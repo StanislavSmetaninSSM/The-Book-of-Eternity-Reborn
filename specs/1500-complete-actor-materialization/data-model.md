@@ -93,6 +93,7 @@ Rules:
 | `relationships` | `relationshipLevel`, `attitude`, `relationshipLock`, and any initial inter-NPC relationship authority |
 
 The existing core NPC fields remain mandatory and are not duplicated in `sections`.
+`characteristics` must contain at least one numeric property. Property names come from the current world's schema; the materialization contract does not define a universal characteristic vocabulary.
 
 ## Afterlife actor contract
 
@@ -145,7 +146,7 @@ Exceptions:
 
 1. `absent` -> `complete`: permitted only on first materialization with complete envelope.
 2. `legacy_without_envelope` -> unchanged: accepted for load compatibility.
-3. `legacy_without_envelope` -> significant promotion: blocked until materialized.
+3. `legacy_without_envelope` -> significant promotion: blocked until materialized; the complete object may repeat `inventory` only when it is semantically identical to the validated pre-turn snapshot.
 4. `complete` -> ordinary update: dedicated delta commands mutate gameplay fields; envelope identity remains stable.
 5. `complete` -> resent as first materialization: rejected for existing actors when it attempts to bypass delta authority.
 6. `complete` -> invalid contradiction: blocked with bounded repair.
@@ -165,13 +166,15 @@ Exceptions:
 - `afterlife_actor_materialization_profile_missing`
 - `afterlife_actor_materialization_profile_ambiguous`
 - `actor_materialization_existing_resend_forbidden`
+- `npc_characteristics_empty`
+- `npc_existing_inventory_resend_forbidden`
 
 Every issue records actor type/ID, section or capability where applicable, expected canonical target, and a bounded repair hint.
 
-Before applying a worker-authored actor materialization repair, the apply gate removes only the exact mutable subtree named by the issue and semantically compares the remaining canonical JSON. Any change to protected actor data, another actor, or unrelated root state rejects the proposal. An ambiguous-profile repair may only remove duplicates while retaining one otherwise unchanged canonical profile. Dedicated Guardian/resident memory repair is stricter than ordinary scalar repair: all existing journal entries remain an exact prefix, and the worker may append exactly one meaningful thought for the issue-bound actor without rewriting or deleting history.
+Before applying a worker-authored actor materialization repair, the apply gate removes only the exact mutable subtree named by the issue and semantically compares the remaining canonical JSON. Any change to protected actor data, another actor, or unrelated root state rejects the proposal. An ambiguous-profile repair may only remove duplicates while retaining one otherwise unchanged canonical profile. Dedicated Guardian/resident memory repair is stricter than ordinary scalar repair: all existing journal entries remain an exact prefix, and the worker may append exactly one meaningful thought for the issue-bound actor without rewriting or deleting history. If and only if `game_state/meta/guardian_thought_journal.json` is absent and every scoped issue is `afterlife_actor_materialization_memory_missing` for one exact `guardian:<id>`, preservation uses `{ "entries": [] }` as the baseline; the normal proposal contract still requires Add, `beforeSha256=missing`, exact `afterSha256`, and the proposal-bound content reference.
 
 Every validation-repair context path has one exact byte state: a 64-character SHA-256 digest or `missing`. A changed-file entry repeats that state as `beforeSha256`; add is legal only from `missing`, replace/delete only from an existing digest. Non-delete content lives only at `worker_proposals/<proposalId>/<path>` and its bytes must match `afterSha256`; delete uses `afterSha256=missing` and no content reference. Apply and rollback both compare expected bytes under the shared canonical-write lock. A mismatch is a conflict and never overwrites the newer owner.
 
-Only `status=completed` proposals may reach that apply path. `failed`, `timed-out`, and `rejected` proposals carry no `changedFiles` and remain diagnostic records. Worker audit lines use one lock-protected read-and-append operation so concurrent writers preserve every event; an audit publication failure is telemetry loss and cannot revoke an already accepted canonical commit.
+Only `status=completed` proposals may reach that apply path. `failed`, `timed-out`, and `rejected` proposals carry no `changedFiles` and remain diagnostic records. Worker audit lines use one lock-protected read-and-append operation so concurrent writers preserve every event. Generated event IDs combine a readable UTC millisecond timestamp with a GUID suffix so same-millisecond calls remain unique; an audit publication failure is telemetry loss and cannot revoke an already accepted canonical commit.
 
 Repair handoff has one owner state. Before dispatch, request/ready/stall artifacts from older cycles are removed. `Applied + ReadySignalCreated` enters the correlated ready path; `Applied + !ReadySignalCreated` records `worker_apply_gate_accepted` and immediately revalidates; every non-applied result writes one fresh legacy request. Player-facing output freshness is compared with the explicit start time of the accepted canonical repair, including worker-only cycles where no legacy request exists.

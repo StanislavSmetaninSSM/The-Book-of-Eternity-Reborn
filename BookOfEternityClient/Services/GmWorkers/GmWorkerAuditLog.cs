@@ -115,7 +115,12 @@ public sealed class GmWorkerAuditLog
     }
 
     private static string CreateEventId() =>
-        "worker_audit_" + DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff");
+        "worker_audit_" +
+        DateTimeOffset.UtcNow.ToString(
+            "yyyyMMddHHmmssfff",
+            System.Globalization.CultureInfo.InvariantCulture) +
+        "_" +
+        Guid.NewGuid().ToString("N");
 
     private static string ToKebabCase(WorkerTaskType taskType) =>
         taskType switch

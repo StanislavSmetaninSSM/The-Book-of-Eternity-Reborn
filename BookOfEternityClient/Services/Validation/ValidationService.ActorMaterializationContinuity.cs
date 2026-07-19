@@ -93,6 +93,7 @@ public partial class ValidationService
 
     private readonly record struct MortalActorMaterializationPreTurnState(
         MortalActorMaterializationPromotionAuthority PromotionAuthority,
+        string? InventoryJson,
         string? HistoricalEnvelopeJson,
         IReadOnlySet<string> HistoricalEnvelopeSections,
         IReadOnlyDictionary<string, string> HistoricalActorJsonBySection)
@@ -424,8 +425,16 @@ public partial class ValidationService
             ActorMaterializationContract.PropertyName,
             out var envelope) &&
             envelope.ValueKind == JsonValueKind.Object;
+        var hasUnchangedInventorySnapshot =
+            previousState.InventoryJson != null &&
+            actor.TryGetProperty("inventory", out var currentInventory) &&
+            currentInventory.ValueKind == JsonValueKind.Array &&
+            JsonValuesSemanticallyEqual(
+                previousState.InventoryJson,
+                currentInventory.GetRawText());
         return !hasMaterializationEnvelope ||
-               !currentSignals.IsPromotionFrom(previousState.PromotionSignals);
+               !currentSignals.IsPromotionFrom(previousState.PromotionSignals) ||
+               !hasUnchangedInventorySnapshot;
     }
 
     private static bool TryReadCanonicalMortalActorStates(
@@ -467,9 +476,19 @@ public partial class ValidationService
                 if (!TryReadSingleCanonicalMortalActorId(actor, out var actorId))
                     return false;
 
+                if (actor.TryGetProperty("inventory", out var inventory) &&
+                    inventory.ValueKind != JsonValueKind.Array)
+                {
+                    return false;
+                }
+
+                var inventoryJson = inventory.ValueKind == JsonValueKind.Array
+                    ? inventory.GetRawText()
+                    : null;
                 var historicalEnvelopeJson = ReadHistoricalActorMaterializationEnvelopeJson(actor);
                 var state = new MortalActorMaterializationPreTurnState(
                     ReadMortalActorMaterializationPromotionAuthority(actor),
+                    inventoryJson,
                     historicalEnvelopeJson,
                     historicalEnvelopeJson == null
                         ? new HashSet<string>(StringComparer.Ordinal)
@@ -512,6 +531,10 @@ public partial class ValidationService
         if (!left.PromotionAuthority.TryMerge(
                 right.PromotionAuthority,
                 out var mergedPromotionAuthority) ||
+            !TryMergeMortalActorInventorySnapshots(
+                left.InventoryJson,
+                right.InventoryJson,
+                out var mergedInventoryJson) ||
             !TryMergeHistoricalActorMaterializationEnvelopes(
                 left.HistoricalEnvelopeJson,
                 right.HistoricalEnvelopeJson,
@@ -522,6 +545,7 @@ public partial class ValidationService
 
         merged = new MortalActorMaterializationPreTurnState(
             mergedPromotionAuthority,
+            mergedInventoryJson,
             mergedEnvelopeJson,
             MergeActorMaterializationSectionSets(
                 left.HistoricalEnvelopeSections,
@@ -540,6 +564,18 @@ public partial class ValidationService
         foreach (var (sectionName, actorJson) in right)
             result[sectionName] = actorJson;
         return result;
+    }
+
+    private static bool TryMergeMortalActorInventorySnapshots(
+        string? leftJson,
+        string? rightJson,
+        out string? mergedJson)
+    {
+        mergedJson = leftJson ?? rightJson;
+        if (leftJson == null || rightJson == null)
+            return true;
+
+        return JsonValuesSemanticallyEqual(leftJson, rightJson);
     }
 
     private static bool TryMergeHistoricalActorMaterializationEnvelopes(

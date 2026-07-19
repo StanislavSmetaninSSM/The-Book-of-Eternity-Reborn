@@ -32,6 +32,8 @@ As a player, when a significant Mortal NPC first appears, I can later inspect a 
 2. **Given** an itemless non-combatant NPC whose empty skill and possession sections are explicitly declared `empty_by_design` with non-empty in-world reasons, **when** the remaining required profile sections are complete, **then** validation accepts the materialization.
 3. **Given** a new NPC explicitly declared able to teach, trade, or fight, **when** the corresponding canonical teacher, merchant, or skill authority is absent, **then** validation blocks the materialization without parsing the NPC name, occupation, history, tags, or narrative.
 4. **Given** an existing NPC, **when** the GM changes inventory, skills, relationships, activity, or memory, **then** existing dedicated delta commands remain authoritative and the full materialization envelope is not resent.
+5. **Given** a first-materialization Mortal NPC with `characteristics={}`, **when** its complete object is validated, **then** validation reports `npc_characteristics_empty`; at least one setting-defined numeric property is required without prescribing characteristic names.
+6. **Given** a legacy Mortal NPC receives its first complete envelope during a structured promotion, **when** the schema-required `UpdateNPCs.inventory` differs from validated pre-turn inventory, **then** validation rejects the resend; the same promotion passes when the inventory snapshot is semantically unchanged and all mutations use dedicated atomic commands.
 
 ---
 
@@ -69,6 +71,7 @@ As a returning player, I can load an older save without the client silently inve
 2. **Given** that legacy actor becomes newly relevant through a first canonical profile promotion, teacher/merchant enablement, or Shining leadership appointment, **when** the turn is validated, **then** current-contract materialization is required.
 3. **Given** a repair packet for an incomplete actor, **when** some sections are already valid, **then** repair preserves them and names only missing or contradictory sections.
 4. **Given** a worker proposes a bounded actor repair, **when** the proposal also changes personality, another section, another actor, or unrelated root state, **then** the apply gate rejects the proposal before canonical files are written.
+5. **Given** the canonical Guardian thought journal does not exist and one exact `guardian:<id>` memory-missing issue is routed to it, **when** a completed proposal uses `changeKind=add`, `beforeSha256=missing`, exact proposal-bound content, and one fresh owned entry under `{ "entries": [...] }`, **then** the apply gate accepts creation; wrong-owner or extra-root data remains rejected.
 
 ---
 
@@ -98,6 +101,9 @@ As the GM agent, I receive one bounded, setting-agnostic authoring contract and 
 - Guardians and residents retain their type-specific canonical files; the common profile complements rather than replaces those files.
 - Afterlife possessions are not Mortal inventory. Trade stock, offerings, relic links, and mentor showcases remain their existing explicit capability surfaces.
 - Legacy files are accepted only as unchanged baseline authority. A current-turn new actor cannot omit metadata by presenting a permanent-looking ID.
+- A legacy Mortal promotion may repeat only an inventory snapshot semantically equal to validated pre-turn authority; changed, added, or removed inventory entries remain atomic-command-only.
+- A missing Guardian thought journal is treated as `{ "entries": [] }` only inside the exact issue-bound Add path. Other missing actor files, owners, issue codes, or proposed roots remain fail-closed.
+- Generated worker audit event IDs remain readable but must be unique even when multiple helper calls occur in the same millisecond.
 
 ## Requirements
 
@@ -107,12 +113,12 @@ As the GM agent, I receive one bounded, setting-agnostic authoring contract and 
 - **FR-002**: The envelope MUST contain exact `actorType` and `actorId` bindings, a stable `materializationId`, `materializedAtTurn`, `schemaVersion`, `state=complete`, explicit capability booleans, and per-section dispositions.
 - **FR-003**: A governed section disposition MUST be either `populated` or `empty_by_design`; the latter MUST include a non-empty in-world reason.
 - **FR-004**: Validation MUST reject a missing disposition, a `populated` disposition with empty content, an `empty_by_design` disposition with content, unknown section keys, duplicate authority, and malformed envelope fields.
-- **FR-005**: Mortal first materialization MUST govern combined skills, inventory/equipment, Fate Cards, personal quests, and NPC relationships through dispositions while continuing to require existing core identity, personality, characteristics, goals, progression, location, and memory fields.
+- **FR-005**: Mortal first materialization MUST govern combined skills, inventory/equipment, Fate Cards, personal quests, and NPC relationships through dispositions while continuing to require existing core identity, personality, characteristics, goals, progression, location, and memory fields. `characteristics` MUST contain at least one numeric property, but the validator MUST NOT prescribe setting-specific characteristic names.
 - **FR-006**: A Mortal NPC with `canFight=true` MUST have at least one valid active or passive skill.
 - **FR-007**: A Mortal NPC with `canTeach=true` MUST have canonical `teacherProfile.canTeach=true` and non-empty teacher skill authority.
 - **FR-008**: A Mortal NPC with `canTrade=true` MUST have canonical merchant/trade authority; initial stock may remain pending only through the existing explicit trade request contract.
 - **FR-009**: A Mortal NPC with `ownsItems=true` MUST have non-empty canonical inventory, and equipped item references MUST resolve to that inventory.
-- **FR-010**: Existing Mortal NPCs MUST continue to mutate through dedicated delta commands; validators MUST forbid using the first-materialization envelope to bypass existing update contracts.
+- **FR-010**: Existing Mortal NPCs MUST continue to mutate through dedicated delta commands; validators MUST forbid using the first-materialization envelope to bypass existing update contracts. A legacy promotion MAY include the schema-required inventory snapshot only when it is semantically identical to validated pre-turn inventory; any add, removal, or change through `UpdateNPCs.inventory` MUST be rejected.
 - **FR-011**: A newly significant non-player afterlife actor MUST have a matching common afterlife entity profile unless its actor type is explicitly client-owned and documented as equivalent authority.
 - **FR-012**: New afterlife profiles MUST govern standard arts, special arts, custom states, Fate Cards, relationships, actor agency, and progression history through dispositions and MUST initialize actor-owned memory. A populated agency section MUST contain meaningful goals, personal quests, a current activity, or completed activity history; masks, disposition, or progression strategy alone MUST NOT satisfy agency.
 - **FR-013**: An afterlife actor with `canFight=true` MUST have at least one usable standard or special spiritual art.
@@ -123,11 +129,11 @@ As the GM agent, I receive one bounded, setting-agnostic authoring contract and 
 - **FR-018**: The client MUST determine new/current-turn materialization from validated pre-turn authority and current structured commands, not from display names, ID prefixes, prose, or current pathname state alone.
 - **FR-019**: Untouched legacy actors MUST remain loadable without invented data. Current-turn creation, promotion, or newly significant role assignment MUST trigger the current contract.
 - **FR-020**: Repair packets MUST preserve valid actor data and report only missing, empty, contradictory, or unbound sections for the exact stable actor identity.
-- **FR-020a**: The worker apply gate MUST compare a proposed actor repair with canonical JSON and MUST reject protected actor data changes outside the exact actor and named repair section.
+- **FR-020a**: The worker apply gate MUST compare a proposed actor repair with canonical JSON and MUST reject protected actor data changes outside the exact actor and named repair section. The only missing-baseline actor-memory creation exception is an exact Guardian thought journal Add routed solely by `afterlife_actor_materialization_memory_missing` for one exact `guardian:<id>`; preservation treats that baseline as `{ "entries": [] }` and accepts exactly one fresh meaningful owned entry.
 - **FR-020b**: Validation-repair proposals MUST pin exact canonical bytes with 64-character SHA-256 context/before hashes, bind every non-delete result to its own proposal-scoped content and exact after hash, and apply or roll back through one cross-process compare/exchange write protocol so a concurrent canonical writer cannot be overwritten.
 - **FR-020c**: Worker dispatch MUST happen before exposing the legacy main-GM repair request. Once the apply gate accepts a worker repair, the worker remains the sole repair owner even if ready-signal publication fails; the client MUST revalidate directly and MUST NOT start a second legacy repair. Player-facing output freshness MUST use an explicit repair boundary rather than depend on a legacy request file.
 - **FR-020d**: Only a worker proposal with `status=completed` MAY enter the apply gate. `failed`, `timed-out`, and `rejected` proposals MUST carry an empty `changedFiles` collection, remain diagnostic evidence only, and MUST NOT mutate canonical state.
-- **FR-020e**: Worker audit appends MUST serialize their read-and-append operation under the shared cross-process canonical-write lock. Failure to publish audit telemetry after a canonical apply is accepted MUST NOT roll back or revoke the accepted canonical bytes.
+- **FR-020e**: Worker audit appends MUST serialize their read-and-append operation under the shared cross-process canonical-write lock. Generated audit event IDs MUST remain unique under concurrent or same-millisecond helper calls. Failure to publish audit telemetry after a canonical apply is accepted MUST NOT roll back or revoke the accepted canonical bytes.
 - **FR-021**: Normalization MUST preserve valid materialization metadata but MUST NOT generate narrative reasons, capabilities, skills, inventory, Fate Cards, goals, relationships, or profile content.
 - **FR-022**: System Guardian fresh-game builders MUST emit deterministic valid envelopes for their client-owned Guardian/profile seeds, and every capability boolean, including `canTrade`, MUST match the exact current seeded authority.
 - **FR-023**: GM prompts, Mortal NPC documentation, afterlife contract documentation, worked examples, manifests, and source/documentation guards MUST be updated in the same change.

@@ -2126,6 +2126,27 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateResponse_FirstMaterializationWithEmptyCharacteristics_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "empty_characteristics_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["characteristics"] = new JsonObject();
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_characteristics_empty" &&
+            issue.FilePath.EndsWith(".characteristics", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_NewActiveGuardianWithExactTradeAuthority_PassesCanTradeCapability()
     {
         const string actorId = "guardian_trade_authority";
@@ -2753,7 +2774,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             actorId,
             sectionName: "NPCsInScene",
             canTeach: false,
-            includeEnvelope: false))!.AsObject();
+            includeEnvelope: false,
+            includeInventory: true))!.AsObject();
         var duplicateActor = preTurnRoot["NPCsInScene"]![0]!.DeepClone();
         preTurnRoot["UpdateNPCs"] = new JsonArray(duplicateActor);
         var currentJson = BuildMortalActorStateJson(
@@ -2830,7 +2852,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateResponse_TrueLegacyPromotionWithEnvelopeAndInventory_HasNoErrors()
+    public async Task ValidateResponse_TrueLegacyPromotionWithEnvelopeAndChangedInventory_IsRejected()
     {
         const string path = "game_state/npcs/npc_core.json";
         var preTurnJson = BuildMortalActorStateJson(
@@ -2840,6 +2862,30 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             includeEnvelope: false);
         var currentJson = BuildMortalActorStateJson(
             "legacy_promoted_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentJson);
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_TrueLegacyPromotionWithEnvelopeAndUnchangedInventory_HasNoErrors()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalActorStateJson(
+            "legacy_promoted_actor_unchanged_inventory",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false,
+            includeInventory: true);
+        var currentJson = BuildMortalActorStateJson(
+            "legacy_promoted_actor_unchanged_inventory",
             sectionName: "UpdateNPCs",
             canTeach: true,
             includeEnvelope: true,

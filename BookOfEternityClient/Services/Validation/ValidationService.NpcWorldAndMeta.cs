@@ -5433,6 +5433,19 @@ public partial class ValidationService
         if (item.TryGetProperty("characteristics", out var characteristics) &&
             RequireObject(characteristics, $"{itemContext}.characteristics", issues))
         {
+            if (!characteristics.EnumerateObject().Any())
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.characteristics",
+                    IssueSeverity.Error,
+                    "Complete NPC characteristics не может быть пустым object",
+                    code: "npc_characteristics_empty",
+                    section: "NPC",
+                    expected: "at least one setting-defined numeric characteristic",
+                    actual: "empty object",
+                    repairHint: "Добавь хотя бы одну числовую характеристику, определённую текущим миром; не подменяй характеристики фиксированным жанровым набором."));
+            }
+
             foreach (var characteristic in characteristics.EnumerateObject())
             {
                 if (characteristic.Value.ValueKind != JsonValueKind.Number)

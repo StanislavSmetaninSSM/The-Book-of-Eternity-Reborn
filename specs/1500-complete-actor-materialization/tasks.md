@@ -72,6 +72,11 @@
 - [x] T038 Make the deterministic System Guardian envelope match exact current Guardian trade authority for preset and freeform fresh-game seeds.
 - [x] T039 Serialize worker audit read-and-append under the shared canonical lock and treat audit publication failure as non-authoritative telemetry after an accepted apply.
 - [x] T040 Reject canonical changes on `failed`, `timed-out`, or `rejected` proposals in both contract validation and the apply gate; synchronize the runtime prompt, guide, formal contract, worked example, and source guard.
+- [x] T041 Retain validated pre-turn Mortal inventory and reject legacy-promotion `UpdateNPCs.inventory` unless it is semantically unchanged; preserve new-actor initial inventory and historical resend protection.
+- [x] T042 Reject empty complete Mortal `characteristics` with `npc_characteristics_empty` while keeping characteristic names setting-defined.
+- [x] T043 Permit only the exact missing Guardian thought journal Add for one routed memory-missing owner, reusing append-only preservation and the normal hash/content apply gate; cover wrong-owner and extra-root rejection.
+- [x] T044 Synchronize authoritative Block 19, Block 19.A, CLI/daemon guidance, the existing Mortal worked example, and source guards with complete actor domains and the unchanged-inventory legacy-promotion rule.
+- [x] T045 Make generated worker audit IDs unique under tight same-millisecond calls with a readable timestamp plus GUID suffix and deterministic regression coverage.
 
 ## Phase 11 - Final verification and integration
 

@@ -1084,6 +1084,98 @@ public sealed class GmWorkerApplyGateTests
     }
 
     [Fact]
+    public async Task ApplyAsync_MissingGuardianThoughtJournalRepair_AddsOneOwnedEntry()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/guardian_thought_journal.json";
+            const string actorId = "guardian_journal_first_entry";
+            const string contentRef =
+                "worker_proposals/worker_proposal_guardian_journal_first_entry/game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            var proposed = new JsonObject
+            {
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["entryId"] = "thought_first",
+                    ["guardianId"] = actorId,
+                    ["summary"] = "Я сохраню первое самостоятельное решение души."
+                })
+            };
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                "game_state/meta/guardians.json.guardians[0]",
+                $"guardian:{actorId}");
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Accepted, decision.Result);
+            var appliedJson = await fs.ReadFileAsync(path);
+            Assert.NotNull(appliedJson);
+            Assert.True(JsonNode.DeepEquals(
+                proposed,
+                JsonNode.Parse(appliedJson)));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData("wrong_owner")]
+    [InlineData("extra_root_data")]
+    public async Task ApplyAsync_MissingGuardianThoughtJournalRepair_RejectsUnsafeCreation(
+        string mutation)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/guardian_thought_journal.json";
+            const string actorId = "guardian_journal_safe_owner";
+            const string contentRef =
+                "worker_proposals/worker_proposal_guardian_journal_unsafe/game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            var proposed = new JsonObject
+            {
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["entryId"] = "thought_unsafe",
+                    ["guardianId"] = mutation == "wrong_owner" ? "guardian_journal_other_owner" : actorId,
+                    ["summary"] = "Эта запись должна пройти только при точной безопасной маршрутизации."
+                })
+            };
+            if (mutation == "extra_root_data")
+                proposed["unrelatedState"] = new JsonObject { ["changed"] = true };
+
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                "game_state/meta/guardians.json.guardians[0]",
+                $"guardian:{actorId}");
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.False(File.Exists(fs.ResolvePath(path)));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ApplyAsync_GuardianThoughtJournalRepair_RewritingHistoryIsRejected()
     {
         var root = CreateTempRoot();
@@ -1394,7 +1486,11 @@ public sealed class GmWorkerApplyGateTests
             string issuePath,
             string actor = "mortal_npc:npc_repair_target")
     {
-        var baselineSha256 = ComputeSha256(File.ReadAllBytes(fs.ResolvePath(path)));
+        var resolvedBaselinePath = fs.ResolvePath(path);
+        var baselineExists = File.Exists(resolvedBaselinePath);
+        var baselineSha256 = baselineExists
+            ? ComputeSha256(File.ReadAllBytes(resolvedBaselinePath))
+            : "missing";
         var proposalSha256 = ComputeSha256(File.ReadAllBytes(fs.ResolvePath(contentRef)));
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
         var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
@@ -1432,7 +1528,9 @@ public sealed class GmWorkerApplyGateTests
                 new WorkerChangedFile
                 {
                     Path = path,
-                    ChangeKind = WorkerFileChangeKind.Replace,
+                    ChangeKind = baselineExists
+                        ? WorkerFileChangeKind.Replace
+                        : WorkerFileChangeKind.Add,
                     BeforeSha256 = baselineSha256,
                     AfterSha256 = proposalSha256,
                     ContentRef = contentRef

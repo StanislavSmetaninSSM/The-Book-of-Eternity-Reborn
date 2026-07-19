@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Reflection;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -119,6 +120,25 @@ public sealed class GmWorkerAuditLogTests
         {
             CleanupTempRoot(root);
         }
+    }
+
+    [Fact]
+    public void CreateEventId_TightLoopProducesUniqueReadableIds()
+    {
+        var factory = typeof(GmWorkerAuditLog).GetMethod(
+            "CreateEventId",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(factory);
+
+        var eventIds = Enumerable.Range(0, 10_000)
+            .Select(_ => Assert.IsType<string>(factory.Invoke(null, null)))
+            .ToArray();
+
+        Assert.Equal(
+            eventIds.Length,
+            eventIds.Distinct(StringComparer.Ordinal).Count());
+        Assert.All(eventIds, eventId =>
+            Assert.Matches("^worker_audit_[0-9]{17}_[0-9a-f]{32}$", eventId));
     }
 
     private static FileSystemManager CreateFileSystem(string root)

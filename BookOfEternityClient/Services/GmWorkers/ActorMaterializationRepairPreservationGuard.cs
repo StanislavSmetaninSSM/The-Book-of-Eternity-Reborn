@@ -51,6 +51,12 @@ internal static class ActorMaterializationRepairPreservationGuard
         if (relevantIssues.Length == 0)
             return [];
 
+        if (string.IsNullOrWhiteSpace(baselineJson) &&
+            IsSafeMissingGuardianThoughtJournalCreation(path, relevantIssues))
+        {
+            baselineJson = """{ "entries": [] }""";
+        }
+
         if (string.IsNullOrWhiteSpace(baselineJson) || string.IsNullOrWhiteSpace(proposedJson))
         {
             return
@@ -168,6 +174,38 @@ internal static class ActorMaterializationRepairPreservationGuard
         {
             return [$"Actor materialization preservation check requires valid JSON for {path}."];
         }
+    }
+
+    private static bool IsSafeMissingGuardianThoughtJournalCreation(
+        string path,
+        IReadOnlyList<WorkerValidationIssue> relevantIssues)
+    {
+        if (!path.Equals(GuardianThoughtJournalState.StatePath, StringComparison.Ordinal) ||
+            relevantIssues.Count == 0)
+        {
+            return false;
+        }
+
+        string? routedActorId = null;
+        foreach (var issue in relevantIssues)
+        {
+            if (!string.Equals(
+                    issue.Code,
+                    "afterlife_actor_materialization_memory_missing",
+                    StringComparison.OrdinalIgnoreCase) ||
+                !TryParseActorIdentity(issue.Actor, out var actorType, out var actorId) ||
+                !string.Equals(actorType, "guardian", StringComparison.Ordinal) ||
+                !string.Equals(issue.Actor, $"guardian:{actorId}", StringComparison.Ordinal) ||
+                routedActorId != null &&
+                !string.Equals(routedActorId, actorId, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            routedActorId = actorId;
+        }
+
+        return routedActorId != null;
     }
 
     private static bool IsActorMaterializationIssue(string code) =>

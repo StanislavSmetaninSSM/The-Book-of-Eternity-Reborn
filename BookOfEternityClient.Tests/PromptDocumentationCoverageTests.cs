@@ -524,6 +524,9 @@ public sealed class PromptDocumentationCoverageTests
     public void MortalActorMaterializationContract_IsDocumentedForGm()
     {
         var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var npcRules = ReadRepoFile("Rules", "Block_19.txt");
+        var npcInventoryRules = ReadRepoFile("Rules", "Block_19.A.txt");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
 
@@ -556,6 +559,58 @@ public sealed class PromptDocumentationCoverageTests
             Assert.Contains("\"relationships\": { \"state\": \"populated\" }", text, StringComparison.Ordinal);
             Assert.Contains("\"inventory\": {", text, StringComparison.Ordinal);
             Assert.Contains("\"state\": \"empty_by_design\"", text, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+                 {
+                     "Actor Materialization v1",
+                     "materializationId",
+                     "materializedAtTurn",
+                     "\"actorType\": \"mortal_npc\"",
+                     "\"state\": \"complete\"",
+                     "canFight",
+                     "canTeach",
+                     "canTrade",
+                     "ownsItems",
+                     "skills",
+                     "inventory",
+                     "fateCards",
+                     "personalQuests",
+                     "relationships",
+                     "core identity, personality, characteristics, goals, progression, location, and memory",
+                     "at least one setting-defined numeric property",
+                     "First materialization",
+                     "Legacy promotion",
+                     "Existing-actor update"
+                 })
+        {
+            Assert.Contains(requiredText, npcRules, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var requiredText in new[]
+                 {
+                     "Legacy promotion",
+                     "unchanged inventory snapshot",
+                     "semantically identical to the validated pre-turn inventory snapshot",
+                     "NPCInventoryAdds",
+                     "NPCInventoryUpdates",
+                     "NPCInventoryRemovals"
+                 })
+        {
+            Assert.Contains(requiredText, npcInventoryRules, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var requiredText in new[]
+                 {
+                     "first-materialization envelope",
+                     "legacy promotion",
+                     "validated pre-turn inventory snapshot",
+                     "NPCInventoryAdds",
+                     "NPCInventoryUpdates",
+                     "NPCInventoryRemovals"
+                 })
+        {
+            Assert.Contains(requiredText, stepGuide, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.Contains("mortal_actor_materialization_v1", manifest, StringComparison.Ordinal);

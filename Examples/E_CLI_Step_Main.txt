@@ -1241,7 +1241,9 @@ Only then:
 
 Actor Materialization v1 applies when a genuinely new significant Mortal NPC first becomes durable state. Bind the full NPC and its immutable envelope by exact `mortal_npc:<initialId>`. Do not infer skills, inventory, teaching, trade, combat ability, or identity from a display name, prose, occupation, or setting genre. The example world below is only evidence that the contract is setting-neutral; it is not a keyword template for other worlds.
 
-Every required section is either `populated` by structured NPC data or `empty_by_design` with a concise in-world reason. An existing NPC keeps the original envelope unchanged; later changes use a dedicated delta or command surface instead of resending the full object. An untouched legacy NPC remains readable, but the first assignment of teacher, merchant/trade, combat, Actor Brain, or another significant structured role is a promotion and requires a complete envelope in that accepted turn.
+Every required section is either `populated` by structured NPC data or `empty_by_design` with a concise in-world reason. An already materialized existing NPC keeps the original envelope unchanged; later changes use a dedicated delta or command surface instead of resending the full object. An untouched legacy NPC remains readable, but the first assignment of teacher, merchant/trade, combat, Actor Brain, or another significant structured role is a promotion and requires a complete envelope in that accepted turn.
+
+Worked legacy-promotion inventory continuity: if validated pre-turn authority contains `inventory=[{"itemId":"existing_item_01","count":1}]`, the promotion's complete `UpdateNPCs` object repeats that inventory snapshot with the same meaning and adds the first envelope. Changing the count, adding another entry, or removing the entry through that snapshot is rejected. Such a mutation is authored separately through `NPCInventoryAdds`, `NPCInventoryUpdates`, or `NPCInventoryRemovals`; the promotion snapshot remains semantically identical to the validated pre-turn inventory snapshot.
 
 Worked first-materialization fragment for `game_state/npcs/npc_core.json`:
 

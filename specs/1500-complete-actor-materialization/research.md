@@ -83,7 +83,31 @@
 
 **Rationale**: A terminal failure carrying mutations is contradictory. Rejecting that shape in both contract validation and the apply gate makes accidental application impossible even when one boundary is called directly.
 
-## Decision 10: Metadata remains private
+## Decision 13: Legacy promotion inventory is continuity evidence
+
+**Decision**: Retain the validated canonical pre-turn inventory JSON for each Mortal identity. A complete legacy promotion may include its schema-required inventory only when that array is semantically identical to the retained snapshot; new identities may still provide their complete initial inventory, and all actual existing-identity mutations remain dedicated-command-only.
+
+**Rationale**: Promotion needs a complete object but must not become an alternate inventory mutation channel. Comparing structured pre-turn authority preserves both requirements without inventing content or parsing prose.
+
+## Decision 14: Mortal characteristics are open-vocabulary but non-empty
+
+**Decision**: Require at least one numeric property in a complete Mortal `characteristics` object while leaving property names entirely setting-defined.
+
+**Rationale**: `{}` is not meaningful actor materialization, but a fixed characteristic dictionary would make the supposedly setting-agnostic contract depend on one world's vocabulary.
+
+## Decision 15: First Guardian journal creation is one narrow Add
+
+**Decision**: When the exact Guardian thought journal is absent, treat it as `{ "entries": [] }` only for memory-missing issues routed to one exact `guardian:<id>`. Reuse append-only normalization and the ordinary Add/hash/content-reference gate; wrong owners, extra roots, unrelated issues, rewrites, and extra entries remain rejected.
+
+**Rationale**: The canonical journal has a safe empty state, but a general missing-baseline exception would bypass protected-data preservation for unrelated files.
+
+## Decision 16: Audit identity is independent of clock granularity
+
+**Decision**: Generate readable worker audit IDs from the UTC millisecond timestamp plus a GUID suffix.
+
+**Rationale**: The timestamp remains useful during inspection, while uniqueness no longer depends on scheduler timing or call serialization.
+
+## Decision 17: Metadata remains private
 
 **Decision**: Console and browser projections continue to render gameplay fields and ignore `materialization`. Source/projection tests guard against exposing contract tokens in player mode.
 

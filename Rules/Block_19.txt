@@ -187,6 +187,13 @@
       Each object in 'UpdateNPCs' represents one NPC.
                             When creating a new NPC, you SHOULD generate 1-2 initial Fate Cards to establish their starting potential and narrative direction. 
                             More cards will be generated dynamically during gameplay by following the 'Dynamic Fate Card Generation Protocol' (Rule 19.1.4).
+
+                            Actor Materialization v1 lifecycle boundaries:
+                            - First materialization: a genuinely new durable NPC MUST provide the complete NPC object plus one complete actor-bound 'materialization' envelope. Use 'actorType: mortal_npc' and bind 'actorId' to the exact same-turn 'initialId' until the client assigns a permanent 'NPCId'.
+                            - Legacy promotion: an existing legacy NPC without an envelope MUST provide the complete envelope when it first gains a significant structured role or Actor Brain scope. Because the complete schema still requires 'inventory', this promotion may resend only an inventory snapshot semantically identical to the validated pre-turn inventory snapshot. It MUST NOT add, remove, or change an item.
+                            - Existing-actor update: an already materialized NPC keeps the historical envelope unchanged and does not resend it through an ordinary update. Use the dedicated delta commands for every later mutable domain, including all inventory mutations.
+
+                            A complete Mortal actor still requires core identity, personality, characteristics, goals, progression, location, and memory. The envelope additionally governs skills, inventory/equipment, fateCards, personalQuests, and relationships. Its explicit capabilities are canFight, canTeach, canTrade, and ownsItems; each capability and section disposition MUST match structured canonical data rather than a display name, prose, occupation, genre, or keyword. Every governed section is either 'populated' or 'empty_by_design'; 'empty_by_design' requires a non-empty in-world reason. The 'characteristics' object MUST contain at least one setting-defined numeric property, with names supplied by the current world's schema rather than a predetermined list. Initialize actor-owned Mortal memory through the canonical NPC journal/Actor Brain surfaces; the envelope does not replace that state.
      </instructiontext>
      <content language="json" type="code_example">
       <![CDATA[
@@ -194,6 +201,7 @@
                             Mandatory format for an NPC Object:
                             {
                                 "NPCId": "system_assigned_guid_or_null_for_new",
+                                "initialId": "stable_same_turn_actor_id_or_null",
                                 "name": "full_name_of_NPC_string",
                                 "currentLocationId": "guid_of_npc_current_location_or_null", // The ID of the location where the NPC currently is. Null if location is unknown or 'off-screen'.
                                 "initialLocationId": "turn_local_reference_tag_string_or_null",
@@ -265,18 +273,7 @@
                                 },
                                 "attitude": "attitude_towards_player_string", // Translate
                                 "characteristics": {
-                                    "standardStrength": 0, "modifiedStrength": 0,
-                                    "standardDexterity": 0, "modifiedDexterity": 0,
-                                    "standardConstitution": 0, "modifiedConstitution": 0,
-                                    "standardIntelligence": 0, "modifiedIntelligence": 0,
-                                    "standardWisdom": 0, "modifiedWisdom": 0,
-                                    "standardFaith": 0, "modifiedFaith": 0,
-                                    "standardAttractiveness": 0, "modifiedAttractiveness": 0,
-                                    "standardTrade": 0, "modifiedTrade": 0,
-                                    "standardPersuasion": 0, "modifiedPersuasion": 0,
-                                    "standardPerception": 0, "modifiedPerception": 0,
-                                    "standardLuck": 0, "modifiedLuck": 0,
-                                    "standardSpeed": 0, "modifiedSpeed": 0
+                                    "setting_defined_characteristic_key": 0
                                 },
                                 "passiveSkills": [ /* Array of Passive Skill Objects */ ],
                                 "activeSkills": [ /* Array of Active Skill Objects */ ],
@@ -288,6 +285,28 @@
                                     /* Object mapping equipment slots to item IDs, identical to the player's structure. 
                                     Maintained by the GM. 
                                 */ },
+                                "materialization": {
+                                    /* Include only for First materialization or Legacy promotion. */
+                                    "schemaVersion": 1,
+                                    "materializationId": "stable_unique_materialization_id",
+                                    "actorType": "mortal_npc",
+                                    "actorId": "exact_NPCId_or_same_turn_initialId",
+                                    "materializedAtTurn": "non_negative_integer_turn",
+                                    "state": "complete",
+                                    "capabilities": {
+                                        "canFight": false,
+                                        "canTeach": false,
+                                        "canTrade": false,
+                                        "ownsItems": false
+                                    },
+                                    "sections": {
+                                        "skills": { "state": "empty_by_design", "reason": "This actor has no structured skills in the current world." },
+                                        "inventory": { "state": "empty_by_design", "reason": "This actor carries no personal items at first materialization." },
+                                        "fateCards": { "state": "empty_by_design", "reason": "No Fate Card is active for this actor yet." },
+                                        "personalQuests": { "state": "empty_by_design", "reason": "This actor has no current personal quest." },
+                                        "relationships": { "state": "populated" }
+                                    }
+                                },
                                 "customStates": [ /* Array of Custom State Objects (as per Block 25.A) */ ],
                                 "fateCards": [
                                     {
@@ -416,6 +435,8 @@
                             - For a new NPC, this MUST be 'null'.
                             - For an existing NPC, this MUST be their ID from 'NPCsInScene' if the NPC is present.
                             - You MUST adhere to the "Law of ID Generation" (Rule #5.8.A). Never invent an ID.
+
+                            1.A. "initialId": (string or null) Stable same-turn identity for a genuinely new NPC. It MUST exactly match 'materialization.actorId' until the client assigns the permanent 'NPCId'. Existing permanent actors normally use null.
                             
                             2.  "name": (string) Full NPC name. If existing, use exact name from Context. Translate to user's language.
                             
@@ -571,23 +592,23 @@
                                 This value MUST be one of the official tier names defined in the "800-Point Relationship Scale Protocol" (Rule #19.4.A), determined by the current 'relationshipLevel'. 
                                 Must be translated.
 
-                            14. "characteristics": (object) 
-                            Contains key-value pairs for all standard and modified characteristics as per #5.1.2.
-                            CRITICAL: 
-                            When generating a new NPC, you MUST calculate their standard characteristics by strictly following the 'MANDATORY NPC Generation and Progression Protocol' defined in Rule #5.A.2.
-                            The stats MUST be balanced and logical for the NPC's level and role. You must log your calculation as proof.
+                            14. "characteristics": (object)
+                            Contains numeric key-value pairs defined by the current world's characteristic schema. It MUST contain at least one setting-defined numeric property. Do not invent a universal list or infer characteristic names from a display name, occupation, prose, or genre.
 
                             15. "passiveSkills": (array of Passive Skill Objects) Full definitions of passive skills known by NPC, as per #8.1.
 
                             16. "activeSkills": (array of Active Skill Objects) Full definitions of active skills known by NPC, as per #7.1. 
                             Their mastery must be initialized/updated via 'NPCSkillMasteryChanges'.
 
-                            17. "inventory": (array of Item Objects) A list of notable items the NPC possesses, defined as per InstructionBlock '10'.
+                            17. "inventory": (array of Item Objects) A list of notable items the NPC possesses, defined as per InstructionBlock '10'. A new NPC supplies its complete initial inventory. A Legacy promotion supplies only an unchanged inventory snapshot that is semantically identical to validated pre-turn authority. Every actual mutation for an existing identity uses Block 19.A atomic commands.
 
                             17.1. "equippedItems": (object) 
                             An object that maps equipment slot names (e.g., 'MainHand', 'Chest') to the 'existedId' of the item currently equipped in that slot. 
                             This structure is identical to the player's 'equippedItems'. 
                             The GM is responsible for maintaining this state based on the NPC's actions and situation (e.g., equipping armor for battle).
+
+                            17.2. "materialization": (object, required only for First materialization or Legacy promotion)
+                            Contains schemaVersion=1, stable materializationId, exact actorType/actorId binding, materializedAtTurn, state=complete, exact capability booleans, and dispositions for skills, inventory, fateCards, personalQuests, and relationships. Use only 'populated' or 'empty_by_design'; the latter requires a non-empty in-world reason. Do not regenerate or resend an accepted historical envelope.
 
                             17.A. "customStates": (array of Custom State Objects, optional) 
                             This array holds the persistent, custom-defined states for the NPC, such as Hunger, Thirst, Morale, etc. 

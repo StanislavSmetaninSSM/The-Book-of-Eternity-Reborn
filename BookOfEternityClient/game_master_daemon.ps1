@@ -1717,7 +1717,8 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 - Bind it to the exact `actorType:actorId` pair. Mortal NPCs use `actorType: mortal_npc`; a same-turn new NPC uses the same stable `initialId` as `materialization.actorId`.
 - Never infer skills, inventory, teaching, trade, combat capability, or identity from a display name, prose, occupation, or setting genre. Materialize only structured facts justified by the current world and scene.
 - `capabilities` must agree with the full NPC object. Every required entry under `sections` is either `populated` or `empty_by_design`; `empty_by_design` requires a concise in-world reason, not a technical placeholder.
-- For an existing NPC, preserve the original envelope byte-for-byte. Apply later changes through a dedicated delta/command surface; do not resend or regenerate `materialization`.
+- For an already materialized existing NPC, preserve the original envelope byte-for-byte. Apply later changes through a dedicated delta/command surface; do not resend or regenerate `materialization`.
+- For a legacy promotion, add the first complete envelope and include the schema-required `inventory` only when it is semantically identical to the validated pre-turn inventory snapshot. Inventory additions, changes, and removals remain dedicated-command-only.
 
 ## Scene NPC location rules
 
@@ -1727,7 +1728,7 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 - If the current scene is a same-turn new location (`currentLocationData.locationId = null` with `currentLocationData.initialId`), set `initialLocationId` to that exact initial id and set `currentLocationId` to `null`.
 - Keep `currentLocationName` as the visible current location name.
 - For a genuinely new NPC, use `NPCId: null` plus non-empty `initialId`; do not invent a permanent NPCId before the client materializes it.
-- `inventory` inside the full NPC object is allowed for a genuinely new NPC's initial carried inventory. For an existing NPC, do not resend `inventory` inside `UpdateNPCs`; use NPC inventory command surfaces for deltas.
+- `inventory` inside the full NPC object is allowed for a genuinely new NPC's initial carried inventory. The only existing-identity exception is the unchanged snapshot required for a legacy promotion; every mutation uses `NPCInventoryAdds`, `NPCInventoryUpdates`, or `NPCInventoryRemovals`.
 - Use canonical `culturalStance`: `Conformist`, `Pragmatist`, or `Dissident`.
 - Keep `relationshipLevel` numeric. For neutral/unknown NPCs use `0` and `attitude: "Neutral"`.
 - Nullable string fields must be either a real string or JSON `null`, not `{}` and not missing when validator names them.
