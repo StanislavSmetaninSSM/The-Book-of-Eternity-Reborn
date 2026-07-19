@@ -726,7 +726,59 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateAcceptedTurnContinuity_ProfileWithCaseVariantIdentityAlias_DoesNotSatisfyExactBinding()
+    public async Task ValidateAcceptedTurnContinuity_TrackedAfterlifeProfilesDeleted_IsRejected()
+    {
+        const string actorType = "guardian";
+        const string actorId = "guardian_deleted_profile_authority";
+        var sourcePath = GetAfterlifeBindingSourcePath(actorType);
+        var source = BuildAfterlifeBindingSourceJson(actorType, actorId, includeActor: true);
+        var profiles = BuildCompleteAfterlifeBindingProfileStateJson(actorType, actorId, includeProfile: true);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            source,
+            source,
+            profiles,
+            profiles);
+        _fs.DeleteFile(AfterlifeEntityProfileState.StatePath);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == AfterlifeEntityProfileState.StatePath);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("{ \"schemaVersion\": 1 }")]
+    public async Task ValidateAcceptedTurnContinuity_TrackedAfterlifeSourceActorRemoved_IsRejected(
+        string? replacementJson)
+    {
+        const string sourceKind = "guardian";
+        const string actorId = "guardian_deleted_source_authority";
+        var sourcePath = GetAfterlifeBindingSourcePath(sourceKind);
+        var source = BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: true);
+        var profiles = BuildCompleteAfterlifeBindingProfileStateJson("guardian", actorId, includeProfile: true);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            source,
+            source,
+            profiles,
+            profiles);
+        if (replacementJson == null)
+            _fs.DeleteFile(sourcePath);
+        else
+            await _fs.WriteFileAtomicAsync(sourcePath, replacementJson);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == sourcePath);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_ProfileWithCaseVariantIdentityAlias_IsRejectedAsUnusableAuthority()
     {
         const string sourceKind = "guardian";
         const string actorId = "guardian_case_alias";
@@ -747,8 +799,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var issues = await InvokeAcceptedTurnContinuityAsync();
 
         Assert.Contains(issues, issue =>
-            issue.Code == "afterlife_actor_materialization_profile_missing" &&
-            issue.Actor == "guardian:guardian_case_alias");
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == AfterlifeEntityProfileState.StatePath);
     }
 
     [Fact]
@@ -1430,6 +1482,38 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var issues = await InvokeAcceptedTurnContinuityAsync();
 
         Assert.Empty(issues);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_CurrentMortalActorWithConflictingIdentityAliases_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalPromotionStateJson(promotion: null);
+        var currentRoot = JsonNode.Parse(preTurnJson)!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["id"] = "shadow_mortal_identity";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_current_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_CurrentAfterlifeProfileWithConflictingIdentityAliases_IsRejected()
+    {
+        const string path = "game_state/meta/afterlife_entity_profiles.json";
+        var preTurnJson = BuildAfterlifeProfileStateJson(includeProfile: true);
+        var currentRoot = JsonNode.Parse(preTurnJson)!.AsObject();
+        currentRoot["profiles"]![0]!["actorRef"] = "shadow_afterlife_identity";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == path);
     }
 
     [Theory]

@@ -77,6 +77,12 @@ public partial class ValidationService
                 return;
             }
 
+            if (preTurnActors.Keys.Any(identityKey => !currentActors.ContainsKey(identityKey)))
+            {
+                AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(path, issues);
+                return;
+            }
+
             foreach (var actor in currentActors.Values)
             {
                 currentSourceActors[actor.IdentityKey] = actor;
@@ -168,14 +174,15 @@ public partial class ValidationService
         foreach (var profile in profiles.EnumerateArray())
         {
             var context = $"{AfterlifeEntityProfileState.StatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{index++}]";
-            if (!TryReadExactNonEmptyString(profile, "actorType", out var actorType) ||
-                !TryReadExactNonEmptyString(profile, "actorId", out var actorId) ||
-                IsPlayerSoulIdentity(actorType, actorId))
-            {
+            if (!TryReadCanonicalAfterlifePreTurnActorIdentity(
+                    profile,
+                    out var actorType,
+                    out var actorId,
+                    out var identityKey))
+                return false;
+            if (IsPlayerSoulIdentity(actorType, actorId))
                 continue;
-            }
 
-            var identityKey = BuildAfterlifeActorIdentityKey(actorType, actorId);
             if (!result.TryGetValue(identityKey, out var matches))
             {
                 matches = new List<(JsonElement, string)>();

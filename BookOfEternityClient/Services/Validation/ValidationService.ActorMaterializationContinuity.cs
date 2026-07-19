@@ -174,6 +174,20 @@ public partial class ValidationService
             repairHint: "Откати текущий ход к client-owned validated snapshot и восстанови snapshot через штатный rollback/recovery; не переписывай pre-turn authority догадками ГМа."));
     }
 
+    private static void AddUnusableMortalActorMaterializationCurrentAuthorityIssue(
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            MortalActorMaterializationStatePath,
+            IssueSeverity.Error,
+            "Текущая canonical authority персонажей содержит неоднозначную или повреждённую идентичность; materialization нельзя связывать по догадке.",
+            code: "actor_materialization_current_authority_unusable",
+            section: "ActorMaterialization",
+            expected: "one exact canonical permanent NPC identity, or one exact initialId for a same-turn NPC",
+            actual: "missing, duplicate, case-variant, or conflicting identity aliases",
+            repairHint: "Восстанови точную идентичность из validated snapshot либо оставь новой сущности только canonical null NPCId и initialId; не связывай персонажей по имени, описанию или жанровым словам."));
+    }
+
     private async Task ValidateAcceptedTurnActorMaterializationCompletenessAsync(List<ValidationIssue> issues)
     {
         await ValidateAcceptedTurnMortalActorMaterializationCompletenessAsync(issues);
@@ -235,8 +249,7 @@ public partial class ValidationService
                 foreach (var actor in actors.EnumerateArray())
                 {
                     var context = $"{MortalActorMaterializationStatePath}.{sectionName}[{index++}]";
-                    var actorId = ReadCanonicalMortalActorId(actor);
-                    if (actorId == null)
+                    if (!TryReadCanonicalCurrentMortalActorId(actor, out var actorId))
                         continue;
 
                     var currentSignals = ReadMortalActorMaterializationPromotionSignals(actor);
@@ -326,6 +339,7 @@ public partial class ValidationService
 
     private static IReadOnlyList<ValidationIssue> ValidateCurrentMortalMaterializationIds(JsonElement root)
     {
+        var issues = new List<ValidationIssue>();
         var currentActors = new List<(JsonElement Actor, string Context, string ActorType, string ActorId)>();
         foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
@@ -336,13 +350,18 @@ public partial class ValidationService
             foreach (var actor in actors.EnumerateArray())
             {
                 var context = $"{MortalActorMaterializationStatePath}.{sectionName}[{index++}]";
-                var actorId = ReadCurrentMortalActorMaterializationId(actor);
-                if (actorId != null)
-                    currentActors.Add((actor, context, "mortal_npc", actorId));
+                if (!TryReadCanonicalCurrentMortalActorId(actor, out var actorId))
+                {
+                    AddUnusableMortalActorMaterializationCurrentAuthorityIssue(issues);
+                    continue;
+                }
+
+                currentActors.Add((actor, context, "mortal_npc", actorId));
             }
         }
 
-        return ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors);
+        issues.AddRange(ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors));
+        return issues;
     }
 
     private MortalActorMaterializationPreTurnAuthority
@@ -643,26 +662,39 @@ public partial class ValidationService
         return actorId.Length > 0;
     }
 
-    private static string? ReadCanonicalMortalActorId(JsonElement actor)
+    private static bool TryReadCanonicalCurrentMortalActorId(
+        JsonElement actor,
+        out string actorId)
     {
+        actorId = string.Empty;
         if (actor.ValueKind != JsonValueKind.Object)
-            return null;
+            return false;
 
-        foreach (var propertyName in new[] { "NPCId", "npcId", "id" })
+        if (TryReadSingleCanonicalMortalActorId(actor, out actorId))
+            return true;
+
+        var nullableNpcIdentityAliases = 0;
+        foreach (var property in actor.EnumerateObject())
         {
-            if (!actor.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.String)
+            var resemblesIdentityAlias =
+                string.Equals(property.Name, "NPCId", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(property.Name, "id", StringComparison.OrdinalIgnoreCase);
+            if (!resemblesIdentityAlias)
                 continue;
 
-            var actorId = value.GetString();
-            if (!string.IsNullOrWhiteSpace(actorId))
-                return actorId;
+            var isCanonicalNullableNpcId =
+                string.Equals(property.Name, "NPCId", StringComparison.Ordinal) ||
+                string.Equals(property.Name, "npcId", StringComparison.Ordinal);
+            if (!isCanonicalNullableNpcId ||
+                property.Value.ValueKind != JsonValueKind.Null ||
+                ++nullableNpcIdentityAliases > 1)
+            {
+                return false;
+            }
         }
 
-        return null;
+        return TryReadExactNonEmptyString(actor, "initialId", out actorId);
     }
-
-    private static string? ReadCurrentMortalActorMaterializationId(JsonElement actor) =>
-        ReadCanonicalMortalActorId(actor) ?? ReadActorMaterializationString(actor, "initialId");
 
     private static ActorMaterializationPromotionSignals ReadMortalActorMaterializationPromotionSignals(
         JsonElement actor) =>
@@ -754,8 +786,23 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         var currentJson = await _fs.ReadFileAsync(AfterlifeActorMaterializationStatePath);
+        var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (string.IsNullOrWhiteSpace(currentJson))
+        {
+            if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+                snapshotLookup.Manifest != null &&
+                (snapshotLookup.Manifest.Files?.ContainsKey(AfterlifeActorMaterializationStatePath) == true ||
+                 snapshotLookup.Manifest.RollbackBaselineFiles?.Contains(
+                     AfterlifeActorMaterializationStatePath,
+                     StringComparer.OrdinalIgnoreCase) == true))
+            {
+                AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(
+                    AfterlifeActorMaterializationStatePath,
+                    issues);
+            }
+
             return;
+        }
 
         try
         {
@@ -764,7 +811,6 @@ public partial class ValidationService
                 return;
 
             issues.AddRange(ValidateCurrentAfterlifeMaterializationIds(currentDocument.RootElement));
-            var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
             if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
                 return;
             if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
@@ -811,16 +857,20 @@ public partial class ValidationService
             foreach (var profile in profiles.EnumerateArray())
             {
                 var context = $"{AfterlifeActorMaterializationStatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{index++}]";
-                if (!TryReadCanonicalAfterlifeActorIdentity(
+                if (!TryReadCanonicalAfterlifePreTurnActorIdentity(
                         profile,
                         out var actorType,
                         out var actorId,
-                        out var identityKey) ||
-                    (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
-                     string.Equals(actorId, "player_soul", StringComparison.Ordinal)))
+                        out var identityKey))
                 {
-                    continue;
+                    AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(
+                        AfterlifeActorMaterializationStatePath,
+                        issues);
+                    return;
                 }
+                if (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
+                    string.Equals(actorId, "player_soul", StringComparison.Ordinal))
+                    continue;
 
                 var currentSignals = ReadAfterlifeActorMaterializationPromotionSignals(profile);
                 if (preTurnActors.TryGetValue(identityKey, out var previousState))
@@ -890,7 +940,7 @@ public partial class ValidationService
         foreach (var profile in profiles.EnumerateArray())
         {
             var context = $"{AfterlifeActorMaterializationStatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{index++}]";
-            if (!TryReadCanonicalAfterlifeActorIdentity(
+            if (!TryReadCanonicalAfterlifePreTurnActorIdentity(
                     profile,
                     out var actorType,
                     out var actorId,
@@ -965,22 +1015,6 @@ public partial class ValidationService
             return false;
 
         actorId = hasActorId ? canonicalActorId : legacyActorRef;
-        identityKey = $"{actorType}\u001f{actorId}";
-        return true;
-    }
-
-    private static bool TryReadCanonicalAfterlifeActorIdentity(
-        JsonElement profile,
-        out string actorType,
-        out string actorId,
-        out string identityKey)
-    {
-        actorType = ReadActorMaterializationString(profile, "actorType") ?? string.Empty;
-        actorId = ReadActorMaterializationString(profile, "actorId", "actorRef") ?? string.Empty;
-        identityKey = string.Empty;
-        if (actorType.Length == 0 || actorId.Length == 0)
-            return false;
-
         identityKey = $"{actorType}\u001f{actorId}";
         return true;
     }
