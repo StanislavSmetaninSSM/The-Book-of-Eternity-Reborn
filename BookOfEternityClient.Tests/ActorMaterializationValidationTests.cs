@@ -1999,6 +1999,59 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CrossSectionHistoricalUpdateCarrierWithReorderedProperties_IsAllowed()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "cross_section_historical_carrier",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var historicalUpdate = preTurnRoot["NPCsInScene"]![0]!.DeepClone().AsObject();
+        preTurnRoot["UpdateNPCs"] = new JsonArray(historicalUpdate);
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var reorderedUpdate = new JsonObject();
+        foreach (var property in historicalUpdate.Reverse())
+            reorderedUpdate[property.Key] = property.Value?.DeepClone();
+        currentRoot["UpdateNPCs"] = new JsonArray(reorderedUpdate);
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            currentRoot.ToJsonString(),
+            preTurnRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Actor == "mortal_npc:cross_section_historical_carrier" &&
+            issue.Code == "actor_materialization_existing_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CrossSectionChangedHistoricalUpdateCarrier_IsRejectedAsResend()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "cross_section_changed_carrier",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        preTurnRoot["UpdateNPCs"] = new JsonArray(preTurnRoot["NPCsInScene"]![0]!.DeepClone());
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        currentRoot["UpdateNPCs"]![0]!["plans"] = "Изменённый delta с повторно присланным envelope.";
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            currentRoot.ToJsonString(),
+            preTurnRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Actor == "mortal_npc:cross_section_changed_carrier" &&
+            issue.Code == "actor_materialization_existing_resend_forbidden");
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_HistoricalActorDedicatedDeltaWithoutEnvelope_Passes()
     {
         const string path = "game_state/npcs/npc_core.json";
