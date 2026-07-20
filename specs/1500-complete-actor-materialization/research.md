@@ -113,6 +113,36 @@
 
 **Rationale**: Schema versions and disposition states are harness data, not in-world information.
 
+## Decision 18: Mortal continuity uses one effective identity
+
+**Decision**: Resolve a current Mortal actor from its canonical permanent ID or exact same-turn `initialId`, reject any `initialId` that collides with a validated pre-turn permanent `NPCId`, and run inventory continuity against that same effective ID.
+
+**Rationale**: Identity and inventory gates must not disagree about whether one payload is new. A null permanent field cannot be a way to bypass existing-actor mutation rules.
+
+## Decision 19: Memory repair routing is actor-type-aware
+
+**Decision**: Route Guardian issues to the canonical/supported Guardian journal, resident issues to resident state/journal, and all common-profile actor types to the exact profile. Common-profile repair may remove only the exact actor's `gmThoughtsSummary` from preservation comparison.
+
+**Rationale**: Validation issues originate in type-specific source files while the repair authority may live elsewhere. Path-prefix matching alone silently disables preservation for Radiant and Saref repairs.
+
+## Decision 20: Proposal status has no successful default
+
+**Decision**: Reserve enum zero for `Unspecified`, require the JSON member, and reject unspecified/unknown values in contract validation. Explicit `completed` remains applyable; explicit terminal statuses remain mutation-free diagnostics.
+
+**Rationale**: Missing protocol data must fail closed. Deserialization must never upgrade omission into permission to store or apply canonical changes.
+
+## Decision 21: First envelope is the afterlife memory boundary
+
+**Decision**: When an already bound legacy profile gains its first envelope, add it to accepted-turn required bindings and validate actual actor-owned memory. Do not retroactively require memory from an unchanged envelope-free legacy profile.
+
+**Rationale**: Binding existence proves identity, not memory. The envelope transition is the precise compatibility boundary already used for new profiles and promotions.
+
+## Decision 22: One generator owns all audit event identities
+
+**Decision**: Centralize the readable UTC-millisecond plus GUID format in one generator, migrate every dispatch/proposal/apply/repair producer, expose a deterministic overload for tests, and source-guard the prefix outside that utility.
+
+**Rationale**: A collision-safe format is ineffective when only one producer uses it; central ownership prevents timestamp-only and GUID-only variants from returning.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

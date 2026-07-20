@@ -43,7 +43,7 @@ public sealed class GmWorkerAuditLog
     public Task RecordTaskDispatchedAsync(WorkerTaskPacket task) =>
         AppendEventAsync(new WorkerAuditEvent
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = "task-dispatched",
             WorkerId = task.WorkerId,
             TaskId = task.TaskId,
@@ -62,7 +62,7 @@ public sealed class GmWorkerAuditLog
     public Task RecordProposalReceivedAsync(WorkerProposal proposal) =>
         AppendEventAsync(new WorkerAuditEvent
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = "proposal-received",
             WorkerId = proposal.WorkerId,
             TaskId = proposal.TaskId,
@@ -78,7 +78,7 @@ public sealed class GmWorkerAuditLog
     public Task RecordApplyDecisionAsync(WorkerProposal proposal, ApplyGateDecision decision) =>
         AppendEventAsync(new WorkerAuditEvent
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = decision.Result switch
             {
                 ApplyGateResult.Accepted => "proposal-applied",
@@ -113,14 +113,6 @@ public sealed class GmWorkerAuditLog
 
         return events;
     }
-
-    private static string CreateEventId() =>
-        "worker_audit_" +
-        DateTimeOffset.UtcNow.ToString(
-            "yyyyMMddHHmmssfff",
-            System.Globalization.CultureInfo.InvariantCulture) +
-        "_" +
-        Guid.NewGuid().ToString("N");
 
     private static string ToKebabCase(WorkerTaskType taskType) =>
         taskType switch

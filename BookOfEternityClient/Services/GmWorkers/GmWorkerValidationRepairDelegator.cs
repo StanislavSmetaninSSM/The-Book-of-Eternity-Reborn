@@ -267,7 +267,7 @@ public sealed class GmWorkerValidationRepairDelegator
         {
             await _auditLog.AppendEventAsync(new WorkerAuditEvent
             {
-                EventId = CreateEventId(),
+                EventId = GmWorkerAuditEventIdGenerator.Create(),
                 EventType = "validation-repair-ready-created",
                 WorkerId = proposal.WorkerId,
                 TaskId = proposal.TaskId,
@@ -296,7 +296,7 @@ public sealed class GmWorkerValidationRepairDelegator
         {
             await _auditLog.AppendEventAsync(new WorkerAuditEvent
             {
-                EventId = CreateEventId(),
+                EventId = GmWorkerAuditEventIdGenerator.Create(),
                 EventType = eventType,
                 WorkerId = proposal.WorkerId,
                 TaskId = proposal.TaskId,
@@ -314,7 +314,7 @@ public sealed class GmWorkerValidationRepairDelegator
     private Task RecordRouterEventAsync(string eventType, string? workerId, string? taskId, string summary) =>
         _auditLog.AppendEventAsync(new WorkerAuditEvent
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = eventType,
             WorkerId = string.IsNullOrWhiteSpace(workerId) ? "validation_repair_router" : workerId,
             TaskId = taskId,
@@ -324,9 +324,6 @@ public sealed class GmWorkerValidationRepairDelegator
 
     private static string ComputeSha256(byte[] content) =>
         Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
-
-    private static string CreateEventId() =>
-        "worker_audit_" + Guid.NewGuid().ToString("N");
 
     private sealed record ValidationRepairReadySignal
     {

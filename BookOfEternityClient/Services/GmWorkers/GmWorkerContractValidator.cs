@@ -158,6 +158,12 @@ public static class GmWorkerContractValidator
         RequireText(proposal.Summary, "summary", errors);
         RequireText(proposal.CreatedAtUtc, "createdAtUtc", errors);
 
+        if (proposal.Status == WorkerProposalStatus.Unspecified ||
+            !Enum.IsDefined(proposal.Status))
+        {
+            errors.Add("proposal.status is required and must be an explicit supported status.");
+        }
+
         if (profile.Permissions.ProposalOnly && proposal.ChangedFiles.Count > 0)
             errors.Add("proposal-only worker proposals must not include changedFiles.");
         if (proposal.Status != WorkerProposalStatus.Completed && proposal.ChangedFiles.Count > 0)

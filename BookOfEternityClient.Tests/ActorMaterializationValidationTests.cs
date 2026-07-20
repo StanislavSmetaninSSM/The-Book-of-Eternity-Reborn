@@ -737,6 +737,119 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Theory]
+    [InlineData("guardian", "guardian", "guardian_existing_profile_first_envelope_missing_memory")]
+    [InlineData("resident", "resident", "resident_existing_profile_first_envelope_missing_memory")]
+    [InlineData("radiant", "radiant_actor", "radiant_existing_profile_first_envelope_missing_memory")]
+    [InlineData("saref", "saref_agent", "saref_existing_profile_first_envelope_missing_memory")]
+    public async Task ValidateAcceptedTurnContinuity_FirstEnvelopeOnExistingAfterlifeProfileRequiresActualActorMemory(
+        string sourceKind,
+        string actorType,
+        string actorId)
+    {
+        var sourcePath = GetAfterlifeBindingSourcePath(sourceKind);
+        var source = BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: true);
+        var preTurnProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeMemory: false,
+            includeEnvelope: false);
+        var currentProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeMemory: false,
+            includeEnvelope: true);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            source,
+            source,
+            currentProfiles,
+            preTurnProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_materialization_memory_missing" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Theory]
+    [InlineData("guardian", "guardian", "guardian_existing_profile_first_envelope_with_memory")]
+    [InlineData("resident", "resident", "resident_existing_profile_first_envelope_with_memory")]
+    [InlineData("radiant", "radiant_actor", "radiant_existing_profile_first_envelope_with_memory")]
+    [InlineData("saref", "saref_agent", "saref_existing_profile_first_envelope_with_memory")]
+    public async Task ValidateAcceptedTurnContinuity_FirstEnvelopeOnExistingAfterlifeProfileUsesActorTypeMemoryAuthority(
+        string sourceKind,
+        string actorType,
+        string actorId)
+    {
+        var hasDedicatedMemory = sourceKind is "guardian" or "resident";
+        var sourcePath = GetAfterlifeBindingSourcePath(sourceKind);
+        var source = BuildAfterlifeBindingSourceJson(
+            sourceKind,
+            actorId,
+            includeActor: true,
+            includeTypeSpecificMemory: hasDedicatedMemory);
+        var preTurnProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeMemory: !hasDedicatedMemory,
+            includeEnvelope: false);
+        var currentProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeMemory: !hasDedicatedMemory,
+            includeEnvelope: true);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            source,
+            source,
+            currentProfiles,
+            preTurnProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "afterlife_actor_materialization_memory_missing" &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Theory]
+    [InlineData("guardian", "guardian", "guardian_untouched_bound_legacy_profile")]
+    [InlineData("resident", "resident", "resident_untouched_bound_legacy_profile")]
+    [InlineData("radiant", "radiant_actor", "radiant_untouched_bound_legacy_profile")]
+    [InlineData("saref", "saref_agent", "saref_untouched_bound_legacy_profile")]
+    public async Task ValidateAcceptedTurnContinuity_UntouchedBoundLegacyAfterlifeProfileRemainsLoadable(
+        string sourceKind,
+        string actorType,
+        string actorId)
+    {
+        var sourcePath = GetAfterlifeBindingSourcePath(sourceKind);
+        var source = BuildAfterlifeBindingSourceJson(sourceKind, actorId, includeActor: true);
+        var legacyProfiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            actorType,
+            actorId,
+            includeProfile: true,
+            includeMemory: false,
+            includeEnvelope: false);
+        await WriteAfterlifeBindingScenarioAsync(
+            sourcePath,
+            source,
+            source,
+            legacyProfiles,
+            legacyProfiles);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Actor == $"{actorType}:{actorId}");
+    }
+
+    [Theory]
     [InlineData("guardian", "guardian", "guardian_type_memory")]
     [InlineData("resident", "resident", "resident_type_memory")]
     public async Task ValidateAcceptedTurnContinuity_NewAfterlifeActorWithExactTypeSpecificMemory_PassesMemoryContract(
@@ -2896,6 +3009,117 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var issues = _validator.ValidateResponse(currentDocument.RootElement);
 
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Theory]
+    [InlineData("changed")]
+    [InlineData("added")]
+    [InlineData("removed")]
+    public async Task ValidateResponse_NullPermanentIdInitialIdCollisionCannotBypassInventoryContinuity(
+        string inventoryMutation)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string permanentActorId = "legacy_collision_actor";
+        var preTurnJson = BuildMortalActorStateJson(
+            permanentActorId,
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false,
+            includeInventory: true);
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            permanentActorId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true))!.AsObject();
+        var currentActor = currentRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            currentActor,
+            permanentActorId,
+            "mat_legacy_collision_actor_turn_8");
+        var inventory = currentActor["inventory"]!.AsArray();
+        switch (inventoryMutation)
+        {
+            case "changed":
+                inventory[0]!["count"] = 2;
+                break;
+            case "added":
+                var addedItem = inventory[0]!.DeepClone().AsObject();
+                addedItem["itemId"] = "item_legacy_collision_actor_second_anchor";
+                addedItem["existedId"] = "item_legacy_collision_actor_second_anchor";
+                inventory.Add(addedItem);
+                break;
+            case "removed":
+                inventory.Clear();
+                currentActor["materialization"]!["capabilities"]!["ownsItems"] = false;
+                currentActor["materialization"]!["sections"]!["inventory"] =
+                    EmptyMortalSection("Этот NPC больше не несёт личных предметов.");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(inventoryMutation), inventoryMutation, null);
+        }
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_initial_id_collides_with_existing_permanent_id" &&
+            issue.Actor == $"mortal_npc:{permanentActorId}");
+        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_NonCollidingSameTurnInitialIdKeepsNewActorInitialInventory()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string permanentActorId = "existing_snapshot_actor";
+        const string initialId = "genuinely_new_same_turn_actor";
+        var preTurnJson = BuildMortalActorStateJson(
+            permanentActorId,
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false,
+            includeInventory: true);
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true))!.AsObject();
+        ConfigureSameTurnMortalActor(
+            currentRoot["UpdateNPCs"]![0]!.AsObject(),
+            initialId,
+            "mat_genuinely_new_same_turn_actor_turn_8");
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Fact]
+    public async Task ValidateResponse_GenuinelyNewSameTurnInitialIdWithoutPreTurnAuthorityKeepsInitialInventory()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string initialId = "genuinely_new_actor_without_snapshot";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true))!.AsObject();
+        ConfigureSameTurnMortalActor(
+            currentRoot["UpdateNPCs"]![0]!.AsObject(),
+            initialId,
+            "mat_genuinely_new_actor_without_snapshot_turn_8");
+        await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.DoesNotContain(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
     }
 
     [Fact]

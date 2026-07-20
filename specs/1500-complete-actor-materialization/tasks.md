@@ -42,7 +42,7 @@
   - Evidence: 1643 focused C# tests, 262 command-display fixture tests, 255 documentation/source-guard tests, 138 frontend player-facing tests, and 2 built-frontend smoke tests passed.
 - [x] T021 Run the complete C# test project and `git diff --check`.
   - Evidence: `git diff --check` passed. The complete project ran 5878 tests: 5870 passed; seven failures reproduce identically on base `9a149014`, and the remaining Agent Console HTTP 500 passed immediately when rerun in isolation.
-- [ ] T022 Perform independent code review against issue #1500 and Spec Kit artifacts; repair findings and rerun verification.
+- [x] T022 Perform independent code review against issue #1500 and Spec Kit artifacts; repair findings and rerun verification.
 - [ ] T023 Update task checkboxes only from verified evidence, commit, push, open PR, review CI-independent evidence, and merge when clean.
 
 ## Phase 7 - Independent review remediation
@@ -78,6 +78,16 @@
 - [x] T044 Synchronize authoritative Block 19, Block 19.A, CLI/daemon guidance, the existing Mortal worked example, and source guards with complete actor domains and the unchanged-inventory legacy-promotion rule.
 - [x] T045 Make generated worker audit IDs unique under tight same-millisecond calls with a readable timestamp plus GUID suffix and deterministic regression coverage.
 
-## Phase 11 - Final verification and integration
+## Phase 11 - Final whole-branch re-review closure
+
+- [x] T046 Reject a same-turn `initialId` that collides with validated pre-turn permanent Mortal identity, apply effective identity to inventory continuity, and synchronize the exact legacy-promotion repair hint.
+- [x] T047 Route Guardian, resident, Radiant, Saref, and common-profile memory repairs to actor-owned authority and reject every unrelated canonical mutation in the apply gate.
+- [x] T048 Make worker proposal `status` explicitly required, reject omitted/unspecified values before storage or apply, and preserve explicit terminal diagnostic proposals.
+- [x] T049 Require exact actor-owned memory when an already-bound afterlife profile gains its first envelope while preserving untouched legacy profile compatibility.
+- [x] T050 Centralize every generated worker audit event ID on one UTC-millisecond-plus-GUID generator with deterministic, concurrent, and production-source coverage.
+- [x] T051 Synchronize Mortal/afterlife/worker GM contracts and Spec Kit artifacts, record per-finding RED/GREEN evidence, run broad verification, and publish the final re-review fix report.
+  - Evidence: every confirmed re-review finding has a recorded RED and GREEN cycle; final focused suites passed 186 actor-materialization, 174 GmWorker, 15 Mortal prompt, 114 mandatory afterlife-documentation, and 374 documentation/source-guard tests. The full C# suite passed 6045/6052; its seven residual content-fixture failures are the same failures already recorded as reproducing on base `9a149014` in T021.
+
+## Phase 12 - Final verification and integration
 
 - [ ] T033 Rerun focused/documentation/full verification, perform fresh independent review, then commit, open the PR, and merge only after the evidence is clean.

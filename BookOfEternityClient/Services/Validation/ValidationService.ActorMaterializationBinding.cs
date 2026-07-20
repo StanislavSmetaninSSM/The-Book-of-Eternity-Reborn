@@ -109,6 +109,8 @@ public partial class ValidationService
                 if (!preTurnActors.ContainsKey(actor.IdentityKey) ||
                     (profilesByIdentity.ContainsKey(actor.IdentityKey) &&
                      !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)) ||
+                    (HasCurrentAfterlifeProfileEnvelope(profilesByIdentity, actor.IdentityKey) &&
+                     !preTurnMaterializedProfileIdentityKeys.Contains(actor.IdentityKey)) ||
                     (!preTurnMaterializedProfileIdentityKeys.Contains(actor.IdentityKey) &&
                      kind == AfterlifeBindingSourceKind.Guardian &&
                      HasAfterlifeTradeAuthority(ChaosSeaTradeRealm, actor, currentTradeAuthorities) &&
@@ -135,6 +137,8 @@ public partial class ValidationService
                     if (!preTurnLeadership.ContainsKey(actor.IdentityKey) ||
                         (profilesByIdentity.ContainsKey(actor.IdentityKey) &&
                          !preTurnProfileIdentityKeys.Contains(actor.IdentityKey)) ||
+                        (HasCurrentAfterlifeProfileEnvelope(profilesByIdentity, actor.IdentityKey) &&
+                         !preTurnMaterializedProfileIdentityKeys.Contains(actor.IdentityKey)) ||
                         (!preTurnMaterializedProfileIdentityKeys.Contains(actor.IdentityKey) &&
                          HasAfterlifeTradeAuthority(ShiningAbodeTradeRealm, actor, currentTradeAuthorities) &&
                          !HasAfterlifeTradeAuthority(ShiningAbodeTradeRealm, actor, preTurnTradeAuthorities)))
@@ -188,6 +192,14 @@ public partial class ValidationService
                 AddMissingAfterlifeActorMemoryIssue(required, issues);
         }
     }
+
+    private static bool HasCurrentAfterlifeProfileEnvelope(
+        IReadOnlyDictionary<string, List<(JsonElement Profile, string Context)>> profilesByIdentity,
+        string identityKey) =>
+        profilesByIdentity.TryGetValue(identityKey, out var profiles) &&
+        profiles.Any(candidate => candidate.Profile.TryGetProperty(
+            ActorMaterializationContract.PropertyName,
+            out _));
 
     private static void AddOrMergeCurrentSourceActor(
         IDictionary<string, AfterlifeActorBinding> currentSourceActors,

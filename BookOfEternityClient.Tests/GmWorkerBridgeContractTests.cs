@@ -222,6 +222,43 @@ public sealed class GmWorkerBridgeContractTests
             error.Contains("changedFiles", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public void UnspecifiedProposalStatus_IsRejectedBeforeCompletedSemantics()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal() with
+        {
+            Status = (WorkerProposalStatus)0
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("status", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("required", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData(WorkerProposalStatus.Failed)]
+    [InlineData(WorkerProposalStatus.TimedOut)]
+    [InlineData(WorkerProposalStatus.Rejected)]
+    public void TerminalDiagnosticProposal_AllowsEmptyChangedFiles(WorkerProposalStatus status)
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal() with
+        {
+            Status = status,
+            ChangedFiles = []
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Errors));
+    }
+
     [Theory]
     [InlineData(WorkerProposalStatus.Failed)]
     [InlineData(WorkerProposalStatus.TimedOut)]

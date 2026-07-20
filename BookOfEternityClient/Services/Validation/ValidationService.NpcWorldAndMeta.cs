@@ -5088,6 +5088,26 @@ public partial class ValidationService
                 ValidateNpcTradeState(item, itemContext, issues);
 
                 var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
+                var hasEffectiveNpcId = TryReadCanonicalCurrentMortalActorId(item, out var effectiveNpcId);
+                var usesSameTurnInitialId = string.IsNullOrWhiteSpace(npcId) && hasEffectiveNpcId;
+                var hasInventoryContinuityAuthority =
+                    !usesSameTurnInitialId ||
+                    mortalActorPreTurnAuthority.Status == ValidatedPendingTurnSnapshotStatus.Usable;
+                if (usesSameTurnInitialId &&
+                    mortalActorPreTurnAuthority.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+                    mortalActorPreTurnAuthority.Actors?.ContainsKey(effectiveNpcId) == true)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.initialId",
+                        IssueSeverity.Error,
+                        "same-turn initialId must not collide with a validated pre-turn permanent NPCId",
+                        code: "npc_initial_id_collides_with_existing_permanent_id",
+                        section: "NPCIdentity",
+                        actor: $"mortal_npc:{effectiveNpcId}",
+                        expected: "a genuinely new same-turn identity absent from validated pre-turn permanent NPC state",
+                        actual: effectiveNpcId,
+                        repairHint: "Restore the existing actor's permanent NPCId. NPCId = null plus initialId is reserved for a genuinely new actor."));
+                }
                 var initialLocationId = GetFirstNonEmptyString(item, "initialLocationId");
                 var currentLocationId = GetFirstNonEmptyString(item, "currentLocationId");
                 if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
@@ -5149,9 +5169,10 @@ public partial class ValidationService
                         repairHint: "Если NPC находится в текущей same-turn новой сцене, скопируй exact currentLocationData.initialId. Не ссылай NPCsInScene на initialId другой новой локации."));
                 }
                 if (string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
-                    !string.IsNullOrWhiteSpace(npcId) &&
+                    hasEffectiveNpcId &&
+                    hasInventoryContinuityAuthority &&
                     item.TryGetProperty("inventory", out _) &&
-                    ShouldBlockMortalActorInventoryResend(item, npcId, mortalActorPreTurnAuthority))
+                    ShouldBlockMortalActorInventoryResend(item, effectiveNpcId, mortalActorPreTurnAuthority))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.inventory",
@@ -5159,7 +5180,7 @@ public partial class ValidationService
                         "UpdateNPCs не должен пересылать inventory для existing NPC",
                         code: "npc_existing_inventory_resend_forbidden",
                         section: "NPCInventory",
-                        repairHint: "Для existing NPC меняй инвентарь только через NPCInventoryAdds/Updates/Removals. inventory внутри UpdateNPCs допустим только при создании нового NPC."));
+                        repairHint: "For a true legacy promotion, restore the validated pre-turn inventory snapshot without semantic changes. Put every real mutation in NPCInventoryAdds/Updates/Removals; inventory inside UpdateNPCs is otherwise only for a genuinely new NPC."));
                 }
 
                 if (!string.IsNullOrWhiteSpace(initialLocationId) &&

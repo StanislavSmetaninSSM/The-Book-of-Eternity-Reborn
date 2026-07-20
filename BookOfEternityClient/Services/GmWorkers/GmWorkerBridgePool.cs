@@ -475,7 +475,7 @@ public sealed class GmWorkerBridgePool
         IReadOnlyList<string> details) =>
         _auditLog?.AppendEventAsync(new WorkerAuditEvent
         {
-            EventId = "worker_audit_" + DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff"),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = eventType,
             WorkerId = profile.WorkerId,
             TaskId = task.TaskId,

@@ -12,6 +12,7 @@ Use this checklist when implementing or reviewing issue #1500. It is not a playe
 4. Declare every Mortal governed section.
 5. Make each capability agree with canonical skill, teacher, trade, and inventory data.
 6. Do not infer anything from setting vocabulary.
+7. Resolve one effective identity; a same-turn `initialId` must not collide with any validated pre-turn permanent `NPCId`, and true legacy inventory promotion must repeat the unchanged snapshot while mutations use atomic inventory commands.
 
 ## Afterlife valid first materialization
 
@@ -20,10 +21,17 @@ Use this checklist when implementing or reviewing issue #1500. It is not a playe
 3. Add an envelope bound to exact actor type and ID.
 4. Declare all afterlife governed sections and initialize actor-owned memory.
 5. Cross-check combat, mentor, and trade capabilities against their existing realm-specific authority.
+6. Treat the first envelope on an existing profile as a memory-validation transition: Guardian/resident journals are dedicated authority; Radiant/Saref/common actors use only the exact profile `gmThoughtsSummary`.
 
 ## Legacy rule
 
 Do not modify or fabricate untouched actors merely because they lack an envelope. Require the current contract only when the accepted turn creates or promotes the actor, or when an existing envelope is malformed.
+
+## Worker repair protocol
+
+- Route afterlife memory repair by actor type and preserve every field outside the exact actor-owned memory target.
+- Require explicit proposal `status`; omission/`Unspecified` is invalid, only explicit `completed` may apply, and terminal statuses use empty `changedFiles`.
+- Generate every worker audit event ID through the shared UTC-millisecond plus GUID utility; source guards reject hand-built prefixes.
 
 ## Red/green verification loop
 

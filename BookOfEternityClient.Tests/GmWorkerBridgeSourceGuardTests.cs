@@ -41,6 +41,25 @@ public sealed class GmWorkerBridgeSourceGuardTests
         Assert.Empty(offenders);
     }
 
+    [Fact]
+    public void SharedAuditEventIdGenerator_IsTheOnlyWorkerAuditIdFormatter()
+    {
+        var workerRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "GmWorkers");
+        Assert.True(Directory.Exists(workerRoot), "Worker service directory must exist.");
+
+        var offenders = Directory
+            .EnumerateFiles(workerRoot, "*.cs", SearchOption.AllDirectories)
+            .Where(path => !string.Equals(
+                Path.GetFileName(path),
+                "GmWorkerAuditEventIdGenerator.cs",
+                StringComparison.Ordinal))
+            .Where(path => File.ReadAllText(path).Contains("worker_audit_", StringComparison.Ordinal))
+            .Select(path => Path.GetRelativePath(TestRepoPaths.RepoRoot, path).Replace('\\', '/'))
+            .ToArray();
+
+        Assert.Empty(offenders);
+    }
+
     private static string ReadClientFile(string relativePath)
     {
         var path = Path.Combine(

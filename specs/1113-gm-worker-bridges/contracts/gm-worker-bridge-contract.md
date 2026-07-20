@@ -287,6 +287,7 @@ must be included in both `allowedProposalPaths` and
 ## Proposal Contract
 
 Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
+Status is mandatory; omission is invalid and must never default to completed.
 
 Validation repair proposal:
 
@@ -627,12 +628,12 @@ Guardian/Abode content proposal:
 
 ## Audit Event Contract
 
-Every worker task must produce durable audit events for dispatch and terminal result. Apply decisions must include the proposal id and the decision result.
+Every worker task must produce durable audit events for dispatch and terminal result. Apply decisions must include the proposal id and the decision result. Every producer uses `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>` so concurrent events retain readable UTC ordering without timestamp-only collisions.
 
 ```json
 {
   "schemaVersion": 1,
-  "eventId": "worker_audit_20260620_0001",
+  "eventId": "worker_audit_20260620000030000_00112233445566778899aabbccddeeff",
   "eventType": "proposal-applied",
   "workerId": "validation_repair_codex",
   "taskId": "worker_task_20260620_0001",

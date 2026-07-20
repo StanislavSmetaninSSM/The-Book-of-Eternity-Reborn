@@ -529,6 +529,11 @@ public sealed class PromptDocumentationCoverageTests
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var npcValidation = ReadRepoFile(
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.NpcWorldAndMeta.cs");
 
         foreach (var text in new[] { daemon, example })
         {
@@ -604,6 +609,7 @@ public sealed class PromptDocumentationCoverageTests
                  {
                      "first-materialization envelope",
                      "legacy promotion",
+                     "same-turn initialId must not collide with a validated pre-turn permanent NPCId",
                      "validated pre-turn inventory snapshot",
                      "NPCInventoryAdds",
                      "NPCInventoryUpdates",
@@ -612,6 +618,18 @@ public sealed class PromptDocumentationCoverageTests
         {
             Assert.Contains(requiredText, stepGuide, StringComparison.OrdinalIgnoreCase);
         }
+
+        foreach (var text in new[] { daemon, npcRules, npcInventoryRules, example })
+        {
+            Assert.Contains(
+                "same-turn initialId must not collide with a validated pre-turn permanent NPCId",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("true legacy promotion", npcValidation, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn inventory snapshot", npcValidation, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("NPCInventoryAdds/Updates/Removals", npcValidation, StringComparison.Ordinal);
 
         Assert.Contains("mortal_actor_materialization_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_Step_Main.txt", manifest, StringComparison.Ordinal);

@@ -48,7 +48,7 @@
       "file": "E_CLI_GM_Worker_Validation_Repair.txt",
       "statePath": "game_state/control/gm_worker_audit.jsonl",
       "responseSurface": "worker-proposal-v1 / apply gate",
-      "description": "Hidden/background validation-repair worker profile, live validation failure dispatch, scoped task packet, proposal contentRef, apply gate validation, client-created validation_repair_ready signal, proposal-applied/validation-repair-ready-created audit events, fallback to legacy repair request, and no direct worker writes to canonical game_session files."
+      "description": "Hidden/background validation-repair worker profile, live validation failure dispatch, scoped task packet, mandatory explicit proposal status whose omission is invalid, proposal contentRef, apply gate validation, client-created validation_repair_ready signal, collision-safe shared UTC-millisecond plus GUID audit event IDs, proposal-applied/validation-repair-ready-created audit events, fallback to legacy repair request, and no direct worker writes to canonical game_session files."
     },
     {
       "contractId": "gm_worker_narrative_draft_v1",
@@ -109,7 +109,7 @@
       "realms": [
         "Chaos Sea"
       ],
-      "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, actor-owned memory, real goals/quests/activity agency, exact current abode Guardian trade authority or secure/contested operational Shining head trade tier authority, and bounded repairs that preserve protected actor data."
+      "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, actor-owned memory, real goals/quests/activity agency, exact current abode Guardian trade authority or secure/contested operational Shining head trade tier authority, and bounded repairs that preserve protected actor data. The first envelope on an existing profile revalidates actor-owned memory; a common-profile repair changes only the exact actor's gmThoughtsSummary."
     },
     {
       "contractId": "afterlife_actor_materialization_shining_v1",
@@ -126,7 +126,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "Guardian/resident/radiant_actor/saref_agent/Shining leadership source identity -> exact profiles actorType + actorId",
-      "description": "Source actors bind to exactly one complete profile without display-name, prose, role, or genre inference; actor newness comes only from the validated pre-turn baseline, and malformed current source authority is repair-blocking; player_soul and vacant leadership are explicit exceptions."
+      "description": "Source actors bind to exactly one complete profile without display-name, prose, role, or genre inference; actor newness comes only from the validated pre-turn baseline, first-envelope transitions use Guardian/resident dedicated journals or exact common-profile memory, and malformed current source authority is repair-blocking; player_soul and vacant leadership are explicit exceptions."
     },
     {
       "contractId": "afterlife_entity_profiles_v1",

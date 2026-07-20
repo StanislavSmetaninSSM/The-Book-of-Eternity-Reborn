@@ -100,6 +100,60 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_WhenWorkerOmitsProposalStatus_RejectsWithoutStoringProposal()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-missing-status.ps1");
+            await File.WriteAllTextAsync(scriptPath, """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = 'worker_proposal_missing_status'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    summary = 'This proposal deliberately omits status.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'Diagnostic draft that must not be stored.'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('status omitted')
+                    }
+                    createdAtUtc = '2026-06-20T00:15:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var store = new GmWorkerProposalStore(fs);
+            var pool = new GmWorkerBridgePool(fs, store, new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+            var storedJson = await fs.ReadFileAsync(
+                GmWorkerProposalStore.GetProposalPath("worker_proposal_missing_status"));
+            var auditEvents = await new GmWorkerAuditLog(fs).ReadEventsAsync();
+
+            Assert.Equal(WorkerBridgeState.Failed, result.Status.State);
+            Assert.Null(result.Proposal);
+            Assert.Null(storedJson);
+            Assert.Contains("status", result.Status.LastError, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(auditEvents, audit => audit.EventType == "proposal-rejected");
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_WhenWorkerExitsNonZero_ReportsFailedStatusAndAudit()
     {
         var root = CreateTempRoot();

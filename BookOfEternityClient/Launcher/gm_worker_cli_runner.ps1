@@ -187,6 +187,7 @@ Required worker-proposal-v1 JSON shape:
 
 Required-field rules:
 - Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.
+- Status is mandatory; omission is invalid and must never default to completed.
 - Use exact taskId and workerId values from the WorkerTaskPacket below.
 - Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 - For proposal-only tasks, changedFiles must be [].

@@ -589,10 +589,18 @@ internal static class ActorMaterializationRepairPreservationGuard
                 issue.Code,
                 "afterlife_actor_materialization_memory_missing",
                 StringComparison.OrdinalIgnoreCase) &&
-            issue.Actor?.StartsWith("guardian:", StringComparison.Ordinal) == true)
+            TryParseActorIdentity(issue.Actor, out var actorType, out _))
         {
-            return path.Equals(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase) ||
-                   path.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase);
+            if (string.Equals(actorType, "guardian", StringComparison.Ordinal))
+            {
+                return path.Equals(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+                       path.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (string.Equals(actorType, "resident", StringComparison.Ordinal))
+                return path.Equals(GuardianAbodeResidentState.StatePath, StringComparison.OrdinalIgnoreCase);
+
+            return path.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase);
         }
         return issue.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase);
     }

@@ -93,6 +93,7 @@ own proposal content. For an afterlife validation-repair task,
 `afterlifeProposal` is optional; bounded `changedFiles` must still be inside
 both `allowedProposalPaths` and `afterlifeContract.allowedAfterlifeSurfaces`.
 Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
+Status is mandatory; omission is invalid and must never default to completed.
 
 Worker response proposal:
 
@@ -181,10 +182,12 @@ state directly and records a trajectory terminal like this:
 
 Audit events:
 
+Every audit producer uses `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>` so ids stay readable and collision-safe under concurrent dispatch, rejection, apply, and ready-signal diagnostics.
+
 ```json
 {
   "schemaVersion": 1,
-  "eventId": "worker_audit_20260620_0001",
+  "eventId": "worker_audit_20260620000030000_00112233445566778899aabbccddeeff",
   "eventType": "proposal-applied",
   "workerId": "validation_repair_codex",
   "taskId": "worker_task_20260620_0001",
@@ -207,7 +210,7 @@ full proposal payloads.
 ```json
 {
   "schemaVersion": 1,
-  "eventId": "worker_audit_20260620_0002",
+  "eventId": "worker_audit_20260620000031000_11223344556677889900aabbccddeeff",
   "eventType": "validation-repair-ready-created",
   "workerId": "validation_repair_codex",
   "taskId": "worker_task_20260620_0001",

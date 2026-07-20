@@ -139,6 +139,31 @@ public sealed class GmWorkerApplyGateTests
     }
 
     [Fact]
+    public async Task ApplyAsync_UnspecifiedProposalStatusIsRejectedWithoutWritingCanonicalFile()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
+            proposal = proposal with { Status = (WorkerProposalStatus)0 };
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("status", StringComparison.OrdinalIgnoreCase) &&
+                reason.Contains("required", StringComparison.OrdinalIgnoreCase));
+            Assert.Equal("{\"before\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ApplyAsync_StaleTaskContextWithBomOnlyByteDifference_IsRejectedWithoutChangingCanonicalFile()
     {
         var root = CreateTempRoot();
@@ -1286,6 +1311,129 @@ public sealed class GmWorkerApplyGateTests
         }
     }
 
+    [Theory]
+    [InlineData("radiant_actor", "game_state/meta/shining_abode_state.json")]
+    [InlineData("saref_agent", "game_state/meta/main_story_saref_state.json")]
+    public async Task ApplyAsync_CommonAfterlifeMemoryRepair_RoutesSourceIssueToExactProfileSummary(
+        string actorType,
+        string sourceIssuePath)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/afterlife_entity_profiles.json";
+            var actorId = $"{actorType}_memory_repair_target";
+            var proposalId = $"worker_proposal_{actorType}_memory_only";
+            var contentRef = $"worker_proposals/{proposalId}/game_state/meta/afterlife_entity_profiles.json";
+            var fs = CreateFileSystem(root);
+            var baseline = BuildCommonAfterlifeProfileRepairState(actorType, actorId);
+            var proposed = baseline.DeepClone().AsObject();
+            proposed["profiles"]![0]!["gmThoughtsSummary"] = "Я сохраняю новый вывод только в собственной памяти.";
+            await fs.WriteFileAtomicAsync(path, baseline.ToJsonString());
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                $"{sourceIssuePath}.actors[0]",
+                $"{actorType}:{actorId}");
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.True(
+                decision.Result == ApplyGateResult.Accepted,
+                $"Expected Accepted, got {decision.Result}: {string.Join(" | ", decision.RejectionReasons)}");
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    public static TheoryData<string, string, string> CommonAfterlifeProtectedMutations => new()
+    {
+        { "radiant_actor", "game_state/meta/shining_abode_state.json", "unrelated_actor" },
+        { "radiant_actor", "game_state/meta/shining_abode_state.json", "root" },
+        { "radiant_actor", "game_state/meta/shining_abode_state.json", "currencies" },
+        { "radiant_actor", "game_state/meta/shining_abode_state.json", "progression" },
+        { "radiant_actor", "game_state/meta/shining_abode_state.json", "envelope" },
+        { "radiant_actor", "game_state/meta/shining_abode_state.json", "scalar" },
+        { "saref_agent", "game_state/meta/main_story_saref_state.json", "unrelated_actor" },
+        { "saref_agent", "game_state/meta/main_story_saref_state.json", "root" },
+        { "saref_agent", "game_state/meta/main_story_saref_state.json", "currencies" },
+        { "saref_agent", "game_state/meta/main_story_saref_state.json", "progression" },
+        { "saref_agent", "game_state/meta/main_story_saref_state.json", "envelope" },
+        { "saref_agent", "game_state/meta/main_story_saref_state.json", "scalar" }
+    };
+
+    [Theory]
+    [MemberData(nameof(CommonAfterlifeProtectedMutations))]
+    public async Task ApplyAsync_CommonAfterlifeMemoryRepair_RejectsChangesOutsideExactProfileSummary(
+        string actorType,
+        string sourceIssuePath,
+        string mutation)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/afterlife_entity_profiles.json";
+            var actorId = $"{actorType}_protected_memory_target";
+            var proposalId = $"worker_proposal_{actorType}_{mutation}";
+            var contentRef = $"worker_proposals/{proposalId}/game_state/meta/afterlife_entity_profiles.json";
+            var fs = CreateFileSystem(root);
+            var baseline = BuildCommonAfterlifeProfileRepairState(actorType, actorId);
+            var proposed = baseline.DeepClone().AsObject();
+            var target = proposed["profiles"]![0]!.AsObject();
+            target["gmThoughtsSummary"] = "Я сохраняю новый вывод только в собственной памяти.";
+            switch (mutation)
+            {
+                case "unrelated_actor":
+                    proposed["profiles"]![1]!["displayName"] = "Переписанный посторонний актор";
+                    break;
+                case "root":
+                    proposed["schemaVersion"] = 2;
+                    break;
+                case "currencies":
+                    target["currencies"]!["lightSparks"] = 99;
+                    break;
+                case "progression":
+                    target["progression"]!["rank"] = 99;
+                    break;
+                case "envelope":
+                    target["materialization"]!["state"] = "rewritten";
+                    break;
+                case "scalar":
+                    target["displayName"] = "Переписанное имя";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+            await fs.WriteFileAtomicAsync(path, baseline.ToJsonString());
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                $"{sourceIssuePath}.actors[0]",
+                $"{actorType}:{actorId}");
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("protected actor data", StringComparison.OrdinalIgnoreCase) ||
+                reason.Contains("unrelated canonical data", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static async Task<(WorkerBridgeProfile Profile, WorkerTaskPacket Task, WorkerProposal Proposal)> PrepareAllowedRepairAsync(
         FileSystemManager fs)
     {
@@ -1538,6 +1686,36 @@ public sealed class GmWorkerApplyGateTests
             ]
         };
         return (profile, task, proposal);
+    }
+
+    private static JsonObject BuildCommonAfterlifeProfileRepairState(string actorType, string actorId)
+    {
+        JsonObject Profile(string type, string id, string displayName) => new()
+        {
+            ["actorType"] = type,
+            ["actorId"] = id,
+            ["displayName"] = displayName,
+            ["gmThoughtsSummary"] = "Я помню прежнее решение.",
+            ["currencies"] = new JsonObject { ["lightSparks"] = 1 },
+            ["progression"] = new JsonObject { ["rank"] = 1 },
+            ["materialization"] = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["materializationId"] = $"mat_{type}_{id}",
+                ["actorType"] = type,
+                ["actorId"] = id,
+                ["materializedAtTurn"] = 12,
+                ["state"] = "complete"
+            }
+        };
+
+        return new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["profiles"] = new JsonArray(
+                Profile(actorType, actorId, "Целевой актор"),
+                Profile("radiant_actor", "unrelated_memory_actor", "Посторонний актор"))
+        };
     }
 
     private static JsonObject BuildRepairTargetActor(string materializationState) => new()

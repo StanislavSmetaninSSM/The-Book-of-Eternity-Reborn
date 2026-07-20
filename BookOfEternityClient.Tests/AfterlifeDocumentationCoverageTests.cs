@@ -3926,6 +3926,17 @@ public sealed class AfterlifeDocumentationCoverageTests
             {
                 Assert.Contains(requiredText, text, StringComparison.OrdinalIgnoreCase);
             }
+
+            Assert.Contains(
+                "first envelope on an existing profile",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "only the exact actor's gmThoughtsSummary",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Guardian thought journal", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("resident thought journal", text, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.Contains("Guardian", matrix, StringComparison.Ordinal);
@@ -3967,6 +3978,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("protected actor data", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("malformed current source authority", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("validated pre-turn baseline", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("first envelope on an existing profile", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("exact actor's gmThoughtsSummary", manifest, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

@@ -190,6 +190,7 @@
 
                             Actor Materialization v1 lifecycle boundaries:
                             - First materialization: a genuinely new durable NPC MUST provide the complete NPC object plus one complete actor-bound 'materialization' envelope. Use 'actorType: mortal_npc' and bind 'actorId' to the exact same-turn 'initialId' until the client assigns a permanent 'NPCId'.
+                            - Identity continuity: same-turn initialId must not collide with a validated pre-turn permanent NPCId. Restore that existing actor's permanent NPCId instead of disguising it as new with NPCId=null.
                             - Legacy promotion: an existing legacy NPC without an envelope MUST provide the complete envelope when it first gains a significant structured role or Actor Brain scope. Because the complete schema still requires 'inventory', this promotion may resend only an inventory snapshot semantically identical to the validated pre-turn inventory snapshot. It MUST NOT add, remove, or change an item.
                             - Existing-actor update: an already materialized NPC keeps the historical envelope unchanged and does not resend it through an ordinary update. Use the dedicated delta commands for every later mutable domain, including all inventory mutations.
 

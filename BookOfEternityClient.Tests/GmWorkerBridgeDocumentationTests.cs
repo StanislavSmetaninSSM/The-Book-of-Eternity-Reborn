@@ -232,6 +232,14 @@ public sealed class GmWorkerBridgeDocumentationTests
             "Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].";
         foreach (var source in new[] { guide, contract, repair, runner })
             Assert.Contains(terminalStatusRule, source, StringComparison.Ordinal);
+        const string mandatoryStatusRule =
+            "Status is mandatory; omission is invalid and must never default to completed.";
+        foreach (var source in new[] { guide, contract, repair, runner })
+            Assert.Contains(mandatoryStatusRule, source, StringComparison.Ordinal);
+        const string auditIdRule =
+            "worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>";
+        foreach (var source in new[] { guide, contract, repair })
+            Assert.Contains(auditIdRule, source, StringComparison.Ordinal);
         Assert.DoesNotContain(
             "If the task contains afterlifeContract, keep changedFiles empty",
             runner,

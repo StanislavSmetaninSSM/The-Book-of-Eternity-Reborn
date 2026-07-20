@@ -180,6 +180,8 @@
                     
                     You MUST differentiate between three lifecycle cases: Creation, Legacy promotion, and Modification.
 
+                    Identity guard: same-turn initialId must not collide with a validated pre-turn permanent NPCId. An actor already present under a permanent NPCId is existing even if the current payload tries NPCId=null plus that id as initialId.
+
                     1.  For NEW NPCs (Creation):
                         -   The NPC's complete, initial inventory MUST be defined exclusively within the 'inventory' array of their main object in the 'UpdateNPCs' key.
                         -   The commands 'NPCInventoryAdds', 'NPCInventoryUpdates', and 'NPCInventoryRemovals' MUST NOT be used for this new NPC in the same turn it is created.

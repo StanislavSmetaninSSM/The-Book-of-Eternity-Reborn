@@ -251,7 +251,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
     private Task RecordDispatchFailureAsync(string workerId, string taskId, string summary) =>
         _auditLog.AppendEventAsync(new WorkerAuditEvent
         {
-            EventId = "worker_audit_" + Guid.NewGuid().ToString("N"),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = "proposal-only-dispatch-failed",
             WorkerId = workerId,
             TaskId = string.IsNullOrWhiteSpace(taskId) ? null : taskId,

@@ -105,6 +105,7 @@ public static class WorkerTaskTypes
 
 public enum WorkerProposalStatus
 {
+    Unspecified = 0,
     Completed,
     Failed,
     TimedOut,
@@ -261,7 +262,7 @@ public sealed record WorkerProposal
     public string ProposalId { get; init; } = "";
     public string TaskId { get; init; } = "";
     public string WorkerId { get; init; } = "";
-    public WorkerProposalStatus Status { get; init; } = WorkerProposalStatus.Completed;
+    public required WorkerProposalStatus Status { get; init; }
     public string Summary { get; init; } = "";
     public IReadOnlyList<WorkerChangedFile> ChangedFiles { get; init; } = [];
     public IReadOnlyList<WorkerFinding> Findings { get; init; } = [];

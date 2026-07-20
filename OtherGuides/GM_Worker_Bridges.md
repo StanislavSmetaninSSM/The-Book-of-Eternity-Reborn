@@ -22,6 +22,7 @@ game state.
 - Workers must not edit canonical `game_session` files directly.
 - Canonical writes happen only through the apply gate.
 - Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
+- Status is mandatory; omission is invalid and must never default to completed.
 - The apply gate checks scope, reads proposal `contentRef` files, applies
   allowed changes, runs validation when required, and rolls back failed repairs.
 - Stored proposals are inspectable through GM worker proposal inbox diagnostics.
@@ -46,6 +47,8 @@ Use workers as bounded RLM-like subcalls, not as alternate GMs.
    `game_state/control/gm_worker_audit.jsonl`, and compact summaries are copied
    into `game_state/control/gm_trajectory_ledger.jsonl` as `workerEvents[]` for
    live-test and harness review.
+
+Every producer uses the collision-safe audit id shape `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>`; do not hand-build timestamp-only event ids.
 
 If a useful worker task cannot be expressed with these fields, record that as a
 missing harness surface instead of giving a worker broad repository authority.

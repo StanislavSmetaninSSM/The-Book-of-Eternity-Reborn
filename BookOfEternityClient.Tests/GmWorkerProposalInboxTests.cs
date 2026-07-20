@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -67,6 +68,33 @@ public sealed class GmWorkerProposalInboxTests
             Assert.Equal("broken_proposal", entry.ProposalId);
             Assert.False(entry.IsReadable);
             Assert.Contains("malformed", entry.UnreadableReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal("unreadable", entry.ReviewMode);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ListAsync_ProposalWithoutStatus_ReturnsUnreadableEntry()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var proposal = JsonNode.Parse(GmWorkerJson.Serialize(
+                GmWorkerBridgeTestFixtures.ValidationRepairProposal()))!.AsObject();
+            proposal.Remove("status");
+            await fs.WriteFileAtomicAsync(
+                "worker_proposals/proposal_without_status/proposal.json",
+                proposal.ToJsonString());
+            var inbox = new GmWorkerProposalInboxService(fs);
+
+            var entry = Assert.Single(await inbox.ListAsync());
+
+            Assert.False(entry.IsReadable);
+            Assert.Contains("status", entry.UnreadableReason, StringComparison.OrdinalIgnoreCase);
             Assert.Equal("unreadable", entry.ReviewMode);
         }
         finally
