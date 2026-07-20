@@ -737,6 +737,67 @@ public sealed class GmWorkerApplyGateTests
         }
     }
 
+    public static TheoryData<string, string, ApplyGateResult> MortalContinuityRepairCases { get; } = new()
+    {
+        { "npc_initial_id_collides_with_existing_permanent_id", "intended", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "intended", ApplyGateResult.Accepted },
+        { "npc_characteristics_empty", "intended", ApplyGateResult.Accepted },
+        { "npc_initial_id_collides_with_existing_permanent_id", "same_actor", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "same_actor", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "same_actor", ApplyGateResult.Rejected },
+        { "npc_initial_id_collides_with_existing_permanent_id", "other_actor", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "other_actor", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "other_actor", ApplyGateResult.Rejected },
+        { "npc_initial_id_collides_with_existing_permanent_id", "root", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "root", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "root", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "invalid_target", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "invalid_target", ApplyGateResult.Rejected },
+        { "npc_initial_id_collides_with_existing_permanent_id", "target_delete", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "target_delete", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "target_delete", ApplyGateResult.Rejected },
+        { "npc_initial_id_collides_with_existing_permanent_id", "file_delete", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "file_delete", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "file_delete", ApplyGateResult.Rejected },
+        { "npc_initial_id_collides_with_existing_permanent_id", "file_add", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "file_add", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "file_add", ApplyGateResult.Rejected },
+        { "npc_initial_id_collides_with_existing_permanent_id", "missing_actor", ApplyGateResult.Rejected },
+        { "npc_existing_inventory_resend_forbidden", "missing_actor", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "missing_actor", ApplyGateResult.Rejected }
+    };
+
+    [Theory]
+    [MemberData(nameof(MortalContinuityRepairCases))]
+    public async Task ApplyAsync_MortalContinuityRepair_EnforcesExactIssuePolicy(
+        string code,
+        string mutation,
+        ApplyGateResult expectedResult)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var (profile, task, proposal, path, baseline) = await PrepareMortalContinuityRepairAsync(
+                fs,
+                code,
+                mutation);
+            var gate = new GmWorkerApplyGate(
+                fs,
+                () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(expectedResult, decision.Result);
+            if (expectedResult == ApplyGateResult.Rejected)
+                Assert.Equal(baseline, await fs.ReadFileAsync(path));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     [Fact]
     public async Task ApplyAsync_ActorMaterializationScalarRepairChangingSiblingEnvelopeData_IsRejected()
     {
@@ -1589,6 +1650,185 @@ public sealed class GmWorkerApplyGateTests
             ["state"] = "empty_by_design",
             ["reason"] = reason
         };
+    }
+
+    private static async Task<(
+        WorkerBridgeProfile Profile,
+        WorkerTaskPacket Task,
+        WorkerProposal Proposal,
+        string Path,
+        string Baseline)> PrepareMortalContinuityRepairAsync(
+            FileSystemManager fs,
+            string code,
+            string mutation)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "npc_policy_target";
+        const string expectedInventory = "[{\"itemId\":\"item_snapshot\",\"count\":1}]";
+        var proposalId = $"worker_proposal_{code}_{mutation}";
+        var contentRef = $"worker_proposals/{proposalId}/{path}";
+        var targetActor = new JsonObject
+        {
+            ["NPCId"] = code == "npc_initial_id_collides_with_existing_permanent_id"
+                ? null
+                : actorId,
+            ["initialId"] = code == "npc_initial_id_collides_with_existing_permanent_id"
+                ? actorId
+                : null,
+            ["name"] = "Policy target",
+            ["personality"] = new JsonObject { ["summary"] = "Preserve this summary." },
+            ["characteristics"] = new JsonObject(),
+            ["inventory"] = new JsonArray
+            {
+                new JsonObject { ["itemId"] = "item_invalid", ["count"] = 2 }
+            }
+        };
+        var baselineRoot = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["UpdateNPCs"] = new JsonArray(targetActor),
+            ["NPCsInScene"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["NPCId"] = "npc_unrelated_policy_actor",
+                    ["name"] = "Unrelated actor",
+                    ["personality"] = new JsonObject { ["summary"] = "Keep unrelated data." },
+                    ["characteristics"] = new JsonObject { ["setting_defined_focus"] = 4 },
+                    ["inventory"] = new JsonArray()
+                }
+            },
+            ["rootMarker"] = "preserve"
+        };
+        var proposedRoot = baselineRoot.DeepClone().AsObject();
+        var proposedTarget = proposedRoot["UpdateNPCs"]![0]!.AsObject();
+
+        ApplyIntendedCorrection();
+        switch (mutation)
+        {
+            case "intended":
+                break;
+            case "same_actor":
+                proposedTarget["personality"]!["summary"] = "Worker rewrote protected personality.";
+                break;
+            case "other_actor":
+                proposedRoot["NPCsInScene"]![0]!["personality"]!["summary"] =
+                    "Worker rewrote another actor.";
+                break;
+            case "root":
+                proposedRoot["rootMarker"] = "worker rewrite";
+                break;
+            case "invalid_target":
+                if (code == "npc_existing_inventory_resend_forbidden")
+                {
+                    proposedTarget["inventory"] = new JsonArray
+                    {
+                        new JsonObject { ["itemId"] = "item_not_snapshot", ["count"] = 99 }
+                    };
+                }
+                else
+                {
+                    proposedTarget["characteristics"] = new JsonObject();
+                }
+                break;
+            case "target_delete":
+                proposedRoot["UpdateNPCs"]!.AsArray().Clear();
+                break;
+            case "file_delete":
+            case "file_add":
+            case "missing_actor":
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        var baseline = baselineRoot.ToJsonString();
+        var proposedContent = proposedRoot.ToJsonString();
+        await fs.WriteFileAtomicAsync(path, baseline);
+        await fs.WriteFileAtomicAsync(contentRef, proposedContent);
+        var baselineSha = ComputeFileSha256(fs, path);
+        var proposalSha = ComputeFileSha256(fs, contentRef);
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issuePath = code switch
+        {
+            "npc_initial_id_collides_with_existing_permanent_id" => $"{path}.UpdateNPCs[0].initialId",
+            "npc_existing_inventory_resend_forbidden" => $"{path}.UpdateNPCs[0].inventory",
+            "npc_characteristics_empty" => $"{path}.UpdateNPCs[0].characteristics",
+            _ => throw new ArgumentOutOfRangeException(nameof(code), code, null)
+        };
+        if (mutation == "missing_actor")
+            issuePath = issuePath[(issuePath.IndexOf("UpdateNPCs", StringComparison.Ordinal))..].Insert(0, "response.");
+        var issueSection = code switch
+        {
+            "npc_initial_id_collides_with_existing_permanent_id" => "NPCIdentity",
+            "npc_existing_inventory_resend_forbidden" => "NPCInventory",
+            "npc_characteristics_empty" => "NPCCharacteristics",
+            _ => throw new ArgumentOutOfRangeException(nameof(code), code, null)
+        };
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            ValidationIssues =
+            [
+                new WorkerValidationIssue
+                {
+                    Code = code,
+                    Path = issuePath,
+                    Message = "Mortal continuity preservation regression.",
+                    Actor = mutation == "missing_actor" ? null : $"mortal_npc:{actorId}",
+                    Section = issueSection,
+                    Expected = code == "npc_existing_inventory_resend_forbidden"
+                        ? expectedInventory
+                        : "exact issue-bound correction"
+                }
+            ],
+            ContextFiles = [new WorkerFileReference { Path = path, Sha256 = baselineSha }],
+            AllowedProposalPaths = [path]
+        };
+        var changeKind = mutation switch
+        {
+            "file_add" => WorkerFileChangeKind.Add,
+            "file_delete" => WorkerFileChangeKind.Delete,
+            _ => WorkerFileChangeKind.Replace
+        };
+        var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal() with
+        {
+            ProposalId = proposalId,
+            ChangedFiles =
+            [
+                new WorkerChangedFile
+                {
+                    Path = path,
+                    ChangeKind = changeKind,
+                    BeforeSha256 = baselineSha,
+                    AfterSha256 = changeKind == WorkerFileChangeKind.Delete ? "missing" : proposalSha,
+                    ContentRef = changeKind == WorkerFileChangeKind.Delete ? null : contentRef
+                }
+            ]
+        };
+
+        return (profile, task, proposal, path, baseline);
+
+        void ApplyIntendedCorrection()
+        {
+            switch (code)
+            {
+                case "npc_initial_id_collides_with_existing_permanent_id":
+                    proposedTarget["NPCId"] = actorId;
+                    proposedTarget["initialId"] = null;
+                    break;
+                case "npc_existing_inventory_resend_forbidden":
+                    proposedTarget["inventory"] = JsonNode.Parse(expectedInventory);
+                    break;
+                case "npc_characteristics_empty":
+                    proposedTarget["characteristics"] = new JsonObject
+                    {
+                        ["setting_defined_focus"] = 8
+                    };
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(code), code, null);
+            }
+        }
     }
 
     private static async Task<(WorkerBridgeProfile Profile, WorkerTaskPacket Task, WorkerProposal Proposal)>

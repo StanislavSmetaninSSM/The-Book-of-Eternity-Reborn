@@ -115,6 +115,92 @@ public sealed class GmWorkerValidationRepairTests
     }
 
     [Theory]
+    [InlineData("npc_initial_id_collides_with_existing_permanent_id", "NPCIdentity", null, false)]
+    [InlineData("npc_existing_inventory_resend_forbidden", "NPCInventory", "Use dedicated inventory commands", false)]
+    [InlineData("npc_existing_inventory_resend_forbidden", "NPCInventory", "[]", true)]
+    [InlineData("npc_characteristics_empty", "NPCCharacteristics", "at least one setting-defined numeric characteristic", true)]
+    public void BuildValidationRepairTask_MortalContinuityIssues_UseExplicitDispatchPolicy(
+        string code,
+        string section,
+        string? expected,
+        bool shouldDispatch)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issue = new ValidationIssue(
+            $"{path}.UpdateNPCs[0].{(section == "NPCIdentity" ? "initialId" : section == "NPCInventory" ? "inventory" : "characteristics")}",
+            IssueSeverity.Error,
+            "Mortal continuity repair regression.",
+            code: code,
+            actor: "mortal_npc:npc_policy_target",
+            section: section,
+            expected: expected);
+
+        WorkerTaskPacket Build() => GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+            profile,
+            "worker_task_mortal_continuity_policy",
+            new WorkerTurnReference
+            {
+                SessionId = "test-session",
+                RequestId = "test-request",
+                TurnNumber = 12
+            },
+            [issue],
+            new Dictionary<string, string> { [path] = new string('f', 64) },
+            "2026-06-20T00:00:00Z");
+
+        if (!shouldDispatch)
+        {
+            var exception = Assert.Throws<ArgumentException>(Build);
+            Assert.Contains("main GM", exception.Message, StringComparison.OrdinalIgnoreCase);
+            return;
+        }
+
+        var task = Build();
+        Assert.Equal(new[] { path }, task.AllowedProposalPaths);
+        var packagedIssue = Assert.Single(task.ValidationIssues);
+        Assert.Equal("mortal_npc:npc_policy_target", packagedIssue.Actor);
+        Assert.Equal(section, packagedIssue.Section);
+        Assert.Equal(expected, packagedIssue.Expected);
+    }
+
+    [Theory]
+    [InlineData("npc_existing_inventory_resend_forbidden", "NPCInventory", "[]", "inventory")]
+    [InlineData("npc_characteristics_empty", "NPCCharacteristics", "at least one setting-defined numeric characteristic", "characteristics")]
+    public void BuildValidationRepairTask_MortalContinuityIssueWithoutExactActor_ForcesMainGm(
+        string code,
+        string section,
+        string expected,
+        string property)
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issue = new ValidationIssue(
+            $"response.UpdateNPCs[0].{property}",
+            IssueSeverity.Error,
+            "Mortal continuity repair missing actor metadata.",
+            code: code,
+            actor: null,
+            section: section,
+            expected: expected);
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_mortal_continuity_missing_actor",
+                new WorkerTurnReference
+                {
+                    SessionId = "test-session",
+                    RequestId = "test-request",
+                    TurnNumber = 12
+                },
+                [issue],
+                new Dictionary<string, string>(),
+                "2026-06-20T00:00:00Z"));
+
+        Assert.Contains("main GM", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
     [InlineData(
         "game_state/meta/guardians.json.guardians[0]",
         "game_state/meta/guardian_thought_journal.json",

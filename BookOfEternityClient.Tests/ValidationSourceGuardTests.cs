@@ -66,6 +66,33 @@ public sealed class ValidationSourceGuardTests
     }
 
     [Fact]
+    public void MortalNpcTemplate_MustUseSettingDefinedCharacteristicAuthority()
+    {
+        var path = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "game_master_daemon.ps1");
+        var source = File.ReadAllText(path);
+        var templateStart = source.IndexOf(
+            "# Compact Mortal World NPC Update Template",
+            StringComparison.Ordinal);
+        var templateEnd = source.IndexOf("\n'@", templateStart, StringComparison.Ordinal);
+
+        Assert.True(templateStart >= 0 && templateEnd > templateStart, "Mortal NPC template source block was not found.");
+        var template = source[templateStart..templateEnd];
+        Assert.Contains("current-world canonical characteristic authority", template, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"setting_defined_characteristic_key\": 0", template, StringComparison.Ordinal);
+        foreach (var universalKey in new[]
+                 {
+                     "strength", "dexterity", "constitution", "intelligence", "wisdom", "faith",
+                     "attractiveness", "trade", "persuasion", "perception", "luck", "speed"
+                 })
+        {
+            Assert.DoesNotContain($"\"{universalKey}\":", template, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void PlayerFacingActorViews_MustNotReferencePrivateMaterializationMetadata()
     {
         var sourceRoots = new[]

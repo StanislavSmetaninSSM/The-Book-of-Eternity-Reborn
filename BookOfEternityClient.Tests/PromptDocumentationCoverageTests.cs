@@ -650,6 +650,75 @@ public sealed class PromptDocumentationCoverageTests
             "NPCsInScene");
 
         Assert.Empty(issues);
+        var characteristicKeys = npc.GetProperty("characteristics")
+            .EnumerateObject()
+            .Select(property => property.Name)
+            .ToArray();
+        Assert.Contains("xenobiology", characteristicKeys);
+        Assert.Contains("biosafety_discipline", characteristicKeys);
+        foreach (var universalKey in new[]
+                 {
+                     "strength", "dexterity", "constitution", "intelligence", "wisdom", "faith",
+                     "attractiveness", "trade", "persuasion", "perception", "luck", "speed"
+                 })
+        {
+            Assert.DoesNotContain(universalKey, characteristicKeys);
+        }
+    }
+
+    [Fact]
+    public void MortalInventoryRepairGuidance_DistinguishesLifecycleCasesWithoutPromotionRemoval()
+    {
+        var packetSource = ReadRepoFile(
+            "BookOfEternityClient",
+            "Core",
+            "GameEngine",
+            "GameEngine.ValidationAndRepair.cs");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+
+        foreach (var text in new[] { packetSource, example })
+        {
+            Assert.DoesNotContain(
+                "preserve any other validated update fields",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "remove only the forbidden inventory",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("genuinely new NPC", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("ordinary existing NPC", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("true legacy promotion", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "remove the whole ordinary-existing full-object resend",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "skill, inventory, relationship, journal, activity, equipment/resource",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("main-GM rollback/repair path", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "exact semantically unchanged validated pre-turn inventory snapshot",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("NPCInventoryAdds", text, StringComparison.Ordinal);
+            Assert.Contains("NPCInventoryUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("NPCInventoryRemovals", text, StringComparison.Ordinal);
+        }
+
+        Assert.DoesNotContain(
+            "Remove inventory from UpdateNPCs for every existing NPC",
+            packetSource,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "Do not keep inventory: []",
+            packetSource,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "Do not remove the schema-required inventory from a full true legacy promotion",
+            packetSource,
+            StringComparison.OrdinalIgnoreCase);
     }
 
     private static string ReadRepoFile(params string[] parts) =>

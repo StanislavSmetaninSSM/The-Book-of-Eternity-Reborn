@@ -1,4 +1,6 @@
 using BookOfEternityClient.Services;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -20,6 +22,8 @@ public static class GmWorkerTaskPacketBuilder
             throw new ArgumentException("Worker profile cannot handle validation-repair tasks.", nameof(profile));
         if (validationIssues.Count == 0)
             throw new ArgumentException("At least one validation issue is required.", nameof(validationIssues));
+
+        ValidateMortalContinuityDispatchPolicy(validationIssues);
 
         var allowedPaths = validationIssues
             .Select(ResolveValidationTargetPath)
@@ -122,6 +126,12 @@ public static class GmWorkerTaskPacketBuilder
     internal static string? ResolveActorMaterializationAuthorityPath(ValidationIssue issue)
     {
         var code = issue.Code ?? string.Empty;
+        if ((code is "npc_existing_inventory_resend_forbidden" or "npc_characteristics_empty") &&
+            issue.Actor?.StartsWith("mortal_npc:", StringComparison.Ordinal) == true)
+        {
+            return "game_state/npcs/npc_core.json";
+        }
+
         if (!code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase))
             return null;
 
@@ -154,6 +164,80 @@ public static class GmWorkerTaskPacketBuilder
         }
 
         return null;
+    }
+
+    private static void ValidateMortalContinuityDispatchPolicy(
+        IReadOnlyList<ValidationIssue> validationIssues)
+    {
+        foreach (var issue in validationIssues)
+        {
+            if (!TryGetMortalContinuitySection(issue.Code, out var expectedSection))
+                continue;
+
+            var actor = issue.Actor ?? string.Empty;
+            if (!actor.StartsWith("mortal_npc:", StringComparison.Ordinal) ||
+                actor.Length == "mortal_npc:".Length ||
+                !string.Equals(issue.Section, expectedSection, StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    $"{issue.Code} requires exact Mortal actor and section metadata; use the main GM rollback/repair path.",
+                    nameof(validationIssues));
+            }
+        }
+
+        if (validationIssues.Any(issue => string.Equals(
+                issue.Code,
+                "npc_initial_id_collides_with_existing_permanent_id",
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException(
+                "NPC identity collisions require the main GM rollback/repair path.",
+                nameof(validationIssues));
+        }
+
+        if (validationIssues.Any(issue =>
+                string.Equals(
+                    issue.Code,
+                    "npc_existing_inventory_resend_forbidden",
+                    StringComparison.OrdinalIgnoreCase) &&
+                !IsExactInventorySnapshot(issue.Expected)))
+        {
+            throw new ArgumentException(
+                "Existing-NPC inventory repair without an exact validated pre-turn snapshot requires the main GM rollback/repair path.",
+                nameof(validationIssues));
+        }
+    }
+
+    private static bool TryGetMortalContinuitySection(string? code, out string section)
+    {
+        if (string.Equals(code, "npc_initial_id_collides_with_existing_permanent_id", StringComparison.OrdinalIgnoreCase))
+            section = "NPCIdentity";
+        else if (string.Equals(code, "npc_existing_inventory_resend_forbidden", StringComparison.OrdinalIgnoreCase))
+            section = "NPCInventory";
+        else if (string.Equals(code, "npc_characteristics_empty", StringComparison.OrdinalIgnoreCase))
+            section = "NPCCharacteristics";
+        else
+        {
+            section = string.Empty;
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool IsExactInventorySnapshot(string? expected)
+    {
+        if (string.IsNullOrWhiteSpace(expected))
+            return false;
+
+        try
+        {
+            return JsonNode.Parse(expected) is JsonArray;
+        }
+        catch (Exception exception) when (exception is JsonException or ArgumentException)
+        {
+            return false;
+        }
     }
 
     private static int FindExtensionEnd(string path, string extension)

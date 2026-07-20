@@ -19,6 +19,9 @@ internal static class ActorMaterializationRepairPreservationGuard
         "actor_materialization_capability_mismatch",
         "actor_materialization_existing_resend_forbidden",
         "actor_materialization_historical_envelope_changed",
+        "npc_initial_id_collides_with_existing_permanent_id",
+        "npc_existing_inventory_resend_forbidden",
+        "npc_characteristics_empty",
         "afterlife_actor_materialization_profile_missing",
         "afterlife_actor_materialization_profile_ambiguous",
         "afterlife_actor_materialization_memory_missing"
@@ -50,6 +53,14 @@ internal static class ActorMaterializationRepairPreservationGuard
             .ToArray();
         if (relevantIssues.Length == 0)
             return [];
+
+        if (relevantIssues.Any(issue => string.Equals(
+                issue.Code,
+                "npc_initial_id_collides_with_existing_permanent_id",
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            return ["NPC identity collisions require the main GM rollback/repair path."];
+        }
 
         if (string.IsNullOrWhiteSpace(baselineJson) &&
             IsSafeMissingGuardianThoughtJournalCreation(path, relevantIssues))
@@ -83,6 +94,22 @@ internal static class ActorMaterializationRepairPreservationGuard
                         $"Actor materialization repair issue must include exact actorType:actorId coordinates for {path}.");
                     continue;
                 }
+
+                var scopedIssues = actorGroup.ToList();
+                if (!TryNormalizeMortalContinuityRepairs(
+                        path,
+                        actorType,
+                        actorId,
+                        baselineCopy,
+                        proposedCopy,
+                        scopedIssues,
+                        out var mortalRepairError))
+                {
+                    errors.Add(mortalRepairError);
+                    continue;
+                }
+                if (scopedIssues.Count == 0)
+                    continue;
 
                 var baselineActors = FindActors(baselineCopy, path, actorType, actorId);
                 var proposedActors = FindActors(proposedCopy, path, actorType, actorId);
@@ -131,7 +158,6 @@ internal static class ActorMaterializationRepairPreservationGuard
                     continue;
                 }
 
-                var scopedIssues = actorGroup.ToList();
                 if (!TryNormalizeAppendOnlyMemoryRepair(
                     path,
                     actorType,
@@ -211,7 +237,150 @@ internal static class ActorMaterializationRepairPreservationGuard
     private static bool IsActorMaterializationIssue(string code) =>
         code.StartsWith("actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
         code.StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
-        code.StartsWith("afterlife_actor_binding_", StringComparison.OrdinalIgnoreCase);
+        code.StartsWith("afterlife_actor_binding_", StringComparison.OrdinalIgnoreCase) ||
+        IsMortalContinuityIssue(code);
+
+    private static bool IsMortalContinuityIssue(string code) =>
+        string.Equals(code, "npc_initial_id_collides_with_existing_permanent_id", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(code, "npc_existing_inventory_resend_forbidden", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(code, "npc_characteristics_empty", StringComparison.OrdinalIgnoreCase);
+
+    private static bool TryNormalizeMortalContinuityRepairs(
+        string path,
+        string actorType,
+        string actorId,
+        JsonNode baselineRoot,
+        JsonNode proposedRoot,
+        ICollection<WorkerValidationIssue> issues,
+        out string error)
+    {
+        error = string.Empty;
+        var mortalIssues = issues.Where(issue =>
+                string.Equals(issue.Code, "npc_existing_inventory_resend_forbidden", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "npc_characteristics_empty", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (mortalIssues.Length == 0)
+            return true;
+
+        if (!path.Equals("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(actorType, "mortal_npc", StringComparison.Ordinal))
+        {
+            error = $"Mortal continuity repair scope is not safely derivable for {actorType}:{actorId} in {path}.";
+            return false;
+        }
+
+        foreach (var issue in mortalIssues)
+        {
+            if (!TryReadMortalIssueCarrier(issue.Path, out var carrier))
+            {
+                error = $"Mortal continuity repair requires an exact UpdateNPCs or NPCsInScene carrier for {actorType}:{actorId}.";
+                return false;
+            }
+
+            var baselineActors = FindMortalActorsInCarrier(baselineRoot, carrier, actorId);
+            var proposedActors = FindMortalActorsInCarrier(proposedRoot, carrier, actorId);
+            if (baselineActors.Count != 1 || proposedActors.Count != 1)
+            {
+                error = $"Mortal continuity repair cannot prove one exact {carrier} actor for {actorType}:{actorId}.";
+                return false;
+            }
+
+            var baselineActor = baselineActors[0].Actor;
+            var proposedActor = proposedActors[0].Actor;
+            if (string.Equals(issue.Code, "npc_existing_inventory_resend_forbidden", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.Equals(issue.Section, "NPCInventory", StringComparison.Ordinal) ||
+                    !issue.Path.EndsWith(".inventory", StringComparison.OrdinalIgnoreCase) ||
+                    !TryParseExpectedInventory(issue.Expected, out var expectedInventory) ||
+                    baselineActor["inventory"] is not JsonArray ||
+                    proposedActor["inventory"] is not JsonArray proposedInventory ||
+                    !JsonNode.DeepEquals(proposedInventory, expectedInventory))
+                {
+                    error = $"Mortal inventory repair for {actorType}:{actorId} must restore the exact validated pre-turn snapshot.";
+                    return false;
+                }
+
+                baselineActor.Remove("inventory");
+                proposedActor.Remove("inventory");
+            }
+            else
+            {
+                if (!string.Equals(issue.Section, "NPCCharacteristics", StringComparison.Ordinal) ||
+                    !issue.Path.EndsWith(".characteristics", StringComparison.OrdinalIgnoreCase) ||
+                    baselineActor["characteristics"] is not JsonObject baselineCharacteristics ||
+                    baselineCharacteristics.Count != 0 ||
+                    proposedActor["characteristics"] is not JsonObject proposedCharacteristics ||
+                    proposedCharacteristics.Count == 0 ||
+                    proposedCharacteristics.Any(property => !IsNumericJsonValue(property.Value)))
+                {
+                    error = $"Mortal characteristics repair for {actorType}:{actorId} must add only setting-defined numeric characteristics to the empty target object.";
+                    return false;
+                }
+
+                baselineActor.Remove("characteristics");
+                proposedActor.Remove("characteristics");
+            }
+
+            issues.Remove(issue);
+        }
+
+        return true;
+    }
+
+    private static bool TryReadMortalIssueCarrier(string issuePath, out string carrier)
+    {
+        foreach (var candidate in new[] { "UpdateNPCs", "NPCsInScene" })
+        {
+            if (issuePath.Contains($".{candidate}[", StringComparison.OrdinalIgnoreCase) ||
+                issuePath.StartsWith($"{candidate}[", StringComparison.OrdinalIgnoreCase))
+            {
+                carrier = candidate;
+                return true;
+            }
+        }
+
+        carrier = string.Empty;
+        return false;
+    }
+
+    private static List<ActorNode> FindMortalActorsInCarrier(
+        JsonNode root,
+        string carrier,
+        string actorId)
+    {
+        var result = new List<ActorNode>();
+        if (root is JsonObject rootObject)
+            AddMatchingActors(rootObject, carrier, actorId, mortal: true, "mortal_npc", result);
+        return result;
+    }
+
+    private static bool TryParseExpectedInventory(string? expected, out JsonArray inventory)
+    {
+        inventory = null!;
+        if (string.IsNullOrWhiteSpace(expected))
+            return false;
+
+        try
+        {
+            if (JsonNode.Parse(expected) is not JsonArray parsed)
+                return false;
+            inventory = parsed;
+            return true;
+        }
+        catch (Exception exception) when (exception is JsonException or ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    private static bool IsNumericJsonValue(JsonNode? node)
+    {
+        if (node == null)
+            return false;
+
+        using var document = JsonDocument.Parse(node.ToJsonString());
+        return document.RootElement.ValueKind == JsonValueKind.Number;
+    }
 
     private static bool TryNormalizeAmbiguousProfiles(
         IReadOnlyList<ActorNode> baselineActors,
@@ -582,6 +751,11 @@ internal static class ActorMaterializationRepairPreservationGuard
 
     private static bool IssueTargetsPath(WorkerValidationIssue issue, string path)
     {
+        if (IsMortalContinuityIssue(issue.Code))
+        {
+            return path.Equals("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase);
+        }
+
         if (issue.Code is "afterlife_actor_materialization_profile_missing" or
             "afterlife_actor_materialization_profile_ambiguous")
             return path.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase);

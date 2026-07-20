@@ -3214,7 +3214,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task WriteValidationRepairRequestAsync_MortalNpcExistingInventoryResend_AddsInventoryHarnessPacket()
+    public async Task WriteValidationRepairRequestAsync_MortalNpcExistingInventoryResend_DistinguishesAllLifecycleCases()
     {
         var engine = CreateGameEngine();
         var issues = new List<ValidationIssue>
@@ -3248,9 +3248,30 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains("game_state/npcs/npc_core.json", packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
         Assert.Contains("Миртан Велор", packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
 
-        var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
-        Assert.Contains(steps, step => step.Contains("Remove inventory from UpdateNPCs", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(steps, step => step.Contains("NPCInventoryAdds", StringComparison.OrdinalIgnoreCase));
+        var guidance = string.Join(
+            Environment.NewLine,
+            new[] { "expectedShape", "safeCorrectionRules", "steps", "doNotDo" }
+                .SelectMany(property => packet.GetProperty(property).EnumerateArray())
+                .Select(item => item.GetString() ?? string.Empty));
+        Assert.DoesNotContain(
+            "remove only the forbidden inventory resend while preserving any other validated update fields",
+            guidance,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "remove the forbidden inventory resend or remove the whole",
+            guidance,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("genuinely new NPC", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ordinary existing NPC", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("true legacy promotion", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("remove the whole ordinary-existing full-object resend", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("skill, inventory, relationship, journal, activity, equipment/resource", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("main-GM rollback/repair path", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("exact semantically unchanged validated pre-turn inventory snapshot", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("NPCInventoryAdds", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Do not remove the schema-required inventory", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Remove inventory from UpdateNPCs for every existing NPC", guidance, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Do not keep inventory: []", guidance, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

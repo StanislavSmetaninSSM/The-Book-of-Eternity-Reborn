@@ -1768,6 +1768,8 @@ NPC journal shape is not the same as inventory item journal shape:
 
 ## Minimal safe NPC scene object
 
+The `characteristics` object below is a setting-defined placeholder. Copy the actual keys from current-world canonical characteristic authority; never reuse a universal list.
+
 ```json
 {
   "NPCId": null,
@@ -1823,18 +1825,7 @@ NPC journal shape is not the same as inventory item journal shape:
     "breakthroughQuestId": null
   },
   "characteristics": {
-    "strength": 8,
-    "dexterity": 10,
-    "constitution": 10,
-    "intelligence": 10,
-    "wisdom": 10,
-    "faith": 8,
-    "attractiveness": 10,
-    "trade": 8,
-    "persuasion": 10,
-    "perception": 10,
-    "luck": 9,
-    "speed": 8
+    "setting_defined_characteristic_key": 0
   },
   "activeSkills": [],
   "passiveSkills": [],

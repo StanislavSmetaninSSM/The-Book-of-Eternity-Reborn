@@ -174,6 +174,20 @@ Exceptions:
 
 Every issue records actor type/ID, section or capability where applicable, expected canonical target, and a bounded repair hint.
 
+Raw continuity authority is duplicate-sensitive before semantic comparison. Current Mortal/afterlife actor subtrees, current inventory/materialization values, and validated pre-turn actor/inventory authority reject duplicate members through structured issues. Only duplicate-free valid JSON reaches order-insensitive semantic equality.
+
+The three Mortal continuity issue policies are explicit:
+
+| Issue code | Required metadata | Worker policy |
+|---|---|---|
+| `npc_initial_id_collides_with_existing_permanent_id` | exact `mortal_npc:<id>`, `NPCIdentity` | Never dispatch/apply through a worker; use main-GM rollback/repair because identity correction may have cross-file consequences. |
+| `npc_existing_inventory_resend_forbidden` | exact actor, `NPCInventory`, current inventory in `actual`; exact validated pre-turn JSON array in `expected` only for a true legacy promotion | Dispatch only with the exact JSON-array snapshot. Apply may replace only the named actor/carrier inventory with that snapshot. Ordinary existing resends remain main-GM-only. |
+| `npc_characteristics_empty` | exact actor, `NPCCharacteristics`, setting-defined numeric requirement | Apply may replace only the named actor/carrier empty object with a non-empty numeric object. |
+
+For every supported worker correction, deleting/adding the file or actor, changing a sibling field, another actor, root data, a different carrier, or a non-snapshot target remains protected and rejects before full validation.
+
+The high-priority main-GM inventory repair packet never turns an ordinary existing full object into a partial object: because canonical full-object shape requires `inventory`, the whole ordinary-existing `UpdateNPCs` resend is removed. Every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change is re-authored through its dedicated delta/command surface. Missing delta authority forces main-GM rollback/repair rather than field deletion. Genuinely new initial inventory and exact-snapshot legacy promotion remain the two complete-object branches.
+
 Before applying a worker-authored actor materialization repair, the apply gate routes memory issues by actor type, removes only the exact mutable subtree named by the issue, and semantically compares the remaining canonical JSON. Guardian targets use the canonical/supported Guardian journal path, residents use resident state/journal, and Radiant/Saref/other common-profile actors use only their exact profile `gmThoughtsSummary`. Any change to protected actor data, another actor, root state, currencies, progression, envelope, or unrelated scalar rejects the proposal. An ambiguous-profile repair may only remove duplicates while retaining one otherwise unchanged canonical profile. Dedicated Guardian/resident memory repair is stricter than ordinary scalar repair: all existing journal entries remain an exact prefix, and the worker may append exactly one meaningful thought for the issue-bound actor without rewriting or deleting history. If and only if `game_state/meta/guardian_thought_journal.json` is absent and every scoped issue is `afterlife_actor_materialization_memory_missing` for one exact `guardian:<id>`, preservation uses `{ "entries": [] }` as the baseline; the normal proposal contract still requires Add, `beforeSha256=missing`, exact `afterSha256`, and the proposal-bound content reference.
 
 Every validation-repair context path has one exact byte state: a 64-character SHA-256 digest or `missing`. A changed-file entry repeats that state as `beforeSha256`; add is legal only from `missing`, replace/delete only from an existing digest. Non-delete content lives only at `worker_proposals/<proposalId>/<path>` and its bytes must match `afterSha256`; delete uses `afterSha256=missing` and no content reference. Apply and rollback both compare expected bytes under the shared canonical-write lock. A mismatch is a conflict and never overwrites the newer owner.

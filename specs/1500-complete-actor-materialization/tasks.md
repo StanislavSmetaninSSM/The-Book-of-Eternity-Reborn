@@ -87,7 +87,22 @@
 - [x] T050 Centralize every generated worker audit event ID on one UTC-millisecond-plus-GUID generator with deterministic, concurrent, and production-source coverage.
 - [x] T051 Synchronize Mortal/afterlife/worker GM contracts and Spec Kit artifacts, record per-finding RED/GREEN evidence, run broad verification, and publish the final re-review fix report.
   - Evidence: every confirmed re-review finding has a recorded RED and GREEN cycle; final focused suites passed 186 actor-materialization, 174 GmWorker, 15 Mortal prompt, 114 mandatory afterlife-documentation, and 374 documentation/source-guard tests. The full C# suite passed 6045/6052; its seven residual content-fixture failures are the same failures already recorded as reproducing on base `9a149014` in T021.
+  - Scope note: this evidence closes the first final re-review wave only; it does not claim the second final re-review invariants below.
 
 ## Phase 12 - Final verification and integration
 
 - [ ] T033 Rerun focused/documentation/full verification, perform fresh independent review, then commit, open the PR, and merge only after the evidence is clean.
+
+## Phase 13 - Second final re-review remediation
+
+- [x] T052 Reject duplicate-key current and validated pre-turn actor/inventory/materialization authority through structured production-path validation while retaining order-insensitive semantic equality for valid JSON.
+- [x] T053 Add exact Mortal actor/section/snapshot metadata for collision, inventory-resend, and empty-characteristics issues.
+- [x] T054 Fail collision and non-snapshot inventory worker dispatch/apply closed; constrain exact-snapshot inventory and numeric-characteristics proposals to one actor, carrier, and field with a public negative apply matrix.
+- [x] T055 Replace the generated universal characteristic list with a setting-defined placeholder and guard source plus rendered output against regression.
+- [x] T056 Distinguish genuinely new, ordinary existing, and true legacy-promotion inventory repairs in the high-priority packet; synchronize the worked GM example, prompt/source guards, and Spec Kit decisions.
+- [x] T057 Run focused, broad, mandatory afterlife, syntax, diff, and full-project verification; self-review the complete wave and publish `final-rereview-2-fixes-report.md`.
+  - Evidence: 235 actor validation/contract, 206 GmWorker, 156 turn-lifecycle, 261 prompt/example/source-guard, and 114 mandatory afterlife tests passed. PowerShell parse and `git diff --check` passed. The final full C# run passed 6084/6091; its seven failures exactly match the base-reproduced content-fixture set documented in T021, and the intermittent Agent Console smoke passed both isolated and in the final full run. See `.git/worktrees/boe-1500-complete-actor-materialization/sdd/final-rereview-2-fixes-report.md`.
+
+## Phase 14 - Controller follow-up after first implementation report
+
+- [x] T058 Remove the residual ordinary-existing partial-object repair branch from validator metadata, the high-priority packet, and the worked GM example; require whole-entry removal, dedicated deltas, and main-GM fallback, then append fresh RED/GREEN and affected-suite evidence to the report. Evidence: focused 3/3, validator 191/191, lifecycle 156/156, and documentation/source guards 153/153 passed; see `sdd/final-rereview-2-fixes-report.md`.

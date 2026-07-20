@@ -1247,7 +1247,14 @@ Identity continuity rule: same-turn initialId must not collide with a validated 
 
 Worked legacy-promotion inventory continuity: if validated pre-turn authority contains `inventory=[{"itemId":"existing_item_01","count":1}]`, the promotion's complete `UpdateNPCs` object repeats that inventory snapshot with the same meaning and adds the first envelope. Changing the count, adding another entry, or removing the entry through that snapshot is rejected. Such a mutation is authored separately through `NPCInventoryAdds`, `NPCInventoryUpdates`, or `NPCInventoryRemovals`; the promotion snapshot remains semantically identical to the validated pre-turn inventory snapshot.
 
+Worked `mortal_npc_inventory_update_repair` decision:
+- A genuinely new NPC may keep initial inventory in its full object when validated continuity confirms `NPCId: null` plus a new non-empty `initialId`.
+- For an ordinary existing NPC, remove the whole ordinary-existing full-object resend from `UpdateNPCs`. Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated delta/command surface. If a required delta surface does not exist, use the main-GM rollback/repair path; never retain a schema-invalid partial full object with `inventory` omitted.
+- A true legacy promotion must retain schema-required inventory and copy the exact semantically unchanged validated pre-turn inventory snapshot from the validation issue's `expected` field. Do not remove or reconstruct that snapshot; author real mutations through the dedicated inventory commands.
+
 Worked first-materialization fragment for `game_state/npcs/npc_core.json`:
+
+The characteristic keys in this fragment come from this current world's canonical characteristic authority. Another world must copy its own keys rather than reuse this list.
 
 ```json
 {
@@ -1306,18 +1313,10 @@ Worked first-materialization fragment for `game_state/npcs/npc_core.json`:
         "breakthroughQuestId": null
       },
       "characteristics": {
-        "strength": 7,
-        "dexterity": 9,
-        "constitution": 9,
-        "intelligence": 14,
-        "wisdom": 12,
-        "faith": 4,
-        "attractiveness": 10,
-        "trade": 6,
-        "persuasion": 9,
-        "perception": 13,
-        "luck": 8,
-        "speed": 8
+        "xenobiology": 14,
+        "field_observation": 13,
+        "biosafety_discipline": 12,
+        "zero_gravity_coordination": 9
       },
       "activeSkills": [],
       "passiveSkills": [],

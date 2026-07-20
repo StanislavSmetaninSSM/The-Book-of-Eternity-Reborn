@@ -354,7 +354,18 @@ public partial class ValidationService
             foreach (var actor in actors.EnumerateArray())
             {
                 var context = $"{MortalActorMaterializationStatePath}.{sectionName}[{index++}]";
-                if (!TryReadCanonicalCurrentMortalActorId(actor, out var actorId))
+                var hasActorId = TryReadCanonicalCurrentMortalActorId(actor, out var actorId);
+                if (TryFindDuplicateJsonProperty(actor, out var duplicatePath))
+                {
+                    AddDuplicateActorMaterializationAuthorityIssue(
+                        $"{context}{duplicatePath}",
+                        hasActorId ? $"mortal_npc:{actorId}" : null,
+                        duplicatePath,
+                        issues);
+                    continue;
+                }
+
+                if (!hasActorId)
                 {
                     AddUnusableMortalActorMaterializationCurrentAuthorityIssue(issues);
                     continue;
@@ -435,6 +446,29 @@ public partial class ValidationService
         return !hasMaterializationEnvelope ||
                !currentSignals.IsPromotionFrom(previousState.PromotionSignals) ||
                !hasUnchangedInventorySnapshot;
+    }
+
+    private static bool TryGetMortalActorLegacyPromotionInventorySnapshot(
+        JsonElement actor,
+        string actorId,
+        MortalActorMaterializationPreTurnAuthority preTurnAuthority,
+        out string inventoryJson)
+    {
+        inventoryJson = string.Empty;
+        if (preTurnAuthority.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            preTurnAuthority.Actors == null ||
+            !preTurnAuthority.Actors.TryGetValue(actorId, out var previousState) ||
+            previousState.HistoricalEnvelopeJson != null ||
+            previousState.InventoryJson == null ||
+            !actor.TryGetProperty(ActorMaterializationContract.PropertyName, out var envelope) ||
+            envelope.ValueKind != JsonValueKind.Object ||
+            !ReadMortalActorMaterializationPromotionSignals(actor).IsPromotionFrom(previousState.PromotionSignals))
+        {
+            return false;
+        }
+
+        inventoryJson = previousState.InventoryJson;
+        return true;
     }
 
     private static bool TryReadCanonicalMortalActorStates(
@@ -995,6 +1029,7 @@ public partial class ValidationService
 
     private static IReadOnlyList<ValidationIssue> ValidateCurrentAfterlifeMaterializationIds(JsonElement root)
     {
+        var issues = new List<ValidationIssue>();
         var currentActors = new List<(JsonElement Actor, string Context, string ActorType, string ActorId)>();
         if (!root.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles) ||
             profiles.ValueKind != JsonValueKind.Array)
@@ -1006,11 +1041,22 @@ public partial class ValidationService
         foreach (var profile in profiles.EnumerateArray())
         {
             var context = $"{AfterlifeActorMaterializationStatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{index++}]";
-            if (!TryReadCanonicalAfterlifePreTurnActorIdentity(
+            var hasActorIdentity = TryReadCanonicalAfterlifePreTurnActorIdentity(
                     profile,
                     out var actorType,
                     out var actorId,
-                    out _) ||
+                    out _);
+            if (TryFindDuplicateJsonProperty(profile, out var duplicatePath))
+            {
+                AddDuplicateActorMaterializationAuthorityIssue(
+                    $"{context}{duplicatePath}",
+                    hasActorIdentity ? $"{actorType}:{actorId}" : null,
+                    duplicatePath,
+                    issues);
+                continue;
+            }
+
+            if (!hasActorIdentity ||
                 (string.Equals(actorType, "player_soul", StringComparison.Ordinal) &&
                  string.Equals(actorId, "player_soul", StringComparison.Ordinal)))
             {
@@ -1020,7 +1066,8 @@ public partial class ValidationService
             currentActors.Add((profile, context, actorType, actorId));
         }
 
-        return ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors);
+        issues.AddRange(ActorMaterializationContract.ValidateUniqueMaterializationIds(currentActors));
+        return issues;
     }
 
     private static bool TryReadCanonicalAfterlifeActorStates(
@@ -1040,6 +1087,7 @@ public partial class ValidationService
         foreach (var profile in profiles.EnumerateArray())
         {
             if (profile.ValueKind != JsonValueKind.Object ||
+                TryFindDuplicateJsonProperty(profile, out _) ||
                 !TryReadCanonicalAfterlifePreTurnActorIdentity(
                     profile,
                     out var actorType,
@@ -1174,11 +1222,75 @@ public partial class ValidationService
     {
         try
         {
+            using var leftDocument = JsonDocument.Parse(leftJson);
+            using var rightDocument = JsonDocument.Parse(rightJson);
+            if (TryFindDuplicateJsonProperty(leftDocument.RootElement, out _) ||
+                TryFindDuplicateJsonProperty(rightDocument.RootElement, out _))
+            {
+                return false;
+            }
+
             return JsonNode.DeepEquals(JsonNode.Parse(leftJson), JsonNode.Parse(rightJson));
         }
-        catch (JsonException)
+        catch (Exception exception) when (exception is JsonException or ArgumentException)
         {
             return false;
         }
+    }
+
+    private static bool TryFindDuplicateJsonProperty(JsonElement value, out string duplicatePath) =>
+        TryFindDuplicateJsonProperty(value, string.Empty, out duplicatePath);
+
+    private static bool TryFindDuplicateJsonProperty(
+        JsonElement value,
+        string path,
+        out string duplicatePath)
+    {
+        if (value.ValueKind == JsonValueKind.Object)
+        {
+            var propertyNames = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var property in value.EnumerateObject())
+            {
+                var propertyPath = $"{path}.{property.Name}";
+                if (!propertyNames.Add(property.Name))
+                {
+                    duplicatePath = propertyPath;
+                    return true;
+                }
+
+                if (TryFindDuplicateJsonProperty(property.Value, propertyPath, out duplicatePath))
+                    return true;
+            }
+        }
+        else if (value.ValueKind == JsonValueKind.Array)
+        {
+            var index = 0;
+            foreach (var item in value.EnumerateArray())
+            {
+                if (TryFindDuplicateJsonProperty(item, $"{path}[{index++}]", out duplicatePath))
+                    return true;
+            }
+        }
+
+        duplicatePath = string.Empty;
+        return false;
+    }
+
+    private static void AddDuplicateActorMaterializationAuthorityIssue(
+        string path,
+        string? actor,
+        string duplicatePath,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "Actor materialization authority не допускает повторяющиеся JSON properties.",
+            code: "actor_materialization_duplicate_property",
+            actor: actor,
+            section: "ActorMaterialization",
+            expected: "each JSON object member appears exactly once",
+            actual: duplicatePath,
+            repairHint: "Оставь ровно одно значение каждого JSON property в exact actor authority; не выбирай duplicate по порядку properties."));
     }
 }

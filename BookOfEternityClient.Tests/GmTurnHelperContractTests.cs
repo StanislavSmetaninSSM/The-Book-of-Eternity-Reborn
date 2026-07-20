@@ -4072,6 +4072,16 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("Actors outside scope", template, StringComparison.Ordinal);
             Assert.Contains("Role-identifiable visible, speaking, acting, clue-giving, or directly addressed scene actors are NPC candidates even when their personal name is unknown", template, StringComparison.Ordinal);
             Assert.Contains("Use a stable role-based visible name", template, StringComparison.Ordinal);
+            Assert.Contains("current-world canonical characteristic authority", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("\"setting_defined_characteristic_key\": 0", template, StringComparison.Ordinal);
+            foreach (var universalKey in new[]
+                     {
+                         "strength", "dexterity", "constitution", "intelligence", "wisdom", "faith",
+                         "attractiveness", "trade", "persuasion", "perception", "luck", "speed"
+                     })
+            {
+                Assert.DoesNotContain($"\"{universalKey}\":", template, StringComparison.OrdinalIgnoreCase);
+            }
 
             var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
             Assert.True(WaitForFileContaining(readmePath, "Mortal World NPC updates", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));

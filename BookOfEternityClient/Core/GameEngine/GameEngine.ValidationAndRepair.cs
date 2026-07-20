@@ -3169,28 +3169,35 @@ public partial class GameEngine
             CanonicalActorNames = actorNames,
             ExpectedShape = new List<string>
             {
-                "UpdateNPCs for an existing NPC must not resend an inventory array/object.",
-                "Existing NPC inventory changes must use NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, equipment/resource commands, or no inventory command when nothing changed.",
-                "Only a genuinely new NPC with NPCId = JSON null and a non-empty initialId may carry initial inventory inside the full UpdateNPCs/NPCsInScene object."
+                "A genuinely new NPC with NPCId = JSON null and a non-empty initialId may carry its initial inventory inside the full UpdateNPCs/NPCsInScene object.",
+                "An ordinary existing NPC must remove the whole ordinary-existing full-object resend from UpdateNPCs. Every legitimate supported change uses its dedicated delta/command surface.",
+                "A true legacy promotion must retain schema-required inventory and restore the exact semantically unchanged validated pre-turn inventory snapshot carried by validationIssues[].expected; real mutations still use dedicated inventory commands."
             },
             SafeCorrectionRules = new List<string>
             {
                 "Patch only the listed NPC entries and inventory command surfaces.",
-                "If the NPC is existing, remove inventory from UpdateNPCs and keep unrelated profile/location/relationship fields intact.",
-                "If the NPC is genuinely new, change identity to NPCId = JSON null plus initialId and keep inventory only as that new NPC's initial carried inventory."
+                "For an ordinary existing NPC, remove the whole ordinary-existing full-object resend; never retain a schema-invalid UpdateNPCs object with inventory omitted.",
+                "Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated delta/command surface.",
+                "If a required delta surface does not exist, use the main-GM rollback/repair path instead of constructing a partial full object.",
+                "For a true legacy promotion, copy the exact inventory JSON from validationIssues[].expected back into the full promotion object without semantic changes.",
+                "Keep initial inventory only for a genuinely new NPC that was already new in validated continuity authority; never change an existing identity into NPCId = JSON null plus initialId to evade this error."
             },
             Steps = new List<string>
             {
                 "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before repairing NPC inventory update validation errors.",
-                "Remove inventory from UpdateNPCs for every existing NPC named by validation_repair_request.json.",
-                "If an existing NPC's inventory really changed this turn, express the delta through NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, equipment/resource commands, or another documented inventory command surface.",
-                "If there was no inventory change, delete only the forbidden inventory field and preserve the rest of the NPC object.",
+                "For each named actor, classify the object as a genuinely new NPC, an ordinary existing NPC, or a true legacy promotion using validated identity/materialization continuity and the issue metadata.",
+                "For an ordinary existing NPC, remove the whole ordinary-existing full-object resend from UpdateNPCs. Re-author every legitimate supported change through NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, skill, relationship, journal, activity, equipment/resource, or another documented dedicated command surface.",
+                "If any required ordinary-existing change has no dedicated delta/command surface, stop and use the main-GM rollback/repair path; do not retain a partial full object.",
+                "For a true legacy promotion, keep inventory present and restore the exact semantically unchanged validated pre-turn inventory snapshot from validationIssues[].expected.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
             },
             DoNotDo = new List<string>
             {
                 "Do not delete a meaningful NPC to silence an inventory resend error.",
-                "Do not keep inventory: [] inside UpdateNPCs for an existing NPC.",
+                "Do not keep an ordinary existing full UpdateNPCs object after removing only its inventory property; that partial object is schema-invalid.",
+                "Do not remove the schema-required inventory from a full true legacy promotion.",
+                "Do not mutate or reconstruct the validated pre-turn promotion snapshot; copy validationIssues[].expected exactly.",
+                "Do not reclassify an existing NPC as genuinely new by replacing its permanent NPCId with initialId.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC inventory rules."
             }
         };

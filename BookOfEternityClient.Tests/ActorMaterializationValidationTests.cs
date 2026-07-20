@@ -2062,6 +2062,87 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Theory]
+    [InlineData("current_actor", "actor_materialization_duplicate_property")]
+    [InlineData("current_inventory", "actor_materialization_duplicate_property")]
+    [InlineData("current_materialization", "actor_materialization_duplicate_property")]
+    [InlineData("pre_turn_actor", "actor_materialization_pre_turn_authority_unusable")]
+    [InlineData("pre_turn_inventory", "actor_materialization_pre_turn_authority_unusable")]
+    public async Task ValidateGameStateAsync_DuplicateMortalContinuityAuthority_ReturnsStructuredIssue(
+        string duplicateLocation,
+        string expectedCode)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "duplicate_continuity_actor";
+        string currentJson;
+        string preTurnJson;
+
+        if (duplicateLocation is "current_actor" or "current_materialization")
+        {
+            preTurnJson = BuildHistoricalEnvelopeStateJson("mortal", mutation: null);
+            currentJson = duplicateLocation == "current_actor"
+                ? InsertDuplicateJsonProperty(
+                    preTurnJson,
+                    "\"currentLocationId\":\"loc_historical_archive\"",
+                    "\"currentLocationId\":\"loc_historical_archive\"")
+                : InsertDuplicateJsonProperty(
+                    preTurnJson,
+                    "\"materializationId\":\"mat_mortal_historical\"",
+                    "\"materializationId\":\"mat_mortal_historical\"");
+        }
+        else
+        {
+            preTurnJson = BuildMortalActorStateJson(
+                actorId,
+                sectionName: "NPCsInScene",
+                canTeach: false,
+                includeEnvelope: false,
+                includeInventory: true);
+            currentJson = BuildMortalActorStateJson(
+                actorId,
+                sectionName: "UpdateNPCs",
+                canTeach: true,
+                includeEnvelope: true,
+                includeInventory: true);
+            var inventoryProperty = $"\"itemId\":\"item_{actorId}_archive_key\"";
+
+            if (duplicateLocation == "current_inventory")
+            {
+                currentJson = InsertDuplicateJsonProperty(
+                    currentJson,
+                    inventoryProperty,
+                    inventoryProperty);
+            }
+            else if (duplicateLocation == "pre_turn_actor")
+            {
+                preTurnJson = InsertDuplicateJsonProperty(
+                    preTurnJson,
+                    "\"currentLocationName\":",
+                    "\"currentLocationName\":\"duplicate authority\"");
+            }
+            else if (duplicateLocation == "pre_turn_inventory")
+            {
+                preTurnJson = InsertDuplicateJsonProperty(
+                    preTurnJson,
+                    inventoryProperty,
+                    inventoryProperty);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(duplicateLocation),
+                    duplicateLocation,
+                    null);
+            }
+        }
+
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => issue.Code == expectedCode);
+    }
+
+    [Theory]
     [InlineData("mortal")]
     [InlineData("afterlife")]
     public async Task ValidateGameStateAsync_HistoricalEnvelopeWithLaterGameplayDelta_DoesNotReinterpretEnvelope(
@@ -2256,7 +2337,9 @@ public sealed class ActorMaterializationValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             issue.Code == "npc_characteristics_empty" &&
-            issue.FilePath.EndsWith(".characteristics", StringComparison.Ordinal));
+            issue.FilePath.EndsWith(".characteristics", StringComparison.Ordinal) &&
+            issue.Actor == "mortal_npc:empty_characteristics_actor" &&
+            issue.Section == "NPCCharacteristics");
     }
 
     [Fact]
@@ -2479,7 +2562,16 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         using var currentDocument = JsonDocument.Parse(currentJson);
         var issues = _validator.ValidateResponse(currentDocument.RootElement);
 
-        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+        var issue = Assert.Single(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+        Assert.Contains(
+            "remove the whole ordinary-existing full-object resend",
+            issue.Expected,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "skill, inventory, relationship, journal, activity, equipment/resource",
+            issue.RepairHint,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("main-GM rollback/repair path", issue.RepairHint, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -2968,23 +3060,35 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     public async Task ValidateResponse_TrueLegacyPromotionWithEnvelopeAndChangedInventory_IsRejected()
     {
         const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "legacy_promoted_actor";
         var preTurnJson = BuildMortalActorStateJson(
-            "legacy_promoted_actor",
+            actorId,
             sectionName: "NPCsInScene",
             canTeach: false,
-            includeEnvelope: false);
-        var currentJson = BuildMortalActorStateJson(
-            "legacy_promoted_actor",
+            includeEnvelope: false,
+            includeInventory: true);
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorId,
             sectionName: "UpdateNPCs",
             canTeach: true,
             includeEnvelope: true,
-            includeInventory: true);
+            includeInventory: true))!.AsObject();
+        var addedItem = currentRoot["UpdateNPCs"]![0]!["inventory"]![0]!.DeepClone().AsObject();
+        addedItem["itemId"] = "item_legacy_promoted_actor_added";
+        addedItem["existedId"] = "item_legacy_promoted_actor_added";
+        currentRoot["UpdateNPCs"]![0]!["inventory"]!.AsArray().Add(addedItem);
+        var currentJson = currentRoot.ToJsonString();
+        var expectedInventory = JsonNode.Parse(preTurnJson)!["NPCsInScene"]![0]!["inventory"]!.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
         using var currentDocument = JsonDocument.Parse(currentJson);
         var issues = _validator.ValidateResponse(currentDocument.RootElement);
 
-        Assert.Contains(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_inventory_resend_forbidden" &&
+            issue.Actor == $"mortal_npc:{actorId}" &&
+            issue.Section == "NPCInventory" &&
+            issue.Expected == expectedInventory);
     }
 
     [Fact]
@@ -3674,6 +3778,21 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         };
         root[sectionName]!.AsArray().Add(actor);
         return root.ToJsonString();
+    }
+
+    private static string InsertDuplicateJsonProperty(
+        string json,
+        string existingPropertyPrefix,
+        string duplicateProperty)
+    {
+        var propertyIndex = json.IndexOf(existingPropertyPrefix, StringComparison.Ordinal);
+        Assert.True(propertyIndex >= 0, $"Missing JSON property marker: {existingPropertyPrefix}");
+        var separatorIndex = json.IndexOf(',', propertyIndex + existingPropertyPrefix.Length);
+        if (separatorIndex < 0)
+            separatorIndex = json.IndexOf('}', propertyIndex + existingPropertyPrefix.Length);
+        Assert.True(separatorIndex >= 0, $"Missing JSON property boundary: {existingPropertyPrefix}");
+
+        return json.Insert(separatorIndex, $",{duplicateProperty}");
     }
 
     private static void ConfigureSameTurnMortalActor(

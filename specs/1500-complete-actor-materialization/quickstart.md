@@ -13,6 +13,7 @@ Use this checklist when implementing or reviewing issue #1500. It is not a playe
 5. Make each capability agree with canonical skill, teacher, trade, and inventory data.
 6. Do not infer anything from setting vocabulary.
 7. Resolve one effective identity; a same-turn `initialId` must not collide with any validated pre-turn permanent `NPCId`, and true legacy inventory promotion must repeat the unchanged snapshot while mutations use atomic inventory commands.
+8. Reject duplicate members in current actor/inventory/materialization data and validated pre-turn actor/inventory authority before semantic comparison; property order alone remains irrelevant.
 
 ## Afterlife valid first materialization
 
@@ -30,6 +31,9 @@ Do not modify or fabricate untouched actors merely because they lack an envelope
 ## Worker repair protocol
 
 - Route afterlife memory repair by actor type and preserve every field outside the exact actor-owned memory target.
+- Keep `npc_initial_id_collides_with_existing_permanent_id` on the main-GM rollback/repair path.
+- Dispatch `npc_existing_inventory_resend_forbidden` only when `expected` is the exact validated pre-turn JSON-array snapshot; restore only that actor/carrier field. Ordinary existing resends stay main-GM-only.
+- For `npc_characteristics_empty`, allow only a non-empty numeric object on the exact actor/carrier field. Reject sibling, other-actor, root, add, and delete changes.
 - Require explicit proposal `status`; omission/`Unspecified` is invalid, only explicit `completed` may apply, and terminal statuses use empty `changedFiles`.
 - Generate every worker audit event ID through the shared UTC-millisecond plus GUID utility; source guards reject hand-built prefixes.
 
@@ -59,5 +63,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - System Guardian deterministic seed covered.
 - Normalizer preservation and no-invention covered.
 - Bounded repair packet covered.
+- Generated Mortal template uses current-world characteristic authority and no universal list.
+- Inventory repair packet covers genuinely new, ordinary existing, and true legacy-promotion cases: remove the whole ordinary-existing full-object resend and use dedicated deltas/main-GM fallback, while retaining required promotion inventory.
 - Mortal and afterlife prompts/docs/examples/manifests synchronized.
 - Player-facing metadata non-leakage covered.

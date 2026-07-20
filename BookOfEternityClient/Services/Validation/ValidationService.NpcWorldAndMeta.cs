@@ -5171,16 +5171,26 @@ public partial class ValidationService
                 if (string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
                     hasEffectiveNpcId &&
                     hasInventoryContinuityAuthority &&
-                    item.TryGetProperty("inventory", out _) &&
+                    item.TryGetProperty("inventory", out var currentInventory) &&
                     ShouldBlockMortalActorInventoryResend(item, effectiveNpcId, mortalActorPreTurnAuthority))
                 {
+                    var hasExactLegacyPromotionSnapshot = TryGetMortalActorLegacyPromotionInventorySnapshot(
+                        item,
+                        effectiveNpcId,
+                        mortalActorPreTurnAuthority,
+                        out var expectedInventoryJson);
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.inventory",
                         IssueSeverity.Error,
                         "UpdateNPCs не должен пересылать inventory для existing NPC",
                         code: "npc_existing_inventory_resend_forbidden",
                         section: "NPCInventory",
-                        repairHint: "For a true legacy promotion, restore the validated pre-turn inventory snapshot without semantic changes. Put every real mutation in NPCInventoryAdds/Updates/Removals; inventory inside UpdateNPCs is otherwise only for a genuinely new NPC."));
+                        actor: $"mortal_npc:{effectiveNpcId}",
+                        expected: hasExactLegacyPromotionSnapshot
+                            ? expectedInventoryJson
+                            : "remove the whole ordinary-existing full-object resend from UpdateNPCs and use dedicated delta/command surfaces for every supported change",
+                        actual: currentInventory.GetRawText(),
+                        repairHint: "For a true legacy promotion, restore the validated pre-turn inventory snapshot without semantic changes. For an ordinary existing NPC, remove the whole ordinary-existing full-object resend. Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated delta/command surface; inventory mutations use NPCInventoryAdds/Updates/Removals. If a required delta surface does not exist, use the main-GM rollback/repair path. Inventory inside UpdateNPCs is otherwise only for a genuinely new NPC."));
                 }
 
                 if (!string.IsNullOrWhiteSpace(initialLocationId) &&
@@ -5461,7 +5471,10 @@ public partial class ValidationService
                     IssueSeverity.Error,
                     "Complete NPC characteristics не может быть пустым object",
                     code: "npc_characteristics_empty",
-                    section: "NPC",
+                    section: "NPCCharacteristics",
+                    actor: TryReadCanonicalCurrentMortalActorId(item, out var actorId)
+                        ? $"mortal_npc:{actorId}"
+                        : null,
                     expected: "at least one setting-defined numeric characteristic",
                     actual: "empty object",
                     repairHint: "Добавь хотя бы одну числовую характеристику, определённую текущим миром; не подменяй характеристики фиксированным жанровым набором."));

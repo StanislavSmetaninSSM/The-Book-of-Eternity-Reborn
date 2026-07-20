@@ -143,6 +143,30 @@
 
 **Rationale**: A collision-safe format is ineffective when only one producer uses it; central ownership prevents timestamp-only and GUID-only variants from returning.
 
+## Decision 23: Duplicate-key continuity authority fails before comparison
+
+**Decision**: Detect duplicate JSON members recursively in current actor authority and reject duplicate/malformed values before order-insensitive semantic comparison. Convert current and validated pre-turn failures into structured validation issues rather than allowing `JsonNode` duplicate-key exceptions to escape.
+
+**Rationale**: Catching only one parser exception can still accept duplicate new-actor data or leave another reparse path throwable. Duplicate-free validation is the prerequisite for meaningful semantic equality.
+
+## Decision 24: Mortal continuity repair has per-code mechanical policy
+
+**Decision**: Keep identity collision on the main-GM rollback/repair path. Dispatch legacy-promotion inventory repair only when the issue carries the exact validated pre-turn JSON-array snapshot, and permit only exact snapshot restoration. Permit empty-characteristics repair only as a non-empty setting-defined numeric object on the exact actor/carrier. Preserve every sibling, other actor, and root value through comparison.
+
+**Rationale**: Adding production codes to a broad repair-code set without target normalization silently grants whole-file rewrite authority. Some identity corrections can have cross-file consequences and are not safely worker-representable.
+
+## Decision 25: Generated characteristic examples are authority-neutral
+
+**Decision**: The generated Mortal NPC template uses one `setting_defined_characteristic_key` placeholder and tells the GM to copy actual keys from current-world canonical authority. The setting-specific worked example uses world-specific keys rather than a universal tabletop list.
+
+**Rationale**: A fixed list in an authoritative minimal template contradicts the open-vocabulary validator and steers non-fantasy worlds toward fabricated mechanics.
+
+## Decision 26: Inventory repair guidance classifies actor lifecycle
+
+**Decision**: The high-priority repair packet distinguishes genuinely new initial inventory, ordinary existing updates, and true legacy promotions. For an ordinary existing actor it removes the whole full-object resend and re-authors every supported change through dedicated delta/command surfaces; absence of a required delta surface forces main-GM rollback/repair. It never removes only `inventory` while retaining a schema-invalid full object. True legacy promotions retain inventory and restore the exact validated pre-turn snapshot.
+
+**Rationale**: An absolute instruction to remove inventory from every existing actor makes a schema-valid legacy promotion impossible to repair, while removing only that property from an ordinary retained full object violates the full-object schema. Lifecycle classification must choose one valid authority path rather than create a second validation failure.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.
