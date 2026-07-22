@@ -34,11 +34,18 @@ publication. Task and proposal identifiers are immutable; an existing ID is a
 collision and cannot overwrite earlier dispatch or review evidence. When a
 process times out and leaves a malformed proposal, timeout remains authoritative
 and the malformed handoff is retained only as an additional diagnostic.
-The bridge atomically reserves every task and proposal identifier before durable
-publication. Validation-repair task IDs are globally unique per dispatch while
-retaining a readable attempt prefix. `maxConcurrentTasks` is enforced at runtime
-for each worker and game session, including separate bridge-pool instances; a
-queued task is not published before it owns a worker slot.
+The bridge reserves every task identifier with a create-only compare/exchange,
+then publishes the complete proposal bundle through one create-only atomic directory rename.
+The bundle contains `proposal.json` and every declared `contentRef`; no separate
+proposal claim exists. While holding the canonical write lease, publication
+verifies that the exact originating task bytes still belong to the current game
+session generation. The durable bundle remains authority if derived inbox or
+audit publication fails. Validation-repair task IDs are globally unique per
+dispatch while retaining a readable attempt prefix. `maxConcurrentTasks` is
+enforced at runtime for each worker and game session, including separate
+bridge-pool instances. Worker slots use reference-counted gates that retire when idle;
+an idle profile limit can change, while an active limit change fails as a worker
+result. Cancellation kills and awaits the complete worker process tree before releasing its worker slot.
 Validation-repair hashes bind exact bytes: `contextFiles.sha256` and
 `changedFiles.beforeSha256` are the same exact 64-character SHA-256 digest (or
 `missing` for an absent add target), while each non-delete `afterSha256` is the
@@ -78,9 +85,15 @@ context and authority check through every target compare/exchange, full-state
 validation, read-only context revalidation, rollback when required, and final
 decision linearization. Cooperating canonical writers wait for that decision;
 detected external authority changes reject the complete proposal.
-Built-in backup, restore, game-state clear, and current-world lore clear use the
-same lease. Save and load operations use the same canonical write lease so a
-save is one coherent snapshot and load cannot replace live state during apply.
+The apply gate has no replaceable lock inside `game_session`; the external lease
+is its sole exclusion authority. Built-in backup, restore, game-state clear, and
+current-world lore clear use the same lease. Save and load operations use the
+same canonical write lease so a save is one coherent snapshot and load cannot
+replace live state during apply. Load uses an external durable journal under
+`.boe_runtime/load-transactions`: startup restores an interrupted swap before
+creating session directories, and failed rollback preserves the backup and
+journal for a later recovery attempt. State refresh and client-owned mirror
+repair reuse the active lease.
 Detached workspace deletion never follows reparse points; a cleanup failure is an audit diagnostic
 and cannot replace the worker result.
 

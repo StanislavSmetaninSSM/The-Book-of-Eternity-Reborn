@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Text.Json;
 
 namespace BookOfEternityClient.Core;
 
@@ -7,6 +9,13 @@ public enum CanonicalFileMutationResult
     Applied,
     Conflict
 }
+
+internal sealed record CanonicalLoadTransactionPaths(
+    string TransactionId,
+    string TransactionRoot,
+    string StagingSessionPath,
+    string BackupSessionPath,
+    string FailedSessionPath);
 
 /// <summary>
 /// Manages the game_session directory structure per CLI API specification.
@@ -38,6 +47,7 @@ public class FileSystemManager
 
     private readonly string _basePath;
     private readonly ILogger<FileSystemManager> _logger;
+    private readonly ILoadTransactionOperations _loadTransactionOperations;
     private const int TransientFileAccessRetryCount = 20;
     private static readonly TimeSpan TransientFileAccessRetryDelay = TimeSpan.FromMilliseconds(50);
     private const int CanonicalWriteLockRetryCount = 200;
@@ -75,14 +85,46 @@ public class FileSystemManager
     public string GameSessionPath => Path.Combine(_basePath, "game_session");
     internal string CanonicalWriteLockPath =>
         Path.Combine(_basePath, ".boe_runtime", "locks", "canonical-write.lock");
+    internal string ActiveLoadTransactionJournalPath =>
+        Path.Combine(_basePath, ".boe_runtime", "load-transactions", "active.json");
 
     public FileSystemManager(string basePath, ILogger<FileSystemManager> logger)
+        : this(basePath, logger, PhysicalLoadTransactionOperations.Instance)
+    {
+    }
+
+    internal FileSystemManager(
+        string basePath,
+        ILogger<FileSystemManager> logger,
+        ILoadTransactionOperations loadTransactionOperations)
     {
         _basePath = basePath;
         _logger = logger;
+        _loadTransactionOperations = loadTransactionOperations ??
+            throw new ArgumentNullException(nameof(loadTransactionOperations));
     }
 
     public void EnsureDirectoryStructure()
+    {
+        var writeLease = AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        try
+        {
+            RecoverInterruptedLoadTransaction(writeLease);
+            EnsureDirectoryStructureCore();
+        }
+        finally
+        {
+            writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        }
+    }
+
+    internal void EnsureDirectoryStructure(CanonicalWriteLease writeLease)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        EnsureDirectoryStructureCore();
+    }
+
+    private void EnsureDirectoryStructureCore()
     {
         foreach (var dir in RequiredDirectories)
         {
@@ -105,13 +147,16 @@ public class FileSystemManager
     /// </summary>
     public async Task WriteFileAtomicAsync(string relativePath, string content)
     {
-        var encoding = System.Text.Encoding.UTF8;
-        var preamble = encoding.GetPreamble();
-        var body = encoding.GetBytes(content);
-        var bytes = new byte[preamble.Length + body.Length];
-        Buffer.BlockCopy(preamble, 0, bytes, 0, preamble.Length);
-        Buffer.BlockCopy(body, 0, bytes, preamble.Length, body.Length);
-        await WriteFileAtomicBytesAsync(relativePath, bytes);
+        await WriteFileAtomicBytesAsync(relativePath, EncodeUtf8WithPreamble(content));
+    }
+
+    internal async Task WriteFileAtomicAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        string content)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        await WriteFileAtomicBytesCoreAsync(relativePath, EncodeUtf8WithPreamble(content));
     }
 
     public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
@@ -120,9 +165,27 @@ public class FileSystemManager
         await WriteFileAtomicBytesCoreAsync(relativePath, content);
     }
 
+    internal async Task WriteFileAtomicBytesAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        byte[] content)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        await WriteFileAtomicBytesCoreAsync(relativePath, content);
+    }
+
     public async Task AppendFileAtomicAsync(string relativePath, string content)
     {
         await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        await AppendFileAtomicAsync(writeLock, relativePath, content);
+    }
+
+    internal async Task AppendFileAtomicAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        string content)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
         var fullPath = ResolvePath(relativePath);
         byte[] currentContent;
         try
@@ -338,6 +401,164 @@ public class FileSystemManager
     private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>
         left == null ? right == null : right != null && left.AsSpan().SequenceEqual(right);
 
+    private static byte[] EncodeUtf8WithPreamble(string content)
+    {
+        var preamble = Encoding.UTF8.GetPreamble();
+        var body = Encoding.UTF8.GetBytes(content);
+        var bytes = new byte[preamble.Length + body.Length];
+        Buffer.BlockCopy(preamble, 0, bytes, 0, preamble.Length);
+        Buffer.BlockCopy(body, 0, bytes, preamble.Length, body.Length);
+        return bytes;
+    }
+
+    internal CanonicalLoadTransactionPaths GetLoadTransactionPaths(string transactionId)
+    {
+        if (!Guid.TryParseExact(transactionId, "N", out _))
+            throw new ArgumentException("Load transaction ID must be a GUID in N format.", nameof(transactionId));
+
+        var transactionRoot = Path.Combine(
+            _basePath,
+            ".boe_runtime",
+            "load-transactions",
+            transactionId);
+        return new CanonicalLoadTransactionPaths(
+            transactionId,
+            transactionRoot,
+            Path.Combine(transactionRoot, "stage", "game_session"),
+            Path.Combine(transactionRoot, "backup", "game_session"),
+            Path.Combine(transactionRoot, "failed", "game_session"));
+    }
+
+    internal void BeginLoadTransaction(CanonicalWriteLease writeLease, string transactionId)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        RecoverInterruptedLoadTransaction(writeLease);
+        WriteLoadTransactionJournal(transactionId, committed: false);
+    }
+
+    internal void CommitLoadTransaction(CanonicalWriteLease writeLease, string transactionId)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        WriteLoadTransactionJournal(transactionId, committed: true);
+
+        try
+        {
+            CleanupCommittedLoadTransaction(GetLoadTransactionPaths(transactionId));
+        }
+        catch (Exception ex)
+        {
+            // The committed journal makes cleanup retryable at the next startup.
+            _logger.LogWarning(ex, "Не удалось сразу очистить завершённую транзакцию загрузки {TransactionId}.", transactionId);
+        }
+    }
+
+    internal void RecoverInterruptedLoadTransaction(CanonicalWriteLease writeLease)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        if (!_loadTransactionOperations.FileExists(ActiveLoadTransactionJournalPath))
+            return;
+
+        var journal = ReadLoadTransactionJournal();
+        var paths = GetLoadTransactionPaths(journal.TransactionId);
+
+        if (!journal.Committed || !_loadTransactionOperations.DirectoryExists(GameSessionPath))
+            RestoreLoadTransactionBackup(paths);
+
+        CleanupCommittedLoadTransaction(paths);
+        _logger.LogWarning(
+            "Восстановлена незавершённая транзакция загрузки {TransactionId} (committed={Committed}).",
+            journal.TransactionId,
+            journal.Committed);
+    }
+
+    internal void CleanupInactiveLoadTransaction(CanonicalLoadTransactionPaths paths)
+    {
+        if (ActiveLoadTransactionReferences(paths.TransactionId))
+            return;
+
+        if (_loadTransactionOperations.DirectoryExists(paths.TransactionRoot))
+            _loadTransactionOperations.DeleteDirectory(paths.TransactionRoot, recursive: true);
+    }
+
+    internal bool LoadDirectoryExists(string path) => _loadTransactionOperations.DirectoryExists(path);
+    internal void CreateLoadDirectory(string path) => _loadTransactionOperations.CreateDirectory(path);
+    internal void MoveLoadDirectory(string sourcePath, string destinationPath) =>
+        _loadTransactionOperations.MoveDirectory(sourcePath, destinationPath);
+
+    private void RestoreLoadTransactionBackup(CanonicalLoadTransactionPaths paths)
+    {
+        if (!_loadTransactionOperations.DirectoryExists(paths.BackupSessionPath))
+            return;
+
+        if (_loadTransactionOperations.DirectoryExists(GameSessionPath))
+        {
+            if (_loadTransactionOperations.DirectoryExists(paths.FailedSessionPath))
+                _loadTransactionOperations.DeleteDirectory(paths.FailedSessionPath, recursive: true);
+
+            _loadTransactionOperations.CreateDirectory(Path.GetDirectoryName(paths.FailedSessionPath)!);
+            _loadTransactionOperations.MoveDirectory(GameSessionPath, paths.FailedSessionPath);
+        }
+
+        _loadTransactionOperations.CreateDirectory(Path.GetDirectoryName(GameSessionPath)!);
+        _loadTransactionOperations.MoveDirectory(paths.BackupSessionPath, GameSessionPath);
+    }
+
+    private void CleanupCommittedLoadTransaction(CanonicalLoadTransactionPaths paths)
+    {
+        if (_loadTransactionOperations.DirectoryExists(paths.TransactionRoot))
+            _loadTransactionOperations.DeleteDirectory(paths.TransactionRoot, recursive: true);
+        if (_loadTransactionOperations.FileExists(ActiveLoadTransactionJournalPath))
+            _loadTransactionOperations.DeleteFile(ActiveLoadTransactionJournalPath);
+    }
+
+    private void WriteLoadTransactionJournal(string transactionId, bool committed)
+    {
+        var json = JsonSerializer.Serialize(new LoadTransactionJournal(1, transactionId, committed));
+        _loadTransactionOperations.WriteAllTextAtomic(ActiveLoadTransactionJournalPath, json);
+    }
+
+    private LoadTransactionJournal ReadLoadTransactionJournal()
+    {
+        try
+        {
+            var journal = JsonSerializer.Deserialize<LoadTransactionJournal>(
+                _loadTransactionOperations.ReadAllText(ActiveLoadTransactionJournalPath),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (journal is null || journal.SchemaVersion != 1 ||
+                !Guid.TryParseExact(journal.TransactionId, "N", out _))
+            {
+                throw new InvalidDataException("Active load transaction journal is invalid.");
+            }
+
+            return journal;
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidDataException("Active load transaction journal is invalid.", ex);
+        }
+    }
+
+    private bool ActiveLoadTransactionReferences(string transactionId)
+    {
+        if (!_loadTransactionOperations.FileExists(ActiveLoadTransactionJournalPath))
+            return false;
+
+        try
+        {
+            return string.Equals(
+                ReadLoadTransactionJournal().TransactionId,
+                transactionId,
+                StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            // Never delete recovery evidence when the journal cannot be interpreted.
+            return true;
+        }
+    }
+
+    private sealed record LoadTransactionJournal(int SchemaVersion, string TransactionId, bool Committed);
+
     /// <summary>
     /// Create a backup of a file before modification.
     /// </summary>
@@ -459,7 +680,7 @@ public class FileSystemManager
         }
 
         // Re-create structure
-        EnsureDirectoryStructure();
+        EnsureDirectoryStructureCore();
     }
 
     private static bool ShouldPreserveAcrossGameStateClear(string gameStatePath, string filePath)

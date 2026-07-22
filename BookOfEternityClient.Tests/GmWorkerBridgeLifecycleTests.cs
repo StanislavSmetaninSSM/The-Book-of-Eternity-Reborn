@@ -1,4 +1,7 @@
 using BookOfEternityClient.Services.GmWorkers;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.Configuration;
+using System.Diagnostics;
 using Xunit;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -551,6 +554,88 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_LoadDuringWorkerExecutionRejectsProposalFromReplacedSession()
+    {
+        var root = CreateTempRoot();
+        var releasePath = Path.Combine(root, "release-stale-session-worker");
+        try
+        {
+            const string proposalId = "worker_proposal_stale_session";
+            var fs = CreateFileSystem(root);
+            var stateManager = new StateManager(
+                fs,
+                new GameSettings(),
+                NullLogger<StateManager>.Instance);
+            await stateManager.RefreshGameStateAsync();
+            var saveLoad = new SaveLoadService(
+                fs,
+                stateManager,
+                NullLogger<SaveLoadService>.Instance);
+            Assert.True(await saveLoad.SaveGameAsync("pre-worker-session", "session generation regression"));
+            var savePath = Directory.GetFiles(fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+
+            var readyPath = Path.Combine(root, "stale-session-worker-ready");
+            var scriptPath = Path.Combine(root, "fake-worker-stale-session.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                New-Item -ItemType File -Force -Path '{{readyPath.Replace("'", "''", StringComparison.Ordinal)}}' | Out-Null
+                while (-not (Test-Path -LiteralPath '{{releasePath.Replace("'", "''", StringComparison.Ordinal)}}')) { Start-Sleep -Milliseconds 25 }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = '{{proposalId}}'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'This result belongs to the session that was replaced during execution.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'stale session output'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('session generation')
+                    }
+                    createdAtUtc = '2026-07-23T03:00:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_stale_session",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var runTask = pool.RunTaskAsync(profile, task);
+            await WaitForFileAsync(readyPath, TimeSpan.FromSeconds(5));
+            Assert.True(await saveLoad.LoadGameAsync(savePath));
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId)));
+            await File.WriteAllTextAsync(releasePath, "release");
+
+            var result = await runTask;
+
+            Assert.Null(result.Proposal);
+            Assert.Equal(WorkerBridgeState.Failed, result.Status.State);
+            Assert.Contains("session", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+            Assert.Null(await new GmWorkerProposalStore(fs).ReadProposalAsync(proposalId));
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetProposalInboxPath(task.TaskId)));
+        }
+        finally
+        {
+            Directory.CreateDirectory(root);
+            await File.WriteAllTextAsync(releasePath, "release");
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_ConcurrentPoolsWithSameTaskId_LaunchExactlyOneWorker()
     {
         var root = CreateTempRoot();
@@ -587,7 +672,8 @@ public sealed class GmWorkerBridgeLifecycleTests
             var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
-                TimeoutSeconds = 10
+                TimeoutSeconds = 10,
+                MaxConcurrentTasks = 2
             };
             var task = await MaterializeTaskContextAsync(
                 fs,
@@ -596,13 +682,24 @@ public sealed class GmWorkerBridgeLifecycleTests
                     TaskId = "worker_task_concurrent_reservation",
                     TimeoutSeconds = profile.TimeoutSeconds
                 });
-            var firstPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
-            var secondPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+            var reservationBarrier = new AsyncTestBarrier(2);
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTaskReservationAsync = reservationBarrier.SignalAndWaitAsync
+            };
+            var firstPool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+            var secondPool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
 
-            var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
             var firstRun = firstPool.RunTaskAsync(profile, task);
             var secondRun = secondPool.RunTaskAsync(profile, task);
-            await writeLease.DisposeAsync();
             var results = await Task.WhenAll(firstRun, secondRun);
 
             Assert.Single(results, result => result.Proposal != null);
@@ -670,12 +767,32 @@ public sealed class GmWorkerBridgeLifecycleTests
                     TimeoutSeconds = profile.TimeoutSeconds
                 });
             var secondTask = firstTask with { TaskId = "worker_task_concurrency_second" };
-            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+            var slotWaitCount = 0;
+            var secondSlotWaitStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeWorkerSlotWaitAsync = () =>
+                {
+                    if (Interlocked.Increment(ref slotWaitCount) == 2)
+                        secondSlotWaitStarted.SetResult();
+                    return Task.CompletedTask;
+                }
+            };
+            var firstPool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+            var secondPool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
 
-            firstRun = pool.RunTaskAsync(profile, firstTask);
+            firstRun = firstPool.RunTaskAsync(profile, firstTask);
             await WaitForFileAsync(Path.Combine(markerDirectory, firstTask.TaskId), TimeSpan.FromSeconds(5));
-            secondRun = pool.RunTaskAsync(profile, secondTask);
-            await Task.Delay(500);
+            secondRun = secondPool.RunTaskAsync(profile, secondTask);
+            await secondSlotWaitStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
             Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(secondTask.TaskId)));
             Assert.False(File.Exists(Path.Combine(markerDirectory, secondTask.TaskId)));
@@ -686,6 +803,199 @@ public sealed class GmWorkerBridgeLifecycleTests
             await File.WriteAllTextAsync(releasePath, "release");
             if (firstRun != null && secondRun != null)
                 await Task.WhenAll(firstRun, secondRun);
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_IdleWorkerGateAcceptsUpdatedConcurrencyLimit()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-idle-limit-change.ps1");
+            await File.WriteAllTextAsync(scriptPath, """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = ('worker_proposal_' + $task.taskId)
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Idle gate limit change regression.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'complete'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('idle gate')
+                    }
+                    createdAtUtc = '2026-07-23T03:10:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var firstProfile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10,
+                MaxConcurrentTasks = 1
+            };
+            var secondProfile = firstProfile with { MaxConcurrentTasks = 2 };
+            var firstTask = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_idle_limit_one",
+                    TimeoutSeconds = 10
+                });
+            var secondTask = firstTask with { TaskId = "worker_task_idle_limit_two" };
+
+            var firstResult = await new GmWorkerBridgePool(fs).RunTaskAsync(firstProfile, firstTask);
+            var secondResult = await new GmWorkerBridgePool(fs).RunTaskAsync(secondProfile, secondTask);
+
+            Assert.NotNull(firstResult.Proposal);
+            Assert.NotNull(secondResult.Proposal);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_ActiveWorkerGateLimitChangeReturnsFailedResult()
+    {
+        var root = CreateTempRoot();
+        var releasePath = Path.Combine(root, "release-active-limit-worker");
+        Task<GmWorkerTaskRunResult>? firstRun = null;
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var readyPath = Path.Combine(root, "active-limit-worker-ready");
+            var scriptPath = Path.Combine(root, "fake-worker-active-limit-change.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                New-Item -ItemType File -Force -Path '{{readyPath.Replace("'", "''", StringComparison.Ordinal)}}' | Out-Null
+                while (-not (Test-Path -LiteralPath '{{releasePath.Replace("'", "''", StringComparison.Ordinal)}}')) { Start-Sleep -Milliseconds 25 }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = ('worker_proposal_' + $task.taskId)
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Active gate limit change regression.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'complete'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('active gate')
+                    }
+                    createdAtUtc = '2026-07-23T03:11:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var activeProfile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10,
+                MaxConcurrentTasks = 1
+            };
+            var changedProfile = activeProfile with { MaxConcurrentTasks = 2 };
+            var firstTask = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_active_limit_one",
+                    TimeoutSeconds = 10
+                });
+            var secondTask = firstTask with { TaskId = "worker_task_active_limit_two" };
+            firstRun = new GmWorkerBridgePool(fs).RunTaskAsync(activeProfile, firstTask);
+            await WaitForFileAsync(readyPath, TimeSpan.FromSeconds(5));
+
+            var secondResult = await new GmWorkerBridgePool(fs).RunTaskAsync(changedProfile, secondTask);
+
+            Assert.Equal(WorkerBridgeState.Failed, secondResult.Status.State);
+            Assert.Contains("maxConcurrentTasks", secondResult.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(secondTask.TaskId)));
+        }
+        finally
+        {
+            Directory.CreateDirectory(root);
+            await File.WriteAllTextAsync(releasePath, "release");
+            if (firstRun != null)
+                await firstRun;
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_CancellationKillsProcessBeforeReturningAndReleasingSlot()
+    {
+        var root = CreateTempRoot();
+        Process? leakedProcess = null;
+        Process? leakedChildProcess = null;
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var pidPath = Path.Combine(root, "cancelled-worker.pid");
+            var childPidPath = Path.Combine(root, "cancelled-worker-child.pid");
+            var scriptPath = Path.Combine(root, "fake-worker-cancellation.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                Set-Content -LiteralPath '{{pidPath.Replace("'", "''", StringComparison.Ordinal)}}' -Value $PID -Encoding ascii
+                $child = Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoLogo', '-NoProfile', '-Command', 'Start-Sleep -Seconds 30') -PassThru
+                Set-Content -LiteralPath '{{childPidPath.Replace("'", "''", StringComparison.Ordinal)}}' -Value $child.Id -Encoding ascii
+                Start-Sleep -Seconds 30
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60,
+                MaxConcurrentTasks = 1
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_cancel_process",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            using var cancellation = new CancellationTokenSource();
+            var runTask = new GmWorkerBridgePool(fs).RunTaskAsync(profile, task, cancellation.Token);
+            await WaitForFileAsync(pidPath, TimeSpan.FromSeconds(5));
+            await WaitForFileAsync(childPidPath, TimeSpan.FromSeconds(5));
+            var pid = int.Parse((await File.ReadAllTextAsync(pidPath)).Trim());
+            var childPid = int.Parse((await File.ReadAllTextAsync(childPidPath)).Trim());
+            leakedProcess = Process.GetProcessById(pid);
+            leakedChildProcess = Process.GetProcessById(childPid);
+
+            cancellation.Cancel();
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => runTask);
+            await leakedProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            await leakedChildProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.True(leakedProcess.HasExited);
+            Assert.True(leakedChildProcess.HasExited);
+        }
+        finally
+        {
+            try
+            {
+                if (leakedProcess is { HasExited: false })
+                    leakedProcess.Kill(entireProcessTree: true);
+                if (leakedChildProcess is { HasExited: false })
+                    leakedChildProcess.Kill(entireProcessTree: true);
+            }
+            catch
+            {
+                // Best effort cleanup for the RED implementation.
+            }
+
+            leakedProcess?.Dispose();
+            leakedChildProcess?.Dispose();
             CleanupTempRoot(root);
         }
     }
@@ -748,19 +1058,29 @@ public sealed class GmWorkerBridgeLifecycleTests
                 TaskId = "worker_task_proposal_race_two",
                 WorkerId = secondProfile.WorkerId
             };
-            var firstPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
-            var secondPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+            var publicationBarrier = new AsyncTestBarrier(2);
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeProposalPublicationAsync = publicationBarrier.SignalAndWaitAsync
+            };
+            var firstPool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+            var secondPool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
 
             var firstRun = firstPool.RunTaskAsync(firstProfile, firstTask);
             var secondRun = secondPool.RunTaskAsync(secondProfile, secondTask);
             await WaitForFileAsync(Path.Combine(markerDirectory, $"ready-{firstTask.TaskId}"), TimeSpan.FromSeconds(5));
             await WaitForFileAsync(Path.Combine(markerDirectory, $"ready-{secondTask.TaskId}"), TimeSpan.FromSeconds(5));
-            var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
             await File.WriteAllTextAsync(releasePath, "release");
             await WaitForFileAsync(Path.Combine(markerDirectory, $"done-{firstTask.TaskId}"), TimeSpan.FromSeconds(5));
             await WaitForFileAsync(Path.Combine(markerDirectory, $"done-{secondTask.TaskId}"), TimeSpan.FromSeconds(5));
-            await Task.Delay(500);
-            await writeLease.DisposeAsync();
             var results = await Task.WhenAll(firstRun, secondRun);
 
             Assert.Single(results, result => result.Proposal != null);
@@ -1225,5 +1545,19 @@ public sealed class GmWorkerBridgeLifecycleTests
         }
 
         return task with { ContextFiles = contextFiles };
+    }
+
+    private sealed class AsyncTestBarrier(int participantCount)
+    {
+        private readonly TaskCompletionSource _release =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private int _arrived;
+
+        internal Task SignalAndWaitAsync()
+        {
+            if (Interlocked.Increment(ref _arrived) == participantCount)
+                _release.SetResult();
+            return _release.Task;
+        }
     }
 }

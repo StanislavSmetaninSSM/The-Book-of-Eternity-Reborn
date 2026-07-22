@@ -59,13 +59,18 @@ task's pinned context, never the live canonical session. Review only the
 validated proposal and its declared `contentRef` artifacts; never copy direct snapshot edits
 or undeclared worker files into canonical state. The client apply gate owns all
 authority checks, writes, validation, rollback, and the final decision.
-The bridge verifies every declared artifact digest before publishing any part
-of a handoff, rejects reused task/proposal identifiers and case-aliased paths,
+The bridge verifies every declared artifact digest before publication, reserves
+task IDs create-only, and publishes a complete proposal/content bundle with one
+create-only atomic directory rename only while the exact task bytes still belong
+to the current session generation. It rejects reused IDs and case-aliased paths
 and accepts only exact wildcard-free afterlife surfaces. A timeout remains the
-result even when the worker also leaves malformed proposal JSON. Built-in
-backup, restore, and clear operations share the canonical write lease; detached
-workspace cleanup never follows reparse points and cannot replace a worker
-result with a cleanup exception.
+result even when the worker also leaves malformed proposal JSON. Worker slots
+are shared across pool instances; cancellation awaits the complete process tree
+before slot reuse. Built-in backup, restore, clear, save, and load operations
+share the external canonical write lease. Load recovery uses a durable external
+journal and preserves the previous valid backup if immediate rollback fails.
+Detached workspace cleanup never follows reparse points and cannot replace a
+worker result with a cleanup exception.
 
 All paths relative to:
 {{REPO_ROOT}}

@@ -355,14 +355,19 @@ with evidence from the first cycle.
 ### Decision 46: Concurrency and evidence identity are harness-owned
 
 **Decision**: Acquire a process-wide per-session/per-worker slot before task
-publication, enforce the profile's `MaxConcurrentTasks`, and atomically claim
-task/proposal IDs under the canonical lease. A losing claimant fails without
-launching or overwriting prior evidence.
+publication and enforce the profile's `MaxConcurrentTasks`. Reserve immutable
+task IDs with create-only compare/exchange. Stage `proposal.json` and every
+declared content file outside the session, then, under the canonical lease,
+verify the exact task bytes still identify the current session generation and
+publish the complete bundle through one create-only atomic directory rename.
+The durable bundle is authoritative; derived inbox/audit failure cannot erase
+it. A losing publisher fails without overwriting prior evidence.
 
 **Rationale**: Sequential existence checks cannot prevent two bridge-pool
-instances from launching the same task or publishing the same proposal. This is
-a deterministic coordination problem and must not be delegated to worker
-prompts.
+instances from launching the same task, and a separate proposal claim followed
+by multiple writes can strand partial evidence. Task reservation and complete
+directory publication are different atomicity problems. Both are deterministic
+harness coordination and must not be delegated to worker prompts.
 
 ### Decision 47: Afterlife authority is positive, not inferred by exclusion
 
@@ -380,14 +385,35 @@ crafted packets from weakening the realm boundary.
 
 **Decision**: Place canonical lock authority under `.boe_runtime` outside the
 replaceable session directory. Hold it while creating a save snapshot and while
-swapping, refreshing, or restoring a loaded session.
+swapping, refreshing, or restoring a loaded session. Load stages the replacement
+and records an external durable journal plus the last valid session backup under
+`.boe_runtime/load-transactions`. Startup recovery runs before ordinary session
+directory initialization. Failed rollback preserves both journal and backup;
+lease-aware refresh and client-owned mirror repair reuse the active lease.
 
 **Rationale**: Loading previously replaced the entire live session outside the
 worker apply lease, while saving could archive files from multiple authority
 moments. An external lock survives directory replacement and makes both
-operations cooperating canonical participants. These harness changes add no GM
+operations cooperating canonical participants. A lease alone does not recover a
+process crash or failed directory rollback, so the swap also needs a durable
+recovery record outside the replaceable tree. These harness changes add no GM
 response field, afterlife action, receipt, report, scheduler contour, or
 normalizer side effect; Mortal and afterlife repair guidance is synchronized.
+
+### Decision 49: Worker slots represent live process-tree ownership
+
+**Decision**: Implement per-session/per-worker limits with reference-counted
+gates shared across bridge-pool instances. Retire a gate when its final holder or
+waiter leaves, permit a changed profile limit only after retirement, and return
+an active limit mismatch as a failed worker result. On cancellation, kill the
+complete process tree and await confirmed exit plus output drain before releasing
+the slot.
+
+**Rationale**: Permanent static semaphores retain stale profile limits and leak
+session keys. Releasing a slot while a canceled parent or child remains alive can
+let two workers mutate detached handoff state concurrently despite a one-slot
+profile. Process-tree termination and gate lifetime are harness responsibilities,
+not timing assumptions or prompt instructions.
 
 ## Existing integration findings
 

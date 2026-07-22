@@ -83,7 +83,6 @@ public sealed class GmWorkerApplyGate
         }
 
         ApplyGateDecision transactionDecision;
-        await using (var applyLock = await AcquireApplyLockAsync())
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             transactionDecision = await ApplyWithinCanonicalLeaseAsync(
@@ -431,31 +430,6 @@ public sealed class GmWorkerApplyGate
         }
 
         return errors;
-    }
-
-    private async Task<FileStream> AcquireApplyLockAsync()
-    {
-        var lockPath = _fs.ResolvePath("game_state/control/gm_worker_apply.lock");
-        Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
-        for (var attempt = 0; attempt < 200; attempt++)
-        {
-            try
-            {
-                return new FileStream(
-                    lockPath,
-                    FileMode.OpenOrCreate,
-                    FileAccess.ReadWrite,
-                    FileShare.None,
-                    bufferSize: 1,
-                    FileOptions.Asynchronous);
-            }
-            catch (IOException) when (attempt < 199)
-            {
-                await Task.Delay(50);
-            }
-        }
-
-        throw new IOException("Timed out waiting for the GM worker apply lock.");
     }
 
     private static string? DecodeUtf8(byte[]? content)

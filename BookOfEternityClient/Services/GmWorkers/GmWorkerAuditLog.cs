@@ -22,6 +22,21 @@ public sealed class GmWorkerAuditLog
 
     public async Task AppendEventAsync(WorkerAuditEvent auditEvent)
     {
+        await AppendEventCoreAsync(auditEvent, writeLease: null);
+    }
+
+    internal async Task AppendEventAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WorkerAuditEvent auditEvent)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        await AppendEventCoreAsync(auditEvent, writeLease);
+    }
+
+    private async Task AppendEventCoreAsync(
+        WorkerAuditEvent auditEvent,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
         if (string.IsNullOrWhiteSpace(auditEvent.EventId))
             throw new ArgumentException("Audit event id is required.", nameof(auditEvent));
         if (string.IsNullOrWhiteSpace(auditEvent.EventType))
@@ -32,7 +47,10 @@ public sealed class GmWorkerAuditLog
         var line = JsonSerializer.Serialize(auditEvent, CompactJsonOptions);
         try
         {
-            await _fs.AppendFileAtomicAsync(AuditLogPath, line + Environment.NewLine);
+            if (writeLease == null)
+                await _fs.AppendFileAtomicAsync(AuditLogPath, line + Environment.NewLine);
+            else
+                await _fs.AppendFileAtomicAsync(writeLease, AuditLogPath, line + Environment.NewLine);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
@@ -60,7 +78,18 @@ public sealed class GmWorkerAuditLog
         });
 
     public Task RecordProposalReceivedAsync(WorkerProposal proposal) =>
-        AppendEventAsync(new WorkerAuditEvent
+        RecordProposalReceivedCoreAsync(proposal, writeLease: null);
+
+    internal Task RecordProposalReceivedAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WorkerProposal proposal) =>
+        RecordProposalReceivedCoreAsync(proposal, writeLease);
+
+    private Task RecordProposalReceivedCoreAsync(
+        WorkerProposal proposal,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        var auditEvent = new WorkerAuditEvent
         {
             EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = "proposal-received",
@@ -73,7 +102,11 @@ public sealed class GmWorkerAuditLog
             {
                 ["changedFiles"] = proposal.ChangedFiles.Select(file => file.Path).ToArray()
             }
-        });
+        };
+        return writeLease == null
+            ? AppendEventAsync(auditEvent)
+            : AppendEventAsync(writeLease, auditEvent);
+    }
 
     public Task RecordApplyDecisionAsync(WorkerProposal proposal, ApplyGateDecision decision) =>
         AppendEventAsync(new WorkerAuditEvent

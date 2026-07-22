@@ -253,6 +253,21 @@ internal static class AfterlifeEntityProfileState
 
     public static async Task<bool> ApplyPlayerSoulProfileClientAuthorityAsync(FileSystemManager fs)
     {
+        return await ApplyPlayerSoulProfileClientAuthorityCoreAsync(fs, writeLease: null);
+    }
+
+    internal static async Task<bool> ApplyPlayerSoulProfileClientAuthorityAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        return await ApplyPlayerSoulProfileClientAuthorityCoreAsync(fs, writeLease);
+    }
+
+    private static async Task<bool> ApplyPlayerSoulProfileClientAuthorityCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
         ArgumentNullException.ThrowIfNull(fs);
 
         var currentRoot = await ReadObjectAsync(fs, StatePath);
@@ -270,7 +285,11 @@ internal static class AfterlifeEntityProfileState
         if (JsonNode.DeepEquals(currentRoot, projectedRoot))
             return false;
 
-        await fs.WriteFileAtomicAsync(StatePath, projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var content = projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        if (writeLease == null)
+            await fs.WriteFileAtomicAsync(StatePath, content);
+        else
+            await fs.WriteFileAtomicAsync(writeLease, StatePath, content);
         return true;
     }
 

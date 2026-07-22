@@ -1,5 +1,7 @@
 using System.IO.Compression;
 using System.Linq;
+using System.Diagnostics;
+using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -291,6 +293,143 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease()
+    {
+        var archivePath = Path.Combine(_rootPath, "stale_player_soul_mirror.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(archive, "game_state/meta/soul_state.json", """
+            {
+              "soulName": "Пепельная Искра",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 7,
+              "inkFeathers": { "current": 0, "total": 0 },
+              "enlightenment": { "experience": 0, "level": 0 },
+              "afterlifeCombatProfile": {
+                "spiritFocusTier": 0,
+                "artTiers": { "guard": 0, "recover_spiritual_power": 0 }
+              }
+            }
+            """);
+            await WriteArchiveEntryAsync(archive, "game_state/meta/afterlife_entity_profiles.json", """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "player_soul",
+                  "actorId": "player_soul",
+                  "displayName": "Пепельная Искра",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 4, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 1, "recover_spiritual_power": 1 },
+                  "progressionStrategy": {
+                    "strategyId": "strategy_player",
+                    "priorityOrder": [ "guard" ],
+                    "lastAutoProgressionCycleKey": "chaos:14"
+                  },
+                  "progressionLedger": []
+                }
+              ]
+            }
+            """);
+        }
+
+        var stopwatch = Stopwatch.StartNew();
+        Assert.True(await _service.LoadGameAsync(archivePath));
+        stopwatch.Stop();
+
+        Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(5), $"Load took {stopwatch.Elapsed}.");
+        using var doc = JsonDocument.Parse(
+            await _fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json") ?? "{}");
+        var player = doc.RootElement.GetProperty("profiles").EnumerateArray().Single();
+        Assert.Equal(0, player.GetProperty("currencies").GetProperty("inkFeathers").GetInt32());
+        Assert.Equal(0, player.GetProperty("standardArts").GetProperty("guard").GetInt32());
+        Assert.False(player.GetProperty("progressionStrategy").TryGetProperty("lastAutoProgressionCycleKey", out _));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_WhenCommitJournalWriteFails_RestoresDiskAndRuntimeSnapshot()
+    {
+        var root = Path.Combine(_rootPath, "commit-journal-failure");
+        Directory.CreateDirectory(root);
+        var operations = new FaultInjectingLoadTransactionOperations();
+        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, operations);
+        fs.EnsureDirectoryStructure();
+        var settings = new GameSettings { Language = "ru" };
+        var stateManager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
+        await fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
+        { "characterName": "Старый герой" }
+        """);
+        await fs.WriteFileAtomicAsync("config.json", """
+        { "language": "ru" }
+        """);
+        await stateManager.RefreshGameStateAsync();
+        await stateManager.LoadSettingsAsync();
+
+        var archivePath = Path.Combine(root, "new-session.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(archive, "game_state/core/player_status.json", """
+            { "characterName": "Новый герой" }
+            """);
+            await WriteArchiveEntryAsync(archive, "config.json", """
+            { "language": "en" }
+            """);
+        }
+
+        operations.FailCommittedJournalWrites = true;
+        var service = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.Equal("Старый герой", stateManager.CurrentState.CharacterName);
+        Assert.Equal("ru", stateManager.Settings.Language);
+        Assert.Contains("Старый герой", await fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.False(File.Exists(fs.ActiveLoadTransactionJournalPath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_WhenRollbackMoveFails_PreservesBackupForStartupRecovery()
+    {
+        var root = Path.Combine(_rootPath, "rollback-move-failure");
+        Directory.CreateDirectory(root);
+        var operations = new FaultInjectingLoadTransactionOperations();
+        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, operations);
+        fs.EnsureDirectoryStructure();
+        const string markerPath = "game_state/world/recovery_marker.json";
+        await fs.WriteFileAtomicAsync(markerPath, "{\"state\":\"last-valid\"}");
+        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+
+        var archivePath = Path.Combine(root, "activation-failure.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+            await WriteArchiveEntryAsync(archive, markerPath, "{\"state\":\"replacement\"}");
+
+        operations.FailStagedActivationMove = true;
+        operations.FailBackupRestoreMove = true;
+        var service = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.True(File.Exists(fs.ActiveLoadTransactionJournalPath));
+        var backupMarker = Directory.GetFiles(
+                Path.Combine(root, ".boe_runtime", "load-transactions"),
+                "recovery_marker.json",
+                SearchOption.AllDirectories)
+            .Single(path => path.Contains($"{Path.DirectorySeparatorChar}backup{Path.DirectorySeparatorChar}"));
+        Assert.Equal("{\"state\":\"last-valid\"}", await File.ReadAllTextAsync(backupMarker));
+
+        operations.FailStagedActivationMove = false;
+        operations.FailBackupRestoreMove = false;
+        fs.EnsureDirectoryStructure();
+
+        Assert.Equal("{\"state\":\"last-valid\"}", await fs.ReadFileAsync(markerPath));
+        Assert.False(File.Exists(fs.ActiveLoadTransactionJournalPath));
+    }
+
+    [Fact]
     public async Task SaveGameAsync_ExcludesLifecycleTriggers_AndLoadRemovesLegacyTriggerFiles()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -374,6 +513,53 @@ public sealed class SaveLoadServiceTests : IDisposable
         catch
         {
             // ignore temp cleanup failures
+        }
+    }
+
+    private static async Task WriteArchiveEntryAsync(ZipArchive archive, string path, string content)
+    {
+        var entry = archive.CreateEntry(path);
+        await using var stream = entry.Open();
+        await using var writer = new StreamWriter(stream);
+        await writer.WriteAsync(content);
+    }
+
+    private sealed class FaultInjectingLoadTransactionOperations : ILoadTransactionOperations
+    {
+        public bool FailCommittedJournalWrites { get; set; }
+        public bool FailStagedActivationMove { get; set; }
+        public bool FailBackupRestoreMove { get; set; }
+
+        public bool DirectoryExists(string path) => Directory.Exists(path);
+        public void CreateDirectory(string path) => Directory.CreateDirectory(path);
+        public void DeleteDirectory(string path, bool recursive) => Directory.Delete(path, recursive);
+        public bool FileExists(string path) => File.Exists(path);
+        public string ReadAllText(string path) => File.ReadAllText(path);
+        public void DeleteFile(string path) => File.Delete(path);
+
+        public void MoveDirectory(string sourcePath, string destinationPath)
+        {
+            if (FailStagedActivationMove &&
+                sourcePath.Contains($"{Path.DirectorySeparatorChar}stage{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new IOException("Injected staged-session activation failure.");
+            }
+
+            if (FailBackupRestoreMove &&
+                sourcePath.Contains($"{Path.DirectorySeparatorChar}backup{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new IOException("Injected backup restore failure.");
+            }
+
+            Directory.Move(sourcePath, destinationPath);
+        }
+
+        public void WriteAllTextAtomic(string path, string content)
+        {
+            if (FailCommittedJournalWrites && content.Contains("\"Committed\":true", StringComparison.Ordinal))
+                throw new IOException("Injected committed-journal write failure.");
+
+            PhysicalLoadTransactionOperations.Instance.WriteAllTextAtomic(path, content);
         }
     }
 }

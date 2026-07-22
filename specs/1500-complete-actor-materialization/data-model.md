@@ -249,14 +249,22 @@ set wholly under `game_state/meta/`; typed afterlife content tasks retain their
 exact task-provided control/report surfaces. `lore/current_world/**` and
 `game_state/core/player_status.json` are Mortal authorities even when an issue
 points at a nested field. Validation-repair dispatch IDs combine the readable
-attempt number with a unique dispatch suffix. Task and proposal identities are
-atomically claimed before publication, and a per-session/per-worker gate owns a
-`MaxConcurrentTasks` slot before any task artifact is written. An observed
-timeout remains the execution result even when malformed proposal bytes also
-exist. Built-in backup, restore, game-state clear, and current-world lore clear
-participate in the canonical write lease. Save reads and live-session replacement
-on load participate in that lease as well; the lock file lives outside the
-replaceable `game_session` directory. Detached cleanup traverses only
+attempt number with a unique dispatch suffix. Task identities are reserved by
+create-only compare/exchange before launch. A proposal's JSON and declared
+content form one staged bundle; after exact task-byte/session-generation
+verification under the canonical lease, one create-only directory rename makes
+the complete bundle durable. The bundle remains authority if derived inbox or
+audit publication fails. A reference-counted per-session/per-worker gate owns a
+`MaxConcurrentTasks` slot before any task artifact is written, retires when idle,
+and is not released on cancellation until the complete process tree has exited.
+An observed timeout remains the execution result even when malformed proposal
+bytes also exist. Built-in backup, restore, game-state clear, and current-world
+lore clear participate in the canonical write lease. Save reads and
+live-session replacement on load participate in that lease as well; the lock
+file and a durable load journal live under `.boe_runtime` outside the replaceable
+`game_session` directory. The journal identifies staged, backup, and failed
+session directories so startup can restore interrupted swaps before normal
+initialization and retain the last valid backup when rollback fails. Detached cleanup traverses only
 ordinary child entries, removes reparse entries as links, and records exhausted
 cleanup failure without replacing the worker result.
 

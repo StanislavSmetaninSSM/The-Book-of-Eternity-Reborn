@@ -150,7 +150,7 @@ Worker runtime paths:
 - BOE_WORKER_SESSION_PATH: $SessionPath
 - BOE_WORKER_SESSION_PATH is a detached execution snapshot under .worker_runtime, not the live canonical session. It contains only pinned task context.
 - Direct writes to copied game_state, lore, or other session files are discarded. Only the validated proposal and its declared contentRef bytes can be imported by the pool.
-- The pool verifies every declared contentRef digest before publishing any part of the handoff. Do not reuse a taskId or proposalId; identifiers are immutable and collisions are rejected.
+- The pool verifies every declared contentRef digest, stages one complete proposal/content bundle, and publishes it atomically only if the exact task bytes still belong to the current session generation. Do not reuse a taskId or proposalId; identifiers are immutable and collisions are rejected.
 
 Output contract:
 - Write exactly one worker-proposal-v1 JSON object to BOE_WORKER_PROPOSAL_PATH.

@@ -32,6 +32,85 @@ public sealed class GmWorkerProposalStoreTests
         }
     }
 
+    [Fact]
+    public async Task SaveProposalAsync_ConcurrentDuplicateIdAllowsExactlyOneCreate()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var firstStore = new GmWorkerProposalStore(fs);
+            var secondStore = new GmWorkerProposalStore(fs);
+            var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+            {
+                ProposalId = "worker_proposal_store_race"
+            };
+
+            var attempts = await Task.WhenAll(
+                TrySaveAsync(firstStore, proposal),
+                TrySaveAsync(secondStore, proposal));
+
+            Assert.Single(attempts, result => result);
+            Assert.NotNull(await firstStore.ReadProposalAsync(proposal.ProposalId));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task PublishBundleAsync_InboxFailureKeepsCompleteBundleAuthoritative()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+            {
+                ProposalId = "worker_proposal_durable_without_inbox"
+            };
+            var taskPath = GmWorkerBridgePool.GetTaskPacketPath(proposal.TaskId);
+            var taskBytes = System.Text.Encoding.UTF8.GetBytes("task-generation");
+            await fs.WriteFileAtomicBytesAsync(taskPath, taskBytes);
+            var store = new GmWorkerProposalStore(
+                fs,
+                (_, _, _) => throw new IOException("Injected derived inbox failure."));
+            var proposalBytes = System.Text.Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(proposal));
+            var inboxPath = GmWorkerBridgePool.GetProposalInboxPath(proposal.TaskId);
+
+            var result = await store.PublishBundleAsync(
+                proposal,
+                proposalBytes,
+                new Dictionary<string, byte[]>(),
+                taskPath,
+                taskBytes,
+                inboxPath);
+
+            Assert.True(result.Published);
+            Assert.Contains("inbox", result.Warning!, StringComparison.OrdinalIgnoreCase);
+            Assert.NotNull(await store.ReadProposalAsync(proposal.ProposalId));
+            Assert.False(fs.FileExists(inboxPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    private static async Task<bool> TrySaveAsync(GmWorkerProposalStore store, WorkerProposal proposal)
+    {
+        try
+        {
+            await store.SaveProposalAsync(proposal);
+            return true;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+    }
+
     private static FileSystemManager CreateFileSystem(string root)
     {
         var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);

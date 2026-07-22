@@ -69,6 +69,18 @@ public class StateManager
     public async Task RefreshGameStateAsync()
     {
         await RepairClientOwnedProfileMirrorsAsync();
+        await RefreshGameStateCoreAsync();
+    }
+
+    internal async Task RefreshGameStateAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        await RepairClientOwnedProfileMirrorsAsync(writeLease);
+        await RefreshGameStateCoreAsync();
+    }
+
+    private async Task RefreshGameStateCoreAsync()
+    {
         var state = new AggregatedGameState();
 
         // Core: Player status
@@ -441,6 +453,25 @@ public class StateManager
             _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
         }
     }
+
+    private Task RepairClientOwnedProfileMirrorsAsync(FileSystemManager.CanonicalWriteLease writeLease) =>
+        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(_fs, writeLease);
+
+    internal RuntimeSnapshot CaptureRuntimeSnapshot()
+    {
+        var settingsJson = JsonSerializer.Serialize(Settings, JsonOpts);
+        var settingsCopy = JsonSerializer.Deserialize<GameSettings>(settingsJson, JsonOpts) ?? new GameSettings();
+        return new RuntimeSnapshot(CurrentState, settingsCopy);
+    }
+
+    internal void RestoreRuntimeSnapshot(RuntimeSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        CurrentState = snapshot.State;
+        Settings.ApplyLoadedValues(snapshot.Settings);
+    }
+
+    internal sealed record RuntimeSnapshot(AggregatedGameState State, GameSettings Settings);
 
     private static string GetString(JsonElement el, string prop, string def)
     {

@@ -225,6 +225,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         var mainGmPromptGenerator = ReadRepoFile("BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1");
         var gitIgnore = ReadRepoFile(".gitignore");
         var bridgePool = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs");
+        var proposalStore = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs");
         var applyGate = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs");
         var contractValidator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs");
         var executionWorkspace = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
@@ -240,20 +241,26 @@ public sealed class GmWorkerBridgeDocumentationTests
 
         foreach (var source in new[] { guide, contract, repair })
         {
-            Assert.Contains(".worker_runtime", source, StringComparison.Ordinal);
-            Assert.Contains("only pinned task context", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("only the validated proposal and its declared contentRef", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("read-only context", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("before importing any worker artifact", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("task and proposal identifiers are immutable", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("timeout remains authoritative", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("case-insensitive canonical path identity", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("cleanup failure is an audit diagnostic", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("atomically reserves every task and proposal identifier", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("`maxConcurrentTasks`", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("worker slot", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("globally unique per dispatch", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("save and load operations use the same canonical write lease", source, StringComparison.OrdinalIgnoreCase);
+            var normalizedSource = string.Join(
+                ' ',
+                source.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+            Assert.Contains(".worker_runtime", normalizedSource, StringComparison.Ordinal);
+            Assert.Contains("only pinned task context", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("only the validated proposal and its declared contentRef", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("read-only context", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("before importing any worker artifact", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("task and proposal identifiers are immutable", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("timeout remains authoritative", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("case-insensitive canonical path identity", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("cleanup failure is an audit diagnostic", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("publishes the complete proposal bundle through one create-only atomic directory rename", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("`maxConcurrentTasks`", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("worker slot", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("globally unique per dispatch", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("save and load operations use the same canonical write lease", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("external durable journal under `.boe_runtime/load-transactions`", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("kills and awaits the complete worker process tree", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("reference-counted gates that retire when idle", normalizedSource, StringComparison.OrdinalIgnoreCase);
         }
 
         foreach (var source in new[] { guide, contract, repair, afterlifeMatrix })
@@ -274,13 +281,21 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("AcquireCanonicalWriteLeaseAsync", applyGate, StringComparison.Ordinal);
         Assert.Contains("SHA256.HashData(content)", bridgePool, StringComparison.Ordinal);
         Assert.Contains("Worker task id already exists and cannot overwrite", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("Worker proposal id already exists and cannot be overwritten", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("Worker proposal id already exists and cannot be overwritten", proposalStore, StringComparison.Ordinal);
         Assert.Contains("TimedOut = true", bridgePool, StringComparison.Ordinal);
         Assert.Contains("workspace-cleanup-failed", bridgePool, StringComparison.Ordinal);
         Assert.Contains("WorkerConcurrencyGates", bridgePool, StringComparison.Ordinal);
         Assert.Contains("TryReserveTaskAsync", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("TryReserveProposalIdAsync", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("ProposalClaimRoot", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("ReferenceCount", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("TryRemove", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("Kill(entireProcessTree: true)", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("await waitTask", bridgePool, StringComparison.Ordinal);
+        Assert.DoesNotContain("TryReserveProposalIdAsync", bridgePool, StringComparison.Ordinal);
+        Assert.DoesNotContain("ProposalClaimRoot", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("PublishBundleAsync", proposalStore, StringComparison.Ordinal);
+        Assert.Contains("Directory.Move(stagingBundleRoot, finalBundleRoot)", proposalStore, StringComparison.Ordinal);
+        Assert.Contains("current game session generation", proposalStore, StringComparison.Ordinal);
+        Assert.DoesNotContain("gm_worker_apply.lock", applyGate, StringComparison.Ordinal);
         Assert.Contains("CanonicalPathComparer", contractValidator, StringComparison.Ordinal);
         Assert.Contains("StringComparer.OrdinalIgnoreCase", contractValidator, StringComparison.Ordinal);
         Assert.Contains("must not contain wildcard patterns", contractValidator, StringComparison.Ordinal);
@@ -290,6 +305,11 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.True(
             saveLoadService.Split("AcquireCanonicalWriteLeaseAsync", StringSplitOptions.None).Length - 1 >= 2,
             "Expected save and load to acquire the canonical write lease.");
+        Assert.Contains("BeginLoadTransaction", saveLoadService, StringComparison.Ordinal);
+        Assert.Contains("RecoverInterruptedLoadTransaction", saveLoadService, StringComparison.Ordinal);
+        Assert.Contains(".boe_runtime", fileSystemManager, StringComparison.Ordinal);
+        Assert.Contains("load-transactions", fileSystemManager, StringComparison.Ordinal);
+        Assert.Contains("RecoverInterruptedLoadTransaction", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("SearchOption.TopDirectoryOnly", executionWorkspace, StringComparison.Ordinal);
         Assert.Contains("FileAttributes.ReparsePoint", executionWorkspace, StringComparison.Ordinal);
         Assert.Contains("Directory.Delete(path, recursive: false)", executionWorkspace, StringComparison.Ordinal);

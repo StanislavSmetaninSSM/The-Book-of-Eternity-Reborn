@@ -6,11 +6,17 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
+internal sealed class GmWorkerBridgePoolHooks
+{
+    internal Func<Task>? BeforeWorkerSlotWaitAsync { get; init; }
+    internal Func<Task>? BeforeTaskReservationAsync { get; init; }
+    internal Func<Task>? BeforeProposalPublicationAsync { get; init; }
+}
+
 public sealed class GmWorkerBridgePool
 {
     public const string TaskRoot = "worker_tasks";
     public const string ProposalInboxRoot = "worker_proposals/inbox";
-    public const string ProposalClaimRoot = ".worker_claims/proposals";
     public const string WorkerRuntimeRoot = ".worker_runtime";
     public const string TaskPathEnvironmentVariable = "BOE_WORKER_TASK_PATH";
     public const string ProposalPathEnvironmentVariable = "BOE_WORKER_PROPOSAL_PATH";
@@ -19,6 +25,7 @@ public sealed class GmWorkerBridgePool
     private readonly FileSystemManager _fs;
     private readonly GmWorkerProposalStore _proposalStore;
     private readonly GmWorkerAuditLog? _auditLog;
+    private readonly GmWorkerBridgePoolHooks? _hooks;
     private static readonly ConcurrentDictionary<string, WorkerConcurrencyGate> WorkerConcurrencyGates =
         new(StringComparer.OrdinalIgnoreCase);
 
@@ -26,10 +33,20 @@ public sealed class GmWorkerBridgePool
         FileSystemManager fs,
         GmWorkerProposalStore? proposalStore = null,
         GmWorkerAuditLog? auditLog = null)
+        : this(fs, proposalStore, auditLog, hooks: null)
+    {
+    }
+
+    internal GmWorkerBridgePool(
+        FileSystemManager fs,
+        GmWorkerProposalStore? proposalStore,
+        GmWorkerAuditLog? auditLog,
+        GmWorkerBridgePoolHooks? hooks)
     {
         _fs = fs;
         _proposalStore = proposalStore ?? new GmWorkerProposalStore(fs);
         _auditLog = auditLog;
+        _hooks = hooks;
     }
 
     public static WorkerRoutingResult SelectWorkerForTask(
@@ -102,11 +119,25 @@ public sealed class GmWorkerBridgePool
             };
         }
 
-        using var workerSlot = await AcquireWorkerSlotAsync(profile, cancellationToken);
+        var slotAcquisition = await AcquireWorkerSlotAsync(profile, cancellationToken);
+        if (slotAcquisition.Lease == null)
+        {
+            var status = Track(WorkerBridgeState.Failed, ready: false, slotAcquisition.Error);
+            return new GmWorkerTaskRunResult
+            {
+                Status = status,
+                StatusHistory = statusHistory.ToArray()
+            };
+        }
+
+        using var workerSlot = slotAcquisition.Lease;
 
         var taskPath = GetTaskPacketPath(task.TaskId);
         var proposalInboxPath = GetProposalInboxPath(task.TaskId);
-        var taskReserved = await TryReserveTaskAsync(task, taskPath, proposalInboxPath);
+        var taskBytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(task));
+        if (_hooks?.BeforeTaskReservationAsync != null)
+            await _hooks.BeforeTaskReservationAsync();
+        var taskReserved = await TryReserveTaskAsync(taskPath, proposalInboxPath, taskBytes);
         if (!taskReserved)
         {
             var message = $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.";
@@ -125,6 +156,7 @@ public sealed class GmWorkerBridgePool
             await _auditLog.RecordTaskDispatchedAsync(task);
 
         Process? process = null;
+        var processStarted = false;
         GmWorkerExecutionWorkspace? workspace = null;
         try
         {
@@ -151,25 +183,39 @@ public sealed class GmWorkerBridgePool
                     StatusHistory = statusHistory.ToArray()
                 };
             }
+            processStarted = true;
 
             var processId = process.Id;
             Track(WorkerBridgeState.Busy, ready: false, processId: processId);
-            var outputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
-            var errorTask = process.StandardError.ReadToEndAsync(cancellationToken);
+            var outputTask = process.StandardOutput.ReadToEndAsync(CancellationToken.None);
+            var errorTask = process.StandardError.ReadToEndAsync(CancellationToken.None);
             var timeout = TimeSpan.FromSeconds(Math.Max(1, profile.TimeoutSeconds));
-            var waitTask = process.WaitForExitAsync(cancellationToken);
-            var completed = await Task.WhenAny(waitTask, Task.Delay(timeout, cancellationToken));
+            var waitTask = process.WaitForExitAsync(CancellationToken.None);
+            var timeoutTask = Task.Delay(timeout, CancellationToken.None);
+            var cancellationTask = cancellationToken.CanBeCanceled
+                ? Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken)
+                : Task.Delay(Timeout.InfiniteTimeSpan, CancellationToken.None);
+            var completed = await Task.WhenAny(waitTask, timeoutTask, cancellationTask);
 
-            if (completed != waitTask)
+            if (completed == cancellationTask)
             {
-                TryKillProcess(process);
-                await WaitForProcessExitAfterKillAsync(waitTask);
+                await StopProcessTreeAsync(process, waitTask);
+                await ReadProcessOutputAsync(outputTask);
+                await ReadProcessOutputAsync(errorTask);
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            if (completed == timeoutTask)
+            {
+                await StopProcessTreeAsync(process, waitTask);
                 var output = await ReadProcessOutputAsync(outputTask);
                 var stderr = await ReadProcessOutputAsync(errorTask);
                 var message = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
                 var existingProposalResult = await TryReadAndStoreExistingProposalAsync(
                     profile,
                     task,
+                    taskPath,
+                    taskBytes,
                     proposalInboxPath,
                     workspace);
                 if (existingProposalResult.Attempted)
@@ -208,6 +254,7 @@ public sealed class GmWorkerBridgePool
                     TimedOut = true
                 };
             }
+            await waitTask;
 
             var standardOutput = await ReadProcessOutputAsync(outputTask);
             var standardError = await ReadProcessOutputAsync(errorTask);
@@ -218,6 +265,8 @@ public sealed class GmWorkerBridgePool
                 var existingProposalResult = await TryReadAndStoreExistingProposalAsync(
                     profile,
                     task,
+                    taskPath,
+                    taskBytes,
                     proposalInboxPath,
                     workspace);
                 if (existingProposalResult.Attempted)
@@ -256,6 +305,8 @@ public sealed class GmWorkerBridgePool
             var proposalResult = await ReadAndStoreProposalAsync(
                 profile,
                 task,
+                taskPath,
+                taskBytes,
                 proposalInboxPath,
                 workspace);
             if (proposalResult.Proposal == null)
@@ -298,6 +349,18 @@ public sealed class GmWorkerBridgePool
         }
         finally
         {
+            if (processStarted && process is { HasExited: false })
+            {
+                try
+                {
+                    await StopProcessTreeAsync(process, process.WaitForExitAsync(CancellationToken.None));
+                }
+                catch
+                {
+                    // The primary result remains authoritative; cleanup is best effort here.
+                }
+            }
+
             process?.Dispose();
             if (workspace != null)
             {
@@ -453,6 +516,8 @@ public sealed class GmWorkerBridgePool
     private async Task<(WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> ReadAndStoreProposalAsync(
         WorkerBridgeProfile profile,
         WorkerTaskPacket task,
+        string taskPath,
+        byte[] expectedTaskBytes,
         string proposalInboxPath,
         GmWorkerExecutionWorkspace workspace)
     {
@@ -526,9 +591,21 @@ public sealed class GmWorkerBridgePool
             importedContent[changedFile.ContentRef!] = content;
         }
 
-        if (!await TryReserveProposalIdAsync(proposal!, task.TaskId))
+        if (_hooks?.BeforeProposalPublicationAsync != null)
+            await _hooks.BeforeProposalPublicationAsync();
+        var publication = await _proposalStore.PublishBundleAsync(
+            proposal!,
+            proposalBytes!,
+            importedContent,
+            taskPath,
+            expectedTaskBytes,
+            proposalInboxPath,
+            _auditLog == null
+                ? null
+                : lease => _auditLog.RecordProposalReceivedAsync(lease, proposal!));
+        if (!publication.Published)
         {
-            var message = $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.";
+            var message = publication.Error ?? "Worker proposal bundle publication was rejected.";
             await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [proposal.ProposalId]);
             return (null, new GmWorkerTaskRunResult
             {
@@ -536,27 +613,18 @@ public sealed class GmWorkerBridgePool
             });
         }
 
-        foreach (var (contentRef, content) in importedContent)
-            await _fs.WriteFileAtomicBytesAsync(contentRef, content);
-        await _fs.WriteFileAtomicBytesAsync(proposalInboxPath, proposalBytes!);
-
-        await _proposalStore.SaveProposalAsync(proposal!);
-        if (_auditLog != null)
-            await _auditLog.RecordProposalReceivedAsync(proposal!);
-
         return (proposal, new GmWorkerTaskRunResult());
     }
 
     private async Task<bool> TryReserveTaskAsync(
-        WorkerTaskPacket task,
         string taskPath,
-        string proposalInboxPath)
+        string proposalInboxPath,
+        byte[] taskBytes)
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
             return false;
 
-        var taskBytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(task));
         return await _fs.CompareExchangeFileBytesAsync(
                    writeLease,
                    taskPath,
@@ -564,23 +632,7 @@ public sealed class GmWorkerBridgePool
                    desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
     }
 
-    private async Task<bool> TryReserveProposalIdAsync(WorkerProposal proposal, string taskId)
-    {
-        var proposalRootPath = _fs.ResolvePath(
-            $"{GmWorkerProposalStore.ProposalRoot}/{proposal.ProposalId}");
-        var claimPath = $"{ProposalClaimRoot}/{proposal.ProposalId}.claim";
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (Directory.Exists(proposalRootPath) || _fs.FileExists(claimPath))
-            return false;
-
-        return await _fs.CompareExchangeFileBytesAsync(
-                   writeLease,
-                   claimPath,
-                   expectedContent: null,
-                   desiredContent: Encoding.UTF8.GetBytes(taskId)) == CanonicalFileMutationResult.Applied;
-    }
-
-    private async Task<IDisposable> AcquireWorkerSlotAsync(
+    private async Task<WorkerSlotAcquisition> AcquireWorkerSlotAsync(
         WorkerBridgeProfile profile,
         CancellationToken cancellationToken)
     {
@@ -588,18 +640,62 @@ public sealed class GmWorkerBridgePool
             Path.DirectorySeparatorChar,
             Path.AltDirectorySeparatorChar);
         var key = $"{sessionPath}|{profile.WorkerId}";
-        var gate = WorkerConcurrencyGates.GetOrAdd(
-            key,
-            _ => new WorkerConcurrencyGate(profile.MaxConcurrentTasks));
-        if (gate.Limit != profile.MaxConcurrentTasks)
+        while (true)
         {
-            throw new InvalidOperationException(
-                $"Worker profile {profile.WorkerId} changed maxConcurrentTasks from {gate.Limit} " +
-                $"to {profile.MaxConcurrentTasks} during the active process.");
-        }
+            var gate = WorkerConcurrencyGates.GetOrAdd(
+                key,
+                _ => new WorkerConcurrencyGate(profile.MaxConcurrentTasks));
+            var retry = false;
+            var disposeGate = false;
+            lock (gate.Sync)
+            {
+                if (!WorkerConcurrencyGates.TryGetValue(key, out var currentGate) ||
+                    !ReferenceEquals(currentGate, gate))
+                {
+                    retry = true;
+                }
+                else if (gate.Limit != profile.MaxConcurrentTasks)
+                {
+                    if (gate.ReferenceCount == 0)
+                    {
+                        if (WorkerConcurrencyGates.TryRemove(key, out var removed) &&
+                            ReferenceEquals(removed, gate))
+                        {
+                            disposeGate = true;
+                        }
+                        retry = true;
+                    }
+                    else
+                    {
+                        return WorkerSlotAcquisition.Failed(
+                            $"Worker profile {profile.WorkerId} changed maxConcurrentTasks from {gate.Limit} " +
+                            $"to {profile.MaxConcurrentTasks} while tasks are active.");
+                    }
+                }
+                else
+                {
+                    gate.ReferenceCount++;
+                }
+            }
 
-        await gate.Semaphore.WaitAsync(cancellationToken);
-        return new WorkerSlotLease(gate.Semaphore);
+            if (disposeGate)
+                gate.Dispose();
+            if (retry)
+                continue;
+
+            try
+            {
+                if (_hooks?.BeforeWorkerSlotWaitAsync != null)
+                    await _hooks.BeforeWorkerSlotWaitAsync();
+                await gate.Semaphore.WaitAsync(cancellationToken);
+                return WorkerSlotAcquisition.Acquired(new WorkerSlotLease(key, gate));
+            }
+            catch
+            {
+                ReleaseWorkerSlotReference(key, gate, releaseSemaphore: false);
+                throw;
+            }
+        }
     }
 
     private static byte[] EncodeUtf8WithPreamble(string content)
@@ -612,28 +708,84 @@ public sealed class GmWorkerBridgePool
         return bytes;
     }
 
-    private sealed record WorkerConcurrencyGate(int Limit)
+    private sealed class WorkerConcurrencyGate : IDisposable
     {
-        internal SemaphoreSlim Semaphore { get; } = new(Limit, Limit);
+        internal WorkerConcurrencyGate(int limit)
+        {
+            Limit = limit;
+            Semaphore = new SemaphoreSlim(limit, limit);
+        }
+
+        internal object Sync { get; } = new();
+        internal int Limit { get; }
+        internal int ReferenceCount { get; set; }
+        internal SemaphoreSlim Semaphore { get; }
+
+        public void Dispose() => Semaphore.Dispose();
     }
 
-    private sealed class WorkerSlotLease(SemaphoreSlim semaphore) : IDisposable
+    private static void ReleaseWorkerSlotReference(
+        string key,
+        WorkerConcurrencyGate gate,
+        bool releaseSemaphore)
     {
-        private SemaphoreSlim? _semaphore = semaphore;
+        if (releaseSemaphore)
+            gate.Semaphore.Release();
 
-        public void Dispose() => Interlocked.Exchange(ref _semaphore, null)?.Release();
+        var disposeGate = false;
+        lock (gate.Sync)
+        {
+            gate.ReferenceCount--;
+            if (gate.ReferenceCount < 0)
+                throw new InvalidOperationException("Worker concurrency gate reference count became negative.");
+            if (gate.ReferenceCount == 0 &&
+                WorkerConcurrencyGates.TryRemove(key, out var removed) &&
+                ReferenceEquals(removed, gate))
+            {
+                disposeGate = true;
+            }
+        }
+
+        if (disposeGate)
+            gate.Dispose();
+    }
+
+    private sealed class WorkerSlotLease(string key, WorkerConcurrencyGate gate) : IDisposable
+    {
+        private WorkerConcurrencyGate? _gate = gate;
+
+        public void Dispose()
+        {
+            var ownedGate = Interlocked.Exchange(ref _gate, null);
+            if (ownedGate != null)
+                ReleaseWorkerSlotReference(key, ownedGate, releaseSemaphore: true);
+        }
+    }
+
+    private sealed record WorkerSlotAcquisition(WorkerSlotLease? Lease, string? Error)
+    {
+        internal static WorkerSlotAcquisition Acquired(WorkerSlotLease lease) => new(lease, null);
+        internal static WorkerSlotAcquisition Failed(string error) => new(null, error);
     }
 
     private async Task<(bool Attempted, WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> TryReadAndStoreExistingProposalAsync(
         WorkerBridgeProfile profile,
         WorkerTaskPacket task,
+        string taskPath,
+        byte[] expectedTaskBytes,
         string proposalInboxPath,
         GmWorkerExecutionWorkspace workspace)
     {
         if (await workspace.ReadProposalBytesAsync() == null)
             return (false, null, new GmWorkerTaskRunResult());
 
-        var proposalResult = await ReadAndStoreProposalAsync(profile, task, proposalInboxPath, workspace);
+        var proposalResult = await ReadAndStoreProposalAsync(
+            profile,
+            task,
+            taskPath,
+            expectedTaskBytes,
+            proposalInboxPath,
+            workspace);
         return (true, proposalResult.Proposal, proposalResult.Result);
     }
 
@@ -700,16 +852,12 @@ public sealed class GmWorkerBridgePool
         }
     }
 
-    private static async Task WaitForProcessExitAfterKillAsync(Task waitTask)
+    private static async Task StopProcessTreeAsync(Process process, Task waitTask)
     {
-        try
-        {
-            await waitTask;
-        }
-        catch
-        {
-            // Timeout handling returns a timed-out result.
-        }
+        TryKillProcess(process);
+        await waitTask;
+        if (!process.HasExited)
+            throw new IOException("Worker process tree did not exit after termination.");
     }
 
     private static async Task<string> ReadProcessOutputAsync(Task<string> outputTask)

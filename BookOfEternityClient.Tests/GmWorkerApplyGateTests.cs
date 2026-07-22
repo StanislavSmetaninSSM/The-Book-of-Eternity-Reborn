@@ -1,4 +1,5 @@
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -100,6 +101,60 @@ public sealed class GmWorkerApplyGateTests
             Assert.False(decision.ValidationCheck.Passed);
             Assert.Equal(1, decision.ValidationCheck.IssueCount);
             Assert.Equal("{\"before\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync("game_state/world/weather.json", "{\"saved\":true}");
+            var stateManager = new StateManager(
+                fs,
+                new GameSettings(),
+                NullLogger<StateManager>.Instance);
+            await stateManager.RefreshGameStateAsync();
+            var saveLoad = new SaveLoadService(
+                fs,
+                stateManager,
+                NullLogger<SaveLoadService>.Instance);
+            Assert.True(await saveLoad.SaveGameAsync("apply-boundary", "apply/load lease regression"));
+            var savePath = Directory.GetFiles(fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+
+            var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
+            var validationEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var releaseValidation = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var gate = new GmWorkerApplyGate(
+                fs,
+                async () =>
+                {
+                    validationEntered.SetResult();
+                    await releaseValidation.Task;
+                    return [];
+                });
+
+            var applyTask = gate.ApplyAsync(proposal, task, profile);
+            await validationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(fs.FileExists("game_state/control/gm_worker_apply.lock"));
+            var loadTask = saveLoad.LoadGameAsync(savePath);
+            await Task.Delay(150);
+
+            Assert.False(loadTask.IsCompleted);
+            Assert.Equal("{\"after\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
+            releaseValidation.SetResult();
+
+            var decision = await applyTask;
+            Assert.Equal(ApplyGateResult.Accepted, decision.Result);
+            Assert.True(await loadTask);
+            Assert.Equal("{\"saved\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
+            Assert.False(fs.FileExists("game_state/control/gm_worker_apply.lock"));
         }
         finally
         {

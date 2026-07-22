@@ -1,5 +1,6 @@
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -250,6 +251,44 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.True(_fs.FileExists("game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json"));
         Assert.True(_fs.FileExists("game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json"));
         Assert.False(_fs.FileExists("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task EnsureDirectoryStructure_RecoversInterruptedLoadBeforeCreatingEmptySession()
+    {
+        const string markerPath = "game_state/world/recovery_marker.json";
+        await _fs.WriteFileAtomicAsync(markerPath, "{\"state\":\"last-valid\"}");
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "load-transactions",
+            transactionId);
+        var backupSessionPath = Path.Combine(transactionRoot, "backup", "game_session");
+        Directory.CreateDirectory(Path.GetDirectoryName(backupSessionPath)!);
+        Directory.Move(_fs.GameSessionPath, backupSessionPath);
+
+        var journalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "load-transactions",
+            "active.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(journalPath)!);
+        await File.WriteAllTextAsync(
+            journalPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = false
+            }));
+
+        _fs.EnsureDirectoryStructure();
+
+        Assert.Equal("{\"state\":\"last-valid\"}", await _fs.ReadFileAsync(markerPath));
+        Assert.False(File.Exists(journalPath));
+        Assert.False(Directory.Exists(transactionRoot));
     }
 
     public void Dispose()

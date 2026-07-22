@@ -140,8 +140,7 @@ public class SaveLoadService
 
     public async Task<bool> LoadGameAsync(string saveFilePath)
     {
-        string? stagingRoot = null;
-        string? backupSessionPath = null;
+        CanonicalLoadTransactionPaths? transactionPaths = null;
         try
         {
             var fullPath = saveFilePath;
@@ -154,9 +153,9 @@ public class SaveLoadService
                 return false;
             }
 
-            stagingRoot = Path.Combine(_fs.BasePath, $"game_session_load_stage_{Guid.NewGuid():N}");
-            var stagingSessionPath = Path.Combine(stagingRoot, "game_session");
-            Directory.CreateDirectory(stagingSessionPath);
+            var transactionId = Guid.NewGuid().ToString("N");
+            transactionPaths = _fs.GetLoadTransactionPaths(transactionId);
+            Directory.CreateDirectory(transactionPaths.StagingSessionPath);
 
             using (var archive = ZipFile.OpenRead(fullPath))
             {
@@ -165,7 +164,7 @@ public class SaveLoadService
                     if (string.IsNullOrEmpty(entry.Name))
                         continue;
 
-                    if (!TryResolveArchiveEntryTargetPath(stagingSessionPath, entry.FullName, out var targetPath))
+                    if (!TryResolveArchiveEntryTargetPath(transactionPaths.StagingSessionPath, entry.FullName, out var targetPath))
                     {
                         _logger.LogWarning("Загрузка отклонена: zip entry выходит за пределы sandbox: {Entry}", entry.FullName);
                         return false;
@@ -179,43 +178,49 @@ public class SaveLoadService
                 }
             }
 
-            DeleteEphemeralArtifacts(stagingSessionPath);
+            DeleteEphemeralArtifacts(transactionPaths.StagingSessionPath);
 
             var liveSessionPath = _fs.GameSessionPath;
-            backupSessionPath = Path.Combine(_fs.BasePath, $"game_session_load_backup_{Guid.NewGuid():N}");
+            var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
 
-            await using (await _fs.AcquireCanonicalWriteLeaseAsync())
+            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
-                if (Directory.Exists(backupSessionPath))
-                    Directory.Delete(backupSessionPath, recursive: true);
-
-                if (Directory.Exists(liveSessionPath))
-                    Directory.Move(liveSessionPath, backupSessionPath);
-
+                _fs.BeginLoadTransaction(writeLease, transactionId);
                 try
                 {
-                    Directory.Move(stagingSessionPath, liveSessionPath);
-                    _fs.EnsureDirectoryStructure();
-                }
-                catch
-                {
-                    RestoreBackedUpSession(liveSessionPath, backupSessionPath);
-                    throw;
-                }
+                    if (_fs.LoadDirectoryExists(liveSessionPath))
+                    {
+                        _fs.CreateLoadDirectory(Path.GetDirectoryName(transactionPaths.BackupSessionPath)!);
+                        _fs.MoveLoadDirectory(liveSessionPath, transactionPaths.BackupSessionPath);
+                    }
 
-                try
-                {
-                    await _stateManager.RefreshGameStateAsync();
+                    _fs.MoveLoadDirectory(transactionPaths.StagingSessionPath, liveSessionPath);
+                    _fs.EnsureDirectoryStructure(writeLease);
+                    await _stateManager.RefreshGameStateAsync(writeLease);
                     await _stateManager.LoadSettingsAsync();
+                    _fs.CommitLoadTransaction(writeLease, transactionId);
                 }
-                catch
+                catch (Exception loadException)
                 {
-                    RestoreBackedUpSession(liveSessionPath, backupSessionPath);
+                    try
+                    {
+                        _fs.RecoverInterruptedLoadTransaction(writeLease);
+                        _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
+                        await _stateManager.RefreshGameStateAsync(writeLease);
+                        await _stateManager.LoadSettingsAsync();
+                    }
+                    catch (Exception recoveryException)
+                    {
+                        _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
+                        throw new AggregateException(
+                            "Load failed and automatic rollback could not restore the last valid session. " +
+                            "Recovery journal and backup were preserved for startup retry.",
+                            loadException,
+                            recoveryException);
+                    }
+
                     throw;
                 }
-
-                DeleteDirectoryIfExists(backupSessionPath);
-                backupSessionPath = null;
             }
 
             _logger.LogInformation("Игра загружена: {Path}", saveFilePath);
@@ -228,8 +233,20 @@ public class SaveLoadService
         }
         finally
         {
-            DeleteDirectoryIfExists(stagingRoot);
-            DeleteDirectoryIfExists(backupSessionPath);
+            if (transactionPaths != null)
+            {
+                try
+                {
+                    _fs.CleanupInactiveLoadTransaction(transactionPaths);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(
+                        ex,
+                        "Не удалось очистить неактивную staging-директорию транзакции загрузки {TransactionId}.",
+                        transactionPaths.TransactionId);
+                }
+            }
         }
     }
 
@@ -315,19 +332,6 @@ public class SaveLoadService
         return Task.CompletedTask;
     }
 
-    private void ClearAuthoredSourceDirectoriesForLoad()
-    {
-        foreach (var relativeDir in new[] { "mods", "world_profiles" })
-        {
-            var fullDir = _fs.ResolvePath(relativeDir);
-            if (!Directory.Exists(fullDir))
-                continue;
-
-            foreach (var file in Directory.GetFiles(fullDir, "*", SearchOption.AllDirectories))
-                File.Delete(file);
-        }
-    }
-
     private static bool TryResolveArchiveEntryTargetPath(string sessionRoot, string archiveEntryPath, out string targetPath)
     {
         targetPath = string.Empty;
@@ -369,21 +373,6 @@ public class SaveLoadService
             if (Directory.Exists(cleanupPath))
                 Directory.Delete(cleanupPath, recursive: true);
         }
-    }
-
-    private static void RestoreBackedUpSession(string liveSessionPath, string? backupSessionPath)
-    {
-        if (string.IsNullOrWhiteSpace(backupSessionPath) || !Directory.Exists(backupSessionPath))
-            return;
-
-        DeleteDirectoryIfExists(liveSessionPath);
-        Directory.Move(backupSessionPath, liveSessionPath);
-    }
-
-    private static void DeleteDirectoryIfExists(string? path)
-    {
-        if (!string.IsNullOrWhiteSpace(path) && Directory.Exists(path))
-            Directory.Delete(path, recursive: true);
     }
 
     private Task CleanupOldSaves(string saveDir, int maxSaves)

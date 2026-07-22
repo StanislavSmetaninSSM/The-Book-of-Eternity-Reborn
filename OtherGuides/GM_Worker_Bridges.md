@@ -87,12 +87,20 @@ are both observed, timeout remains authoritative; the malformed proposal is
 reported as additional diagnostic evidence rather than rewriting the outcome
 as an ordinary failure.
 
-The bridge atomically reserves every task and proposal identifier before the
-corresponding durable handoff is published. Validation-repair task IDs are
-globally unique per dispatch while retaining the repair-attempt number as a
-readable prefix. `maxConcurrentTasks` is enforced at runtime for the same
-worker and game session, including calls made through separate bridge-pool
-instances; a queued task is not published until a worker slot is available.
+The bridge reserves every task identifier with a create-only compare/exchange,
+then publishes the complete proposal bundle through one create-only atomic directory rename.
+The bundle contains `proposal.json` and every declared `contentRef`; no separate
+proposal claim can outlive a partial publication. Under the canonical write
+lease, publication first verifies that the exact originating task bytes still
+belong to the current game session generation. The durable bundle is authority;
+the proposal inbox and audit record are derived views whose publication failure
+cannot erase or invalidate it. Validation-repair task IDs are globally unique
+per dispatch while retaining the repair-attempt number as a readable prefix.
+`maxConcurrentTasks` is enforced at runtime for the same worker and game
+session, including calls made through separate bridge-pool instances. Worker
+slots use reference-counted gates that retire when idle, so an idle profile can
+change its limit; an active limit change fails as a worker result. Cancellation
+kills and awaits the complete worker process tree before releasing its worker slot.
 
 Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
 must be the exact 64-character SHA-256 digest of the same canonical file bytes,
@@ -138,10 +146,16 @@ decision linearization. A cooperating canonical writer waits; an external
 non-cooperating mutation is detected by the final byte checks and rejects the
 proposal without accepting mixed authority.
 
-Built-in backup, restore, game-state clear, and current-world lore clear
-operations acquire the same canonical write lease. Save and load operations use the same canonical write lease:
-saves read one coherent snapshot, and a loaded
-session cannot replace live state during worker apply. Detached runtime cleanup
+The apply gate has no replaceable lock inside `game_session`; its sole exclusion
+authority is the external canonical write lease. Built-in backup, restore,
+game-state clear, and current-world lore clear operations acquire the same
+canonical write lease. Save and load operations use the same canonical write lease:
+saves read one coherent snapshot, and a loaded session cannot replace live
+state during worker apply. Load uses an external durable journal under
+`.boe_runtime/load-transactions`: startup recovers an interrupted swap before
+creating session directories, and rollback failure preserves the last valid
+backup plus journal for a later retry. State refresh and client-owned mirror
+repair reuse the already-held lease instead of trying to reacquire it. Detached runtime cleanup
 never follows reparse points. A cleanup failure is an audit diagnostic and does
 not replace an already completed, timed-out, or rejected worker result.
 
