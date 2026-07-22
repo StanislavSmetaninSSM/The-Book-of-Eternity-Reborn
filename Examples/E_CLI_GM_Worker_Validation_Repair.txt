@@ -42,6 +42,12 @@ The worker process receives `BOE_WORKER_TASK_PATH`,
 packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
 `BOE_WORKER_PROPOSAL_PATH`, and writes changed file content under
 `worker_proposals/<proposalId>/...` inside `BOE_WORKER_SESSION_PATH`.
+`BOE_WORKER_SESSION_PATH` is a detached execution snapshot under
+`.worker_runtime`, not the live session. It contains only pinned task context.
+If the worker directly edits the copied weather, Soul, characteristics, or any
+other state file, that edit is discarded. The pool imports only the validated proposal and its declared contentRef
+bytes; undeclared files never reach the
+canonical session.
 
 ```json
 {
@@ -99,6 +105,10 @@ it must be present in `contextFiles` with the exact canonical
 SHA-256, its realm must match the afterlife contract, and it must not appear in `changedFiles`
 or `allowedProposalPaths`. A missing, malformed, duplicate-key,
 unsupported, changed-after-dispatch, or mismatched authority fails closed.
+Every `game_state/meta/` validation-repair target is afterlife-scoped, including
+non-actor metadata. A mixed Mortal/afterlife issue batch is rejected at task
+construction. `game_state/misc/characteristics.json` is read-only context for
+an empty-characteristics repair and cannot be listed as a writable target.
 Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 Status is mandatory; omission is invalid and must never default to completed.
 
@@ -131,6 +141,13 @@ hashes. It must preserve the pinned `soul_state.json` bytes and cannot include
 that authority path in its proposal. If another process changes the authority
 after dispatch, the apply gate rejects the whole proposal without partial
 writes.
+
+Immediately before applying, the client acquires one canonical write lease.
+The lease remains held while it verifies every pinned byte, performs every
+target compare/exchange, validates the complete state, rechecks all read-only
+context, rolls back if needed, and records the decision. Thus a cooperating
+writer cannot slip a realm or characteristic-authority change between check and
+commit, and an observed non-cooperating mutation rejects the proposal.
 
 Worker response proposal:
 

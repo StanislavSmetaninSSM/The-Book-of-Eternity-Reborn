@@ -151,3 +151,15 @@
 - [x] T079 Retain the original repaired canonical target set/boundary through derived output-only retries, require strict output-newer-than-target ordering, and reject a second canonical rewrite after output refresh.
   - Evidence: RED accepted an equal boundary and timed out waiting for a renewed stale-output request after a second canonical rewrite. GREEN passed 4/4 focused lifecycle/boundary tests, including strict equality rejection and retained-target re-staling.
 - [ ] T080 Synchronize Spec Kit and shared Mortal/afterlife repair guidance, record RED/GREEN evidence, rerun focused/full verification, and complete segmented sixth independent review before T075/T023/T033 integration.
+
+## Phase 19 - Seventh review worker isolation and authority remediation
+
+- [x] T081 Run every worker in a detached execution snapshot that exposes only pinned task context and imports only a contract-valid proposal plus its declared content refs; prove direct worker writes cannot mutate the live canonical session.
+  - Evidence: RED showed a worker launched against the live session could mutate canonical weather outside its proposal. GREEN isolates task context under `.worker_runtime`, imports only the validated proposal and declared `contentRef` bytes, cleans the detached workspace, and passes all 10 bridge lifecycle tests including direct-write isolation and declared-artifact import.
+- [x] T082 Hold the canonical write lock from exact-byte context/authority verification through the complete multi-target proposal commit, so a cooperating writer cannot change realm or setting authority between validation and apply.
+  - Evidence: RED let a cooperating realm writer complete inside validation and accepted a direct realm mutation after the initial authority read. GREEN uses one canonical write lease through context verification, preservation, all compare-exchange writes, validation, read-only context revalidation, rollback, and decision linearization; explicit Soul and characteristics authority races pass.
+- [x] T083 Classify every `game_state/meta/` validation-repair target as afterlife-scoped, including non-actor and mixed issue batches, and fail task construction closed without one exact pinned Soul realm authority contract.
+  - Evidence: RED produced four failures for a non-actor Shining repair, absent/malformed Soul authority, and a forged standalone task. GREEN binds every meta repair to Soul authority and fails mixed Mortal/Shining task construction closed; five focused classification cases pass.
+- [x] T084 Keep `game_state/misc/characteristics.json` read-only in every mixed Mortal characteristics repair task and enforce the invariant in both task construction and standalone packet validation.
+  - Evidence: RED allowed the setting authority file to become writable in a mixed characteristics repair. GREEN rejects it in both builder and standalone packet validation and revalidates its exact bytes before apply acceptance.
+- [ ] T085 Synchronize Spec Kit, worker/GM guidance, source guards, and worked examples; record RED/GREEN evidence and repeat segmented independent review before T080/T075/T023/T033 integration.

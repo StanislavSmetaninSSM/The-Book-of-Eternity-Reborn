@@ -25,6 +25,9 @@ game state.
 - Status is mandatory; omission is invalid and must never default to completed.
 - The apply gate checks scope, reads proposal `contentRef` files, applies
   allowed changes, runs validation when required, and rolls back failed repairs.
+- The apply gate holds one canonical write lease from exact context/authority
+  verification through all proposal writes, validation, read-only context
+  revalidation, rollback when required, and the final accept/reject decision.
 - Stored proposals are inspectable through GM worker proposal inbox diagnostics.
   The inbox is read-only and does not apply proposal-only drafts.
 
@@ -61,15 +64,19 @@ When the worker pool launches a worker task, it starts the configured
 - `BOE_WORKER_TASK_PATH`: absolute path to the JSON `WorkerTaskPacket`.
 - `BOE_WORKER_PROPOSAL_PATH`: absolute path where the worker must write one
   JSON `WorkerProposal`.
-- `BOE_WORKER_SESSION_PATH`: absolute path to the current `game_session`
-  directory.
+- `BOE_WORKER_SESSION_PATH`: absolute path to a detached execution snapshot
+  under the client-owned `.worker_runtime` directory. The snapshot exposes only pinned task context,
+  not the live canonical `game_session` directory.
 
-The proposal file written to `BOE_WORKER_PROPOSAL_PATH` is an inbox response.
-After validation, the main GM/daemon stores it under
-`worker_proposals/<proposalId>/proposal.json`. Repair workers that include
-`changedFiles` must write referenced content under `worker_proposals/<proposalId>/...`
-and use safe relative `contentRef` paths. The worker must not overwrite
-canonical files such as `game_state/...` directly.
+The task, proposal inbox, and declared content files all live in that detached
+execution snapshot. Direct worker writes to copied `game_state/...`, `lore/...`,
+or any other snapshot path are discarded. After contract validation, the pool
+imports only the validated proposal and its declared contentRef bytes into the
+live proposal inbox; undeclared files are never imported. The detached
+`.worker_runtime` directory is ephemeral and is removed after the task, so a
+worker must not depend on it for durable state. This is a harness boundary for
+the configured worker protocol, not an operating-system sandbox for a
+deliberately malicious operator-supplied `launchCommand`.
 
 Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
 must be the exact 64-character SHA-256 digest of the same canonical file bytes,
@@ -91,6 +98,20 @@ exact canonical bytes and SHA-256 must be present in `contextFiles`, its
 `allowedProposalPaths`. Missing, malformed, duplicate-key, unsupported,
 changed-after-dispatch, or mismatched realm authority fails closed before any
 canonical write.
+
+Every `game_state/meta/` validation-repair target is afterlife-scoped, including
+non-actor metadata. A mixed Mortal/afterlife issue batch fails task construction
+closed instead of weakening either authority contract. For
+`npc_characteristics_empty`, `game_state/misc/characteristics.json` is likewise
+read-only context and must never appear in `allowedProposalPaths` or
+`changedFiles`.
+
+The apply gate acquires one canonical write lease before its final exact-byte
+context check. It retains that lease through every target compare/exchange,
+full-state validation, read-only context recheck, rollback if necessary, and
+decision linearization. A cooperating canonical writer waits; an external
+non-cooperating mutation is detected by the final byte checks and rejects the
+proposal without accepting mixed authority.
 
 If a worker CLI writes a valid proposal and only then times out or exits with a
 nonzero code, the worker pool preserves the proposal and records it as
@@ -340,10 +361,14 @@ is optional: the authoritative repair payload is the bounded, hashed
 `changedFiles` list, and every changed path must also be allowed by
 `allowedAfterlifeSurfaces`.
 
-An afterlife validation-repair additionally binds the contract to the exact
+Every `game_state/meta/` validation-repair target, including a non-actor state
+file, binds the contract to the exact
 hash-pinned read-only realm authority in `game_state/meta/soul_state.json`.
 That authority is context only and must not appear in `changedFiles`; the apply
-gate rechecks the same bytes and realm immediately before applying the proposal.
+gate holds one canonical write lease while it checks the same bytes and realm,
+applies all targets, validates the result, rechecks every read-only context, and
+records the final decision. Mixed Mortal/afterlife issue batches fail task
+construction closed.
 
 The validator rejects afterlife proposals that try to use Mortal World
 substitutes such as `worldStateFlags`, `worldEventsLog`, Mortal NPC

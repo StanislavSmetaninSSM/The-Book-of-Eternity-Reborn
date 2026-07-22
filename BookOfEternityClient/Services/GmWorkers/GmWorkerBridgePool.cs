@@ -8,6 +8,7 @@ public sealed class GmWorkerBridgePool
 {
     public const string TaskRoot = "worker_tasks";
     public const string ProposalInboxRoot = "worker_proposals/inbox";
+    public const string WorkerRuntimeRoot = ".worker_runtime";
     public const string TaskPathEnvironmentVariable = "BOE_WORKER_TASK_PATH";
     public const string ProposalPathEnvironmentVariable = "BOE_WORKER_PROPOSAL_PATH";
     public const string SessionPathEnvironmentVariable = "BOE_WORKER_SESSION_PATH";
@@ -106,13 +107,15 @@ public sealed class GmWorkerBridgePool
             await _auditLog.RecordTaskDispatchedAsync(task);
 
         Process? process = null;
+        GmWorkerExecutionWorkspace? workspace = null;
         try
         {
+            workspace = await GmWorkerExecutionWorkspace.CreateAsync(_fs, task);
             Track(WorkerBridgeState.Starting, ready: false);
-            var startInfo = CreateWorkerStartInfo(profile, _fs.GameSessionPath);
-            startInfo.Environment[TaskPathEnvironmentVariable] = _fs.ResolvePath(taskPath);
-            startInfo.Environment[ProposalPathEnvironmentVariable] = _fs.ResolvePath(proposalInboxPath);
-            startInfo.Environment[SessionPathEnvironmentVariable] = _fs.GameSessionPath;
+            var startInfo = CreateWorkerStartInfo(profile, workspace.GameSessionPath);
+            startInfo.Environment[TaskPathEnvironmentVariable] = workspace.TaskPath;
+            startInfo.Environment[ProposalPathEnvironmentVariable] = workspace.ProposalPath;
+            startInfo.Environment[SessionPathEnvironmentVariable] = workspace.GameSessionPath;
 
             process = new Process
             {
@@ -146,7 +149,11 @@ public sealed class GmWorkerBridgePool
                 var output = await ReadProcessOutputAsync(outputTask);
                 var stderr = await ReadProcessOutputAsync(errorTask);
                 var message = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
-                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(profile, task, proposalInboxPath);
+                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(
+                    profile,
+                    task,
+                    proposalInboxPath,
+                    workspace);
                 if (existingProposalResult.Attempted)
                 {
                     var state = existingProposalResult.Proposal == null
@@ -186,7 +193,11 @@ public sealed class GmWorkerBridgePool
             if (exitCode != 0)
             {
                 var message = $"Worker process exited with code {exitCode}.";
-                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(profile, task, proposalInboxPath);
+                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(
+                    profile,
+                    task,
+                    proposalInboxPath,
+                    workspace);
                 if (existingProposalResult.Attempted)
                 {
                     var state = existingProposalResult.Proposal == null
@@ -220,7 +231,11 @@ public sealed class GmWorkerBridgePool
                 };
             }
 
-            var proposalResult = await ReadAndStoreProposalAsync(profile, task, proposalInboxPath);
+            var proposalResult = await ReadAndStoreProposalAsync(
+                profile,
+                task,
+                proposalInboxPath,
+                workspace);
             if (proposalResult.Proposal == null)
             {
                 var status = Track(
@@ -262,6 +277,8 @@ public sealed class GmWorkerBridgePool
         finally
         {
             process?.Dispose();
+            if (workspace != null)
+                await workspace.DisposeAsync();
         }
     }
 
@@ -391,9 +408,11 @@ public sealed class GmWorkerBridgePool
     private async Task<(WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> ReadAndStoreProposalAsync(
         WorkerBridgeProfile profile,
         WorkerTaskPacket task,
-        string proposalInboxPath)
+        string proposalInboxPath,
+        GmWorkerExecutionWorkspace workspace)
     {
-        var proposalJson = await _fs.ReadFileAsync(proposalInboxPath);
+        var proposalBytes = await workspace.ReadProposalBytesAsync();
+        var proposalJson = DecodeUtf8(proposalBytes);
         if (string.IsNullOrWhiteSpace(proposalJson))
         {
             const string message = "Worker completed without writing a proposal.";
@@ -430,6 +449,30 @@ public sealed class GmWorkerBridgePool
             });
         }
 
+        var importedContent = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        foreach (var changedFile in proposal!.ChangedFiles)
+        {
+            if (changedFile.ChangeKind == WorkerFileChangeKind.Delete)
+                continue;
+
+            var content = await workspace.ReadFileBytesAsync(changedFile.ContentRef!);
+            if (content == null)
+            {
+                var message = $"Worker proposal contentRef is missing from detached execution output: {changedFile.ContentRef}.";
+                await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [changedFile.ContentRef!]);
+                return (null, new GmWorkerTaskRunResult
+                {
+                    Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
+                });
+            }
+
+            importedContent[changedFile.ContentRef!] = content;
+        }
+
+        foreach (var (contentRef, content) in importedContent)
+            await _fs.WriteFileAtomicBytesAsync(contentRef, content);
+        await _fs.WriteFileAtomicBytesAsync(proposalInboxPath, proposalBytes!);
+
         await _proposalStore.SaveProposalAsync(proposal!);
         if (_auditLog != null)
             await _auditLog.RecordProposalReceivedAsync(proposal!);
@@ -440,13 +483,24 @@ public sealed class GmWorkerBridgePool
     private async Task<(bool Attempted, WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> TryReadAndStoreExistingProposalAsync(
         WorkerBridgeProfile profile,
         WorkerTaskPacket task,
-        string proposalInboxPath)
+        string proposalInboxPath,
+        GmWorkerExecutionWorkspace workspace)
     {
-        if (!_fs.FileExists(proposalInboxPath))
+        if (await workspace.ReadProposalBytesAsync() == null)
             return (false, null, new GmWorkerTaskRunResult());
 
-        var proposalResult = await ReadAndStoreProposalAsync(profile, task, proposalInboxPath);
+        var proposalResult = await ReadAndStoreProposalAsync(profile, task, proposalInboxPath, workspace);
         return (true, proposalResult.Proposal, proposalResult.Result);
+    }
+
+    private static string? DecodeUtf8(byte[]? bytes)
+    {
+        if (bytes == null)
+            return null;
+        var offset = bytes.AsSpan().StartsWith(Encoding.UTF8.GetPreamble())
+            ? Encoding.UTF8.GetPreamble().Length
+            : 0;
+        return Encoding.UTF8.GetString(bytes, offset, bytes.Length - offset);
     }
 
     private static WorkerBridgeStatus CreateStatus(

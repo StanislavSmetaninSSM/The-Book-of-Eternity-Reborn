@@ -14,6 +14,28 @@ public enum CanonicalFileMutationResult
 /// </summary>
 public class FileSystemManager
 {
+    internal sealed class CanonicalWriteLease : IAsyncDisposable
+    {
+        private FileStream? _stream;
+
+        internal CanonicalWriteLease(FileSystemManager owner, FileStream stream)
+        {
+            Owner = owner;
+            _stream = stream;
+        }
+
+        internal FileSystemManager Owner { get; }
+        internal bool IsActive => _stream != null;
+
+        public async ValueTask DisposeAsync()
+        {
+            var stream = _stream;
+            _stream = null;
+            if (stream != null)
+                await stream.DisposeAsync();
+        }
+    }
+
     private readonly string _basePath;
     private readonly ILogger<FileSystemManager> _logger;
     private const int TransientFileAccessRetryCount = 20;
@@ -92,13 +114,13 @@ public class FileSystemManager
 
     public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
     {
-        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
         await WriteFileAtomicBytesCoreAsync(relativePath, content);
     }
 
     public async Task AppendFileAtomicAsync(string relativePath, string content)
     {
-        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
         var fullPath = ResolvePath(relativePath);
         byte[] currentContent;
         try
@@ -126,7 +148,17 @@ public class FileSystemManager
         byte[]? expectedContent,
         byte[]? desiredContent)
     {
-        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        return await CompareExchangeFileBytesAsync(writeLock, relativePath, expectedContent, desiredContent);
+    }
+
+    internal async Task<CanonicalFileMutationResult> CompareExchangeFileBytesAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        byte[]? expectedContent,
+        byte[]? desiredContent)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
         var fullPath = ResolvePath(relativePath);
         byte[]? currentContent = null;
         try
@@ -246,7 +278,7 @@ public class FileSystemManager
 
     private async Task DeleteFileWithLockAsync(string relativePath)
     {
-        await using var writeLock = await AcquireCanonicalWriteLockAsync();
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
         DeleteFileCore(relativePath);
     }
 
@@ -268,7 +300,7 @@ public class FileSystemManager
         }
     }
 
-    private async Task<FileStream> AcquireCanonicalWriteLockAsync()
+    internal async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseAsync()
     {
         var lockPath = Path.Combine(GameSessionPath, ".locks", "canonical-write.lock");
         Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
@@ -276,13 +308,14 @@ public class FileSystemManager
         {
             try
             {
-                return new FileStream(
+                var stream = new FileStream(
                     lockPath,
                     FileMode.OpenOrCreate,
                     FileAccess.ReadWrite,
                     FileShare.None,
                     bufferSize: 1,
                     FileOptions.Asynchronous);
+                return new CanonicalWriteLease(this, stream);
             }
             catch (IOException) when (attempt < CanonicalWriteLockRetryCount - 1)
             {
@@ -291,6 +324,13 @@ public class FileSystemManager
         }
 
         throw new IOException("Timed out waiting for the canonical game-session write lock.");
+    }
+
+    private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        if (!ReferenceEquals(writeLease.Owner, this) || !writeLease.IsActive)
+            throw new InvalidOperationException("Canonical write lease is not active for this game session.");
     }
 
     private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>

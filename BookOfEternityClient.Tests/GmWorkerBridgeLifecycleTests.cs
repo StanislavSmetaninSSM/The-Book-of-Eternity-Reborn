@@ -61,7 +61,9 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -92,6 +94,159 @@ public sealed class GmWorkerBridgeLifecycleTests
                 auditEvents,
                 first => Assert.Equal("task-dispatched", first.EventType),
                 second => Assert.Equal("proposal-received", second.EventType));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_DirectWorkerCanonicalWrite_CannotMutateLiveSession()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string canonicalPath = "game_state/world/weather.json";
+            const string original = "{\"weather\":\"live-original\"}";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(canonicalPath, original);
+            var scriptPath = Path.Combine(root, "fake-worker-direct-canonical-write.ps1");
+            await File.WriteAllTextAsync(scriptPath, """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $canonicalPath = Join-Path $env:BOE_WORKER_SESSION_PATH 'game_state\world\weather.json'
+                New-Item -ItemType Directory -Force -Path (Split-Path -Parent $canonicalPath) | Out-Null
+                '{"weather":"worker-direct-mutation"}' | Set-Content -Path $canonicalPath -Encoding UTF8
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = 'worker_proposal_isolated_direct_write'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'The proposal is valid even though the worker attempted a direct canonical write.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'isolated worker result'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('direct write attempted only in detached worker session')
+                    }
+                    createdAtUtc = '2026-07-23T00:00:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                Write-Output "worker-session=$env:BOE_WORKER_SESSION_PATH"
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with
+            {
+                TimeoutSeconds = profile.TimeoutSeconds,
+                ContextFiles =
+                [
+                    new WorkerFileReference
+                    {
+                        Path = canonicalPath,
+                        Sha256 = ComputeFileSha256(fs.ResolvePath(canonicalPath))
+                    }
+                ]
+            };
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+
+            Assert.True(
+                result.Proposal != null,
+                $"{result.Status.LastError}{Environment.NewLine}STDOUT: {result.StandardOutput}{Environment.NewLine}STDERR: {result.StandardError}");
+            Assert.Equal(original, await fs.ReadFileAsync(canonicalPath));
+            Assert.DoesNotContain($"worker-session={fs.GameSessionPath}", result.StandardOutput, StringComparison.OrdinalIgnoreCase);
+            var runtimeRoot = Path.Combine(root, ".worker_runtime");
+            Assert.False(Directory.Exists(runtimeRoot) && Directory.EnumerateFileSystemEntries(runtimeRoot).Any());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_DeclaredContentRef_IsImportedWithoutApplyingCanonicalChange()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string canonicalPath = "game_state/world/weather.json";
+            const string replacement = "{\"weather\":\"detached-proposal\"}";
+            const string proposalId = "worker_proposal_detached_content_ref";
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-detached-content-ref.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $content = '{{replacement}}'
+                $contentRef = 'worker_proposals/{{proposalId}}/{{canonicalPath}}'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Force -Path (Split-Path -Parent $contentPath) | Out-Null
+                [System.IO.File]::WriteAllText($contentPath, $content, [System.Text.UTF8Encoding]::new($false))
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try {
+                    $hashBytes = $sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($content))
+                    $afterSha256 = [System.BitConverter]::ToString($hashBytes).Replace('-', '').ToLowerInvariant()
+                }
+                finally {
+                    $sha.Dispose()
+                }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = '{{proposalId}}'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Detached worker returned one declared repair artifact.'
+                    changedFiles = @([ordered]@{
+                        path = '{{canonicalPath}}'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('declared content ref written in detached workspace')
+                    }
+                    createdAtUtc = '2026-07-23T00:05:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+                {
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var original = await fs.ReadFileAsync(canonicalPath);
+            var contentRef = $"worker_proposals/{proposalId}/{canonicalPath}";
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+
+            Assert.True(
+                result.Proposal != null,
+                $"{result.Status.LastError}{Environment.NewLine}STDOUT: {result.StandardOutput}{Environment.NewLine}STDERR: {result.StandardError}");
+            Assert.Equal(replacement, await fs.ReadFileAsync(contentRef));
+            Assert.Equal(original, await fs.ReadFileAsync(canonicalPath));
+            Assert.NotNull(await new GmWorkerProposalStore(fs).ReadProposalAsync(proposalId));
+            var runtimeRoot = Path.Combine(root, GmWorkerBridgePool.WorkerRuntimeRoot);
+            Assert.False(Directory.Exists(runtimeRoot) && Directory.EnumerateFileSystemEntries(runtimeRoot).Any());
         }
         finally
         {
@@ -132,7 +287,9 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
             var store = new GmWorkerProposalStore(fs);
             var pool = new GmWorkerBridgePool(fs, store, new GmWorkerAuditLog(fs));
 
@@ -167,7 +324,9 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -233,7 +392,9 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -271,7 +432,9 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds });
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -325,7 +488,9 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 3
             };
-            var task = GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -362,7 +527,9 @@ public sealed class GmWorkerBridgeLifecycleTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 1
             };
-            var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairTask() with { TimeoutSeconds = profile.TimeoutSeconds });
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var result = await pool.RunTaskAsync(profile, task);
@@ -417,5 +584,34 @@ public sealed class GmWorkerBridgeLifecycleTests
         {
             // ignored
         }
+    }
+
+    private static string ComputeFileSha256(string path) =>
+        Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path)))
+            .ToLowerInvariant();
+
+    private static async Task<WorkerTaskPacket> MaterializeTaskContextAsync(
+        FileSystemManager fs,
+        WorkerTaskPacket task)
+    {
+        var contextFiles = new List<WorkerFileReference>();
+        foreach (var contextFile in task.ContextFiles)
+        {
+            if (string.Equals(contextFile.Sha256, "missing", StringComparison.OrdinalIgnoreCase))
+            {
+                contextFiles.Add(contextFile);
+                continue;
+            }
+
+            await fs.WriteFileAtomicAsync(
+                contextFile.Path,
+                $"{{\"fixturePath\":\"{contextFile.Path.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"}}");
+            contextFiles.Add(contextFile with
+            {
+                Sha256 = ComputeFileSha256(fs.ResolvePath(contextFile.Path))
+            });
+        }
+
+        return task with { ContextFiles = contextFiles };
     }
 }

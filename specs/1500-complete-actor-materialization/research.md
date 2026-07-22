@@ -257,6 +257,51 @@
 
 **Rationale**: The realm-authority pin is a new afterlife validation-repair authority rule and therefore cannot use the earlier Mortal-only no-change rationale. The output freshness and explicit operation rules are shared lifecycle contracts, so both realms require synchronized guidance even though canonical gameplay schemas remain unchanged.
 
+### Decision 39: Workers execute from detached pinned-context snapshots
+
+**Decision**: Materialize each worker task under client-owned `.worker_runtime`
+with only the exact context bytes named and hashed in the task packet. Point the
+worker task, proposal, session, and working-directory paths at that detached
+snapshot. Import only a contract-valid proposal and the exact declared
+non-delete `contentRef` bytes; discard direct state edits and every undeclared
+artifact, then remove the snapshot.
+
+**Rationale**: A prompt prohibition did not prevent an ordinary worker process
+from editing the live session it was given. Removing the live session from the
+normal worker protocol makes that mistake ineffective without pretending that
+the bridge is an operating-system sandbox against a deliberately malicious
+operator-supplied command.
+
+### Decision 40: Apply is one canonical authority lease
+
+**Decision**: Acquire one canonical write lease after proposal/content
+prevalidation and retain it through final context/authority verification, all
+target compare/exchange writes, complete-state validation, read-only context
+revalidation, rollback when required, and accept/reject linearization. Every
+`game_state/meta/` repair target is afterlife-scoped; mixed Mortal/meta batches
+fail task construction closed. Soul and characteristics authority paths remain
+read-only in standalone and mixed tasks.
+
+**Rationale**: Per-file compare/exchange protects target ownership but does not
+close the interval in which a cooperating writer can change an authority file
+between validation and commit. A single lease makes the supported canonical
+writer protocol linearizable, while final byte checks still detect external
+non-cooperating mutation.
+
+### Decision 41: Phase 19 changes harness authority, not gameplay schemas
+
+**Decision**: Synchronize the runner prompt, worker bridge guide and formal
+contract, worked validation-repair example, afterlife matrix/example, manifest,
+active Spec Kit artifacts, and source guards. Do not add a pending/control file,
+afterlife action type, response field, receipt, report, scheduler contour,
+normalizer side effect, or player-facing command.
+
+**Rationale**: Detached execution and the canonical lease change how shared
+Mortal/afterlife repairs are safely delegated and committed. They do not create
+new GM-authored game state, but the afterlife classification and Soul authority
+rules are GM-facing repair contracts and therefore require both realms' repair
+documentation.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

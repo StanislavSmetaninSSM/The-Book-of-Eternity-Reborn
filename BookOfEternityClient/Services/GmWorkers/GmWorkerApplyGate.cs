@@ -82,11 +82,35 @@ public sealed class GmWorkerApplyGate
             return decision;
         }
 
-        await using var applyLock = await AcquireApplyLockAsync();
+        ApplyGateDecision transactionDecision;
+        await using (var applyLock = await AcquireApplyLockAsync())
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transactionDecision = await ApplyWithinCanonicalLeaseAsync(
+                proposal,
+                task,
+                profile,
+                checkedPaths,
+                capturedContents,
+                writeLease);
+        }
+
+        await RecordDecisionAsync(proposal, transactionDecision);
+        return transactionDecision;
+    }
+
+    private async Task<ApplyGateDecision> ApplyWithinCanonicalLeaseAsync(
+        WorkerProposal proposal,
+        WorkerTaskPacket task,
+        WorkerBridgeProfile profile,
+        IReadOnlyList<string> checkedPaths,
+        IReadOnlyDictionary<string, byte[]> capturedContents,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
         var (contextErrors, baselines) = await CaptureAndVerifyTaskContextAsync(proposal, task);
         if (contextErrors.Count > 0)
         {
-            var decision = BuildDecision(
+            return BuildDecision(
                 proposal.ProposalId,
                 ApplyGateResult.Rejected,
                 checkedPaths,
@@ -97,8 +121,6 @@ public sealed class GmWorkerApplyGate
                 issueCount: 0,
                 appliedFiles: [],
                 rejectionReasons: contextErrors);
-            await RecordDecisionAsync(proposal, decision);
-            return decision;
         }
 
         var preservationErrors = VerifyAfterlifeRealmAuthority(task, baselines)
@@ -110,7 +132,7 @@ public sealed class GmWorkerApplyGate
             .ToArray();
         if (preservationErrors.Length > 0)
         {
-            var decision = BuildDecision(
+            return BuildDecision(
                 proposal.ProposalId,
                 ApplyGateResult.Rejected,
                 checkedPaths,
@@ -121,8 +143,6 @@ public sealed class GmWorkerApplyGate
                 issueCount: 0,
                 appliedFiles: [],
                 rejectionReasons: preservationErrors);
-            await RecordDecisionAsync(proposal, decision);
-            return decision;
         }
 
         var rollback = new List<RollbackEntry>();
@@ -136,15 +156,16 @@ public sealed class GmWorkerApplyGate
                     ? null
                     : capturedContents[changedFile.Path];
                 var mutationResult = await _fs.CompareExchangeFileBytesAsync(
+                    writeLease,
                     changedFile.Path,
                     baselineBytes,
                     appliedBytes);
                 if (mutationResult == CanonicalFileMutationResult.Conflict)
                 {
-                    var rollbackErrors = await RollbackOwnedChangesAsync(rollback);
+                    var rollbackErrors = await RollbackOwnedChangesAsync(writeLease, rollback);
                     var conflict = $"canonical file changed concurrently before worker apply: {changedFile.Path}.";
                     var rejectionReasons = new[] { conflict }.Concat(rollbackErrors).ToArray();
-                    var decision = BuildDecision(
+                    return BuildDecision(
                         proposal.ProposalId,
                         ApplyGateResult.Rejected,
                         checkedPaths,
@@ -155,8 +176,6 @@ public sealed class GmWorkerApplyGate
                         issueCount: 0,
                         appliedFiles: [],
                         rejectionReasons: rejectionReasons);
-                    await RecordDecisionAsync(proposal, decision);
-                    return decision;
                 }
 
                 rollback.Add(new RollbackEntry(changedFile.Path, baselineBytes, appliedBytes));
@@ -168,12 +187,12 @@ public sealed class GmWorkerApplyGate
                 : [];
             if (validationIssues.Count > 0)
             {
-                var rollbackErrors = await RollbackOwnedChangesAsync(rollback);
+                var rollbackErrors = await RollbackOwnedChangesAsync(writeLease, rollback);
                 var rejectionReasons = validationIssues
                     .Select(issue => issue.ToString())
                     .Concat(rollbackErrors)
                     .ToArray();
-                var decision = BuildDecision(
+                return BuildDecision(
                     proposal.ProposalId,
                     ApplyGateResult.ValidationFailed,
                     checkedPaths,
@@ -184,16 +203,16 @@ public sealed class GmWorkerApplyGate
                     issueCount: validationIssues.Count,
                     appliedFiles: [],
                     rejectionReasons: rejectionReasons);
-                await RecordDecisionAsync(proposal, decision);
-                return decision;
             }
 
-            var ownershipErrors = await VerifyAppliedFilesRemainOwnedAsync(rollback);
-            if (ownershipErrors.Count > 0)
+            var ownershipErrors = (await VerifyAppliedFilesRemainOwnedAsync(rollback))
+                .Concat(await VerifyReadOnlyTaskContextRemainsOwnedAsync(task, proposal, baselines))
+                .ToArray();
+            if (ownershipErrors.Length > 0)
             {
-                var rollbackErrors = await RollbackOwnedChangesAsync(rollback);
+                var rollbackErrors = await RollbackOwnedChangesAsync(writeLease, rollback);
                 var rejectionReasons = ownershipErrors.Concat(rollbackErrors).ToArray();
-                var decision = BuildDecision(
+                return BuildDecision(
                     proposal.ProposalId,
                     ApplyGateResult.ValidationFailed,
                     checkedPaths,
@@ -201,14 +220,12 @@ public sealed class GmWorkerApplyGate
                     violations: rejectionReasons,
                     validationRequired: profile.Permissions.RequiresValidation,
                     validationPassed: false,
-                    issueCount: rejectionReasons.Length,
+                    issueCount: ownershipErrors.Length,
                     appliedFiles: [],
                     rejectionReasons: rejectionReasons);
-                await RecordDecisionAsync(proposal, decision);
-                return decision;
             }
 
-            var acceptedDecision = BuildDecision(
+            return BuildDecision(
                 proposal.ProposalId,
                 ApplyGateResult.Accepted,
                 checkedPaths,
@@ -219,12 +236,10 @@ public sealed class GmWorkerApplyGate
                 issueCount: 0,
                 appliedFiles: appliedFiles,
                 rejectionReasons: []);
-            await RecordDecisionAsync(proposal, acceptedDecision);
-            return acceptedDecision;
         }
         catch
         {
-            await RollbackOwnedChangesAsync(rollback);
+            await RollbackOwnedChangesAsync(writeLease, rollback);
             throw;
         }
     }
@@ -376,12 +391,38 @@ public sealed class GmWorkerApplyGate
         return errors;
     }
 
-    private async Task<IReadOnlyList<string>> RollbackOwnedChangesAsync(IReadOnlyList<RollbackEntry> rollback)
+    private async Task<IReadOnlyList<string>> VerifyReadOnlyTaskContextRemainsOwnedAsync(
+        WorkerTaskPacket task,
+        WorkerProposal proposal,
+        IReadOnlyDictionary<string, byte[]?> baselines)
+    {
+        var changedPaths = proposal.ChangedFiles
+            .Select(file => file.Path)
+            .ToHashSet(StringComparer.Ordinal);
+        var errors = new List<string>();
+        foreach (var contextFile in task.ContextFiles)
+        {
+            if (changedPaths.Contains(contextFile.Path))
+                continue;
+
+            baselines.TryGetValue(contextFile.Path, out var baseline);
+            var current = await _fs.ReadFileBytesAsync(contextFile.Path);
+            if (!ExactBytesEqual(current, baseline))
+                errors.Add($"read-only task context changed during worker apply: {contextFile.Path}.");
+        }
+
+        return errors;
+    }
+
+    private async Task<IReadOnlyList<string>> RollbackOwnedChangesAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IReadOnlyList<RollbackEntry> rollback)
     {
         var errors = new List<string>();
         foreach (var entry in rollback.AsEnumerable().Reverse())
         {
             var result = await _fs.CompareExchangeFileBytesAsync(
+                writeLease,
                 entry.Path,
                 entry.AppliedBytes,
                 entry.BaselineBytes);

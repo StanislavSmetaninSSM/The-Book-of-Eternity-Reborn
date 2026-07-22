@@ -508,6 +508,125 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_NonActorAfterlifeRepair_BuildsRealmBoundTaskForCanonicalSource()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string targetPath = "game_state/meta/shining_abode_state.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(SoulStatePath, "{\"currentRealm\":\"Shining Abode\"}");
+            await fs.WriteFileAtomicAsync(targetPath, "{\"treasury\":{}}");
+            var profile = BuildProfile(root, "fake-non-actor-afterlife-repair-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{targetPath}.treasury",
+                IssueSeverity.Error,
+                "Shining treasury client-owned state changed.",
+                code: "shining_treasury_client_owned_modified",
+                section: "ShiningAbode");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 323);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            var afterlife = Assert.IsType<WorkerAfterlifeTaskContract>(task.AfterlifeContract);
+            Assert.Equal(WorkerAfterlifeRealmGate.ShiningAbode, afterlife.RealmGate);
+            Assert.Equal([targetPath], afterlife.AllowedAfterlifeSurfaces);
+            Assert.Contains(task.ContextFiles, context =>
+                context.Path == SoulStatePath &&
+                System.Text.RegularExpressions.Regex.IsMatch(context.Sha256, "^[0-9a-f]{64}$"));
+            Assert.DoesNotContain(SoulStatePath, task.AllowedProposalPaths);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("not-json")]
+    public async Task TryRunAsync_NonActorAfterlifeRepair_InvalidRealmAuthorityFailsTaskBuild(
+        string? soulStateJson)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string targetPath = "game_state/meta/shining_abode_state.json";
+            var fs = CreateFileSystem(root);
+            if (soulStateJson != null)
+                await fs.WriteFileAtomicAsync(SoulStatePath, soulStateJson);
+            await fs.WriteFileAtomicAsync(targetPath, "{\"treasury\":{}}");
+            var profile = BuildProfile(root, "fake-non-actor-invalid-realm-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{targetPath}.treasury",
+                IssueSeverity.Error,
+                "Shining treasury client-owned state changed.",
+                code: "shining_treasury_client_owned_modified",
+                section: "ShiningAbode");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 324);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Null(result.Task);
+            Assert.Contains(SoulStatePath, result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_MixedMortalAndNonActorAfterlifeRepair_FailsTaskBuildClosed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string shiningPath = "game_state/meta/shining_abode_state.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(SoulStatePath, "{\"currentRealm\":\"Shining Abode\"}");
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            await fs.WriteFileAtomicAsync(shiningPath, "{\"treasury\":{}}");
+            var profile = BuildProfile(root, "fake-mixed-non-actor-afterlife-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var shiningIssue = new ValidationIssue(
+                $"{shiningPath}.treasury",
+                IssueSeverity.Error,
+                "Shining treasury client-owned state changed.",
+                code: "shining_treasury_client_owned_modified",
+                section: "ShiningAbode");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue(), shiningIssue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 325);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Null(result.Task);
+            Assert.Contains("allowedAfterlifeSurfaces", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_ApplyGateValidationFails_RollsBackAndLeavesLegacyRepairLoopWaiting()
     {
         var root = CreateTempRoot();

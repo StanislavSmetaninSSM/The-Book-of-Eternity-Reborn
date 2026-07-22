@@ -74,7 +74,7 @@
       "file": "E_CLI_GM_Worker_Validation_Repair.txt",
       "statePath": "game_state/control/gm_worker_audit.jsonl",
       "responseSurface": "worker-proposal-v1 / apply gate",
-      "description": "Hidden/background validation-repair worker profile, live validation failure dispatch, scoped task packet, mandatory explicit proposal status whose omission is invalid, proposal contentRef, apply gate validation, client-created validation_repair_ready signal, collision-safe shared UTC-millisecond plus GUID audit event IDs, proposal-applied/validation-repair-ready-created audit events, fallback to legacy repair request, and no direct worker writes to canonical game_session files."
+      "description": "Hidden/background validation-repair worker profile, detached .worker_runtime execution snapshot with only pinned context, import of only the validated proposal and declared contentRef bytes, mandatory explicit proposal status whose omission is invalid, exact read-only setting and Soul authority, every game_state/meta target classified as afterlife, one canonical write lease through validation and decision, client-created validation_repair_ready signal, collision-safe shared UTC-millisecond plus GUID audit event IDs, proposal-applied/validation-repair-ready-created audit events, and fallback to legacy repair request."
     },
     {
       "contractId": "gm_worker_narrative_draft_v1",

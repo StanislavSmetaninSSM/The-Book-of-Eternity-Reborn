@@ -148,6 +148,8 @@ Worker runtime paths:
 - BOE_WORKER_TASK_PATH: $TaskPath
 - BOE_WORKER_PROPOSAL_PATH: $ProposalPath
 - BOE_WORKER_SESSION_PATH: $SessionPath
+- BOE_WORKER_SESSION_PATH is a detached execution snapshot under .worker_runtime, not the live canonical session. It contains only pinned task context.
+- Direct writes to copied game_state, lore, or other session files are discarded. Only the validated proposal and its declared contentRef bytes can be imported by the pool.
 
 Output contract:
 - Write exactly one worker-proposal-v1 JSON object to BOE_WORKER_PROPOSAL_PATH.
@@ -162,6 +164,7 @@ Output contract:
 - For an afterlife validation-repair task, game_state/meta/soul_state.json is hash-pinned read-only realm authority. Read it only from task context, keep its exact bytes unchanged, require its realm to match afterlifeContract, and remember that it must not appear in `changedFiles` or allowedProposalPaths.
 - If the task contains soulContentRequest, keep changedFiles empty and return soulContentProposal with safeSoulSummaries, progressionSuggestions, rewardNotes, nextLifePreparationHooks, forbiddenReadonlyFields, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. Treat soulName and soulFormDescription as player-owned readonly identity; do not overwrite them.
 - Leave schema validation, scope checks, and canonical application to the main GM apply gate.
+- The main apply gate holds one canonical write lease through final context checks, all writes, validation, read-only context revalidation, rollback, and its decision. Do not assume copied authority can be changed from this worker.
 
 Required worker-proposal-v1 JSON shape:
 {

@@ -17,13 +17,17 @@ each dispatched task, the worker process receives:
 - `BOE_WORKER_TASK_PATH`: absolute path to the JSON `WorkerTaskPacket`.
 - `BOE_WORKER_PROPOSAL_PATH`: absolute path where the process must write one
   JSON `WorkerProposal`.
-- `BOE_WORKER_SESSION_PATH`: absolute path to the current `game_session`.
+- `BOE_WORKER_SESSION_PATH`: absolute path to a detached execution snapshot
+  under client-owned `.worker_runtime`; the snapshot exposes only pinned task context
+  and is not the live canonical `game_session`.
 
-The proposal path is an inbox handoff path. After the proposal validates, the
-main GM/daemon stores it under `worker_proposals/<proposalId>/proposal.json`.
-Workers that propose file changes write content under
-`worker_proposals/<proposalId>/...` and reference it with safe relative
-`contentRef` values. Workers do not write canonical `game_state/...` files.
+The proposal path and proposed content also live inside the detached execution
+snapshot. Direct edits to copied state are discarded. After contract
+validation, the pool imports only the validated proposal and its declared contentRef
+bytes into the live proposal inbox; undeclared snapshot files never
+cross that boundary. The client removes the ephemeral `.worker_runtime`
+workspace after the task. This protocol does not claim operating-system
+isolation from a deliberately malicious operator-supplied launch command.
 Validation-repair hashes bind exact bytes: `contextFiles.sha256` and
 `changedFiles.beforeSha256` are the same exact 64-character SHA-256 digest (or
 `missing` for an absent add target), while each non-delete `afterSha256` is the
@@ -42,6 +46,18 @@ SHA-256 in `contextFiles`; `currentRealm` must match both
 authority path must not appear in `changedFiles` or `allowedProposalPaths`.
 Missing, malformed, duplicate-key, unsupported, changed-after-dispatch, or
 mismatched authority fails closed before canonical writes.
+
+Every `game_state/meta/` validation-repair target is afterlife-scoped,
+including non-actor metadata. Mixed Mortal/afterlife issue batches fail task
+construction closed. `game_state/misc/characteristics.json` is read-only
+context for `npc_characteristics_empty` and cannot be writable even in a mixed
+Mortal repair.
+
+The apply gate holds one canonical write lease from the final exact-byte
+context and authority check through every target compare/exchange, full-state
+validation, read-only context revalidation, rollback when required, and final
+decision linearization. Cooperating canonical writers wait for that decision;
+detected external authority changes reject the complete proposal.
 
 ## Worker Profile Contract
 
@@ -617,6 +633,12 @@ Guardian/Abode content proposal:
 ```
 
 ## Apply Gate Decision Contract
+
+An apply decision represents one atomic authority interval. The gate has held
+the canonical write lease across context verification, all target writes,
+validation, read-only context revalidation, any rollback, and this decision.
+No accepted decision may be based on authority bytes that changed during that
+interval.
 
 ```json
 {

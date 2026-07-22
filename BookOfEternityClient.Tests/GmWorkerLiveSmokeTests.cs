@@ -138,7 +138,21 @@ public sealed class GmWorkerLiveSmokeTests
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
                 TimeoutSeconds = 10
             };
-            var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask() with { TimeoutSeconds = profile.TimeoutSeconds };
+            var canonicalSha256 = Convert.ToHexString(SHA256.HashData(
+                await File.ReadAllBytesAsync(fs.ResolvePath("game_state/world/current_location.json"))))
+                .ToLowerInvariant();
+            var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask() with
+            {
+                TimeoutSeconds = profile.TimeoutSeconds,
+                ContextFiles =
+                [
+                    new WorkerFileReference
+                    {
+                        Path = "game_state/world/current_location.json",
+                        Sha256 = canonicalSha256
+                    }
+                ]
+            };
             var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
 
             var run = await pool.RunTaskAsync(profile, task);

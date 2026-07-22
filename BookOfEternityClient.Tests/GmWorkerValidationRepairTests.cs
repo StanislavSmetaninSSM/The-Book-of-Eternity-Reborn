@@ -224,6 +224,67 @@ public sealed class GmWorkerValidationRepairTests
             file.Path == authorityPath && file.Sha256 == new string('b', 64));
     }
 
+    [Fact]
+    public void CharacteristicsAuthority_MixedRepairCannotMakePinnedAuthorityWritable()
+    {
+        const string npcPath = "game_state/npcs/npc_core.json";
+        const string authorityPath = "game_state/misc/characteristics.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var sourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 12
+        };
+        var characteristicIssue = new ValidationIssue(
+            $"{npcPath}.UpdateNPCs[0].characteristics",
+            IssueSeverity.Error,
+            "Mortal characteristics are empty.",
+            code: "npc_characteristics_empty",
+            actor: "mortal_npc:npc_authority_target",
+            section: "NPCCharacteristics",
+            expected: "at least one setting-defined numeric characteristic");
+        var authorityIssue = new ValidationIssue(
+            $"{authorityPath}.agility",
+            IssueSeverity.Error,
+            "The setting authority contains an invalid value.",
+            code: "characteristics_non_integer_value");
+        var contextHashes = new Dictionary<string, string>
+        {
+            [npcPath] = new string('a', 64),
+            [authorityPath] = new string('b', 64)
+        };
+
+        var buildError = Assert.Throws<ArgumentException>(() =>
+            GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_characteristics_writable_authority",
+                sourceTurn,
+                [characteristicIssue, authorityIssue],
+                contextHashes,
+                "2026-07-23T00:00:00Z"));
+        Assert.Contains("read-only", buildError.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(authorityPath, buildError.Message, StringComparison.Ordinal);
+
+        var validTask = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+            profile,
+            "worker_task_characteristics_forged_authority",
+            sourceTurn,
+            [characteristicIssue],
+            contextHashes,
+            "2026-07-23T00:00:00Z");
+        var forgedTask = validTask with
+        {
+            AllowedProposalPaths = [npcPath, authorityPath]
+        };
+
+        var validation = GmWorkerContractValidator.ValidateTaskPacket(forgedTask, profile);
+        Assert.False(validation.IsValid);
+        Assert.Contains(validation.Errors, error =>
+            error.Contains("read-only", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains(authorityPath, StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("npc_existing_inventory_resend_forbidden", "NPCInventory", "[]", "inventory")]
     [InlineData("npc_characteristics_empty", "NPCCharacteristics", "at least one setting-defined numeric characteristic", "characteristics")]
@@ -379,6 +440,34 @@ public sealed class GmWorkerValidationRepairTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, error =>
             error.Contains("soul_state.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateTaskPacket_NonActorMetaRepairWithoutRealmContractIsRejected()
+    {
+        const string targetPath = "game_state/meta/shining_abode_state.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            ValidationIssues =
+            [
+                new WorkerValidationIssue
+                {
+                    Code = "shining_treasury_client_owned_modified",
+                    Path = targetPath,
+                    Message = "Shining treasury client-owned state changed."
+                }
+            ],
+            ContextFiles = [new WorkerFileReference { Path = targetPath, Sha256 = new string('c', 64) }],
+            AllowedProposalPaths = [targetPath],
+            AfterlifeContract = null
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("afterlifeContract", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

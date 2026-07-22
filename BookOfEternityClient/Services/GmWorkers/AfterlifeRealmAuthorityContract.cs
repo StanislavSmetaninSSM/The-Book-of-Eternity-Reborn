@@ -6,6 +6,10 @@ internal static class AfterlifeRealmAuthorityContract
 {
     internal const string StatePath = "game_state/meta/soul_state.json";
 
+    internal static bool IsAfterlifeStatePath(string? path) =>
+        !string.IsNullOrWhiteSpace(path) &&
+        path.Replace('\\', '/').StartsWith("game_state/meta/", StringComparison.OrdinalIgnoreCase);
+
     internal static bool TryRead(
         string? json,
         out WorkerAfterlifeRealmGate realmGate,

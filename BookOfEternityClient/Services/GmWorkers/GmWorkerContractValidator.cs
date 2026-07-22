@@ -98,6 +98,7 @@ public static class GmWorkerContractValidator
         }
 
         ValidateAfterlifeTaskPacket(task, errors);
+        ValidateMortalCharacteristicAuthorityTaskPacket(task, errors);
 
         foreach (var path in task.AllowedProposalPaths)
         {
@@ -134,6 +135,35 @@ public static class GmWorkerContractValidator
             errors.Add("soulContentRequest is only allowed for soul-content tasks.");
 
         return ToResult(errors);
+    }
+
+    private static void ValidateMortalCharacteristicAuthorityTaskPacket(
+        WorkerTaskPacket task,
+        List<string> errors)
+    {
+        if (task.TaskType != WorkerTaskType.ValidationRepair ||
+            !task.ValidationIssues.Any(issue => string.Equals(
+                issue.Code,
+                "npc_characteristics_empty",
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        var authorityFiles = task.ContextFiles
+            .Where(file => file.Path.Equals(MortalCharacteristicAuthorityContract.StatePath, StringComparison.Ordinal))
+            .ToArray();
+        if (authorityFiles.Length != 1 || !IsSha256(authorityFiles[0].Sha256))
+        {
+            errors.Add(
+                $"Mortal characteristics repair must include exactly one hash-pinned read-only setting authority context: {MortalCharacteristicAuthorityContract.StatePath}.");
+        }
+
+        if (task.AllowedProposalPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, StringComparer.Ordinal))
+        {
+            errors.Add(
+                $"Mortal characteristic authority is read-only and must not appear in allowedProposalPaths: {MortalCharacteristicAuthorityContract.StatePath}.");
+        }
     }
 
     public static WorkerContractValidationResult ValidateProposal(
@@ -1383,6 +1413,14 @@ public static class GmWorkerContractValidator
 
     private static bool TaskLooksAfterlifeScoped(WorkerTaskPacket task)
     {
+        if (task.TaskType == WorkerTaskType.ValidationRepair &&
+            (task.AllowedProposalPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) ||
+             task.ValidationIssues.Any(issue =>
+                 AfterlifeRealmAuthorityContract.IsAfterlifeStatePath(issue.Path))))
+        {
+            return true;
+        }
+
         var values = new List<string> { task.Instructions };
         values.AddRange(task.ContextFiles.Select(file => file.Path));
         values.AddRange(task.AcceptanceCriteria);

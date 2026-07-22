@@ -154,7 +154,9 @@ public sealed class GmWorkerValidationRepairDelegator
             issue.Code,
             "npc_characteristics_empty",
             StringComparison.OrdinalIgnoreCase));
-        var requiresAfterlifeRealmAuthority = prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue);
+        var requiresAfterlifeRealmAuthority =
+            targetPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) ||
+            prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue);
         var contextPaths = targetPaths.AsEnumerable();
         if (requiresCharacteristicAuthority)
             contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
@@ -212,7 +214,7 @@ public sealed class GmWorkerValidationRepairDelegator
             RealmGate = realmGate,
             CurrentRealm = currentRealm,
             AllowedAfterlifeSurfaces = targetPaths
-                .Where(path => path.StartsWith("game_state/meta/", StringComparison.OrdinalIgnoreCase))
+                .Where(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath)
                 .Where(path => !path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.Ordinal))
                 .Distinct(StringComparer.Ordinal)
                 .Order(StringComparer.Ordinal)

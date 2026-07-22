@@ -214,6 +214,47 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
+    public void ValidationRepairDocs_DocumentDetachedRuntimeAndAtomicAuthorityLease()
+    {
+        var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
+        var contract = ReadRepoFile("specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md");
+        var repair = ReadRepoFile("Examples/E_CLI_GM_Worker_Validation_Repair.txt");
+        var afterlifeMatrix = ReadRepoFile("OtherGuides/Afterlife_Contract_Matrix.md");
+        var runner = ReadRepoFile("BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1");
+        var mainGmPrompt = ReadRepoFile("BookOfEternityClient/Launcher/CLI_Launch_Script.md");
+        var mainGmPromptGenerator = ReadRepoFile("BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1");
+        var gitIgnore = ReadRepoFile(".gitignore");
+        var bridgePool = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs");
+        var applyGate = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs");
+
+        foreach (var source in new[] { guide, contract, repair, runner })
+        {
+            Assert.Contains("detached execution snapshot", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("canonical write lease", source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var source in new[] { guide, contract, repair })
+        {
+            Assert.Contains(".worker_runtime", source, StringComparison.Ordinal);
+            Assert.Contains("only pinned task context", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("only the validated proposal and its declared contentRef", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("read-only context", source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var source in new[] { guide, contract, repair, afterlifeMatrix })
+            Assert.Contains("every `game_state/meta/`", source, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("GmWorkerExecutionWorkspace.CreateAsync", bridgePool, StringComparison.Ordinal);
+        Assert.DoesNotContain("CreateWorkerStartInfo(profile, _fs.GameSessionPath)", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("AcquireCanonicalWriteLeaseAsync", applyGate, StringComparison.Ordinal);
+        Assert.Contains("detached execution snapshot", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("never copy direct snapshot edits", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("detached execution snapshot", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("never copy direct snapshot edits", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("**/.worker_runtime/", gitIgnore, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void GmWorkerBridgeDocs_DocumentCliRunnerEntrypoint()
     {
         var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");

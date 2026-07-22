@@ -123,6 +123,12 @@ apply gate, and continue as the sole main GM. Worker dispatch/proposal/apply
 events are recorded in `game_state/control/gm_worker_audit.jsonl` and compact
 `workerEvents[]` in `game_state/control/gm_trajectory_ledger.jsonl`.
 
+The bridge gives each worker a detached execution snapshot containing only the
+task's pinned context, never the live canonical session. Review only the
+validated proposal and its declared `contentRef` artifacts; never copy direct snapshot edits
+or undeclared worker files into canonical state. The client apply gate owns all
+authority checks, writes, validation, rollback, and the final decision.
+
 All paths relative to:
 {{REPO_ROOT}}
 

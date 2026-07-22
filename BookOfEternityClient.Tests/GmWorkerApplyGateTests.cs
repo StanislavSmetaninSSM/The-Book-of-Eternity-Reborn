@@ -328,7 +328,10 @@ public sealed class GmWorkerApplyGateTests
                 fs,
                 async () =>
                 {
-                    await fs.WriteFileAtomicAsync(path, concurrentMutation);
+                    await File.WriteAllTextAsync(
+                        fs.ResolvePath(path),
+                        concurrentMutation,
+                        new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
                     IReadOnlyList<ValidationIssue> issues = [validationIssue];
                     return issues;
                 });
@@ -372,7 +375,8 @@ public sealed class GmWorkerApplyGateTests
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Equal(concurrentBytes, await fs.ReadFileBytesAsync(path));
             Assert.Contains(decision.RejectionReasons, reason =>
-                reason.Contains("changed concurrently", StringComparison.OrdinalIgnoreCase));
+                reason.Contains("changed", StringComparison.OrdinalIgnoreCase) &&
+                reason.Contains(path, StringComparison.Ordinal));
         }
         finally
         {
@@ -395,30 +399,15 @@ public sealed class GmWorkerApplyGateTests
                 IssueSeverity.Error,
                 "Weather is still invalid.",
                 code: "weather_still_invalid");
-            var lockPath = Path.Combine(fs.GameSessionPath, ".locks", "canonical-write.lock");
-            FileStream? rollbackBarrier = null;
-            Task? concurrentWrite = null;
             var gate = new GmWorkerApplyGate(
                 fs,
-                () =>
+                async () =>
                 {
-                    rollbackBarrier = new FileStream(
-                        lockPath,
-                        FileMode.OpenOrCreate,
-                        FileAccess.ReadWrite,
-                        FileShare.None);
-                    concurrentWrite = Task.Run(async () =>
-                    {
-                        await Task.Delay(200);
-                        await File.WriteAllBytesAsync(fs.ResolvePath(path), concurrentBytes);
-                        await rollbackBarrier.DisposeAsync();
-                    });
-                    return Task.FromResult<IReadOnlyList<ValidationIssue>>([validationIssue]);
+                    await File.WriteAllBytesAsync(fs.ResolvePath(path), concurrentBytes);
+                    return [validationIssue];
                 });
 
             var decision = await gate.ApplyAsync(proposal, task, profile);
-            if (concurrentWrite != null)
-                await concurrentWrite;
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
             Assert.Equal(concurrentBytes, await fs.ReadFileBytesAsync(path));
@@ -890,6 +879,44 @@ public sealed class GmWorkerApplyGateTests
     }
 
     [Fact]
+    public async Task ApplyAsync_CharacteristicAuthorityMutationDuringValidationRejectsAndRollsBackTarget()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string authorityPath = "game_state/misc/characteristics.json";
+            var fs = CreateFileSystem(root);
+            var (profile, task, proposal, path, baseline) = await PrepareMortalContinuityRepairAsync(
+                fs,
+                "npc_characteristics_empty",
+                "intended");
+            var gate = new GmWorkerApplyGate(
+                fs,
+                async () =>
+                {
+                    await File.WriteAllTextAsync(
+                        fs.ResolvePath(authorityPath),
+                        "{\"different_setting_key\":4}",
+                        new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                    return [];
+                });
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
+            Assert.Equal(baseline, await fs.ReadFileAsync(path));
+            Assert.Contains("different_setting_key", await fs.ReadFileAsync(authorityPath));
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("context changed", StringComparison.OrdinalIgnoreCase) &&
+                reason.Contains(authorityPath, StringComparison.Ordinal));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ApplyAsync_ActorMaterializationScalarRepairChangingSiblingEnvelopeData_IsRejected()
     {
         var root = CreateTempRoot();
@@ -1350,6 +1377,119 @@ public sealed class GmWorkerApplyGateTests
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Equal(baseline.ToJsonString(), await fs.ReadFileAsync(path));
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("context changed", StringComparison.OrdinalIgnoreCase) &&
+                reason.Contains(soulStatePath, StringComparison.Ordinal));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ApplyAsync_CooperatingRealmAuthorityWriterWaitsUntilAcceptedLinearizationPoint()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/guardian_thought_journal.json";
+            const string soulStatePath = "game_state/meta/soul_state.json";
+            const string actorId = "guardian_realm_lock";
+            const string contentRef =
+                "worker_proposals/worker_proposal_guardian_realm_lock/game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            var baseline = new JsonObject { ["entries"] = new JsonArray() };
+            var proposed = baseline.DeepClone().AsObject();
+            proposed["entries"]!.AsArray().Add(new JsonObject
+            {
+                ["entryId"] = "thought_realm_lock",
+                ["guardianId"] = actorId,
+                ["summary"] = "This write is accepted before the next realm transition."
+            });
+            await fs.WriteFileAtomicAsync(path, baseline.ToJsonString());
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            await fs.WriteFileAtomicAsync(soulStatePath, "{\"currentRealm\":\"Chaos Sea\"}");
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                "game_state/meta/guardians.json.guardians[0]",
+                $"guardian:{actorId}");
+            Task? realmWrite = null;
+            var gate = new GmWorkerApplyGate(
+                fs,
+                async () =>
+                {
+                    realmWrite = fs.WriteFileAtomicAsync(
+                        soulStatePath,
+                        "{\"currentRealm\":\"Shining Abode\"}");
+                    await Task.Delay(150);
+                    Assert.False(realmWrite.IsCompleted);
+                    return [];
+                });
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+            Assert.NotNull(realmWrite);
+            await realmWrite;
+
+            Assert.Equal(ApplyGateResult.Accepted, decision.Result);
+            Assert.Equal(proposed.ToJsonString(), await fs.ReadFileAsync(path));
+            Assert.Contains("Shining Abode", await fs.ReadFileAsync(soulStatePath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ApplyAsync_RealmAuthorityMutationDuringValidationRejectsAndRollsBackTarget()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/guardian_thought_journal.json";
+            const string soulStatePath = "game_state/meta/soul_state.json";
+            const string actorId = "guardian_realm_revalidation";
+            const string contentRef =
+                "worker_proposals/worker_proposal_guardian_realm_revalidation/game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            var baseline = new JsonObject { ["entries"] = new JsonArray() };
+            var proposed = baseline.DeepClone().AsObject();
+            proposed["entries"]!.AsArray().Add(new JsonObject
+            {
+                ["entryId"] = "thought_realm_revalidation",
+                ["guardianId"] = actorId,
+                ["summary"] = "This write must be rejected after an uncoordinated realm switch."
+            });
+            await fs.WriteFileAtomicAsync(path, baseline.ToJsonString());
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            await fs.WriteFileAtomicAsync(soulStatePath, "{\"currentRealm\":\"Chaos Sea\"}");
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                "game_state/meta/guardians.json.guardians[0]",
+                $"guardian:{actorId}");
+            var gate = new GmWorkerApplyGate(
+                fs,
+                async () =>
+                {
+                    await File.WriteAllTextAsync(
+                        fs.ResolvePath(soulStatePath),
+                        "{\"currentRealm\":\"Shining Abode\"}",
+                        new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                    return [];
+                });
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
+            Assert.Equal(baseline.ToJsonString(), await fs.ReadFileAsync(path));
+            Assert.Contains("Shining Abode", await fs.ReadFileAsync(soulStatePath));
             Assert.Contains(decision.RejectionReasons, reason =>
                 reason.Contains("context changed", StringComparison.OrdinalIgnoreCase) &&
                 reason.Contains(soulStatePath, StringComparison.Ordinal));

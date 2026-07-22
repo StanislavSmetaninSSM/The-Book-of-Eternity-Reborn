@@ -66,6 +66,13 @@ public static class GmWorkerTaskPacketBuilder
                 $"Afterlife realm authority is read-only and cannot be a repair proposal target: {AfterlifeRealmAuthorityContract.StatePath}.",
                 nameof(validationIssues));
         }
+        if (requiresCharacteristicAuthority &&
+            allowedPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, StringComparer.Ordinal))
+        {
+            throw new ArgumentException(
+                $"Mortal characteristic authority is read-only and cannot be a repair proposal target: {MortalCharacteristicAuthorityContract.StatePath}.",
+                nameof(validationIssues));
+        }
 
         var contextPaths = allowedPaths.AsEnumerable();
         if (requiresCharacteristicAuthority)
