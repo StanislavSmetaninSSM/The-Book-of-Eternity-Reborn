@@ -1,4 +1,5 @@
 using BookOfEternityClient.Services.GmWorkers;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -134,6 +135,51 @@ public sealed class GmWorkerBridgeContractTests
         Assert.Contains(result.Errors, error =>
             error.Contains("duplicate", StringComparison.OrdinalIgnoreCase) &&
             error.Contains(valid.ChangedFiles[0].Path, StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(99)]
+    public void ValidationRepairProposal_RejectsUnspecifiedOrUndefinedFileChangeKind(int rawChangeKind)
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var proposal = valid with
+        {
+            ChangedFiles =
+            [
+                valid.ChangedFiles[0] with
+                {
+                    ChangeKind = (WorkerFileChangeKind)rawChangeKind
+                }
+            ]
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("changeKind", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("Add, Replace, or Delete", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ValidationRepairProposal_RejectsOmittedFileChangeKind()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var root = JsonNode.Parse(GmWorkerJson.Serialize(
+            GmWorkerBridgeTestFixtures.ValidationRepairProposal()))!.AsObject();
+        root["changedFiles"]!.AsArray()[0]!.AsObject().Remove("changeKind");
+        var proposal = GmWorkerJson.Deserialize<WorkerProposal>(root.ToJsonString())!;
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("changeKind", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("Add, Replace, or Delete", StringComparison.Ordinal));
     }
 
     [Theory]

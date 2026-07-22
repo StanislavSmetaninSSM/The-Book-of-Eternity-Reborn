@@ -31,6 +31,18 @@ exact 64-character SHA-256 digest of its `contentRef` bytes. A delete uses
 `afterSha256=missing` and no `contentRef`. Every non-empty `contentRef` must be
 exactly `worker_proposals/<proposalId>/<changedFiles.path>`.
 
+For each file entry, `changeKind is mandatory` and must be exactly `add`, `replace`, or `delete`.
+Missing, zero/unspecified, and undefined enum values are
+invalid and cannot be inferred from hashes, file existence, or `contentRef`.
+
+For afterlife `validation-repair`, `game_state/meta/soul_state.json` is the
+hash-pinned read-only realm authority. The task must carry its exact canonical
+SHA-256 in `contextFiles`; `currentRealm` must match both
+`afterlifeContract.realmGate` and `afterlifeContract.currentRealm`; and the
+authority path must not appear in `changedFiles` or `allowedProposalPaths`.
+Missing, malformed, duplicate-key, unsupported, changed-after-dispatch, or
+mismatched authority fails closed before canonical writes.
+
 ## Worker Profile Contract
 
 Validation repair worker:
@@ -283,6 +295,11 @@ For proposal-only tasks, an `afterlifeContract` requires a matching
 the repair authority is the bounded `changedFiles` list, and every changed path
 must be included in both `allowedProposalPaths` and
 `afterlifeContract.allowedAfterlifeSurfaces`.
+
+The afterlife repair contract is derived from the hash-pinned read-only realm
+authority in `game_state/meta/soul_state.json`, not from caller-supplied realm
+text. That file must not appear in `changedFiles`; the apply gate verifies its
+same exact bytes and realm again immediately before applying the proposal.
 
 ## Proposal Contract
 

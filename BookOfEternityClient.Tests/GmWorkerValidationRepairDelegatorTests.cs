@@ -11,6 +11,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmWorkerValidationRepairDelegatorTests
 {
     private const string WeatherPath = "game_state/world/weather.json";
+    private const string SoulStatePath = "game_state/meta/soul_state.json";
     private const string ReadyPath = "game_state/control/validation_repair_ready.json";
     private const string LatestTaskPath = "game_state/control/gm_worker_latest_validation_repair_task.json";
 
@@ -406,9 +407,59 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             Assert.Equal(WorkerAfterlifeRealmGate.ChaosSea, afterlife.RealmGate);
             Assert.Equal("Chaos Sea", afterlife.CurrentRealm);
             Assert.Equal([guardianPath], afterlife.AllowedAfterlifeSurfaces);
-            var context = Assert.Single(task.ContextFiles);
-            Assert.Equal(guardianPath, context.Path);
-            Assert.Matches("^[0-9a-f]{64}$", context.Sha256);
+            Assert.Contains(task.ContextFiles, context =>
+                context.Path == guardianPath &&
+                System.Text.RegularExpressions.Regex.IsMatch(context.Sha256, "^[0-9a-f]{64}$"));
+            Assert.Contains(task.ContextFiles, context =>
+                context.Path == SoulStatePath &&
+                System.Text.RegularExpressions.Regex.IsMatch(context.Sha256, "^[0-9a-f]{64}$"));
+            Assert.DoesNotContain(SoulStatePath, task.AllowedProposalPaths);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("not-json")]
+    [InlineData("[]")]
+    [InlineData("{}")]
+    [InlineData("{\"currentRealm\":7}")]
+    [InlineData("{\"currentRealm\":\"Mortal World\"}")]
+    [InlineData("{\"currentRealm\":\"Chaos Sea\",\"currentRealm\":\"Shining Abode\"}")]
+    public async Task TryRunAsync_AfterlifeActorRepair_InvalidRealmAuthorityFailsTaskBuild(
+        string? soulStateJson)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string guardianPath = "game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            if (soulStateJson != null)
+                await fs.WriteFileAtomicAsync(SoulStatePath, soulStateJson);
+            await fs.WriteFileAtomicAsync(guardianPath, "{\"entries\":[]}");
+            var profile = BuildProfile(root, "fake-invalid-realm-authority-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                "game_state/meta/guardians.json.guardians[0]",
+                IssueSeverity.Error,
+                "Guardian memory is missing.",
+                code: "afterlife_actor_materialization_memory_missing",
+                actor: "guardian:guardian_invalid_realm_authority",
+                section: "ActorMemory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 322);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Null(result.Task);
+            Assert.Contains(SoulStatePath, result.FallbackReason, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

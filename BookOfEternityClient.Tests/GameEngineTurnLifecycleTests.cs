@@ -1230,19 +1230,54 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
             await WriteJsonAsync("output/narrative_response.json", new
             {
-                response = "После ремонта canonical state: Средоточие не восстановило ОД, теперь 2/6.",
+                response = "После первого ремонта canonical state: Средоточие не восстановило ОД, теперь 2/6.",
                 timestamp = "2026-07-04T05:20:00Z"
             });
+            var firstRefreshedOutputWrittenAtUtc = canonicalStateWrittenAtUtc.AddSeconds(2);
             File.SetLastWriteTimeUtc(
                 _fs.ResolvePath("output/narrative_response.json"),
-                canonicalStateWrittenAtUtc.AddSeconds(2));
+                firstRefreshedOutputWrittenAtUtc);
+            await WriteJsonAsync(trackedPath, new
+            {
+                soulName = "Искра Испытаний",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 0,
+                soulFormDescription = "Женский силуэт из серебристого пепла с новой светлой отметиной."
+            });
+            var secondCanonicalStateWrittenAtUtc = canonicalStateWrittenAtUtc.AddSeconds(4);
+            File.SetLastWriteTimeUtc(
+                _fs.ResolvePath(trackedPath),
+                secondCanonicalStateWrittenAtUtc);
             await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
             {
                 sessionId,
                 requestId,
                 turnNumber,
                 updatedAtUtc = "2026-07-04T05:20:05Z",
-                note = "Player-facing output refreshed after canonical repair."
+                note = "Player-facing output refreshed, then canonical state was rewritten again."
+            });
+
+            var thirdRequest = await WaitForUpdatedValidationRepairRequestContainingAsync(
+                "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                secondRequest,
+                TimeSpan.FromSeconds(5));
+            Assert.Contains("output/narrative_response.json", thirdRequest, StringComparison.OrdinalIgnoreCase);
+
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "После окончательного canonical state: Средоточие не восстановило ОД, теперь 2/6.",
+                timestamp = "2026-07-04T05:20:10Z"
+            });
+            File.SetLastWriteTimeUtc(
+                _fs.ResolvePath("output/narrative_response.json"),
+                secondCanonicalStateWrittenAtUtc.AddSeconds(2));
+            await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
+            {
+                sessionId,
+                requestId,
+                turnNumber,
+                updatedAtUtc = "2026-07-04T05:20:15Z",
+                note = "Player-facing output refreshed after the latest canonical rewrite."
             });
         });
 
@@ -3492,6 +3527,39 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var issues = Assert.IsType<List<ValidationIssue>>(method!.Invoke(
             engine,
             new object[] { repairedErrors, boundary }));
+
+        Assert.Contains(issues, issue =>
+            string.Equals(
+                issue.Code,
+                "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues_EqualBoundaryIsStale()
+    {
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "Ответ записан одновременно с canonical repair.",
+            timestamp = "2026-07-10T07:30:00Z"
+        });
+        var boundary = new DateTime(2026, 7, 10, 7, 31, 0, DateTimeKind.Utc);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath("output/narrative_response.json"), boundary);
+        var repairedErrors = new List<ValidationIssue>
+        {
+            new(
+                "game_state/world/weather.json",
+                IssueSeverity.Error,
+                "Canonical weather was repaired.",
+                code: "normalized_weather_missing_description")
+        };
+        var engine = CreateGameEngine();
+
+        var issues = InvokePrivateValue<List<ValidationIssue>>(
+            engine,
+            "CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues",
+            repairedErrors,
+            boundary);
 
         Assert.Contains(issues, issue =>
             string.Equals(
@@ -7861,6 +7929,33 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         throw new TimeoutException(
             $"Timed out waiting for validation_repair_request.json containing '{expectedText}'. Last request: {lastRequest ?? "<missing>"}");
+    }
+
+    private async Task<string> WaitForUpdatedValidationRepairRequestContainingAsync(
+        string expectedText,
+        string previousRequest,
+        TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        string? lastRequest = null;
+
+        while (DateTime.UtcNow < deadline)
+        {
+            if (_fs.FileExists("game_state/control/validation_repair_request.json"))
+            {
+                lastRequest = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+                if (!string.Equals(lastRequest, previousRequest, StringComparison.Ordinal) &&
+                    lastRequest?.Contains(expectedText, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    return lastRequest;
+                }
+            }
+
+            await Task.Delay(50);
+        }
+
+        throw new TimeoutException(
+            $"Timed out waiting for an updated validation_repair_request.json containing '{expectedText}'. Last request: {lastRequest ?? "<missing>"}");
     }
 
     private static int ReadInt(JsonNode? node)

@@ -188,8 +188,9 @@ Common afterlife repair packets from live tests:
 For `afterlife_spiritual_conflict_reward_repair`, a currency reward is legal only for contested `player_success` or `decisive_player_success`. For `afterlife_entity_profile_scaffold_repair`, repair the profile in place; do not move afterlife profile data into Mortal files and do not delete special-art learning proof to avoid scaffold fields.
 
 Correct repair behavior:
+- For an afterlife validation-repair worker, `game_state/meta/soul_state.json` is hash-pinned read-only realm authority. Its exact canonical-byte hash must be in task `contextFiles`, its realm must match `afterlifeContract`, and it must not appear in `changedFiles` or `allowedProposalPaths`. If it is missing, malformed, has duplicate keys, uses an unsupported realm, changes after dispatch, or disagrees with the task realm, reject the worker proposal without applying any file.
 - Repair only files listed in `targetFiles` unless another current error explicitly names a different file.
-- If one current repair request lists both afterlife canonical and player-facing targets, finish every canonical write first, then re-read the repaired state and rewrite dependent narrative/interface output. Request creation, worker dispatch, and repair-loop start are not freshness boundaries; output written before the latest repaired canonical target will be rejected as stale.
+- If one current repair request lists both afterlife canonical and player-facing targets, finish every canonical write first, then re-read the repaired state and rewrite dependent narrative/interface output. Keep the original canonical target set through every later output-only retry. Output must be strictly newer than the latest actual write of every retained target; equal timestamps are stale. Request creation, worker dispatch, and repair-loop start are not freshness boundaries, and an unobservable target write fails closed.
 - In `output/debug_logs.json.gm_thoughts_markdown`, use `canonicalActorNames[]` exactly for `Relevant actors` and for `### <Guardian Name>` headings. Do not use raw `guardianId` or stale mirror-only aliases as actor names.
 - In `game_state/meta/guardians.json`, treat `activeGuardian` and `guardians[]` as materialized mirrors. Reconstruct them from the validated pre-turn Guardian baseline plus authorized same-turn Guardian mutations. Do not treat the raw current mirror as the authority source.
 - If `game_state/meta/guardian_projects.json` is listed, treat `activeProjects` the same way: restore the kernel-authoritative tracker state from the validated pre-turn project baseline plus authorized same-turn project commands. Do not start or preserve a project only because the rejected materialized file contains it.
@@ -213,6 +214,7 @@ Correct:
 
 Wrong:
 - rewrite the narrative first and then repair guardians.json. The visible response predates the canonical Guardian state it describes and must enter output-only repair.
+- after that output-only request appears, forget the original guardians.json target and accept an output timestamp equal to its write time. The original canonical target set remains authoritative and equality is still stale.
 ```
 
 ==================================================

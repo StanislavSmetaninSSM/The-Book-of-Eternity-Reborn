@@ -139,3 +139,15 @@
 - [x] T074 Synchronize Mortal/afterlife no-change rationale and all affected Spec Kit/GM documentation, record per-finding RED/GREEN evidence, and run focused/documentation/full verification.
   - Evidence: Spec Kit analysis covered 39 FRs, 8 SCs, and 75 unique tasks; its one afterlife-guidance inconsistency was corrected in the matrix and worked example. Phase 17 regressions passed 44/44, mandatory afterlife docs passed 115/115, and the broad materialization/worker/docs/source-guard matrix passed 837/837. Frontend verification passed 138/138 plus typecheck/build. The full C# run passed 6203/6211; the sole transient Agent Console HTTP 500 passed 1/1 in isolation, while all remaining seven failures reproduced 7/7 with identical assertions on exact base `9a1490146b7cecad6101af1f166bde614050a6a3`. PowerShell syntax and `git diff --check` passed.
 - [ ] T075 Obtain a sixth independent whole-branch review with exact-base comparison; resolve every confirmed finding before T023/T033 integration.
+
+## Phase 18 - Sixth review worker/lifecycle remediation
+
+- [x] T076 Hash-pin `game_state/meta/soul_state.json` as read-only realm authority for every afterlife/mixed repair worker task; reject missing, malformed, duplicate, ambiguous, unsupported, changed, or realm-mismatched authority at task build and apply.
+  - Evidence: RED produced 11 expected task-build/validation/apply failures across absent, malformed, non-object, duplicate, unsupported, mismatched, and after-dispatch changed authority. GREEN passed the 15-test focused authority matrix; the combined worker/delegator/apply regression suite passed 158/158.
+- [x] T077 Reject omitted, zero, and undefined `WorkerFileChangeKind` values at proposal contract validation before any apply semantics.
+  - Evidence: RED produced four expected contract/apply failures for omitted, raw zero, and undefined numeric values. GREEN passed 4/4 focused operation-authority tests.
+- [x] T078 Require finite setting-authorized numeric values in Mortal characteristics worker repair and cover exponent-overflow JSON tokens.
+  - Evidence: RED accepted the `1e9999` matrix case; GREEN rejected it and passed the complete 28/28 characteristic-preservation matrix.
+- [x] T079 Retain the original repaired canonical target set/boundary through derived output-only retries, require strict output-newer-than-target ordering, and reject a second canonical rewrite after output refresh.
+  - Evidence: RED accepted an equal boundary and timed out waiting for a renewed stale-output request after a second canonical rewrite. GREEN passed 4/4 focused lifecycle/boundary tests, including strict equality rejection and retained-target re-staling.
+- [ ] T080 Synchronize Spec Kit and shared Mortal/afterlife repair guidance, record RED/GREEN evidence, rerun focused/full verification, and complete segmented sixth independent review before T075/T023/T033 integration.

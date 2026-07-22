@@ -164,6 +164,39 @@ public sealed class GmWorkerApplyGateTests
     }
 
     [Fact]
+    public async Task ApplyAsync_UndefinedFileChangeKindIsRejectedWithoutWritingCanonicalFile()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
+            proposal = proposal with
+            {
+                ChangedFiles =
+                [
+                    proposal.ChangedFiles[0] with
+                    {
+                        ChangeKind = (WorkerFileChangeKind)99
+                    }
+                ]
+            };
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("changeKind", StringComparison.OrdinalIgnoreCase));
+            Assert.Equal("{\"before\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ApplyAsync_StaleTaskContextWithBomOnlyByteDifference_IsRejectedWithoutChangingCanonicalFile()
     {
         var root = CreateTempRoot();
@@ -495,7 +528,9 @@ public sealed class GmWorkerApplyGateTests
             var fs = CreateFileSystem(root);
             await fs.WriteFileAtomicAsync(path, baseline);
             await fs.WriteFileAtomicAsync(contentRef, proposedContent);
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Shining Abode\"}");
             var canonicalSha = ComputeFileSha256(fs, path);
+            var soulStateSha = ComputeFileSha256(fs, "game_state/meta/soul_state.json");
             var proposalSha = ComputeFileSha256(fs, contentRef);
             var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
             var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
@@ -510,7 +545,15 @@ public sealed class GmWorkerApplyGateTests
                         Section = "ActorMaterialization"
                     }
                 ],
-                ContextFiles = [new WorkerFileReference { Path = path, Sha256 = canonicalSha }],
+                ContextFiles =
+                [
+                    new WorkerFileReference { Path = path, Sha256 = canonicalSha },
+                    new WorkerFileReference
+                    {
+                        Path = "game_state/meta/soul_state.json",
+                        Sha256 = soulStateSha
+                    }
+                ],
                 AfterlifeContract = new WorkerAfterlifeTaskContract
                 {
                     RealmGate = WorkerAfterlifeRealmGate.ShiningAbode,
@@ -567,8 +610,10 @@ public sealed class GmWorkerApplyGateTests
             var fs = CreateFileSystem(root);
             await fs.WriteFileAtomicAsync(outsidePath, baseline);
             await fs.WriteFileAtomicAsync(contentRef, proposedContent);
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Chaos Sea\"}");
 
             var canonicalSha = ComputeFileSha256(fs, outsidePath);
+            var soulStateSha = ComputeFileSha256(fs, "game_state/meta/soul_state.json");
             var proposalSha = ComputeFileSha256(fs, contentRef);
             var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
             var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
@@ -584,7 +629,15 @@ public sealed class GmWorkerApplyGateTests
                         Section = "ActorMaterialization"
                     }
                 ],
-                ContextFiles = [new WorkerFileReference { Path = outsidePath, Sha256 = canonicalSha }],
+                ContextFiles =
+                [
+                    new WorkerFileReference { Path = outsidePath, Sha256 = canonicalSha },
+                    new WorkerFileReference
+                    {
+                        Path = "game_state/meta/soul_state.json",
+                        Sha256 = soulStateSha
+                    }
+                ],
                 AfterlifeContract = new WorkerAfterlifeTaskContract
                 {
                     RealmGate = WorkerAfterlifeRealmGate.ChaosSea,
@@ -743,6 +796,7 @@ public sealed class GmWorkerApplyGateTests
         { "npc_existing_inventory_resend_forbidden", "intended", ApplyGateResult.Accepted },
         { "npc_characteristics_empty", "intended", ApplyGateResult.Accepted },
         { "npc_characteristics_empty", "unauthorized_characteristic", ApplyGateResult.Rejected },
+        { "npc_characteristics_empty", "non_finite_characteristic", ApplyGateResult.Rejected },
         { "npc_initial_id_collides_with_existing_permanent_id", "same_actor", ApplyGateResult.Rejected },
         { "npc_existing_inventory_resend_forbidden", "same_actor", ApplyGateResult.Rejected },
         { "npc_characteristics_empty", "same_actor", ApplyGateResult.Rejected },
@@ -1199,6 +1253,106 @@ public sealed class GmWorkerApplyGateTests
             var decision = await gate.ApplyAsync(proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ApplyAsync_AfterlifeRealmContractMismatchingPinnedSoulAuthorityIsRejected()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/guardian_thought_journal.json";
+            const string soulStatePath = "game_state/meta/soul_state.json";
+            const string actorId = "guardian_realm_mismatch";
+            const string contentRef =
+                "worker_proposals/worker_proposal_guardian_realm_mismatch/game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            var baseline = new JsonObject { ["entries"] = new JsonArray() };
+            var proposed = baseline.DeepClone().AsObject();
+            proposed["entries"]!.AsArray().Add(new JsonObject
+            {
+                ["entryId"] = "thought_realm_mismatch",
+                ["guardianId"] = actorId,
+                ["summary"] = "This write must remain realm-bound."
+            });
+            await fs.WriteFileAtomicAsync(path, baseline.ToJsonString());
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            await fs.WriteFileAtomicAsync(soulStatePath, "{\"currentRealm\":\"Chaos Sea\"}");
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                "game_state/meta/guardians.json.guardians[0]",
+                $"guardian:{actorId}");
+            task = task with
+            {
+                AfterlifeContract = task.AfterlifeContract! with
+                {
+                    RealmGate = WorkerAfterlifeRealmGate.ShiningAbode,
+                    CurrentRealm = "Shining Abode"
+                }
+            };
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.Equal(baseline.ToJsonString(), await fs.ReadFileAsync(path));
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("realm", StringComparison.OrdinalIgnoreCase) &&
+                reason.Contains("soul_state", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ApplyAsync_AfterlifeRealmAuthorityChangedAfterDispatchIsRejected()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/meta/guardian_thought_journal.json";
+            const string soulStatePath = "game_state/meta/soul_state.json";
+            const string actorId = "guardian_realm_changed";
+            const string contentRef =
+                "worker_proposals/worker_proposal_guardian_realm_changed/game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            var baseline = new JsonObject { ["entries"] = new JsonArray() };
+            var proposed = baseline.DeepClone().AsObject();
+            proposed["entries"]!.AsArray().Add(new JsonObject
+            {
+                ["entryId"] = "thought_realm_changed",
+                ["guardianId"] = actorId,
+                ["summary"] = "This write must use the dispatched realm authority."
+            });
+            await fs.WriteFileAtomicAsync(path, baseline.ToJsonString());
+            await fs.WriteFileAtomicAsync(contentRef, proposed.ToJsonString());
+            var (profile, task, proposal) = BuildActorRepairPacket(
+                fs,
+                path,
+                contentRef,
+                "afterlife_actor_materialization_memory_missing",
+                "game_state/meta/guardians.json.guardians[0]",
+                $"guardian:{actorId}");
+            await fs.WriteFileAtomicAsync(soulStatePath, "{\"currentRealm\":\"Shining Abode\"}");
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.Equal(baseline.ToJsonString(), await fs.ReadFileAsync(path));
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("context changed", StringComparison.OrdinalIgnoreCase) &&
+                reason.Contains(soulStatePath, StringComparison.Ordinal));
         }
         finally
         {
@@ -1752,6 +1906,10 @@ public sealed class GmWorkerApplyGateTests
                     ["invented_stat"] = 999
                 };
                 break;
+            case "non_finite_characteristic":
+                proposedTarget["characteristics"] = JsonNode.Parse(
+                    "{\"setting_defined_focus\":1e9999}");
+                break;
             case "same_actor":
                 proposedTarget["personality"]!["summary"] = "Worker rewrote protected personality.";
                 break;
@@ -1942,6 +2100,25 @@ public sealed class GmWorkerApplyGateTests
             ? ComputeSha256(File.ReadAllBytes(resolvedBaselinePath))
             : "missing";
         var proposalSha256 = ComputeSha256(File.ReadAllBytes(fs.ResolvePath(contentRef)));
+        var isAfterlifeRepair = !actor.StartsWith("mortal_npc:", StringComparison.Ordinal);
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        if (isAfterlifeRepair && !File.Exists(fs.ResolvePath(soulStatePath)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(fs.ResolvePath(soulStatePath))!);
+            File.WriteAllText(fs.ResolvePath(soulStatePath), "{\"currentRealm\":\"Chaos Sea\"}");
+        }
+        var contextFiles = new List<WorkerFileReference>
+        {
+            new() { Path = path, Sha256 = baselineSha256 }
+        };
+        if (isAfterlifeRepair)
+        {
+            contextFiles.Add(new WorkerFileReference
+            {
+                Path = soulStatePath,
+                Sha256 = ComputeFileSha256(fs, soulStatePath)
+            });
+        }
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
         var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
         {
@@ -1956,8 +2133,8 @@ public sealed class GmWorkerApplyGateTests
                     Section = "ActorMaterialization"
                 }
             ],
-            ContextFiles = [new WorkerFileReference { Path = path, Sha256 = baselineSha256 }],
-            AfterlifeContract = actor.StartsWith("mortal_npc:", StringComparison.Ordinal)
+            ContextFiles = contextFiles,
+            AfterlifeContract = !isAfterlifeRepair
                 ? null
                 : new WorkerAfterlifeTaskContract
                 {

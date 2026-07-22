@@ -190,6 +190,12 @@ public static class GmWorkerContractValidator
         foreach (var changedFile in proposal.ChangedFiles)
         {
             ValidatePath(changedFile.Path, "changedFiles.path", errors);
+            if (changedFile.ChangeKind is not WorkerFileChangeKind.Add and
+                not WorkerFileChangeKind.Replace and
+                not WorkerFileChangeKind.Delete)
+            {
+                errors.Add("changedFiles.changeKind must be exactly Add, Replace, or Delete.");
+            }
             if (!task.AllowedProposalPaths.Contains(changedFile.Path, StringComparer.Ordinal))
                 errors.Add($"changedFiles contains a path outside task allowedProposalPaths: {changedFile.Path}");
             if (!profile.Permissions.ProposalOnly &&
@@ -390,6 +396,24 @@ public static class GmWorkerContractValidator
         }
 
         var contract = task.AfterlifeContract;
+        if (task.TaskType == WorkerTaskType.ValidationRepair)
+        {
+            var realmAuthorityFiles = task.ContextFiles
+                .Where(file => file.Path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.Ordinal))
+                .ToArray();
+            if (realmAuthorityFiles.Length != 1 ||
+                !IsSha256(realmAuthorityFiles[0].Sha256))
+            {
+                errors.Add(
+                    $"afterlife validation-repair tasks must include exactly one hash-pinned read-only realm authority context: {AfterlifeRealmAuthorityContract.StatePath}.");
+            }
+
+            if (task.AllowedProposalPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, StringComparer.Ordinal))
+            {
+                errors.Add(
+                    $"afterlife realm authority must not appear in allowedProposalPaths: {AfterlifeRealmAuthorityContract.StatePath}.");
+            }
+        }
         if (contract.RealmGate == WorkerAfterlifeRealmGate.None)
             errors.Add("afterlifeContract.realmGate must be ChaosSea, ShiningAbode, or ShiningAbodePendingBootstrap.");
         RequireText(contract.CurrentRealm, "afterlifeContract.currentRealm", errors);

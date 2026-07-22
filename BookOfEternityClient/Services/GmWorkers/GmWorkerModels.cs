@@ -114,6 +114,7 @@ public enum WorkerProposalStatus
 
 public enum WorkerFileChangeKind
 {
+    Unspecified = 0,
     Add,
     Replace,
     Delete
@@ -380,7 +381,7 @@ public sealed record WorkerValidatorRisk
 public sealed record WorkerChangedFile
 {
     public string Path { get; init; } = "";
-    public WorkerFileChangeKind ChangeKind { get; init; } = WorkerFileChangeKind.Replace;
+    public WorkerFileChangeKind ChangeKind { get; init; } = WorkerFileChangeKind.Unspecified;
     public string? BeforeSha256 { get; init; }
     public string? AfterSha256 { get; init; }
     public string? ContentRef { get; init; }

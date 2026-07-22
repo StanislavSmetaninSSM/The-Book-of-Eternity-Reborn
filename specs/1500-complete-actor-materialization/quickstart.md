@@ -45,9 +45,12 @@ Do not modify or fabricate untouched actors merely because they lack an envelope
 - Keep `npc_initial_id_collides_with_existing_permanent_id` on the main-GM rollback/repair path.
 - Dispatch `npc_existing_inventory_resend_forbidden` only when `expected` is the exact validated pre-turn JSON-array snapshot; restore only that actor/carrier field. Ordinary existing resends stay main-GM-only.
 - For `npc_characteristics_empty`, hash-pin `game_state/misc/characteristics.json` as read-only context and allow only finite numeric keys present in that authority on the exact actor/carrier field. Missing or malformed authority and sibling, other-actor, root, add, or delete changes reject.
+- Treat JSON exponent overflow such as `1e9999` as non-finite and invalid even though the token has number syntax.
+- For afterlife/mixed repair, hash-pin `game_state/meta/soul_state.json` as read-only realm authority, derive the contract from its strict duplicate-free `currentRealm`, exclude it from proposal paths, and recheck the exact bytes at apply.
+- Require every changed-file entry to declare exactly `Add`, `Replace`, or `Delete`; omission, `Unspecified`, zero, and undefined values reject before apply semantics.
 - Require explicit proposal `status`; omission/`Unspecified` is invalid, only explicit `completed` may apply, and terminal statuses use empty `changedFiles`.
 - Generate every worker audit event ID through the shared UTC-millisecond plus GUID utility; source guards reject hand-built prefixes.
-- Treat player-facing output as fresh only when it postdates the latest actual write of every repaired canonical target.
+- Retain the original canonical target set through output-only retries. Treat player-facing output as fresh only when it is strictly newer than every target's latest actual write; equality and output followed by another target rewrite are stale.
 
 ## Red/green verification loop
 
@@ -84,4 +87,5 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - Third re-review docs explicitly record Mortal-only scope and no Chaos Sea/Shining Abode contract change.
 - Fourth re-review guards malformed/duplicate NPCCore authority, every historical actor-owned domain, production Fate Card reduction atomicity, and ID-less canonical skill evidence.
 - Shared Block 5 effect `value` enforcement is synchronized with the afterlife matrix/example without changing the separate special-art schema.
+- Afterlife worker repair pins exact Soul realm authority without granting write scope; worker changed-file operations are explicit; characteristic overflow and retained output-freshness chains are guarded.
 - Player-facing metadata non-leakage covered.

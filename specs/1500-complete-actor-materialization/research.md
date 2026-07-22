@@ -221,7 +221,7 @@
 
 ### Decision 33: Output freshness follows canonical mutation
 
-**Decision**: Resolve the repair boundary from actual writes to issue-targeted canonical files after repair succeeds. Require player-facing output to be at least as new as the latest repaired target, and fail closed when a required target mutation cannot be observed.
+**Decision**: Resolve the repair boundary from actual writes to issue-targeted canonical files after repair succeeds. Retain the original canonical target set through every derived output-only retry. Require player-facing output to be strictly newer than every retained target's latest actual write; equality is stale. If an original target is rewritten again, recompute the boundary and re-stale earlier output. Fail closed when a required target mutation cannot be observed.
 
 **Rationale**: Repair start time precedes both narrative and canonical writes, so it cannot establish that the narrative describes the accepted canonical state.
 
@@ -230,6 +230,32 @@
 **Decision**: Synchronize the shared daemon, repair guide, daemon specification, worked main-turn example, `OtherGuides/Afterlife_Contract_Matrix.md`, and `Examples/E_CLI_Afterlife_Turns.txt`. Keep afterlife pending/control manifests and realm-specific state schemas unchanged.
 
 **Rationale**: The Phase 17 fixes constrain worker-only Mortal characteristic vocabulary, repair an existing Mortal `NPCCoreChanges` example, and harden the shared repair/output ordering. They add no Mortal or afterlife GM-authored state field, action type, receipt, scheduler contour, normalizer side effect, or realm-specific authority path. Because the shared lifecycle also governs afterlife repairs, the applicable matrix and worked example still document canonical-write-before-output ordering; adding a new afterlife state-contract row or manifest entry would misrepresent the runtime surface.
+
+## Sixth review hardening decisions
+
+### Decision 35: Afterlife repair realm is derived from pinned Soul authority
+
+**Decision**: Every afterlife or mixed validation-repair worker task includes the exact canonical bytes and SHA-256 of `game_state/meta/soul_state.json` as read-only context. The client strictly parses one unambiguous supported `currentRealm`, derives the worker realm contract from those bytes, excludes the authority path from proposal scope, and verifies the same bytes and realm immediately before apply.
+
+**Rationale**: Caller-supplied realm labels can drift from canonical state, and an after-dispatch realm change can turn an otherwise bounded proposal into a wrong-realm write. Making realm authority explicit and immutable closes both ambiguity and TOCTOU paths without asking the worker to reason about them.
+
+### Decision 36: Changed-file operation is explicit closed authority
+
+**Decision**: `WorkerFileChangeKind` has an invalid `Unspecified=0` state. Contract validation accepts exactly `Add`, `Replace`, or `Delete` and rejects omitted, zero, or undefined numeric values before any file-existence or hash semantics run.
+
+**Rationale**: Default enum deserialization must never silently turn a missing operation into an applicable mutation. The operation is part of authority, not a value the apply gate may infer.
+
+### Decision 37: JSON numeric syntax is not enough for characteristics
+
+**Decision**: Characteristic preservation accepts only JSON number tokens that parse to finite runtime numbers. Exponent overflow such as `1e9999` is rejected alongside non-number JSON kinds.
+
+**Rationale**: `System.Text.Json` can classify overflow syntax as a JSON number even when it cannot produce a finite value. Mechanical actor characteristics cannot carry infinity-equivalent state.
+
+### Decision 38: Phase 18 changes shared worker and afterlife repair authority
+
+**Decision**: Update the worker runner, bridge guide/formal contract/worked repair example, shared daemon repair template/spec, Mortal main guide/example, afterlife matrix/example, Spec Kit artifacts, and documentation/source guards. No new afterlife pending/control action, response field, receipt, report, scheduler contour, or normalizer side effect is added.
+
+**Rationale**: The realm-authority pin is a new afterlife validation-repair authority rule and therefore cannot use the earlier Mortal-only no-change rationale. The output freshness and explicit operation rules are shared lifecycle contracts, so both realms require synchronized guidance even though canonical gameplay schemas remain unchanged.
 
 ## Existing integration findings
 

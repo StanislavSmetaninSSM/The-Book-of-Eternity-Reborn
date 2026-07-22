@@ -110,6 +110,8 @@ public sealed class GmWorkerValidationRepairTests
             Assert.Single(task.ContextFiles).Path);
         Assert.Contains(task.AcceptanceCriteria, criterion =>
             criterion.Contains("protected actor data", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(task.AcceptanceCriteria, criterion =>
+            criterion.Contains("finite JSON number", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(task.ForbiddenActions, action =>
             action.Contains("untargeted actor", StringComparison.OrdinalIgnoreCase));
     }
@@ -290,7 +292,8 @@ public sealed class GmWorkerValidationRepairTests
             section: "ActorMemory");
         var hashes = new Dictionary<string, string>
         {
-            [expectedTargetPath] = new string('c', 64)
+            [expectedTargetPath] = new string('c', 64),
+            ["game_state/meta/soul_state.json"] = new string('d', 64)
         };
 
         var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
@@ -308,11 +311,74 @@ public sealed class GmWorkerValidationRepairTests
             BuildAfterlifeRepairContract(expectedTargetPath));
 
         Assert.Equal(new[] { expectedTargetPath }, task.AllowedProposalPaths);
-        var context = Assert.Single(task.ContextFiles);
-        Assert.Equal(expectedTargetPath, context.Path);
-        Assert.Equal(new string('c', 64), context.Sha256);
+        Assert.Contains(task.ContextFiles, context =>
+            context.Path == expectedTargetPath && context.Sha256 == new string('c', 64));
+        Assert.Contains(task.ContextFiles, context =>
+            context.Path == "game_state/meta/soul_state.json" && context.Sha256 == new string('d', 64));
+        Assert.DoesNotContain("game_state/meta/soul_state.json", task.AllowedProposalPaths);
         Assert.Contains("afterlifeProposal is optional", task.Instructions, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Return afterlifeProposal when this contract is present", task.Instructions, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BuildValidationRepairTask_AfterlifeRepairRequiresHashPinnedRealmAuthority()
+    {
+        const string targetPath = "game_state/meta/guardian_thought_journal.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issue = new ValidationIssue(
+            "game_state/meta/guardians.json.guardians[0]",
+            IssueSeverity.Error,
+            "Guardian memory is missing.",
+            code: "afterlife_actor_materialization_memory_missing",
+            actor: "guardian:guardian_realm_authority",
+            section: "ActorMemory");
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_afterlife_missing_realm_authority",
+                new WorkerTurnReference
+                {
+                    SessionId = "test-session",
+                    RequestId = "test-request",
+                    TurnNumber = 12
+                },
+                [issue],
+                new Dictionary<string, string> { [targetPath] = new string('c', 64) },
+                "2026-06-20T00:00:00Z",
+                BuildAfterlifeRepairContract(targetPath)));
+
+        Assert.Contains("soul_state.json", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ValidateTaskPacket_AfterlifeRepairWithoutPinnedRealmAuthorityIsRejected()
+    {
+        const string targetPath = "game_state/meta/guardian_thought_journal.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            ValidationIssues =
+            [
+                new WorkerValidationIssue
+                {
+                    Code = "afterlife_actor_materialization_memory_missing",
+                    Path = "game_state/meta/guardians.json.guardians[0]",
+                    Message = "Guardian memory is missing.",
+                    Actor = "guardian:guardian_realm_authority",
+                    Section = "ActorMemory"
+                }
+            ],
+            ContextFiles = [new WorkerFileReference { Path = targetPath, Sha256 = new string('c', 64) }],
+            AfterlifeContract = BuildAfterlifeRepairContract(targetPath),
+            AllowedProposalPaths = [targetPath]
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("soul_state.json", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -337,7 +403,8 @@ public sealed class GmWorkerValidationRepairTests
         var hashes = new Dictionary<string, string>
         {
             ["game_state/npcs/npc_core.json"] = new string('d', 64),
-            [AfterlifeEntityProfileState.StatePath] = new string('e', 64)
+            [AfterlifeEntityProfileState.StatePath] = new string('e', 64),
+            ["game_state/meta/soul_state.json"] = new string('f', 64)
         };
 
         var exception = Assert.Throws<InvalidOperationException>(() =>

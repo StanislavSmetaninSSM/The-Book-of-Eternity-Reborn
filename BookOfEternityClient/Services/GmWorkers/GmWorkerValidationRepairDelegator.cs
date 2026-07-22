@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
@@ -155,13 +154,17 @@ public sealed class GmWorkerValidationRepairDelegator
             issue.Code,
             "npc_characteristics_empty",
             StringComparison.OrdinalIgnoreCase));
-        var contextPaths = requiresCharacteristicAuthority
-            ? targetPaths.Append(MortalCharacteristicAuthorityContract.StatePath)
-                .Distinct(StringComparer.Ordinal)
-            : targetPaths;
+        var requiresAfterlifeRealmAuthority = prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue);
+        var contextPaths = targetPaths.AsEnumerable();
+        if (requiresCharacteristicAuthority)
+            contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
+        if (requiresAfterlifeRealmAuthority)
+            contextPaths = contextPaths.Append(AfterlifeRealmAuthorityContract.StatePath);
 
         var contextHashes = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var path in contextPaths)
+        WorkerAfterlifeRealmGate realmGate = WorkerAfterlifeRealmGate.None;
+        var currentRealm = string.Empty;
+        foreach (var path in contextPaths.Distinct(StringComparer.Ordinal))
         {
             var content = await _fs.ReadFileBytesAsync(path);
             if (path == MortalCharacteristicAuthorityContract.StatePath)
@@ -170,11 +173,25 @@ public sealed class GmWorkerValidationRepairDelegator
                 if (!MortalCharacteristicAuthorityContract.TryReadKeys(authorityJson, out _, out var error))
                     throw new InvalidOperationException(error);
             }
+            else if (path == AfterlifeRealmAuthorityContract.StatePath)
+            {
+                var authorityJson = DecodeUtf8(content);
+                if (!AfterlifeRealmAuthorityContract.TryRead(
+                        authorityJson,
+                        out realmGate,
+                        out currentRealm,
+                        out var error))
+                {
+                    throw new InvalidOperationException(error);
+                }
+            }
 
             contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
         }
 
-        var afterlifeContract = await BuildAfterlifeRepairContractAsync(prioritizedErrors, contextHashes.Keys);
+        var afterlifeContract = requiresAfterlifeRealmAuthority
+            ? BuildAfterlifeRepairContract(realmGate, currentRealm, targetPaths)
+            : null;
         return GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
             profile,
             $"worker_task_validation_repair_{attempt:D4}",
@@ -185,62 +202,32 @@ public sealed class GmWorkerValidationRepairDelegator
             afterlifeContract);
     }
 
-    private async Task<WorkerAfterlifeTaskContract?> BuildAfterlifeRepairContractAsync(
-        IReadOnlyList<ValidationIssue> issues,
+    private static WorkerAfterlifeTaskContract BuildAfterlifeRepairContract(
+        WorkerAfterlifeRealmGate realmGate,
+        string currentRealm,
         IEnumerable<string> targetPaths)
     {
-        if (!issues.Any(IsAfterlifeActorMaterializationIssue))
-            return null;
-
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
-            return null;
-
-        try
+        return new WorkerAfterlifeTaskContract
         {
-            using var document = JsonDocument.Parse(soulJson);
-            if (!document.RootElement.TryGetProperty("currentRealm", out var currentRealmElement) ||
-                currentRealmElement.ValueKind != JsonValueKind.String)
-            {
-                return null;
-            }
-
-            var currentRealm = currentRealmElement.GetString();
-            var realmGate = RealmSemantics.IsChaosSea(currentRealm)
-                ? WorkerAfterlifeRealmGate.ChaosSea
-                : RealmSemantics.IsShiningRealm(currentRealm)
-                    ? WorkerAfterlifeRealmGate.ShiningAbode
-                    : WorkerAfterlifeRealmGate.None;
-            if (realmGate == WorkerAfterlifeRealmGate.None)
-                return null;
-
-            return new WorkerAfterlifeTaskContract
-            {
-                RealmGate = realmGate,
-                CurrentRealm = realmGate == WorkerAfterlifeRealmGate.ChaosSea
-                    ? "Chaos Sea"
-                    : "Shining Abode",
-                AllowedAfterlifeSurfaces = targetPaths
-                    .Where(path => path.StartsWith("game_state/meta/", StringComparison.OrdinalIgnoreCase))
-                    .Distinct(StringComparer.Ordinal)
-                    .Order(StringComparer.Ordinal)
-                    .ToArray(),
-                RequiredReceipts = ["No new receipt is required for this bounded validation repair."],
-                RequiredReports = ["The apply-gate validation decision is the required repair report."],
-                ForbiddenMortalSubstitutes =
-                [
-                    "worldStateFlags",
-                    "worldEventsLog",
-                    "Mortal NPC relationships",
-                    "Mortal combat HP/status",
-                    "Mortal factions or map files"
-                ]
-            };
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
+            RealmGate = realmGate,
+            CurrentRealm = currentRealm,
+            AllowedAfterlifeSurfaces = targetPaths
+                .Where(path => path.StartsWith("game_state/meta/", StringComparison.OrdinalIgnoreCase))
+                .Where(path => !path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.Ordinal))
+                .Distinct(StringComparer.Ordinal)
+                .Order(StringComparer.Ordinal)
+                .ToArray(),
+            RequiredReceipts = ["No new receipt is required for this bounded validation repair."],
+            RequiredReports = ["The apply-gate validation decision is the required repair report."],
+            ForbiddenMortalSubstitutes =
+            [
+                "worldStateFlags",
+                "worldEventsLog",
+                "Mortal NPC relationships",
+                "Mortal combat HP/status",
+                "Mortal factions or map files"
+            ]
+        };
     }
 
     private static bool IsAfterlifeActorMaterializationIssue(ValidationIssue issue)

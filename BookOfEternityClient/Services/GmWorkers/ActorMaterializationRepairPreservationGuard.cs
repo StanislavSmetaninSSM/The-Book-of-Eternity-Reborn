@@ -393,7 +393,9 @@ internal static class ActorMaterializationRepairPreservationGuard
             return false;
 
         using var document = JsonDocument.Parse(node.ToJsonString());
-        return document.RootElement.ValueKind == JsonValueKind.Number;
+        return document.RootElement.ValueKind == JsonValueKind.Number &&
+               document.RootElement.TryGetDouble(out var value) &&
+               double.IsFinite(value);
     }
 
     private static bool TryNormalizeAmbiguousProfiles(

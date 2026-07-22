@@ -12,6 +12,22 @@ namespace BookOfEternityClient.Tests;
 public sealed class AfterlifeDocumentationCoverageTests
 {
     [Fact]
+    public void AfterlifeRepairDocs_PinRealmAuthorityAndRetainOutputFreshnessChain()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var source in new[] { matrix, examples })
+        {
+            Assert.Contains("hash-pinned read-only realm authority", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("game_state/meta/soul_state.json", source, StringComparison.Ordinal);
+            Assert.Contains("must not appear in `changedFiles`", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("strictly newer", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("original canonical target set", source, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void SharedCombatActionEffectValueContract_IsDocumentedForAfterlifeAuthors()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

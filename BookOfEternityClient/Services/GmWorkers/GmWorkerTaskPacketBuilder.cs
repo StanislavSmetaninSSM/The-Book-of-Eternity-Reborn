@@ -29,6 +29,7 @@ public static class GmWorkerTaskPacketBuilder
             issue.Code,
             "npc_characteristics_empty",
             StringComparison.OrdinalIgnoreCase));
+        var requiresAfterlifeRealmAuthority = afterlifeContract != null;
         if (requiresCharacteristicAuthority &&
             (!contextFileHashes.TryGetValue(MortalCharacteristicAuthorityContract.StatePath, out var authorityHash) ||
              string.IsNullOrWhiteSpace(authorityHash) ||
@@ -36,6 +37,15 @@ public static class GmWorkerTaskPacketBuilder
         {
             throw new ArgumentException(
                 $"Characteristics repair requires hash-pinned setting authority at {MortalCharacteristicAuthorityContract.StatePath}.",
+                nameof(contextFileHashes));
+        }
+        if (requiresAfterlifeRealmAuthority &&
+            (!contextFileHashes.TryGetValue(AfterlifeRealmAuthorityContract.StatePath, out var realmAuthorityHash) ||
+             string.IsNullOrWhiteSpace(realmAuthorityHash) ||
+             string.Equals(realmAuthorityHash, "missing", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException(
+                $"Afterlife repair requires hash-pinned realm authority at {AfterlifeRealmAuthorityContract.StatePath}.",
                 nameof(contextFileHashes));
         }
 
@@ -49,20 +59,52 @@ public static class GmWorkerTaskPacketBuilder
 
         if (allowedPaths.Length == 0)
             throw new ArgumentException("Validation issues do not map to any safe worker proposal path.", nameof(validationIssues));
+        if (requiresAfterlifeRealmAuthority &&
+            allowedPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, StringComparer.Ordinal))
+        {
+            throw new ArgumentException(
+                $"Afterlife realm authority is read-only and cannot be a repair proposal target: {AfterlifeRealmAuthorityContract.StatePath}.",
+                nameof(validationIssues));
+        }
 
-        var contextPaths = requiresCharacteristicAuthority
-            ? allowedPaths.Append(MortalCharacteristicAuthorityContract.StatePath)
-                .Distinct(StringComparer.Ordinal)
-                .Order(StringComparer.Ordinal)
-                .ToArray()
-            : allowedPaths;
+        var contextPaths = allowedPaths.AsEnumerable();
+        if (requiresCharacteristicAuthority)
+            contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
+        if (requiresAfterlifeRealmAuthority)
+            contextPaths = contextPaths.Append(AfterlifeRealmAuthorityContract.StatePath);
         var contextFiles = contextPaths
+            .Distinct(StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal)
             .Select(path => new WorkerFileReference
             {
                 Path = path,
                 Sha256 = contextFileHashes.TryGetValue(path, out var hash) ? hash : ""
             })
             .ToArray();
+        var acceptanceCriteria = new List<string>
+        {
+            "Return a worker-proposal-v1 JSON proposal.",
+            "Include changedFiles only for allowedProposalPaths.",
+            "Validation must pass after the apply gate applies proposed changes.",
+            "For actor materialization repair, preserve protected actor data and change only the exact actor/section coordinates carried by validationIssues.",
+            "For Mortal characteristics repair, use only keys from the hash-pinned read-only setting authority in game_state/misc/characteristics.json.",
+            "Every structured actor characteristic value must be a finite JSON number; strings, booleans, nulls, arrays, objects, NaN, infinity, and exponent overflow are invalid.",
+            "Keep session/request/turn metadata tied to sourceTurn."
+        };
+        var forbiddenActions = new List<string>
+        {
+            "Do not edit canonical game_session files directly.",
+            "Do not write outside allowedProposalPaths.",
+            "Do not rewrite untargeted actor fields, untargeted actors, or unrelated canonical root data.",
+            "Do not create terminal signals or validation ready files manually."
+        };
+        if (requiresAfterlifeRealmAuthority)
+        {
+            acceptanceCriteria.Add(
+                "For afterlife repair, obey the hash-pinned read-only realm authority in game_state/meta/soul_state.json.");
+            forbiddenActions.Add(
+                "Do not propose changes to game_state/meta/soul_state.json; it is read-only realm authority.");
+        }
 
         var task = new WorkerTaskPacket
         {
@@ -86,22 +128,8 @@ public static class GmWorkerTaskPacketBuilder
             ContextFiles = contextFiles,
             AfterlifeContract = afterlifeContract,
             AllowedProposalPaths = allowedPaths,
-            AcceptanceCriteria =
-            [
-                "Return a worker-proposal-v1 JSON proposal.",
-                "Include changedFiles only for allowedProposalPaths.",
-                "Validation must pass after the apply gate applies proposed changes.",
-                "For actor materialization repair, preserve protected actor data and change only the exact actor/section coordinates carried by validationIssues.",
-                "For Mortal characteristics repair, use only keys from the hash-pinned read-only setting authority in game_state/misc/characteristics.json.",
-                "Keep session/request/turn metadata tied to sourceTurn."
-            ],
-            ForbiddenActions =
-            [
-                "Do not edit canonical game_session files directly.",
-                "Do not write outside allowedProposalPaths.",
-                "Do not rewrite untargeted actor fields, untargeted actors, or unrelated canonical root data.",
-                "Do not create terminal signals or validation ready files manually."
-            ],
+            AcceptanceCriteria = acceptanceCriteria,
+            ForbiddenActions = forbiddenActions,
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal. Include changedFiles only for allowedProposalPaths. " +
                 "Use validationIssues actor/section/expected/actual coordinates as the exact repair scope. " +

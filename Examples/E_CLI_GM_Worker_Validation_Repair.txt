@@ -92,8 +92,45 @@ every non-delete `afterSha256` is the exact 64-character SHA-256 digest of its
 own proposal content. For an afterlife validation-repair task,
 `afterlifeProposal` is optional; bounded `changedFiles` must still be inside
 both `allowedProposalPaths` and `afterlifeContract.allowedAfterlifeSurfaces`.
+For every entry, `changeKind is mandatory` and must be exactly `add`, `replace`, or `delete`;
+omission, zero/unspecified, and undefined values are rejected.
+For afterlife repair, `game_state/meta/soul_state.json` is hash-pinned read-only realm authority:
+it must be present in `contextFiles` with the exact canonical
+SHA-256, its realm must match the afterlife contract, and it must not appear in `changedFiles`
+or `allowedProposalPaths`. A missing, malformed, duplicate-key,
+unsupported, changed-after-dispatch, or mismatched authority fails closed.
 Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 Status is mandatory; omission is invalid and must never default to completed.
+
+Worked afterlife authority fragment (the repeated hex strings stand for exact
+64-character SHA-256 values of the corresponding canonical bytes):
+
+```json
+{
+  "contextFiles": [
+    {
+      "path": "game_state/meta/guardians.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "path": "game_state/meta/soul_state.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "afterlifeContract": {
+    "realmGate": "ChaosSea",
+    "currentRealm": "Chaos Sea",
+    "allowedAfterlifeSurfaces": ["game_state/meta/guardians.json"]
+  },
+  "allowedProposalPaths": ["game_state/meta/guardians.json"]
+}
+```
+
+The worker may return a `replace` entry for `guardians.json` with matching exact
+hashes. It must preserve the pinned `soul_state.json` bytes and cannot include
+that authority path in its proposal. If another process changes the authority
+after dispatch, the apply gate rejects the whole proposal without partial
+writes.
 
 Worker response proposal:
 

@@ -3817,6 +3817,9 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("ledger/progressionLedger", template, StringComparison.Ordinal);
             Assert.Contains("shiningFactionChronicleUpdates", template, StringComparison.Ordinal);
             Assert.Contains("do not invent an actor", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("strictly newer", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("original canonical target set", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("equal timestamps are stale", template, StringComparison.OrdinalIgnoreCase);
 
             var daemon = File.ReadAllText(Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1"), Encoding.UTF8);
             Assert.Contains("$script:CompactOutputArtifactRepairTemplatePath", daemon, StringComparison.Ordinal);
@@ -3825,6 +3828,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("narrative_response_technical_repair_leak", daemon, StringComparison.Ordinal);
             Assert.Contains("Test-GmValidationRepairArtifactWritingStall", daemon, StringComparison.Ordinal);
             Assert.Contains("gm_validation_repair_artifact_stall", daemon, StringComparison.Ordinal);
+            Assert.Contains("strictly newer", daemon, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("original canonical target set", daemon, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

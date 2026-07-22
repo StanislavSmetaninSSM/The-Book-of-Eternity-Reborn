@@ -101,12 +101,14 @@ public sealed class GmWorkerApplyGate
             return decision;
         }
 
-        var preservationErrors = VerifyActorMaterializationRepairPreservation(
-            proposal,
-            task,
-            capturedContents,
-            baselines);
-        if (preservationErrors.Count > 0)
+        var preservationErrors = VerifyAfterlifeRealmAuthority(task, baselines)
+            .Concat(VerifyActorMaterializationRepairPreservation(
+                proposal,
+                task,
+                capturedContents,
+                baselines))
+            .ToArray();
+        if (preservationErrors.Length > 0)
         {
             var decision = BuildDecision(
                 proposal.ProposalId,
@@ -329,6 +331,35 @@ public sealed class GmWorkerApplyGate
         }
 
         return errors;
+    }
+
+    private static IReadOnlyList<string> VerifyAfterlifeRealmAuthority(
+        WorkerTaskPacket task,
+        IReadOnlyDictionary<string, byte[]?> baselines)
+    {
+        if (task.TaskType != WorkerTaskType.ValidationRepair || task.AfterlifeContract == null)
+            return [];
+
+        baselines.TryGetValue(AfterlifeRealmAuthorityContract.StatePath, out var authorityBytes);
+        if (!AfterlifeRealmAuthorityContract.TryRead(
+                DecodeUtf8(authorityBytes),
+                out var realmGate,
+                out var currentRealm,
+                out var error))
+        {
+            return [error];
+        }
+
+        if (task.AfterlifeContract.RealmGate != realmGate ||
+            !string.Equals(task.AfterlifeContract.CurrentRealm, currentRealm, StringComparison.Ordinal))
+        {
+            return
+            [
+                $"Afterlife repair realm contract does not match pinned realm authority in {AfterlifeRealmAuthorityContract.StatePath}."
+            ];
+        }
+
+        return [];
     }
 
     private async Task<IReadOnlyList<string>> VerifyAppliedFilesRemainOwnedAsync(

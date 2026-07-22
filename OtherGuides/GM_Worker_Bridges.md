@@ -1,6 +1,6 @@
 # GM Worker Bridges
 
-Tracked issues: #1141, #1143, #1145, #1147, #1149, #1231, #1232, #1233.
+Tracked issues: #1141, #1143, #1145, #1147, #1149, #1231, #1232, #1233, #1500.
 
 GM worker bridges are subordinate helpers for the main GM. They can be Codex
 or another supported CLI profile configured by the user. The main GM remains the
@@ -78,6 +78,19 @@ or the literal `missing` for an absent add target. Every non-delete
 content bytes. A delete uses `afterSha256=missing` and no `contentRef`.
 `contentRef` is proposal-bound and must be exactly
 `worker_proposals/<proposalId>/<changedFiles.path>`.
+
+For every changed entry, `changeKind is mandatory` and must be exactly `add`, `replace`, or `delete`.
+Omission, zero/unspecified values, and unknown enum
+values are invalid even when hashes and content otherwise look correct.
+
+For an afterlife `validation-repair`,
+`game_state/meta/soul_state.json` is hash-pinned read-only realm authority. Its
+exact canonical bytes and SHA-256 must be present in `contextFiles`, its
+`currentRealm` must agree with `afterlifeContract.realmGate` and
+`afterlifeContract.currentRealm`, and it must not appear in `changedFiles` or
+`allowedProposalPaths`. Missing, malformed, duplicate-key, unsupported,
+changed-after-dispatch, or mismatched realm authority fails closed before any
+canonical write.
 
 If a worker CLI writes a valid proposal and only then times out or exits with a
 nonzero code, the worker pool preserves the proposal and records it as
@@ -326,6 +339,11 @@ and reports, provide a player-visible summary, and give `gmReviewNotes` plus
 is optional: the authoritative repair payload is the bounded, hashed
 `changedFiles` list, and every changed path must also be allowed by
 `allowedAfterlifeSurfaces`.
+
+An afterlife validation-repair additionally binds the contract to the exact
+hash-pinned read-only realm authority in `game_state/meta/soul_state.json`.
+That authority is context only and must not appear in `changedFiles`; the apply
+gate rechecks the same bytes and realm immediately before applying the proposal.
 
 The validator rejects afterlife proposals that try to use Mortal World
 substitutes such as `worldStateFlags`, `worldEventsLog`, Mortal NPC

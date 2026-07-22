@@ -186,6 +186,34 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
+    public void ValidationRepairDocs_DocumentExplicitChangeKindsAndPinnedAfterlifeRealmAuthority()
+    {
+        var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
+        var contract = ReadRepoFile("specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md");
+        var repair = ReadRepoFile("Examples/E_CLI_GM_Worker_Validation_Repair.txt");
+        var afterlifeMatrix = ReadRepoFile("OtherGuides/Afterlife_Contract_Matrix.md");
+        var runner = ReadRepoFile("BookOfEternityClient/Launcher/gm_worker_cli_runner.ps1");
+        var mainGuide = ReadRepoFile("TaskGuides/CLI_Step_Main.txt");
+        var mainExample = ReadRepoFile("Examples/E_CLI_Step_Main.txt");
+
+        foreach (var source in new[] { guide, contract, repair, runner })
+        {
+            Assert.Contains("changeKind is mandatory", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("`add`, `replace`, or `delete`", source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var source in new[] { guide, contract, repair, afterlifeMatrix, runner })
+        {
+            Assert.Contains("hash-pinned read-only realm authority", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("game_state/meta/soul_state.json", source, StringComparison.Ordinal);
+            Assert.Contains("must not appear in `changedFiles`", source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("finite JSON number", mainGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("finite JSON number", mainExample, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void GmWorkerBridgeDocs_DocumentCliRunnerEntrypoint()
     {
         var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");
