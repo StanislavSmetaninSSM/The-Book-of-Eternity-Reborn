@@ -78,6 +78,15 @@ worker must not depend on it for durable state. This is a harness boundary for
 the configured worker protocol, not an operating-system sandbox for a
 deliberately malicious operator-supplied `launchCommand`.
 
+The pool verifies every declared non-delete `contentRef` digest before importing any worker artifact.
+One mismatched or missing artifact rejects the complete handoff, so a partially
+published proposal cannot become review authority. Task and proposal identifiers are immutable:
+reusing an existing identifier is a collision and never overwrites prior task,
+proposal, or review evidence. If the process timeout and a malformed handoff
+are both observed, timeout remains authoritative; the malformed proposal is
+reported as additional diagnostic evidence rather than rewriting the outcome
+as an ordinary failure.
+
 Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
 must be the exact 64-character SHA-256 digest of the same canonical file bytes,
 or the literal `missing` for an absent add target. Every non-delete
@@ -101,7 +110,11 @@ canonical write.
 
 Every `game_state/meta/` validation-repair target is afterlife-scoped, including
 non-actor metadata. A mixed Mortal/afterlife issue batch fails task construction
-closed instead of weakening either authority contract. For
+closed instead of weakening either authority contract. Afterlife allowlists use
+exact wildcard-free afterlife paths; `game_state/**`, `*`, `?`, and equivalent
+patterns never grant repair authority. The harness uses case-insensitive canonical path identity
+for Windows session paths, rejects duplicate case aliases, and applies the same
+identity to setting/Soul read-only authority and proposal scope. For
 `npc_characteristics_empty`, `game_state/misc/characteristics.json` is likewise
 read-only context and must never appear in `allowedProposalPaths` or
 `changedFiles`.
@@ -112,6 +125,11 @@ full-state validation, read-only context recheck, rollback if necessary, and
 decision linearization. A cooperating canonical writer waits; an external
 non-cooperating mutation is detected by the final byte checks and rejects the
 proposal without accepting mixed authority.
+
+Built-in backup, restore, game-state clear, and current-world lore clear
+operations acquire the same canonical write lease. Detached runtime cleanup
+never follows reparse points. A cleanup failure is an audit diagnostic and does
+not replace an already completed, timed-out, or rejected worker result.
 
 If a worker CLI writes a valid proposal and only then times out or exits with a
 nonzero code, the worker pool preserves the proposal and records it as

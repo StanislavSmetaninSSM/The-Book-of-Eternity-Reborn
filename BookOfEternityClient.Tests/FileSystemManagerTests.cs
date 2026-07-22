@@ -143,6 +143,84 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task CreateBackup_WaitsForCanonicalWriteLease()
+    {
+        const string path = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(path, "before");
+        Task<string?> backupTask;
+
+        await using (await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            backupTask = Task.Run(() => _fs.CreateBackup(path));
+            await Task.Delay(150);
+            Assert.False(backupTask.IsCompleted);
+        }
+
+        var backupPath = await backupTask;
+        Assert.NotNull(backupPath);
+        Assert.True(File.Exists(backupPath));
+    }
+
+    [Fact]
+    public async Task RestoreBackup_WaitsForCanonicalWriteLease()
+    {
+        const string path = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(path, "current");
+        var backupPath = _fs.ResolvePath(path) + ".test-backup";
+        await File.WriteAllTextAsync(backupPath, "restored");
+        Task restoreTask;
+
+        await using (await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            restoreTask = Task.Run(() => _fs.RestoreBackup(backupPath, path));
+            await Task.Delay(150);
+            Assert.False(restoreTask.IsCompleted);
+            Assert.Equal("current", await _fs.ReadFileAsync(path));
+        }
+
+        await restoreTask;
+        Assert.Equal("restored", await _fs.ReadFileAsync(path));
+    }
+
+    [Fact]
+    public async Task ClearGameState_WaitsForCanonicalWriteLease()
+    {
+        const string path = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(path, "state");
+        Task clearTask;
+
+        await using (await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            clearTask = Task.Run(_fs.ClearGameState);
+            await Task.Delay(150);
+            Assert.False(clearTask.IsCompleted);
+            Assert.True(_fs.FileExists(path));
+        }
+
+        await clearTask;
+        Assert.False(_fs.FileExists(path));
+    }
+
+    [Fact]
+    public async Task ClearCurrentWorldLore_WaitsForCanonicalWriteLease()
+    {
+        const string path = "lore/current_world/setting.md";
+        await _fs.WriteFileAtomicAsync(path, "setting");
+        Task clearTask;
+
+        await using (await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            clearTask = Task.Run(_fs.ClearCurrentWorldLore);
+            await Task.Delay(150);
+            Assert.False(clearTask.IsCompleted);
+            Assert.True(_fs.FileExists(path));
+        }
+
+        await clearTask;
+        Assert.False(_fs.FileExists(path));
+    }
+
+    [Fact]
     public async Task ClearGameState_PreservesGmBridgeRuntimeStatus()
     {
         await _fs.WriteFileAtomicAsync("game_state/control/gm_bridge_status.json", """{"ready":true}""");

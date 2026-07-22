@@ -150,6 +150,7 @@ Worker runtime paths:
 - BOE_WORKER_SESSION_PATH: $SessionPath
 - BOE_WORKER_SESSION_PATH is a detached execution snapshot under .worker_runtime, not the live canonical session. It contains only pinned task context.
 - Direct writes to copied game_state, lore, or other session files are discarded. Only the validated proposal and its declared contentRef bytes can be imported by the pool.
+- The pool verifies every declared contentRef digest before publishing any part of the handoff. Do not reuse a taskId or proposalId; identifiers are immutable and collisions are rejected.
 
 Output contract:
 - Write exactly one worker-proposal-v1 JSON object to BOE_WORKER_PROPOSAL_PATH.
@@ -161,6 +162,7 @@ Output contract:
 - If the task contains authoringRequest, keep changedFiles empty and return authoringProposal with structured created/updated entities, requiredLinks, validatorRisks, and gmReviewNotes.
 - If the task contains afterlifeContract and taskType is not validation-repair, keep changedFiles empty and return afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks. Use only the listed afterlife surfaces; never substitute Mortal World state such as worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files.
 - For validation-repair tasks, return only bounded changedFiles inside allowedProposalPaths. For every entry, changeKind is mandatory and must be exactly `add`, `replace`, or `delete`; never omit it or use zero/unspecified/unknown values. Every replace/add item requires path, beforeSha256, afterSha256, and a contentRef under worker_proposals/<proposalId>/<path>. When afterlifeContract is present, all changed files must also stay inside allowedAfterlifeSurfaces; afterlifeProposal is optional for this repair-only task.
+- Paths are compared by case-insensitive canonical Windows identity. Copy exact task paths, never add case aliases, and never use `*`, `?`, `**`, or another wildcard in allowedAfterlifeSurfaces; each afterlife surface is one exact path.
 - For an afterlife validation-repair task, game_state/meta/soul_state.json is hash-pinned read-only realm authority. Read it only from task context, keep its exact bytes unchanged, require its realm to match afterlifeContract, and remember that it must not appear in `changedFiles` or allowedProposalPaths.
 - If the task contains soulContentRequest, keep changedFiles empty and return soulContentProposal with safeSoulSummaries, progressionSuggestions, rewardNotes, nextLifePreparationHooks, forbiddenReadonlyFields, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. Treat soulName and soulFormDescription as player-owned readonly identity; do not overwrite them.
 - Leave schema validation, scope checks, and canonical application to the main GM apply gate.

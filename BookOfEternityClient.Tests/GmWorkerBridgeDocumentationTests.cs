@@ -226,6 +226,9 @@ public sealed class GmWorkerBridgeDocumentationTests
         var gitIgnore = ReadRepoFile(".gitignore");
         var bridgePool = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs");
         var applyGate = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs");
+        var contractValidator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs");
+        var executionWorkspace = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
+        var fileSystemManager = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.cs");
 
         foreach (var source in new[] { guide, contract, repair, runner })
         {
@@ -239,14 +242,53 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("only pinned task context", source, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("only the validated proposal and its declared contentRef", source, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("read-only context", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("before importing any worker artifact", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("task and proposal identifiers are immutable", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("timeout remains authoritative", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("case-insensitive canonical path identity", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("cleanup failure is an audit diagnostic", source, StringComparison.OrdinalIgnoreCase);
         }
 
         foreach (var source in new[] { guide, contract, repair, afterlifeMatrix })
+        {
             Assert.Contains("every `game_state/meta/`", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("exact wildcard-free afterlife paths", source, StringComparison.OrdinalIgnoreCase);
+        }
 
         Assert.Contains("GmWorkerExecutionWorkspace.CreateAsync", bridgePool, StringComparison.Ordinal);
         Assert.DoesNotContain("CreateWorkerStartInfo(profile, _fs.GameSessionPath)", bridgePool, StringComparison.Ordinal);
         Assert.Contains("AcquireCanonicalWriteLeaseAsync", applyGate, StringComparison.Ordinal);
+        Assert.Contains("SHA256.HashData(content)", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("Worker task id already exists and cannot overwrite", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("Worker proposal id already exists and cannot be overwritten", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("TimedOut = true", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("workspace-cleanup-failed", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("CanonicalPathComparer", contractValidator, StringComparison.Ordinal);
+        Assert.Contains("StringComparer.OrdinalIgnoreCase", contractValidator, StringComparison.Ordinal);
+        Assert.Contains("must not contain wildcard patterns", contractValidator, StringComparison.Ordinal);
+        Assert.Contains("SearchOption.TopDirectoryOnly", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("FileAttributes.ReparsePoint", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("Directory.Delete(path, recursive: false)", executionWorkspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("SearchOption.AllDirectories", executionWorkspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.Delete(workspaceRoot, recursive: true)", executionWorkspace, StringComparison.Ordinal);
+        foreach (var methodName in new[]
+                 {
+                     "CreateBackupAsync",
+                     "RestoreBackupAsync",
+                     "ClearGameStateAsync",
+                     "ClearCurrentWorldLoreAsync"
+                 })
+        {
+            var methodOffset = fileSystemManager.IndexOf(methodName, StringComparison.Ordinal);
+            Assert.True(methodOffset >= 0, $"Expected FileSystemManager method {methodName}.");
+            var leaseOffset = fileSystemManager.IndexOf(
+                "AcquireCanonicalWriteLeaseAsync",
+                methodOffset,
+                StringComparison.Ordinal);
+            Assert.True(
+                leaseOffset >= 0 && leaseOffset - methodOffset < 300,
+                $"Expected {methodName} to acquire the canonical write lease before mutating state.");
+        }
         Assert.Contains("detached execution snapshot", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("never copy direct snapshot edits", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("detached execution snapshot", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);

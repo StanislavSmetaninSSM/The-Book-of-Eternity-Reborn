@@ -42,7 +42,7 @@ public class StateDistributor
             // Phase 1: Create backups for all affected files
             foreach (var filePath in fileUpdates.Keys)
             {
-                var backup = _fs.CreateBackup(filePath);
+                var backup = await _fs.CreateBackupAsync(filePath);
                 if (backup != null)
                     backups[filePath] = backup;
             }
@@ -70,7 +70,7 @@ public class StateDistributor
 
             // Rollback all changes
             foreach (var (filePath, backupPath) in backups)
-                _fs.RestoreBackup(backupPath, filePath);
+                await _fs.RestoreBackupAsync(backupPath, filePath);
 
             throw;
         }

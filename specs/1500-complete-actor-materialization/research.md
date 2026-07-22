@@ -302,6 +302,47 @@ new GM-authored game state, but the afterlife classification and Soul authority
 rules are GM-facing repair contracts and therefore require both realms' repair
 documentation.
 
+### Decision 42: Worker handoff publication is all-verified and identity-preserving
+
+**Decision**: Load and hash every declared non-delete proposal artifact before
+publishing any of them. Reject an existing task or proposal identifier instead
+of overwriting earlier evidence. If timeout and malformed proposal data coexist,
+retain timeout as the authoritative execution outcome and append the malformed
+handoff as diagnostic context.
+
+**Rationale**: Per-artifact streaming publication permits a later digest failure
+to leave a partial handoff. Overwriting IDs destroys review history, while
+letting malformed JSON replace a timeout makes observability dependent on a
+worker's final partial write.
+
+### Decision 43: Canonical path and writer authority use one exact protocol
+
+**Decision**: Treat canonical Windows session paths case-insensitively, reject
+case-alias duplicates, classify the original issue set before worker-profile
+path filtering, reject mixed Mortal/afterlife batches, and accept only exact
+wildcard-free afterlife surfaces. Route built-in backup, restore, game-state
+clear, and current-world lore clear operations through the same canonical write
+lease used by worker apply.
+
+**Rationale**: Windows case aliases and glob allowlists can bypass otherwise
+correct read-only checks. A lease closes TOCTOU only when every cooperating
+canonical writer participates, not merely the worker apply path.
+
+### Decision 44: Detached cleanup cannot broaden authority or erase results
+
+**Decision**: Delete detached workspaces with top-level post-order traversal,
+remove reparse entries as links, and never recurse through their targets. Record
+exhausted cleanup failures in worker audit while preserving the already known
+completed, timed-out, failed, or rejected result. Synchronize shared Mortal and
+afterlife worker guidance and source guards, but add no gameplay state field,
+pending/control action, response, receipt, report, scheduler contour, or
+normalizer side effect.
+
+**Rationale**: Recursive filesystem deletion can escape the detached workspace
+through a worker-created junction and a cleanup exception from `finally` can
+mask the result that operators need to review. These are harness lifecycle
+rules, not new GM-authored gameplay schemas.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

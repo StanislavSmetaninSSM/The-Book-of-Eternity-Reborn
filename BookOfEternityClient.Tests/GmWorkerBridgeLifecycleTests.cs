@@ -173,6 +173,165 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_WorkerCreatedJunction_IsRemovedWithoutTouchingExternalTargetOrMaskingResult()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var outsideRoot = CreateTempRoot();
+        var outsideFile = Path.Combine(outsideRoot, "outside-readonly.txt");
+        try
+        {
+            await File.WriteAllTextAsync(outsideFile, "outside");
+            File.SetAttributes(outsideFile, File.GetAttributes(outsideFile) | FileAttributes.ReadOnly);
+            var fs = CreateFileSystem(root);
+            var escapedOutsideRoot = outsideRoot.Replace("'", "''", StringComparison.Ordinal);
+            var scriptPath = Path.Combine(root, "fake-worker-junction.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $junctionPath = Join-Path $env:BOE_WORKER_SESSION_PATH 'worker-created-junction'
+                New-Item -ItemType Junction -Path $junctionPath -Target '{{escapedOutsideRoot}}' | Out-Null
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = 'worker_proposal_junction_cleanup'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Valid proposal with an unrelated worker-created junction.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'junction cleanup regression'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('cleanup must not traverse junctions')
+                    }
+                    createdAtUtc = '2026-07-23T00:11:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+
+            Assert.NotNull(result.Proposal);
+            Assert.Equal("worker_proposal_junction_cleanup", result.Proposal!.ProposalId);
+            Assert.True(File.Exists(outsideFile));
+            Assert.True((File.GetAttributes(outsideFile) & FileAttributes.ReadOnly) != 0);
+            var runtimeRoot = Path.Combine(root, GmWorkerBridgePool.WorkerRuntimeRoot);
+            Assert.False(Directory.Exists(runtimeRoot) && Directory.EnumerateFileSystemEntries(runtimeRoot).Any());
+        }
+        finally
+        {
+            if (File.Exists(outsideFile))
+                File.SetAttributes(outsideFile, File.GetAttributes(outsideFile) & ~FileAttributes.ReadOnly);
+            CleanupTempRoot(root);
+            CleanupTempRoot(outsideRoot);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_WorkspaceCleanupFailure_DoesNotReplaceCompletedWorkerResult()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var childPidPath = Path.Combine(root, "cleanup-locker.pid");
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var lockerScriptPath = Path.Combine(root, "hold-worker-file-lock.ps1");
+            await File.WriteAllTextAsync(lockerScriptPath, """
+                param([Parameter(Mandatory = $true)][string]$LockedPath)
+                $stream = [System.IO.File]::Open(
+                    $LockedPath,
+                    [System.IO.FileMode]::OpenOrCreate,
+                    [System.IO.FileAccess]::ReadWrite,
+                    [System.IO.FileShare]::None)
+                try { Start-Sleep -Seconds 30 }
+                finally { $stream.Dispose() }
+                """);
+            var escapedLockerScript = lockerScriptPath.Replace("'", "''", StringComparison.Ordinal);
+            var escapedChildPidPath = childPidPath.Replace("'", "''", StringComparison.Ordinal);
+            var workerScriptPath = Path.Combine(root, "fake-worker-cleanup-lock.ps1");
+            await File.WriteAllTextAsync(workerScriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $lockedPath = Join-Path $env:BOE_WORKER_SESSION_PATH 'worker-lock.bin'
+                $child = Start-Process -FilePath 'powershell.exe' -ArgumentList @(
+                    '-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass',
+                    '-File', '{{escapedLockerScript}}', $lockedPath
+                ) -WindowStyle Hidden -PassThru
+                [System.IO.File]::WriteAllText('{{escapedChildPidPath}}', $child.Id.ToString())
+                Start-Sleep -Seconds 1
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = 'worker_proposal_cleanup_failure'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Valid proposal survives a detached workspace cleanup failure.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'cleanup failure regression'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('cleanup failure must be diagnostic only')
+                    }
+                    createdAtUtc = '2026-07-23T00:12:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{workerScriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
+            var audit = new GmWorkerAuditLog(fs);
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit);
+
+            var result = await pool.RunTaskAsync(profile, task);
+            var events = await audit.ReadEventsAsync();
+
+            Assert.NotNull(result.Proposal);
+            Assert.Equal("worker_proposal_cleanup_failure", result.Proposal!.ProposalId);
+            Assert.Contains(events, item => item.EventType == "workspace-cleanup-failed");
+        }
+        finally
+        {
+            if (File.Exists(childPidPath) &&
+                int.TryParse(await File.ReadAllTextAsync(childPidPath), out var childPid))
+            {
+                try
+                {
+                    using var child = System.Diagnostics.Process.GetProcessById(childPid);
+                    child.Kill(entireProcessTree: true);
+                    await child.WaitForExitAsync();
+                }
+                catch (ArgumentException)
+                {
+                    // The child already exited.
+                }
+            }
+
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_DeclaredContentRef_IsImportedWithoutApplyingCanonicalChange()
     {
         var root = CreateTempRoot();
@@ -247,6 +406,143 @@ public sealed class GmWorkerBridgeLifecycleTests
             Assert.NotNull(await new GmWorkerProposalStore(fs).ReadProposalAsync(proposalId));
             var runtimeRoot = Path.Combine(root, GmWorkerBridgePool.WorkerRuntimeRoot);
             Assert.False(Directory.Exists(runtimeRoot) && Directory.EnumerateFileSystemEntries(runtimeRoot).Any());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_ContentRefDigestMismatch_RejectsBeforeImportingAnyArtifact()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string canonicalPath = "game_state/world/weather.json";
+            const string proposalId = "worker_proposal_wrong_content_digest";
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-wrong-content-digest.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $contentRef = 'worker_proposals/{{proposalId}}/{{canonicalPath}}'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Force -Path (Split-Path -Parent $contentPath) | Out-Null
+                [System.IO.File]::WriteAllText($contentPath, '{"weather":"tampered"}', [System.Text.UTF8Encoding]::new($false))
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = '{{proposalId}}'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Digest deliberately does not match detached content.'
+                    changedFiles = @([ordered]@{
+                        path = '{{canonicalPath}}'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = ('0' * 64)
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $false
+                        notes = @('digest mismatch regression')
+                    }
+                    createdAtUtc = '2026-07-23T00:06:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+                {
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var contentRef = $"worker_proposals/{proposalId}/{canonicalPath}";
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+            var events = await new GmWorkerAuditLog(fs).ReadEventsAsync();
+
+            Assert.Null(result.Proposal);
+            Assert.Equal(WorkerBridgeState.Failed, result.Status.State);
+            Assert.Contains("afterSha256", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(contentRef));
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetProposalInboxPath(task.TaskId)));
+            Assert.Null(await new GmWorkerProposalStore(fs).ReadProposalAsync(proposalId));
+            Assert.Contains(events, item => item.EventType == "proposal-rejected");
+            Assert.DoesNotContain(events, item => item.EventType == "proposal-received");
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_ExistingProposalId_RejectsWithoutOverwritingPriorReviewArtifact()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string proposalId = "worker_proposal_collision";
+            var fs = CreateFileSystem(root);
+            var store = new GmWorkerProposalStore(fs);
+            var prior = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+            {
+                ProposalId = proposalId,
+                Summary = "Prior proposal must remain immutable."
+            };
+            await store.SaveProposalAsync(prior);
+            var scriptPath = Path.Combine(root, "fake-worker-proposal-collision.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = '{{proposalId}}'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Attempted replacement proposal.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'Must not replace the prior artifact.'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('proposal id collision regression')
+                    }
+                    createdAtUtc = '2026-07-23T00:07:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
+            var pool = new GmWorkerBridgePool(fs, store, new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+            var preserved = await store.ReadProposalAsync(proposalId);
+            var events = await new GmWorkerAuditLog(fs).ReadEventsAsync();
+
+            Assert.Null(result.Proposal);
+            Assert.Equal(WorkerBridgeState.Failed, result.Status.State);
+            Assert.Contains("already exists", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(prior.Summary, preserved!.Summary);
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetProposalInboxPath(task.TaskId)));
+            Assert.Contains(events, item => item.EventType == "proposal-rejected");
+            Assert.DoesNotContain(events, item => item.EventType == "proposal-received");
         }
         finally
         {
@@ -506,6 +802,83 @@ public sealed class GmWorkerBridgeLifecycleTests
                 auditEvents,
                 first => Assert.Equal("task-dispatched", first.EventType),
                 second => Assert.Equal("proposal-received", second.EventType));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_WhenWorkerTimesOutAfterWritingMalformedProposal_PreservesTimeoutTruth()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-malformed-proposal-then-timeout.ps1");
+            await File.WriteAllTextAsync(scriptPath, """
+                [System.IO.File]::WriteAllText(
+                    $env:BOE_WORKER_PROPOSAL_PATH,
+                    '{not valid json',
+                    [System.Text.UTF8Encoding]::new($false))
+                Start-Sleep -Seconds 30
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 3
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = profile.TimeoutSeconds });
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+            var auditEvents = await new GmWorkerAuditLog(fs).ReadEventsAsync();
+
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
+            Assert.Null(result.Proposal);
+            Assert.Contains("timed out", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("malformed", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(auditEvents, item => item.EventType == "proposal-rejected");
+            Assert.Contains(auditEvents, item => item.EventType == "task-timed-out");
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_ExistingTaskId_RejectsWithoutOverwritingPriorDispatchArtifact()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = 10 });
+            var taskPath = GmWorkerBridgePool.GetTaskPacketPath(task.TaskId);
+            const string priorTaskJson = "{\"prior\":true}";
+            await fs.WriteFileAtomicAsync(taskPath, priorTaskJson);
+            var scriptPath = Path.Combine(root, "fake-worker-existing-task-id.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 0");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task);
+
+            Assert.Equal(WorkerBridgeState.Failed, result.Status.State);
+            Assert.Contains("task id already exists", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(priorTaskJson, await fs.ReadFileAsync(taskPath));
+            Assert.Empty(await new GmWorkerAuditLog(fs).ReadEventsAsync());
         }
         finally
         {

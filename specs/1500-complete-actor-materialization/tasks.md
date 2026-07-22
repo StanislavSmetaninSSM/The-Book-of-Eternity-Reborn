@@ -163,3 +163,17 @@
 - [x] T084 Keep `game_state/misc/characteristics.json` read-only in every mixed Mortal characteristics repair task and enforce the invariant in both task construction and standalone packet validation.
   - Evidence: RED allowed the setting authority file to become writable in a mixed characteristics repair. GREEN rejects it in both builder and standalone packet validation and revalidates its exact bytes before apply acceptance.
 - [ ] T085 Synchronize Spec Kit, worker/GM guidance, source guards, and worked examples; record RED/GREEN evidence and repeat segmented independent review before T080/T075/T023/T033 integration.
+
+## Phase 20 - Eighth review import, scope, lease, and cleanup remediation
+
+- [x] T086 Verify every declared `contentRef` digest before importing any worker artifact, reject proposal-ID collisions without overwriting prior review state, and preserve timeout truth when a malformed proposal exists.
+  - Evidence: RED accepted mismatched detached bytes, replaced an existing proposal, overwrote repeated dispatch IDs, and reported a malformed proposal timeout as an ordinary failure. GREEN verifies `afterSha256` before publication, preserves immutable task/proposal artifacts, and reports timeout plus the rejected-handoff diagnostic; focused lifecycle verification passes 6/6.
+- [x] T087 Reject standalone and builder-created mixed Mortal/afterlife repair batches before path filtering; require exact non-wildcard afterlife surfaces for every `game_state/meta/` target.
+  - Evidence: RED let a narrow profile silently drop the Mortal target and accepted a forged mixed packet covered by `game_state/**`. GREEN classifies the original issue set before filtering, rejects mixed standalone packets, and requires exact wildcard-free afterlife surfaces; validation-repair/delegator verification passes 42/42.
+- [x] T088 Route built-in backup, restore, and clear operations through the canonical write lease so no cooperating canonical writer can cross an apply decision interval.
+  - Evidence: RED showed backup, restore, game-state clear, and current-world lore clear completing while a canonical lease was held. GREEN adds leased async operations with compatible sync wrappers and migrates `StateDistributor` rollback; `FileSystemManagerTests` passes 14/14.
+- [x] T089 Treat Windows path aliases case-insensitively for setting/Soul read-only authority, context identity, and proposal-scope exclusion.
+  - Evidence: RED accepted case aliases in context/allowed paths and both read-only authorities, while changed-file aliases escaped duplicate detection. GREEN centralizes case-insensitive canonical path identity across builder, validator, dispatch, bridge, and apply gate; focused alias tests pass 5/5 and the broader contract/delegator/apply suite passes 180/180.
+- [x] T090 Delete detached workspaces without traversing worker-created reparse points and prevent cleanup failure from replacing a completed/timeout worker result.
+  - Evidence: RED cleanup traversed a worker junction and cleared an external file attribute; a deliberately locked runtime file threw from `finally` and replaced a completed result. GREEN performs top-level/post-order deletion without following reparse points and records cleanup failure diagnostically; both regressions pass 2/2.
+- [ ] T091 Synchronize Spec Kit and worker/afterlife guidance where review semantics changed, record RED/GREEN evidence, rerun focused/full verification, and obtain a clean independent re-review before T085/T080/T075/T023/T033 integration.

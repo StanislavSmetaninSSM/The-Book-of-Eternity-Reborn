@@ -22,8 +22,18 @@ public static class GmWorkerTaskPacketBuilder
             throw new ArgumentException("Worker profile cannot handle validation-repair tasks.", nameof(profile));
         if (validationIssues.Count == 0)
             throw new ArgumentException("At least one validation issue is required.", nameof(validationIssues));
+        var duplicateContextHashPath = contextFileHashes.Keys
+            .GroupBy(path => path, GmWorkerContractValidator.CanonicalPathComparer)
+            .FirstOrDefault(group => group.Count() > 1)?.Key;
+        if (duplicateContextHashPath != null)
+        {
+            throw new ArgumentException(
+                $"contextFileHashes contains duplicate canonical path: {duplicateContextHashPath}",
+                nameof(contextFileHashes));
+        }
 
         ValidateMortalContinuityDispatchPolicy(validationIssues);
+        ValidateRealmIsolationBeforeFiltering(validationIssues);
 
         var requiresCharacteristicAuthority = validationIssues.Any(issue => string.Equals(
             issue.Code,
@@ -31,7 +41,7 @@ public static class GmWorkerTaskPacketBuilder
             StringComparison.OrdinalIgnoreCase));
         var requiresAfterlifeRealmAuthority = afterlifeContract != null;
         if (requiresCharacteristicAuthority &&
-            (!contextFileHashes.TryGetValue(MortalCharacteristicAuthorityContract.StatePath, out var authorityHash) ||
+            (!TryGetPathHash(contextFileHashes, MortalCharacteristicAuthorityContract.StatePath, out var authorityHash) ||
              string.IsNullOrWhiteSpace(authorityHash) ||
              string.Equals(authorityHash, "missing", StringComparison.OrdinalIgnoreCase)))
         {
@@ -40,7 +50,7 @@ public static class GmWorkerTaskPacketBuilder
                 nameof(contextFileHashes));
         }
         if (requiresAfterlifeRealmAuthority &&
-            (!contextFileHashes.TryGetValue(AfterlifeRealmAuthorityContract.StatePath, out var realmAuthorityHash) ||
+            (!TryGetPathHash(contextFileHashes, AfterlifeRealmAuthorityContract.StatePath, out var realmAuthorityHash) ||
              string.IsNullOrWhiteSpace(realmAuthorityHash) ||
              string.Equals(realmAuthorityHash, "missing", StringComparison.OrdinalIgnoreCase)))
         {
@@ -53,21 +63,21 @@ public static class GmWorkerTaskPacketBuilder
             .Select(ResolveValidationTargetPath)
             .Where(GmWorkerContractValidator.IsSafeRelativePath)
             .Where(path => profile.Permissions.ProposalWritePaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, path)))
-            .Distinct(StringComparer.Ordinal)
-            .Order(StringComparer.Ordinal)
+            .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+            .Order(GmWorkerContractValidator.CanonicalPathComparer)
             .ToArray();
 
         if (allowedPaths.Length == 0)
             throw new ArgumentException("Validation issues do not map to any safe worker proposal path.", nameof(validationIssues));
         if (requiresAfterlifeRealmAuthority &&
-            allowedPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, StringComparer.Ordinal))
+            allowedPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, GmWorkerContractValidator.CanonicalPathComparer))
         {
             throw new ArgumentException(
                 $"Afterlife realm authority is read-only and cannot be a repair proposal target: {AfterlifeRealmAuthorityContract.StatePath}.",
                 nameof(validationIssues));
         }
         if (requiresCharacteristicAuthority &&
-            allowedPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, StringComparer.Ordinal))
+            allowedPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, GmWorkerContractValidator.CanonicalPathComparer))
         {
             throw new ArgumentException(
                 $"Mortal characteristic authority is read-only and cannot be a repair proposal target: {MortalCharacteristicAuthorityContract.StatePath}.",
@@ -80,12 +90,12 @@ public static class GmWorkerTaskPacketBuilder
         if (requiresAfterlifeRealmAuthority)
             contextPaths = contextPaths.Append(AfterlifeRealmAuthorityContract.StatePath);
         var contextFiles = contextPaths
-            .Distinct(StringComparer.Ordinal)
-            .Order(StringComparer.Ordinal)
+            .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+            .Order(GmWorkerContractValidator.CanonicalPathComparer)
             .Select(path => new WorkerFileReference
             {
                 Path = path,
-                Sha256 = contextFileHashes.TryGetValue(path, out var hash) ? hash : ""
+                Sha256 = TryGetPathHash(contextFileHashes, path, out var hash) ? hash : ""
             })
             .ToArray();
         var acceptanceCriteria = new List<string>
@@ -149,6 +159,24 @@ public static class GmWorkerTaskPacketBuilder
             throw new InvalidOperationException(string.Join(Environment.NewLine, taskValidation.Errors));
 
         return task;
+    }
+
+    private static bool TryGetPathHash(
+        IReadOnlyDictionary<string, string> contextFileHashes,
+        string path,
+        out string hash)
+    {
+        foreach (var entry in contextFileHashes)
+        {
+            if (!GmWorkerContractValidator.CanonicalPathComparer.Equals(entry.Key, path))
+                continue;
+
+            hash = entry.Value;
+            return true;
+        }
+
+        hash = string.Empty;
+        return false;
     }
 
     internal static string ResolveValidationTargetPath(ValidationIssue issue)
@@ -260,6 +288,21 @@ public static class GmWorkerTaskPacketBuilder
         {
             throw new ArgumentException(
                 "Existing-NPC inventory repair without an exact validated pre-turn snapshot requires the main GM rollback/repair path.",
+                nameof(validationIssues));
+        }
+    }
+
+    private static void ValidateRealmIsolationBeforeFiltering(
+        IReadOnlyList<ValidationIssue> validationIssues)
+    {
+        var targetPaths = validationIssues
+            .Select(ResolveValidationTargetPath)
+            .ToArray();
+        if (targetPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) &&
+            targetPaths.Any(GmWorkerContractValidator.IsMortalWorldStatePath))
+        {
+            throw new ArgumentException(
+                "Mixed Mortal World and afterlife validation repair batches are forbidden; dispatch separate realm-scoped tasks.",
                 nameof(validationIssues));
         }
     }

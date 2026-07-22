@@ -63,7 +63,7 @@ public sealed class GmWorkerApplyGate
             return decision;
         }
 
-        var capturedContents = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        var capturedContents = new Dictionary<string, byte[]>(GmWorkerContractValidator.CanonicalPathComparer);
         var contentErrors = await VerifyProposalContentRefsAsync(proposal, capturedContents);
         if (contentErrors.Count > 0)
         {
@@ -286,10 +286,10 @@ public sealed class GmWorkerApplyGate
             WorkerTaskPacket task)
     {
         var errors = new List<string>();
-        var baselines = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        var baselines = new Dictionary<string, byte[]?>(GmWorkerContractValidator.CanonicalPathComparer);
         var contextByPath = task.ContextFiles
-            .GroupBy(file => file.Path, StringComparer.Ordinal)
-            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            .GroupBy(file => file.Path, GmWorkerContractValidator.CanonicalPathComparer)
+            .ToDictionary(group => group.Key, group => group.First(), GmWorkerContractValidator.CanonicalPathComparer);
 
         foreach (var contextFile in task.ContextFiles)
         {
@@ -398,7 +398,7 @@ public sealed class GmWorkerApplyGate
     {
         var changedPaths = proposal.ChangedFiles
             .Select(file => file.Path)
-            .ToHashSet(StringComparer.Ordinal);
+            .ToHashSet(GmWorkerContractValidator.CanonicalPathComparer);
         var errors = new List<string>();
         foreach (var contextFile in task.ContextFiles)
         {

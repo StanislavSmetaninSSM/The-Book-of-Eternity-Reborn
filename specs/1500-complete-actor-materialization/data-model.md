@@ -240,6 +240,17 @@ Before applying a worker-authored actor materialization repair, the apply gate r
 
 Every validation-repair context path has one exact byte state: a 64-character SHA-256 digest or `missing`. A changed-file entry repeats that state as `beforeSha256`; add is legal only from `missing`, replace/delete only from an existing digest. The worker runs in an ephemeral detached `.worker_runtime` snapshot containing only those pinned context bytes. Non-delete content is imported only when declared at `worker_proposals/<proposalId>/<path>` and its bytes match `afterSha256`; delete uses `afterSha256=missing` and no content reference. Direct snapshot edits and undeclared artifacts are discarded. Apply and rollback both compare expected bytes under one canonical write lease retained through full validation, read-only context revalidation, and final decision. A mismatch is a conflict and never overwrites the newer owner.
 
+All declared non-delete content is loaded and digest-verified before any proposal
+artifact is published. Task and proposal IDs are immutable identities; a
+collision preserves the earlier artifact and rejects the new handoff. Canonical
+session-path identity is case-insensitive, duplicate aliases reject, and
+afterlife surface authority is an exact wildcard-free path set. An observed
+timeout remains the execution result even when malformed proposal bytes also
+exist. Built-in backup, restore, game-state clear, and current-world lore clear
+participate in the canonical write lease. Detached cleanup traverses only
+ordinary child entries, removes reparse entries as links, and records exhausted
+cleanup failure without replacing the worker result.
+
 `WorkerProposalStatus.Unspecified=0` is never a completion state. JSON `status` is required; omission fails deserialization, while direct unspecified/unknown models fail contract validation and apply. Only explicit `status=completed` proposals may reach the apply path. `failed`, `timed-out`, and `rejected` proposals carry no `changedFiles` and remain diagnostic records. Worker audit lines use one lock-protected read-and-append operation so concurrent writers preserve every event. Every producer calls one shared generator with `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>`; a source guard forbids hand-built prefixes elsewhere, and audit publication failure is telemetry loss that cannot revoke an already accepted canonical commit.
 
 Repair handoff has one owner state. Before dispatch, request/ready/stall artifacts from older cycles are removed. `Applied + ReadySignalCreated` enters the correlated ready path; `Applied + !ReadySignalCreated` records `worker_apply_gate_accepted` and immediately revalidates; every non-applied result writes one fresh legacy request. Player-facing output freshness retains the original repaired canonical target set through all derived output-only retries and requires every output write to be strictly newer than the latest actual write of every retained target, including worker-only cycles where no legacy request exists. Equal timestamps are stale; rewriting an original target recomputes the boundary and re-stales older output. Request creation, dispatch, and repair-loop start timestamps are not canonical mutation boundaries; an unobservable required target mutation fails freshness closed.

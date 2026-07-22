@@ -234,8 +234,8 @@ public sealed class GmWorkerProposalOnlyDispatchService
                      .Select(path => path.Replace('\\', '/'))
                      .Where(GmWorkerContractValidator.IsSafeRelativePath)
                      .Where(path => profile.Permissions.ReadPaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, path)))
-                     .Distinct(StringComparer.Ordinal)
-                     .Order(StringComparer.Ordinal))
+                     .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+                     .Order(GmWorkerContractValidator.CanonicalPathComparer))
         {
             var content = await _fs.ReadFileBytesAsync(path);
             result.Add(new WorkerFileReference

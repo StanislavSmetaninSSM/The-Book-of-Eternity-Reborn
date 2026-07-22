@@ -618,7 +618,9 @@ public sealed class GmWorkerValidationRepairDelegatorTests
 
             Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
             Assert.Null(result.Task);
-            Assert.Contains("allowedAfterlifeSurfaces", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("mixed", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Mortal", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("afterlife", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

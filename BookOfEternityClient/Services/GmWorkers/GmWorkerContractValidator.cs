@@ -2,6 +2,8 @@ namespace BookOfEternityClient.Services.GmWorkers;
 
 public static class GmWorkerContractValidator
 {
+    internal static StringComparer CanonicalPathComparer { get; } = StringComparer.OrdinalIgnoreCase;
+
     public static WorkerContractValidationResult ValidateProfile(WorkerBridgeProfile? profile)
     {
         var errors = new List<string>();
@@ -83,6 +85,12 @@ public static class GmWorkerContractValidator
             RequireText(issue.Message, "validationIssues.message", errors);
         }
 
+        ValidateNoDuplicatePaths(
+            task.ContextFiles.Select(file => file.Path),
+            "contextFiles",
+            errors);
+        ValidateNoDuplicatePaths(task.AllowedProposalPaths, "allowedProposalPaths", errors);
+
         foreach (var file in task.ContextFiles)
         {
             ValidatePath(file.Path, "contextFiles.path", errors);
@@ -151,7 +159,7 @@ public static class GmWorkerContractValidator
         }
 
         var authorityFiles = task.ContextFiles
-            .Where(file => file.Path.Equals(MortalCharacteristicAuthorityContract.StatePath, StringComparison.Ordinal))
+            .Where(file => file.Path.Equals(MortalCharacteristicAuthorityContract.StatePath, StringComparison.OrdinalIgnoreCase))
             .ToArray();
         if (authorityFiles.Length != 1 || !IsSha256(authorityFiles[0].Sha256))
         {
@@ -159,7 +167,7 @@ public static class GmWorkerContractValidator
                 $"Mortal characteristics repair must include exactly one hash-pinned read-only setting authority context: {MortalCharacteristicAuthorityContract.StatePath}.");
         }
 
-        if (task.AllowedProposalPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, StringComparer.Ordinal))
+        if (task.AllowedProposalPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, CanonicalPathComparer))
         {
             errors.Add(
                 $"Mortal characteristic authority is read-only and must not appear in allowedProposalPaths: {MortalCharacteristicAuthorityContract.StatePath}.");
@@ -206,11 +214,11 @@ public static class GmWorkerContractValidator
         }
 
         var contextByPath = task.ContextFiles
-            .GroupBy(file => file.Path, StringComparer.Ordinal)
-            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            .GroupBy(file => file.Path, CanonicalPathComparer)
+            .ToDictionary(group => group.Key, group => group.First(), CanonicalPathComparer);
 
         foreach (var duplicatePath in proposal.ChangedFiles
-                     .GroupBy(file => file.Path, StringComparer.Ordinal)
+                     .GroupBy(file => file.Path, CanonicalPathComparer)
                      .Where(group => group.Count() > 1)
                      .Select(group => group.Key))
         {
@@ -226,7 +234,7 @@ public static class GmWorkerContractValidator
             {
                 errors.Add("changedFiles.changeKind must be exactly Add, Replace, or Delete.");
             }
-            if (!task.AllowedProposalPaths.Contains(changedFile.Path, StringComparer.Ordinal))
+            if (!task.AllowedProposalPaths.Contains(changedFile.Path, CanonicalPathComparer))
                 errors.Add($"changedFiles contains a path outside task allowedProposalPaths: {changedFile.Path}");
             if (!profile.Permissions.ProposalOnly &&
                 !profile.Permissions.ProposalWritePaths.Any(pattern => PathMatches(pattern, changedFile.Path)))
@@ -321,13 +329,13 @@ public static class GmWorkerContractValidator
     {
         if (!IsSafeRelativePath(pattern, allowGlob: true) || !IsSafeRelativePath(path, allowGlob: false))
             return false;
-        if (string.Equals(pattern, path, StringComparison.Ordinal))
+        if (string.Equals(pattern, path, StringComparison.OrdinalIgnoreCase))
             return true;
         if (pattern.EndsWith("/**", StringComparison.Ordinal))
         {
             var prefix = pattern[..^3];
-            return string.Equals(prefix, path, StringComparison.Ordinal) ||
-                   path.StartsWith(prefix + "/", StringComparison.Ordinal);
+            return string.Equals(prefix, path, StringComparison.OrdinalIgnoreCase) ||
+                   path.StartsWith(prefix + "/", StringComparison.OrdinalIgnoreCase);
         }
 
         return false;
@@ -371,6 +379,21 @@ public static class GmWorkerContractValidator
             errors.Add($"{fieldName} must be a safe relative path or /** pattern.");
     }
 
+    private static void ValidateNoDuplicatePaths(
+        IEnumerable<string> paths,
+        string fieldName,
+        List<string> errors)
+    {
+        foreach (var duplicatePath in paths
+                     .Where(path => !string.IsNullOrWhiteSpace(path))
+                     .GroupBy(path => path, CanonicalPathComparer)
+                     .Where(group => group.Count() > 1)
+                     .Select(group => group.Key))
+        {
+            errors.Add($"{fieldName} contains duplicate canonical path: {duplicatePath}");
+        }
+    }
+
     private static bool IsSafeRelativePath(string path, bool allowGlob)
     {
         if (string.IsNullOrWhiteSpace(path))
@@ -386,9 +409,13 @@ public static class GmWorkerContractValidator
         var segments = path.Split('/');
         if (segments.Any(segment => string.IsNullOrWhiteSpace(segment) || segment is "." or ".."))
             return false;
-        if (!allowGlob && segments.Any(segment => segment.Contains('*', StringComparison.Ordinal)))
+        if (!allowGlob && segments.Any(segment =>
+                segment.Contains('*', StringComparison.Ordinal) ||
+                segment.Contains('?', StringComparison.Ordinal)))
             return false;
-        if (allowGlob && segments.Any(segment => segment.Contains('*', StringComparison.Ordinal) && segment != "**"))
+        if (allowGlob && segments.Any(segment =>
+                segment.Contains('?', StringComparison.Ordinal) ||
+                (segment.Contains('*', StringComparison.Ordinal) && segment != "**")))
             return false;
 
         return true;
@@ -418,6 +445,20 @@ public static class GmWorkerContractValidator
 
     private static void ValidateAfterlifeTaskPacket(WorkerTaskPacket task, List<string> errors)
     {
+        if (task.TaskType == WorkerTaskType.ValidationRepair)
+        {
+            var repairPaths = task.ValidationIssues
+                .Select(issue => issue.Path)
+                .Concat(task.AllowedProposalPaths)
+                .ToArray();
+            if (repairPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) &&
+                repairPaths.Any(IsMortalWorldStatePath))
+            {
+                errors.Add(
+                    "Mixed Mortal World and afterlife validation repair batches are forbidden; dispatch separate realm-scoped tasks.");
+            }
+        }
+
         if (task.AfterlifeContract == null)
         {
             if (TaskLooksAfterlifeScoped(task))
@@ -429,7 +470,7 @@ public static class GmWorkerContractValidator
         if (task.TaskType == WorkerTaskType.ValidationRepair)
         {
             var realmAuthorityFiles = task.ContextFiles
-                .Where(file => file.Path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.Ordinal))
+                .Where(file => file.Path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
             if (realmAuthorityFiles.Length != 1 ||
                 !IsSha256(realmAuthorityFiles[0].Sha256))
@@ -438,7 +479,7 @@ public static class GmWorkerContractValidator
                     $"afterlife validation-repair tasks must include exactly one hash-pinned read-only realm authority context: {AfterlifeRealmAuthorityContract.StatePath}.");
             }
 
-            if (task.AllowedProposalPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, StringComparer.Ordinal))
+            if (task.AllowedProposalPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, CanonicalPathComparer))
             {
                 errors.Add(
                     $"afterlife realm authority must not appear in allowedProposalPaths: {AfterlifeRealmAuthorityContract.StatePath}.");
@@ -450,9 +491,22 @@ public static class GmWorkerContractValidator
 
         if (contract.AllowedAfterlifeSurfaces.Count == 0)
             errors.Add("afterlifeContract.allowedAfterlifeSurfaces must contain at least one exact afterlife state surface.");
+        ValidateNoDuplicatePaths(
+            contract.AllowedAfterlifeSurfaces,
+            "afterlifeContract.allowedAfterlifeSurfaces",
+            errors);
         foreach (var path in contract.AllowedAfterlifeSurfaces)
         {
-            ValidatePathOrPattern(path, "afterlifeContract.allowedAfterlifeSurfaces", errors);
+            if (path.Contains('*', StringComparison.Ordinal) ||
+                path.Contains('?', StringComparison.Ordinal))
+            {
+                errors.Add(
+                    $"afterlifeContract.allowedAfterlifeSurfaces must contain exact paths and must not contain wildcard patterns: {path}");
+            }
+            else
+            {
+                ValidatePath(path, "afterlifeContract.allowedAfterlifeSurfaces", errors);
+            }
             if (IsMortalWorldSubstitutePath(path))
                 errors.Add($"afterlifeContract.allowedAfterlifeSurfaces contains a Mortal World substitute path: {path}");
         }
@@ -1452,13 +1506,17 @@ public static class GmWorkerContractValidator
     }
 
     private static bool IsMortalWorldSubstitutePath(string path) =>
+        IsMortalWorldStatePath(path);
+
+    internal static bool IsMortalWorldStatePath(string path) =>
         path.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
         path.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
         path.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase) ||
         path.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase) ||
         path.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase) ||
         path.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase);
+        path.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("game_state/misc/", StringComparison.OrdinalIgnoreCase);
 
     private static bool ContainsMortalWorldSubstituteText(string value)
     {

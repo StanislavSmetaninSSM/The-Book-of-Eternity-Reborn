@@ -148,7 +148,7 @@ public sealed class GmWorkerValidationRepairDelegator
         var targetPaths = prioritizedErrors
             .Select(GmWorkerTaskPacketBuilder.ResolveValidationTargetPath)
             .Where(GmWorkerContractValidator.IsSafeRelativePath)
-            .Distinct(StringComparer.Ordinal)
+            .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
             .ToArray();
         var requiresCharacteristicAuthority = prioritizedErrors.Any(issue => string.Equals(
             issue.Code,
@@ -163,10 +163,10 @@ public sealed class GmWorkerValidationRepairDelegator
         if (requiresAfterlifeRealmAuthority)
             contextPaths = contextPaths.Append(AfterlifeRealmAuthorityContract.StatePath);
 
-        var contextHashes = new Dictionary<string, string>(StringComparer.Ordinal);
+        var contextHashes = new Dictionary<string, string>(GmWorkerContractValidator.CanonicalPathComparer);
         WorkerAfterlifeRealmGate realmGate = WorkerAfterlifeRealmGate.None;
         var currentRealm = string.Empty;
-        foreach (var path in contextPaths.Distinct(StringComparer.Ordinal))
+        foreach (var path in contextPaths.Distinct(GmWorkerContractValidator.CanonicalPathComparer))
         {
             var content = await _fs.ReadFileBytesAsync(path);
             if (path == MortalCharacteristicAuthorityContract.StatePath)
@@ -215,9 +215,9 @@ public sealed class GmWorkerValidationRepairDelegator
             CurrentRealm = currentRealm,
             AllowedAfterlifeSurfaces = targetPaths
                 .Where(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath)
-                .Where(path => !path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.Ordinal))
-                .Distinct(StringComparer.Ordinal)
-                .Order(StringComparer.Ordinal)
+                .Where(path => !path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.OrdinalIgnoreCase))
+                .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+                .Order(GmWorkerContractValidator.CanonicalPathComparer)
                 .ToArray(),
             RequiredReceipts = ["No new receipt is required for this bounded validation repair."],
             RequiredReports = ["The apply-gate validation decision is the required repair report."],

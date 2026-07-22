@@ -168,10 +168,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
             try
             {
                 if (Directory.Exists(workspaceRoot))
-                {
-                    ClearReadOnlyAttributes(workspaceRoot);
-                    Directory.Delete(workspaceRoot, recursive: true);
-                }
+                    DeleteTreeWithoutFollowingReparsePoints(workspaceRoot);
 
                 if (Directory.Exists(runtimeRoot) && !Directory.EnumerateFileSystemEntries(runtimeRoot).Any())
                     Directory.Delete(runtimeRoot);
@@ -188,14 +185,44 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         }
     }
 
-    private static void ClearReadOnlyAttributes(string workspaceRoot)
+    private static void DeleteTreeWithoutFollowingReparsePoints(string path)
     {
-        foreach (var path in Directory.EnumerateFileSystemEntries(workspaceRoot, "*", SearchOption.AllDirectories))
+        var attributes = File.GetAttributes(path);
+        if ((attributes & FileAttributes.ReparsePoint) != 0)
         {
-            var attributes = File.GetAttributes(path);
-            if ((attributes & FileAttributes.ReadOnly) != 0)
-                File.SetAttributes(path, attributes & ~FileAttributes.ReadOnly);
+            DeleteEntryWithoutFollowing(path, attributes);
+            return;
         }
+
+        foreach (var child in Directory.EnumerateFileSystemEntries(path, "*", SearchOption.TopDirectoryOnly))
+        {
+            var childAttributes = File.GetAttributes(child);
+            if ((childAttributes & FileAttributes.ReparsePoint) != 0)
+                DeleteEntryWithoutFollowing(child, childAttributes);
+            else if ((childAttributes & FileAttributes.Directory) != 0)
+                DeleteTreeWithoutFollowingReparsePoints(child);
+            else
+                DeleteFile(child, childAttributes);
+        }
+
+        if ((attributes & FileAttributes.ReadOnly) != 0)
+            File.SetAttributes(path, attributes & ~FileAttributes.ReadOnly);
+        Directory.Delete(path, recursive: false);
+    }
+
+    private static void DeleteEntryWithoutFollowing(string path, FileAttributes attributes)
+    {
+        if ((attributes & FileAttributes.Directory) != 0)
+            Directory.Delete(path, recursive: false);
+        else
+            DeleteFile(path, attributes);
+    }
+
+    private static void DeleteFile(string path, FileAttributes attributes)
+    {
+        if ((attributes & FileAttributes.ReadOnly) != 0)
+            File.SetAttributes(path, attributes & ~FileAttributes.ReadOnly);
+        File.Delete(path);
     }
 
     private static void EnsureWorkspaceIsInsideRuntime(string runtimeRoot, string workspaceRoot)

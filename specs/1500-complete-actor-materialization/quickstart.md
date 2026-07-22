@@ -42,13 +42,16 @@ Do not modify or fabricate untouched actors merely because they lack an envelope
 ## Worker repair protocol
 
 - Run each worker in a detached `.worker_runtime` execution snapshot containing only pinned task context. Import only the validated proposal and its declared `contentRef` bytes; direct snapshot edits and undeclared artifacts are discarded.
+- Verify every declared non-delete artifact digest before publishing any part of a handoff; reject task/proposal ID collisions without overwriting earlier evidence and keep timeout authoritative when malformed proposal bytes coexist.
 - Route afterlife memory repair by actor type and preserve every field outside the exact actor-owned memory target.
 - Keep `npc_initial_id_collides_with_existing_permanent_id` on the main-GM rollback/repair path.
 - Dispatch `npc_existing_inventory_resend_forbidden` only when `expected` is the exact validated pre-turn JSON-array snapshot; restore only that actor/carrier field. Ordinary existing resends stay main-GM-only.
 - For `npc_characteristics_empty`, hash-pin `game_state/misc/characteristics.json` as read-only context and allow only finite numeric keys present in that authority on the exact actor/carrier field. Missing or malformed authority and sibling, other-actor, root, add, or delete changes reject.
 - Treat JSON exponent overflow such as `1e9999` as non-finite and invalid even though the token has number syntax.
 - Treat every `game_state/meta/` repair target as afterlife-scoped. Hash-pin `game_state/meta/soul_state.json` as read-only realm authority, derive the contract from its strict duplicate-free `currentRealm`, exclude it from proposal paths, and fail mixed Mortal/meta task construction closed.
-- Hold one canonical write lease from final context/authority verification through every write, full validation, read-only context recheck, rollback, and decision.
+- Use case-insensitive canonical path identity, reject duplicate aliases, and require exact wildcard-free afterlife surface paths.
+- Hold one canonical write lease from final context/authority verification through every write, full validation, read-only context recheck, rollback, and decision; built-in backup, restore, game-state clear, and current-world lore clear use the same lease.
+- Delete detached workspaces without following reparse points; cleanup failure is audit-only and cannot replace the worker result.
 - Require every changed-file entry to declare exactly `Add`, `Replace`, or `Delete`; omission, `Unspecified`, zero, and undefined values reject before apply semantics.
 - Require explicit proposal `status`; omission/`Unspecified` is invalid, only explicit `completed` may apply, and terminal statuses use empty `changedFiles`.
 - Generate every worker audit event ID through the shared UTC-millisecond plus GUID utility; source guards reject hand-built prefixes.

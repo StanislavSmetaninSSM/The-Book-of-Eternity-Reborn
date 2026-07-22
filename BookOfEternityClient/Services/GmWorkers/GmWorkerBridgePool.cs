@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text;
 using BookOfEternityClient.Core;
 
@@ -99,6 +100,17 @@ public sealed class GmWorkerBridgePool
 
         var taskPath = GetTaskPacketPath(task.TaskId);
         var proposalInboxPath = GetProposalInboxPath(task.TaskId);
+        if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
+        {
+            var message = $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.";
+            var status = Track(WorkerBridgeState.Failed, ready: false, message);
+            return new GmWorkerTaskRunResult
+            {
+                Status = status,
+                StatusHistory = statusHistory.ToArray()
+            };
+        }
+
         await _fs.WriteFileAtomicAsync(taskPath, GmWorkerJson.Serialize(task));
         var proposalInboxDirectory = Path.GetDirectoryName(_fs.ResolvePath(proposalInboxPath));
         if (!string.IsNullOrWhiteSpace(proposalInboxDirectory))
@@ -156,13 +168,17 @@ public sealed class GmWorkerBridgePool
                     workspace);
                 if (existingProposalResult.Attempted)
                 {
-                    var state = existingProposalResult.Proposal == null
-                        ? existingProposalResult.Result.Status.State
-                        : WorkerBridgeState.Stopped;
+                    var proposalRejected = existingProposalResult.Proposal == null;
+                    var state = proposalRejected ? WorkerBridgeState.TimedOut : WorkerBridgeState.Stopped;
+                    var terminalMessage = proposalRejected
+                        ? $"{message} Proposal handoff was rejected: {existingProposalResult.Result.Status.LastError}"
+                        : message;
+                    if (proposalRejected)
+                        await RecordTerminalEventAsync("task-timed-out", profile, task, terminalMessage, []);
                     var proposalStatus = Track(
                         state,
                         ready: false,
-                        existingProposalResult.Proposal == null ? existingProposalResult.Result.Status.LastError : message,
+                        terminalMessage,
                         processId);
                     return existingProposalResult.Result with
                     {
@@ -171,7 +187,7 @@ public sealed class GmWorkerBridgePool
                         Proposal = existingProposalResult.Proposal,
                         StandardOutput = output,
                         StandardError = stderr,
-                        TimedOut = existingProposalResult.Proposal != null
+                        TimedOut = true
                     };
                 }
 
@@ -278,7 +294,30 @@ public sealed class GmWorkerBridgePool
         {
             process?.Dispose();
             if (workspace != null)
-                await workspace.DisposeAsync();
+            {
+                try
+                {
+                    await workspace.DisposeAsync();
+                }
+                catch (Exception cleanupException) when (
+                    cleanupException is IOException or UnauthorizedAccessException)
+                {
+                    try
+                    {
+                        await RecordTerminalEventAsync(
+                            "workspace-cleanup-failed",
+                            profile,
+                            task,
+                            cleanupException.Message,
+                            [cleanupException.GetType().Name]);
+                    }
+                    catch (Exception auditException) when (
+                        auditException is IOException or UnauthorizedAccessException)
+                    {
+                        // Cleanup diagnostics must not replace the completed worker result either.
+                    }
+                }
+            }
         }
     }
 
@@ -449,7 +488,19 @@ public sealed class GmWorkerBridgePool
             });
         }
 
-        var importedContent = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        var proposalRootPath = _fs.ResolvePath(
+            $"{GmWorkerProposalStore.ProposalRoot}/{proposal!.ProposalId}");
+        if (Directory.Exists(proposalRootPath))
+        {
+            var message = $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.";
+            await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [proposal.ProposalId]);
+            return (null, new GmWorkerTaskRunResult
+            {
+                Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
+            });
+        }
+
+        var importedContent = new Dictionary<string, byte[]>(GmWorkerContractValidator.CanonicalPathComparer);
         foreach (var changedFile in proposal!.ChangedFiles)
         {
             if (changedFile.ChangeKind == WorkerFileChangeKind.Delete)
@@ -459,6 +510,18 @@ public sealed class GmWorkerBridgePool
             if (content == null)
             {
                 var message = $"Worker proposal contentRef is missing from detached execution output: {changedFile.ContentRef}.";
+                await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [changedFile.ContentRef!]);
+                return (null, new GmWorkerTaskRunResult
+                {
+                    Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
+                });
+            }
+
+            var actualAfterSha256 = Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
+            if (!string.Equals(actualAfterSha256, changedFile.AfterSha256, StringComparison.OrdinalIgnoreCase))
+            {
+                var message =
+                    $"Worker proposal contentRef bytes do not match afterSha256: {changedFile.ContentRef}.";
                 await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [changedFile.ContentRef!]);
                 return (null, new GmWorkerTaskRunResult
                 {

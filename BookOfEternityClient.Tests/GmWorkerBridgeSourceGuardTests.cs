@@ -60,6 +60,27 @@ public sealed class GmWorkerBridgeSourceGuardTests
         Assert.Empty(offenders);
     }
 
+    [Fact]
+    public void WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics()
+    {
+        var validator = ReadClientFile("Services/GmWorkers/GmWorkerContractValidator.cs");
+        var workspace = ReadClientFile("Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
+
+        Assert.Contains("CanonicalPathComparer { get; } = StringComparer.OrdinalIgnoreCase", validator, StringComparison.Ordinal);
+        Assert.Contains("must not contain wildcard patterns", validator, StringComparison.Ordinal);
+        Assert.Contains("ValidatePath(path, \"afterlifeContract.allowedAfterlifeSurfaces\"", validator, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ValidatePathOrPattern(path, \"afterlifeContract.allowedAfterlifeSurfaces\"",
+            validator,
+            StringComparison.Ordinal);
+
+        Assert.Contains("SearchOption.TopDirectoryOnly", workspace, StringComparison.Ordinal);
+        Assert.Contains("FileAttributes.ReparsePoint", workspace, StringComparison.Ordinal);
+        Assert.Contains("Directory.Delete(path, recursive: false)", workspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("SearchOption.AllDirectories", workspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.Delete(workspaceRoot, recursive: true)", workspace, StringComparison.Ordinal);
+    }
+
     private static string ReadClientFile(string relativePath)
     {
         var path = Path.Combine(

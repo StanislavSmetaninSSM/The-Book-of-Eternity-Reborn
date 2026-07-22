@@ -137,6 +137,61 @@ public sealed class GmWorkerBridgeContractTests
             error.Contains(valid.ChangedFiles[0].Path, StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void ValidationRepairTask_RejectsCaseAliasedContextAndProposalPaths()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var aliasPath = "game_state/world/Weather.json";
+        var task = valid with
+        {
+            ContextFiles =
+            [
+                valid.ContextFiles[0],
+                valid.ContextFiles[0] with { Path = aliasPath }
+            ],
+            AllowedProposalPaths = [valid.AllowedProposalPaths[0], aliasPath]
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("contextFiles", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("duplicate", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Errors, error =>
+            error.Contains("allowedProposalPaths", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("duplicate", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidationRepairProposal_RejectsCaseAliasedChangedFilePathsAsDuplicates()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
+        var valid = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var aliasPath = "game_state/world/Weather.json";
+        var proposal = valid with
+        {
+            ChangedFiles =
+            [
+                valid.ChangedFiles[0],
+                valid.ChangedFiles[0] with
+                {
+                    Path = aliasPath,
+                    ContentRef = $"worker_proposals/{valid.ProposalId}/{aliasPath}"
+                }
+            ]
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("changedFiles", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("duplicate", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(99)]

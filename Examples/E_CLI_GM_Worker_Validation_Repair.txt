@@ -49,6 +49,15 @@ other state file, that edit is discarded. The pool imports only the validated pr
 bytes; undeclared files never reach the
 canonical session.
 
+Before importing any worker artifact, the pool loads every declared non-delete
+content file and verifies that its SHA-256 equals `afterSha256`. One mismatch
+rejects the whole handoff; nothing from that proposal is published. Task and proposal identifiers are immutable,
+so retry with a new ID instead of overwriting an existing dispatch or proposal.
+If the runner exceeds its deadline and also leaves malformed JSON, timeout remains authoritative;
+the malformed handoff is an additional diagnostic, not a replacement result.
+Detached cleanup never follows a junction/symlink/reparse point. A cleanup failure is an audit diagnostic
+and does not hide the completed or timed-out result.
+
 ```json
 {
   "schemaVersion": 1,
@@ -107,7 +116,10 @@ or `allowedProposalPaths`. A missing, malformed, duplicate-key,
 unsupported, changed-after-dispatch, or mismatched authority fails closed.
 Every `game_state/meta/` validation-repair target is afterlife-scoped, including
 non-actor metadata. A mixed Mortal/afterlife issue batch is rejected at task
-construction. `game_state/misc/characteristics.json` is read-only context for
+construction. `allowedAfterlifeSurfaces` contains exact wildcard-free afterlife paths,
+never `game_state/**`, `*`, `?`, or another pattern. Path ownership uses
+case-insensitive canonical path identity, so case aliases cannot duplicate
+context or bypass Soul/characteristics read-only scope. `game_state/misc/characteristics.json` is read-only context for
 an empty-characteristics repair and cannot be listed as a writable target.
 Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 Status is mandatory; omission is invalid and must never default to completed.
@@ -148,6 +160,8 @@ target compare/exchange, validates the complete state, rechecks all read-only
 context, rolls back if needed, and records the decision. Thus a cooperating
 writer cannot slip a realm or characteristic-authority change between check and
 commit, and an observed non-cooperating mutation rejects the proposal.
+The same lease covers built-in backup, restore, game-state clear, and
+current-world lore clear operations.
 
 Worker response proposal:
 

@@ -341,6 +341,17 @@ public class FileSystemManager
     /// </summary>
     public string? CreateBackup(string relativePath)
     {
+        return CreateBackupAsync(relativePath).GetAwaiter().GetResult();
+    }
+
+    public async Task<string?> CreateBackupAsync(string relativePath)
+    {
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        return CreateBackupCore(relativePath);
+    }
+
+    private string? CreateBackupCore(string relativePath)
+    {
         var fullPath = ResolvePath(relativePath);
         if (!File.Exists(fullPath))
             return null;
@@ -351,6 +362,17 @@ public class FileSystemManager
     }
 
     public void RestoreBackup(string backupFullPath, string originalRelativePath)
+    {
+        RestoreBackupAsync(backupFullPath, originalRelativePath).GetAwaiter().GetResult();
+    }
+
+    public async Task RestoreBackupAsync(string backupFullPath, string originalRelativePath)
+    {
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        RestoreBackupCore(backupFullPath, originalRelativePath);
+    }
+
+    private void RestoreBackupCore(string backupFullPath, string originalRelativePath)
     {
         var originalFullPath = ResolvePath(originalRelativePath);
         if (File.Exists(backupFullPath))
@@ -381,6 +403,17 @@ public class FileSystemManager
     /// Clear all game state for a new game.
     /// </summary>
     public void ClearGameState()
+    {
+        ClearGameStateAsync().GetAwaiter().GetResult();
+    }
+
+    public async Task ClearGameStateAsync()
+    {
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        ClearGameStateCore();
+    }
+
+    private void ClearGameStateCore()
     {
         var gameStatePath = Path.Combine(_basePath, "game_session", "game_state");
         if (Directory.Exists(gameStatePath))
@@ -439,6 +472,17 @@ public class FileSystemManager
     }
 
     public void ClearCurrentWorldLore()
+    {
+        ClearCurrentWorldLoreAsync().GetAwaiter().GetResult();
+    }
+
+    public async Task ClearCurrentWorldLoreAsync()
+    {
+        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        ClearCurrentWorldLoreCore();
+    }
+
+    private void ClearCurrentWorldLoreCore()
     {
         var currentWorldPath = Path.Combine(_basePath, "game_session", "lore", "current_world");
         if (!Directory.Exists(currentWorldPath))

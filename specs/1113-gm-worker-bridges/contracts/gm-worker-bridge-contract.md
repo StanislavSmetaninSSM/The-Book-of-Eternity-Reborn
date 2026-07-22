@@ -28,6 +28,12 @@ bytes into the live proposal inbox; undeclared snapshot files never
 cross that boundary. The client removes the ephemeral `.worker_runtime`
 workspace after the task. This protocol does not claim operating-system
 isolation from a deliberately malicious operator-supplied launch command.
+The pool verifies every declared non-delete `contentRef` digest before importing any worker artifact.
+Any mismatch rejects the complete handoff before proposal or artifact
+publication. Task and proposal identifiers are immutable; an existing ID is a
+collision and cannot overwrite earlier dispatch or review evidence. When a
+process times out and leaves a malformed proposal, timeout remains authoritative
+and the malformed handoff is retained only as an additional diagnostic.
 Validation-repair hashes bind exact bytes: `contextFiles.sha256` and
 `changedFiles.beforeSha256` are the same exact 64-character SHA-256 digest (or
 `missing` for an absent add target), while each non-delete `afterSha256` is the
@@ -49,7 +55,11 @@ mismatched authority fails closed before canonical writes.
 
 Every `game_state/meta/` validation-repair target is afterlife-scoped,
 including non-actor metadata. Mixed Mortal/afterlife issue batches fail task
-construction closed. `game_state/misc/characteristics.json` is read-only
+construction closed. Allowlists contain exact wildcard-free afterlife paths;
+glob patterns such as `game_state/**`, `*`, and `?` never grant authority. The
+bridge uses case-insensitive canonical path identity for Windows session paths,
+rejects duplicate case aliases, and applies that identity to context, proposal
+scope, and setting/Soul read-only authority. `game_state/misc/characteristics.json` is read-only
 context for `npc_characteristics_empty` and cannot be writable even in a mixed
 Mortal repair.
 
@@ -58,6 +68,9 @@ context and authority check through every target compare/exchange, full-state
 validation, read-only context revalidation, rollback when required, and final
 decision linearization. Cooperating canonical writers wait for that decision;
 detected external authority changes reject the complete proposal.
+Built-in backup, restore, game-state clear, and current-world lore clear use the
+same lease. Detached workspace deletion never follows reparse points; a cleanup failure is an audit diagnostic
+and cannot replace the worker result.
 
 ## Worker Profile Contract
 
