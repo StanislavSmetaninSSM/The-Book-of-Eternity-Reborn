@@ -191,6 +191,20 @@
 
 **Rationale**: `NPCCoreChanges` maps only to `game_state/npcs/npc_core.json`; setting-neutral Mortal characteristics and Mortal personality shape do not alter afterlife actor profiles. Updating the afterlife contract matrix/examples would falsely imply an afterlife schema change. Mandatory afterlife documentation tests remain a no-drift verification gate.
 
+## Fourth re-review hardening decisions
+
+**Decision**: Parse current `npc_core.json` once through duplicate-sensitive production validation and report malformed, non-object, or duplicate-member authority as blocking structured issues before any command materialization.
+
+**Rationale**: A malformed command carrier is itself invalid authority. Treating it as “no command” permits silent bypass, while materializing duplicate members through `JsonNode` can throw outside the prior narrow catch.
+
+**Decision**: Compare every actor-owned field of a historical full carrier against validated pre-turn authority, leaving actual mutations to the closed dedicated command contracts. Preserve specialized inventory/materialization diagnostics where they provide narrower repair coordinates.
+
+**Rationale**: A list of selected protected fields inevitably leaves future and existing actor domains open. Continuity is safer as a fail-closed ownership boundary than as an expanding denylist.
+
+**Decision**: Reuse the canonical production Fate Card/skill/combat validator before reducing `fateCardsToAdd`, and recognize combat skills from canonical structured content rather than optional IDs.
+
+**Rationale**: A normalizer must never consume a command that creates state rejected by the ordinary production validator. Block 7 makes skill IDs optional, so capability and promotion logic must follow the canonical skill contract.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

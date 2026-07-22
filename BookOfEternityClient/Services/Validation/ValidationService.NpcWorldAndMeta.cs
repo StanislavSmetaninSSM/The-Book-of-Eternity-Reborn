@@ -5838,7 +5838,7 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateNpcFateCardArray(JsonElement value, string context, List<ValidationIssue> issues)
+    private static void ValidateNpcFateCardArray(JsonElement value, string context, List<ValidationIssue> issues)
     {
         RequireArrayOfObjects(value, context, issues);
         if (value.ValueKind != JsonValueKind.Array)

@@ -351,6 +351,26 @@ public sealed class ActorMaterializationContractTests
     }
 
     [Fact]
+    public void ValidateMortalNpc_ProductionValidIdlessActiveSkill_SatisfiesCombatCapability()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["activeSkills"] = new JsonArray(BuildProductionValidIdlessActiveSkill());
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canFight");
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "skills");
+    }
+
+    [Fact]
     public void ValidateMortalNpc_UpdateWithPermanentId_DoesNotInferResendWithoutPreTurnAuthority()
     {
         using var document = JsonDocument.Parse(CreateMortalEnvelope()
@@ -1035,6 +1055,28 @@ public sealed class ActorMaterializationContractTests
         actor["relationshipLock"] = new JsonObject { ["isLocked"] = false };
         return actor;
     }
+
+    private static JsonObject BuildProductionValidIdlessActiveSkill() =>
+        new()
+        {
+            ["skillName"] = "Стойка хранителя",
+            ["skillDescription"] = "Удерживает проход и отвечает на прямую угрозу.",
+            ["rarity"] = "Common",
+            ["actionCost"] = "Main",
+            ["combatEffect"] = new JsonObject
+            {
+                ["isActivatedEffect"] = true,
+                ["actionName"] = "Удержать проход",
+                ["effects"] = new JsonArray(new JsonObject
+                {
+                    ["effectType"] = "Damage",
+                    ["value"] = "10%",
+                    ["targetType"] = "Enemy",
+                    ["effectDescription"] = "Точный ответный удар по приблизившемуся противнику.",
+                    ["poiseDamage"] = "5%"
+                })
+            }
+        };
 
     private static JsonObject CreateAfterlifeProfile(
         string actorType = "guardian",

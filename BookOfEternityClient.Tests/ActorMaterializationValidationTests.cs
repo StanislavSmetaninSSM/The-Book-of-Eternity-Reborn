@@ -195,6 +195,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     [InlineData("teacher")]
     [InlineData("trader")]
     [InlineData("combat")]
+    [InlineData("combat_idless")]
     [InlineData("actor_brain")]
     public async Task ValidateGameStateAsync_LegacyMortalNpcWithStructuredPromotion_ReportsMissingMaterialization(
         string promotion)
@@ -247,6 +248,28 @@ public sealed class ActorMaterializationValidationTests : IDisposable
                 break;
             case "combat":
                 actor["activeSkills"]!.AsArray().Add(new JsonObject { ["skillId"] = "skill_signal" });
+                break;
+            case "combat_idless":
+                actor["activeSkills"]!.AsArray().Add(new JsonObject
+                {
+                    ["skillName"] = "Контур отражения",
+                    ["skillDescription"] = "Возвращает направленный импульс источнику.",
+                    ["rarity"] = "Common",
+                    ["actionCost"] = "Main",
+                    ["combatEffect"] = new JsonObject
+                    {
+                        ["isActivatedEffect"] = true,
+                        ["actionName"] = "Отразить импульс",
+                        ["effects"] = new JsonArray(new JsonObject
+                        {
+                            ["effectType"] = "Damage",
+                            ["value"] = "10%",
+                            ["targetType"] = "Enemy",
+                            ["effectDescription"] = "Отражённая сила поражает источник.",
+                            ["poiseDamage"] = "5%"
+                        })
+                    }
+                });
                 break;
             case "actor_brain":
                 actor["currentActivity"] = new JsonObject { ["activityId"] = "activity_signal" };

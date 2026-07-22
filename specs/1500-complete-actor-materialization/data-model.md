@@ -139,10 +139,17 @@ Boundaries:
 - `NPCId` is one exact existing permanent identity. Names, `initialId`, new/stale targets, case-variant ambiguity, and divergent mirrors fail closed.
 - `reason` is non-empty and at least one mutation group is non-empty. Values are absolute resulting values; expressions and prose-derived arithmetic are invalid.
 - Unknown members are rejected recursively. Identity, name, materialization, inventory/equipment, skills/mastery, relationships/locks, journals/memory, goals/quests, activities, masks, custom states, teacher/trade capabilities, and arbitrary paths remain protected or owned by dedicated commands.
+- Current and validated pre-turn `npc_core.json` are parsed duplicate-sensitively before command evaluation. Malformed, non-object, or duplicate-member authority is a blocking structured error rather than an absent command.
+- Historical `NPCsInScene` and envelope-free `UpdateNPCs` preserve every actor-owned field. Inventory and materialization use their narrower continuity diagnostics; every other direct carrier mutation is rejected by the shared actor-ownership boundary.
 - `characteristicValues` contains finite numeric results only for actor-owned keys or explicit current-world characteristic authority. Carrying and progression formulas also require explicit current-world authority; absent carrying authority leaves the setting-owned nullable result null.
 - A location mutation carries both fields and uses exactly one authority branch: permanent `currentLocationId` plus null `initialLocationId`, or null current plus exact same-turn `initialLocationId`.
 - Changing any level/experience threshold field requires the coherent non-negative tuple. Include `lastPlayerXPValueOnSync` when a role/progression transition requires synchronization.
-- Faction upserts use exact faction identity and the existing complete affiliation shape. Fate Card additions reuse full-card validation, have unique IDs, and begin locked; removals target only validated pre-turn locked/unrealized cards. Unlocking remains `NPCFateCardUnlocks`.
+- Faction upserts use exact faction identity and the existing complete affiliation shape. Fate Card additions reuse the full production Fate Card, active/passive skill, Combat Action, and effect validator, have unique IDs, and begin locked; any nested failure keeps the command unconsumed and all mirrors unchanged. Removals target only validated pre-turn locked/unrealized cards. Unlocking remains `NPCFateCardUnlocks`.
+
+Mortal combat capability and promotion evidence use the canonical active/passive
+skill structure. A complete Block 7 skill does not require `skillId` or `id`;
+legacy identifier-only records remain detectable for migration without changing
+the production skill validator.
 
 ## Afterlife actor contract
 
@@ -239,6 +246,11 @@ For every supported worker correction, deleting/adding the file or actor, changi
 The high-priority main-GM inventory repair packet never turns an ordinary existing full object into a partial object: because canonical full-object shape requires `inventory`, the whole ordinary-existing `UpdateNPCs` resend is removed. Skill, inventory, relationship, journal, goal/quest, activity, equipment/resource, rename, and unlock changes are re-authored through dedicated commands; the bounded profile/location/progression/setting-owned characteristic/faction/Fate Card definition groups use `NPCCoreChanges`. A protected field outside both contracts forces main-GM rollback/repair rather than widening the command or deleting required fields. Genuinely new initial inventory and exact-snapshot legacy promotion remain the two complete-object branches.
 
 The third re-review additions in this section are Mortal-only. They do not change Chaos Sea or Shining Abode pending/control files, response fields, receipts, reports, actor-profile schema, validation, normalization, scheduler, lifecycle mode, or authority path.
+
+The fourth re-review adds no afterlife pending/control surface. The shared Block 5
+Combat Action validator now enforces its already documented mandatory effect
+`value`; the afterlife matrix/example call out inherited item/relic/skill use and
+explicitly keep `specialArts[].combatEffect` on its separate spiritual-conflict schema.
 
 Before applying a worker-authored actor materialization repair, the apply gate routes memory issues by actor type, removes only the exact mutable subtree named by the issue, and semantically compares the remaining canonical JSON. Guardian targets use the canonical/supported Guardian journal path, residents use resident state/journal, and Radiant/Saref/other common-profile actors use only their exact profile `gmThoughtsSummary`. Any change to protected actor data, another actor, root state, currencies, progression, envelope, or unrelated scalar rejects the proposal. An ambiguous-profile repair may only remove duplicates while retaining one otherwise unchanged canonical profile. Dedicated Guardian/resident memory repair is stricter than ordinary scalar repair: all existing journal entries remain an exact prefix, and the worker may append exactly one meaningful thought for the issue-bound actor without rewriting or deleting history. If and only if `game_state/meta/guardian_thought_journal.json` is absent and every scoped issue is `afterlife_actor_materialization_memory_missing` for one exact `guardian:<id>`, preservation uses `{ "entries": [] }` as the baseline; the normal proposal contract still requires Add, `beforeSha256=missing`, exact `afterSha256`, and the proposal-bound content reference.
 

@@ -114,4 +114,15 @@
 - [x] T061 Replace every contradictory ordinary-existing full-`UpdateNPCs` mandate with a real dedicated command or `NPCCoreChanges`; update Block 2, CLI/daemon guidance, worked examples, manifests, and full-source negative guards.
 - [x] T062 Remove universal Strength/Constitution/carrying and class-stat assumptions from authoritative Mortal rules and examples; derive all characteristic keys and formulas from explicit current-world authority and guard the complete Block 19 source against regression.
 - [x] T063 Require three to five first-materialization personality traits with mandatory integer `value`, repair the Mortal worked example, and validate that example through the production NPC validator with truthful manifest coverage.
-- [ ] T064 Record per-finding RED/GREEN evidence, run focused and full verification, update Spec Kit artifacts, and repeat independent whole-branch review before T023/T033 integration.
+- [x] T064 Record per-finding RED/GREEN evidence, run focused and full verification, update Spec Kit artifacts, and repeat independent whole-branch review before T023/T033 integration.
+  - Evidence: third-wave runtime 768/768 and prompt/docs/source/afterlife 267/267 passed; full suite passed 6166/6174 with seven base-reproduced fixture failures and one isolated-green Agent Console reset. Independent re-review 4 is recorded in `sdd/final-rereview-4-report.md`; its four Important findings are the Phase 16 remediation scope below.
+
+## Phase 16 - Fourth final re-review remediation
+
+- [x] T065 Fail malformed, non-object, and duplicate-member current `npc_core.json` authority closed through stable structured pre-normalization issues without throwing or silently skipping `NPCCoreChanges` validation.
+- [x] T066 Enforce validated pre-turn continuity for every actor-owned field in historical `NPCsInScene` and envelope-free `UpdateNPCs`, while preserving genuinely new actors and requiring existing actors to use the exact dedicated command surface.
+- [x] T067 Validate `NPCCoreChanges.fateCardsToAdd` against the complete production Fate Card, skill, combat-action, and combat-effect contract before reduction; retain the command and canonical actor unchanged on any nested error.
+- [x] T068 Derive Mortal combat capability and promotion evidence from production-valid active/passive skill structure rather than optional synthetic skill IDs, including complete ID-less Block 7 skills.
+- [x] T069 Synchronize the formal contract, Spec Kit decisions, source/documentation guards, and explicit Mortal/afterlife prompt-update rationale; remove contract EOF whitespace.
+  - Evidence: per-finding RED failures were observed for three malformed/current authority cases, ten protected actor domains, four nested combat-effect variants plus reducer atomicity, two ID-less combat paths, and duplicate pre-turn authority. The combined actor/NPCCore/docs/source-guard matrix passed 497/497; the broader skill/Fate Card/Combat Action matrix passed 61/61.
+- [ ] T070 Record per-finding RED/GREEN evidence, rerun focused/documentation/full verification, and obtain a fifth independent whole-branch review before T023/T033 integration.

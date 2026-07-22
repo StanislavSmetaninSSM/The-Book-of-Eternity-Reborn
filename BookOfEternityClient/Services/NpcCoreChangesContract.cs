@@ -121,10 +121,12 @@ internal static class NpcCoreChangesContract
         "KnowledgeBased", "CharacteristicBonus", "BodyModification", "CombatEnhancement", "Utility"
     };
 
-    private static readonly string[] DirectProfileFields = ["worldview", "race", "history"];
-    private static readonly string[] DirectLocationFields = ["currentLocationId", "initialLocationId"];
-    private static readonly string[] DirectProgressionFields =
-        ["level", "experience", "experienceForNextLevel", "progressionType"];
+    private static readonly HashSet<string> ActorFieldsWithDedicatedContinuityValidation =
+        new(StringComparer.Ordinal)
+        {
+            "inventory",
+            ActorMaterializationContract.PropertyName
+        };
 
     internal sealed record Authority(
         HashSet<string> KnownPermanentLocationIds,
@@ -151,6 +153,7 @@ internal static class NpcCoreChangesContract
         JsonObject currentRoot,
         JsonObject preTurnRoot,
         Authority authority,
+        Func<JsonArray, string, IReadOnlyList<ValidationIssue>> validateProductionFateCards,
         bool detectDirectMutations)
     {
         var evaluation = new Evaluation { HasCommand = HasCommandLikeProperty(currentRoot) };
@@ -299,6 +302,7 @@ internal static class NpcCoreChangesContract
                     baselineActor?.Actor,
                     $"{context}.fateCardsToAdd",
                     npcId,
+                    validateProductionFateCards,
                     evaluation.Issues);
             }
 
@@ -502,13 +506,13 @@ internal static class NpcCoreChangesContract
                          string.Equals(actor.NpcId, preTurnGroup.Key, StringComparison.Ordinal)))
             {
                 var baseline = ResolveDirectMutationBaseline(current, candidates);
-                if (baseline == null || !HasDirectCoreMutation(baseline.Actor, current.Actor))
+                if (baseline == null || !HasDirectActorMutation(baseline.Actor, current.Actor))
                     continue;
 
                 issues.Add(Error(
                     current.Path,
                     "npc_existing_core_direct_mutation_forbidden",
-                    "Existing NPC core fields must change through NPCCoreChanges, not by rewriting a canonical full carrier.",
+                    "Existing NPC actor-owned fields must change through their exact dedicated command, not by rewriting a canonical full carrier.",
                     current.NpcId!));
             }
         }
@@ -533,24 +537,20 @@ internal static class NpcCoreChangesContract
         return preTurnCandidates.Count > 0 ? preTurnCandidates[0] : null;
     }
 
-    private static bool HasDirectCoreMutation(JsonObject baseline, JsonObject current)
+    private static bool HasDirectActorMutation(JsonObject baseline, JsonObject current)
     {
-        foreach (var field in DirectProfileFields.Concat(DirectLocationFields).Concat(DirectProgressionFields))
+        foreach (var field in baseline.Select(property => property.Key)
+                     .Concat(current.Select(property => property.Key))
+                     .Distinct(StringComparer.Ordinal))
         {
+            if (ActorFieldsWithDedicatedContinuityValidation.Contains(field))
+                continue;
+
             if (!JsonNode.DeepEquals(baseline[field], current[field]))
                 return true;
         }
 
-        if (!JsonNode.DeepEquals(baseline["characteristics"], current["characteristics"]) ||
-            !JsonNode.DeepEquals(baseline["factionAffiliations"], current["factionAffiliations"]) ||
-            !JsonNode.DeepEquals(baseline["fateCards"], current["fateCards"]))
-        {
-            return true;
-        }
-
-        var baselineSync = (baseline["progressionTrackers"] as JsonObject)?["lastPlayerXPValueOnSync"];
-        var currentSync = (current["progressionTrackers"] as JsonObject)?["lastPlayerXPValueOnSync"];
-        return !JsonNode.DeepEquals(baselineSync, currentSync);
+        return false;
     }
 
     private static void ValidateProfile(
@@ -797,6 +797,7 @@ internal static class NpcCoreChangesContract
         JsonObject? baselineActor,
         string context,
         string? npcId,
+        Func<JsonArray, string, IReadOnlyList<ValidationIssue>> validateProductionFateCards,
         List<ValidationIssue> issues)
     {
         if (node is not JsonArray cards || cards.Count == 0)
@@ -804,6 +805,8 @@ internal static class NpcCoreChangesContract
             issues.Add(Error(context, "npc_core_changes_fate_card_invalid", "fateCardsToAdd must be a non-empty array.", npcId));
             return;
         }
+
+        issues.AddRange(validateProductionFateCards(cards, context));
 
         var existingCardIds = ReadFateCards(baselineActor)
             .Select(card => ReadRequiredString(card, "cardId"))

@@ -688,6 +688,10 @@ public sealed class PromptDocumentationCoverageTests
         Assert.Contains("game_state/npcs/npc_core.json", cliMapping, StringComparison.Ordinal);
         Assert.Contains("ordinary existing", example, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("retained scene state", example, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("every actor-owned field", npcRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full production Fate Card", npcRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("skillId is not required", npcRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("every actor-owned field", cliMapping, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

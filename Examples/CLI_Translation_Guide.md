@@ -107,9 +107,9 @@ echo '{"sessionId": "...", "requestId": "...", "turnNumber": 42, "timestamp": "2
 ### **Pattern 3: NPC Interaction**
 **API Response:**
 - For a genuinely new NPC or true legacy promotion, generate the complete `UpdateNPCs`/`NPCsInScene` carrier plus relationship commands.
-- For an ordinary existing NPC, generate the exact dedicated commands and use bounded `NPCCoreChanges` only for supported profile, location, progression, setting-owned characteristic, faction affiliation, or locked/unrealized Fate Card definition changes.
+- For an ordinary existing NPC, preserve every actor-owned field in full carriers, generate the exact dedicated commands, and use bounded `NPCCoreChanges` only for supported profile, location, progression, setting-owned characteristic, faction affiliation, or locked/unrealized Fate Card definition changes.
 **CLI Action:**
-- Route complete carriers and `NPCCoreChanges` → `npcs/npc_core.json`; `NPCCoreChanges` is validated and reduced into the exact existing actor, then consumed. Do not hand-apply arbitrary fields.
+- Route complete carriers and `NPCCoreChanges` → `npcs/npc_core.json`; `NPCCoreChanges` is duplicate-sensitive, validates new Fate Cards through the full production nested skill/Combat Action contract, reduces only an entirely valid command into the exact existing actor, then consumes it. Do not hand-apply arbitrary fields.
 - Write relationships → `npcs/npc_relationships.json`
 - Keep dialogue in `output/narrative_response.json` / `output/interface_updates.json`
 

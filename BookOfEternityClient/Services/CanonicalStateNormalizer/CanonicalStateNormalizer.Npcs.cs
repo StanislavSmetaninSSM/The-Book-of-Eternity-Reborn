@@ -23,6 +23,7 @@ public partial class CanonicalStateNormalizer
             result,
             preTurnRoot,
             authority,
+            ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
             detectDirectMutations: true);
         if (!evaluation.CanApply)
             return;

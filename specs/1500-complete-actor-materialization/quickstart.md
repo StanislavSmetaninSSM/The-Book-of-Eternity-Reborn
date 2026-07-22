@@ -19,10 +19,12 @@ Use this checklist when implementing or reviewing issue #1500. It is not a playe
 ## Ordinary existing Mortal NPC
 
 1. Do not resend a complete or unchanged ordinary-existing object through `UpdateNPCs`.
-2. Keep historical `NPCsInScene` only as retained scene state for a physically present actor; protected core and inventory remain semantically unchanged there.
+2. Keep historical `NPCsInScene` only as retained scene state for a physically present actor; every actor-owned field remains semantically unchanged there and in envelope-free `UpdateNPCs`.
 3. Use the exact dedicated command for rename, unlock, inventory/equipment, skills/mastery, relationships/locks, journals/memory, goals/quests, activities, and masks.
 4. Use `NPCCoreChanges` only for its closed profile, paired location, coherent progression, setting-owned characteristic results, faction-affiliation upsert, and locked/unrealized Fate Card definition add/remove groups.
 5. Target one exact existing permanent `NPCId`, include a non-empty `reason`, and send only absolute resulting values. Invalid commands remain unconsumed for repair.
+6. Keep `npc_core.json` valid and duplicate-free. New Fate Cards pass the full production nested skill/Combat Action contract before reduction.
+7. Treat complete Block 7 active/passive skills as combat evidence even when optional `skillId`/`id` fields are absent.
 
 ## Afterlife valid first materialization
 
@@ -78,4 +80,6 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - Inventory repair packet covers genuinely new, ordinary existing, and true legacy-promotion cases: remove the whole ordinary-existing full-object resend and use dedicated deltas, bounded `NPCCoreChanges`, or main-GM fallback for protected unsupported domains, while retaining required promotion inventory.
 - Mortal and afterlife prompts/docs/examples/manifests synchronized.
 - Third re-review docs explicitly record Mortal-only scope and no Chaos Sea/Shining Abode contract change.
+- Fourth re-review guards malformed/duplicate NPCCore authority, every historical actor-owned domain, production Fate Card reduction atomicity, and ID-less canonical skill evidence.
+- Shared Block 5 effect `value` enforcement is synchronized with the afterlife matrix/example without changing the separate special-art schema.
 - Player-facing metadata non-leakage covered.

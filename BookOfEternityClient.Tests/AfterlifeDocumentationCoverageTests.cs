@@ -12,6 +12,17 @@ namespace BookOfEternityClient.Tests;
 public sealed class AfterlifeDocumentationCoverageTests
 {
     [Fact]
+    public void SharedCombatActionEffectValueContract_IsDocumentedForAfterlifeAuthors()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        Assert.Contains("shared Block 5 Combat Action effect", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("shared Block 5 Combat Action effect", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("value=10%", examples, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void AfterlifePendingControlSurfaceInventoryIsMachineReadable()
     {
         var inventory = ReadRepoFile("OtherGuides", "Afterlife_Pending_Control_Surface_Inventory.json");

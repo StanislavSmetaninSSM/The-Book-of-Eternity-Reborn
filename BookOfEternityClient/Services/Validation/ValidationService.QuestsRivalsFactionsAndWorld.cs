@@ -1996,7 +1996,7 @@ public partial class ValidationService
     }
 
 
-    private void ValidateNumberField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void ValidateNumberField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;
@@ -2009,7 +2009,7 @@ public partial class ValidationService
     }
 
 
-    private void ValidateIntegerField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void ValidateIntegerField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;
@@ -2116,7 +2116,7 @@ public partial class ValidationService
     }
 
 
-    private void ValidatePositiveIntegerField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void ValidatePositiveIntegerField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;

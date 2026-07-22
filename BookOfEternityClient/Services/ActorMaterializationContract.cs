@@ -840,8 +840,8 @@ internal static class ActorMaterializationContract
     }
 
     internal static bool HasUsableMortalCombatSkill(JsonElement npc) =>
-        HasArrayObjectMatching(npc, "activeSkills", IsStructuredMortalSkill) ||
-        HasArrayObjectMatching(npc, "passiveSkills", IsStructuredMortalSkill);
+        HasArrayObjectMatching(npc, "activeSkills", IsUsableMortalActiveCombatSkill) ||
+        HasArrayObjectMatching(npc, "passiveSkills", IsUsableMortalPassiveCombatSkill);
 
     internal static bool HasUsableMortalTeacherAuthority(JsonElement npc)
     {
@@ -969,13 +969,21 @@ internal static class ActorMaterializationContract
         }
     }
 
-    private static bool IsStructuredMortalSkill(JsonElement skill) =>
+    private static bool HasLegacyMortalSkillIdentity(JsonElement skill) =>
         skill.ValueKind == JsonValueKind.Object &&
         !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(skill, "skillId", "id"));
 
+    private static bool IsUsableMortalActiveCombatSkill(JsonElement skill) =>
+        HasLegacyMortalSkillIdentity(skill) ||
+        ValidationService.IsProductionValidMortalActiveSkill(skill);
+
+    private static bool IsUsableMortalPassiveCombatSkill(JsonElement skill) =>
+        HasLegacyMortalSkillIdentity(skill) ||
+        ValidationService.IsProductionValidMortalPassiveSkill(skill);
+
     private static bool IsUsableMortalTeacherSkill(JsonElement skill)
     {
-        if (!IsStructuredMortalSkill(skill) ||
+        if (!HasLegacyMortalSkillIdentity(skill) ||
             string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(skill, "skillName", "displayName", "name")) ||
             !skill.TryGetProperty("masteryLevel", out var masteryLevel) ||
             masteryLevel.ValueKind != JsonValueKind.Number ||

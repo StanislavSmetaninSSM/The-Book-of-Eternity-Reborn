@@ -8382,6 +8382,8 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
 }
 ```
 
+Shared Block 5 Combat Action effect reminder: when an afterlife item, relic, or inherited skill uses this ordinary effect contract, keep its complete shape. Minimal damage example: effectType=Damage, value=10%, targetType=Enemy, effectDescription=Духовный импульс поражает цель, poiseDamage=5%. This reminder does not replace the separate specialArts[].combatEffect spiritual-conflict schema.
+
 The full Guardian response below demonstrates the `populated` path. After acceptance, preserve this envelope and use dedicated deltas for later profile changes instead of resending it.
 
 Valid response fragment:

@@ -42,6 +42,86 @@ public sealed class NpcCoreChangesTests : IDisposable
     }
 
     [Theory]
+    [InlineData("{\"NPCsInScene\":[}", "malformed")]
+    [InlineData("[]", "non-object root")]
+    public async Task ValidatePreNormalizationNpcCoreChanges_InvalidCurrentAuthority_IsStructuredError(
+        string currentJson,
+        string expectedActual)
+    {
+        await WriteFixtureAsync();
+        await _fs.WriteFileAtomicAsync(NpcCorePath, currentJson);
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_core_changes_invalid_json" &&
+            issue.Severity == IssueSeverity.Error &&
+            issue.Actual == expectedActual);
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_DuplicateCurrentMember_IsStructuredError()
+    {
+        var fixture = await WriteFixtureAsync();
+        var currentJson = fixture.CurrentRoot.ToJsonString();
+        currentJson = currentJson[..^1] +
+                      ",\"NPCCoreChanges\":[],\"NPCCoreChanges\":[]}";
+        await _fs.WriteFileAtomicAsync(NpcCorePath, currentJson);
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_core_changes_duplicate_property" &&
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath.Contains("NPCCoreChanges", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_DuplicateNestedCurrentMember_IsStructuredError()
+    {
+        await WriteFixtureAsync((root, actor, _) =>
+        {
+            var card = BuildLockedFateCardWithActiveSkill("fate_duplicate_nested_member");
+            root["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["reason"] = "Событие открыло новую линию судьбы.",
+                ["fateCardsToAdd"] = new JsonArray(card)
+            });
+        });
+        var currentJson = (await _fs.ReadFileAsync(NpcCorePath))!;
+        currentJson = currentJson.Replace(
+            "\"effectType\":\"Damage\"",
+            "\"effectType\":\"Damage\",\"effectType\":\"Heal\"",
+            StringComparison.Ordinal);
+        await _fs.WriteFileAtomicAsync(NpcCorePath, currentJson);
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_core_changes_duplicate_property" &&
+            issue.FilePath.EndsWith(".effectType", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_DuplicatePreTurnMember_IsStructuredError()
+    {
+        await WriteFixtureAsync((root, actor, _) =>
+            root["NPCCoreChanges"] = new JsonArray(BuildProfileChange(actor)));
+        var snapshotPath = $"game_state/control/pending_turn_snapshot/{NpcCorePath}";
+        var preTurnJson = (await _fs.ReadFileAsync(snapshotPath))!;
+        preTurnJson = preTurnJson[..^1] + ",\"NPCsInScene\":[]}";
+        await RewriteNpcCoreSnapshotAuthorityAsync(snapshotPath, preTurnJson);
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_core_changes_pre_turn_authority_unavailable" &&
+            issue.Severity == IssueSeverity.Error &&
+            issue.Actual!.Contains("duplicate", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
     [InlineData("protected")]
     [InlineData("nested_unknown")]
     public async Task ValidateGameStateAsync_NpcCoreChanges_RejectsProtectedOrUnknownMembers(string mutation)
@@ -381,6 +461,83 @@ public sealed class NpcCoreChangesTests : IDisposable
         Assert.Contains(issues, issue => issue.Code == "npc_core_changes_fate_card_invalid");
     }
 
+    [Theory]
+    [InlineData("missing_value")]
+    [InlineData("unknown_effect_type")]
+    [InlineData("timed_effect_without_duration")]
+    [InlineData("poise_on_non_damage")]
+    public async Task ValidatePreNormalizationNpcCoreChanges_RejectsFateCardThatFailsProductionCombatEffect(
+        string mutation)
+    {
+        await WriteFixtureAsync((root, actor, _) =>
+        {
+            var card = BuildLockedFateCardWithActiveSkill("fate_invalid_production_effect");
+            var effect = card["rewards"]!["newActiveSkills"]![0]!["combatEffect"]!["effects"]![0]!.AsObject();
+            switch (mutation)
+            {
+                case "missing_value":
+                    effect.Remove("value");
+                    break;
+                case "unknown_effect_type":
+                    effect["effectType"] = "UnknownEffect";
+                    break;
+                case "timed_effect_without_duration":
+                    effect["effectType"] = "Buff";
+                    effect.Remove("poiseDamage");
+                    effect.Remove("duration");
+                    break;
+                case "poise_on_non_damage":
+                    effect["effectType"] = "Heal";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+
+            root["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["reason"] = "Событие открыло новую, но ещё не реализованную боевую линию судьбы.",
+                ["fateCardsToAdd"] = new JsonArray(card)
+            });
+        });
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath.Contains("combatEffect.effects[0]", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_ProductionInvalidFateCard_RemainsAtomicAndUnconsumed()
+    {
+        var fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            var card = BuildLockedFateCardWithActiveSkill("fate_invalid_atomicity");
+            card["rewards"]!["newActiveSkills"]![0]!["combatEffect"]!["effects"]![0]!["effectType"] =
+                "UnknownEffect";
+            root["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["reason"] = "Событие открыло новую, но ещё не реализованную боевую линию судьбы.",
+                ["fateCardsToAdd"] = new JsonArray(card)
+            });
+        });
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [NpcCorePath] = $"game_state/control/pending_turn_snapshot/{NpcCorePath}"
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(NpcCorePath))!)!.AsObject();
+        Assert.True(root.ContainsKey("NPCCoreChanges"));
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.DoesNotContain(actor["fateCards"]!.AsArray().OfType<JsonObject>(), card =>
+            card["cardId"]?.GetValue<string>() == "fate_invalid_atomicity");
+        Assert.Equal(fixture.ActorId, actor["NPCId"]!.GetValue<string>());
+    }
+
     [Fact]
     public async Task ValidatePreNormalizationNpcCoreChanges_DuplicatePreTurnFateCardIdentity_IsStructuredError()
     {
@@ -480,6 +637,88 @@ public sealed class NpcCoreChangesTests : IDisposable
             issue.Actor == $"mortal_npc:{fixture.ActorId}");
     }
 
+    [Theory]
+    [InlineData("personality")]
+    [InlineData("active_skills")]
+    [InlineData("goals")]
+    [InlineData("relationships")]
+    [InlineData("journal")]
+    [InlineData("activity")]
+    [InlineData("equipment")]
+    [InlineData("teacher")]
+    [InlineData("trade")]
+    [InlineData("custom_state")]
+    public async Task ValidatePreNormalizationNpcCoreChanges_HistoricalActorOwnedDomainMutationWithoutCommand_IsRejected(
+        string mutation)
+    {
+        var fixture = await WriteFixtureAsync((_, actor, _) =>
+        {
+            switch (mutation)
+            {
+                case "personality":
+                    actor["personalityTraits"] = new JsonArray(new JsonObject
+                    {
+                        ["name"] = "Осторожность",
+                        ["description"] = "Проверяет каждое свидетельство дважды.",
+                        ["value"] = 8
+                    });
+                    break;
+                case "active_skills":
+                    actor["activeSkills"] = new JsonArray(new JsonObject
+                    {
+                        ["skillName"] = "Архивный заслон",
+                        ["skillDescription"] = "Закрывает проход тяжёлой створкой.",
+                        ["rarity"] = "common"
+                    });
+                    break;
+                case "goals":
+                    actor["goals"] = new JsonArray("Сохранить опись архива до рассвета.");
+                    break;
+                case "relationships":
+                    actor["relationshipLocks"] = new JsonArray(new JsonObject
+                    {
+                        ["targetId"] = "player",
+                        ["reason"] = "Доверие ещё не заслужено."
+                    });
+                    break;
+                case "journal":
+                    actor["thoughtJournal"] = new JsonArray("Я должен проверить печать ещё раз.");
+                    break;
+                case "activity":
+                    actor["currentActivity"] = new JsonObject
+                    {
+                        ["activityId"] = "activity_archive_audit",
+                        ["description"] = "Проверяет вечернюю опись."
+                    };
+                    break;
+                case "equipment":
+                    actor["equippedItems"] = new JsonObject { ["hands"] = "item_archive_key" };
+                    break;
+                case "teacher":
+                    actor["teacherProfile"]!["canTeach"] = false;
+                    break;
+                case "trade":
+                    actor["tradeState"] = new JsonObject
+                    {
+                        ["canTrade"] = true,
+                        ["merchantProfile"] = "GeneralGoods"
+                    };
+                    break;
+                case "custom_state":
+                    actor["customStates"] = new JsonObject { ["archiveAlarm"] = true };
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+        });
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
     [Fact]
     public async Task ValidatePreNormalizationNpcCoreChanges_UnchangedHistoricalSceneAndNewActor_AreAccepted()
     {
@@ -533,6 +772,29 @@ public sealed class NpcCoreChangesTests : IDisposable
             var currentUpdateMirror = preTurnUpdateMirror.DeepClone().AsObject();
             currentUpdateMirror["history"] = "Несанкционированное изменение той же UpdateNPCs-копии.";
             root["UpdateNPCs"] = new JsonArray(currentUpdateMirror);
+        });
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}" &&
+            issue.FilePath == $"{NpcCorePath}.UpdateNPCs[0]");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_EnvelopeFreeUpdateCarrierMutation_IsRejected()
+    {
+        var fixture = await WriteFixtureAsync((root, _, preTurnActor) =>
+        {
+            var updateCarrier = preTurnActor.DeepClone().AsObject();
+            updateCarrier["activeSkills"] = new JsonArray(new JsonObject
+            {
+                ["skillName"] = "Несанкционированный навык",
+                ["skillDescription"] = "Добавлен прямой заменой carrier.",
+                ["rarity"] = "Common"
+            });
+            root["UpdateNPCs"] = new JsonArray(updateCarrier);
         });
 
         var issues = await InvokePreNormalizationValidationAsync();
@@ -901,6 +1163,18 @@ public sealed class NpcCoreChangesTests : IDisposable
         return await task;
     }
 
+    private async Task RewriteNpcCoreSnapshotAuthorityAsync(string snapshotPath, string preTurnJson)
+    {
+        await _fs.WriteFileAtomicAsync(snapshotPath, preTurnJson);
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var manifest = JsonNode.Parse((await _fs.ReadFileAsync(manifestPath))!)!.AsObject();
+        manifest["snapshotFileHashes"]![NpcCorePath] = PendingTurnSnapshotAuthority.ComputeSha256(preTurnJson);
+        manifest["manifestPayloadHash"] = string.Empty;
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await _fs.WriteFileAtomicAsync(manifestPath, manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
     private static JsonObject BuildProfileChange(JsonObject actor) =>
         new()
         {
@@ -931,6 +1205,32 @@ public sealed class NpcCoreChangesTests : IDisposable
             },
             ["isUnlocked"] = false
         };
+
+    private static JsonObject BuildLockedFateCardWithActiveSkill(string cardId)
+    {
+        var card = BuildLockedFateCard(cardId);
+        card["rewards"]!["newActiveSkills"] = new JsonArray(new JsonObject
+        {
+            ["skillName"] = "Archive Ward",
+            ["skillDescription"] = "Raises a brief protective seal.",
+            ["rarity"] = "Rare",
+            ["actionCost"] = "Main",
+            ["combatEffect"] = new JsonObject
+            {
+                ["isActivatedEffect"] = true,
+                ["actionName"] = "Raise Archive Ward",
+                ["effects"] = new JsonArray(new JsonObject
+                {
+                    ["effectType"] = "Damage",
+                    ["value"] = "10%",
+                    ["targetType"] = "Enemy",
+                    ["effectDescription"] = "A seal lashes the target with stored force.",
+                    ["poiseDamage"] = "5%"
+                })
+            }
+        });
+        return card;
+    }
 
     private static JsonObject BuildHistoricalMaterialization(string actorId) =>
         new()

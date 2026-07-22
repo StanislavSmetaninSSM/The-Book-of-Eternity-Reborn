@@ -102,7 +102,9 @@ membership commands.
 ### `fateCardsToAdd`
 
 Each card reuses full Fate Card validation, has a unique new ID, and starts with
-`isUnlocked=false`.
+`isUnlocked=false`. Nested active/passive skills, Combat Actions, and effects pass
+the same production validator as a complete canonical NPC before any reduction;
+every effect includes required `value` and type-specific duration/poise fields.
 
 ### `fateCardIdsToRemove`
 
@@ -113,10 +115,14 @@ card remains `NPCFateCardUnlocks`.
 ## Reduction guarantees
 
 - Resolve one logical actor from validated pre-turn/current permanent identity.
+- Reject malformed, non-object, or duplicate-member current `npc_core.json`
+  authority through a blocking structured issue before command materialization.
 - Reject missing, ambiguous, case-variant, or divergent mirrors.
+- Preserve every actor-owned field in historical full carriers. Inventory and the
+  materialization envelope retain their narrower dedicated continuity diagnostics;
+  every other domain changes only through its exact dedicated command.
 - Apply only named allowed subfields to every canonical mirror.
 - Preserve all siblings and the historical materialization envelope.
 - Consume `NPCCoreChanges` only after successful reduction.
 - Run ordinary full-object validation on the resulting canonical state.
 - Leave invalid commands unconsumed so bounded repair can address them.
-

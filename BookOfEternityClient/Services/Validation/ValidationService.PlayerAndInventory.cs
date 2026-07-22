@@ -3904,7 +3904,7 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    private static void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
@@ -4002,7 +4002,7 @@ public partial class ValidationService
         ValidateOptionalNumberOrString(item, itemContext, issues, "timeCost");
     }
 
-    private void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    private static void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
         RequireString(item, itemContext, issues, "skillName");
         RequireString(item, itemContext, issues, "skillDescription");
@@ -4127,7 +4127,7 @@ public partial class ValidationService
         ValidateOptionalNumberOrString(item, itemContext, issues, "maxUnlockableActiveSkills");
     }
 
-    private void ValidateSkillActionCostField(JsonElement item, string itemContext, List<ValidationIssue> issues, string propName,
+    private static void ValidateSkillActionCostField(JsonElement item, string itemContext, List<ValidationIssue> issues, string propName,
         string section)
     {
         if (!item.TryGetProperty(propName, out var actionCostNode))
@@ -6648,7 +6648,7 @@ public partial class ValidationService
             allowArray ? "Поле должно быть объектом или массивом" : "Поле должно быть объектом"));
     }
 
-    private void ValidateOptionalString(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void ValidateOptionalString(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;
@@ -7019,7 +7019,7 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateCombatActionObject(JsonElement action, string context, List<ValidationIssue> issues,
+    private static void ValidateCombatActionObject(JsonElement action, string context, List<ValidationIssue> issues,
         bool requireActionNameForActivatedEffect = true, string section = "Inventory")
     {
         if (!RequireObject(action, context, issues))
@@ -7092,13 +7092,28 @@ public partial class ValidationService
             ValidateCombatActionEffectObject(effect, $"{context}.effects[{index++}]", issues, section);
     }
 
-    private void ValidateCombatActionEffectObject(JsonElement effect, string context, List<ValidationIssue> issues, string section)
+    private static void ValidateCombatActionEffectObject(JsonElement effect, string context, List<ValidationIssue> issues, string section)
     {
         if (!RequireObject(effect, context, issues))
             return;
 
         var effectType = RequireString(effect, context, issues, "effectType");
-        ValidatePercentageStringField(effect, context, issues, "value", requirePositive: false);
+        if (!effect.TryGetProperty("value", out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.value",
+                IssueSeverity.Error,
+                "Combat Action effect должен содержать базовое значение value",
+                code: "combat_action_missing_effect_value",
+                section: section,
+                expected: "non-negative percentage string",
+                actual: "missing",
+                repairHint: "Добавь в effect обязательное canonical поле value как percentage string, например 10%."));
+        }
+        else
+        {
+            ValidatePercentageStringField(effect, context, issues, "value", requirePositive: false);
+        }
         RequireString(effect, context, issues, "targetType");
         RequireString(effect, context, issues, "effectDescription");
         ValidateOptionalString(effect, context, issues, "targetTypeDisplayName");
@@ -7436,7 +7451,7 @@ public partial class ValidationService
         return false;
     }
 
-    private void ValidateOptionalNumberOrString(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void ValidateOptionalNumberOrString(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;
@@ -7451,7 +7466,7 @@ public partial class ValidationService
             "Поле должно быть числом или непустой строкой"));
     }
 
-    private void ValidateOptionalBool(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void ValidateOptionalBool(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;

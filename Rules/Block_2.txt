@@ -467,7 +467,7 @@
                     'changeReason': 'string' 
                 }.",
 
-                "NPCsInScene": "(array of complete npc_objects or null) Canonical full objects for named NPCs physically present in the active scene/context. A historical actor may remain here only as retained scene state with protected core and inventory semantically unchanged; presence is not an ordinary mutation command. Use dedicated commands or NPCCoreChanges for supported changes.",
+                "NPCsInScene": "(array of complete npc_objects or null) Canonical full objects for named NPCs physically present in the active scene/context. A historical actor may remain here only as retained scene state with every actor-owned field semantically unchanged from validated pre-turn authority; presence is not an ordinary mutation command. Use the exact dedicated command or bounded NPCCoreChanges for supported changes.",
 
                 "NPCGoalUpdates": "(array of npc_goal_update_objects or null)
                 The atomic command to update an NPC's short-term goals, long-term goals and strategic plans. 

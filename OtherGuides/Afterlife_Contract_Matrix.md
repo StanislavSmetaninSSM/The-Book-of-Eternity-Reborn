@@ -6,6 +6,7 @@ The GM normally does not need to read client code. Use this matrix to decide whi
 
 ## Universal Afterlife Rules
 
+- When an afterlife item, relic, or inherited skill surface embeds a shared Block 5 Combat Action effect, that effect keeps the ordinary canonical fields: non-empty `effectType`, required percentage-string `value`, non-empty `targetType`, non-empty `effectDescription`, and the type-specific duration/poise fields. This does not change the separate `specialArts[].combatEffect` spiritual-conflict schema.
 - Always run realm gate first: ordinary `Chaos Sea`, ordinary active `Shining Abode`, or `Shining Abode pending-bootstrap handoff`.
 - Always read `input/turn_request.json.progressionControl` before selecting the scene, tone, relevant actors, or player-action resolution.
 - `game_state/meta/soul_state.json.soulName`, `previousSoulNames`, and optional `soulFormDescription` are player-owned identity. The GM may use `soulFormDescription` as the soul's visible afterlife form in prose, but must not overwrite it from ordinary accepted-turn output.

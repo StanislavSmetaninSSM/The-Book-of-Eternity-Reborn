@@ -192,7 +192,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "fateCards[] / afterlifeFateCardUnlocks",
-      "description": "Afterlife Fate Cards for Guardians and other afterlife actors: locked cards cannot grant effects, unlocks require evidence, appliedAtTurn, and guardian/player/political/combat/training effect arrays."
+      "description": "Afterlife Fate Cards for Guardians and other afterlife actors: locked cards cannot grant effects, unlocks require evidence, appliedAtTurn, and guardian/player/political/combat/training effect arrays. Shared Block 5 Combat Action effects embedded by afterlife items, relics, or inherited skills retain required percentage-string value and type-specific fields."
     },
     {
       "contractId": "afterlife_entity_auto_progression_v1",
