@@ -55,6 +55,7 @@ public class SaveLoadService
     {
         try
         {
+            await using var canonicalSnapshotLease = await _fs.AcquireCanonicalWriteLeaseAsync();
             var state = _stateManager.CurrentState;
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var fileName = SanitizeFileName($"{saveName}_{timestamp}.zip");
@@ -183,36 +184,39 @@ public class SaveLoadService
             var liveSessionPath = _fs.GameSessionPath;
             backupSessionPath = Path.Combine(_fs.BasePath, $"game_session_load_backup_{Guid.NewGuid():N}");
 
-            if (Directory.Exists(backupSessionPath))
-                Directory.Delete(backupSessionPath, recursive: true);
-
-            if (Directory.Exists(liveSessionPath))
-                Directory.Move(liveSessionPath, backupSessionPath);
-
-            try
+            await using (await _fs.AcquireCanonicalWriteLeaseAsync())
             {
-                Directory.Move(stagingSessionPath, liveSessionPath);
-                _fs.EnsureDirectoryStructure();
-            }
-            catch
-            {
-                RestoreBackedUpSession(liveSessionPath, backupSessionPath);
-                throw;
-            }
+                if (Directory.Exists(backupSessionPath))
+                    Directory.Delete(backupSessionPath, recursive: true);
 
-            try
-            {
-                await _stateManager.RefreshGameStateAsync();
-                await _stateManager.LoadSettingsAsync();
-            }
-            catch
-            {
-                RestoreBackedUpSession(liveSessionPath, backupSessionPath);
-                throw;
-            }
+                if (Directory.Exists(liveSessionPath))
+                    Directory.Move(liveSessionPath, backupSessionPath);
 
-            DeleteDirectoryIfExists(backupSessionPath);
-            backupSessionPath = null;
+                try
+                {
+                    Directory.Move(stagingSessionPath, liveSessionPath);
+                    _fs.EnsureDirectoryStructure();
+                }
+                catch
+                {
+                    RestoreBackedUpSession(liveSessionPath, backupSessionPath);
+                    throw;
+                }
+
+                try
+                {
+                    await _stateManager.RefreshGameStateAsync();
+                    await _stateManager.LoadSettingsAsync();
+                }
+                catch
+                {
+                    RestoreBackedUpSession(liveSessionPath, backupSessionPath);
+                    throw;
+                }
+
+                DeleteDirectoryIfExists(backupSessionPath);
+                backupSessionPath = null;
+            }
 
             _logger.LogInformation("Игра загружена: {Path}", saveFilePath);
             return true;

@@ -73,6 +73,8 @@ public class FileSystemManager
 
     public string BasePath => _basePath;
     public string GameSessionPath => Path.Combine(_basePath, "game_session");
+    internal string CanonicalWriteLockPath =>
+        Path.Combine(_basePath, ".boe_runtime", "locks", "canonical-write.lock");
 
     public FileSystemManager(string basePath, ILogger<FileSystemManager> logger)
     {
@@ -302,7 +304,7 @@ public class FileSystemManager
 
     internal async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseAsync()
     {
-        var lockPath = Path.Combine(GameSessionPath, ".locks", "canonical-write.lock");
+        var lockPath = CanonicalWriteLockPath;
         Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
         for (var attempt = 0; attempt < CanonicalWriteLockRetryCount; attempt++)
         {

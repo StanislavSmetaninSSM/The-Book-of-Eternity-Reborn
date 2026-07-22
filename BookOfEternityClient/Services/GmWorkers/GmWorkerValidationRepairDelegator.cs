@@ -196,7 +196,7 @@ public sealed class GmWorkerValidationRepairDelegator
             : null;
         return GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
             profile,
-            $"worker_task_validation_repair_{attempt:D4}",
+            $"worker_task_validation_repair_{attempt:D4}_{Guid.NewGuid():N}",
             sourceTurn,
             prioritizedErrors,
             contextHashes,

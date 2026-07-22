@@ -34,6 +34,11 @@ publication. Task and proposal identifiers are immutable; an existing ID is a
 collision and cannot overwrite earlier dispatch or review evidence. When a
 process times out and leaves a malformed proposal, timeout remains authoritative
 and the malformed handoff is retained only as an additional diagnostic.
+The bridge atomically reserves every task and proposal identifier before durable
+publication. Validation-repair task IDs are globally unique per dispatch while
+retaining a readable attempt prefix. `maxConcurrentTasks` is enforced at runtime
+for each worker and game session, including separate bridge-pool instances; a
+queued task is not published before it owns a worker slot.
 Validation-repair hashes bind exact bytes: `contextFiles.sha256` and
 `changedFiles.beforeSha256` are the same exact 64-character SHA-256 digest (or
 `missing` for an absent add target), while each non-delete `afterSha256` is the
@@ -57,6 +62,11 @@ Every `game_state/meta/` validation-repair target is afterlife-scoped,
 including non-actor metadata. Mixed Mortal/afterlife issue batches fail task
 construction closed. Allowlists contain exact wildcard-free afterlife paths;
 glob patterns such as `game_state/**`, `*`, and `?` never grant authority. The
+paths `lore/current_world/**` and `game_state/core/player_status.json` are Mortal,
+including nested validation coordinates. Every afterlife validation-repair
+allowlist entry must stay under `game_state/meta/`; an unknown non-Mortal path
+is not afterlife repair authority. Typed afterlife content tasks may use exact
+task-provided control/report surfaces. The
 bridge uses case-insensitive canonical path identity for Windows session paths,
 rejects duplicate case aliases, and applies that identity to context, proposal
 scope, and setting/Soul read-only authority. `game_state/misc/characteristics.json` is read-only
@@ -69,7 +79,9 @@ validation, read-only context revalidation, rollback when required, and final
 decision linearization. Cooperating canonical writers wait for that decision;
 detected external authority changes reject the complete proposal.
 Built-in backup, restore, game-state clear, and current-world lore clear use the
-same lease. Detached workspace deletion never follows reparse points; a cleanup failure is an audit diagnostic
+same lease. Save and load operations use the same canonical write lease so a
+save is one coherent snapshot and load cannot replace live state during apply.
+Detached workspace deletion never follows reparse points; a cleanup failure is an audit diagnostic
 and cannot replace the worker result.
 
 ## Worker Profile Contract

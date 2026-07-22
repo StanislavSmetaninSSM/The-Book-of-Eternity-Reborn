@@ -357,7 +357,7 @@ public sealed class GmWorkerApplyGateTests
             var concurrentBytes = Encoding.UTF8.GetBytes("{\"concurrent\":true}");
             var fs = CreateFileSystem(root);
             var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
-            var lockPath = Path.Combine(fs.GameSessionPath, ".locks", "canonical-write.lock");
+            var lockPath = fs.CanonicalWriteLockPath;
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
             await using var canonicalLock = new FileStream(
                 lockPath,

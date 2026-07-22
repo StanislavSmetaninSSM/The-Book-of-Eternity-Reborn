@@ -551,6 +551,232 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_ConcurrentPoolsWithSameTaskId_LaunchExactlyOneWorker()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var markerDirectory = Path.Combine(root, "task-race-markers");
+            Directory.CreateDirectory(markerDirectory);
+            var escapedMarkerDirectory = markerDirectory.Replace("'", "''", StringComparison.Ordinal);
+            var scriptPath = Path.Combine(root, "fake-worker-task-id-race.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                New-Item -ItemType File -Force -Path (Join-Path '{{escapedMarkerDirectory}}' ($task.taskId + '-' + $PID)) | Out-Null
+                $proposalId = 'worker_proposal_task_race_' + $PID
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Concurrent task-id reservation regression.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'Only one worker may launch for an immutable task id.'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('task-id race')
+                    }
+                    createdAtUtc = '2026-07-23T02:00:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_concurrent_reservation",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var firstPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+            var secondPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+            var firstRun = firstPool.RunTaskAsync(profile, task);
+            var secondRun = secondPool.RunTaskAsync(profile, task);
+            await writeLease.DisposeAsync();
+            var results = await Task.WhenAll(firstRun, secondRun);
+
+            Assert.Single(results, result => result.Proposal != null);
+            Assert.Single(results, result =>
+                result.Status.State == WorkerBridgeState.Failed &&
+                result.Status.LastError?.Contains("task id already exists", StringComparison.OrdinalIgnoreCase) == true);
+            Assert.Single(Directory.GetFiles(markerDirectory));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_MaxConcurrentTasksOne_DoesNotLaunchSecondWorkerUntilFirstCompletes()
+    {
+        var root = CreateTempRoot();
+        Task<GmWorkerTaskRunResult>? firstRun = null;
+        Task<GmWorkerTaskRunResult>? secondRun = null;
+        var releasePath = Path.Combine(root, "release-workers");
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var markerDirectory = Path.Combine(root, "concurrency-markers");
+            Directory.CreateDirectory(markerDirectory);
+            var escapedMarkerDirectory = markerDirectory.Replace("'", "''", StringComparison.Ordinal);
+            var escapedReleasePath = releasePath.Replace("'", "''", StringComparison.Ordinal);
+            var scriptPath = Path.Combine(root, "fake-worker-concurrency-limit.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                New-Item -ItemType File -Force -Path (Join-Path '{{escapedMarkerDirectory}}' $task.taskId) | Out-Null
+                while (-not (Test-Path -LiteralPath '{{escapedReleasePath}}')) { Start-Sleep -Milliseconds 25 }
+                $proposalId = 'worker_proposal_' + $task.taskId
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Worker concurrency limit regression.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = 'Bounded worker result.'
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('max concurrency')
+                    }
+                    createdAtUtc = '2026-07-23T02:01:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10,
+                MaxConcurrentTasks = 1
+            };
+            var firstTask = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_concurrency_first",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var secondTask = firstTask with { TaskId = "worker_task_concurrency_second" };
+            var pool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            firstRun = pool.RunTaskAsync(profile, firstTask);
+            await WaitForFileAsync(Path.Combine(markerDirectory, firstTask.TaskId), TimeSpan.FromSeconds(5));
+            secondRun = pool.RunTaskAsync(profile, secondTask);
+            await Task.Delay(500);
+
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(secondTask.TaskId)));
+            Assert.False(File.Exists(Path.Combine(markerDirectory, secondTask.TaskId)));
+        }
+        finally
+        {
+            Directory.CreateDirectory(root);
+            await File.WriteAllTextAsync(releasePath, "release");
+            if (firstRun != null && secondRun != null)
+                await Task.WhenAll(firstRun, secondRun);
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_ConcurrentWorkersWithSameProposalId_PublishExactlyOneProposal()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string proposalId = "worker_proposal_concurrent_reservation";
+            var fs = CreateFileSystem(root);
+            var markerDirectory = Path.Combine(root, "proposal-race-markers");
+            Directory.CreateDirectory(markerDirectory);
+            var releasePath = Path.Combine(root, "release-proposal-workers");
+            var escapedMarkerDirectory = markerDirectory.Replace("'", "''", StringComparison.Ordinal);
+            var escapedReleasePath = releasePath.Replace("'", "''", StringComparison.Ordinal);
+            var scriptPath = Path.Combine(root, "fake-worker-proposal-id-race.ps1");
+            await File.WriteAllTextAsync(scriptPath, $$"""
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                New-Item -ItemType File -Force -Path (Join-Path '{{escapedMarkerDirectory}}' ('ready-' + $task.taskId)) | Out-Null
+                while (-not (Test-Path -LiteralPath '{{escapedReleasePath}}')) { Start-Sleep -Milliseconds 25 }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = '{{proposalId}}'
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Concurrent proposal-id reservation regression.'
+                    changedFiles = @()
+                    findings = @()
+                    draftText = $task.taskId
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('proposal-id race')
+                    }
+                    createdAtUtc = '2026-07-23T02:02:00Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                New-Item -ItemType File -Force -Path (Join-Path '{{escapedMarkerDirectory}}' ('done-' + $task.taskId)) | Out-Null
+                """);
+            var firstProfile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                WorkerId = "analysis_codex_proposal_race_one",
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var secondProfile = firstProfile with { WorkerId = "analysis_codex_proposal_race_two" };
+            var baseTask = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with { TimeoutSeconds = 10 });
+            var firstTask = baseTask with
+            {
+                TaskId = "worker_task_proposal_race_one",
+                WorkerId = firstProfile.WorkerId
+            };
+            var secondTask = baseTask with
+            {
+                TaskId = "worker_task_proposal_race_two",
+                WorkerId = secondProfile.WorkerId
+            };
+            var firstPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+            var secondPool = new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), new GmWorkerAuditLog(fs));
+
+            var firstRun = firstPool.RunTaskAsync(firstProfile, firstTask);
+            var secondRun = secondPool.RunTaskAsync(secondProfile, secondTask);
+            await WaitForFileAsync(Path.Combine(markerDirectory, $"ready-{firstTask.TaskId}"), TimeSpan.FromSeconds(5));
+            await WaitForFileAsync(Path.Combine(markerDirectory, $"ready-{secondTask.TaskId}"), TimeSpan.FromSeconds(5));
+            var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+            await File.WriteAllTextAsync(releasePath, "release");
+            await WaitForFileAsync(Path.Combine(markerDirectory, $"done-{firstTask.TaskId}"), TimeSpan.FromSeconds(5));
+            await WaitForFileAsync(Path.Combine(markerDirectory, $"done-{secondTask.TaskId}"), TimeSpan.FromSeconds(5));
+            await Task.Delay(500);
+            await writeLease.DisposeAsync();
+            var results = await Task.WhenAll(firstRun, secondRun);
+
+            Assert.Single(results, result => result.Proposal != null);
+            Assert.Single(results, result =>
+                result.Status.State == WorkerBridgeState.Failed &&
+                result.Status.LastError?.Contains("proposal id already exists", StringComparison.OrdinalIgnoreCase) == true);
+            var stored = await new GmWorkerProposalStore(fs).ReadProposalAsync(proposalId);
+            Assert.NotNull(stored);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_WhenWorkerOmitsProposalStatus_RejectsWithoutStoringProposal()
     {
         var root = CreateTempRoot();
@@ -962,6 +1188,19 @@ public sealed class GmWorkerBridgeLifecycleTests
     private static string ComputeFileSha256(string path) =>
         Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path)))
             .ToLowerInvariant();
+
+    private static async Task WaitForFileAsync(string path, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        while (DateTime.UtcNow < deadline)
+        {
+            if (File.Exists(path))
+                return;
+            await Task.Delay(25);
+        }
+
+        Assert.Fail($"Timed out waiting for test synchronization file: {path}");
+    }
 
     private static async Task<WorkerTaskPacket> MaterializeTaskContextAsync(
         FileSystemManager fs,

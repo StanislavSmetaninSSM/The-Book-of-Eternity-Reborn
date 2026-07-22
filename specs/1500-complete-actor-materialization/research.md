@@ -343,6 +343,52 @@ through a worker-created junction and a cleanup exception from `finally` can
 mask the result that operators need to review. These are harness lifecycle
 rules, not new GM-authored gameplay schemas.
 
+### Decision 45: Repair attempt numbers are labels, not durable identities
+
+**Decision**: Keep the zero-padded repair attempt in each validation-repair task
+ID, but append a fresh lowercase GUID for every dispatch.
+
+**Rationale**: The repair-loop attempt counter restarts in later validation
+cycles. Using it as the full immutable task ID makes a valid later cycle collide
+with evidence from the first cycle.
+
+### Decision 46: Concurrency and evidence identity are harness-owned
+
+**Decision**: Acquire a process-wide per-session/per-worker slot before task
+publication, enforce the profile's `MaxConcurrentTasks`, and atomically claim
+task/proposal IDs under the canonical lease. A losing claimant fails without
+launching or overwriting prior evidence.
+
+**Rationale**: Sequential existence checks cannot prevent two bridge-pool
+instances from launching the same task or publishing the same proposal. This is
+a deterministic coordination problem and must not be delegated to worker
+prompts.
+
+### Decision 47: Afterlife authority is positive, not inferred by exclusion
+
+**Decision**: Classify current-world lore and core player status explicitly as
+Mortal, including nested issue coordinates. Require every exact afterlife
+validation-repair surface to live below `game_state/meta/`, while preserving
+exact task-provided control/report surfaces for typed afterlife content tasks,
+and reject standalone NPC identity collision repair as main-GM-only.
+
+**Rationale**: A path that was omitted from a Mortal prefix list is not thereby
+afterlife state. Positive realm ownership prevents narrow profile filtering and
+crafted packets from weakening the realm boundary.
+
+### Decision 48: Save/load participates in canonical linearization
+
+**Decision**: Place canonical lock authority under `.boe_runtime` outside the
+replaceable session directory. Hold it while creating a save snapshot and while
+swapping, refreshing, or restoring a loaded session.
+
+**Rationale**: Loading previously replaced the entire live session outside the
+worker apply lease, while saving could archive files from multiple authority
+moments. An external lock survives directory replacement and makes both
+operations cooperating canonical participants. These harness changes add no GM
+response field, afterlife action, receipt, report, scheduler contour, or
+normalizer side effect; Mortal and afterlife repair guidance is synchronized.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

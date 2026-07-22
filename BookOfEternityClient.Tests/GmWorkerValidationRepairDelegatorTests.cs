@@ -110,7 +110,9 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             Assert.Contains("\"sessionId\": \"test-session\"", readyJson);
             Assert.Contains("\"requestId\": \"test-request\"", readyJson);
             Assert.Contains("\"turnNumber\": 12", readyJson);
-            Assert.Contains("\"taskId\": \"worker_task_validation_repair_0002\"", latestTaskJson);
+            Assert.NotNull(result.Task);
+            Assert.StartsWith("worker_task_validation_repair_0002_", result.Task.TaskId, StringComparison.Ordinal);
+            Assert.Contains($"\"taskId\": \"{result.Task.TaskId}\"", latestTaskJson);
             Assert.Contains(events, e => e.EventType == "task-dispatched");
             Assert.Contains(events, e => e.EventType == "proposal-received");
             Assert.Contains(events, e => e.EventType == "proposal-applied");
@@ -145,6 +147,46 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             Assert.False(fs.FileExists(ReadyPath));
             Assert.Equal("{\"before\":true}", await fs.ReadFileAsync(WeatherPath));
             Assert.Contains("exited with code 7", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_RepeatedValidationCycleWithSameAttempt_UsesDistinctImmutableTaskIds()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-repeated-validation-repair-failure.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+
+            var first = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 1);
+            var second = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:01:00Z",
+                attempt: 1);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, first.Outcome);
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, second.Outcome);
+            Assert.Contains("exited with code 7", first.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("exited with code 7", second.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.NotNull(first.Task);
+            Assert.NotNull(second.Task);
+            Assert.StartsWith("worker_task_validation_repair_0001_", first.Task.TaskId, StringComparison.Ordinal);
+            Assert.StartsWith("worker_task_validation_repair_0001_", second.Task.TaskId, StringComparison.Ordinal);
+            Assert.NotEqual(first.Task.TaskId, second.Task.TaskId);
         }
         finally
         {

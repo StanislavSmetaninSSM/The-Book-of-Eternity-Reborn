@@ -229,6 +229,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         var contractValidator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs");
         var executionWorkspace = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
         var fileSystemManager = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.cs");
+        var repairDelegator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs");
+        var saveLoadService = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.cs");
 
         foreach (var source in new[] { guide, contract, repair, runner })
         {
@@ -247,12 +249,24 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("timeout remains authoritative", source, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("case-insensitive canonical path identity", source, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("cleanup failure is an audit diagnostic", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("atomically reserves every task and proposal identifier", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("`maxConcurrentTasks`", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("worker slot", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("globally unique per dispatch", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("save and load operations use the same canonical write lease", source, StringComparison.OrdinalIgnoreCase);
         }
 
         foreach (var source in new[] { guide, contract, repair, afterlifeMatrix })
         {
-            Assert.Contains("every `game_state/meta/`", source, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("exact wildcard-free afterlife paths", source, StringComparison.OrdinalIgnoreCase);
+            var normalizedSource = string.Join(
+                ' ',
+                source.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+            Assert.Contains("every `game_state/meta/`", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("exact wildcard-free afterlife paths", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("`lore/current_world/**`", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("`game_state/core/player_status.json`", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("are Mortal", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("under `game_state/meta/`", normalizedSource, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.Contains("GmWorkerExecutionWorkspace.CreateAsync", bridgePool, StringComparison.Ordinal);
@@ -263,9 +277,19 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("Worker proposal id already exists and cannot be overwritten", bridgePool, StringComparison.Ordinal);
         Assert.Contains("TimedOut = true", bridgePool, StringComparison.Ordinal);
         Assert.Contains("workspace-cleanup-failed", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("WorkerConcurrencyGates", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("TryReserveTaskAsync", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("TryReserveProposalIdAsync", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("ProposalClaimRoot", bridgePool, StringComparison.Ordinal);
         Assert.Contains("CanonicalPathComparer", contractValidator, StringComparison.Ordinal);
         Assert.Contains("StringComparer.OrdinalIgnoreCase", contractValidator, StringComparison.Ordinal);
         Assert.Contains("must not contain wildcard patterns", contractValidator, StringComparison.Ordinal);
+        Assert.Contains("outside canonical afterlife state", contractValidator, StringComparison.Ordinal);
+        Assert.Contains("identity collision repair is main GM only", contractValidator, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Guid.NewGuid():N", repairDelegator, StringComparison.Ordinal);
+        Assert.True(
+            saveLoadService.Split("AcquireCanonicalWriteLeaseAsync", StringSplitOptions.None).Length - 1 >= 2,
+            "Expected save and load to acquire the canonical write lease.");
         Assert.Contains("SearchOption.TopDirectoryOnly", executionWorkspace, StringComparison.Ordinal);
         Assert.Contains("FileAttributes.ReparsePoint", executionWorkspace, StringComparison.Ordinal);
         Assert.Contains("Directory.Delete(path, recursive: false)", executionWorkspace, StringComparison.Ordinal);
@@ -294,6 +318,7 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("detached execution snapshot", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("never copy direct snapshot edits", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("**/.worker_runtime/", gitIgnore, StringComparison.Ordinal);
+        Assert.Contains("**/.boe_runtime/", gitIgnore, StringComparison.Ordinal);
     }
 
     [Fact]

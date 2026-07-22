@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,6 +10,7 @@ public sealed class GmWorkerBridgePool
 {
     public const string TaskRoot = "worker_tasks";
     public const string ProposalInboxRoot = "worker_proposals/inbox";
+    public const string ProposalClaimRoot = ".worker_claims/proposals";
     public const string WorkerRuntimeRoot = ".worker_runtime";
     public const string TaskPathEnvironmentVariable = "BOE_WORKER_TASK_PATH";
     public const string ProposalPathEnvironmentVariable = "BOE_WORKER_PROPOSAL_PATH";
@@ -17,6 +19,8 @@ public sealed class GmWorkerBridgePool
     private readonly FileSystemManager _fs;
     private readonly GmWorkerProposalStore _proposalStore;
     private readonly GmWorkerAuditLog? _auditLog;
+    private static readonly ConcurrentDictionary<string, WorkerConcurrencyGate> WorkerConcurrencyGates =
+        new(StringComparer.OrdinalIgnoreCase);
 
     public GmWorkerBridgePool(
         FileSystemManager fs,
@@ -98,9 +102,12 @@ public sealed class GmWorkerBridgePool
             };
         }
 
+        using var workerSlot = await AcquireWorkerSlotAsync(profile, cancellationToken);
+
         var taskPath = GetTaskPacketPath(task.TaskId);
         var proposalInboxPath = GetProposalInboxPath(task.TaskId);
-        if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
+        var taskReserved = await TryReserveTaskAsync(task, taskPath, proposalInboxPath);
+        if (!taskReserved)
         {
             var message = $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.";
             var status = Track(WorkerBridgeState.Failed, ready: false, message);
@@ -111,7 +118,6 @@ public sealed class GmWorkerBridgePool
             };
         }
 
-        await _fs.WriteFileAtomicAsync(taskPath, GmWorkerJson.Serialize(task));
         var proposalInboxDirectory = Path.GetDirectoryName(_fs.ResolvePath(proposalInboxPath));
         if (!string.IsNullOrWhiteSpace(proposalInboxDirectory))
             Directory.CreateDirectory(proposalInboxDirectory);
@@ -488,18 +494,6 @@ public sealed class GmWorkerBridgePool
             });
         }
 
-        var proposalRootPath = _fs.ResolvePath(
-            $"{GmWorkerProposalStore.ProposalRoot}/{proposal!.ProposalId}");
-        if (Directory.Exists(proposalRootPath))
-        {
-            var message = $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.";
-            await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [proposal.ProposalId]);
-            return (null, new GmWorkerTaskRunResult
-            {
-                Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
-            });
-        }
-
         var importedContent = new Dictionary<string, byte[]>(GmWorkerContractValidator.CanonicalPathComparer);
         foreach (var changedFile in proposal!.ChangedFiles)
         {
@@ -532,6 +526,16 @@ public sealed class GmWorkerBridgePool
             importedContent[changedFile.ContentRef!] = content;
         }
 
+        if (!await TryReserveProposalIdAsync(proposal!, task.TaskId))
+        {
+            var message = $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.";
+            await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [proposal.ProposalId]);
+            return (null, new GmWorkerTaskRunResult
+            {
+                Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
+            });
+        }
+
         foreach (var (contentRef, content) in importedContent)
             await _fs.WriteFileAtomicBytesAsync(contentRef, content);
         await _fs.WriteFileAtomicBytesAsync(proposalInboxPath, proposalBytes!);
@@ -541,6 +545,83 @@ public sealed class GmWorkerBridgePool
             await _auditLog.RecordProposalReceivedAsync(proposal!);
 
         return (proposal, new GmWorkerTaskRunResult());
+    }
+
+    private async Task<bool> TryReserveTaskAsync(
+        WorkerTaskPacket task,
+        string taskPath,
+        string proposalInboxPath)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
+            return false;
+
+        var taskBytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(task));
+        return await _fs.CompareExchangeFileBytesAsync(
+                   writeLease,
+                   taskPath,
+                   expectedContent: null,
+                   desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
+    }
+
+    private async Task<bool> TryReserveProposalIdAsync(WorkerProposal proposal, string taskId)
+    {
+        var proposalRootPath = _fs.ResolvePath(
+            $"{GmWorkerProposalStore.ProposalRoot}/{proposal.ProposalId}");
+        var claimPath = $"{ProposalClaimRoot}/{proposal.ProposalId}.claim";
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (Directory.Exists(proposalRootPath) || _fs.FileExists(claimPath))
+            return false;
+
+        return await _fs.CompareExchangeFileBytesAsync(
+                   writeLease,
+                   claimPath,
+                   expectedContent: null,
+                   desiredContent: Encoding.UTF8.GetBytes(taskId)) == CanonicalFileMutationResult.Applied;
+    }
+
+    private async Task<IDisposable> AcquireWorkerSlotAsync(
+        WorkerBridgeProfile profile,
+        CancellationToken cancellationToken)
+    {
+        var sessionPath = Path.GetFullPath(_fs.GameSessionPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var key = $"{sessionPath}|{profile.WorkerId}";
+        var gate = WorkerConcurrencyGates.GetOrAdd(
+            key,
+            _ => new WorkerConcurrencyGate(profile.MaxConcurrentTasks));
+        if (gate.Limit != profile.MaxConcurrentTasks)
+        {
+            throw new InvalidOperationException(
+                $"Worker profile {profile.WorkerId} changed maxConcurrentTasks from {gate.Limit} " +
+                $"to {profile.MaxConcurrentTasks} during the active process.");
+        }
+
+        await gate.Semaphore.WaitAsync(cancellationToken);
+        return new WorkerSlotLease(gate.Semaphore);
+    }
+
+    private static byte[] EncodeUtf8WithPreamble(string content)
+    {
+        var preamble = Encoding.UTF8.GetPreamble();
+        var body = Encoding.UTF8.GetBytes(content);
+        var bytes = new byte[preamble.Length + body.Length];
+        Buffer.BlockCopy(preamble, 0, bytes, 0, preamble.Length);
+        Buffer.BlockCopy(body, 0, bytes, preamble.Length, body.Length);
+        return bytes;
+    }
+
+    private sealed record WorkerConcurrencyGate(int Limit)
+    {
+        internal SemaphoreSlim Semaphore { get; } = new(Limit, Limit);
+    }
+
+    private sealed class WorkerSlotLease(SemaphoreSlim semaphore) : IDisposable
+    {
+        private SemaphoreSlim? _semaphore = semaphore;
+
+        public void Dispose() => Interlocked.Exchange(ref _semaphore, null)?.Release();
     }
 
     private async Task<(bool Attempted, WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> TryReadAndStoreExistingProposalAsync(

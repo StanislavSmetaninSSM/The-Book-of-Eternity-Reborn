@@ -84,6 +84,14 @@ public static class GmWorkerContractValidator
             ValidatePath(issue.Path, "validationIssues.path", errors);
             RequireText(issue.Message, "validationIssues.message", errors);
         }
+        if (task.TaskType == WorkerTaskType.ValidationRepair &&
+            task.ValidationIssues.Any(issue => string.Equals(
+                issue.Code,
+                "npc_initial_id_collides_with_existing_permanent_id",
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            errors.Add("NPC identity collision repair is main GM only and must not be delegated to a worker.");
+        }
 
         ValidateNoDuplicatePaths(
             task.ContextFiles.Select(file => file.Path),
@@ -509,6 +517,9 @@ public static class GmWorkerContractValidator
             }
             if (IsMortalWorldSubstitutePath(path))
                 errors.Add($"afterlifeContract.allowedAfterlifeSurfaces contains a Mortal World substitute path: {path}");
+            if (task.TaskType == WorkerTaskType.ValidationRepair &&
+                !AfterlifeRealmAuthorityContract.IsAfterlifeStatePath(path))
+                errors.Add($"afterlifeContract.allowedAfterlifeSurfaces contains a path outside canonical afterlife state: {path}");
         }
 
         foreach (var path in task.AllowedProposalPaths)
@@ -1508,15 +1519,20 @@ public static class GmWorkerContractValidator
     private static bool IsMortalWorldSubstitutePath(string path) =>
         IsMortalWorldStatePath(path);
 
-    internal static bool IsMortalWorldStatePath(string path) =>
-        path.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/misc/", StringComparison.OrdinalIgnoreCase);
+    internal static bool IsMortalWorldStatePath(string path)
+    {
+        var normalized = path.Replace('\\', '/');
+        return normalized.StartsWith("game_state/core/player_status.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("lore/current_world/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/misc/", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static bool ContainsMortalWorldSubstituteText(string value)
     {

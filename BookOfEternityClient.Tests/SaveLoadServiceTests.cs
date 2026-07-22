@@ -85,6 +85,54 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", "{\"state\":\"stable\"}");
+        Task<bool> saveTask;
+
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        try
+        {
+            saveTask = _service.SaveGameAsync("leased_save", "canonical save snapshot regression");
+            await Task.Delay(200);
+            Assert.False(saveTask.IsCompleted);
+        }
+        finally
+        {
+            await writeLease.DisposeAsync();
+        }
+
+        Assert.True(await saveTask);
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_WaitsForCanonicalWriteLeaseBeforeReplacingLiveSession()
+    {
+        const string weatherPath = "game_state/world/weather.json";
+        await _fs.WriteFileAtomicAsync(weatherPath, "{\"state\":\"saved\"}");
+        Assert.True(await _service.SaveGameAsync("leased_load", "canonical load swap regression"));
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        await _fs.WriteFileAtomicAsync(weatherPath, "{\"state\":\"live\"}");
+        Task<bool> loadTask;
+
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        try
+        {
+            loadTask = _service.LoadGameAsync(savePath);
+            await Task.Delay(250);
+            Assert.False(loadTask.IsCompleted);
+            Assert.Equal("{\"state\":\"live\"}", await _fs.ReadFileAsync(weatherPath));
+        }
+        finally
+        {
+            await writeLease.DisposeAsync();
+        }
+
+        Assert.True(await loadTask);
+        Assert.Equal("{\"state\":\"saved\"}", await _fs.ReadFileAsync(weatherPath));
+    }
+
+    [Fact]
     public async Task SaveAndLoad_PreservesLivePendingContracts()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

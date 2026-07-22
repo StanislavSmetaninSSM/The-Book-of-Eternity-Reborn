@@ -87,6 +87,13 @@ are both observed, timeout remains authoritative; the malformed proposal is
 reported as additional diagnostic evidence rather than rewriting the outcome
 as an ordinary failure.
 
+The bridge atomically reserves every task and proposal identifier before the
+corresponding durable handoff is published. Validation-repair task IDs are
+globally unique per dispatch while retaining the repair-attempt number as a
+readable prefix. `maxConcurrentTasks` is enforced at runtime for the same
+worker and game session, including calls made through separate bridge-pool
+instances; a queued task is not published until a worker slot is available.
+
 Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
 must be the exact 64-character SHA-256 digest of the same canonical file bytes,
 or the literal `missing` for an absent add target. Every non-delete
@@ -112,7 +119,12 @@ Every `game_state/meta/` validation-repair target is afterlife-scoped, including
 non-actor metadata. A mixed Mortal/afterlife issue batch fails task construction
 closed instead of weakening either authority contract. Afterlife allowlists use
 exact wildcard-free afterlife paths; `game_state/**`, `*`, `?`, and equivalent
-patterns never grant repair authority. The harness uses case-insensitive canonical path identity
+patterns never grant repair authority. `lore/current_world/**` and
+`game_state/core/player_status.json` are Mortal, including nested validation
+coordinates beneath those files. Every exact afterlife validation-repair
+allowlist entry must stay under `game_state/meta/`; merely failing to match a
+known Mortal prefix is not repair authority. Typed afterlife content tasks may
+still use exact task-provided control/report surfaces. The harness uses case-insensitive canonical path identity
 for Windows session paths, rejects duplicate case aliases, and applies the same
 identity to setting/Soul read-only authority and proposal scope. For
 `npc_characteristics_empty`, `game_state/misc/characteristics.json` is likewise
@@ -127,7 +139,9 @@ non-cooperating mutation is detected by the final byte checks and rejects the
 proposal without accepting mixed authority.
 
 Built-in backup, restore, game-state clear, and current-world lore clear
-operations acquire the same canonical write lease. Detached runtime cleanup
+operations acquire the same canonical write lease. Save and load operations use the same canonical write lease:
+saves read one coherent snapshot, and a loaded
+session cannot replace live state during worker apply. Detached runtime cleanup
 never follows reparse points. A cleanup failure is an audit diagnostic and does
 not replace an already completed, timed-out, or rejected worker result.
 

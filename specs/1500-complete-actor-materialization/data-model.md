@@ -244,10 +244,19 @@ All declared non-delete content is loaded and digest-verified before any proposa
 artifact is published. Task and proposal IDs are immutable identities; a
 collision preserves the earlier artifact and rejects the new handoff. Canonical
 session-path identity is case-insensitive, duplicate aliases reject, and
-afterlife surface authority is an exact wildcard-free path set. An observed
+afterlife validation-repair surface authority is an exact wildcard-free path
+set wholly under `game_state/meta/`; typed afterlife content tasks retain their
+exact task-provided control/report surfaces. `lore/current_world/**` and
+`game_state/core/player_status.json` are Mortal authorities even when an issue
+points at a nested field. Validation-repair dispatch IDs combine the readable
+attempt number with a unique dispatch suffix. Task and proposal identities are
+atomically claimed before publication, and a per-session/per-worker gate owns a
+`MaxConcurrentTasks` slot before any task artifact is written. An observed
 timeout remains the execution result even when malformed proposal bytes also
 exist. Built-in backup, restore, game-state clear, and current-world lore clear
-participate in the canonical write lease. Detached cleanup traverses only
+participate in the canonical write lease. Save reads and live-session replacement
+on load participate in that lease as well; the lock file lives outside the
+replaceable `game_session` directory. Detached cleanup traverses only
 ordinary child entries, removes reparse entries as links, and records exhausted
 cleanup failure without replacing the worker result.
 

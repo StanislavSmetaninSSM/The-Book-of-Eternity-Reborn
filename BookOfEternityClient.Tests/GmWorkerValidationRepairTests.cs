@@ -649,6 +649,60 @@ public sealed class GmWorkerValidationRepairTests
         Assert.Contains("afterlife", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("lore/current_world/world_setting.json")]
+    [InlineData("game_state/core/player_status.json")]
+    public void BuildValidationRepairTask_MixedAdditionalMortalAuthorityAndAfterlife_FailsBeforeFiltering(
+        string mortalPath)
+    {
+        const string afterlifePath = "game_state/meta/afterlife_chronicles.json";
+        var baseProfile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var profile = baseProfile with
+        {
+            Permissions = baseProfile.Permissions with
+            {
+                ProposalWritePaths = ["game_state/meta/**"]
+            }
+        };
+        var issues = new[]
+        {
+            new ValidationIssue(
+                mortalPath,
+                IssueSeverity.Error,
+                "Mortal authority needs repair.",
+                code: "mortal_authority_missing"),
+            new ValidationIssue(
+                afterlifePath,
+                IssueSeverity.Error,
+                "Afterlife chronicle needs repair.",
+                code: "afterlife_chronicle_missing_entry")
+        };
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_mixed_additional_mortal_authority",
+                new WorkerTurnReference
+                {
+                    SessionId = "test-session",
+                    RequestId = "test-request",
+                    TurnNumber = 12
+                },
+                issues,
+                new Dictionary<string, string>
+                {
+                    [mortalPath] = new string('a', 64),
+                    [afterlifePath] = new string('b', 64),
+                    [AfterlifeRealmAuthorityContract.StatePath] = new string('c', 64)
+                },
+                "2026-07-23T02:03:00Z",
+                BuildAfterlifeRepairContract(afterlifePath)));
+
+        Assert.Contains("mixed", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Mortal", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterlife", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public void ValidateTaskPacket_MixedRealmIssuesAndWildcardAfterlifeSurfaceAreRejected()
     {
@@ -733,6 +787,125 @@ public sealed class GmWorkerValidationRepairTests
         Assert.Contains(result.Errors, error =>
             error.Contains("exact", StringComparison.OrdinalIgnoreCase) &&
             error.Contains("wildcard", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("lore/current_world/world_setting.json")]
+    [InlineData("game_state/core/player_status.json")]
+    public void ValidateTaskPacket_ExactAfterlifeSurfaceOutsideAfterlifeStateIsRejected(string foreignSurface)
+    {
+        const string afterlifePath = "game_state/meta/afterlife_chronicles.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var contract = BuildAfterlifeRepairContract(afterlifePath) with
+        {
+            AllowedAfterlifeSurfaces = [afterlifePath, foreignSurface]
+        };
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            ValidationIssues =
+            [
+                new WorkerValidationIssue
+                {
+                    Code = "afterlife_chronicle_missing_entry",
+                    Path = afterlifePath,
+                    Message = "Afterlife chronicle needs repair."
+                }
+            ],
+            ContextFiles =
+            [
+                new WorkerFileReference { Path = afterlifePath, Sha256 = new string('a', 64) },
+                new WorkerFileReference
+                {
+                    Path = AfterlifeRealmAuthorityContract.StatePath,
+                    Sha256 = new string('b', 64)
+                }
+            ],
+            AllowedProposalPaths = [afterlifePath],
+            AfterlifeContract = contract
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("outside canonical afterlife state", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains(foreignSurface, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("lore/current_world/world_setting.json.genre")]
+    [InlineData("game_state/core/player_status.json.money")]
+    public void ValidateTaskPacket_MixedAdditionalMortalIssueAndAfterlifeIssueIsRejected(string mortalIssuePath)
+    {
+        const string afterlifePath = "game_state/meta/afterlife_chronicles.json.entries[0]";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            ValidationIssues =
+            [
+                new WorkerValidationIssue
+                {
+                    Code = "mortal_authority_invalid",
+                    Path = mortalIssuePath,
+                    Message = "Mortal authority needs repair."
+                },
+                new WorkerValidationIssue
+                {
+                    Code = "afterlife_chronicle_missing_entry",
+                    Path = afterlifePath,
+                    Message = "Afterlife chronicle needs repair."
+                }
+            ],
+            ContextFiles =
+            [
+                new WorkerFileReference { Path = "game_state/meta/afterlife_chronicles.json", Sha256 = new string('a', 64) },
+                new WorkerFileReference
+                {
+                    Path = AfterlifeRealmAuthorityContract.StatePath,
+                    Sha256 = new string('b', 64)
+                }
+            ],
+            AllowedProposalPaths = ["game_state/meta/afterlife_chronicles.json"],
+            AfterlifeContract = BuildAfterlifeRepairContract("game_state/meta/afterlife_chronicles.json")
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("mixed", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("Mortal", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("afterlife", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateTaskPacket_IdentityCollisionRepairIsMainGmOnly()
+    {
+        const string npcPath = "game_state/npcs/npc_core.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            ValidationIssues =
+            [
+                new WorkerValidationIssue
+                {
+                    Code = "npc_initial_id_collides_with_existing_permanent_id",
+                    Path = $"{npcPath}.UpdateNPCs[0].initialId",
+                    Message = "Initial identity collides with an existing permanent NPC identity.",
+                    Actor = "mortal_npc:npc_existing",
+                    Section = "NPCIdentity"
+                }
+            ],
+            ContextFiles = [new WorkerFileReference { Path = npcPath, Sha256 = new string('a', 64) }],
+            AllowedProposalPaths = [npcPath]
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("identity collision", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("main GM", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

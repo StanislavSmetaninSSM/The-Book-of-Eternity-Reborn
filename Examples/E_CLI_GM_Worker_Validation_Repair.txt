@@ -58,6 +58,12 @@ the malformed handoff is an additional diagnostic, not a replacement result.
 Detached cleanup never follows a junction/symlink/reparse point. A cleanup failure is an audit diagnostic
 and does not hide the completed or timed-out result.
 
+The bridge atomically reserves every task and proposal identifier before durable
+publication. Validation-repair task IDs are globally unique per dispatch while
+keeping the attempt number in a readable prefix. `maxConcurrentTasks` is enforced
+at runtime for the same worker and session, even across separate bridge-pool
+instances; a queued task is not published until a worker slot is free.
+
 ```json
 {
   "schemaVersion": 1,
@@ -117,8 +123,14 @@ unsupported, changed-after-dispatch, or mismatched authority fails closed.
 Every `game_state/meta/` validation-repair target is afterlife-scoped, including
 non-actor metadata. A mixed Mortal/afterlife issue batch is rejected at task
 construction. `allowedAfterlifeSurfaces` contains exact wildcard-free afterlife paths,
-never `game_state/**`, `*`, `?`, or another pattern. Path ownership uses
-case-insensitive canonical path identity, so case aliases cannot duplicate
+never `game_state/**`, `*`, `?`, or another pattern. Realm ownership is explicit:
+`lore/current_world/**` and
+`game_state/core/player_status.json` are Mortal, including nested validation
+coordinates, while every allowed afterlife validation-repair surface must stay
+under `game_state/meta/`. An unknown non-Mortal path is not an afterlife repair
+surface. Typed afterlife content tasks may use exact task-provided control/report
+surfaces.
+Path ownership uses case-insensitive canonical path identity, so case aliases cannot duplicate
 context or bypass Soul/characteristics read-only scope. `game_state/misc/characteristics.json` is read-only context for
 an empty-characteristics repair and cannot be listed as a writable target.
 Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
@@ -161,7 +173,9 @@ context, rolls back if needed, and records the decision. Thus a cooperating
 writer cannot slip a realm or characteristic-authority change between check and
 commit, and an observed non-cooperating mutation rejects the proposal.
 The same lease covers built-in backup, restore, game-state clear, and
-current-world lore clear operations.
+current-world lore clear operations. Save and load operations use the same canonical write lease,
+so save archives contain one coherent session snapshot
+and load cannot replace live state during a worker apply decision.
 
 Worker response proposal:
 
