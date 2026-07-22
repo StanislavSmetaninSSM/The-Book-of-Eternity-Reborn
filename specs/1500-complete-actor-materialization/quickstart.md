@@ -44,9 +44,10 @@ Do not modify or fabricate untouched actors merely because they lack an envelope
 - Route afterlife memory repair by actor type and preserve every field outside the exact actor-owned memory target.
 - Keep `npc_initial_id_collides_with_existing_permanent_id` on the main-GM rollback/repair path.
 - Dispatch `npc_existing_inventory_resend_forbidden` only when `expected` is the exact validated pre-turn JSON-array snapshot; restore only that actor/carrier field. Ordinary existing resends stay main-GM-only.
-- For `npc_characteristics_empty`, allow only a non-empty numeric object on the exact actor/carrier field. Reject sibling, other-actor, root, add, and delete changes.
+- For `npc_characteristics_empty`, hash-pin `game_state/misc/characteristics.json` as read-only context and allow only finite numeric keys present in that authority on the exact actor/carrier field. Missing or malformed authority and sibling, other-actor, root, add, or delete changes reject.
 - Require explicit proposal `status`; omission/`Unspecified` is invalid, only explicit `completed` may apply, and terminal statuses use empty `changedFiles`.
 - Generate every worker audit event ID through the shared UTC-millisecond plus GUID utility; source guards reject hand-built prefixes.
+- Treat player-facing output as fresh only when it postdates the latest actual write of every repaired canonical target.
 
 ## Red/green verification loop
 
@@ -77,6 +78,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - Generated Mortal template uses current-world characteristic authority and no universal list.
 - First-materialization Mortal personality uses 3-5 traits with mandatory integer values 1-10 and the worked fragment enters the production response validator.
 - Ordinary existing profile/location/progression/setting-owned characteristic/faction/Fate Card definition mutations use `NPCCoreChanges`; complete carriers remain creation/true-promotion only.
+- Authoritative `NPCCoreChanges` templates omit unused groups and pass the production command path as written.
 - Inventory repair packet covers genuinely new, ordinary existing, and true legacy-promotion cases: remove the whole ordinary-existing full-object resend and use dedicated deltas, bounded `NPCCoreChanges`, or main-GM fallback for protected unsupported domains, while retaining required promotion inventory.
 - Mortal and afterlife prompts/docs/examples/manifests synchronized.
 - Third re-review docs explicitly record Mortal-only scope and no Chaos Sea/Shining Abode contract change.

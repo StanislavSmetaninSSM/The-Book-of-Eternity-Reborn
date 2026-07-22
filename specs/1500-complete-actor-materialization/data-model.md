@@ -108,31 +108,15 @@ Current first materialization contains 3-5 `personalityTraits`; every trait has 
       "NPCId": "exact-existing-permanent-id",
       "reason": "non-empty in-world/mechanical reason",
       "profile": {
-        "worldview": "optional replacement",
-        "race": "optional replacement",
-        "history": "optional replacement"
-      },
-      "location": {
-        "currentLocationId": "known permanent location id or null",
-        "initialLocationId": "exact same-turn location initialId or null"
-      },
-      "progression": {
-        "level": 4,
-        "experience": 25,
-        "experienceForNextLevel": 500,
-        "progressionType": "Companion",
-        "lastPlayerXPValueOnSync": 1200
-      },
-      "characteristicValues": {
-        "setting_defined_characteristic_key": 15
-      },
-      "factionAffiliationsToUpsert": [],
-      "fateCardsToAdd": [],
-      "fateCardIdsToRemove": []
+        "worldview": "absolute replacement from the current story"
+      }
     }
   ]
 }
 ```
+
+Unused optional mutation groups are omitted. A present empty object or array is
+not a placeholder and is rejected by the runtime contract.
 
 Boundaries:
 
@@ -239,7 +223,7 @@ The three Mortal continuity issue policies are explicit:
 |---|---|---|
 | `npc_initial_id_collides_with_existing_permanent_id` | exact `mortal_npc:<id>`, `NPCIdentity` | Never dispatch/apply through a worker; use main-GM rollback/repair because identity correction may have cross-file consequences. |
 | `npc_existing_inventory_resend_forbidden` | exact actor, `NPCInventory`, current inventory in `actual`; exact validated pre-turn JSON array in `expected` only for a true legacy promotion | Dispatch only with the exact JSON-array snapshot. Apply may replace only the named actor/carrier inventory with that snapshot. Ordinary existing resends remain main-GM-only. |
-| `npc_characteristics_empty` | exact actor, `NPCCharacteristics`, setting-defined numeric requirement | Apply may replace only the named actor/carrier empty object with a non-empty numeric object. |
+| `npc_characteristics_empty` | exact actor, `NPCCharacteristics`, setting-defined numeric requirement | Dispatch pins `game_state/misc/characteristics.json` as read-only context. Apply may replace only the named actor/carrier empty object with finite numeric keys present in that authority; missing/malformed/empty authority rejects. |
 
 For every supported worker correction, deleting/adding the file or actor, changing a sibling field, another actor, root data, a different carrier, or a non-snapshot target remains protected and rejects before full validation.
 
@@ -258,4 +242,4 @@ Every validation-repair context path has one exact byte state: a 64-character SH
 
 `WorkerProposalStatus.Unspecified=0` is never a completion state. JSON `status` is required; omission fails deserialization, while direct unspecified/unknown models fail contract validation and apply. Only explicit `status=completed` proposals may reach the apply path. `failed`, `timed-out`, and `rejected` proposals carry no `changedFiles` and remain diagnostic records. Worker audit lines use one lock-protected read-and-append operation so concurrent writers preserve every event. Every producer calls one shared generator with `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>`; a source guard forbids hand-built prefixes elsewhere, and audit publication failure is telemetry loss that cannot revoke an already accepted canonical commit.
 
-Repair handoff has one owner state. Before dispatch, request/ready/stall artifacts from older cycles are removed. `Applied + ReadySignalCreated` enters the correlated ready path; `Applied + !ReadySignalCreated` records `worker_apply_gate_accepted` and immediately revalidates; every non-applied result writes one fresh legacy request. Player-facing output freshness is compared with the explicit start time of the accepted canonical repair, including worker-only cycles where no legacy request exists.
+Repair handoff has one owner state. Before dispatch, request/ready/stall artifacts from older cycles are removed. `Applied + ReadySignalCreated` enters the correlated ready path; `Applied + !ReadySignalCreated` records `worker_apply_gate_accepted` and immediately revalidates; every non-applied result writes one fresh legacy request. Player-facing output freshness is compared with the latest actual write of every repaired canonical target, including worker-only cycles where no legacy request exists. Request creation, dispatch, and repair-loop start timestamps are not canonical mutation boundaries; an unobservable required target mutation fails freshness closed.

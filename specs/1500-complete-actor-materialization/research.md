@@ -205,6 +205,32 @@
 
 **Rationale**: A normalizer must never consume a command that creates state rejected by the ordinary production validator. Block 7 makes skill IDs optional, so capability and promotion logic must follow the canonical skill contract.
 
+## Fifth re-review hardening decisions
+
+### Decision 31: Characteristic repair consumes explicit setting authority
+
+**Decision**: Add `game_state/misc/characteristics.json` to every empty-characteristics worker task as exact hash-pinned read-only context. It is never an allowed proposal path. Dispatch and apply fail closed when the authority cannot be parsed uniquely, and preservation accepts only finite numeric keys already present in that authority.
+
+**Rationale**: Checking only that the repaired object is non-empty and numeric allows a worker to invent a setting vocabulary that the ordinary NPC shape validator cannot distinguish from authored authority.
+
+### Decision 32: Authoritative templates are executable minimal examples
+
+**Decision**: Every GM-facing and Spec Kit `NPCCoreChanges` template contains one concrete non-empty mutation group and omits all unused groups. Tests extract the exact supplied template and run it through the production command validator/reducer fixture.
+
+**Rationale**: Optional groups are closed commands, not form fields. Publishing empty arrays teaches the GM to produce a response that the runtime necessarily rejects.
+
+### Decision 33: Output freshness follows canonical mutation
+
+**Decision**: Resolve the repair boundary from actual writes to issue-targeted canonical files after repair succeeds. Require player-facing output to be at least as new as the latest repaired target, and fail closed when a required target mutation cannot be observed.
+
+**Rationale**: Repair start time precedes both narrative and canonical writes, so it cannot establish that the narrative describes the accepted canonical state.
+
+### Decision 34: Phase 17 changes no realm-specific state contract but updates shared afterlife guidance
+
+**Decision**: Synchronize the shared daemon, repair guide, daemon specification, worked main-turn example, `OtherGuides/Afterlife_Contract_Matrix.md`, and `Examples/E_CLI_Afterlife_Turns.txt`. Keep afterlife pending/control manifests and realm-specific state schemas unchanged.
+
+**Rationale**: The Phase 17 fixes constrain worker-only Mortal characteristic vocabulary, repair an existing Mortal `NPCCoreChanges` example, and harden the shared repair/output ordering. They add no Mortal or afterlife GM-authored state field, action type, receipt, scheduler contour, normalizer side effect, or realm-specific authority path. Because the shared lifecycle also governs afterlife repairs, the applicable matrix and worked example still document canonical-write-before-output ordering; adding a new afterlife state-contract row or manifest entry would misrepresent the runtime surface.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

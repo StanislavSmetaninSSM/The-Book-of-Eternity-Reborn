@@ -1181,6 +1181,16 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 TimeSpan.FromSeconds(5));
             Assert.Contains("game_state/meta/soul_state.json", firstRequest, StringComparison.OrdinalIgnoreCase);
 
+            var prematureOutputWrittenAtUtc = DateTime.UtcNow;
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "Ответ переписан после запроса, но до фактического ремонта canonical state: Средоточие возвращает 1 ОД, теперь 3/6.",
+                timestamp = "2026-07-04T05:18:45Z"
+            });
+            File.SetLastWriteTimeUtc(
+                _fs.ResolvePath("output/narrative_response.json"),
+                prematureOutputWrittenAtUtc);
+
             await WriteJsonAsync(trackedPath, new
             {
                 soulName = "Искра Испытаний",
@@ -1188,6 +1198,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 currentIncarnation = 0,
                 soulFormDescription = "Женский силуэт из серебристого пепла."
             });
+            var canonicalStateWrittenAtUtc = prematureOutputWrittenAtUtc.AddSeconds(2);
+            File.SetLastWriteTimeUtc(
+                _fs.ResolvePath(trackedPath),
+                canonicalStateWrittenAtUtc);
             await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
             {
                 sessionId,
@@ -1219,6 +1233,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 response = "После ремонта canonical state: Средоточие не восстановило ОД, теперь 2/6.",
                 timestamp = "2026-07-04T05:20:00Z"
             });
+            File.SetLastWriteTimeUtc(
+                _fs.ResolvePath("output/narrative_response.json"),
+                canonicalStateWrittenAtUtc.AddSeconds(2));
             await WriteJsonAsync("game_state/control/validation_repair_ready.json", new
             {
                 sessionId,
@@ -3476,6 +3493,84 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             engine,
             new object[] { repairedErrors, boundary }));
 
+        Assert.Contains(issues, issue =>
+            string.Equals(
+                issue.Code,
+                "accepted_turn_stale_player_facing_output_after_canonical_repair",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ResolveCanonicalRepairOutputFreshnessBoundaryUtc_UsesLatestActualTargetWrite()
+    {
+        const string firstTarget = "game_state/world/weather.json";
+        const string secondTarget = "game_state/meta/soul_state.json";
+        await WriteJsonAsync(firstTarget, new { description = "Туман рассеялся." });
+        await WriteJsonAsync(secondTarget, new { soulFormDescription = "Серебристый силуэт." });
+
+        var repairStartedAtUtc = DateTime.UtcNow.AddMinutes(-3);
+        var firstWriteUtc = repairStartedAtUtc.AddMinutes(1);
+        var latestWriteUtc = repairStartedAtUtc.AddMinutes(2);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath(firstTarget), firstWriteUtc);
+        File.SetLastWriteTimeUtc(_fs.ResolvePath(secondTarget), latestWriteUtc);
+
+        var repairedErrors = new List<ValidationIssue>
+        {
+            new(
+                $"{firstTarget}.description",
+                IssueSeverity.Error,
+                "Weather repaired.",
+                code: "normalized_weather_missing_description"),
+            new(
+                $"{secondTarget}.soulFormDescription",
+                IssueSeverity.Error,
+                "Soul form repaired.",
+                code: "soul_form_description_invalid_shape")
+        };
+
+        var boundary = InvokePrivateValue<DateTime>(
+            CreateGameEngine(),
+            "ResolveCanonicalRepairOutputFreshnessBoundaryUtc",
+            repairedErrors,
+            repairStartedAtUtc);
+
+        Assert.Equal(latestWriteUtc, boundary);
+    }
+
+    [Fact]
+    public async Task ResolveCanonicalRepairOutputFreshnessBoundaryUtc_UnobservableTargetFailsOutputFreshnessClosed()
+    {
+        await WriteJsonAsync("output/narrative_response.json", new
+        {
+            response = "Ответ создан до ненаблюдаемого canonical repair.",
+            timestamp = "2026-07-10T07:30:00Z"
+        });
+        var repairStartedAtUtc = DateTime.UtcNow.AddMinutes(-1);
+        File.SetLastWriteTimeUtc(
+            _fs.ResolvePath("output/narrative_response.json"),
+            repairStartedAtUtc);
+        var repairedErrors = new List<ValidationIssue>
+        {
+            new(
+                "game_state/world/missing_canonical_target.json.value",
+                IssueSeverity.Error,
+                "Canonical target repair could not be observed.",
+                code: "missing_canonical_target_repaired_elsewhere")
+        };
+        var engine = CreateGameEngine();
+
+        var boundary = InvokePrivateValue<DateTime>(
+            engine,
+            "ResolveCanonicalRepairOutputFreshnessBoundaryUtc",
+            repairedErrors,
+            repairStartedAtUtc);
+        var issues = InvokePrivateValue<List<ValidationIssue>>(
+            engine,
+            "CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues",
+            repairedErrors,
+            boundary);
+
+        Assert.True(boundary > repairStartedAtUtc);
         Assert.Contains(issues, issue =>
             string.Equals(
                 issue.Code,

@@ -42,6 +42,45 @@ public sealed class NpcCoreChangesTests : IDisposable
     }
 
     [Theory]
+    [InlineData("Rules/Block_19.txt")]
+    [InlineData("BookOfEternityClient/game_master_daemon.ps1")]
+    public async Task AuthoritativeNpcCoreChangesTemplate_PassesProductionValidationAndReduction(
+        string repositoryPath)
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            repositoryPath.Replace('/', Path.DirectorySeparatorChar)));
+        var template = JsonNode.Parse(ExtractNpcCoreChangesTemplate(source))!.AsObject();
+        var expectedWorldview = template["NPCCoreChanges"]![0]!["profile"]!["worldview"]!
+            .GetValue<string>();
+        var fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            var commandRoot = template.DeepClone().AsObject();
+            commandRoot["NPCCoreChanges"]![0]!["NPCId"] = actor["NPCId"]!.DeepClone();
+            root["NPCCoreChanges"] = commandRoot["NPCCoreChanges"]!.DeepClone();
+        });
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("npc_core_changes_", StringComparison.Ordinal) == true);
+
+        var normalizer = new CanonicalStateNormalizer(
+            _fs,
+            NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [NpcCorePath] = $"game_state/control/pending_turn_snapshot/{NpcCorePath}"
+        });
+
+        var normalized = JsonNode.Parse((await _fs.ReadFileAsync(NpcCorePath))!)!.AsObject();
+        Assert.False(normalized.ContainsKey("NPCCoreChanges"));
+        var actor = Assert.Single(normalized["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(fixture.ActorId, actor["NPCId"]!.GetValue<string>());
+        Assert.Equal(expectedWorldview, actor["worldview"]!.GetValue<string>());
+    }
+
+    [Theory]
     [InlineData("{\"NPCsInScene\":[}", "malformed")]
     [InlineData("[]", "non-object root")]
     public async Task ValidatePreNormalizationNpcCoreChanges_InvalidCurrentAuthority_IsStructuredError(
@@ -1042,6 +1081,46 @@ public sealed class NpcCoreChangesTests : IDisposable
 
     private const string fixturePlaceholderFactionId = "__fixture_faction_id__";
     private const string fixturePlaceholderFactionName = "__fixture_faction_name__";
+
+    private static string ExtractNpcCoreChangesTemplate(string source)
+    {
+        const string marker = "\"NPCCoreChanges\": [";
+        var markerIndex = source.IndexOf(marker, StringComparison.Ordinal);
+        Assert.True(markerIndex >= 0, "Authoritative source has no NPCCoreChanges JSON template.");
+        var start = source.LastIndexOf('{', markerIndex);
+        Assert.True(start >= 0, "Authoritative NPCCoreChanges template has no JSON object start.");
+
+        var depth = 0;
+        var inString = false;
+        var escaped = false;
+        for (var index = start; index < source.Length; index++)
+        {
+            var current = source[index];
+            if (inString)
+            {
+                if (escaped)
+                    escaped = false;
+                else if (current == '\\')
+                    escaped = true;
+                else if (current == '"')
+                    inString = false;
+                continue;
+            }
+
+            if (current == '"')
+            {
+                inString = true;
+                continue;
+            }
+
+            if (current == '{')
+                depth++;
+            else if (current == '}' && --depth == 0)
+                return source[start..(index + 1)];
+        }
+
+        throw new Xunit.Sdk.XunitException("Authoritative NPCCoreChanges template is not a complete JSON object.");
+    }
 
     private async Task<NpcCoreFixture> WriteFixtureAsync(
         Action<JsonObject, JsonObject, JsonObject>? mutateCurrent = null)

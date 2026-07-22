@@ -23,31 +23,16 @@ actor.
       "NPCId": "exact-existing-permanent-id",
       "reason": "non-empty in-world/mechanical reason",
       "profile": {
-        "worldview": "optional replacement",
-        "race": "optional replacement",
-        "history": "optional replacement"
-      },
-      "location": {
-        "currentLocationId": "known permanent location id or null",
-        "initialLocationId": "exact same-turn location initialId or null"
-      },
-      "progression": {
-        "level": 4,
-        "experience": 25,
-        "experienceForNextLevel": 500,
-        "progressionType": "Companion",
-        "lastPlayerXPValueOnSync": 1200
-      },
-      "characteristicValues": {
-        "setting_defined_characteristic_key": 15
-      },
-      "factionAffiliationsToUpsert": [],
-      "fateCardsToAdd": [],
-      "fateCardIdsToRemove": []
+        "worldview": "absolute replacement from the current story"
+      }
     }
   ]
 }
 ```
+
+Include only mutation groups that actually change. Unused optional groups are
+omitted; a present empty object or array is runtime-invalid rather than a
+template placeholder.
 
 ## Entry invariants
 

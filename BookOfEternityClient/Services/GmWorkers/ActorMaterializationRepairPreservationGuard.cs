@@ -31,7 +31,8 @@ internal static class ActorMaterializationRepairPreservationGuard
         string path,
         string? baselineJson,
         string? proposedJson,
-        IReadOnlyList<WorkerValidationIssue> issues)
+        IReadOnlyList<WorkerValidationIssue> issues,
+        string? characteristicAuthorityJson = null)
     {
         var unscopedIssues = issues
             .Where(issue => IsActorMaterializationIssue(issue.Code) &&
@@ -103,6 +104,7 @@ internal static class ActorMaterializationRepairPreservationGuard
                         baselineCopy,
                         proposedCopy,
                         scopedIssues,
+                        characteristicAuthorityJson,
                         out var mortalRepairError))
                 {
                     errors.Add(mortalRepairError);
@@ -252,6 +254,7 @@ internal static class ActorMaterializationRepairPreservationGuard
         JsonNode baselineRoot,
         JsonNode proposedRoot,
         ICollection<WorkerValidationIssue> issues,
+        string? characteristicAuthorityJson,
         out string error)
     {
         error = string.Empty;
@@ -305,13 +308,24 @@ internal static class ActorMaterializationRepairPreservationGuard
             }
             else
             {
+                if (!MortalCharacteristicAuthorityContract.TryReadKeys(
+                        characteristicAuthorityJson,
+                        out var allowedCharacteristicKeys,
+                        out var authorityError))
+                {
+                    error = authorityError;
+                    return false;
+                }
+
                 if (!string.Equals(issue.Section, "NPCCharacteristics", StringComparison.Ordinal) ||
                     !issue.Path.EndsWith(".characteristics", StringComparison.OrdinalIgnoreCase) ||
                     baselineActor["characteristics"] is not JsonObject baselineCharacteristics ||
                     baselineCharacteristics.Count != 0 ||
                     proposedActor["characteristics"] is not JsonObject proposedCharacteristics ||
                     proposedCharacteristics.Count == 0 ||
-                    proposedCharacteristics.Any(property => !IsNumericJsonValue(property.Value)))
+                    proposedCharacteristics.Any(property =>
+                        !allowedCharacteristicKeys.Contains(property.Key) ||
+                        !IsNumericJsonValue(property.Value)))
                 {
                     error = $"Mortal characteristics repair for {actorType}:{actorId} must add only setting-defined numeric characteristics to the empty target object.";
                     return false;

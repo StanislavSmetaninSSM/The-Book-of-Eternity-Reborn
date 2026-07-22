@@ -73,12 +73,15 @@ public partial class GameEngine
         RollbackSnapshot? rollbackSnapshot = null,
         ProgressionControl? progressionControl = null,
         bool allowRepairLoop = false,
-        DateTime? initialCanonicalRepairStartedAtUtc = null)
+        DateTime? initialCanonicalRepairBoundaryUtc = null,
+        IReadOnlyCollection<ValidationIssue>? initialCanonicalRepairErrors = null)
     {
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
+        IReadOnlyCollection<ValidationIssue>? outputFreshnessRepairErrors = initialCanonicalRepairErrors;
         var lastRepairAttempt = 0;
-        var lastCanonicalRepairStartedAtUtc = initialCanonicalRepairStartedAtUtc;
+        var lastCanonicalRepairBoundaryUtc = initialCanonicalRepairBoundaryUtc;
+        DateTime? lastCanonicalRepairStartedAtUtc = null;
 
         while (true)
         {
@@ -96,12 +99,20 @@ public partial class GameEngine
                 issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
             }
             if (allowRepairLoop &&
-                lastRepairErrors is { Count: > 0 } &&
+                outputFreshnessRepairErrors is { Count: > 0 } &&
                 lastCanonicalRepairStartedAtUtc.HasValue)
             {
+                lastCanonicalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    outputFreshnessRepairErrors,
+                    lastCanonicalRepairStartedAtUtc.Value);
+            }
+            if (allowRepairLoop &&
+                outputFreshnessRepairErrors is { Count: > 0 } &&
+                lastCanonicalRepairBoundaryUtc.HasValue)
+            {
                 issues.AddRange(CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
-                    lastRepairErrors,
-                    lastCanonicalRepairStartedAtUtc.Value));
+                    outputFreshnessRepairErrors,
+                    lastCanonicalRepairBoundaryUtc.Value));
             }
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
             if (progressionControl != null)
@@ -150,11 +161,15 @@ public partial class GameEngine
 
             repairAttempt++;
             lastRepairErrors = errors;
+            outputFreshnessRepairErrors = errors;
             lastRepairAttempt = repairAttempt;
             var repairStartedAtUtc = DateTime.UtcNow;
             if (!await WaitForContractRepairAsync(source, errors, repairAttempt, rollbackSnapshot))
                 return false;
             lastCanonicalRepairStartedAtUtc = repairStartedAtUtc;
+            lastCanonicalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                errors,
+                repairStartedAtUtc);
         }
     }
 
@@ -168,6 +183,7 @@ public partial class GameEngine
         var criticalRepairAttempt = 0;
         List<ValidationIssue>? lastCriticalRepairErrors = null;
         var lastCriticalRepairAttempt = 0;
+        DateTime? lastCriticalRepairBoundaryUtc = null;
         DateTime? lastCriticalRepairStartedAtUtc = null;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
@@ -190,6 +206,9 @@ public partial class GameEngine
                 if (!await WaitForContractRepairAsync(source, rawErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
                 lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    rawErrors,
+                    rawRepairStartedAtUtc);
 
                 continue;
             }
@@ -221,6 +240,9 @@ public partial class GameEngine
                 if (!await WaitForContractRepairAsync(source, baselineErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
                 lastCriticalRepairStartedAtUtc = baselineRepairStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    baselineErrors,
+                    baselineRepairStartedAtUtc);
 
                 continue;
             }
@@ -242,8 +264,19 @@ public partial class GameEngine
                 if (!await WaitForContractRepairAsync(source, canonicalErrors, criticalRepairAttempt, rollbackSnapshot))
                     return false;
                 lastCriticalRepairStartedAtUtc = canonicalRepairStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    canonicalErrors,
+                    canonicalRepairStartedAtUtc);
 
                 continue;
+            }
+
+            if (lastCriticalRepairErrors is { Count: > 0 } &&
+                lastCriticalRepairStartedAtUtc.HasValue)
+            {
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    lastCriticalRepairErrors,
+                    lastCriticalRepairStartedAtUtc.Value);
             }
 
             if (!await ValidateCurrentGameStateOrShowErrorsAsync(
@@ -251,7 +284,8 @@ public partial class GameEngine
                     rollbackSnapshot,
                     progressionControl,
                     allowRepairLoop: true,
-                    initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc))
+                    initialCanonicalRepairBoundaryUtc: lastCriticalRepairBoundaryUtc,
+                    initialCanonicalRepairErrors: lastCriticalRepairErrors))
                 return false;
 
             if (lastCriticalRepairErrors is { Count: > 0 })
@@ -331,7 +365,7 @@ public partial class GameEngine
 
     private List<ValidationIssue> CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
         IReadOnlyCollection<ValidationIssue> repairedErrors,
-        DateTime repairStartedAtUtc)
+        DateTime canonicalRepairBoundaryUtc)
     {
         var canonicalRepairCodes = repairedErrors
             .Where(issue => IsCanonicalStateRepairIssue(issue) &&
@@ -355,7 +389,7 @@ public partial class GameEngine
                 continue;
 
             var outputWrittenAtUtc = File.GetLastWriteTimeUtc(outputFullPath);
-            if (outputWrittenAtUtc >= repairStartedAtUtc)
+            if (outputWrittenAtUtc >= canonicalRepairBoundaryUtc)
                 continue;
 
             issues.Add(new ValidationIssue(
@@ -364,12 +398,65 @@ public partial class GameEngine
                 $"{outputPath} был записан до canonical validation repair и может противоречить исправленному состоянию.",
                 code: "accepted_turn_stale_player_facing_output_after_canonical_repair",
                 section: "PlayerFacingOutput",
-                expected: $"player-facing output rewritten after canonical state repair started at {repairStartedAtUtc:o}",
+                expected: $"player-facing output rewritten after repaired canonical state was last written at {canonicalRepairBoundaryUtc:o}",
                 actual: $"{outputPath} last write {outputWrittenAtUtc:o}; repaired canonical issues: {string.Join(", ", canonicalRepairCodes)}",
                 repairHint: "Перепиши player-facing output под уже исправленное canonical state: обнови output/narrative_response.json.response и, если есть варианты выбора, output/interface_updates.json.dialogueOptions. Не меняй canonical state повторно, если validation_repair_request.json не перечисляет новые canonical ошибки."));
         }
 
         return issues;
+    }
+
+    private DateTime ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+        IReadOnlyCollection<ValidationIssue> repairedErrors,
+        DateTime repairStartedAtUtc)
+    {
+        var canonicalTargetPaths = repairedErrors
+            .Where(issue => IsCanonicalStateRepairIssue(issue) &&
+                            !IsPlayerFacingNeutralActorMemoryRepairIssue(issue))
+            .Select(issue => NormalizeCanonicalRepairTargetFilePath(issue.FilePath))
+            .Where(PendingTurnSnapshotAuthority.IsSafeRelativePath)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        if (canonicalTargetPaths.Length == 0)
+            return DateTime.UtcNow;
+
+        var latestWriteUtc = DateTime.MinValue;
+        foreach (var targetPath in canonicalTargetPaths)
+        {
+            try
+            {
+                var targetFullPath = _fs.ResolvePath(targetPath);
+                if (!File.Exists(targetFullPath))
+                    return DateTime.UtcNow;
+
+                var targetWriteUtc = File.GetLastWriteTimeUtc(targetFullPath);
+                if (targetWriteUtc < repairStartedAtUtc)
+                    return DateTime.UtcNow;
+
+                if (targetWriteUtc > latestWriteUtc)
+                    latestWriteUtc = targetWriteUtc;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Не удалось определить фактическую границу записи repaired canonical target {TargetPath}; freshness validation будет fail-closed.",
+                    targetPath);
+                return DateTime.UtcNow;
+            }
+        }
+
+        return latestWriteUtc == DateTime.MinValue ? DateTime.UtcNow : latestWriteUtc;
+    }
+
+    private static string NormalizeCanonicalRepairTargetFilePath(string path)
+    {
+        var normalized = NormalizeRepairTargetPath(path).Replace('\\', '/');
+        var jsonExtensionIndex = normalized.IndexOf(".json", StringComparison.OrdinalIgnoreCase);
+        return jsonExtensionIndex < 0
+            ? normalized
+            : normalized[..(jsonExtensionIndex + ".json".Length)];
     }
 
     private static bool IsCanonicalStateRepairIssue(ValidationIssue issue)

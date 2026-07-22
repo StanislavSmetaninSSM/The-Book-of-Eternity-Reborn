@@ -25,6 +25,20 @@ public static class GmWorkerTaskPacketBuilder
 
         ValidateMortalContinuityDispatchPolicy(validationIssues);
 
+        var requiresCharacteristicAuthority = validationIssues.Any(issue => string.Equals(
+            issue.Code,
+            "npc_characteristics_empty",
+            StringComparison.OrdinalIgnoreCase));
+        if (requiresCharacteristicAuthority &&
+            (!contextFileHashes.TryGetValue(MortalCharacteristicAuthorityContract.StatePath, out var authorityHash) ||
+             string.IsNullOrWhiteSpace(authorityHash) ||
+             string.Equals(authorityHash, "missing", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException(
+                $"Characteristics repair requires hash-pinned setting authority at {MortalCharacteristicAuthorityContract.StatePath}.",
+                nameof(contextFileHashes));
+        }
+
         var allowedPaths = validationIssues
             .Select(ResolveValidationTargetPath)
             .Where(GmWorkerContractValidator.IsSafeRelativePath)
@@ -36,7 +50,13 @@ public static class GmWorkerTaskPacketBuilder
         if (allowedPaths.Length == 0)
             throw new ArgumentException("Validation issues do not map to any safe worker proposal path.", nameof(validationIssues));
 
-        var contextFiles = allowedPaths
+        var contextPaths = requiresCharacteristicAuthority
+            ? allowedPaths.Append(MortalCharacteristicAuthorityContract.StatePath)
+                .Distinct(StringComparer.Ordinal)
+                .Order(StringComparer.Ordinal)
+                .ToArray()
+            : allowedPaths;
+        var contextFiles = contextPaths
             .Select(path => new WorkerFileReference
             {
                 Path = path,
@@ -72,6 +92,7 @@ public static class GmWorkerTaskPacketBuilder
                 "Include changedFiles only for allowedProposalPaths.",
                 "Validation must pass after the apply gate applies proposed changes.",
                 "For actor materialization repair, preserve protected actor data and change only the exact actor/section coordinates carried by validationIssues.",
+                "For Mortal characteristics repair, use only keys from the hash-pinned read-only setting authority in game_state/misc/characteristics.json.",
                 "Keep session/request/turn metadata tied to sourceTurn."
             ],
             ForbiddenActions =

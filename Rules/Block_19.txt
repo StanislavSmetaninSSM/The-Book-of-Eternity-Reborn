@@ -198,6 +198,7 @@
                             Ordinary-existing bounded core mutation ('NPCCoreChanges'):
                             - 'NPCCoreChanges' is a non-carrier response command mapped to 'game_state/npcs/npc_core.json'. It is never a partial NPC object and never carries 'materialization' or 'inventory'.
                             - Each entry targets one exact existing permanent 'NPCId', includes a non-empty in-world/mechanical 'reason', and contains at least one non-empty mutation group.
+                            - Include only groups that actually change. Omit every unused optional group; never emit an empty object or array as a placeholder.
                             - All values are absolute resulting values. Do not send arithmetic expressions, prose-derived math, names, 'initialId', arbitrary JSON paths, or unchanged fields.
                             - Allowed groups are exactly 'profile', 'location', 'progression', 'characteristicValues', 'factionAffiliationsToUpsert', 'fateCardsToAdd', and 'fateCardIdsToRemove'. Unknown members at any depth are invalid.
                             - 'characteristicValues' may use only numeric keys already owned by the actor or explicitly defined by current-world characteristic authority. Never infer a universal characteristic vocabulary.
@@ -210,27 +211,8 @@
                                         "NPCId": "exact_existing_permanent_npc_id",
                                         "reason": "non-empty in-world and mechanical justification",
                                         "profile": {
-                                            "worldview": "optional absolute replacement",
-                                            "race": "optional absolute replacement",
-                                            "history": "optional absolute replacement"
-                                        },
-                                        "location": {
-                                            "currentLocationId": "known_permanent_location_id_or_null",
-                                            "initialLocationId": "exact_same_turn_location_initial_id_or_null"
-                                        },
-                                        "progression": {
-                                            "level": 4,
-                                            "experience": 25,
-                                            "experienceForNextLevel": 500,
-                                            "progressionType": "Companion",
-                                            "lastPlayerXPValueOnSync": 1200
-                                        },
-                                        "characteristicValues": {
-                                            "setting_defined_characteristic_key": 15
-                                        },
-                                        "factionAffiliationsToUpsert": [],
-                                        "fateCardsToAdd": [],
-                                        "fateCardIdsToRemove": []
+                                            "worldview": "absolute replacement from the current story"
+                                        }
                                     }
                                 ]
                             }

@@ -295,6 +295,81 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_CharacteristicsRepairPinsSettingAuthorityAsReadOnlyContext()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            const string authorityPath = "game_state/misc/characteristics.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(npcPath, "{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            await fs.WriteFileAtomicAsync(authorityPath, "{\"setting_defined_focus\":4}");
+            var profile = BuildProfile(root, "fake-characteristic-authority-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.UpdateNPCs[0].characteristics",
+                IssueSeverity.Error,
+                "Mortal characteristics are empty.",
+                code: "npc_characteristics_empty",
+                actor: "mortal_npc:npc_authority_target",
+                section: "NPCCharacteristics");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 312);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            Assert.Equal([npcPath], task.AllowedProposalPaths);
+            Assert.Contains(task.ContextFiles, file =>
+                file.Path == authorityPath && file.Sha256.Length == 64);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_CharacteristicsRepairWithoutSettingAuthorityFailsTaskBuild()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(npcPath, "{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            var profile = BuildProfile(root, "fake-missing-characteristic-authority-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.UpdateNPCs[0].characteristics",
+                IssueSeverity.Error,
+                "Mortal characteristics are empty.",
+                code: "npc_characteristics_empty",
+                actor: "mortal_npc:npc_authority_target",
+                section: "NPCCharacteristics");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 313);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Contains("characteristics.json", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_AfterlifeActorRepair_BuildsRealmBoundTaskForCanonicalSource()
     {
         var root = CreateTempRoot();

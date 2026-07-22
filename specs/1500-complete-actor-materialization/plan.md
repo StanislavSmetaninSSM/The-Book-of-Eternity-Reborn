@@ -54,7 +54,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 **Gate result before research**: PASS. Issue #1500 is tracked; harness-first validation, legacy safety, documentation synchronization, and verification evidence are explicit.
 
-**Gate result after design**: PASS. The data model keeps narrative authority with the GM, uses validated pre-turn state for legacy/new classification, preserves dedicated delta contracts, bounds `NPCCoreChanges` to named existing-core fields, and documents both Mortal and afterlife authoring paths without changing the afterlife contract in the R3 wave.
+**Gate result after design**: PASS. The data model keeps narrative authority with the GM, uses validated pre-turn state for legacy/new classification, preserves dedicated delta contracts, bounds `NPCCoreChanges` to named existing-core fields, hash-pins setting authority for worker-authored characteristics, validates authoritative templates as executable examples, binds narrative freshness to actual repaired canonical writes, and documents both Mortal and afterlife authoring paths without changing the afterlife contract in the R3 wave.
 
 ## Project Structure
 

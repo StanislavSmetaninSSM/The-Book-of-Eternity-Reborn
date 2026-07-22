@@ -189,6 +189,7 @@ For `afterlife_spiritual_conflict_reward_repair`, a currency reward is legal onl
 
 Correct repair behavior:
 - Repair only files listed in `targetFiles` unless another current error explicitly names a different file.
+- If one current repair request lists both afterlife canonical and player-facing targets, finish every canonical write first, then re-read the repaired state and rewrite dependent narrative/interface output. Request creation, worker dispatch, and repair-loop start are not freshness boundaries; output written before the latest repaired canonical target will be rejected as stale.
 - In `output/debug_logs.json.gm_thoughts_markdown`, use `canonicalActorNames[]` exactly for `Relevant actors` and for `### <Guardian Name>` headings. Do not use raw `guardianId` or stale mirror-only aliases as actor names.
 - In `game_state/meta/guardians.json`, treat `activeGuardian` and `guardians[]` as materialized mirrors. Reconstruct them from the validated pre-turn Guardian baseline plus authorized same-turn Guardian mutations. Do not treat the raw current mirror as the authority source.
 - If `game_state/meta/guardian_projects.json` is listed, treat `activeProjects` the same way: restore the kernel-authoritative tracker state from the validated pre-turn project baseline plus authorized same-turn project commands. Do not start or preserve a project only because the rejected materialized file contains it.
@@ -197,6 +198,22 @@ Correct repair behavior:
 - Every independent name in relevant actors needs a canonical memory owner. Materialize a genuine actor with a stable id and complete supported profile; otherwise remove the invented/non-actor label from relevant actors and its standalone Actor Brain block.
 - Do not read implementation code such as `BookOfEternityClient/**/*.cs` during repair. Use the repair packet, this example, GM guides, and session control/snapshot files.
 - After repairing the files, call `Complete-BoeValidationRepair` or create `game_state/control/validation_repair_ready.json` with exact `sessionId`, `requestId`, and `turnNumber` from the same current repair request.
+
+Worked afterlife canonical/output ordering:
+
+```text
+Current repair request lists:
+- game_state/meta/guardians.json.activeGuardian.relationshipData
+- output/narrative_response.json
+
+Correct:
+1. Repair guardians.json from the validated Guardian authority.
+2. Re-read the repaired active Guardian and rewrite narrative_response.json afterward.
+3. Call Complete-BoeValidationRepair last.
+
+Wrong:
+- rewrite the narrative first and then repair guardians.json. The visible response predates the canonical Guardian state it describes and must enter output-only repair.
+```
 
 ==================================================
 COMBINED TURN DECISION TREE

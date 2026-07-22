@@ -310,6 +310,8 @@ public sealed class GmWorkerApplyGate
         if (task.TaskType != WorkerTaskType.ValidationRepair)
             return [];
 
+        baselines.TryGetValue(MortalCharacteristicAuthorityContract.StatePath, out var characteristicAuthorityBytes);
+        var characteristicAuthority = DecodeUtf8(characteristicAuthorityBytes);
         var errors = new List<string>();
         foreach (var changedFile in proposal.ChangedFiles)
         {
@@ -322,7 +324,8 @@ public sealed class GmWorkerApplyGate
                 changedFile.Path,
                 baseline,
                 proposed,
-                task.ValidationIssues));
+                task.ValidationIssues,
+                characteristicAuthority));
         }
 
         return errors;

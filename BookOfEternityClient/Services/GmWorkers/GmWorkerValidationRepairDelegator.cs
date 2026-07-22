@@ -146,13 +146,31 @@ public sealed class GmWorkerValidationRepairDelegator
         string createdAtUtc,
         int attempt)
     {
+        var targetPaths = prioritizedErrors
+            .Select(GmWorkerTaskPacketBuilder.ResolveValidationTargetPath)
+            .Where(GmWorkerContractValidator.IsSafeRelativePath)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        var requiresCharacteristicAuthority = prioritizedErrors.Any(issue => string.Equals(
+            issue.Code,
+            "npc_characteristics_empty",
+            StringComparison.OrdinalIgnoreCase));
+        var contextPaths = requiresCharacteristicAuthority
+            ? targetPaths.Append(MortalCharacteristicAuthorityContract.StatePath)
+                .Distinct(StringComparer.Ordinal)
+            : targetPaths;
+
         var contextHashes = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var path in prioritizedErrors
-                     .Select(GmWorkerTaskPacketBuilder.ResolveValidationTargetPath)
-                     .Where(GmWorkerContractValidator.IsSafeRelativePath)
-                     .Distinct(StringComparer.Ordinal))
+        foreach (var path in contextPaths)
         {
             var content = await _fs.ReadFileBytesAsync(path);
+            if (path == MortalCharacteristicAuthorityContract.StatePath)
+            {
+                var authorityJson = DecodeUtf8(content);
+                if (!MortalCharacteristicAuthorityContract.TryReadKeys(authorityJson, out _, out var error))
+                    throw new InvalidOperationException(error);
+            }
+
             contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
         }
 
@@ -324,6 +342,14 @@ public sealed class GmWorkerValidationRepairDelegator
 
     private static string ComputeSha256(byte[] content) =>
         Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
+
+    private static string? DecodeUtf8(byte[]? content)
+    {
+        if (content == null)
+            return null;
+        var text = System.Text.Encoding.UTF8.GetString(content);
+        return text.Length > 0 && text[0] == '\ufeff' ? text[1..] : text;
+    }
 
     private sealed record ValidationRepairReadySignal
     {

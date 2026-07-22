@@ -136,18 +136,28 @@ public sealed class GmWorkerValidationRepairTests
             section: section,
             expected: expected);
 
-        WorkerTaskPacket Build() => GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
-            profile,
-            "worker_task_mortal_continuity_policy",
-            new WorkerTurnReference
+        WorkerTaskPacket Build()
+        {
+            var contextHashes = new Dictionary<string, string>
             {
-                SessionId = "test-session",
-                RequestId = "test-request",
-                TurnNumber = 12
-            },
-            [issue],
-            new Dictionary<string, string> { [path] = new string('f', 64) },
-            "2026-06-20T00:00:00Z");
+                [path] = new string('f', 64)
+            };
+            if (code == "npc_characteristics_empty")
+                contextHashes["game_state/misc/characteristics.json"] = new string('e', 64);
+
+            return GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_mortal_continuity_policy",
+                new WorkerTurnReference
+                {
+                    SessionId = "test-session",
+                    RequestId = "test-request",
+                    TurnNumber = 12
+                },
+                [issue],
+                contextHashes,
+                "2026-06-20T00:00:00Z");
+        }
 
         if (!shouldDispatch)
         {
@@ -162,6 +172,54 @@ public sealed class GmWorkerValidationRepairTests
         Assert.Equal("mortal_npc:npc_policy_target", packagedIssue.Actor);
         Assert.Equal(section, packagedIssue.Section);
         Assert.Equal(expected, packagedIssue.Expected);
+    }
+
+    [Fact]
+    public void BuildValidationRepairTask_CharacteristicsRepairRequiresHashPinnedReadOnlyAuthority()
+    {
+        const string npcPath = "game_state/npcs/npc_core.json";
+        const string authorityPath = "game_state/misc/characteristics.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issue = new ValidationIssue(
+            $"{npcPath}.UpdateNPCs[0].characteristics",
+            IssueSeverity.Error,
+            "Mortal characteristics are empty.",
+            code: "npc_characteristics_empty",
+            actor: "mortal_npc:npc_authority_target",
+            section: "NPCCharacteristics",
+            expected: "at least one setting-defined numeric characteristic");
+        var sourceTurn = new WorkerTurnReference
+        {
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 12
+        };
+
+        var missingAuthority = Assert.Throws<ArgumentException>(() =>
+            GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_characteristics_missing_authority",
+                sourceTurn,
+                [issue],
+                new Dictionary<string, string> { [npcPath] = new string('a', 64) },
+                "2026-06-20T00:00:00Z"));
+        Assert.Contains(authorityPath, missingAuthority.Message, StringComparison.Ordinal);
+
+        var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+            profile,
+            "worker_task_characteristics_with_authority",
+            sourceTurn,
+            [issue],
+            new Dictionary<string, string>
+            {
+                [npcPath] = new string('a', 64),
+                [authorityPath] = new string('b', 64)
+            },
+            "2026-06-20T00:00:00Z");
+
+        Assert.Equal([npcPath], task.AllowedProposalPaths);
+        Assert.Contains(task.ContextFiles, file =>
+            file.Path == authorityPath && file.Sha256 == new string('b', 64));
     }
 
     [Theory]

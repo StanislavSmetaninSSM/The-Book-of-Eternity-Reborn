@@ -756,7 +756,7 @@ function New-GmExperienceLesson {
         "Use TURN_OUTPUT_TEMPLATE.md for output/narrative_response.json: only response and timestamp are allowed there. Never put afterlifeChronicleUpdates into output/narrative_response.json. Use AFTERLIFE_CHRONICLE_TEMPLATE.md and the afterlifeChronicleUpdates surface for game_state/meta/afterlife_chronicles.json external memory, then include game_state/meta/afterlife_chronicles.json in Complete-BoeTurn -FilesModified when that state was changed."
     }
     elseif ($hasStalePlayerFacingOutputIssue) {
-        "Use OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md for this output-only validation repair. Possible output targets are output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json, but harnessRepairPackets[].targetFiles is the exact allowlist: rewrite only listed stale or technically contaminated artifacts. If output/debug_logs.json is absent from targetFiles, preserve it unchanged. If it is listed, preserve every full Actor Brain block and exact journal/ledger surface while repairing only the invalid fields. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response. Do not touch canonical game_state files unless the current validation_repair_request.json still lists canonical state errors."
+        "Use OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md for this output-only validation repair. Possible output targets are output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json, but harnessRepairPackets[].targetFiles is the exact allowlist: rewrite only listed stale or technically contaminated artifacts. If output/debug_logs.json is absent from targetFiles, preserve it unchanged. If it is listed, preserve every full Actor Brain block and exact journal/ledger surface while repairing only the invalid fields. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response. Do not touch canonical game_state files unless the current validation_repair_request.json still lists canonical state errors; if it does, finish every canonical write before rewriting dependent output because freshness follows the latest actual canonical-target write."
     }
     elseif ($hasGenericTurnOutputArtifactIssue) {
         "Use TURN_OUTPUT_TEMPLATE.md before writing ordinary turn output artifacts. Write output/narrative_response.json with only response and timestamp. Write output/debug_logs.json with gm_thoughts_markdown and timestamp. Write output/interface_updates.json with payload and timestamp. Do not write generic checks/mode/outcome/requestId/rewards/sessionId/turnNumber envelopes into output artifacts. Finish with Complete-BoeTurn -FilesModified only after canonical state changes are written."
@@ -1332,7 +1332,7 @@ Use this before opening large examples for ordinary live turns.
 1. Dot-source `game_state/control/gm_turn_helper.bootstrap.ps1`.
 2. Read `input/turn_request.json`, `game_state/meta/soul_state.json`, and the minimal state files needed for the current realm.
    - If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing an afterlife spiritual conflict exchange; copy its authoritative action-cost tiers/costs and dice outcome preview instead of guessing deterministic math.
-3. Write player-facing output first, then structured state/output files.
+3. Write every canonical structured-state change first. Write player-facing output only after the final canonical write so the prose and choices describe the state that will be validated.
 4. Finish with `Complete-BoeTurn -FilesModified @(...)` as the last command.
 
 ## Minimal files
@@ -1452,7 +1452,8 @@ Use this template only in validation repair mode when
    - `output/debug_logs.json`
 6. When `output/debug_logs.json` is absent from `targetFiles`, preserve its full Actor Brain and exact `Изменения состояния` journal/ledger surfaces unchanged.
 7. Do not touch canonical game_state files unless the current repair request still lists canonical state errors.
-8. Finish with `Complete-BoeValidationRepair` as the last command.
+8. If the same current request lists canonical errors, complete every listed canonical write before rewriting any dependent player-facing output. Repair-loop start/request time is not a freshness boundary; output written before the final canonical target write will be rejected as stale.
+9. Finish with `Complete-BoeValidationRepair` as the last command.
 
 ## Narrative response must stay diegetic
 
@@ -1598,6 +1599,7 @@ Use this before opening large examples for repair mode.
 - If `harnessRepairPackets[].kind` is `actor_memory_persistence_repair`, persist one new current-turn actor-owned memory delta only to the listed state surface. Guardians/NPCs/residents use first-person journal entries; direct repair of `game_state/meta/guardian_thought_journal.json` writes its canonical top-level `entries[]` root, never `schemaVersion` or a `guardianThoughtJournalUpdates`-only root. Existing afterlife profiles append actor-owned `ledger`/`progressionLedger` even when `gmThoughtsSummary` changes; existing Shining factions append `shiningFactionChronicleUpdates`, never a `shiningFactionStrategicMemoryUpdates` rewrite alone. In packet-listed `output/debug_logs.json`, update only the same actor's `Изменения состояния:` line to name the journal command/surface actually used. This internal memory-only repair does not invalidate or rewrite narrative/interface output. Do not rewrite old entries or unrelated canonical state.
 - If a wrong-realm auto-rollback report exists, treat it as diagnostic evidence, not permission to rewrite mortal files from afterlife.
 - If `harnessRepairPackets[].kind` is `accepted_turn_output_artifact_repair`, use `OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md`. Possible targets are `output/narrative_response.json`, `output/interface_updates.json`, and `output/debug_logs.json`, but `targetFiles` is the exact allowlist: repair only listed artifacts for the same turn. If `output/debug_logs.json` is absent, preserve it unchanged; if listed, preserve its complete Actor Brain blocks and exact journal/ledger surfaces. Do not create a new turn and do not touch canonical game_state files unless canonical errors remain listed in the current request.
+- In any repair request that lists both canonical and player-facing targets, finish all canonical writes first, then rewrite dependent player-facing output. The client compares output timestamps with the latest actual repaired-target write, not request creation or repair-loop start, and fails closed when that write cannot be observed.
 - If validation reports `narrative_response_technical_repair_leak`, rewrite `output/narrative_response.json.response` as diegetic in-world prose only. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, storage shape, or that a technical state write succeeded.
 - If validation reports `narrative_response_unknown_field`, remove the unsupported field from `output/narrative_response.json`; keep only `response` and `timestamp`. If the field is `afterlifeChronicleUpdates`, move/keep that data only on the afterlife chronicle surface described by `AFTERLIFE_CHRONICLE_TEMPLATE.md` and `game_state/meta/afterlife_chronicles.json`.
 - If `harnessRepairPackets[].kind` is `mortal_skill_progression_shape_repair`, repair the listed Mortal player skill files in place. `activeSkillChanges`, `passiveSkillChanges`, `removeActiveSkills`, `removePassiveSkills`, and `skillMasteryChanges` are always arrays, even for one changed skill. Read `game_state/control/pending_training_showcase_requests.json` for paid lesson `targetKind` authority and do not charge money/XP/currency again.
@@ -1725,6 +1727,7 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 
 - `NPCCoreChanges` is a Mortal-only non-carrier command mapped to `game_state/npcs/npc_core.json`. It targets one exact existing permanent `NPCId`; never target by name or `initialId`.
 - Every entry needs a non-empty in-world/mechanical `reason` and at least one non-empty mutation group. Values are absolute resulting values, not expressions or prose math.
+- Include only groups that actually change. Omit every unused optional group; never emit an empty object or array as a placeholder.
 - Allowed groups are exactly `profile`, `location`, `progression`, `characteristicValues`, `factionAffiliationsToUpsert`, `fateCardsToAdd`, and `fateCardIdsToRemove`. Unknown members and protected identity/name/materialization/inventory/equipment/skill/relationship/journal/goal/quest/activity/mask/custom-state/teacher/trade fields are forbidden.
 - `characteristicValues` may use only keys already owned by the actor or explicit current-world characteristic authority. Carrying and progression formulas also come only from explicit current-world authority; keep setting-owned nullable results null when no authority exists.
 - Unlock cards through `NPCFateCardUnlocks`. Add only complete new initially locked cards and remove only validated pre-turn locked/unrealized cards through `NPCCoreChanges`.
@@ -1736,27 +1739,8 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
       "NPCId": "exact_existing_permanent_npc_id",
       "reason": "non-empty in-world and mechanical justification",
       "profile": {
-        "worldview": "optional absolute replacement",
-        "race": "optional absolute replacement",
-        "history": "optional absolute replacement"
-      },
-      "location": {
-        "currentLocationId": "known_permanent_location_id_or_null",
-        "initialLocationId": "exact_same_turn_location_initial_id_or_null"
-      },
-      "progression": {
-        "level": 4,
-        "experience": 25,
-        "experienceForNextLevel": 500,
-        "progressionType": "Companion",
-        "lastPlayerXPValueOnSync": 1200
-      },
-      "characteristicValues": {
-        "setting_defined_characteristic_key": 15
-      },
-      "factionAffiliationsToUpsert": [],
-      "fateCardsToAdd": [],
-      "fateCardIdsToRemove": []
+        "worldview": "absolute replacement from the current story"
+      }
     }
   ]
 }
@@ -5604,7 +5588,7 @@ function Process-RepairRequest {
             [string]::Equals($_, "guardian_trade_request_missing_receipt_resolution", [System.StringComparison]::OrdinalIgnoreCase)
         }).Count -gt 0
         $outputArtifactRepairDirective = if ($hasAcceptedTurnOutputArtifactRepair -or $hasStalePlayerFacingOutputRepair) {
-            " You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)' before any broad repair examples. For accepted_turn_output_artifact_repair, this is output-only repair: harnessRepairPackets[].targetFiles is the exact allowlist. Rewrite only listed artifacts; if output/debug_logs.json is absent, preserve it unchanged, and if listed, preserve its full Actor Brain blocks and exact journal/ledger surfaces. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response; do not touch canonical game_state files unless the current request still lists canonical errors."
+            " You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)' before any broad repair examples. For accepted_turn_output_artifact_repair, harnessRepairPackets[].targetFiles is the exact allowlist. Rewrite only listed artifacts; if output/debug_logs.json is absent, preserve it unchanged, and if listed, preserve its full Actor Brain blocks and exact journal/ledger surfaces. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response. Do not touch canonical game_state files unless the current request still lists canonical errors; if it does, finish every canonical write before dependent output because freshness follows the latest actual canonical-target write, not repair start."
         } else {
             ""
         }

@@ -742,6 +742,7 @@ public sealed class GmWorkerApplyGateTests
         { "npc_initial_id_collides_with_existing_permanent_id", "intended", ApplyGateResult.Rejected },
         { "npc_existing_inventory_resend_forbidden", "intended", ApplyGateResult.Accepted },
         { "npc_characteristics_empty", "intended", ApplyGateResult.Accepted },
+        { "npc_characteristics_empty", "unauthorized_characteristic", ApplyGateResult.Rejected },
         { "npc_initial_id_collides_with_existing_permanent_id", "same_actor", ApplyGateResult.Rejected },
         { "npc_existing_inventory_resend_forbidden", "same_actor", ApplyGateResult.Rejected },
         { "npc_characteristics_empty", "same_actor", ApplyGateResult.Rejected },
@@ -791,6 +792,42 @@ public sealed class GmWorkerApplyGateTests
             Assert.Equal(expectedResult, decision.Result);
             if (expectedResult == ApplyGateResult.Rejected)
                 Assert.Equal(baseline, await fs.ReadFileAsync(path));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("not-json")]
+    [InlineData("[]")]
+    [InlineData("{}")]
+    [InlineData("{\"setting_defined_focus\":4,\"setting_defined_focus\":5}")]
+    public async Task ApplyAsync_CharacteristicsRepair_InvalidSettingAuthorityIsRejected(
+        string? authorityJson)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var (profile, task, proposal, path, baseline) = await PrepareMortalContinuityRepairAsync(
+                fs,
+                "npc_characteristics_empty",
+                "intended",
+                authorityJson);
+            var gate = new GmWorkerApplyGate(
+                fs,
+                () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+
+            var decision = await gate.ApplyAsync(proposal, task, profile);
+
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.Equal(baseline, await fs.ReadFileAsync(path));
+            Assert.Contains(decision.RejectionReasons, reason =>
+                reason.Contains("characteristic", StringComparison.OrdinalIgnoreCase) &&
+                reason.Contains("authority", StringComparison.OrdinalIgnoreCase));
         }
         finally
         {
@@ -1660,7 +1697,8 @@ public sealed class GmWorkerApplyGateTests
         string Baseline)> PrepareMortalContinuityRepairAsync(
             FileSystemManager fs,
             string code,
-            string mutation)
+            string mutation,
+            string? characteristicAuthorityJson = "{\"setting_defined_focus\":4}")
     {
         const string path = "game_state/npcs/npc_core.json";
         const string actorId = "npc_policy_target";
@@ -1708,6 +1746,12 @@ public sealed class GmWorkerApplyGateTests
         {
             case "intended":
                 break;
+            case "unauthorized_characteristic":
+                proposedTarget["characteristics"] = new JsonObject
+                {
+                    ["invented_stat"] = 999
+                };
+                break;
             case "same_actor":
                 proposedTarget["personality"]!["summary"] = "Worker rewrote protected personality.";
                 break;
@@ -1746,6 +1790,9 @@ public sealed class GmWorkerApplyGateTests
         var proposedContent = proposedRoot.ToJsonString();
         await fs.WriteFileAtomicAsync(path, baseline);
         await fs.WriteFileAtomicAsync(contentRef, proposedContent);
+        const string characteristicAuthorityPath = "game_state/misc/characteristics.json";
+        if (code == "npc_characteristics_empty" && characteristicAuthorityJson != null)
+            await fs.WriteFileAtomicAsync(characteristicAuthorityPath, characteristicAuthorityJson);
         var baselineSha = ComputeFileSha256(fs, path);
         var proposalSha = ComputeFileSha256(fs, contentRef);
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
@@ -1765,6 +1812,21 @@ public sealed class GmWorkerApplyGateTests
             "npc_characteristics_empty" => "NPCCharacteristics",
             _ => throw new ArgumentOutOfRangeException(nameof(code), code, null)
         };
+        var contextFiles = new List<WorkerFileReference>
+        {
+            new() { Path = path, Sha256 = baselineSha }
+        };
+        if (code == "npc_characteristics_empty")
+        {
+            contextFiles.Add(new WorkerFileReference
+            {
+                Path = characteristicAuthorityPath,
+                Sha256 = characteristicAuthorityJson == null
+                    ? "missing"
+                    : ComputeFileSha256(fs, characteristicAuthorityPath)
+            });
+        }
+
         var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
         {
             ValidationIssues =
@@ -1781,7 +1843,7 @@ public sealed class GmWorkerApplyGateTests
                         : "exact issue-bound correction"
                 }
             ],
-            ContextFiles = [new WorkerFileReference { Path = path, Sha256 = baselineSha }],
+            ContextFiles = contextFiles,
             AllowedProposalPaths = [path]
         };
         var changeKind = mutation switch
