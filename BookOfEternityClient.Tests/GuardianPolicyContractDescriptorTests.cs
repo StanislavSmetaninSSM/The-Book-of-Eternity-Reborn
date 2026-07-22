@@ -966,6 +966,7 @@ public class GuardianPolicyContractDescriptorTests
         Assert.Equal(
             new[]
             {
+                "NPCCoreChanges",
                 "NPCsInScene",
                 "NPCsRenameData",
                 "UpdateNPCs",
@@ -989,6 +990,7 @@ public class GuardianPolicyContractDescriptorTests
         Assert.Equal(
             new[]
             {
+                "NPCCoreChanges",
                 "NPCsRenameData",
                 "UpdateNpcTradeInventoryReceipts"
             },
@@ -1015,6 +1017,7 @@ public class GuardianPolicyContractDescriptorTests
         Assert.Equal(
             new[]
             {
+                "NPCCoreChanges",
                 "NPCsInScene",
                 "NPCsRenameData",
                 "UpdateNPCs",

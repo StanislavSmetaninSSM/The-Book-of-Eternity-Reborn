@@ -231,6 +231,9 @@ public class GameResponse
     [JsonPropertyName("UpdateNPCs")]
     public JsonElement[]? UpdateNPCs { get; set; }
 
+    [JsonPropertyName("NPCCoreChanges")]
+    public JsonElement[]? NPCCoreChanges { get; set; }
+
     [JsonPropertyName("UpdateNpcTradeInventoryReceipts")]
     public JsonElement[]? UpdateNpcTradeInventoryReceipts { get; set; }
 

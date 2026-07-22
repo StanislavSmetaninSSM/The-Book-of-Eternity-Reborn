@@ -68,6 +68,7 @@ public partial class ValidationService
     {
         GuardianPolicyContracts.NpcCoreUpdateSectionName,
         GuardianPolicyContracts.NpcCoreSceneSectionName,
+        GuardianPolicyContracts.NpcCoreChangesSectionName,
         NpcTradeRequestState.UpdateReceiptsProperty,
         "NPCGoalUpdates",
         "NPCQuestUpdates",
@@ -5000,9 +5001,15 @@ public partial class ValidationService
         JsonElement root,
         string contextPrefix,
         List<ValidationIssue> issues,
-        bool skipManifestedCompanionSourceValidation = false)
+        bool skipManifestedCompanionSourceValidation = false,
+        bool validateCurrentMaterializationPersonality = false)
     {
-        ValidateNpcSceneArray(root, contextPrefix, issues, skipManifestedCompanionSourceValidation);
+        ValidateNpcSceneArray(
+            root,
+            contextPrefix,
+            issues,
+            skipManifestedCompanionSourceValidation,
+            validateCurrentMaterializationPersonality);
         ValidateNpcTradeReceiptUpdateCommands(root, contextPrefix, issues);
         ValidateNpcRenameData(root, contextPrefix, issues);
         ValidateNpcJournals(root, contextPrefix, issues);
@@ -5039,7 +5046,8 @@ public partial class ValidationService
         JsonElement root,
         string contextPrefix,
         List<ValidationIssue> issues,
-        bool skipManifestedCompanionSourceValidation = false)
+        bool skipManifestedCompanionSourceValidation = false,
+        bool validateCurrentMaterializationPersonality = false)
     {
         var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature, string? BuybackInventorySignature)>(StringComparer.OrdinalIgnoreCase);
         var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(root);
@@ -5084,11 +5092,22 @@ public partial class ValidationService
                 ValidateNpcSceneIdentity(item, itemContext, issues);
                 RequireString(item, itemContext, issues, "name");
                 issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(item, itemContext, sectionName));
-                ValidateNpcCoreObjectShape(item, itemContext, issues, sectionName);
+                var hasEffectiveNpcId = TryReadCanonicalCurrentMortalActorId(item, out var effectiveNpcId);
+                var requiresCompletePersonality = RequiresCompleteCurrentMortalPersonality(
+                    item,
+                    hasEffectiveNpcId,
+                    effectiveNpcId,
+                    mortalActorPreTurnAuthority,
+                    validateCurrentMaterializationPersonality);
+                ValidateNpcCoreObjectShape(
+                    item,
+                    itemContext,
+                    issues,
+                    sectionName,
+                    requiresCompletePersonality);
                 ValidateNpcTradeState(item, itemContext, issues);
 
                 var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
-                var hasEffectiveNpcId = TryReadCanonicalCurrentMortalActorId(item, out var effectiveNpcId);
                 var usesSameTurnInitialId = string.IsNullOrWhiteSpace(npcId) && hasEffectiveNpcId;
                 var hasInventoryContinuityAuthority =
                     !usesSameTurnInitialId ||
@@ -5168,29 +5187,35 @@ public partial class ValidationService
                         actual: initialLocationId,
                         repairHint: "Если NPC находится в текущей same-turn новой сцене, скопируй exact currentLocationData.initialId. Не ссылай NPCsInScene на initialId другой новой локации."));
                 }
-                if (string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
-                    hasEffectiveNpcId &&
+                if (hasEffectiveNpcId &&
                     hasInventoryContinuityAuthority &&
                     item.TryGetProperty("inventory", out var currentInventory) &&
-                    ShouldBlockMortalActorInventoryResend(item, effectiveNpcId, mortalActorPreTurnAuthority))
-                {
-                    var hasExactLegacyPromotionSnapshot = TryGetMortalActorLegacyPromotionInventorySnapshot(
+                    ShouldBlockMortalActorInventoryResend(
                         item,
                         effectiveNpcId,
+                        sectionName,
+                        mortalActorPreTurnAuthority))
+                {
+                    var hasExactInventorySnapshot = TryGetMortalActorInventoryContinuitySnapshot(
+                        item,
+                        effectiveNpcId,
+                        sectionName,
                         mortalActorPreTurnAuthority,
                         out var expectedInventoryJson);
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.inventory",
                         IssueSeverity.Error,
-                        "UpdateNPCs не должен пересылать inventory для existing NPC",
+                        $"{sectionName} не должен изменять inventory existing NPC вне dedicated inventory commands",
                         code: "npc_existing_inventory_resend_forbidden",
                         section: "NPCInventory",
                         actor: $"mortal_npc:{effectiveNpcId}",
-                        expected: hasExactLegacyPromotionSnapshot
+                        expected: hasExactInventorySnapshot
                             ? expectedInventoryJson
-                            : "remove the whole ordinary-existing full-object resend from UpdateNPCs and use dedicated delta/command surfaces for every supported change",
+                            : string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase)
+                                ? "remove the whole ordinary-existing full-object resend from UpdateNPCs and use dedicated delta/command surfaces for every supported change"
+                                : "preserve the validated pre-turn NPCsInScene inventory and use NPCInventoryAdds/Updates/Removals for mutations",
                         actual: currentInventory.GetRawText(),
-                        repairHint: "For a true legacy promotion, restore the validated pre-turn inventory snapshot without semantic changes. For an ordinary existing NPC, remove the whole ordinary-existing full-object resend. Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated delta/command surface; inventory mutations use NPCInventoryAdds/Updates/Removals. If a required delta surface does not exist, use the main-GM rollback/repair path. Inventory inside UpdateNPCs is otherwise only for a genuinely new NPC."));
+                        repairHint: "Restore the exact validated pre-turn inventory snapshot on this carrier. Keep genuinely new initial inventory unchanged, and express every existing-actor inventory mutation through NPCInventoryAdds, NPCInventoryUpdates, or NPCInventoryRemovals. For an ordinary existing UpdateNPCs entry, remove the whole full-object resend. Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated delta/command surface; if a required surface does not exist, use the main-GM rollback/repair path."));
                 }
 
                 if (!string.IsNullOrWhiteSpace(initialLocationId) &&
@@ -5275,6 +5300,30 @@ public partial class ValidationService
         }
     }
 
+    private static bool RequiresCompleteCurrentMortalPersonality(
+        JsonElement item,
+        bool hasEffectiveNpcId,
+        string effectiveNpcId,
+        MortalActorMaterializationPreTurnAuthority preTurnAuthority,
+        bool validateCurrentMaterializationPersonality)
+    {
+        if (!item.TryGetProperty(ActorMaterializationContract.PropertyName, out var materialization) ||
+            materialization.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        if (hasEffectiveNpcId &&
+            preTurnAuthority.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+            preTurnAuthority.Actors != null)
+        {
+            return !preTurnAuthority.Actors.TryGetValue(effectiveNpcId, out var preTurnActor) ||
+                   preTurnActor.HistoricalEnvelopeJson == null;
+        }
+
+        return validateCurrentMaterializationPersonality;
+    }
+
     private void ValidateCompanionManifestationNpcSources(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         var seenCompanionSourceRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -5322,7 +5371,12 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateNpcCoreObjectShape(JsonElement item, string itemContext, List<ValidationIssue> issues, string sectionName)
+    private void ValidateNpcCoreObjectShape(
+        JsonElement item,
+        string itemContext,
+        List<ValidationIssue> issues,
+        string sectionName,
+        bool requiresCompletePersonality)
     {
         var missingFields = new List<string>();
         foreach (var requiredStringField in new[] { "image_prompt", "rarity", "worldview", "personalityArchetype", "culturalStance", "race", "class", "appearanceDescription", "history", "progressionType" })
@@ -5524,10 +5578,42 @@ public partial class ValidationService
             ValidateRequiredNullableStringField(relationshipLock, $"{itemContext}.relationshipLock", issues, "breakthroughQuestId");
         }
 
-        if (item.TryGetProperty("personalityTraits", out var personalityTraits) &&
-            personalityTraits.ValueKind != JsonValueKind.Null)
+        if (item.TryGetProperty("personalityTraits", out var personalityTraits))
         {
-            ValidateArrayItems(personalityTraits, $"{itemContext}.personalityTraits", issues, ValidateNpcPersonalityTraitObject);
+            var personalityContext = $"{itemContext}.personalityTraits";
+            if (requiresCompletePersonality &&
+                (personalityTraits.ValueKind != JsonValueKind.Array ||
+                 personalityTraits.GetArrayLength() is < 3 or > 5))
+            {
+                issues.Add(new ValidationIssue(
+                    personalityContext,
+                    IssueSeverity.Error,
+                    "First-materialization NPC personalityTraits должен содержать от 3 до 5 черт",
+                    code: "npc_personality_traits_cardinality_invalid",
+                    section: "NPCPersonality",
+                    actor: TryReadCanonicalCurrentMortalActorId(item, out var actorId)
+                        ? $"mortal_npc:{actorId}"
+                        : null,
+                    expected: "3..5 personality traits",
+                    actual: personalityTraits.ValueKind == JsonValueKind.Array
+                        ? personalityTraits.GetArrayLength().ToString()
+                        : personalityTraits.ValueKind.ToString(),
+                    repairHint: "Для first materialization передай 3-5 complete personalityTraits с integer value 1..10."));
+            }
+
+            if (personalityTraits.ValueKind != JsonValueKind.Null)
+            {
+                ValidateArrayItems(
+                    personalityTraits,
+                    personalityContext,
+                    issues,
+                    (trait, traitContext, traitIssues) =>
+                        ValidateNpcPersonalityTraitObject(
+                            trait,
+                            traitContext,
+                            traitIssues,
+                            requiresCompletePersonality));
+            }
         }
 
         if (item.TryGetProperty("activeSkills", out var activeSkills) && activeSkills.ValueKind != JsonValueKind.Null)
@@ -5600,7 +5686,11 @@ public partial class ValidationService
             ValidateOptionalNullableStringField(item, itemContext, issues, "activeMaskId");
     }
 
-    private void ValidateNpcPersonalityTraitObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    private void ValidateNpcPersonalityTraitObject(
+        JsonElement item,
+        string itemContext,
+        List<ValidationIssue> issues,
+        bool requireValue)
     {
         if (!RequireObject(item, itemContext, issues))
             return;
@@ -5608,7 +5698,40 @@ public partial class ValidationService
         RequireString(item, itemContext, issues, "traitName");
         RequireString(item, itemContext, issues, "description");
         RequireString(item, itemContext, issues, "valueDescription");
-        ValidateIntegerField(item, itemContext, issues, "value");
+        if (requireValue && !item.TryGetProperty("value", out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.value",
+                IssueSeverity.Error,
+                "First-materialization NPC personality trait должен содержать integer value",
+                code: "npc_personality_trait_value_missing",
+                section: "NPCPersonality",
+                expected: "integer 1..10",
+                actual: "missing",
+                repairHint: "Добавь обязательный integer personalityTraits[].value от 1 до 10."));
+        }
+        else if (requireValue &&
+                 (!item.TryGetProperty("value", out var requiredValue) ||
+                  requiredValue.ValueKind != JsonValueKind.Number ||
+                  !requiredValue.TryGetInt32(out _)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.value",
+                IssueSeverity.Error,
+                "First-materialization NPC personality trait value должен быть integer",
+                code: "npc_personality_trait_value_invalid",
+                section: "NPCPersonality",
+                expected: "integer 1..10",
+                actual: item.TryGetProperty("value", out var actualValue)
+                    ? actualValue.ValueKind.ToString()
+                    : "missing",
+                repairHint: "Сохраняй обязательный personalityTraits[].value как JSON integer от 1 до 10."));
+        }
+        else
+        {
+            ValidateIntegerField(item, itemContext, issues, "value");
+        }
+
         if (TryReadInt(item, "value", out var value) && (value < 1 || value > 10))
         {
             issues.Add(new ValidationIssue(

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Add a setting-agnostic, versioned first-materialization contract for persistent Mortal NPCs and significant afterlife actors. The validator requires an actor-bound private `materialization` envelope for current-turn creations and promotions, compares declared section dispositions and capabilities with canonical actor data, requires at least one setting-defined numeric Mortal characteristic, derives one effective Mortal identity so null permanent-ID plus colliding `initialId` cannot evade continuity, and retains validated pre-turn inventory so true legacy promotion can resend only a semantically unchanged snapshot. Duplicate-key current and validated pre-turn authority fails closed through structured issues while semantic equality stays property-order-insensitive. Afterlife type-specific records bind to common profiles; the first envelope on an existing bound profile revalidates actual Guardian/resident journal or exact common-profile memory while untouched legacy profiles remain readable. The worker apply gate routes memory repairs by actor type and mechanically preserves every field except the exact actor-owned memory target, permits first creation of the exact Guardian thought journal only as a hash-pinned Add with one issue-owned append, pins exact proposal bytes, and applies or rolls back through cross-process compare/exchange. Mortal collision repair remains main-GM-only; exact-snapshot inventory and empty-characteristics repairs are constrained to one issue-bound actor, carrier, and field. Proposal `status` is mandatory: omission/unspecified values are invalid, only explicit completed proposals may enter apply, and terminal failure proposals remain mutation-free diagnostics. Worker audit append is concurrency-safe, all producers use one source-guarded UTC-millisecond plus GUID generator, and telemetry failure cannot revoke accepted canonical bytes. Worker dispatch owns a repair before legacy fallback is exposed, including direct revalidation after an accepted apply whose ready publication fails. The client never infers skills, possessions, roles, or capabilities from prose, and generated templates use current-world characteristic authority instead of a universal list. System Guardian seeds remain client-owned and receive deterministic envelopes that match their exact seeded capabilities. Mortal and afterlife prompts, examples, manifests, contract documentation, and source guards are updated with the runtime change.
+Add a setting-agnostic, versioned first-materialization contract for persistent Mortal NPCs and significant afterlife actors. The validator requires an actor-bound private `materialization` envelope for current-turn creations and promotions, compares declared section dispositions and capabilities with canonical actor data, requires 3-5 integer-valued Mortal personality traits and at least one setting-defined numeric Mortal characteristic, derives one effective Mortal identity so null permanent-ID plus colliding `initialId` cannot evade continuity, and retains validated pre-turn inventory so true legacy promotion can resend only a semantically unchanged snapshot through either full carrier. Ordinary existing core changes use the Mortal-only closed `NPCCoreChanges` command: exact permanent identity, reason, absolute resulting values, bounded profile/location/progression/setting-owned characteristic/faction/Fate Card groups, deterministic mirror reduction, and command consumption. Duplicate-key current and validated pre-turn authority fails closed through structured issues while semantic equality stays property-order-insensitive. Afterlife type-specific records bind to common profiles; the first envelope on an existing bound profile revalidates actual Guardian/resident journal or exact common-profile memory while untouched legacy profiles remain readable. The worker apply gate routes memory repairs by actor type and mechanically preserves every field except the exact actor-owned memory target, permits first creation of the exact Guardian thought journal only as a hash-pinned Add with one issue-owned append, pins exact proposal bytes, and applies or rolls back through cross-process compare/exchange. Mortal collision repair remains main-GM-only; exact-snapshot inventory and empty-characteristics repairs are constrained to one issue-bound actor, carrier, and field. Proposal `status` is mandatory: omission/unspecified values are invalid, only explicit completed proposals may enter apply, and terminal failure proposals remain mutation-free diagnostics. Worker audit append is concurrency-safe, all producers use one source-guarded UTC-millisecond plus GUID generator, and telemetry failure cannot revoke accepted canonical bytes. Worker dispatch owns a repair before legacy fallback is exposed, including direct revalidation after an accepted apply whose ready publication fails. The client never infers skills, possessions, roles, capabilities, characteristic keys, carrying formulas, or class-stat allocations from prose, and generated templates use current-world authority with nullable setting-owned carrying results. System Guardian seeds remain client-owned and receive deterministic envelopes that match their exact seeded capabilities. Prompts, examples, manifests, contract documentation, and source guards are synchronized; the third re-review command/personality/characteristic remediation is Mortal-only and changes no Chaos Sea or Shining Abode contract.
 
 ## Technical Context
 
@@ -24,18 +24,18 @@ Add a setting-agnostic, versioned first-materialization contract for persistent 
 
 **Performance Goals**: Linear validation in actor and section counts; no network or model calls; negligible additional latency for ordinary save sizes
 
-**Constraints**: Preserve legacy saves; duplicate/malformed continuity authority fails closed without escaping validation; no client-authored narrative data; no genre keyword inference; no new cloud dependency; dedicated delta commands remain authoritative; worker repair remains exact-actor/exact-field bounded; metadata stays out of player projections
+**Constraints**: Preserve legacy saves; duplicate/malformed continuity authority fails closed without escaping validation; no client-authored narrative data; no genre keyword inference or universal characteristic/carrying/class-stat formula; no new cloud dependency; dedicated delta commands and bounded `NPCCoreChanges` retain separate authority; worker repair remains exact-actor/exact-field bounded; metadata stays out of player projections
 
-**Scale/Scope**: Mortal NPC core validation, afterlife common profiles and cross-file actors, repair harness, System Guardian seed generation, prompts/docs/examples/source guards, focused tests
+**Scale/Scope**: Mortal NPC core validation and bounded reduction, afterlife common profiles and cross-file actors, repair harness, System Guardian seed generation, prompts/docs/examples/source guards, focused tests. R3-I-2/R3-I-3/R3-M-1 are Mortal-only and do not alter afterlife pending/control, response, receipt, scheduler, lifecycle, or authority contracts.
 
 **Source Issue(s)**: [#1500](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1500), related [#1446](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1446) and [#1461](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1461)
 
-**Contract Scope**: GM-facing prompts, runtime state, validation, normalization preservation, repair packets, Mortal World, Chaos Sea, Shining Abode, docs, examples, manifests, console/browser metadata non-leakage
+**Contract Scope**: GM-facing prompts, runtime state, validation, normalization preservation, repair packets, Mortal World, Chaos Sea, Shining Abode, docs, examples, manifests, console/browser metadata non-leakage. The third re-review docs wave changes only Mortal `NPCCoreChanges`, setting authority, and personality completeness; afterlife contract surfaces remain unchanged.
 
 **Verification Commands**:
 
 ```powershell
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ActorMaterialization|NpcFullObject|AfterlifeEntityProfile|GuardianAbodeResident|ShiningLeadership|SystemGuardianLibrary|GmWorker|ValidationRepair"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ActorMaterialization|NpcCoreChanges|NpcFullObject|AfterlifeEntityProfile|GuardianAbodeResident|ShiningLeadership|SystemGuardianLibrary|GmWorker|ValidationRepair"
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests|PromptDocumentationCoverageTests|ValidationSourceGuardTests|GameEngineSourceGuardTests"
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore
 ```
@@ -47,14 +47,14 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - **GitHub traceability**: Issue #1500 and related startup findings are linked in spec, plan, and tasks.
 - **Spec Kit fit**: This is a multi-file canonical-state, validation, afterlife, repair, prompt, documentation, and example contract.
 - **Player-facing integrity**: The envelope is private harness metadata; tests prevent console/browser player projections from exposing it.
-- **Contract/state authority**: Canonical JSON and existing dedicated delta commands remain authoritative; prompts/docs/examples are synchronized for Mortal World and afterlife.
+- **Contract/state authority**: Canonical JSON, existing dedicated delta commands, and the closed Mortal-only `NPCCoreChanges` reducer remain authoritative; prompts/docs/examples are synchronized, and the third re-review explicitly records that no afterlife contract changed.
 - **Test-first path**: Each actor family, cross-file binding, legacy path, repair packet, and deterministic seed starts with focused failing tests.
 - **Verification evidence**: Focused, documentation-sensitive, and full test commands are listed above.
 - **Agent orchestration**: Any delegated implementation packet must include #1500, this spec/plan/tasks set, Superpowers TDD/review requirements, and verification commands.
 
 **Gate result before research**: PASS. Issue #1500 is tracked; harness-first validation, legacy safety, documentation synchronization, and verification evidence are explicit.
 
-**Gate result after design**: PASS. The data model keeps narrative authority with the GM, uses validated pre-turn state for legacy/new classification, preserves dedicated delta contracts, and documents both Mortal and afterlife authoring paths.
+**Gate result after design**: PASS. The data model keeps narrative authority with the GM, uses validated pre-turn state for legacy/new classification, preserves dedicated delta contracts, bounds `NPCCoreChanges` to named existing-core fields, and documents both Mortal and afterlife authoring paths without changing the afterlife contract in the R3 wave.
 
 ## Project Structure
 
@@ -67,6 +67,7 @@ specs/1500-complete-actor-materialization/
 ├── data-model.md
 ├── quickstart.md
 ├── contracts/actor-materialization.schema.json
+├── contracts/npc-core-changes.md
 └── tasks.md
 ```
 
@@ -76,10 +77,12 @@ specs/1500-complete-actor-materialization/
 BookOfEternityClient/
 ├── Services/
 │   ├── ActorMaterializationContract.cs
+│   ├── NpcCoreChangesContract.cs
 │   ├── SystemGuardianLibraryService.cs
 │   ├── Validation/ValidationService.ActorMaterializationContinuity.cs
 │   ├── Validation/ValidationService.ActorMaterializationBinding.cs
 │   ├── Validation/ValidationService.ActorMaterializationTradeAuthority.cs
+│   ├── Validation/ValidationService.NpcCoreChanges.cs
 │   ├── GmWorkers/ActorMaterializationRepairPreservationGuard.cs
 │   ├── GmWorkers/GmWorkerApplyGate.cs
 │   ├── GmWorkers/GmWorkerTaskPacketBuilder.cs
@@ -90,6 +93,7 @@ BookOfEternityClient/
 BookOfEternityClient.Tests/
 ├── ActorMaterializationContractTests.cs
 ├── ActorMaterializationValidationTests.cs
+├── NpcCoreChangesTests.cs
 ├── SystemGuardianLibraryServiceTests.cs
 ├── AfterlifeDocumentationCoverageTests.cs
 ├── ExampleDocumentationValidationTests.cs

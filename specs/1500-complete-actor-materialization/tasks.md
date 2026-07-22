@@ -106,3 +106,12 @@
 ## Phase 14 - Controller follow-up after first implementation report
 
 - [x] T058 Remove the residual ordinary-existing partial-object repair branch from validator metadata, the high-priority packet, and the worked GM example; require whole-entry removal, dedicated deltas, and main-GM fallback, then append fresh RED/GREEN and affected-suite evidence to the report. Evidence: focused 3/3, validator 191/191, lifecycle 156/156, and documentation/source guards 153/153 passed; see `sdd/final-rereview-2-fixes-report.md`.
+
+## Phase 15 - Third final re-review remediation
+
+- [x] T059 Apply exact validated pre-turn inventory continuity to both `UpdateNPCs` and `NPCsInScene`, preserving genuinely new initial inventory and exact-snapshot legacy promotion while rejecting changed, added, or removed inventory for historical actors.
+- [x] T060 Add a bounded, setting-agnostic `NPCCoreChanges` command for supported ordinary-existing core mutations; validate exact permanent identity and a closed mutation schema, reduce it into every unambiguous canonical carrier, preserve protected actor state, and consume the command before canonical validation.
+- [x] T061 Replace every contradictory ordinary-existing full-`UpdateNPCs` mandate with a real dedicated command or `NPCCoreChanges`; update Block 2, CLI/daemon guidance, worked examples, manifests, and full-source negative guards.
+- [x] T062 Remove universal Strength/Constitution/carrying and class-stat assumptions from authoritative Mortal rules and examples; derive all characteristic keys and formulas from explicit current-world authority and guard the complete Block 19 source against regression.
+- [x] T063 Require three to five first-materialization personality traits with mandatory integer `value`, repair the Mortal worked example, and validate that example through the production NPC validator with truthful manifest coverage.
+- [ ] T064 Record per-finding RED/GREEN evidence, run focused and full verification, update Spec Kit artifacts, and repeat independent whole-branch review before T023/T033 integration.

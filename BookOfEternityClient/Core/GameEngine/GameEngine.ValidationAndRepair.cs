@@ -174,7 +174,7 @@ public partial class GameEngine
         while (true)
         {
             await EnsureClientOwnedSystemFilesHealthyAsync();
-            var rawIssues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
+            var rawIssues = await CollectAcceptedTurnRawStateIssuesAsync();
             var rawErrors = PrioritizeValidationErrors(rawIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
             if (rawErrors.Count > 0)
             {
@@ -260,6 +260,13 @@ public partial class GameEngine
             await RefreshRuntimeStateAsync();
             return true;
         }
+    }
+
+    private async Task<List<ValidationIssue>> CollectAcceptedTurnRawStateIssuesAsync()
+    {
+        var issues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
+        issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
+        return issues;
     }
 
     private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(

@@ -2343,6 +2343,213 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateResponse_FirstMaterializationPersonalityTraitWithoutValue_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "missing_personality_value_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["personalityTraits"]![0]!.AsObject().Remove("value");
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_personality_trait_value_missing" &&
+            issue.FilePath == "response.UpdateNPCs[0].personalityTraits[0].value");
+    }
+
+    [Fact]
+    public async Task ValidateResponse_FirstMaterializationPersonalityTraitWithNonIntegerValue_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "invalid_personality_value_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["personalityTraits"]![0]!["value"] = "7";
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_personality_trait_value_invalid" &&
+            issue.FilePath == "response.UpdateNPCs[0].personalityTraits[0].value");
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(11)]
+    public async Task ValidateResponse_FirstMaterializationPersonalityTraitValueOutsideOneToTen_IsRejected(
+        int value)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            $"personality_value_{value}_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["personalityTraits"]![0]!["value"] = value;
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_personality_trait_value_out_of_bounds" &&
+            issue.FilePath == "response.UpdateNPCs[0].personalityTraits[0].value");
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(6)]
+    public async Task ValidateResponse_FirstMaterializationPersonalityTraitCardinalityOutsideThreeToFive_IsRejected(
+        int traitCount)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            $"personality_cardinality_{traitCount}_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["personalityTraits"] = BuildCompleteMortalPersonalityTraits(traitCount);
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_personality_traits_cardinality_invalid" &&
+            issue.FilePath == "response.UpdateNPCs[0].personalityTraits" &&
+            issue.Actual == traitCount.ToString());
+    }
+
+    [Theory]
+    [InlineData(3)]
+    [InlineData(5)]
+    public async Task ValidateResponse_FirstMaterializationPersonalityTraitCardinalityAtBoundary_IsAccepted(
+        int traitCount)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            $"personality_boundary_{traitCount}_actor",
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["UpdateNPCs"]![0]!["personalityTraits"] = BuildCompleteMortalPersonalityTraits(traitCount);
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
+        var issues = _validator.ValidateResponse(currentDocument.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is "npc_personality_traits_cardinality_invalid" or
+                "npc_personality_trait_value_missing" or
+                "npc_personality_trait_value_invalid" or
+                "npc_personality_trait_value_out_of_bounds");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FirstMaterializationPersonalityCardinality_IsEnforced()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "game_state_personality_cardinality_actor",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["NPCsInScene"]![0]!["personalityTraits"] = BuildCompleteMortalPersonalityTraits(2);
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_personality_traits_cardinality_invalid" &&
+            issue.FilePath == $"{path}.NPCsInScene[0].personalityTraits");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UntouchedLegacyPersonalityWithoutEnvelope_RemainsCompatible()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var legacyRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "legacy_personality_compatibility_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false))!.AsObject();
+        var legacyTraits = BuildCompleteMortalPersonalityTraits(1);
+        legacyTraits[0]!.AsObject().Remove("value");
+        legacyRoot["NPCsInScene"]![0]!["personalityTraits"] = legacyTraits;
+        var legacyJson = legacyRoot.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is "npc_personality_traits_cardinality_invalid" or
+                "npc_personality_trait_value_missing" or
+                "npc_personality_trait_value_invalid");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UntouchedHistoricalEnvelopeWithLegacyPersonality_RemainsCompatible()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var historicalRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "historical_personality_compatibility_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: true))!.AsObject();
+        var historicalTraits = BuildCompleteMortalPersonalityTraits(1);
+        historicalTraits[0]!.AsObject().Remove("value");
+        historicalRoot["NPCsInScene"]![0]!["personalityTraits"] = historicalTraits;
+        var historicalJson = historicalRoot.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(path, historicalJson, historicalJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is "npc_personality_traits_cardinality_invalid" or
+                "npc_personality_trait_value_missing" or
+                "npc_personality_trait_value_invalid");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LoadedHistoricalInitialIdEnvelopeWithoutPendingTurnAuthority_RemainsCompatible()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "loaded_historical_initial_id_actor";
+        var historicalRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorId,
+            sectionName: "UpdateNPCs",
+            canTeach: false,
+            includeEnvelope: true))!.AsObject();
+        var historicalActor = historicalRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(historicalActor, actorId, "mat_loaded_historical_initial_id_actor");
+        historicalActor["personalityTraits"] = BuildCompleteMortalPersonalityTraits(2);
+        await _fs.WriteFileAtomicAsync(path, historicalRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is "npc_personality_traits_cardinality_invalid" or
+                "npc_personality_trait_value_missing" or
+                "npc_personality_trait_value_invalid");
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_NewActiveGuardianWithExactTradeAuthority_PassesCanTradeCapability()
     {
         const string actorId = "guardian_trade_authority";
@@ -3119,6 +3326,182 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     [InlineData("changed")]
     [InlineData("added")]
     [InlineData("removed")]
+    public async Task ValidateGameStateAsync_TrueLegacyPromotionInNpcScene_WithInventoryMutation_IsRejected(
+        string inventoryMutation)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "legacy_scene_promotion_actor";
+        var preTurnRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false,
+            includeInventory: true))!.AsObject();
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true))!.AsObject();
+        var currentActor = currentRoot["NPCsInScene"]![0]!.AsObject();
+        MutateNpcInventory(currentActor, inventoryMutation);
+        var expectedInventory = preTurnRoot["NPCsInScene"]![0]!["inventory"]!.ToJsonString();
+        var actualInventory = currentActor["inventory"]!.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            currentRoot.ToJsonString(),
+            preTurnRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_inventory_resend_forbidden" &&
+            issue.Actor == $"mortal_npc:{actorId}" &&
+            issue.Section == "NPCInventory" &&
+            issue.FilePath == $"{path}.NPCsInScene[0].inventory" &&
+            issue.Actual == actualInventory &&
+            issue.Expected == expectedInventory);
+    }
+
+    [Theory]
+    [InlineData("changed")]
+    [InlineData("added")]
+    [InlineData("removed")]
+    public async Task ValidateGameStateAsync_HistoricalNpcInScene_WithInventoryMutation_IsRejected(
+        string inventoryMutation)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "historical_scene_inventory_actor";
+        var preTurnRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true))!.AsObject();
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActor = currentRoot["NPCsInScene"]![0]!.AsObject();
+        MutateNpcInventory(currentActor, inventoryMutation);
+        var expectedInventory = preTurnRoot["NPCsInScene"]![0]!["inventory"]!.ToJsonString();
+        var actualInventory = currentActor["inventory"]!.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            currentRoot.ToJsonString(),
+            preTurnRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_inventory_resend_forbidden" &&
+            issue.Actor == $"mortal_npc:{actorId}" &&
+            issue.Section == "NPCInventory" &&
+            issue.FilePath == $"{path}.NPCsInScene[0].inventory" &&
+            issue.Actual == actualInventory &&
+            issue.Expected == expectedInventory);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ValidateGameStateAsync_NpcSceneInventoryContinuity_UnchangedSnapshotIsAcceptedAcrossCarriers(
+        bool preTurnUsesUpdateCarrier)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "unchanged_cross_carrier_inventory_actor";
+        var preTurnJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: preTurnUsesUpdateCarrier ? "UpdateNPCs" : "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false,
+            includeInventory: true);
+        var currentJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_inventory_resend_forbidden" &&
+            issue.Actor == $"mortal_npc:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GenuinelyNewNpcInScene_KeepsInitialInventory()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "genuinely_new_scene_inventory_actor";
+        var currentJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_inventory_resend_forbidden" &&
+            issue.Actor == $"mortal_npc:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LoadedNpcInSceneWithoutPendingTurn_KeepsCanonicalInventory()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "loaded_scene_inventory_actor";
+        var currentJson = BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true);
+        await _fs.WriteFileAtomicAsync(path, currentJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_inventory_resend_forbidden" &&
+            issue.Actor == $"mortal_npc:{actorId}");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NpcInSceneWithUnusablePreTurnAuthority_BlocksPermanentInventoryFailClosed()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string actorId = "scene_actor_with_unusable_inventory_authority";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorId,
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true,
+            includeInventory: true))!.AsObject();
+        var actualInventory = currentRoot["NPCsInScene"]![0]!["inventory"]!.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            currentRoot.ToJsonString(),
+            "{ malformed validated NPC authority");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_inventory_resend_forbidden" &&
+            issue.Actor == $"mortal_npc:{actorId}" &&
+            issue.Section == "NPCInventory" &&
+            issue.FilePath == $"{path}.NPCsInScene[0].inventory" &&
+            issue.Actual == actualInventory &&
+            issue.Expected != null &&
+            !issue.Expected.StartsWith("[", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("changed")]
+    [InlineData("added")]
+    [InlineData("removed")]
     public async Task ValidateResponse_NullPermanentIdInitialIdCollisionCannotBypassInventoryContinuity(
         string inventoryMutation)
     {
@@ -3767,7 +4150,10 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         }
 
         if (includeEnvelope)
+        {
+            actor["personalityTraits"] = BuildCompleteMortalPersonalityTraits(3);
             actor["materialization"] = BuildCompleteMortalEnvelope(actorId, canTeach, includeInventory);
+        }
         else
             actor.Remove("materialization");
 
@@ -3778,6 +4164,23 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         };
         root[sectionName]!.AsArray().Add(actor);
         return root.ToJsonString();
+    }
+
+    private static JsonArray BuildCompleteMortalPersonalityTraits(int count)
+    {
+        var traits = new JsonArray();
+        for (var index = 0; index < count; index++)
+        {
+            traits.Add(new JsonObject
+            {
+                ["traitName"] = $"Trait {index + 1}",
+                ["description"] = $"Concrete personality trait {index + 1}.",
+                ["value"] = (index % 10) + 1,
+                ["valueDescription"] = $"Trait intensity {(index % 10) + 1}."
+            });
+        }
+
+        return traits;
     }
 
     private static string InsertDuplicateJsonProperty(
@@ -3806,6 +4209,34 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         actor["initialId"] = initialId;
         actor["materialization"]!["actorId"] = initialId;
         actor["materialization"]!["materializationId"] = materializationId;
+    }
+
+    private static void MutateNpcInventory(JsonObject actor, string inventoryMutation)
+    {
+        var inventory = actor["inventory"]!.AsArray();
+        switch (inventoryMutation)
+        {
+            case "changed":
+                inventory[0]!["count"] = 2;
+                break;
+            case "added":
+                var addedItem = inventory[0]!.DeepClone().AsObject();
+                addedItem["itemId"] = $"{addedItem["itemId"]!.GetValue<string>()}_added";
+                addedItem["existedId"] = addedItem["itemId"]!.GetValue<string>();
+                inventory.Add(addedItem);
+                break;
+            case "removed":
+                inventory.Clear();
+                actor["materialization"]!["capabilities"]!["ownsItems"] = false;
+                actor["materialization"]!["sections"]!["inventory"] =
+                    EmptyMortalSection("Этот NPC больше не несёт личных предметов.");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(inventoryMutation),
+                    inventoryMutation,
+                    null);
+        }
     }
 
     private static JsonObject BuildCompleteMortalEnvelope(

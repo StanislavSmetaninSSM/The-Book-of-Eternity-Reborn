@@ -10,10 +10,19 @@ Use this checklist when implementing or reviewing issue #1500. It is not a playe
 2. Keep all existing core fields and arrays.
 3. Add `materialization` bound to `mortal_npc` and the exact permanent `NPCId` or same-turn `initialId`.
 4. Declare every Mortal governed section.
-5. Make each capability agree with canonical skill, teacher, trade, and inventory data.
-6. Do not infer anything from setting vocabulary.
-7. Resolve one effective identity; a same-turn `initialId` must not collide with any validated pre-turn permanent `NPCId`, and true legacy inventory promotion must repeat the unchanged snapshot while mutations use atomic inventory commands.
-8. Reject duplicate members in current actor/inventory/materialization data and validated pre-turn actor/inventory authority before semantic comparison; property order alone remains irrelevant.
+5. Provide 3-5 `personalityTraits`; every trait includes integer `value` from 1 through 10.
+6. Make each capability agree with canonical skill, teacher, trade, and inventory data.
+7. Do not infer anything from setting vocabulary. Characteristic keys, progression grants, and carrying formulas come only from explicit current-world authority; nullable carrying results stay null when that authority is absent.
+8. Resolve one effective identity; a same-turn `initialId` must not collide with any validated pre-turn permanent `NPCId`, and true legacy inventory promotion must repeat the unchanged snapshot while mutations use atomic inventory commands.
+9. Reject duplicate members in current actor/inventory/materialization data and validated pre-turn actor/inventory authority before semantic comparison; property order alone remains irrelevant.
+
+## Ordinary existing Mortal NPC
+
+1. Do not resend a complete or unchanged ordinary-existing object through `UpdateNPCs`.
+2. Keep historical `NPCsInScene` only as retained scene state for a physically present actor; protected core and inventory remain semantically unchanged there.
+3. Use the exact dedicated command for rename, unlock, inventory/equipment, skills/mastery, relationships/locks, journals/memory, goals/quests, activities, and masks.
+4. Use `NPCCoreChanges` only for its closed profile, paired location, coherent progression, setting-owned characteristic results, faction-affiliation upsert, and locked/unrealized Fate Card definition add/remove groups.
+5. Target one exact existing permanent `NPCId`, include a non-empty `reason`, and send only absolute resulting values. Invalid commands remain unconsumed for repair.
 
 ## Afterlife valid first materialization
 
@@ -64,6 +73,9 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - Normalizer preservation and no-invention covered.
 - Bounded repair packet covered.
 - Generated Mortal template uses current-world characteristic authority and no universal list.
-- Inventory repair packet covers genuinely new, ordinary existing, and true legacy-promotion cases: remove the whole ordinary-existing full-object resend and use dedicated deltas/main-GM fallback, while retaining required promotion inventory.
+- First-materialization Mortal personality uses 3-5 traits with mandatory integer values 1-10 and the worked fragment enters the production response validator.
+- Ordinary existing profile/location/progression/setting-owned characteristic/faction/Fate Card definition mutations use `NPCCoreChanges`; complete carriers remain creation/true-promotion only.
+- Inventory repair packet covers genuinely new, ordinary existing, and true legacy-promotion cases: remove the whole ordinary-existing full-object resend and use dedicated deltas, bounded `NPCCoreChanges`, or main-GM fallback for protected unsupported domains, while retaining required promotion inventory.
 - Mortal and afterlife prompts/docs/examples/manifests synchronized.
+- Third re-review docs explicitly record Mortal-only scope and no Chaos Sea/Shining Abode contract change.
 - Player-facing metadata non-leakage covered.

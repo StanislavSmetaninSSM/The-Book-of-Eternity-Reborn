@@ -167,10 +167,35 @@
 
 **Rationale**: An absolute instruction to remove inventory from every existing actor makes a schema-valid legacy promotion impossible to repair, while removing only that property from an ordinary retained full object violates the full-object schema. Lifecycle classification must choose one valid authority path rather than create a second validation failure.
 
+## Decision 27: One bounded command owns ordinary-existing core mutations
+
+**Decision**: Add exactly one Mortal-only non-carrier response command named `NPCCoreChanges`. It targets exact existing permanent identity, requires a reason and one closed mutation group, carries absolute resulting values, rejects protected/unknown members recursively, updates every unambiguous canonical mirror, and is consumed only after successful reduction. Dedicated commands retain their existing domains.
+
+**Rationale**: Authoritative rules require existing worldview, race/history, location, progression, setting-owned characteristic, faction-affiliation, and locked/unrealized Fate Card definition changes, but complete `UpdateNPCs` objects conflict with inventory continuity and skeletal patches conflict with full-object shape. A closed command preserves those mechanics without reopening a generic full-object or JSON Patch bypass.
+
+## Decision 28: Carrying and progression are setting-owned authority
+
+**Decision**: Characteristic keys, carrying-capacity formulas/inputs/units, level thresholds, and characteristic grants come only from explicit current-world authority. If no carrying authority exists, `maxWeight` and compatible weight totals remain nullable setting-owned results. If no characteristic grant exists, progression preserves characteristics rather than inventing points or class-stat assumptions.
+
+**Rationale**: A fixed characteristic vocabulary or class allocation contradicts the open-vocabulary validator and fails in valid science-fiction, historical, modern, or custom worlds. Null is more truthful than fabricated mechanical authority.
+
+## Decision 29: First-materialization personality is complete and honestly validated
+
+**Decision**: Current Mortal first materialization requires 3-5 personality traits, each with mandatory integer `value` in the inclusive range 1-10. The canonical worked NPC enters the production `ValidationService.ValidateResponse` -> `ValidateNpcContract` path. Manifest metadata names that route and its focused-fragment limit; separate `NPCCoreChanges` command fragments carry an explicit focused-fragment rationale rather than claiming accepted-turn reducer execution.
+
+**Rationale**: The prior one-trait/value-less example contradicted Block 19, while a narrow envelope helper could not prove full-NPC shape. Explicit route and coverage-limit metadata prevents descriptive examples from being mistaken for runtime scenarios.
+
+## Decision 30: Third re-review command/docs wave is Mortal-only
+
+**Decision**: R3-I-2, R3-I-3, and R3-M-1 change Mortal response, rules, examples, validation, and normalization only. They do not change any Chaos Sea or Shining Abode pending/control file, action type, response field, receipt, report, profile schema, scheduler, lifecycle mode, or authority path.
+
+**Rationale**: `NPCCoreChanges` maps only to `game_state/npcs/npc_core.json`; setting-neutral Mortal characteristics and Mortal personality shape do not alter afterlife actor profiles. Updating the afterlife contract matrix/examples would falsely imply an afterlife schema change. Mandatory afterlife documentation tests remain a no-drift verification gate.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.
-- `NPCsInScene` and `UpdateNPCs` share full object validation; existing NPC inventory resends are already forbidden.
+- `NPCsInScene` and `UpdateNPCs` share full object validation and exact validated pre-turn inventory continuity. Historical scene objects are retained presence, not an alternate mutation carrier.
+- `NPCCoreChanges` is a non-carrier input to the NPC core validator/normalizer and is absent from successfully normalized canonical state.
 - Common afterlife profiles require identity, currencies, progression, arts, strategy, and ledger, while several actor-rich sections remain optional.
 - Guardians have a strong type-specific dossier; residents and Shining leadership use separate files and require cross-file binding to common profiles.
 - The accepted-turn validator already has validated pre-turn authority and Actor Brain memory checks suitable for current-turn classification.
@@ -179,7 +204,7 @@
 ## Open questions resolved by the specification
 
 - **Must every actor own items or Fate Cards?** No. Every section must be addressed, not populated.
-- **Does this replace dedicated NPC delta commands?** No. The envelope is first-materialization authority only.
+- **Does this replace dedicated NPC delta commands?** No. The envelope is first-materialization authority only, and `NPCCoreChanges` owns only the closed existing-core gaps that had no dedicated route.
 - **Does every mentioned name become an actor?** No. Persistent/significant canonical participation is the boundary.
 - **Do afterlife actors receive Mortal inventory?** No.
 - **Can a prompt-only solution suffice?** No. The class of error is machine-detectable and therefore belongs in the harness first, with prompts updated afterward.

@@ -16,9 +16,12 @@ public partial class ValidationService
         await ValidateNpcFile("game_state/npcs/npc_core.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "UpdateNPCs", "NPCsRenameData", "NPCsInScene",
+                "UpdateNPCs", "NPCCoreChanges", "NPCsRenameData", "NPCsInScene",
                 "UpdateNpcTradeInventoryReceipts", "trainingPurchaseReceipts"
             }, issues);
+
+        if (await NpcCoreChangesCommandIsPresentAsync())
+            issues.AddRange(await ValidateNpcCoreChangesBeforeNormalizationAsync());
 
         await ValidateNpcFile("game_state/npcs/npc_skills.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)

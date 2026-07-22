@@ -173,6 +173,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeAfterlifeStoryOutlineAsync(backups);
         await NormalizeSarefMainStoryStateAsync(backups);
         await NormalizeFactionCoreAsync(backups);
+        await NormalizeNpcCoreChangesAsync(backups);
         await NormalizeNpcTradeCoreAsync(backups);
         await NormalizeNpcJournalsAsync(backups);
         await NormalizeNpcInteractionJournalAsync(backups);

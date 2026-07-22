@@ -4,6 +4,33 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private async Task NormalizeNpcCoreChangesAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        var currentNode = await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath);
+        if (currentNode is not JsonObject currentRoot ||
+            !currentRoot.ContainsKey(NpcCoreChangesContract.PropertyName))
+        {
+            return;
+        }
+
+        var preTurnRoot = await ReadBackupObjectAsync(NpcCoreChangesContract.NpcCorePath, backups);
+        if (preTurnRoot == null)
+            return;
+
+        var result = CloneObject(currentRoot);
+        var authority = await NpcCoreChangesContract.ReadAuthorityAsync(_fs);
+        var evaluation = NpcCoreChangesContract.Evaluate(
+            result,
+            preTurnRoot,
+            authority,
+            detectDirectMutations: true);
+        if (!evaluation.CanApply)
+            return;
+
+        NpcCoreChangesContract.Apply(result, evaluation);
+        await WriteIfChangedAsync(NpcCoreChangesContract.NpcCorePath, currentNode, result);
+    }
+
     private async Task NormalizeNpcJournalsAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/npcs/npc_journals.json";

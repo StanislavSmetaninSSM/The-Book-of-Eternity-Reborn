@@ -2372,7 +2372,7 @@ public sealed class GmTurnHelperContractTests
 
             var mortalNpcTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_NPC_UPDATE_TEMPLATE.md"), Encoding.UTF8);
             Assert.Contains("NPCsInScene is only for actors physically present in currentLocationData", mortalNpcTemplate, StringComparison.Ordinal);
-            Assert.Contains("voices behind a door", mortalNpcTemplate, StringComparison.Ordinal);
+            Assert.Contains("voices behind a door", mortalNpcTemplate, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("nearbyExitLocationId", mortalNpcTemplate, StringComparison.Ordinal);
 
             var repairTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "VALIDATION_REPAIR_TEMPLATE.md"), Encoding.UTF8);

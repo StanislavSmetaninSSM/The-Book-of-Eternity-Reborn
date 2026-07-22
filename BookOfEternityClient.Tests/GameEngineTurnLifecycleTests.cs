@@ -217,6 +217,51 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectAcceptedTurnRawStateIssuesAsync_DirectNpcCoreMutation_IsRejectedBeforeNormalization()
+    {
+        const string npcCorePath = "game_state/npcs/npc_core.json";
+        const string sessionId = "session-npc-core-raw-lifecycle";
+        const string requestId = "request-npc-core-raw-lifecycle";
+        const int turnNumber = 12;
+
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: turnNumber - 1,
+            characterDescription: "Архивист пограничного города.",
+            worldDescription: "Город архивов и сигнальных башен.",
+            startingCircumstances: "Наставник предлагает первый урок чтения печатей.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-22T00:00:00Z"));
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        var preTurnRoot = files[npcCorePath].DeepClone().AsObject();
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActor = Assert.Single(currentRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        currentActor["worldview"] = "Несанкционированная подмена убеждений.";
+        await _fs.WriteFileAtomicAsync(npcCorePath, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{npcCorePath}",
+            preTurnRoot.ToJsonString());
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, npcCorePath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            playerAction = "game-engine-turn-lifecycle-test"
+        });
+        var engine = CreateGameEngine();
+
+        var issues = await InvokePrivateAsync<List<ValidationIssue>>(
+            engine,
+            "CollectAcceptedTurnRawStateIssuesAsync");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.FilePath == $"{npcCorePath}.NPCsInScene[0]");
+    }
+
+    [Fact]
     public async Task WriteValidationRepairRequestAsync_WithEnabledWorkerProfile_WritesWorkerTaskAndAudit()
     {
         const string sessionId = "session-worker-repair";

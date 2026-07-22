@@ -418,8 +418,18 @@ public partial class ValidationService
     private static bool ShouldBlockMortalActorInventoryResend(
         JsonElement actor,
         string actorId,
+        string sectionName,
         MortalActorMaterializationPreTurnAuthority preTurnAuthority)
     {
+        if (preTurnAuthority.Status == ValidatedPendingTurnSnapshotStatus.Missing &&
+            string.Equals(
+                sectionName,
+                GuardianPolicyContracts.NpcCoreSceneSectionName,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
         if (preTurnAuthority.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             preTurnAuthority.Actors == null)
         {
@@ -428,6 +438,20 @@ public partial class ValidationService
 
         if (!preTurnAuthority.Actors.TryGetValue(actorId, out var previousState))
             return false;
+
+        if (string.Equals(
+                sectionName,
+                GuardianPolicyContracts.NpcCoreSceneSectionName,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return previousState.InventoryJson == null ||
+                   !actor.TryGetProperty("inventory", out var sceneInventory) ||
+                   sceneInventory.ValueKind != JsonValueKind.Array ||
+                   !JsonValuesSemanticallyEqual(
+                       previousState.InventoryJson,
+                       sceneInventory.GetRawText());
+        }
+
         if (previousState.HistoricalEnvelopeJson != null)
             return true;
 
@@ -448,9 +472,10 @@ public partial class ValidationService
                !hasUnchangedInventorySnapshot;
     }
 
-    private static bool TryGetMortalActorLegacyPromotionInventorySnapshot(
+    private static bool TryGetMortalActorInventoryContinuitySnapshot(
         JsonElement actor,
         string actorId,
+        string sectionName,
         MortalActorMaterializationPreTurnAuthority preTurnAuthority,
         out string inventoryJson)
     {
@@ -458,8 +483,21 @@ public partial class ValidationService
         if (preTurnAuthority.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             preTurnAuthority.Actors == null ||
             !preTurnAuthority.Actors.TryGetValue(actorId, out var previousState) ||
-            previousState.HistoricalEnvelopeJson != null ||
-            previousState.InventoryJson == null ||
+            previousState.InventoryJson == null)
+        {
+            return false;
+        }
+
+        if (string.Equals(
+                sectionName,
+                GuardianPolicyContracts.NpcCoreSceneSectionName,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            inventoryJson = previousState.InventoryJson;
+            return true;
+        }
+
+        if (previousState.HistoricalEnvelopeJson != null ||
             !actor.TryGetProperty(ActorMaterializationContract.PropertyName, out var envelope) ||
             envelope.ValueKind != JsonValueKind.Object ||
             !ReadMortalActorMaterializationPromotionSignals(actor).IsPromotionFrom(previousState.PromotionSignals))

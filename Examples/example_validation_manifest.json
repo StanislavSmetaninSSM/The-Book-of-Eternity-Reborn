@@ -9,7 +9,33 @@
       "realms": [
         "Mortal World"
       ],
-      "description": "First significant Mortal NPC carries a complete setting-neutral full object, immutable exact identity envelope, structured capability truth, explicit section dispositions, and later changes use dedicated deltas instead of prose or genre inference."
+      "description": "First significant Mortal NPC carries a complete setting-neutral full object, 3-5 integer-valued personality traits, immutable exact identity envelope, structured capability truth, explicit section dispositions, and later changes use dedicated deltas or bounded NPCCoreChanges instead of prose or genre inference.",
+      "validationKind": "production-validator",
+      "validationRoute": "PromptDocumentationCoverageTests.MortalActorMaterializationWorkedExample_PassesProductionNpcContract -> ValidationService.ValidateResponse -> ValidateNpcContract -> ValidateNpcCoreObjectShape and ActorMaterializationContract.ValidateMortalNpc",
+      "coverageLimit": "Validates the extracted GameResponse-shaped NPCsInScene fragment through the production response validator; it does not claim StateDistributor or accepted-turn cross-file validation."
+    }
+  ],
+  "mortalNpcCoreChangesCoverage": [
+    {
+      "contractId": "mortal_npc_core_changes_v1",
+      "file": "E_CLI_Step_Main.txt",
+      "statePath": "game_state/npcs/npc_core.json",
+      "responseSurface": "NPCCoreChanges[]",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "Two focused ordinary-existing examples use exact permanent NPCId, non-empty reason, absolute profile/location/progression/setting-owned characteristic values, exact faction affiliation upserts, and locked/unrealized Fate Card definition add/remove groups.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "These snippets intentionally demonstrate bounded command payloads without inventing the validated pre-turn actor, location, faction, characteristic-authority, and locked Fate Card fixtures required for accepted-turn reduction. Production validator, reducer, mirror, and command-consumption coverage belongs to NpcCoreChangesTests.",
+      "coverageLimit": "Documentation tests parse the fragments, require the real GameResponse field, and enforce exact contract vocabulary; they do not claim accepted-turn reducer execution.",
+      "requiredText": [
+        "npc_liana_voss_permanent_01",
+        "location_orbital_archive_lab",
+        "\"field_observation\": 15",
+        "faction_orbital_research_union",
+        "fate_orbital_responsible_contact",
+        "fate_liana_obsolete_hypothesis"
+      ]
     }
   ],
   "trainingShowcaseCoverage": [

@@ -123,10 +123,10 @@
   </rule>
   <rule id="19.1">
    <title>
-    NPC Data Management ('UpdateNPCs')
+    NPC Data Management ('UpdateNPCs' and 'NPCCoreChanges')
    </title>
    <description>
-    This rule applies when a new named NPC is encountered or an existing one's core data (including relationship level or Fate Card status) changes.
+    This rule separates complete-object creation/promotion from bounded changes to an existing NPC's core data.
    </description>
    <content type="ruleset">
     <rule id="19.1.1">
@@ -136,12 +136,11 @@
      <content type="rule_text">
       <![CDATA[
 
-                            Include the 'UpdateNPCs' key in the response ONLY if:
-                            1. A new NPC with a proper name is encountered for the first time.
-                            2. A fundamental property of an existing NPC is being overwritten due to a major plot event (e.g., 'name', 'race', 'history').
-        
-                            DO NOT use 'UpdateNPCs' for reporting incremental changes to existing NPCs, such as updates to their relationship level, skill mastery, or Fate Card unlocks. 
-                            For these, you MUST use the dedicated change/event arrays ('NPCRelationshipChanges', 'NPCFateCardUnlocks', etc.) as per InstructionBlock id="2.5".
+                            Include the 'UpdateNPCs' key in the response ONLY for:
+                            1. A genuinely new durable NPC encountered for the first time.
+                            2. A true legacy promotion that adds the first complete materialization envelope and repeats only the exact semantically unchanged validated pre-turn inventory snapshot.
+
+                            DO NOT use 'UpdateNPCs' for an ordinary existing NPC, even when a core property changes or the full object would otherwise be unchanged. Use the exact dedicated command for relationships, skills/mastery, inventory/equipment, journals, goals/quests, activities, Fate Card unlocks, or renames. Use 'NPCCoreChanges' only for the bounded existing-core fields defined below, including profile race/history/worldview, location, progression, setting-owned characteristic results, faction affiliations, and locked/unrealized Fate Card definitions.
 
                             ]]>
      </content>
@@ -181,10 +180,10 @@
     </rule>
     <rule id="19.1.2">
      <title>
-      NPC Object Structure (for 'UpdateNPCs' array)
+      Complete NPC Object Structure (for genuinely new or true legacy-promotion 'UpdateNPCs')
      </title>
      <instructiontext>
-      Each object in 'UpdateNPCs' represents one NPC.
+      Each object in 'UpdateNPCs' represents one genuinely new NPC or one true legacy promotion. It is not an ordinary-existing patch or unchanged background carrier.
                             When creating a new NPC, you SHOULD generate 1-2 initial Fate Cards to establish their starting potential and narrative direction. 
                             More cards will be generated dynamically during gameplay by following the 'Dynamic Fate Card Generation Protocol' (Rule 19.1.4).
 
@@ -192,9 +191,49 @@
                             - First materialization: a genuinely new durable NPC MUST provide the complete NPC object plus one complete actor-bound 'materialization' envelope. Use 'actorType: mortal_npc' and bind 'actorId' to the exact same-turn 'initialId' until the client assigns a permanent 'NPCId'.
                             - Identity continuity: same-turn initialId must not collide with a validated pre-turn permanent NPCId. Restore that existing actor's permanent NPCId instead of disguising it as new with NPCId=null.
                             - Legacy promotion: an existing legacy NPC without an envelope MUST provide the complete envelope when it first gains a significant structured role or Actor Brain scope. Because the complete schema still requires 'inventory', this promotion may resend only an inventory snapshot semantically identical to the validated pre-turn inventory snapshot. It MUST NOT add, remove, or change an item.
-                            - Existing-actor update: an already materialized NPC keeps the historical envelope unchanged and does not resend it through an ordinary update. Use the dedicated delta commands for every later mutable domain, including all inventory mutations.
+                            - Existing-actor update: an already materialized NPC keeps the historical envelope unchanged and does not resend a complete object through an ordinary update. Use dedicated delta commands for their owned domains and 'NPCCoreChanges' for the bounded core domains listed below.
 
-                            A complete Mortal actor still requires core identity, personality, characteristics, goals, progression, location, and memory. The envelope additionally governs skills, inventory/equipment, fateCards, personalQuests, and relationships. Its explicit capabilities are canFight, canTeach, canTrade, and ownsItems; each capability and section disposition MUST match structured canonical data rather than a display name, prose, occupation, genre, or keyword. Every governed section is either 'populated' or 'empty_by_design'; 'empty_by_design' requires a non-empty in-world reason. The 'characteristics' object MUST contain at least one setting-defined numeric property, with names supplied by the current world's schema rather than a predetermined list. Initialize actor-owned Mortal memory through the canonical NPC journal/Actor Brain surfaces; the envelope does not replace that state.
+                            A complete Mortal actor still requires core identity, personality, characteristics, goals, progression, location, and memory. First materialization MUST contain 3-5 'personalityTraits', and every trait MUST carry an integer 'value' from 1 through 10. The envelope additionally governs skills, inventory/equipment, fateCards, personalQuests, and relationships. Its explicit capabilities are canFight, canTeach, canTrade, and ownsItems; each capability and section disposition MUST match structured canonical data rather than a display name, prose, occupation, genre, or keyword. Every governed section is either 'populated' or 'empty_by_design'; 'empty_by_design' requires a non-empty in-world reason. The 'characteristics' object MUST contain at least one setting-defined numeric property, with names supplied by the current world's schema rather than a predetermined list. Initialize actor-owned Mortal memory through the canonical NPC journal/Actor Brain surfaces; the envelope does not replace that state.
+
+                            Ordinary-existing bounded core mutation ('NPCCoreChanges'):
+                            - 'NPCCoreChanges' is a non-carrier response command mapped to 'game_state/npcs/npc_core.json'. It is never a partial NPC object and never carries 'materialization' or 'inventory'.
+                            - Each entry targets one exact existing permanent 'NPCId', includes a non-empty in-world/mechanical 'reason', and contains at least one non-empty mutation group.
+                            - All values are absolute resulting values. Do not send arithmetic expressions, prose-derived math, names, 'initialId', arbitrary JSON paths, or unchanged fields.
+                            - Allowed groups are exactly 'profile', 'location', 'progression', 'characteristicValues', 'factionAffiliationsToUpsert', 'fateCardsToAdd', and 'fateCardIdsToRemove'. Unknown members at any depth are invalid.
+                            - 'characteristicValues' may use only numeric keys already owned by the actor or explicitly defined by current-world characteristic authority. Never infer a universal characteristic vocabulary.
+                            - A location change carries both 'currentLocationId' and 'initialLocationId'. A progression tuple carries coherent non-negative 'level', 'experience', and 'experienceForNextLevel'; include 'lastPlayerXPValueOnSync' when the role/progression transition requires synchronization.
+                            - Faction upserts use exact existing faction identity and the complete affiliation shape. Fate Card additions are complete, uniquely identified, and initially locked; removals target only validated pre-turn locked/unrealized cards. Unlock an existing card only through 'NPCFateCardUnlocks'.
+
+                            {
+                                "NPCCoreChanges": [
+                                    {
+                                        "NPCId": "exact_existing_permanent_npc_id",
+                                        "reason": "non-empty in-world and mechanical justification",
+                                        "profile": {
+                                            "worldview": "optional absolute replacement",
+                                            "race": "optional absolute replacement",
+                                            "history": "optional absolute replacement"
+                                        },
+                                        "location": {
+                                            "currentLocationId": "known_permanent_location_id_or_null",
+                                            "initialLocationId": "exact_same_turn_location_initial_id_or_null"
+                                        },
+                                        "progression": {
+                                            "level": 4,
+                                            "experience": 25,
+                                            "experienceForNextLevel": 500,
+                                            "progressionType": "Companion",
+                                            "lastPlayerXPValueOnSync": 1200
+                                        },
+                                        "characteristicValues": {
+                                            "setting_defined_characteristic_key": 15
+                                        },
+                                        "factionAffiliationsToUpsert": [],
+                                        "fateCardsToAdd": [],
+                                        "fateCardIdsToRemove": []
+                                    }
+                                ]
+                            }
      </instructiontext>
      <content language="json" type="code_example">
       <![CDATA[
@@ -221,9 +260,9 @@
                                 "classDescription": "detailed_class_description_string_optional", // Translate
                                 "appearanceDescription": "detailed_appearance_description_string", // Translate
                                 "history": "key_moments_of_history_string", // Translate
-                                "maxWeight": "double_or_null", // Max carry weight.
-                                "totalWeight": "double_or_null", // Current total inventory weight.
-                                "isOverloaded": "boolean", // True if totalWeight > maxWeight
+                                "maxWeight": "double_or_null_from_current_world_authority",
+                                "totalWeight": "double_or_null_from_current_world_authority",
+                                "isOverloaded": "boolean", // True only when authoritative numeric totalWeight > maxWeight.
                                 "level": "integer_npc_level",
                                 "experience": "integer_current_xp",
                                 "experienceForNextLevel": "integer_xp_needed_for_next_level",
@@ -324,7 +363,7 @@
                                             "description": "user_readable_summary_of_rewards_string",
                                             "newActiveSkills": [ /* Array of full Active Skill Objects (from #7.1) */ ],
                                             "newPassiveSkills": [ /* Array of full Passive Skill Objects (from #8.1) */ ],
-                                            "statBoosts": [ /* Array of strings, e.g., "+5 strength", "+1 standardIntelligence" */ ],
+                                            "statBoosts": [ /* Array of strings, e.g., "+X current_world_characteristic_key" */ ],
                                             "newServices": [ /* Array of strings describing services, e.g., "Can now craft Epic items" */ ],
                                             "otherNarrativeRewards": "string_optional",
                                             "tacticalTriggers": [
@@ -388,9 +427,11 @@
                             {
                                 "traitName": "user_readable_name_of_the_trait_string",
                                 "description": "detailed_user_readable_description_of_the_trait_string",
-                                "value": "integer_from_1_to_10",
+                                "value": 5,
                                 "valueDescription": "user_readable_description_of_what_the_current_value_means_string"
                             }
+
+                            A current first-materialization NPC MUST provide 3-5 objects in 'personalityTraits'. Every object MUST include 'value' as a JSON integer from 1 through 10; a numeric-looking string is invalid.
 
                             ]]>
      </content>
@@ -492,7 +533,7 @@
 
                             6.E. "personalityTraits": (array of Trait Objects or null, MANDATORY)
                                 An array of objects that build a detailed, quantifiable psychological profile of the NPC. The structure of each object is defined in Rule '19.1.2.A'.
-                                - The GM MUST generate 3 to 10 (or even more) distinct and meaningful traits that define the character's core personality, including their virtues and flaws.
+                                - For current first materialization, the GM MUST generate 3 to 5 distinct and meaningful traits that define the character's core personality, including their virtues and flaws.
                                 - These traits are CUSTOM for each NPC. Do NOT pick from a generic list. They should reflect the NPC's unique character as described in their history and archetype.
                                 - Field Definitions for each Trait Object:
                                     - "traitName": (string) The name of the trait (e.g., "Гордость", "Авантюризм", "Сострадание"). Must be translated.
@@ -518,22 +559,17 @@
                             
                             10. "history": (string) Key moments of NPC's backstory. If killed, note it here. Translate.
                             
-                            10.A. "maxWeight": (double or null) 
-                            The NPC's maximum carrying capacity in kilograms. 
-                            This value MUST be calculated using the universal formula from Rule #5.7.3, based on the NPC's Permanently Modified Strength and Constitution. 
-                            This calculation MUST be performed after the NPC's standard characteristics and initial inventory/skills are defined.
+                            10.A. "maxWeight": (double or null)
+                            The NPC's maximum carrying capacity only when explicit current-world carrying-capacity authority defines the formula, units, and required actor inputs. Use the resulting setting-owned numeric value. If that authority is absent or an input is unavailable, set 'maxWeight' to null; do not invent characteristic keys or borrow a formula from another world.
 
-                            10.B. "totalWeight": (double or null) 
-                            The current total weight of all items in the NPC's 'inventory'. 
-                            This value MUST be calculated and updated by the GM whenever the NPC's inventory changes.
+                            10.B. "totalWeight": (double or null)
+                            Use a numeric total only when current-world item authority supplies compatible weights and units for every counted item. Otherwise set 'totalWeight' to null. Inventory mutations still use the dedicated inventory commands.
 
-                            10.C. "isOverloaded": (boolean) 
-                            A derived flag. It MUST be set to 'true' if 'totalWeight' > 'maxWeight', and 'false' otherwise.
+                            10.C. "isOverloaded": (boolean)
+                            Set this to 'true' only when both authoritative numeric values exist and 'totalWeight' > 'maxWeight'. Otherwise use 'false' without claiming an inferred carrying formula.
 
                             11. "level": (integer, optional) 
-                            NPC's experience level, if relevant for power scaling. 
-                            NPC progression generally follows player rules: standard characteristics can be trained up to 'level * 2', plus 'level * 5' 
-                            points to distribute. Unique NPCs may exceed this.
+                            NPC's experience level, if relevant for power scaling. Level thresholds, characteristic grants, and allocation rules come only from explicit current-world progression authority. If the world defines no characteristic grant for a level, preserve the existing characteristic values and do not invent characteristic points.
                             
                             11.1. "progressionType": (string, mandatory) 
                             Defines how this NPC advances in level. This is a critical field for world consistency.
@@ -733,13 +769,13 @@
       CRITICAL DIRECTIVE: The Personality Trait Protocol (v2.0 - Expanded)
      </title>
      <description>
-      This is the mandatory protocol for generating the 'personalityTraits' array for every new non-static NPC.
+                            This is the mandatory protocol for generating the 'personalityTraits' array for every current first-materialization NPC.
                             Its purpose is to create a multi-faceted, quantifiable psychological profile, complete with virtues, flaws, and internal conflicts. These traits are the primary drivers of an NPC's decisions within the "Strategic NPC Response Protocol" (Rule #5.18.B). This system moves beyond a simple 'archetype' to simulate a true 'personality'.
      </description>
      <instructiontext>
       <![CDATA[
 
-                            You are OBLIGATED to follow this protocol to generate the 'personalityTraits' for every new non-static NPC. 
+                            You are OBLIGATED to follow this protocol to generate the 'personalityTraits' for every current first-materialization NPC.
                             You must generate between 3 and 5 traits to create a well-rounded character. 
                             A character with fewer than 3 traits is considered underdeveloped.
                             
@@ -1099,7 +1135,7 @@
 
                                     Mandatory Actions for a Worldview Shift:
                                     1.  Narrate the Crisis: In the 'response', you MUST describe the internal conflict or profound realization that leads to the shift. It should be a major character moment.
-                                    2.  Update Mechanically: You MUST report this change by sending the complete, updated NPC Object in the 'UpdateNPCs' array, with the new string in the 'worldview' field.
+                                    2.  Update Mechanically: For an existing NPC, send one 'NPCCoreChanges' entry with the exact permanent 'NPCId', a non-empty 'reason', and the absolute resulting 'profile.worldview'. A genuinely new NPC keeps its initial worldview in its complete first object.
                                     3.  Justify in Logs: In 'gm_thoughts_markdown', you MUST log the pivotal event that triggered the change and your reasoning for the new alignment.
 
                                     ]]>
@@ -1148,7 +1184,7 @@
 
                             To ensure NPCs develop over time without excessive upfront generation, you MUST follow this protocol on every turn for each key NPC the player has interacted with.
                             If ANY of the following conditions are met for an NPC, and they have fewer than a maximum of 5-7 Fate Cards total, 
-                            you SHOULD generate one new, logically consistent Fate Card for them and add it to their 'fateCards' array via 'UpdateNPCs'.
+                            you SHOULD generate one new, logically consistent Fate Card for them. For an existing NPC, add the complete initially locked card through 'NPCCoreChanges.fateCardsToAdd'. For a genuinely new NPC, place the initial card in the complete first object.
                             
                             ]]>
      </instructiontext>
@@ -1250,8 +1286,7 @@
                                     2.  Demotion/Expulsion: An NPC can be demoted or expelled ('membershipStatus' changes to 'Exiled') if they fail a critical mission, 
                                     betray the faction, or if the player exposes their corruption.
 
-                                    When an NPC's rank changes, you MUST report this by sending the complete, updated NPC Object in the 'UpdateNPCs' array, 
-                                    with the new rank reflected in their 'factionAffiliations'. 
+                                    When an existing NPC's rank or membership changes, you MUST report the absolute resulting affiliation through 'NPCCoreChanges.factionAffiliationsToUpsert'. Use the exact permanent 'NPCId', exact faction identity, complete affiliation shape, and a non-empty reason.
                                     You must also narrate this event in the 'response'.
 
                                     ]]>
@@ -1304,9 +1339,8 @@
                                 -   The tag MUST follow the format 'temp-loc-[description]' (e.g., "temp-loc-dwarven-forge").
 
                             2.  Link the NPC:
-                                In the NPC's object (within 'UpdateNPCs'), you MUST:
-                                -   Set 'currentLocationId: null'.
-                                -   Set the 'initialLocationId' field to the EXACT same temporary tag you created for the location in Step 1.
+                                - For a genuinely new NPC, set 'currentLocationId: null' and set 'initialLocationId' to the exact temporary location tag in the complete first 'UpdateNPCs'/'NPCsInScene' object.
+                                - For an existing NPC, send 'NPCCoreChanges.location' with both fields: 'currentLocationId: null' and 'initialLocationId' equal to that exact temporary tag. Include the permanent 'NPCId' and a non-empty reason.
 
                             The game system will understand this link, generate a permanent ID for the new location, and automatically populate the NPC's 'currentLocationId' with that new ID for the next turn.
                             This is the ONLY correct method for establishing an NPC's position within a newly created location.
@@ -1885,9 +1919,9 @@
       <![CDATA[
 
                             When a Fate Card is newly unlocked:
-                            1.  Update NPC's Data: Set 'isUnlocked: true' for that card within 'UpdateNPCs'. 
-                            Apply 'rewards.statBoosts' to 'characteristics' in 'UpdateNPCs'. 
-                            If skills are granted, add them to 'activeSkills'/'passiveSkills' in 'UpdateNPCs' AND report via 'NPCActiveSkillChanges'/'NPCPassiveSkillChanges'.
+                            1.  Unlock the identified existing card through 'NPCFateCardUnlocks'; do not duplicate or replace the full card.
+                            Apply any setting-authorized absolute resulting characteristic values through 'NPCCoreChanges.characteristicValues'. Each key must already belong to the actor or explicit current-world characteristic authority.
+                            If skills are granted, report them only through 'NPCActiveSkillChanges'/'NPCPassiveSkillChanges' and the matching mastery commands when required.
                             
                             2.  Narrate: Inform player of the unlock and its consequences.
                             
@@ -2012,9 +2046,8 @@
      <content type="rule_text">
       <![CDATA[
 
-                            1.  Reporting via 'UpdateNPCs':
-                                Because this is a fundamental change to the NPC's core data, you MUST report it by sending the complete, updated NPC Object in the 'UpdateNPCs' array. 
-                                This object must contain the new, reassembled 'fateCards' array.
+                            1.  Reporting through bounded commands:
+                                For an existing NPC, preserve every unlocked card. Send complete new initially locked definitions through 'NPCCoreChanges.fateCardsToAdd' and list only validated pre-turn locked/unrealized obsolete IDs in 'NPCCoreChanges.fateCardIdsToRemove'. Unlock events remain 'NPCFateCardUnlocks'. Do not resend the full NPC or a reassembled 'fateCards' array.
 
                             2.  Mandatory Logging:
                                 Your log in 'gm_thoughts_markdown' MUST detail this entire process:
@@ -2165,9 +2198,9 @@
                                             If so, repeat this entire step (A) for the next level-up. 
                                             Continue until the remaining XP is less than the requirement for the next level.
 
-                                    B. Grant and Distribute Characteristic Points:
-                                        1.  For EACH level gained, the NPC gains 5 new standard characteristic points.
-                                        2.  You, the Game Master, MUST distribute these points logically to reinforce the NPC's archetype (e.g., воин получает силу и выносливость, маг — интеллект), as per the 'MANDATORY NPC Generation and Progression Protocol' (Rule #5.A.2).
+                                    B. Apply Setting-Owned Characteristic Progression:
+                                        1.  Read explicit current-world progression authority before changing characteristics. It defines whether a level grants any points, the amount or formula, and the allowed characteristic keys.
+                                        2.  If no such authority exists, do not invent characteristic points or class-based allocations. Preserve the existing values. When authority does exist, send only the absolute resulting setting-defined keys through 'NPCCoreChanges.characteristicValues'.
 
                                     C. Grant Skill Advancement:
                                         1.  For every 2 full levels an NPC gains in a single advancement event, you MUST choose ONE of the following:
@@ -2176,7 +2209,7 @@
                                         2.  This skill change MUST be reported via 'NPCActiveSkillChanges'/'NPCPassiveSkillChanges' and/or their corresponding mastery change commands.
 
                                     D. Reporting:
-                                        You MUST report all these changes by sending the COMPLETE, updated NPC Object in the 'UpdateNPCs' array. This object must contain the new 'level', 'experience', 'experienceForNextLevel', and the updated 'characteristics' object.
+                                        For an existing NPC, send one 'NPCCoreChanges' entry. Its 'progression' group contains the coherent absolute resulting 'level', 'experience', and 'experienceForNextLevel' tuple plus 'progressionType'/'lastPlayerXPValueOnSync' when changed; 'characteristicValues' contains only setting-authorized absolute results. Report skill changes through their dedicated commands.
 
                                     E. Logging:
                                         In 'gm_thoughts_markdown', you MUST log the entire process: the level-up, the number of points awarded, how you distributed them, and any skill advancements granted.
@@ -2204,7 +2237,7 @@
                             
                             4.  **MANDATORY ADJUDICATION:** For EACH of the above XP grants, you MUST IMMEDIATELY execute the **"NPC Level-Up Adjudication"** protocol (Rule #19.8.3) for that NPC.
                             
-                            5.  Report Changes: Log all calculations and report the complete, updated NPC Object for any NPC whose state changed in the 'UpdateNPCs' array.
+                            5.  Report Changes: Log all calculations. For an existing NPC, use 'NPCCoreChanges.progression' and optional 'characteristicValues' plus dedicated skill/mastery commands. Use a complete 'UpdateNPCs' object only for a genuinely new NPC or true legacy promotion.
 
                             ]]>
      </content>
@@ -2244,7 +2277,7 @@
       <![CDATA[
 
                             Changing an NPC's role is a major plot event and MUST be triggered by significant narrative development.
-                            When this happens, you MUST report it by sending the complete, updated NPC object in the 'UpdateNPCs' array.
+                            When this happens for an existing NPC, you MUST send 'NPCCoreChanges.progression' with the exact permanent 'NPCId', a non-empty reason, the absolute resulting progression tuple, the new 'progressionType', and 'lastPlayerXPValueOnSync' when synchronization is required.
                                     
                             ]]>
      </instructiontext>
@@ -2334,7 +2367,7 @@
 
                             a)  Change the NPC's 'progressionType' to 'Companion'.
                             b)  Initialize their 'progressionTrackers.lastPlayerXPValueOnSync' to the player's current total XP, as per Rule #19.9.2.
-                            c)  Report this change by sending the complete, updated NPC Object in the 'UpdateNPCs' array.
+                            c)  Report this existing-actor change through 'NPCCoreChanges.progression' with the coherent absolute progression tuple, 'progressionType: Companion', and initialized 'lastPlayerXPValueOnSync'.
                             d)  Log the automatic transition and the reasons for it in 'gm_thoughts_markdown'.
                             e)  Narrate this new status clearly in the 'response'.
 
@@ -2495,7 +2528,7 @@
                             If the directive is accepted, it MUST become the primary guiding factor for the NPC's development decisions.
 
                             -   During NPC Level-Up (Rule 19.8.3):
-                                -   When distributing characteristic points, you MUST prioritize the stats that align with the directive.
+                                -   If explicit current-world progression authority grants characteristic changes, prioritize only setting-owned keys that align with the directive and report their absolute results through 'NPCCoreChanges.characteristicValues'. If no such grant exists, do not create one.
                                 -   When choosing a new skill to grant, it MUST be a skill that helps fulfill the directive.
 
                             -   During Off-Screen Action Selection (Rule 30.1.D.0):

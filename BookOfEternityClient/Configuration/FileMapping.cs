@@ -73,6 +73,7 @@ public static class FileMapping
 
         // NPC SYSTEM (14 files)
         ["UpdateNPCs"] = "game_state/npcs/npc_core.json",
+        ["NPCCoreChanges"] = "game_state/npcs/npc_core.json",
         ["UpdateNpcTradeInventoryReceipts"] = "game_state/npcs/npc_core.json",
         ["NPCsRenameData"] = "game_state/npcs/npc_core.json",
         ["NPCsInScene"] = "game_state/npcs/npc_core.json",

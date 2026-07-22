@@ -717,7 +717,7 @@ function New-GmExperienceLesson {
         "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction as a complete factions[] object when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
     }
     elseif ($hasMortalNpcIssue) {
-        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize meaningful Mortal World NPCs through UpdateNPCs/NPCsInScene as full objects with relationshipLock, goals, personalityTraits, attitude, and culturalStance in canonical shapes. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest first-person thought and append journalEntries[] objects with fresh entryId, non-empty first-person description, and timestamp. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
+        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize genuinely new or true legacy-promotion Mortal World NPCs through UpdateNPCs/NPCsInScene as complete objects with relationshipLock, goals, 3-5 integer-valued personalityTraits, attitude, and culturalStance. For an ordinary existing NPC, use dedicated commands and bounded NPCCoreChanges; never resend an unchanged or updated full object through UpdateNPCs. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest first-person thought and append journalEntries[] objects with fresh entryId, non-empty first-person description, and timestamp. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
     }
     elseif ($hasMortalSkillIssue) {
         "Use MORTAL_SKILL_PROGRESSION_TEMPLATE.md before writing Mortal World training, skill unlocks, active skill use, or mastery updates. If harnessRepairPackets[].kind is mortal_skill_progression_shape_repair, repair activeSkillChanges, passiveSkillChanges, removeActiveSkills, removePassiveSkills, and skillMasteryChanges as arrays, even for a single changed skill; read pending_training_showcase_requests.json for paid lesson authority and do not charge resources again. Attribute-only checks may stay prose/math only, but prose-only learning must be avoided when the fiction says the player learned or practiced a concrete skill: create/update passiveSkillChanges or activeSkillChanges, and initialize/update skillMasteryChanges for active skills."
@@ -1717,13 +1717,55 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 - Bind it to the exact `actorType:actorId` pair. Mortal NPCs use `actorType: mortal_npc`; a same-turn new NPC uses the same stable `initialId` as `materialization.actorId`.
 - Never infer skills, inventory, teaching, trade, combat capability, or identity from a display name, prose, occupation, or setting genre. Materialize only structured facts justified by the current world and scene.
 - `capabilities` must agree with the full NPC object. Every required entry under `sections` is either `populated` or `empty_by_design`; `empty_by_design` requires a concise in-world reason, not a technical placeholder.
-- For an already materialized existing NPC, preserve the original envelope byte-for-byte. Apply later changes through a dedicated delta/command surface; do not resend or regenerate `materialization`.
+- First materialization requires 3-5 `personalityTraits`; each trait includes `value` as a JSON integer from 1 through 10.
+- For an already materialized existing NPC, preserve the original envelope byte-for-byte. Apply later changes through a dedicated delta/command surface or bounded `NPCCoreChanges`; do not resend or regenerate `materialization`.
 - For a legacy promotion, add the first complete envelope and include the schema-required `inventory` only when it is semantically identical to the validated pre-turn inventory snapshot. Inventory additions, changes, and removals remain dedicated-command-only.
+
+## Ordinary existing core changes
+
+- `NPCCoreChanges` is a Mortal-only non-carrier command mapped to `game_state/npcs/npc_core.json`. It targets one exact existing permanent `NPCId`; never target by name or `initialId`.
+- Every entry needs a non-empty in-world/mechanical `reason` and at least one non-empty mutation group. Values are absolute resulting values, not expressions or prose math.
+- Allowed groups are exactly `profile`, `location`, `progression`, `characteristicValues`, `factionAffiliationsToUpsert`, `fateCardsToAdd`, and `fateCardIdsToRemove`. Unknown members and protected identity/name/materialization/inventory/equipment/skill/relationship/journal/goal/quest/activity/mask/custom-state/teacher/trade fields are forbidden.
+- `characteristicValues` may use only keys already owned by the actor or explicit current-world characteristic authority. Carrying and progression formulas also come only from explicit current-world authority; keep setting-owned nullable results null when no authority exists.
+- Unlock cards through `NPCFateCardUnlocks`. Add only complete new initially locked cards and remove only validated pre-turn locked/unrealized cards through `NPCCoreChanges`.
+
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "exact_existing_permanent_npc_id",
+      "reason": "non-empty in-world and mechanical justification",
+      "profile": {
+        "worldview": "optional absolute replacement",
+        "race": "optional absolute replacement",
+        "history": "optional absolute replacement"
+      },
+      "location": {
+        "currentLocationId": "known_permanent_location_id_or_null",
+        "initialLocationId": "exact_same_turn_location_initial_id_or_null"
+      },
+      "progression": {
+        "level": 4,
+        "experience": 25,
+        "experienceForNextLevel": 500,
+        "progressionType": "Companion",
+        "lastPlayerXPValueOnSync": 1200
+      },
+      "characteristicValues": {
+        "setting_defined_characteristic_key": 15
+      },
+      "factionAffiliationsToUpsert": [],
+      "fateCardsToAdd": [],
+      "fateCardIdsToRemove": []
+    }
+  ]
+}
+```
 
 ## Scene NPC location rules
 
 - Put scene-local present NPCs in `NPCsInScene`.
-- NPCsInScene is only for actors physically present in currentLocationData. voices behind a door, guards in a nearby corridor, people near nearbyExitLocationId, route pressure, and exit pressure are not scene NPCs for the current room; keep them in narrative, current location memory, quest/faction/location memory, Actors outside scope, or materialize them through UpdateNPCs at their own location only if they are durable known actors.
+- NPCsInScene is only for actors physically present in currentLocationData. Voices behind a door, guards in a nearby corridor, people near nearbyExitLocationId, route pressure, and exit pressure are not scene NPCs for the current room; keep them in narrative, current location memory, quest/faction/location memory, or Actors outside scope. A genuinely new durable off-screen actor may use a complete `UpdateNPCs` object at its own location; an existing actor moves only through `NPCCoreChanges.location`.
 - If `currentLocationData.locationId` is a known permanent id, set `currentLocationId` to that id and set `initialLocationId` to `null`.
 - If the current scene is a same-turn new location (`currentLocationData.locationId = null` with `currentLocationData.initialId`), set `initialLocationId` to that exact initial id and set `currentLocationId` to `null`.
 - Keep `currentLocationName` as the visible current location name.
@@ -1768,7 +1810,7 @@ NPC journal shape is not the same as inventory item journal shape:
 
 ## Minimal safe NPC scene object
 
-The `characteristics` object below is a setting-defined placeholder. Copy the actual keys from current-world canonical characteristic authority; never reuse a universal list.
+The `characteristics` object below is a setting-defined placeholder. Copy the actual keys from current-world canonical characteristic authority; never reuse a universal list. If current-world authority supplies no carrying formula or compatible item weights, keep `maxWeight` and `totalWeight` null.
 
 ```json
 {
@@ -1805,11 +1847,30 @@ The `characteristics` object below is a setting-defined placeholder. Copy the ac
       "summary": "<short trait summary>",
       "traitName": "<same trait name>",
       "description": "<short description>",
+      "value": 5,
       "valueDescription": "<how it matters in play>"
+    },
+    {
+      "traitId": "trait_<npc_slug>_<short_2>",
+      "name": "<second trait name>",
+      "summary": "<short second trait summary>",
+      "traitName": "<same second trait name>",
+      "description": "<short second description>",
+      "value": 5,
+      "valueDescription": "<how the second trait matters in play>"
+    },
+    {
+      "traitId": "trait_<npc_slug>_<short_3>",
+      "name": "<third trait name>",
+      "summary": "<short third trait summary>",
+      "traitName": "<same third trait name>",
+      "description": "<short third description>",
+      "value": 5,
+      "valueDescription": "<how the third trait matters in play>"
     }
   ],
-  "maxWeight": 0,
-  "totalWeight": 0,
+  "maxWeight": null,
+  "totalWeight": null,
   "isOverloaded": false,
   "progressionTrackers": {
     "active": [],
@@ -5184,7 +5245,7 @@ function Process-Turn {
         }
 
         if ($null -eq $message) {
-        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($experiencePrompt)$($firstMortalBootstrapPrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', '$($script:CompactMortalSkillTemplatePath)', '$($script:CompactMortalExperienceTemplatePath)', '$($script:CompactAfterlifeChronicleTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '$($script:CompactMortalSkillTemplatePath)' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '$($script:CompactMortalExperienceTemplatePath)' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
+        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($experiencePrompt)$($firstMortalBootstrapPrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', '$($script:CompactMortalSkillTemplatePath)', '$($script:CompactMortalExperienceTemplatePath)', '$($script:CompactAfterlifeChronicleTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as NPCCoreChanges, UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '$($script:CompactMortalSkillTemplatePath)' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '$($script:CompactMortalExperienceTemplatePath)' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
         $message += " If a Mortal World turn resolves open combat, enemy exchange, combat XP, active-skill combat mastery, or combat resource changes, you MUST read '$($script:CompactMortalCombatTemplatePath)' before writing output/state and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant."
         }

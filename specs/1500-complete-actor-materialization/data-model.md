@@ -95,6 +95,54 @@ Rules:
 
 The existing core NPC fields remain mandatory and are not duplicated in `sections`.
 `characteristics` must contain at least one numeric property. Property names come from the current world's schema; the materialization contract does not define a universal characteristic vocabulary.
+Current first materialization contains 3-5 `personalityTraits`; every trait has a mandatory integer `value` from 1 through 10. Untouched historical legacy records are not retroactively rejected only for older cardinality.
+
+### Ordinary-existing `NPCCoreChanges`
+
+`NPCCoreChanges` is a Mortal-only non-carrier command mapped to `game_state/npcs/npc_core.json`. It is validated before normalization, reduced into every unambiguous canonical mirror of one existing actor, removed after successful reduction, and absent from final canonical state. Invalid commands remain unconsumed for repair.
+
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "exact-existing-permanent-id",
+      "reason": "non-empty in-world/mechanical reason",
+      "profile": {
+        "worldview": "optional replacement",
+        "race": "optional replacement",
+        "history": "optional replacement"
+      },
+      "location": {
+        "currentLocationId": "known permanent location id or null",
+        "initialLocationId": "exact same-turn location initialId or null"
+      },
+      "progression": {
+        "level": 4,
+        "experience": 25,
+        "experienceForNextLevel": 500,
+        "progressionType": "Companion",
+        "lastPlayerXPValueOnSync": 1200
+      },
+      "characteristicValues": {
+        "setting_defined_characteristic_key": 15
+      },
+      "factionAffiliationsToUpsert": [],
+      "fateCardsToAdd": [],
+      "fateCardIdsToRemove": []
+    }
+  ]
+}
+```
+
+Boundaries:
+
+- `NPCId` is one exact existing permanent identity. Names, `initialId`, new/stale targets, case-variant ambiguity, and divergent mirrors fail closed.
+- `reason` is non-empty and at least one mutation group is non-empty. Values are absolute resulting values; expressions and prose-derived arithmetic are invalid.
+- Unknown members are rejected recursively. Identity, name, materialization, inventory/equipment, skills/mastery, relationships/locks, journals/memory, goals/quests, activities, masks, custom states, teacher/trade capabilities, and arbitrary paths remain protected or owned by dedicated commands.
+- `characteristicValues` contains finite numeric results only for actor-owned keys or explicit current-world characteristic authority. Carrying and progression formulas also require explicit current-world authority; absent carrying authority leaves the setting-owned nullable result null.
+- A location mutation carries both fields and uses exactly one authority branch: permanent `currentLocationId` plus null `initialLocationId`, or null current plus exact same-turn `initialLocationId`.
+- Changing any level/experience threshold field requires the coherent non-negative tuple. Include `lastPlayerXPValueOnSync` when a role/progression transition requires synchronization.
+- Faction upserts use exact faction identity and the existing complete affiliation shape. Fate Card additions reuse full-card validation, have unique IDs, and begin locked; removals target only validated pre-turn locked/unrealized cards. Unlocking remains `NPCFateCardUnlocks`.
 
 ## Afterlife actor contract
 
@@ -148,7 +196,7 @@ Exceptions:
 1. `absent` -> `complete`: permitted only on first materialization with complete envelope.
 2. `legacy_without_envelope` -> unchanged: accepted for load compatibility.
 3. `legacy_without_envelope` -> significant promotion: blocked until materialized; Mortal effective identity cannot be disguised with a colliding `initialId`, the complete object may repeat `inventory` only when it is semantically identical to the validated pre-turn snapshot, and an afterlife first envelope must prove actual actor-owned memory.
-4. `complete` -> ordinary update: dedicated delta commands mutate gameplay fields; envelope identity remains stable.
+4. `complete` -> ordinary update: dedicated delta commands mutate their owned gameplay fields; valid `NPCCoreChanges` mutates only its closed core groups; envelope identity remains stable.
 5. `complete` -> resent as first materialization: rejected for existing actors when it attempts to bypass delta authority.
 6. `complete` -> invalid contradiction: blocked with bounded repair.
 
@@ -170,6 +218,8 @@ Exceptions:
 - `npc_characteristics_empty`
 - `npc_existing_inventory_resend_forbidden`
 - `npc_initial_id_collides_with_existing_permanent_id`
+- `npc_core_changes_unknown_member`
+- `npc_existing_core_direct_mutation_forbidden`
 - `afterlife_actor_materialization_memory_missing`
 
 Every issue records actor type/ID, section or capability where applicable, expected canonical target, and a bounded repair hint.
@@ -186,7 +236,9 @@ The three Mortal continuity issue policies are explicit:
 
 For every supported worker correction, deleting/adding the file or actor, changing a sibling field, another actor, root data, a different carrier, or a non-snapshot target remains protected and rejects before full validation.
 
-The high-priority main-GM inventory repair packet never turns an ordinary existing full object into a partial object: because canonical full-object shape requires `inventory`, the whole ordinary-existing `UpdateNPCs` resend is removed. Every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change is re-authored through its dedicated delta/command surface. Missing delta authority forces main-GM rollback/repair rather than field deletion. Genuinely new initial inventory and exact-snapshot legacy promotion remain the two complete-object branches.
+The high-priority main-GM inventory repair packet never turns an ordinary existing full object into a partial object: because canonical full-object shape requires `inventory`, the whole ordinary-existing `UpdateNPCs` resend is removed. Skill, inventory, relationship, journal, goal/quest, activity, equipment/resource, rename, and unlock changes are re-authored through dedicated commands; the bounded profile/location/progression/setting-owned characteristic/faction/Fate Card definition groups use `NPCCoreChanges`. A protected field outside both contracts forces main-GM rollback/repair rather than widening the command or deleting required fields. Genuinely new initial inventory and exact-snapshot legacy promotion remain the two complete-object branches.
+
+The third re-review additions in this section are Mortal-only. They do not change Chaos Sea or Shining Abode pending/control files, response fields, receipts, reports, actor-profile schema, validation, normalization, scheduler, lifecycle mode, or authority path.
 
 Before applying a worker-authored actor materialization repair, the apply gate routes memory issues by actor type, removes only the exact mutable subtree named by the issue, and semantically compares the remaining canonical JSON. Guardian targets use the canonical/supported Guardian journal path, residents use resident state/journal, and Radiant/Saref/other common-profile actors use only their exact profile `gmThoughtsSummary`. Any change to protected actor data, another actor, root state, currencies, progression, envelope, or unrelated scalar rejects the proposal. An ambiguous-profile repair may only remove duplicates while retaining one otherwise unchanged canonical profile. Dedicated Guardian/resident memory repair is stricter than ordinary scalar repair: all existing journal entries remain an exact prefix, and the worker may append exactly one meaningful thought for the issue-bound actor without rewriting or deleting history. If and only if `game_state/meta/guardian_thought_journal.json` is absent and every scoped issue is `afterlife_actor_materialization_memory_missing` for one exact `guardian:<id>`, preservation uses `{ "entries": [] }` as the baseline; the normal proposal contract still requires Add, `beforeSha256=missing`, exact `afterSha256`, and the proposal-bound content reference.
 

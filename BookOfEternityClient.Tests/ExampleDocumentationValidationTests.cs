@@ -85,6 +85,65 @@ public sealed class ExampleDocumentationValidationTests
         var mortal = Assert.Single(manifest.MortalActorMaterializationCoverage,
             entry => string.Equals(entry.ContractId, "mortal_actor_materialization_v1", StringComparison.Ordinal));
         AssertMaterializationCoverageEntry(mortal, "Mortal World");
+        AssertTruthfulValidationMetadata(mortal);
+        Assert.Equal("production-validator", mortal.ValidationKind);
+        Assert.Contains("ValidationService.ValidateResponse", mortal.ValidationRoute, StringComparison.Ordinal);
+        Assert.Contains("ValidateNpcContract", mortal.ValidationRoute, StringComparison.Ordinal);
+
+        var npcCoreChanges = Assert.Single(manifest.MortalNpcCoreChangesCoverage,
+            entry => string.Equals(entry.ContractId, "mortal_npc_core_changes_v1", StringComparison.Ordinal));
+        AssertMaterializationCoverageEntry(npcCoreChanges, "Mortal World");
+        AssertTruthfulValidationMetadata(npcCoreChanges);
+        Assert.Equal("focused-fragment", npcCoreChanges.ValidationKind);
+        var npcCoreChangesExample = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            npcCoreChanges.File));
+        Assert.NotEmpty(npcCoreChanges.RequiredText);
+        Assert.All(npcCoreChanges.RequiredText, requiredText =>
+            Assert.Contains(requiredText, npcCoreChangesExample, StringComparison.Ordinal));
+
+        Assert.NotNull(typeof(GameResponse).GetProperty(nameof(GameResponse.NPCCoreChanges)));
+        var focusedCoreChangeSnippets = ExampleSnippetExtractor.ExtractAll()
+            .Where(snippet =>
+                string.Equals(snippet.File, npcCoreChanges.File, StringComparison.OrdinalIgnoreCase) &&
+                snippet.RawText.Contains("\"NPCCoreChanges\"", StringComparison.Ordinal))
+            .ToArray();
+        Assert.True(focusedCoreChangeSnippets.Length >= 2);
+
+        var allowedGroups = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "profile",
+            "location",
+            "progression",
+            "characteristicValues",
+            "factionAffiliationsToUpsert",
+            "fateCardsToAdd",
+            "fateCardIdsToRemove"
+        };
+        foreach (var snippet in focusedCoreChangeSnippets)
+        {
+            using var document = JsonDocument.Parse(snippet.RawText);
+            var changes = document.RootElement.GetProperty("NPCCoreChanges");
+            Assert.Equal(JsonValueKind.Array, changes.ValueKind);
+            Assert.NotEmpty(changes.EnumerateArray());
+            Assert.NotNull(JsonSerializer.Deserialize<GameResponse>(snippet.RawText, SerializerOptions)?.NPCCoreChanges);
+
+            Assert.All(changes.EnumerateArray(), entry =>
+            {
+                Assert.Equal(JsonValueKind.String, entry.GetProperty("NPCId").ValueKind);
+                Assert.False(string.IsNullOrWhiteSpace(entry.GetProperty("NPCId").GetString()));
+                Assert.Equal(JsonValueKind.String, entry.GetProperty("reason").ValueKind);
+                Assert.False(string.IsNullOrWhiteSpace(entry.GetProperty("reason").GetString()));
+
+                var groups = entry.EnumerateObject()
+                    .Where(property => property.Name is not "NPCId" and not "reason")
+                    .Select(property => property.Name)
+                    .ToArray();
+                Assert.NotEmpty(groups);
+                Assert.All(groups, group => Assert.Contains(group, allowedGroups));
+            });
+        }
 
         var afterlife = manifest.AfterlifeEntityProfileCoverage
             .Where(entry => entry.ContractId.StartsWith("afterlife_actor_materialization_", StringComparison.Ordinal))
@@ -106,6 +165,22 @@ public sealed class ExampleDocumentationValidationTests
         Assert.False(string.IsNullOrWhiteSpace(entry.Description));
         Assert.Contains(expectedRealm, entry.Realms, StringComparer.Ordinal);
         Assert.True(File.Exists(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File)));
+    }
+
+    private static void AssertTruthfulValidationMetadata(ActorMaterializationExampleCoverage entry)
+    {
+        Assert.Contains(entry.ValidationKind, new[] { "production-validator", "focused-fragment" });
+        Assert.False(string.IsNullOrWhiteSpace(entry.CoverageLimit));
+
+        if (string.Equals(entry.ValidationKind, "production-validator", StringComparison.Ordinal))
+        {
+            Assert.False(string.IsNullOrWhiteSpace(entry.ValidationRoute));
+            Assert.True(string.IsNullOrWhiteSpace(entry.FocusedFragmentReason));
+            return;
+        }
+
+        Assert.True(string.IsNullOrWhiteSpace(entry.ValidationRoute));
+        Assert.False(string.IsNullOrWhiteSpace(entry.FocusedFragmentReason));
     }
 
     [Fact]
@@ -1734,6 +1809,7 @@ internal sealed class ExampleValidationManifest
     public List<ExampleRuntimeScenario> RuntimeScenarios { get; set; } = new();
     public List<AfterlifeExampleCoverage> AfterlifeExampleCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> MortalActorMaterializationCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> MortalNpcCoreChangesCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> AfterlifeEntityProfileCoverage { get; set; } = new();
 
     public static ExampleValidationManifest Load()
@@ -1767,6 +1843,11 @@ internal sealed class ActorMaterializationExampleCoverage
     public string ResponseSurface { get; set; } = "";
     public string Description { get; set; } = "";
     public string[] Realms { get; set; } = [];
+    public string ValidationKind { get; set; } = "";
+    public string ValidationRoute { get; set; } = "";
+    public string FocusedFragmentReason { get; set; } = "";
+    public string CoverageLimit { get; set; } = "";
+    public string[] RequiredText { get; set; } = [];
 }
 
 internal sealed class InkFeatherReceiptCoverage

@@ -93,6 +93,95 @@ public sealed class ValidationSourceGuardTests
     }
 
     [Fact]
+    public void MortalNpcAuthoringSources_MustNotMandateOrdinaryExistingUpdateNpcFullObjects()
+    {
+        var block19 = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules", "Block_19.txt"));
+        var block19D = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules", "Block_19.D.txt"));
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", "E_CLI_Step_Main.txt"));
+        var authoritativeRules = string.Join(Environment.NewLine, block19, block19D);
+        var auditedSources = string.Join(Environment.NewLine, authoritativeRules, example);
+
+        foreach (var forbiddenMandate in new[]
+                 {
+                     "A fundamental property of an existing NPC is being overwritten",
+                     "add it to their 'fateCards' array via 'UpdateNPCs'",
+                     "Set 'isUnlocked: true' for that card within 'UpdateNPCs'",
+                     "Apply 'rewards.statBoosts' to 'characteristics' in 'UpdateNPCs'",
+                     "add them to 'activeSkills'/'passiveSkills' in 'UpdateNPCs'",
+                     "sending the complete, updated NPC Object in the 'UpdateNPCs' array",
+                     "report the complete, updated NPC Object for any NPC whose state changed in the 'UpdateNPCs' array",
+                     "All these mechanical changes MUST be reported in 'UpdateNPCs'",
+                     "Step B: Update the Mechanical State ('UpdateNPCs')"
+                 })
+        {
+            Assert.DoesNotContain(forbiddenMandate, authoritativeRules, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var mandatoryOrdinaryExistingLine = new Regex(
+            "^(?=[^\\r\\n]*\\bUpdateNPCs\\b)(?=[^\\r\\n]*(?:MUST|report|send|apply|add|complete|updated))(?=[^\\r\\n]*(?:existing|worldview|rank|location|level|progression|fate|mechanical|state changed))(?![^\\r\\n]*(?:DO NOT|must not|never|not accepted|new NPC|newly significant|genuinely new|legacy[- ]promotion|remove)).*$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Multiline);
+        Assert.DoesNotMatch(mandatoryOrdinaryExistingLine, auditedSources);
+
+        Assert.DoesNotContain(
+            "unchanged canonical NPC objects that exactly match the validated pre-turn snapshot may remain in `UpdateNPCs` / `NPCsInScene`",
+            example,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "If `UpdateNPCs` / `NPCsInScene` contains an existing NPC object",
+            example,
+            StringComparison.OrdinalIgnoreCase);
+
+        const string mismatchStart = "Concrete structured NPC mismatch example:";
+        const string mismatchEnd = "Concrete Mortal relevant NPC without persistence example:";
+        var start = example.IndexOf(mismatchStart, StringComparison.Ordinal);
+        var end = example.IndexOf(mismatchEnd, start, StringComparison.Ordinal);
+        Assert.True(start >= 0 && end > start, "Structured NPC mismatch worked example was not found.");
+        var mismatchExample = example[start..end];
+        Assert.Contains("NPCCoreChanges", mismatchExample, StringComparison.Ordinal);
+        Assert.DoesNotContain("UpdateNPCs", mismatchExample, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalNpcAuthoringSources_MustUseOnlyExplicitSettingCharacteristicAuthority()
+    {
+        var block19 = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules", "Block_19.txt"));
+        var block19D = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules", "Block_19.D.txt"));
+        var authoritativeRules = string.Join(Environment.NewLine, block19, block19D);
+
+        var forbiddenMechanicalAssumptions = new Dictionary<string, string>
+        {
+            ["fixed Strength/Constitution carrying formula"] =
+                "universal formula[^\\r\\n]*Strength[^\\r\\n]*Constitution",
+            ["fixed standard-characteristic point math"] =
+                "standard characteristics[^\\r\\n]*level \\* 2[^\\r\\n]*level \\* 5",
+            ["universal five-point level grant"] =
+                "EACH level gained[^\\r\\n]*5 new standard characteristic points",
+            ["warrior/mage characteristic allocation"] =
+                "archetype[^\\r\\n]*(?:warrior|mage|\\u0432\\u043e\\u0438\\u043d|\\u043c\\u0430\\u0433)[^\\r\\n]*(?:strength|intelligence|\\u0441\\u0438\\u043b|\\u0438\\u043d\\u0442\\u0435\\u043b\\u043b)",
+            ["fixed Fate Card characteristic example"] =
+                "(?:\\+5 strength|\\+1 standardIntelligence)"
+        };
+
+        foreach (var (description, pattern) in forbiddenMechanicalAssumptions)
+        {
+            Assert.False(
+                Regex.IsMatch(
+                    authoritativeRules,
+                    pattern,
+                    RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
+                $"Authoritative Mortal rules still contain {description}.");
+        }
+
+        Assert.Contains("current-world carrying-capacity authority", block19, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("set 'maxWeight' to null", block19, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("current-world progression authority", block19, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("do not invent characteristic points", block19, StringComparison.OrdinalIgnoreCase);
+
+        // Narrative uses of the word are legal; only mandatory mechanical formulas are guarded.
+        Assert.Contains("greatest strengths and greatest weaknesses", block19, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void PlayerFacingActorViews_MustNotReferencePrivateMaterializationMetadata()
     {
         var sourceRoots = new[]

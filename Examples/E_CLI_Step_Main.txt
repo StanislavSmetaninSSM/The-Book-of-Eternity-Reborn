@@ -633,8 +633,8 @@ Client behavior:
   - deletes both repair files
 
 IMPORTANT:
-- declared `Relevant actors` must cover any new or changed structured actor updates written in this turn, such as changed `UpdateNPCs`, actor-specific NPC update arrays, and `UpdateGuardians`
-- unchanged canonical NPC objects that exactly match the validated pre-turn snapshot may remain in `UpdateNPCs` / `NPCsInScene` as state context; they are not a same-turn actor update by themselves
+- declared `Relevant actors` must cover any new or changed structured actor updates written in this turn, such as `NPCCoreChanges`, new/promotion `UpdateNPCs`, actor-specific NPC update arrays, and `UpdateGuardians`
+- unchanged historical NPC objects may remain in canonical `NPCsInScene` as retained scene state when the actor is physically present; retained scene state is not an ordinary update command. Do not emit an ordinary-existing full object in `UpdateNPCs`
 - `Scene-local + Relevant actors: нет` is valid only when no new or changed structured actor updates are emitted
 - unresolved ID-only structured updates should not be hard-rejected solely because the client could not recover a reliable name alias from current state
 - if `validation_repair_request.json.harnessRepairPackets[]` is present, follow those packets before free-form interpretation of `errors[]`
@@ -727,8 +727,8 @@ Mortal bootstrap materialization repair packet:
     "Patch every new map link preview with targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
     "Patch the current-world bootstrap files in place: current location/map, current-world codex/lore, starting inventory/readable document details, factions, and NPC bootstrap surfaces listed in targetFiles.",
     "Do not reuse previous-life lore/current_world files; every current-world codex or lore entry must describe the life being created now.",
-    "If the player-authored start names a teacher/mentor/trainer or promises lessons/training showcase/learn-to intent, add that NPC to NPCsInScene or UpdateNPCs with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
-    "If the player-authored start names a merchant/shop/trader or promises buying/selling through local NPC trade, add that NPC to NPCsInScene or UpdateNPCs with tradeState.canTrade=true, merchantProfile such as GeneralGoods/KnowledgeAndMedia/Equipment, relationshipLevel, summary, currentLocationId matching the scene, and a trade-friendly role/class. If trade is not actually available now, remove the player-facing immediate purchase promise and explain the obstacle in tradeBlockedReason.",
+    "If the player-authored start names a teacher/mentor/trainer or promises lessons/training showcase/learn-to intent, materialize that newly significant NPC as a complete first-materialization NPCsInScene or UpdateNPCs object with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
+    "If the player-authored start names a merchant/shop/trader or promises buying/selling through local NPC trade, materialize that newly significant NPC as a complete first-materialization NPCsInScene or UpdateNPCs object with tradeState.canTrade=true, merchantProfile such as GeneralGoods/KnowledgeAndMedia/Equipment, relationshipLevel, summary, currentLocationId matching the scene, and a trade-friendly role/class. If trade is not actually available now, remove the player-facing immediate purchase promise and explain the obstacle in tradeBlockedReason.",
     "Restore every starterCompetencyRequirements entry from the pre-turn baseline in skills_active.json or skills_passive.json; active skills also keep their skill_mastery.json entry.",
     "Restore every worldEventRequirements.requiredEventIds entry in world_events.json.worldEventsLog with a useful title and description grounded in playerAuthoredStart.startingCircumstances.",
     "Fix readable document items by adding an actual player-openable document/detail authority, not by changing the item type to avoid validation.",
@@ -986,11 +986,11 @@ If GM fixed some files but state is still invalid:
 GM must always use the MOST RECENT repair request as the source of truth.
 
 Example of another invalid repair cause after revalidation:
-- `UpdateNPCs` changed `Марта`, but `Марта` is absent from `Relevant actors`
+- `NPCCoreChanges` changed `Марта`, but `Марта` is absent from `Relevant actors`
 - client rewrites repair request with `structured_npc_update_out_of_scope`
 - GM must either add `Марта` to scope + reasoning blocks or remove the structural NPC update
 
-If `UpdateNPCs` / `NPCsInScene` contains an existing NPC object that is byte-for-byte the same logical object as the validated pre-turn snapshot, the client treats it as unchanged canonical background. Do not add that NPC to `Relevant actors` merely because the unchanged object is still present. Add the NPC to `Relevant actors` only if the turn actually changes the NPC, brings the NPC into the scene as an active participant, or emits an actor-specific update for that NPC.
+An unchanged historical NPC may remain in canonical `NPCsInScene` as retained scene state only while physically present. Do not add that NPC to `Relevant actors` merely because retained state is still present. An ordinary-existing `UpdateNPCs` full object is not accepted as unchanged background. Add the NPC to `Relevant actors` when the turn changes it through `NPCCoreChanges`/another actor-specific command or brings it into the scene as an active participant.
 
 Concrete structured NPC mismatch example:
 
@@ -1003,11 +1003,13 @@ Concrete structured NPC mismatch example:
 
 game_state/npcs/npc_core.json
 {
-  "UpdateNPCs": [
+  "NPCCoreChanges": [
     {
       "NPCId": "npc_marta_01",
-      "name": "Марта",
-      "worldview": "Игроку можно доверять больше, чем раньше"
+      "reason": "Марта пересмотрела отношение к риску после поступка игрока.",
+      "profile": {
+        "worldview": "Игроку можно доверять больше, чем раньше"
+      }
     }
   ]
 }
@@ -1016,7 +1018,7 @@ Client result:
 - rejects the turn
 - writes `structured_npc_update_out_of_scope`
 - asks GM to either add `Марта` to `Relevant actors` + reasoning blocks or remove that structural NPC update
-- this example isolates the scope mismatch only; in a real turn `UpdateNPCs` must still satisfy the full NPC object contract and cannot be treated as a legal skeletal patch
+- this example isolates the scope mismatch while keeping the ordinary-existing mutation on the executable bounded `NPCCoreChanges` route
 
 Concrete Mortal relevant NPC without persistence example:
 
@@ -1241,7 +1243,7 @@ Only then:
 
 Actor Materialization v1 applies when a genuinely new significant Mortal NPC first becomes durable state. Bind the full NPC and its immutable envelope by exact `mortal_npc:<initialId>`. Do not infer skills, inventory, teaching, trade, combat ability, or identity from a display name, prose, occupation, or setting genre. The example world below is only evidence that the contract is setting-neutral; it is not a keyword template for other worlds.
 
-Every required section is either `populated` by structured NPC data or `empty_by_design` with a concise in-world reason. An already materialized existing NPC keeps the original envelope unchanged; later changes use a dedicated delta or command surface instead of resending the full object. An untouched legacy NPC remains readable, but the first assignment of teacher, merchant/trade, combat, Actor Brain, or another significant structured role is a promotion and requires a complete envelope in that accepted turn.
+Every required section is either `populated` by structured NPC data or `empty_by_design` with a concise in-world reason. First materialization contains 3-5 `personalityTraits`; every trait has an integer `value` from 1 through 10. An already materialized existing NPC keeps the original envelope unchanged; later changes use a dedicated delta command or bounded `NPCCoreChanges` instead of resending the full object. An untouched legacy NPC remains readable, but the first assignment of teacher, merchant/trade, combat, Actor Brain, or another significant structured role is a promotion and requires a complete envelope in that accepted turn.
 
 Identity continuity rule: same-turn initialId must not collide with a validated pre-turn permanent NPCId. If the validated snapshot already owns that id as a permanent NPCId, restore the permanent identity; do not emit `NPCId: null` plus the old permanent id as `initialId`.
 
@@ -1249,12 +1251,89 @@ Worked legacy-promotion inventory continuity: if validated pre-turn authority co
 
 Worked `mortal_npc_inventory_update_repair` decision:
 - A genuinely new NPC may keep initial inventory in its full object when validated continuity confirms `NPCId: null` plus a new non-empty `initialId`.
-- For an ordinary existing NPC, remove the whole ordinary-existing full-object resend from `UpdateNPCs`. Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated delta/command surface. If a required delta surface does not exist, use the main-GM rollback/repair path; never retain a schema-invalid partial full object with `inventory` omitted.
+- For an ordinary existing NPC, remove the whole ordinary-existing full-object resend from `UpdateNPCs`. Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated command surface. Goals/quests, renames, unlock events, and any remaining supported domains likewise use their documented dedicated commands. Express supported profile, location, progression, setting-owned characteristic results, faction affiliation, and locked/unrealized Fate Card definition changes through `NPCCoreChanges`. If a requested protected domain is intentionally outside both contracts, use the main-GM rollback/repair path; never widen `NPCCoreChanges` or retain a schema-invalid partial full object.
 - A true legacy promotion must retain schema-required inventory and copy the exact semantically unchanged validated pre-turn inventory snapshot from the validation issue's `expected` field. Do not remove or reconstruct that snapshot; author real mutations through the dedicated inventory commands.
+
+Worked ordinary-existing location plus progression/characteristic change:
+
+`NPCCoreChanges` is a non-carrier command. Every value below is an absolute resulting value from explicit current-world authority; the target is an exact existing permanent `NPCId`, not a name or same-turn `initialId`.
+
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "npc_liana_voss_permanent_01",
+      "reason": "Лиана присоединилась к экспедиции и перенесла работу в архивный модуль.",
+      "profile": {
+        "worldview": "Наблюдение должно вести к ответственному действию."
+      },
+      "location": {
+        "currentLocationId": "location_orbital_archive_lab",
+        "initialLocationId": null
+      },
+      "progression": {
+        "level": 4,
+        "experience": 25,
+        "experienceForNextLevel": 500,
+        "progressionType": "Companion",
+        "lastPlayerXPValueOnSync": 1200
+      },
+      "characteristicValues": {
+        "field_observation": 15,
+        "biosafety_discipline": 13
+      }
+    }
+  ]
+}
+```
+
+Worked ordinary-existing faction plus locked Fate Card definition change:
+
+The target faction and removed card ID below must exist in validated authority. `fateCardsToAdd` accepts a complete new card only with `isUnlocked: false`; unlocking an existing card still uses `NPCFateCardUnlocks`.
+
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "npc_liana_voss_permanent_01",
+      "reason": "Исследовательский союз признал Лиану полевым координатором и её прежняя нереализованная линия судьбы утратила смысл.",
+      "factionAffiliationsToUpsert": [
+        {
+          "factionId": "faction_orbital_research_union",
+          "factionName": "Орбитальный исследовательский союз",
+          "rank": "Полевой координатор",
+          "branch": "Ксенобиологический корпус",
+          "membershipStatus": "Active"
+        }
+      ],
+      "fateCardsToAdd": [
+        {
+          "cardId": "fate_orbital_responsible_contact",
+          "name": "Ответственный контакт",
+          "image_prompt": "xenobiologist opening a sealed observation chamber toward a luminous alien signal, cinematic science fiction",
+          "description": "Лиана сможет превратить осторожное наблюдение в безопасный первый контакт.",
+          "unlockConditions": {
+            "requiredRelationshipLevel": 40,
+            "plotConditionDescription": "Игрок доказывает, что контакт можно установить без эксплуатации образца.",
+            "conjunction": "AND"
+          },
+          "rewards": {
+            "description": "Открывает протокол безопасного контакта."
+          },
+          "isUnlocked": false
+        }
+      ],
+      "fateCardIdsToRemove": [
+        "fate_liana_obsolete_hypothesis"
+      ]
+    }
+  ]
+}
+```
 
 Worked first-materialization fragment for `game_state/npcs/npc_core.json`:
 
-The characteristic keys in this fragment come from this current world's canonical characteristic authority. Another world must copy its own keys rather than reuse this list.
+The characteristic keys in this fragment come from this current world's canonical characteristic authority. Another world must copy its own keys rather than reuse this list. This world supplies no carrying-capacity formula for the actor, so `maxWeight` and `totalWeight` remain `null`; absent characteristic fields are not invented.
 
 ```json
 {
@@ -1293,11 +1372,30 @@ The characteristic keys in this fragment come from this current world's canonica
           "summary": "Не делает выводов без проверяемых наблюдений.",
           "traitName": "Методичность",
           "description": "Лиана последовательно отделяет факты от предположений.",
+          "value": 8,
           "valueDescription": "Сложнее убедить её рисковать, но она замечает противоречия в доказательствах."
+        },
+        {
+          "traitId": "trait_liana_protective_curiosity",
+          "name": "Оберегающая любознательность",
+          "summary": "Стремится понять неизвестное, не подвергая других неоправданному риску.",
+          "traitName": "Оберегающая любознательность",
+          "description": "Её любопытство всегда сопровождается ответственностью за экипаж и образцы.",
+          "value": 7,
+          "valueDescription": "Она продолжает исследование даже под давлением, но остановит опыт при реальной угрозе людям."
+        },
+        {
+          "traitId": "trait_liana_reserved_empathy",
+          "name": "Сдержанная эмпатия",
+          "summary": "Проявляет заботу через точные действия, а не через открытые эмоции.",
+          "traitName": "Сдержанная эмпатия",
+          "description": "Лиана редко говорит о чувствах, но внимательно замечает страх и усталость коллег.",
+          "value": 6,
+          "valueDescription": "Она предложит практическую помощь, хотя её тон может остаться сухим."
         }
       ],
-      "maxWeight": 0,
-      "totalWeight": 0,
+      "maxWeight": null,
+      "totalWeight": null,
       "isOverloaded": false,
       "progressionTrackers": {
         "active": [],
