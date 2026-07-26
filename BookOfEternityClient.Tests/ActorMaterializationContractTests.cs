@@ -793,6 +793,94 @@ public sealed class ActorMaterializationContractTests
     }
 
     [Fact]
+    public void T155_ValidateAfterlifeProfile_TierZeroStandardArtDoesNotGrantTeachingCapability()
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["standardArts"] = new JsonObject { ["guard"] = 0 };
+        profile["mentorProfile"] = new JsonObject { ["canTeach"] = true };
+        profile["materialization"]!["capabilities"]!["canFight"] = false;
+        profile["materialization"]!["capabilities"]!["canTeach"] = true;
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTeach");
+    }
+
+    [Fact]
+    public void T155_ValidateAfterlifeProfile_TierZeroSpecialArtDoesNotGrantTeachingCapability()
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["standardArts"] = new JsonObject();
+        profile["specialArts"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["artId"] = "quiet_archive_ward",
+                ["displayName"] = "Тихий архивный оберег",
+                ["tier"] = 0,
+                ["canTeachPlayer"] = true
+            }
+        };
+        profile["materialization"]!["capabilities"]!["canFight"] = false;
+        profile["materialization"]!["capabilities"]!["canTeach"] = true;
+        profile["materialization"]!["sections"]!["standardArts"] =
+            new JsonObject { ["state"] = "empty_by_design", ["reason"] = "Оформленное стандартное искусство ещё не освоено." };
+        profile["materialization"]!["sections"]!["specialArts"] = new JsonObject { ["state"] = "populated" };
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTeach");
+    }
+
+    [Fact]
+    public void T155_ValidateAfterlifeProfile_NonPositiveMentorLessonCapDoesNotGrantTeachingCapability()
+    {
+        var profile = CreateAfterlifeProfile();
+        profile["standardArts"] = new JsonObject { ["guard"] = 0 };
+        profile["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = "mentor_guard_zero",
+                    ["targetKind"] = "standard_spiritual_art",
+                    ["targetId"] = "guard",
+                    ["targetName"] = "Защита",
+                    ["sourceCap"] = 0
+                }
+            }
+        };
+        profile["materialization"]!["capabilities"]!["canFight"] = false;
+        profile["materialization"]!["capabilities"]!["canTeach"] = true;
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canTeach");
+    }
+
+    [Fact]
     public void ValidateAfterlifeProfile_StructuredMentorShowcase_SatisfiesTeachingCapability()
     {
         var profile = CreateAfterlifeProfile();

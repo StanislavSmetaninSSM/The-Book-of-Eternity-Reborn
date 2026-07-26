@@ -135,7 +135,7 @@ internal static class PendingTurnSnapshotTestAuthority
             fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
-    private static string? ReadRelativeFile(FileSystemManager fs, string relativePath)
+    private static byte[]? ReadRelativeFile(FileSystemManager fs, string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -144,6 +144,6 @@ internal static class PendingTurnSnapshotTestAuthority
         if (!File.Exists(fullPath))
             return null;
 
-        return File.ReadAllText(fullPath);
+        return File.ReadAllBytes(fullPath);
     }
 }

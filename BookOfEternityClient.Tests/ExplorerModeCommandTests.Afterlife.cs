@@ -807,6 +807,33 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task T155_TryProcessCommand_AfterlifeProfiles_UsesPlayerVisibilityPolicyUnlessDiagnosticsEnabled()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteAfterlifeProfileVisibilityFixtureAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/afterlife_profiles");
+
+        Assert.Equal(string.Empty, result);
+        var playerPayload = ExtractRenderedText() + "\n" + ExtractRenderedLiteralText();
+        Assert.Contains("visible_profile_marker", playerPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("gm_only_profile_marker", playerPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("secret_profile_marker", playerPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("non_player_profile_marker", playerPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("system_profile_marker", playerPayload, StringComparison.Ordinal);
+
+        _settings.ShowGmThoughts = true;
+        await _explorer.TryProcessCommand("/afterlife_profiles");
+
+        var diagnosticPayload = ExtractRenderedText() + "\n" + ExtractRenderedLiteralText();
+        Assert.Contains("gm_only_profile_marker", diagnosticPayload, StringComparison.Ordinal);
+        Assert.Contains("secret_profile_marker", diagnosticPayload, StringComparison.Ordinal);
+        Assert.Contains("non_player_profile_marker", diagnosticPayload, StringComparison.Ordinal);
+        Assert.Contains("system_profile_marker", diagnosticPayload, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeProfiles_BracketBearingProfileTextRendersSafely()
     {
         await SeedAfterlifeStateAsync();
@@ -1073,6 +1100,50 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 "gmThoughtsSummary": "hidden_activity_motivation_marker"
               },
               "soulDissipationTier": 0
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task WriteAfterlifeProfileVisibilityFixtureAsync()
+    {
+        await WriteRawJsonAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "visible_profile",
+              "displayName": "visible_profile_marker",
+              "realm": "Chaos Sea"
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "gm_only_profile",
+              "displayName": "gm_only_profile_marker",
+              "gmOnly": true,
+              "realm": "Chaos Sea"
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "secret_profile",
+              "displayName": "secret_profile_marker",
+              "visibility": "secret",
+              "realm": "Chaos Sea"
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "non_player_profile",
+              "displayName": "non_player_profile_marker",
+              "isPlayerVisible": false,
+              "realm": "Chaos Sea"
+            },
+            {
+              "actorType": "system_actor",
+              "actorId": "system_profile",
+              "displayName": "system_profile_marker",
+              "realm": "Chaos Sea"
             }
           ]
         }

@@ -229,8 +229,9 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
         var replacementTask = Task.Run(async () =>
         {
-            await using var replacementLease = await replacementFs.AcquireCanonicalWriteLeaseAsync(
-                CanonicalWritePurpose.SessionReplacement);
+            await using var lifecycleLease = await replacementFs.AcquireSessionLifecycleLeaseAsync();
+            await using var replacementLease =
+                await replacementFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
             replacementFs.RotateSessionGeneration(replacementLease);
             replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.TurnRequestPath);
             replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
@@ -423,14 +424,14 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             out _,
             out failureCode);
 
-    private string? ReadRelativeFile(string relativePath)
+    private byte[]? ReadRelativeFile(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
         var fullPath = _fs.ResolvePath(relativePath);
         return File.Exists(fullPath)
-            ? File.ReadAllText(fullPath, Encoding.UTF8)
+            ? File.ReadAllBytes(fullPath)
             : null;
     }
 

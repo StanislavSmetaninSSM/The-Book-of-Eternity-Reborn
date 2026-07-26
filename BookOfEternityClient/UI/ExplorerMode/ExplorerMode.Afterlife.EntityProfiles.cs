@@ -46,6 +46,7 @@ public partial class ExplorerMode
         };
 
         foreach (var profile in profiles.OfType<JsonObject>()
+                     .Where(profile => includeGmDiagnostics || AfterlifeProfileVisibility.IsVisibleToPlayer(profile))
                      .OrderBy(profile => AfterlifeEntityProfileState.GetNodeString(profile["displayName"]) ?? string.Empty, StringComparer.OrdinalIgnoreCase))
         {
             AppendAfterlifeEntityProfile(lines, profile, includeGmDiagnostics);

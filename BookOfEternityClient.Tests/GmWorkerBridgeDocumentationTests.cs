@@ -627,21 +627,20 @@ public sealed class GmWorkerBridgeDocumentationTests
             clearOverloadOffset,
             StringComparison.Ordinal);
         var replacementLeaseOffset = fileSystemManager.IndexOf(
-            "AcquireCanonicalWriteLeaseAsync(",
+            "AcquireSessionReplacementWriteLeaseAsync(lifecycleLease)",
             lifecycleValidationOffset,
-            StringComparison.Ordinal);
-        var replacementPurposeOffset = fileSystemManager.IndexOf(
-            "CanonicalWritePurpose.SessionReplacement",
-            replacementLeaseOffset,
             StringComparison.Ordinal);
         Assert.True(
             clearWrapperOffset >= 0 &&
             lifecycleLeaseOffset > clearWrapperOffset &&
             clearOverloadOffset > lifecycleLeaseOffset &&
             lifecycleValidationOffset > clearOverloadOffset &&
-            replacementLeaseOffset > lifecycleValidationOffset &&
-            replacementPurposeOffset > replacementLeaseOffset,
+            replacementLeaseOffset > lifecycleValidationOffset,
             "ClearGameStateAsync must acquire the lifecycle lease first and the replacement canonical lease only inside the validated overload.");
+        Assert.Contains(
+            "EnsureValidSessionReplacementLease(writeLease)",
+            fileSystemManager,
+            StringComparison.Ordinal);
         Assert.Contains("detached execution snapshot", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("never copy direct snapshot edits", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("detached execution snapshot", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);

@@ -3104,6 +3104,15 @@ public partial class GameEngine
     /// Reads: output/narrative_response.json, output/interface_updates.json, output/debug_logs.json
     /// </summary>
 
+    private async Task<bool> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
+    {
+        if (!await _saveLoad.LoadGameAsync(saveFilePath))
+            return false;
+
+        await RebindRuntimeAfterSessionReplacementAsync();
+        return true;
+    }
+
     private async Task LoadGameFlow()
     {
         SpectreConsoleSafe.Clear();
@@ -3151,17 +3160,10 @@ public partial class GameEngine
 
         var saveInfo = allSaves[idx];
 
-        var success = await _saveLoad.LoadGameAsync(saveInfo.FileName);
+        var success = await LoadSelectedSaveAndRebindRuntimeAsync(saveInfo.FileName);
         if (success)
         {
             AnsiConsole.MarkupLine($"[green]{_loc.T("load_success")}[/]");
-
-            if (saveInfo.Metadata != null)
-            {
-                _gameLoop.SetSession(
-                    _stateManager.CurrentState.SessionId,
-                    saveInfo.Metadata.TurnNumber);
-            }
 
             await Task.Delay(1000);
 

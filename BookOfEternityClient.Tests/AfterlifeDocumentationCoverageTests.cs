@@ -4011,6 +4011,42 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void T155_AfterlifeActorLifecycleTeachingVisibilityAndAcceptedTypes_AreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        var acceptedActorTypes = new[]
+        {
+            "guardian",
+            "resident",
+            "shining_resident",
+            "shining_faction_head",
+            "radiant_actor",
+            "saref_agent",
+            "system_actor",
+            "custom_afterlife_actor"
+        };
+        foreach (var actorType in acceptedActorTypes)
+        {
+            Assert.Contains(actorType, matrix, StringComparison.Ordinal);
+            Assert.Contains(actorType, examples, StringComparison.Ordinal);
+            Assert.Contains(actorType, manifest, StringComparison.Ordinal);
+        }
+
+        foreach (var text in new[] { matrix, examples, manifest })
+        {
+            Assert.Contains("departure_only", text, StringComparison.Ordinal);
+            Assert.Contains("departed_only", text, StringComparison.Ordinal);
+            Assert.Contains("positive teachable tier or cap", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("gmOnly", text, StringComparison.Ordinal);
+            Assert.Contains("system profiles", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("explicit diagnostics", text, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void AfterlifeActorMaterializationWorkedExample_PassesExecutableContract()
     {
         var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>

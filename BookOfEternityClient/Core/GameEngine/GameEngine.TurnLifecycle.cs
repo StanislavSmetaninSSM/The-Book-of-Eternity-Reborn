@@ -332,7 +332,13 @@ public partial class GameEngine
             return null;
         }
 
-        return ReadRelativeFileFromWorkspace(snapshotPath);
+        var bytes = ReadRelativeFileFromWorkspace(snapshotPath);
+        if (bytes == null)
+            return null;
+
+        var preamble = Encoding.UTF8.GetPreamble();
+        var contentOffset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
+        return Encoding.UTF8.GetString(bytes, contentOffset, bytes.Length - contentOffset);
     }
 
     private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()
@@ -693,26 +699,19 @@ public partial class GameEngine
     // GAME LOOP
     // ═══════════════════════════════════════════════
 
-    private async Task EnterGameLoop()
+    private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
-        _inGame = true;
-        await _audioService.PlayInGameMusicAsync();
-        await NormalizePendingRepairArtifactsAsync();
-        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
-
-        // Check if there's already a correlated completion signal waiting
-        if (_fs.FileExists("ready/turn_complete.json"))
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
         {
-            await RefreshRuntimeStateAsync();
-        }
+            await InvokeSessionFinalizationCheckpointAsync(
+                SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
 
-        while (_inGame)
-        {
-            try
-            {
-            // Pick up late responses (agent finished after cancel/timeout, or response from previous turn)
+            // Pick up late responses (agent finished after cancel/timeout, or response from previous turn).
             var manifest = await LoadPendingTurnSnapshotManifestAsync();
-            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false);
+            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(
+                manifest,
+                requireCurrentContext: false);
             var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
             var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
             var completionSignal = ParseReadySignalMetadata(
@@ -728,32 +727,37 @@ public partial class GameEngine
                 snapshotContext,
                 rollbackSnapshot);
             if (concurrentResolution.Failed)
-                continue;
+                return true;
 
             if (concurrentResolution.UseError)
             {
                 var signal = errorSignal;
                 if (await DiscardMismatchedReadySignalAsync("late turn_error", signal, snapshotContext))
-                    continue;
+                    return true;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
                 if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
                 {
-                    _logger.LogWarning("Игнорируется late error для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _logger.LogWarning(
+                        "Игнорируется late error для хода {Turn}, ожидался ход {ExpectedTurn}",
+                        signalTurn.Value,
+                        expectedTurn);
                     _fs.DeleteFile("ready/turn_error.json");
                     ClearTransientOutputFiles();
                     await CleanupPendingTurnSnapshotAsync();
-                    continue;
+                    return true;
                 }
 
                 if (signal != null &&
                     snapshotContext != null &&
                     HasValidTerminalSignalContract("turn_error", signal))
                 {
-                    var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(signal, snapshotContext);
+                    var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(
+                        signal,
+                        snapshotContext);
                     if (recoveredSignal != null)
-                        continue;
+                        return true;
                 }
 
                 ShowTurnErrorMessage(terminalSignals.ErrorJson);
@@ -761,29 +765,33 @@ public partial class GameEngine
                 {
                     await RestorePreTurnBackup(rollbackSnapshot!);
                     CleanupBackup(rollbackSnapshot!);
-                    AnsiConsole.MarkupLine("[yellow]↩ Поздний сигнал ошибки GM восстановил последнюю стабильную версию состояния.[/]");
+                    AnsiConsole.MarkupLine(
+                        "[yellow]↩ Поздний сигнал ошибки GM восстановил последнюю стабильную версию состояния.[/]");
                 }
 
                 _fs.DeleteFile("ready/turn_error.json");
                 await CleanupPendingTurnSnapshotAsync();
-                continue;
+                return true;
             }
 
-        if (concurrentResolution.UseCompletion)
-        {
-            var signal = completionSignal;
+            if (concurrentResolution.UseCompletion)
+            {
+                var signal = completionSignal;
                 if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, snapshotContext))
-                    continue;
+                    return true;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
                 if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
                 {
-                    _logger.LogWarning("Игнорируется late response для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _logger.LogWarning(
+                        "Игнорируется late response для хода {Turn}, ожидался ход {ExpectedTurn}",
+                        signalTurn.Value,
+                        expectedTurn);
                     _fs.DeleteFile("ready/turn_complete.json");
                     ClearTransientOutputFiles();
                     await CleanupPendingTurnSnapshotAsync();
-                    continue;
+                    return true;
                 }
 
                 var acceptedLateResponse = false;
@@ -809,7 +817,7 @@ public partial class GameEngine
                             rollbackSnapshot,
                             "[yellow]↩ Поздний ответ GM отклонён после материализации. Состояние откатилось к последней стабильной версии.[/]");
                         await CleanupPendingTurnSnapshotAsync();
-                        continue;
+                        return true;
                     }
 
                     _lastResponse = lateResponse;
@@ -831,8 +839,9 @@ public partial class GameEngine
                         acceptedLateResponse = true;
                         if (HasRollbackCapability(rollbackSnapshot))
                             CleanupBackup(rollbackSnapshot!);
-                        continue;
+                        return true;
                     }
+
                     await CheckAscensionTrigger();
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
@@ -862,6 +871,7 @@ public partial class GameEngine
 
                     acceptedLateResponse = true;
                 }
+
                 if (acceptedLateResponse)
                 {
                     if (!await CheckGmIncarnationTrigger(snapshotContext))
@@ -877,7 +887,7 @@ public partial class GameEngine
                 }
             }
 
-            // Check for GM-initiated incarnation (GM sends player to Mortal World)
+            // Check for GM-initiated incarnation (GM sends player to Mortal World).
             await CheckAscensionTrigger();
             await CheckGmIncarnationTrigger();
 
@@ -889,8 +899,32 @@ public partial class GameEngine
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
                 await CheckLifeTransitions();
                 await CheckAscensionTrigger();
-                continue;
+                return true;
             }
+
+            return false;
+        });
+    }
+
+    private async Task EnterGameLoop()
+    {
+        _inGame = true;
+        await _audioService.PlayInGameMusicAsync();
+        await NormalizePendingRepairArtifactsAsync();
+        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+
+        // Check if there's already a correlated completion signal waiting
+        if (_fs.FileExists("ready/turn_complete.json"))
+        {
+            await RefreshRuntimeStateAsync();
+        }
+
+        while (_inGame)
+        {
+            try
+            {
+            if (await ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync())
+                continue;
 
             // Detect console resize — if width changed, just re-render (loop continues)
             try
@@ -1110,9 +1144,6 @@ public partial class GameEngine
 
         try
         {
-            await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
-            await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync();
-
             // Create backup of game state files before sending turn (for escape-rollback)
             var backupId = DateTime.UtcNow.Ticks.ToString();
             backedUpFiles = await CreatePreTurnBackup(backupId);

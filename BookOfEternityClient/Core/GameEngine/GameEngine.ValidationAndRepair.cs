@@ -5299,6 +5299,13 @@ public partial class GameEngine
         return Task.CompletedTask;
     }
 
+    private Task DeleteTerminalProtocolFailureRequestAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        _fs.DeleteFile(writeLease, TerminalProtocolFailureRequestPath);
+        return Task.CompletedTask;
+    }
+
     private Task DeleteValidationRepairReadyAsync()
     {
         return DeleteValidationRepairReadyCoreAsync();

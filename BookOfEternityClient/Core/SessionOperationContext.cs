@@ -68,12 +68,36 @@ internal static class SessionOperationContext
         CurrentFrame.Value = new Frame(state, previous);
         try
         {
-            return await RunWithinBindingAsync(state, fileSystem, operation);
+            return await RunWithinBindingAsync(
+                state,
+                fileSystem,
+                operation,
+                verifyAfterOperation: false);
         }
         finally
         {
-            state.Close();
-            CurrentFrame.Value = previous;
+            state.BeginClosing();
+            try
+            {
+                await fileSystem.InvokeSessionOperationClosingHookAsync();
+                await using var finalizationLease = await fileSystem.AcquireCanonicalWriteLeaseAsync(
+                    CanonicalWritePurpose.SessionFinalization);
+                if (!fileSystem.IsCurrentSessionGeneration(
+                        finalizationLease,
+                        state.ExpectedGeneration))
+                {
+                    throw state.MarkReplaced(
+                        actualGeneration: null,
+                        "The game session was replaced before the bound operation could close.");
+                }
+
+                state.Close();
+            }
+            finally
+            {
+                state.Close();
+                CurrentFrame.Value = previous;
+            }
         }
     }
 
@@ -113,13 +137,15 @@ internal static class SessionOperationContext
     private static async Task<T> RunWithinBindingAsync<T>(
         BindingState state,
         FileSystemManager fileSystem,
-        Func<Task<T>> operation)
+        Func<Task<T>> operation,
+        bool verifyAfterOperation = true)
     {
         state.ThrowIfInvalid();
         try
         {
             var result = await operation();
-            await fileSystem.VerifyCurrentSessionOperationAsync();
+            if (verifyAfterOperation)
+                await fileSystem.VerifyCurrentSessionOperationAsync();
             state.ThrowIfInvalid();
             return result;
         }
@@ -166,6 +192,7 @@ internal static class SessionOperationContext
     private sealed class BindingState
     {
         private readonly object _sync = new();
+        private bool _closing;
         private bool _closed;
         private bool _replaced;
         private string? _actualGeneration;
@@ -197,11 +224,17 @@ internal static class SessionOperationContext
         {
             lock (_sync)
             {
-                if (!_replaced && !_closed)
+                if (!_replaced && !_closing && !_closed)
                     return;
 
                 throw BuildException(innerException);
             }
+        }
+
+        internal void BeginClosing()
+        {
+            lock (_sync)
+                _closing = true;
         }
 
         internal void Close()

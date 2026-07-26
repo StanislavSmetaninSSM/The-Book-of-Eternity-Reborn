@@ -144,6 +144,21 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
             "weather.json.backup.*"));
     }
 
+    [Fact]
+    public async Task DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes()
+    {
+        var malformedBytes = new byte[] { 0xEF, 0xBB, 0xBF, (byte)'{', (byte)'"', (byte)'b', (byte)'r', (byte)'o', (byte)'k', (byte)'e', (byte)'n' };
+        await _fs.WriteFileAtomicBytesAsync(WeatherPath, malformedBytes);
+        var distributor = new StateDistributor(
+            _fs,
+            NullLogger<StateDistributor>.Instance);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => distributor.DistributeAsync(CreateWeatherResponse()));
+
+        Assert.Equal(malformedBytes, await _fs.ReadFileBytesAsync(WeatherPath));
+    }
+
     private FileSystemManager CreateFileSystem(FileSystemManagerHooks? hooks = null)
     {
         var fs = new FileSystemManager(

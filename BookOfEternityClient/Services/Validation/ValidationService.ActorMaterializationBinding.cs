@@ -95,7 +95,17 @@ public partial class ValidationService
                 return;
             }
 
-            if (preTurnActors.Keys.Any(identityKey => !currentActors.ContainsKey(identityKey)))
+            var removedActors = preTurnActors.Values
+                .Where(actor => !currentActors.ContainsKey(actor.IdentityKey))
+                .ToList();
+            if (removedActors.Count > 0 &&
+                (kind != AfterlifeBindingSourceKind.Resident ||
+                 !await AreProvenDepartureOnlyResidentRemovalsAsync(
+                     manifest,
+                     authority.CurrentJson,
+                     authority.PreTurnJson,
+                     currentActors,
+                     removedActors)))
             {
                 AddUnusableAfterlifeActorBindingCurrentAuthorityIssue(path, issues);
                 return;
@@ -271,6 +281,153 @@ public partial class ValidationService
 
         var preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
         return new AfterlifeBindingSourceAuthority(currentJson, preTurnJson, preTurnJson != null);
+    }
+
+    private async Task<bool> AreProvenDepartureOnlyResidentRemovalsAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string? currentResidentsJson,
+        string? preTurnResidentsJson,
+        IReadOnlyDictionary<string, AfterlifeActorBinding> currentActors,
+        IReadOnlyCollection<AfterlifeActorBinding> removedActors)
+    {
+        if (string.IsNullOrWhiteSpace(currentResidentsJson) ||
+            string.IsNullOrWhiteSpace(preTurnResidentsJson) ||
+            removedActors.Count == 0 ||
+            removedActors.Any(actor => !string.Equals(actor.ActorType, "resident", StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        var pendingTransfersJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            manifest,
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath);
+        if (string.IsNullOrWhiteSpace(pendingTransfersJson))
+            return false;
+
+        try
+        {
+            using var currentDocument = JsonDocument.Parse(currentResidentsJson);
+            using var preTurnDocument = JsonDocument.Parse(preTurnResidentsJson);
+            using var pendingDocument = JsonDocument.Parse(pendingTransfersJson);
+            if (!TryReadExactArray(
+                    currentDocument.RootElement,
+                    GuardianAbodeResidentState.TransferReceiptsProperty,
+                    out var receipts) ||
+                !TryReadExactArray(
+                    currentDocument.RootElement,
+                    GuardianAbodeResidentState.HistoryLogProperty,
+                    out var history) ||
+                !TryReadExactArray(
+                    preTurnDocument.RootElement,
+                    GuardianAbodeResidentState.EntriesProperty,
+                    out var preTurnResidents) ||
+                !TryReadExactArray(
+                    pendingDocument.RootElement,
+                    GuardianAbodeResidentRequestState.TransferRequestsProperty,
+                    out var pendingTransfers))
+            {
+                return false;
+            }
+
+            foreach (var removedActor in removedActors)
+            {
+                if (currentActors.Values.Any(actor =>
+                        string.Equals(actor.ActorType, "resident", StringComparison.Ordinal) &&
+                        string.Equals(actor.ActorId, removedActor.ActorId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return false;
+                }
+
+                if (!TryFindExactlyOneExactIdentity(
+                        preTurnResidents,
+                        "residentId",
+                        removedActor.ActorId,
+                        out var preTurnResident) ||
+                    !TryReadExactNonEmptyString(preTurnResident, "guardianId", out var sourceGuardianId) ||
+                    !TryReadExactNonEmptyString(preTurnResident, "abodeId", out var sourceAbodeId) ||
+                    !TryReadExactBoolean(preTurnResident, "isPresent", out var wasPresent) ||
+                    !wasPresent ||
+                    !HasExactString(
+                        preTurnResident,
+                        "migrationState",
+                        GuardianAbodeResidentState.MigrationStateReadyToTransfer))
+                {
+                    return false;
+                }
+
+                if (!TryFindExactlyOneExactIdentity(
+                        pendingTransfers,
+                        "residentId",
+                        removedActor.ActorId,
+                        out var pendingTransfer) ||
+                    !TryReadExactNonEmptyString(pendingTransfer, "requestId", out var requestId) ||
+                    !HasExactString(pendingTransfer, "sourceGuardianId", sourceGuardianId) ||
+                    !HasExactString(pendingTransfer, "sourceAbodeId", sourceAbodeId) ||
+                    !HasExactString(
+                        pendingTransfer,
+                        "migrationState",
+                        GuardianAbodeResidentState.MigrationStateReadyToTransfer) ||
+                    !HasExactString(
+                        pendingTransfer,
+                        "transferMode",
+                        GuardianAbodeResidentState.TransferModeDepartureOnly) ||
+                    !HasExactString(
+                        pendingTransfer,
+                        "selectionMode",
+                        GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly) ||
+                    !HasNoExactStringValue(pendingTransfer, "targetGuardianId") ||
+                    !HasNoExactStringValue(pendingTransfer, "targetGuardianName") ||
+                    !HasNoExactStringValue(pendingTransfer, "targetAbodeId") ||
+                    !HasNoExactStringValue(pendingTransfer, "targetAbodeName") ||
+                    !HasNoExactValue(pendingTransfer, "competitionScore") ||
+                    !HasNoExactValue(pendingTransfer, "competitionLabel") ||
+                    !HasNoExactValue(pendingTransfer, "competitionReason"))
+                {
+                    return false;
+                }
+
+                if (!TryFindExactlyOneExactIdentity(receipts, "requestId", requestId, out var receipt) ||
+                    !HasExactString(receipt, "residentId", removedActor.ActorId) ||
+                    !HasExactString(receipt, "sourceGuardianId", sourceGuardianId) ||
+                    !HasExactString(receipt, "sourceAbodeId", sourceAbodeId) ||
+                    !HasExactString(
+                        receipt,
+                        "status",
+                        GuardianAbodeResidentState.TransferStatusDepartedOnly) ||
+                    !HasExactString(
+                        receipt,
+                        "transferMode",
+                        GuardianAbodeResidentState.TransferModeDepartureOnly) ||
+                    !HasNoExactStringValue(receipt, "targetGuardianId") ||
+                    !HasNoExactStringValue(receipt, "targetGuardianName") ||
+                    !HasNoExactStringValue(receipt, "targetAbodeId") ||
+                    !HasNoExactStringValue(receipt, "targetAbodeName") ||
+                    !HasNoExactStringValue(receipt, "arrivalHistoryEntryId") ||
+                    !TryReadExactNonEmptyString(
+                        receipt,
+                        "departureHistoryEntryId",
+                        out var departureHistoryEntryId))
+                {
+                    return false;
+                }
+
+                if (!TryFindExactlyOneExactIdentity(
+                        history,
+                        "entryId",
+                        departureHistoryEntryId,
+                        out var departureHistory) ||
+                    !HasExactString(departureHistory, "residentId", removedActor.ActorId))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
     }
 
     private async Task<HashSet<string>> LoadCurrentAfterlifeBoundActorIdentityKeysAsync()
@@ -624,6 +781,90 @@ public partial class ValidationService
         }
 
         return array.ValueKind == JsonValueKind.Array;
+    }
+
+    private static bool TryReadExactArray(
+        JsonElement root,
+        string propertyName,
+        out JsonElement array)
+    {
+        array = default;
+        return TryReadExactOptionalProperty(root, propertyName, out array, out var exists) &&
+               exists &&
+               array.ValueKind == JsonValueKind.Array;
+    }
+
+    private static bool TryFindExactlyOneExactIdentity(
+        JsonElement array,
+        string identityProperty,
+        string expectedIdentity,
+        out JsonElement match)
+    {
+        match = default;
+        if (array.ValueKind != JsonValueKind.Array || string.IsNullOrWhiteSpace(expectedIdentity))
+            return false;
+
+        var matches = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.Object ||
+                !TryReadExactNonEmptyString(item, identityProperty, out var identity))
+            {
+                return false;
+            }
+
+            if (!string.Equals(identity, expectedIdentity, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (!string.Equals(identity, expectedIdentity, StringComparison.Ordinal))
+                return false;
+
+            match = item;
+            matches++;
+        }
+
+        return matches == 1;
+    }
+
+    private static bool HasExactString(
+        JsonElement root,
+        string propertyName,
+        string expected) =>
+        TryReadExactNonEmptyString(root, propertyName, out var actual) &&
+        string.Equals(actual, expected, StringComparison.Ordinal);
+
+    private static bool TryReadExactBoolean(
+        JsonElement root,
+        string propertyName,
+        out bool value)
+    {
+        value = false;
+        if (!TryReadExactOptionalProperty(root, propertyName, out var property, out var exists) ||
+            !exists ||
+            property.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+        {
+            return false;
+        }
+
+        value = property.GetBoolean();
+        return true;
+    }
+
+    private static bool HasNoExactStringValue(JsonElement root, string propertyName)
+    {
+        if (!TryReadExactOptionalProperty(root, propertyName, out var property, out var exists))
+            return false;
+        if (!exists || property.ValueKind == JsonValueKind.Null)
+            return true;
+
+        return property.ValueKind == JsonValueKind.String &&
+               string.IsNullOrWhiteSpace(property.GetString());
+    }
+
+    private static bool HasNoExactValue(JsonElement root, string propertyName)
+    {
+        if (!TryReadExactOptionalProperty(root, propertyName, out var property, out var exists))
+            return false;
+        return !exists || property.ValueKind == JsonValueKind.Null;
     }
 
     private static bool TryReadExactNonEmptyString(

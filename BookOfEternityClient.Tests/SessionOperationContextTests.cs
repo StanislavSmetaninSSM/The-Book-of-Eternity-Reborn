@@ -2,6 +2,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Reflection;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -232,6 +233,62 @@ public sealed class SessionOperationContextTests : IDisposable
         releaseEscapedTask.TrySetResult();
         await Assert.ThrowsAsync<SessionReplacedException>(() => escapedTask!);
         Assert.False(_fs.FileExists("game_state/world/escaped.json"));
+    }
+
+    [Fact]
+    public async Task BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter()
+    {
+        var closingStarted = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseClosing = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var hooks = new FileSystemManagerHooks();
+        var closingHook = typeof(FileSystemManagerHooks).GetProperty(
+            "SessionOperationClosingAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(closingHook);
+        closingHook!.SetValue(
+            hooks,
+            (Func<Task>)(async () =>
+            {
+                closingStarted.TrySetResult();
+                await releaseClosing.Task;
+            }));
+
+        var hookedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var generation = await GetOrCreateSessionGenerationAsync(hookedFs);
+        var releaseEscapedWriter = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        Task? escapedWriter = null;
+
+        var owner = SessionOperationContext.RunBoundAsync(
+            hookedFs,
+            generation,
+            () =>
+            {
+                escapedWriter = Task.Run(async () =>
+                {
+                    await releaseEscapedWriter.Task;
+                    await hookedFs.WriteFileAtomicAsync(
+                        "game_state/world/closing-race.json",
+                        "{\"owner\":\"escaped\"}");
+                });
+                return Task.CompletedTask;
+            });
+
+        await closingStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.NotNull(escapedWriter);
+        releaseEscapedWriter.TrySetResult();
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => escapedWriter!.WaitAsync(TimeSpan.FromSeconds(5)));
+        releaseClosing.TrySetResult();
+        await owner.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.False(hookedFs.FileExists("game_state/world/closing-race.json"));
     }
 
     private static async Task<string> GetOrCreateSessionGenerationAsync(FileSystemManager fs)

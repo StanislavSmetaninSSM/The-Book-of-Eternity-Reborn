@@ -538,6 +538,67 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task T155_ValidateAcceptedTurnContinuity_ExactDepartureOnlyResidentRemovalPassesBinding()
+    {
+        const string actorId = "resident_exact_departure";
+        var (currentSource, preTurnSource, pendingRequest) =
+            BuildAfterlifeDepartureOnlyBindingScenario(actorId, mutation: null);
+        var profiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            "resident",
+            actorId,
+            includeProfile: true);
+        await WriteAfterlifeBindingScenarioAsync(
+            GuardianAbodeResidentState.StatePath,
+            currentSource,
+            preTurnSource,
+            profiles,
+            profiles,
+            (GuardianAbodeResidentRequestState.PendingTransfersRequestPath, pendingRequest));
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == GuardianAbodeResidentState.StatePath);
+    }
+
+    [Theory]
+    [InlineData("missing_history")]
+    [InlineData("wrong_receipt_status")]
+    [InlineData("target_metadata")]
+    [InlineData("case_variant_identity")]
+    [InlineData("untracked_request")]
+    public async Task T155_ValidateAcceptedTurnContinuity_UnprovenResidentRemovalFailsClosed(string mutation)
+    {
+        const string actorId = "resident_unproven_departure";
+        var (currentSource, preTurnSource, pendingRequest) =
+            BuildAfterlifeDepartureOnlyBindingScenario(actorId, mutation);
+        var profiles = BuildCompleteAfterlifeBindingProfileStateJson(
+            "resident",
+            actorId,
+            includeProfile: true);
+        var additionalSnapshots = string.Equals(mutation, "untracked_request", StringComparison.Ordinal)
+            ? Array.Empty<(string Path, string Json)>()
+            : new[]
+            {
+                (GuardianAbodeResidentRequestState.PendingTransfersRequestPath, pendingRequest)
+            };
+        await WriteAfterlifeBindingScenarioAsync(
+            GuardianAbodeResidentState.StatePath,
+            currentSource,
+            preTurnSource,
+            profiles,
+            profiles,
+            additionalSnapshots);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_actor_binding_current_authority_unusable" &&
+            issue.FilePath == GuardianAbodeResidentState.StatePath);
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_NewShiningFactionHead_RequiresCurrentMaterialization()
     {
         const string actorType = "guardian";
@@ -1737,6 +1798,104 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         return root.ToJsonString();
     }
 
+    private static (string CurrentSource, string PreTurnSource, string PendingRequest)
+        BuildAfterlifeDepartureOnlyBindingScenario(string actorId, string? mutation)
+    {
+        const string requestId = "resident_departure_request";
+        const string sourceGuardianId = "guardian_binding_host";
+        const string sourceAbodeId = "abode_binding_host";
+        const string departureHistoryEntryId = "history_resident_departure";
+
+        var preTurnSource = JsonNode.Parse(
+            BuildAfterlifeBindingSourceJson("resident", actorId, includeActor: true))!.AsObject();
+        var preTurnResident = preTurnSource[GuardianAbodeResidentState.EntriesProperty]![0]!.AsObject();
+        preTurnResident["isPresent"] = true;
+        preTurnResident["migrationState"] = GuardianAbodeResidentState.MigrationStateReadyToTransfer;
+
+        var receiptResidentId = string.Equals(mutation, "case_variant_identity", StringComparison.Ordinal)
+            ? actorId.ToUpperInvariant()
+            : actorId;
+        var receipt = new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["residentId"] = receiptResidentId,
+            ["sourceGuardianId"] = sourceGuardianId,
+            ["sourceAbodeId"] = sourceAbodeId,
+            ["targetGuardianId"] = "",
+            ["targetAbodeId"] = "",
+            ["status"] = string.Equals(mutation, "wrong_receipt_status", StringComparison.Ordinal)
+                ? GuardianAbodeResidentState.TransferStatusAccepted
+                : GuardianAbodeResidentState.TransferStatusDepartedOnly,
+            ["transferMode"] = GuardianAbodeResidentState.TransferModeDepartureOnly,
+            ["departureHistoryEntryId"] = departureHistoryEntryId,
+            ["arrivalHistoryEntryId"] = null
+        };
+        var historyLog = string.Equals(mutation, "missing_history", StringComparison.Ordinal)
+            ? new JsonArray()
+            : new JsonArray(new JsonObject
+            {
+                ["entryId"] = departureHistoryEntryId,
+                ["residentId"] = actorId,
+                ["title"] = "Уход из Обители",
+                ["summary"] = "Резидент покинул Обитель без перехода к новому Хранителю.",
+                ["tags"] = new JsonArray("departure", "resident_transfer")
+            });
+        var currentSource = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            [GuardianAbodeResidentState.EntriesProperty] = new JsonArray(),
+            [GuardianAbodeResidentState.ThoughtJournalProperty] = new JsonArray(),
+            [GuardianAbodeResidentState.TransferReceiptsProperty] = new JsonArray(receipt),
+            [GuardianAbodeResidentState.HistoryLogProperty] = historyLog
+        };
+
+        var targetGuardianId = string.Equals(mutation, "target_metadata", StringComparison.Ordinal)
+            ? "guardian_unexpected_target"
+            : "";
+        var targetAbodeId = string.Equals(mutation, "target_metadata", StringComparison.Ordinal)
+            ? "abode_unexpected_target"
+            : "";
+        if (!string.IsNullOrEmpty(targetGuardianId))
+        {
+            receipt["targetGuardianId"] = targetGuardianId;
+            receipt["targetAbodeId"] = targetAbodeId;
+        }
+
+        var pendingRequest = new JsonObject
+        {
+            [GuardianAbodeResidentRequestState.TransferRequestsProperty] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = requestId,
+                ["residentId"] = actorId,
+                ["residentName"] = "Резидент точного договора",
+                ["sourceGuardianId"] = sourceGuardianId,
+                ["sourceGuardianName"] = "Хранитель точного договора",
+                ["sourceAbodeId"] = sourceAbodeId,
+                ["sourceAbodeName"] = "Обитель точного договора",
+                ["targetGuardianId"] = targetGuardianId,
+                ["targetGuardianName"] = "",
+                ["targetAbodeId"] = targetAbodeId,
+                ["targetAbodeName"] = "",
+                ["abodeDevotionLevel"] = 0,
+                ["abodeDevotionTier"] = GuardianAbodeResidentState.AbodeDevotionTierAlienated,
+                ["restlessness"] = 100,
+                ["migrationState"] = GuardianAbodeResidentState.MigrationStateReadyToTransfer,
+                ["transferMode"] = GuardianAbodeResidentState.TransferModeDepartureOnly,
+                ["selectionMode"] = GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly,
+                ["competitionScore"] = null,
+                ["competitionLabel"] = null,
+                ["competitionReason"] = null,
+                ["createdAtTurn"] = 42,
+                ["createdAtUtc"] = "2026-07-26T00:00:00Z"
+            })
+        };
+
+        return (
+            currentSource.ToJsonString(),
+            preTurnSource.ToJsonString(),
+            pendingRequest.ToJsonString());
+    }
+
     private static string BuildMalformedAfterlifeBindingSourceJson(
         string sourceKind,
         string actorId,
@@ -1916,19 +2075,25 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         string currentSourceJson,
         string preTurnSourceJson,
         string currentProfilesJson,
-        string preTurnProfilesJson)
+        string preTurnProfilesJson,
+        params (string Path, string Json)[] additionalSnapshotFiles)
     {
         await _fs.WriteFileAtomicAsync(sourcePath, currentSourceJson);
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, currentProfilesJson);
-        await _fs.WriteFileAtomicAsync(
-            $"game_state/control/pending_turn_snapshot/{sourcePath}",
-            preTurnSourceJson);
-        await _fs.WriteFileAtomicAsync(
-            $"game_state/control/pending_turn_snapshot/{AfterlifeEntityProfileState.StatePath}",
-            preTurnProfilesJson);
-        await WriteValidatedSnapshotManifestAsync(
+        var snapshotFiles = new List<(string Path, string Json)>
+        {
             (sourcePath, preTurnSourceJson),
-            (AfterlifeEntityProfileState.StatePath, preTurnProfilesJson));
+            (AfterlifeEntityProfileState.StatePath, preTurnProfilesJson)
+        };
+        snapshotFiles.AddRange(additionalSnapshotFiles);
+        foreach (var (path, json) in snapshotFiles)
+        {
+            await _fs.WriteFileAtomicAsync(
+                $"game_state/control/pending_turn_snapshot/{path}",
+                json);
+        }
+
+        await WriteValidatedSnapshotManifestAsync(snapshotFiles.ToArray());
     }
 
     private static string BuildAfterlifeProfileStateJson(

@@ -288,13 +288,13 @@ public sealed class RealmSegregationAutoRollbackService
         };
     }
 
-    private string? ReadRelativeFile(string relativePath)
+    private byte[]? ReadRelativeFile(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
         var fullPath = _fs.ResolvePath(relativePath);
-        return File.Exists(fullPath) ? File.ReadAllText(fullPath) : null;
+        return File.Exists(fullPath) ? File.ReadAllBytes(fullPath) : null;
     }
 
     private static bool IsKnownBaselineFile(RealmSegregationSnapshotManifest manifest, string path)

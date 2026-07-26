@@ -147,14 +147,55 @@ public sealed class FileSystemManagerTests : IDisposable
     {
         string staleGeneration;
         await using (var canonicalLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-        {
             staleGeneration = _fs.GetOrCreateSessionGeneration(canonicalLease);
-            _fs.RotateSessionGeneration(canonicalLease);
-        }
+        await using (var replacementLifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync())
+        await using (var replacementLease =
+                     await _fs.AcquireSessionReplacementWriteLeaseAsync(replacementLifecycleLease))
+            _fs.RotateSessionGeneration(replacementLease);
 
         var lifecycleLease = await _fs.TryAcquireSessionLifecycleLeaseAsync(staleGeneration);
 
         Assert.Null(lifecycleLease);
+    }
+
+    [Fact]
+    public async Task SessionMutationLease_CannotRotateSessionGeneration()
+    {
+        await using var canonicalLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+
+        var exception = Assert.Throws<InvalidOperationException>(
+            () => _fs.RotateSessionGeneration(canonicalLease));
+
+        Assert.Contains("replacement", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SessionReplacementLease_RequiresActiveLifecycleAuthority()
+    {
+        var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+        await lifecycleLease.DisposeAsync();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease));
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => _fs.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionReplacement));
+    }
+
+    [Fact]
+    public async Task SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive()
+    {
+        string previousGeneration;
+        await using (var mutationLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            previousGeneration = _fs.GetOrCreateSessionGeneration(mutationLease);
+
+        await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+        await using var replacementLease =
+            await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
+
+        var replacementGeneration = _fs.RotateSessionGeneration(replacementLease);
+
+        Assert.NotEqual(previousGeneration, replacementGeneration);
+        Assert.True(_fs.IsCurrentSessionGeneration(replacementLease, replacementGeneration));
     }
 
     [Fact]
@@ -683,8 +724,10 @@ public sealed class FileSystemManagerTests : IDisposable
             path,
             "{\"record\":1}" + Environment.NewLine,
             capturedGeneration));
-        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            _fs.RotateSessionGeneration(lease);
+        await using (var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync())
+        await using (var replacementLease =
+                     await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease))
+            _fs.RotateSessionGeneration(replacementLease);
 
         Assert.False(await _fs.AppendFileAtomicIfCurrentSessionAsync(
             path,
@@ -708,6 +751,145 @@ public sealed class FileSystemManagerTests : IDisposable
         var exception = Assert.Throws<InvalidDataException>(() => _fs.GetOrCreateSessionGeneration(lease));
 
         Assert.Contains("invalid", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task CanonicalFileOperations_RejectTraversalOutsideGameSession()
+    {
+        var outsidePath = Path.Combine(_rootPath, "outside.json");
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.WriteFileAtomicAsync("../outside.json", "{\"escaped\":true}"));
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.ReadFileBytesAsync("../outside.json"));
+
+        Assert.False(File.Exists(outsidePath));
+    }
+
+    [Fact]
+    public async Task CanonicalFileOperations_RejectExistingReparsePointAncestor()
+    {
+        var outsideDirectory = Path.Combine(_rootPath, "outside-target");
+        Directory.CreateDirectory(outsideDirectory);
+        var linkPath = _fs.ResolvePath("game_state/world/linked");
+        Directory.CreateDirectory(Path.GetDirectoryName(linkPath)!);
+        if (!TryCreateDirectoryLink(linkPath, outsideDirectory))
+            return;
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.WriteFileAtomicAsync(
+                "game_state/world/linked/escaped.json",
+                "{\"escaped\":true}"));
+
+        Assert.False(File.Exists(Path.Combine(outsideDirectory, "escaped.json")));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_RechecksReparseConfinementAtMutationBoundary()
+    {
+        const string relativePath = "game_state/world/mutation-boundary/state.json";
+        var parentPath = _fs.ResolvePath("game_state/world/mutation-boundary");
+        var displacedParentPath = _fs.ResolvePath("game_state/world/mutation-boundary-original");
+        var outsideDirectory = Path.Combine(_rootPath, "mutation-boundary-outside");
+        var probeLink = Path.Combine(_rootPath, "mutation-boundary-link-probe");
+        Directory.CreateDirectory(parentPath);
+        Directory.CreateDirectory(outsideDirectory);
+        if (!TryCreateDirectoryLink(probeLink, outsideDirectory))
+            return;
+        Directory.Delete(probeLink);
+
+        var swapped = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = path =>
+                {
+                    if (swapped || !path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
+                        return Task.CompletedTask;
+
+                    swapped = true;
+                    Directory.Move(parentPath, displacedParentPath);
+                    Directory.CreateSymbolicLink(parentPath, outsideDirectory);
+                    return Task.CompletedTask;
+                }
+            });
+
+        try
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => raceFs.WriteFileAtomicAsync(relativePath, "{\"escaped\":true}"));
+
+            Assert.True(swapped);
+            Assert.False(File.Exists(Path.Combine(outsideDirectory, "state.json")));
+        }
+        finally
+        {
+            if (Directory.Exists(parentPath) && FileSystemManager.IsReparsePoint(parentPath))
+                Directory.Delete(parentPath);
+            if (Directory.Exists(displacedParentPath))
+                Directory.Move(displacedParentPath, parentPath);
+        }
+    }
+
+    [Fact]
+    public async Task RestoreBackup_RejectsBackupOutsideCanonicalSession()
+    {
+        const string originalPath = "game_state/world/restore-target.json";
+        var outsideBackupPath = Path.Combine(_rootPath, "outside-restore.backup");
+        await _fs.WriteFileAtomicAsync(originalPath, "{\"marker\":\"canonical\"}");
+        await File.WriteAllTextAsync(outsideBackupPath, "{\"marker\":\"external\"}");
+
+        Assert.Throws<InvalidDataException>(
+            () => _fs.RestoreBackup(outsideBackupPath, originalPath));
+
+        Assert.Contains(
+            "canonical",
+            await _fs.ReadFileAsync(originalPath),
+            StringComparison.Ordinal);
+        Assert.True(File.Exists(outsideBackupPath));
+    }
+
+    [Fact]
+    public void FileSystemManagers_ForPhysicalRootAliases_ShareCanonicalRuntimeIdentity()
+    {
+        var aliasPath = Path.Combine(
+            Path.GetDirectoryName(_rootPath)!,
+            "boe-fs-alias-" + Guid.NewGuid().ToString("N"));
+        if (!TryCreateDirectoryLink(aliasPath, _rootPath))
+            return;
+
+        try
+        {
+            var aliased = new FileSystemManager(
+                aliasPath,
+                NullLogger<FileSystemManager>.Instance);
+
+            Assert.Equal(_fs.BasePath, aliased.BasePath, ignoreCase: true);
+            Assert.Equal(
+                _fs.CanonicalWriteLockPath,
+                aliased.CanonicalWriteLockPath,
+                ignoreCase: true);
+        }
+        finally
+        {
+            Directory.Delete(aliasPath);
+        }
+    }
+
+    private static bool TryCreateDirectoryLink(string linkPath, string targetPath)
+    {
+        try
+        {
+            Directory.CreateSymbolicLink(linkPath, targetPath);
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or PlatformNotSupportedException)
+        {
+            return false;
+        }
     }
 
     private static string Sha256(byte[] content) =>

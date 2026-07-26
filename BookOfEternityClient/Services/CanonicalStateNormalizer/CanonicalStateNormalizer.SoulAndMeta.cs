@@ -831,7 +831,7 @@ public partial class CanonicalStateNormalizer
             : null;
     }
 
-    private static string? ReadRelativeFileFromWorkspace(FileSystemManager fs, string relativePath)
+    private static byte[]? ReadRelativeFileFromWorkspace(FileSystemManager fs, string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -840,7 +840,7 @@ public partial class CanonicalStateNormalizer
         if (!File.Exists(fullPath))
             return null;
 
-        return File.ReadAllText(fullPath, Encoding.UTF8);
+        return File.ReadAllBytes(fullPath);
     }
 
     private static async Task<bool> IsCurrentPendingTurnSnapshotAsync(

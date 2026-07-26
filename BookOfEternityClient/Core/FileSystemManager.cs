@@ -8,6 +8,8 @@ internal sealed class FileSystemManagerHooks
 {
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
+    internal Func<Task>? SessionOperationClosingAsync { get; init; }
+    internal Func<string, Task>? BeforeCanonicalMutationBoundaryAsync { get; init; }
 }
 
 public enum CanonicalFileMutationResult
@@ -19,7 +21,8 @@ public enum CanonicalFileMutationResult
 internal enum CanonicalWritePurpose
 {
     SessionMutation,
-    SessionReplacement
+    SessionReplacement,
+    SessionFinalization
 }
 
 internal sealed record CanonicalLoadTransactionPaths(
@@ -70,13 +73,18 @@ public class FileSystemManager
     {
         private FileStream? _stream;
 
-        internal CanonicalWriteLease(FileSystemManager owner, FileStream stream)
+        internal CanonicalWriteLease(
+            FileSystemManager owner,
+            FileStream stream,
+            CanonicalWritePurpose purpose)
         {
             Owner = owner;
+            Purpose = purpose;
             _stream = stream;
         }
 
         internal FileSystemManager Owner { get; }
+        internal CanonicalWritePurpose Purpose { get; }
         internal bool IsActive => _stream != null;
 
         public async ValueTask DisposeAsync()
@@ -158,7 +166,7 @@ public class FileSystemManager
         ILoadTransactionOperations loadTransactionOperations,
         FileSystemManagerHooks? hooks)
     {
-        _basePath = basePath;
+        _basePath = ResolvePhysicalBasePath(basePath);
         _logger = logger;
         _loadTransactionOperations = loadTransactionOperations ??
             throw new ArgumentNullException(nameof(loadTransactionOperations));
@@ -189,7 +197,10 @@ public class FileSystemManager
     {
         foreach (var dir in RequiredDirectories)
         {
-            var fullPath = Path.Combine(_basePath, dir);
+            var relativePath = dir.Equals("game_session", StringComparison.OrdinalIgnoreCase)
+                ? string.Empty
+                : dir["game_session/".Length..];
+            var fullPath = ResolvePath(relativePath);
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
@@ -200,7 +211,95 @@ public class FileSystemManager
 
     public string ResolvePath(string relativePath)
     {
-        return Path.Combine(_basePath, "game_session", relativePath);
+        ArgumentNullException.ThrowIfNull(relativePath);
+        var sessionRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var normalized = relativePath.Trim().Replace(
+            Path.AltDirectorySeparatorChar,
+            Path.DirectorySeparatorChar);
+        if (Path.IsPathRooted(normalized) || normalized.Contains(':', StringComparison.Ordinal))
+            throw new InvalidDataException("Canonical game-session path must be relative.");
+
+        if (normalized.Length > 0)
+        {
+            var segments = normalized.Split(Path.DirectorySeparatorChar, StringSplitOptions.None);
+            if (segments.Any(segment =>
+                    string.IsNullOrWhiteSpace(segment) ||
+                    segment is "." or ".."))
+            {
+                throw new InvalidDataException("Canonical game-session path contains an invalid segment.");
+            }
+        }
+
+        var fullPath = Path.GetFullPath(Path.Combine(sessionRoot, normalized));
+        var sessionPrefix = sessionRoot + Path.DirectorySeparatorChar;
+        if (!string.Equals(fullPath, sessionRoot, StringComparison.OrdinalIgnoreCase) &&
+            !fullPath.StartsWith(sessionPrefix, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException("Canonical game-session path escapes game_session.");
+        }
+
+        EnsureNoExistingReparsePoint(sessionRoot, fullPath);
+        return fullPath;
+    }
+
+    private static string ResolvePhysicalBasePath(string basePath)
+    {
+        if (string.IsNullOrWhiteSpace(basePath))
+            throw new ArgumentException("Base path is required.", nameof(basePath));
+
+        var requestedPath = Path.GetFullPath(basePath);
+        Directory.CreateDirectory(requestedPath);
+        var root = Path.GetPathRoot(requestedPath)
+            ?? throw new InvalidDataException("Base path has no filesystem root.");
+        var current = root;
+        foreach (var segment in Path.GetRelativePath(root, requestedPath)
+                     .Split(
+                         [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                         StringSplitOptions.RemoveEmptyEntries))
+        {
+            current = Path.Combine(current, segment);
+            if (!Directory.Exists(current))
+                continue;
+
+            var info = new DirectoryInfo(current);
+            if ((info.Attributes & FileAttributes.ReparsePoint) == 0)
+                continue;
+
+            var target = info.ResolveLinkTarget(returnFinalTarget: true)
+                ?? throw new InvalidDataException($"Cannot resolve physical base-path alias '{current}'.");
+            current = Path.GetFullPath(target.FullName);
+        }
+
+        return Path.GetFullPath(current).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+    }
+
+    private static void EnsureNoExistingReparsePoint(string sessionRoot, string fullPath)
+    {
+        var current = sessionRoot;
+        if (Directory.Exists(current) && IsReparsePoint(current))
+            throw new InvalidDataException("Canonical game_session root cannot be a reparse point.");
+
+        var relative = Path.GetRelativePath(sessionRoot, fullPath);
+        if (relative == ".")
+            return;
+
+        foreach (var segment in relative.Split(
+                     [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                     StringSplitOptions.RemoveEmptyEntries))
+        {
+            current = Path.Combine(current, segment);
+            if (!Directory.Exists(current) && !File.Exists(current))
+                break;
+            if (IsReparsePoint(current))
+            {
+                throw new InvalidDataException(
+                    $"Canonical game-session path traverses reparse point '{current}'.");
+            }
+        }
     }
 
     /// <summary>
@@ -331,7 +430,8 @@ public class FileSystemManager
         if (dir != null && !Directory.Exists(dir))
             Directory.CreateDirectory(dir);
 
-        var tempPath = fullPath + ".tmp." + Guid.NewGuid().ToString("N")[..8];
+        var tempRelativePath = relativePath + ".tmp." + Guid.NewGuid().ToString("N")[..8];
+        var tempPath = ResolvePath(tempRelativePath);
         try
         {
             await using (var stream = new FileStream(
@@ -345,10 +445,14 @@ public class FileSystemManager
                 await stream.WriteAsync(content);
                 stream.Flush(flushToDisk: true);
             }
+            if (_hooks?.BeforeCanonicalMutationBoundaryAsync != null)
+                await _hooks.BeforeCanonicalMutationBoundaryAsync(relativePath);
+
             for (var attempt = 0; ; attempt++)
             {
                 try
                 {
+                    EnsureCanonicalMutationBoundary(relativePath, fullPath);
                     File.Move(tempPath, fullPath, overwrite: true);
                     return;
                 }
@@ -360,9 +464,43 @@ public class FileSystemManager
         }
         catch
         {
-            if (File.Exists(tempPath))
-                File.Delete(tempPath);
+            TryDeleteAtomicTempFileWithoutFollowingReparsePoints(tempRelativePath, tempPath);
             throw;
+        }
+    }
+
+    private void EnsureCanonicalMutationBoundary(string relativePath, string expectedFullPath)
+    {
+        var revalidatedFullPath = ResolvePath(relativePath);
+        if (!string.Equals(
+                revalidatedFullPath,
+                expectedFullPath,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Canonical game-session path identity changed before mutation.");
+        }
+    }
+
+    private void TryDeleteAtomicTempFileWithoutFollowingReparsePoints(
+        string tempRelativePath,
+        string expectedTempPath)
+    {
+        try
+        {
+            var revalidatedTempPath = ResolvePath(tempRelativePath);
+            if (string.Equals(
+                    revalidatedTempPath,
+                    expectedTempPath,
+                    StringComparison.OrdinalIgnoreCase) &&
+                File.Exists(revalidatedTempPath))
+            {
+                File.Delete(revalidatedTempPath);
+            }
+        }
+        catch
+        {
+            // Retaining an unreachable temp file is safer than following a replaced path.
         }
     }
 
@@ -464,6 +602,15 @@ public class FileSystemManager
         DeleteDirectoryTreeWithoutFollowingReparsePoints(ResolvePath(relativePath));
     }
 
+    internal void DeleteEmptyDirectories(
+        CanonicalWriteLease writeLease,
+        string relativeRoot)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        EnsureSafeCanonicalRelativePath(relativeRoot);
+        DeleteEmptyDirectoriesWithoutFollowingReparsePoints(ResolvePath(relativeRoot));
+    }
+
     public void DeleteFile(string relativePath)
     {
         DeleteFileWithLockAsync(relativePath).GetAwaiter().GetResult();
@@ -488,6 +635,13 @@ public class FileSystemManager
         {
             try
             {
+                if (_hooks?.BeforeCanonicalMutationBoundaryAsync != null)
+                {
+                    _hooks.BeforeCanonicalMutationBoundaryAsync(relativePath)
+                        .GetAwaiter()
+                        .GetResult();
+                }
+                EnsureCanonicalMutationBoundary(relativePath, fullPath);
                 if (File.Exists(fullPath))
                     File.Delete(fullPath);
                 return;
@@ -502,6 +656,29 @@ public class FileSystemManager
     internal async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseAsync(
         CanonicalWritePurpose purpose = CanonicalWritePurpose.SessionMutation,
         CancellationToken cancellationToken = default)
+    {
+        if (purpose == CanonicalWritePurpose.SessionReplacement)
+        {
+            throw new InvalidOperationException(
+                "Session replacement writes require an active session lifecycle lease.");
+        }
+
+        return await AcquireCanonicalWriteLeaseCoreAsync(purpose, cancellationToken);
+    }
+
+    internal async Task<CanonicalWriteLease> AcquireSessionReplacementWriteLeaseAsync(
+        SessionLifecycleLease lifecycleLease,
+        CancellationToken cancellationToken = default)
+    {
+        EnsureValidSessionLifecycleLease(lifecycleLease);
+        return await AcquireCanonicalWriteLeaseCoreAsync(
+            CanonicalWritePurpose.SessionReplacement,
+            cancellationToken);
+    }
+
+    private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
+        CanonicalWritePurpose purpose,
+        CancellationToken cancellationToken)
     {
         var lockPath = CanonicalWriteLockPath;
         Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
@@ -527,7 +704,7 @@ public class FileSystemManager
                 continue;
             }
 
-            var writeLease = new CanonicalWriteLease(this, stream);
+            var writeLease = new CanonicalWriteLease(this, stream, purpose);
             try
             {
                 RecoverInterruptedLoadTransaction(writeLease);
@@ -572,6 +749,9 @@ public class FileSystemManager
 
         await using var writeLease = await AcquireCanonicalWriteLeaseAsync();
     }
+
+    internal Task InvokeSessionOperationClosingHookAsync() =>
+        _hooks?.SessionOperationClosingAsync?.Invoke() ?? Task.CompletedTask;
 
     internal async Task<SessionLifecycleLease> AcquireSessionLifecycleLeaseAsync()
     {
@@ -630,6 +810,16 @@ public class FileSystemManager
             throw new InvalidOperationException("Canonical write lease is not active for this game session.");
     }
 
+    private void EnsureValidSessionReplacementLease(CanonicalWriteLease writeLease)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        if (writeLease.Purpose != CanonicalWritePurpose.SessionReplacement)
+        {
+            throw new InvalidOperationException(
+                "This operation requires a session replacement write lease.");
+        }
+    }
+
     private void EnsureValidSessionLifecycleLease(SessionLifecycleLease lifecycleLease)
     {
         ArgumentNullException.ThrowIfNull(lifecycleLease);
@@ -668,17 +858,52 @@ public class FileSystemManager
             Path.Combine(transactionRoot, "failed", "game_session"));
     }
 
-    internal void BeginLoadTransaction(CanonicalWriteLease writeLease, string transactionId)
+    internal string BeginLoadTransaction(CanonicalWriteLease writeLease, string transactionId)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
+        EnsureValidSessionReplacementLease(writeLease);
         RecoverInterruptedLoadTransaction(writeLease);
-        WriteLoadTransactionJournal(transactionId, committed: false);
+        var previousGenerationId = _loadTransactionOperations.FileExists(SessionGenerationPath)
+            ? ReadSessionGeneration()
+            : null;
+        var replacementGenerationId = Guid.NewGuid().ToString("N");
+        WriteLoadTransactionJournal(
+            new LoadTransactionJournal(
+                SchemaVersion: 2,
+                TransactionId: transactionId,
+                Committed: false,
+                PreviousGenerationId: previousGenerationId,
+                ReplacementGenerationId: replacementGenerationId));
+        return replacementGenerationId;
+    }
+
+    internal void ActivateLoadTransactionSession(
+        CanonicalWriteLease writeLease,
+        string transactionId)
+    {
+        EnsureValidSessionReplacementLease(writeLease);
+        var journal = ReadLoadTransactionJournal();
+        if (!string.Equals(journal.TransactionId, transactionId, StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(journal.ReplacementGenerationId))
+        {
+            throw new InvalidDataException("Active load transaction replacement authority is invalid.");
+        }
+
+        WriteSessionGeneration(journal.ReplacementGenerationId);
+        DeleteWorkerSessionArtifactsCore();
     }
 
     internal void CommitLoadTransaction(CanonicalWriteLease writeLease, string transactionId)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        WriteLoadTransactionJournal(transactionId, committed: true);
+        EnsureValidSessionReplacementLease(writeLease);
+        var journal = ReadLoadTransactionJournal();
+        if (!string.Equals(journal.TransactionId, transactionId, StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(journal.ReplacementGenerationId) ||
+            !IsCurrentSessionGeneration(writeLease, journal.ReplacementGenerationId))
+        {
+            throw new InvalidDataException("Active load transaction generation was not activated.");
+        }
+
+        WriteLoadTransactionJournal(journal with { Committed = true });
 
         try
         {
@@ -701,7 +926,15 @@ public class FileSystemManager
         var paths = GetLoadTransactionPaths(journal.TransactionId);
 
         if (!journal.Committed || !_loadTransactionOperations.DirectoryExists(GameSessionPath))
+        {
             RestoreLoadTransactionBackup(paths);
+            if (journal.SchemaVersion >= 2)
+                RestoreLoadTransactionGeneration(journal.PreviousGenerationId);
+        }
+        else if (!string.IsNullOrWhiteSpace(journal.ReplacementGenerationId))
+        {
+            WriteSessionGeneration(journal.ReplacementGenerationId);
+        }
 
         CleanupCommittedLoadTransaction(paths);
         _logger.LogWarning(
@@ -750,10 +983,22 @@ public class FileSystemManager
             _loadTransactionOperations.DeleteFile(ActiveLoadTransactionJournalPath);
     }
 
-    private void WriteLoadTransactionJournal(string transactionId, bool committed)
+    private void WriteLoadTransactionJournal(LoadTransactionJournal journal)
     {
-        var json = JsonSerializer.Serialize(new LoadTransactionJournal(1, transactionId, committed));
+        var json = JsonSerializer.Serialize(journal);
         _loadTransactionOperations.WriteAllTextAtomic(ActiveLoadTransactionJournalPath, json);
+    }
+
+    private void RestoreLoadTransactionGeneration(string? previousGenerationId)
+    {
+        if (string.IsNullOrWhiteSpace(previousGenerationId))
+        {
+            if (_loadTransactionOperations.FileExists(SessionGenerationPath))
+                _loadTransactionOperations.DeleteFile(SessionGenerationPath);
+            return;
+        }
+
+        WriteSessionGeneration(previousGenerationId);
     }
 
     private LoadTransactionJournal ReadLoadTransactionJournal()
@@ -763,8 +1008,12 @@ public class FileSystemManager
             var journal = JsonSerializer.Deserialize<LoadTransactionJournal>(
                 _loadTransactionOperations.ReadAllText(ActiveLoadTransactionJournalPath),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            if (journal is null || journal.SchemaVersion != 1 ||
-                !Guid.TryParseExact(journal.TransactionId, "N", out _))
+            if (journal is null ||
+                journal.SchemaVersion is < 1 or > 2 ||
+                !Guid.TryParseExact(journal.TransactionId, "N", out _) ||
+                !IsOptionalCanonicalGenerationId(journal.PreviousGenerationId) ||
+                !IsOptionalCanonicalGenerationId(journal.ReplacementGenerationId) ||
+                (journal.SchemaVersion == 2 && string.IsNullOrWhiteSpace(journal.ReplacementGenerationId)))
             {
                 throw new InvalidDataException("Active load transaction journal is invalid.");
             }
@@ -796,7 +1045,17 @@ public class FileSystemManager
         }
     }
 
-    private sealed record LoadTransactionJournal(int SchemaVersion, string TransactionId, bool Committed);
+    private static bool IsOptionalCanonicalGenerationId(string? generationId) =>
+        string.IsNullOrWhiteSpace(generationId) ||
+        Guid.TryParseExact(generationId, "N", out var parsedGeneration) &&
+        string.Equals(generationId, parsedGeneration.ToString("N"), StringComparison.Ordinal);
+
+    private sealed record LoadTransactionJournal(
+        int SchemaVersion,
+        string TransactionId,
+        bool Committed,
+        string? PreviousGenerationId = null,
+        string? ReplacementGenerationId = null);
 
     internal async Task<CanonicalWorkerApplyTransaction> BeginWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease,
@@ -1078,12 +1337,7 @@ public class FileSystemManager
     {
         if (string.IsNullOrWhiteSpace(relativePath) || Path.IsPathRooted(relativePath))
             throw new InvalidDataException("Worker apply transaction path is invalid.");
-        var fullPath = Path.GetFullPath(ResolvePath(relativePath));
-        var sessionRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
-                              Path.DirectorySeparatorChar,
-                              Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
-        if (!fullPath.StartsWith(sessionRoot, StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException("Worker apply transaction path escapes game_session.");
+        _ = ResolvePath(relativePath);
     }
 
     private static string ComputeSha256OrMissing(byte[]? content) =>
@@ -1173,7 +1427,7 @@ public class FileSystemManager
 
     internal string RotateSessionGeneration(CanonicalWriteLease writeLease)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
+        EnsureValidSessionReplacementLease(writeLease);
         var generationId = Guid.NewGuid().ToString("N");
         WriteSessionGeneration(generationId);
         DeleteWorkerSessionArtifactsCore();
@@ -1258,6 +1512,28 @@ public class FileSystemManager
         Directory.Delete(path, recursive: false);
     }
 
+    private static void DeleteEmptyDirectoriesWithoutFollowingReparsePoints(string path)
+    {
+        if (!Directory.Exists(path))
+            return;
+
+        var attributes = File.GetAttributes(path);
+        if ((attributes & FileAttributes.ReparsePoint) != 0)
+            throw new InvalidDataException($"Refusing to traverse reparse-point directory '{path}'.");
+
+        foreach (var child in Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly))
+        {
+            var childAttributes = File.GetAttributes(child);
+            if ((childAttributes & FileAttributes.ReparsePoint) != 0)
+                continue;
+
+            DeleteEmptyDirectoriesWithoutFollowingReparsePoints(child);
+        }
+
+        if (!Directory.EnumerateFileSystemEntries(path, "*", SearchOption.TopDirectoryOnly).Any())
+            Directory.Delete(path, recursive: false);
+    }
+
     private sealed record SessionGenerationDocument(int SchemaVersion, string GenerationId);
 
     /// <summary>
@@ -1286,7 +1562,9 @@ public class FileSystemManager
         if (!File.Exists(fullPath))
             return null;
 
-        var backupPath = fullPath + $".backup.{DateTime.UtcNow.Ticks}";
+        EnsureCanonicalMutationBoundary(relativePath, fullPath);
+        var backupRelativePath = relativePath + $".backup.{DateTime.UtcNow.Ticks}";
+        var backupPath = ResolvePath(backupRelativePath);
         File.Copy(fullPath, backupPath, overwrite: true);
         return backupPath;
     }
@@ -1313,11 +1591,13 @@ public class FileSystemManager
 
     private void RestoreBackupCore(string backupFullPath, string originalRelativePath)
     {
+        var canonicalBackupPath = ResolveCanonicalAbsolutePath(backupFullPath);
         var originalFullPath = ResolvePath(originalRelativePath);
-        if (File.Exists(backupFullPath))
+        if (File.Exists(canonicalBackupPath))
         {
-            File.Copy(backupFullPath, originalFullPath, overwrite: true);
-            File.Delete(backupFullPath);
+            EnsureCanonicalMutationBoundary(originalRelativePath, originalFullPath);
+            File.Copy(canonicalBackupPath, originalFullPath, overwrite: true);
+            CleanupBackupCore(canonicalBackupPath);
         }
     }
 
@@ -1338,10 +1618,33 @@ public class FileSystemManager
         CleanupBackupCore(backupFullPath);
     }
 
-    private static void CleanupBackupCore(string backupFullPath)
+    private void CleanupBackupCore(string backupFullPath)
     {
-        if (File.Exists(backupFullPath))
-            File.Delete(backupFullPath);
+        var canonicalBackupPath = ResolveCanonicalAbsolutePath(backupFullPath);
+        if (File.Exists(canonicalBackupPath))
+            File.Delete(canonicalBackupPath);
+    }
+
+    private string ResolveCanonicalAbsolutePath(string absolutePath)
+    {
+        if (string.IsNullOrWhiteSpace(absolutePath) || !Path.IsPathRooted(absolutePath))
+            throw new InvalidDataException("Canonical backup path must be absolute.");
+
+        var normalizedAbsolutePath = Path.GetFullPath(absolutePath);
+        var sessionRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var sessionPrefix = sessionRoot + Path.DirectorySeparatorChar;
+        if (!normalizedAbsolutePath.StartsWith(sessionPrefix, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Canonical backup path escapes game_session.");
+
+        var relativePath = Path.GetRelativePath(sessionRoot, normalizedAbsolutePath)
+            .Replace('\\', '/');
+        var resolvedPath = ResolvePath(relativePath);
+        if (!string.Equals(resolvedPath, normalizedAbsolutePath, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Canonical backup path identity is invalid.");
+
+        return resolvedPath;
     }
 
     /// <summary>
@@ -1372,8 +1675,7 @@ public class FileSystemManager
     internal async Task<string> ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
     {
         EnsureValidSessionLifecycleLease(lifecycleLease);
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync(
-            CanonicalWritePurpose.SessionReplacement);
+        await using var writeLock = await AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
         var sessionGeneration = RotateSessionGeneration(writeLock);
         ClearGameStateCore();
         return sessionGeneration;

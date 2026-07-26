@@ -290,7 +290,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups = null,
-        Func<string, string?>? readRelativeFile = null)
+        Func<string, byte[]?>? readRelativeFile = null)
         where TManifest : class
     {
         var payload = BuildAuthorityPayload(
@@ -336,7 +336,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
-        Func<string, string?>? readRelativeFile,
+        Func<string, byte[]?>? readRelativeFile,
         out PendingTurnSnapshotAuthorityPayload? payload,
         out string failureCode)
         where TManifest : class
@@ -377,7 +377,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?> getRollbackBackups,
-        Func<string, string?> readRelativeFile,
+        Func<string, byte[]?> readRelativeFile,
         out PendingTurnSnapshotAuthorityPayload? payload,
         out string failureCode)
         where TManifest : class
@@ -418,7 +418,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
-        Func<string, string?>? readRelativeFile,
+        Func<string, byte[]?>? readRelativeFile,
         out PendingTurnSnapshotAuthorityPayload? payload,
         out string failureCode,
         bool requireRollbackArtifactPaths)
@@ -619,7 +619,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
-        Func<string, string?>? readRelativeFile)
+        Func<string, byte[]?>? readRelativeFile)
         where TManifest : class
     {
         var rollbackBackups = getRollbackBackups != null
@@ -698,7 +698,7 @@ internal static class PendingTurnSnapshotAuthority
 
     private static Dictionary<string, string> CopyNormalizedFileHashes(
         IDictionary<string, string> fileMap,
-        Func<string, string?>? readRelativeFile)
+        Func<string, byte[]?>? readRelativeFile)
     {
         if (readRelativeFile == null)
             throw new InvalidOperationException("Validated pending snapshot authority requires a readable file delegate for rollback-backed authority.");

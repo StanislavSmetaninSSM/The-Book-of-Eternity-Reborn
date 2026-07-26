@@ -13,28 +13,31 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string trackedFile,
         string scope)
     {
-        if (string.IsNullOrWhiteSpace(trackedFile) || !fs.FileExists(trackedFile))
+        if (string.IsNullOrWhiteSpace(trackedFile))
             return null;
 
-        var content = await fs.ReadFileAsync(trackedFile);
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        if (!fs.FileExists(writeLease, trackedFile))
+            return null;
+
+        var content = await fs.ReadFileBytesAsync(writeLease, trackedFile);
         if (content == null)
             return null;
 
         var backupPath =
             $"{Root}/{SafeSegment(scope)}/{DateTime.UtcNow.Ticks}_{Guid.NewGuid():N}/{CreateSafeBackupFileName(trackedFile)}.rollback.{Guid.NewGuid():N}";
-        await fs.WriteFileAtomicAsync(backupPath, content);
+        await fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
         return backupPath;
     }
 
-    public static IReadOnlyList<StagedBackup> DiscoverBackups(
+    internal static IReadOnlyList<StagedBackup> DiscoverBackups(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         IEnumerable<string> trackedFiles)
     {
-        var root = fs.ResolvePath(Root);
-        if (!Directory.Exists(root))
-            return Array.Empty<StagedBackup>();
-
-        var gameSessionRoot = fs.ResolvePath("");
+        var availableBackups = fs.EnumerateFiles(writeLease, "*")
+            .Where(path => path.StartsWith($"{Root}/", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
         var backups = new List<StagedBackup>();
         foreach (var trackedFile in trackedFiles
                      .Where(static path => !string.IsNullOrWhiteSpace(path))
@@ -42,17 +45,16 @@ public static class ExplorerLocalTurnRollbackArtifacts
                      .Distinct(StringComparer.OrdinalIgnoreCase))
         {
             var safeName = CreateSafeBackupFileName(trackedFile);
-            var match = Directory
-                .GetFiles(root, $"{safeName}.rollback.*", SearchOption.AllDirectories)
-                .Select(static path => new FileInfo(path))
-                .OrderByDescending(static file => file.LastWriteTimeUtc)
-                .ThenByDescending(static file => file.FullName, StringComparer.OrdinalIgnoreCase)
+            var match = availableBackups
+                .Where(path => Path.GetFileName(path)
+                    .StartsWith($"{safeName}.rollback.", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(path => File.GetLastWriteTimeUtc(fs.ResolvePath(path)))
+                .ThenByDescending(static path => path, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault();
             if (match == null)
                 continue;
 
-            var relative = Path.GetRelativePath(gameSessionRoot, match.FullName).Replace('\\', '/');
-            backups.Add(new StagedBackup(trackedFile, relative));
+            backups.Add(new StagedBackup(trackedFile, match));
         }
 
         return backups;
@@ -60,28 +62,36 @@ public static class ExplorerLocalTurnRollbackArtifacts
 
     public static void DeleteBackup(FileSystemManager fs, string? backupPath)
     {
-        if (!string.IsNullOrWhiteSpace(backupPath) && fs.FileExists(backupPath))
-            fs.DeleteFile(backupPath);
-
-        DeleteEmptyDirectories(fs);
+        var writeLease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(backupPath))
+                fs.DeleteFile(writeLease, backupPath);
+            DeleteEmptyDirectories(fs, writeLease);
+        }
+        finally
+        {
+            writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        }
     }
 
     public static void DeleteEmptyDirectories(FileSystemManager fs)
     {
-        var rollbackRoot = fs.ResolvePath(Root);
-        if (!Directory.Exists(rollbackRoot))
-            return;
-
-        foreach (var directory in Directory.GetDirectories(rollbackRoot, "*", SearchOption.AllDirectories)
-                     .OrderByDescending(static path => path.Length))
+        var writeLease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        try
         {
-            if (!Directory.EnumerateFileSystemEntries(directory).Any())
-                Directory.Delete(directory);
+            DeleteEmptyDirectories(fs, writeLease);
         }
-
-        if (!Directory.EnumerateFileSystemEntries(rollbackRoot).Any())
-            Directory.Delete(rollbackRoot);
+        finally
+        {
+            writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        }
     }
+
+    internal static void DeleteEmptyDirectories(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        fs.DeleteEmptyDirectories(writeLease, Root);
 
     private static string CreateSafeBackupFileName(string trackedFile)
     {

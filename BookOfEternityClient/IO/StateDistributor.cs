@@ -153,7 +153,7 @@ public class StateDistributor
         {
             try
             {
-                var doc = JsonDocument.Parse(existingJson);
+                using var doc = JsonDocument.Parse(existingJson);
                 existingData = new Dictionary<string, JsonElement>();
                 if (doc.RootElement.ValueKind == JsonValueKind.Object)
                 {
@@ -166,9 +166,11 @@ public class StateDistributor
                     existingData["_previousData"] = doc.RootElement.Clone();
                 }
             }
-            catch
+            catch (JsonException ex)
             {
-                existingData = new Dictionary<string, JsonElement>();
+                throw new InvalidDataException(
+                    $"Canonical state file '{relativePath}' contains malformed JSON and cannot be merged safely.",
+                    ex);
             }
         }
         else

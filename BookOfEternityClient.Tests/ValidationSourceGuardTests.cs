@@ -562,7 +562,10 @@ public sealed class ValidationSourceGuardTests
             "GameEngine.SessionAndSnapshots.cs");
         var source = File.ReadAllText(path);
 
-        Assert.Contains("if (_fs.FileExists(SarefMainStoryState.StatePath))", source, StringComparison.Ordinal);
+        Assert.Contains(
+            "if (_fs.FileExists(writeLease, SarefMainStoryState.StatePath))",
+            source,
+            StringComparison.Ordinal);
         Assert.Contains("TryAddOptionalCanonicalBaselineSnapshotAsync(", source, StringComparison.Ordinal);
         Assert.Contains("SarefMainStoryState.StatePath))", source, StringComparison.Ordinal);
     }

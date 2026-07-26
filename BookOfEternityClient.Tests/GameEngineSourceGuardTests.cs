@@ -87,16 +87,20 @@ public sealed class GameEngineSourceGuardTests
     public void PendingTurnSnapshotCleanup_MustNotBypassCanonicalSessionFence()
     {
         var source = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
-        var method = ExtractMethodSource(
+        var wrapper = ExtractMethodSource(
             source,
             "private async Task CleanupPendingTurnSnapshotAsync(");
+        var core = ExtractMethodSource(
+            source,
+            "private void CleanupPendingTurnSnapshot(");
 
-        Assert.Contains("_fs.AcquireCanonicalWriteLeaseAsync()", method, StringComparison.Ordinal);
-        Assert.Contains("_fs.DeleteDirectoryTree(", method, StringComparison.Ordinal);
-        Assert.Contains("_fs.EnumerateFiles(", method, StringComparison.Ordinal);
-        Assert.DoesNotContain("Directory.Delete(", method, StringComparison.Ordinal);
-        Assert.DoesNotContain("File.Delete(", method, StringComparison.Ordinal);
-        Assert.DoesNotContain("Directory.EnumerateFiles(", method, StringComparison.Ordinal);
+        Assert.Contains("_fs.AcquireCanonicalWriteLeaseAsync()", wrapper, StringComparison.Ordinal);
+        Assert.Contains("CleanupPendingTurnSnapshot(writeLease", wrapper, StringComparison.Ordinal);
+        Assert.Contains("_fs.DeleteDirectoryTree(writeLease", core, StringComparison.Ordinal);
+        Assert.Contains("_fs.EnumerateFiles(writeLease", core, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.Delete(", core, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Delete(", core, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.EnumerateFiles(", core, StringComparison.Ordinal);
     }
 
     [Fact]

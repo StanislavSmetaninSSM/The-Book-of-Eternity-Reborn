@@ -3549,7 +3549,7 @@ public partial class ValidationService
         }
     }
 
-    private string? ReadRelativeFileFromWorkspace(string relativePath)
+    private byte[]? ReadRelativeFileFromWorkspace(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -3560,7 +3560,7 @@ public partial class ValidationService
 
         try
         {
-            return File.ReadAllText(fullPath);
+            return File.ReadAllBytes(fullPath);
         }
         catch
         {

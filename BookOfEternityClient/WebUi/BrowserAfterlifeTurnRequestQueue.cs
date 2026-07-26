@@ -240,7 +240,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             yield return Path.GetRelativePath(sessionRoot, absoluteFile).Replace('\\', '/');
     }
 
-    private string? ReadRelativeFileFromWorkspace(string relativePath)
+    private byte[]? ReadRelativeFileFromWorkspace(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -251,7 +251,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
 
         try
         {
-            return File.ReadAllText(fullPath, Encoding.UTF8);
+            return File.ReadAllBytes(fullPath);
         }
         catch
         {

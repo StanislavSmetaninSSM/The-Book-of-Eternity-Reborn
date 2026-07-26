@@ -56,6 +56,54 @@ public sealed class StoryServiceTests : IDisposable
         Assert.Contains(marker ? "marker narrative" : "turn narrative", story, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task StoryAppend_EscapedClosedSession_PropagatesSessionReplaced(bool marker)
+    {
+        string generation;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            generation = _fs.GetOrCreateSessionGeneration(lease);
+
+        var releaseEscapedAppend = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        Task? escapedAppend = null;
+        await SessionOperationContext.RunBoundAsync(
+            _fs,
+            generation,
+            () =>
+            {
+                escapedAppend = Task.Run(async () =>
+                {
+                    await releaseEscapedAppend.Task;
+                    if (marker)
+                    {
+                        await _storyService.AppendMarkerAsync(
+                            "Mortal World",
+                            1,
+                            "transition",
+                            "must not be swallowed");
+                    }
+                    else
+                    {
+                        await _storyService.AppendTurnAsync(
+                            7,
+                            "Mortal World",
+                            1,
+                            "player action",
+                            "must not be swallowed");
+                    }
+                });
+                return Task.CompletedTask;
+            });
+
+        Assert.NotNull(escapedAppend);
+        releaseEscapedAppend.TrySetResult();
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => escapedAppend!.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.False(_fs.FileExists("stories/mortal_life_1.jsonl"));
+    }
+
     public void Dispose()
     {
         try

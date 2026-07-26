@@ -109,7 +109,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         var allProfiles = profiles?.OfType<JsonObject>().ToList() ?? [];
         var visibleProfiles = includeRawDiagnostics
             ? allProfiles
-            : allProfiles.Where(IsProfileVisibleToPlayer).ToList();
+            : allProfiles.Where(AfterlifeProfileVisibility.IsVisibleToPlayer).ToList();
         var detail = ParseDetailRequest(request.Arguments, "профиль", "profile", "сущность", "entity", "деталь", "detail");
         if (!string.IsNullOrWhiteSpace(detail.Selector))
             return BuildProfileDetail(request.Command, visibleProfiles, detail.Selector);
@@ -4572,32 +4572,6 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     }
 
     private static string UnquoteSelector(string value) => value.Trim().Trim('"');
-
-    private static bool IsProfileVisibleToPlayer(JsonObject profile)
-    {
-        if (IsFalseFlag(profile["isPlayerVisible"]) ||
-            IsFalseFlag(profile["playerVisible"]) ||
-            IsFalseFlag(profile["visibleToPlayer"]) ||
-            IsFalseFlag(profile["visibleForPlayer"]))
-        {
-            return false;
-        }
-
-        if (IsTrueFlag(profile["isHidden"]) ||
-            IsTrueFlag(profile["hidden"]) ||
-            IsTrueFlag(profile["isSecret"]) ||
-            IsTrueFlag(profile["secret"]) ||
-            IsTrueFlag(profile["gmOnly"]) ||
-            IsTrueFlag(profile["isGmOnly"]) ||
-            IsTrueFlag(profile["internal"]) ||
-            IsTrueFlag(profile["isInternal"]))
-        {
-            return false;
-        }
-
-        var visibility = GetString(profile, "visibility", "");
-        return !IsHiddenPlayerFacingVisibility(visibility);
-    }
 
     private static IReadOnlyList<JsonObject> GetVisibleExchangeLog(JsonObject? active)
     {

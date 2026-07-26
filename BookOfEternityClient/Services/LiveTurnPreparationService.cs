@@ -350,7 +350,7 @@ internal sealed class LiveTurnPreparationService
         }
     }
 
-    private string? ReadRelativeFileFromWorkspace(
+    private byte[]? ReadRelativeFileFromWorkspace(
         FileSystemManager.CanonicalWriteLease writeLease,
         string relativePath)
     {
@@ -359,7 +359,7 @@ internal sealed class LiveTurnPreparationService
 
         try
         {
-            return _fs.ReadFileAsync(writeLease, relativePath).GetAwaiter().GetResult();
+            return _fs.ReadFileBytesAsync(writeLease, relativePath).GetAwaiter().GetResult();
         }
         catch
         {
