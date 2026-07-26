@@ -37,17 +37,30 @@ public sealed class GmWorkerAuditLog
         string expectedSessionGeneration,
         WorkerAuditEvent auditEvent)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await AppendEventIfCurrentSessionAsync(
+            expectedSessionGeneration,
+            auditEvent,
+            CancellationToken.None);
+    }
+
+    internal async Task<bool> AppendEventIfCurrentSessionAsync(
+        string expectedSessionGeneration,
+        WorkerAuditEvent auditEvent,
+        CancellationToken cancellationToken)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+            cancellationToken: cancellationToken);
         if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
             return false;
 
-        await AppendEventCoreAsync(auditEvent, writeLease);
+        await AppendEventCoreAsync(auditEvent, writeLease, cancellationToken);
         return true;
     }
 
     private async Task AppendEventCoreAsync(
         WorkerAuditEvent auditEvent,
-        FileSystemManager.CanonicalWriteLease? writeLease)
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(auditEvent.EventId))
             throw new ArgumentException("Audit event id is required.", nameof(auditEvent));
@@ -62,9 +75,13 @@ public sealed class GmWorkerAuditLog
             if (writeLease == null)
                 await _fs.AppendFileAtomicAsync(AuditLogPath, line + Environment.NewLine);
             else
-                await _fs.AppendFileAtomicAsync(writeLease, AuditLogPath, line + Environment.NewLine);
+                await _fs.AppendFileAtomicAsync(
+                    writeLease,
+                    AuditLogPath,
+                    line + Environment.NewLine,
+                    cancellationToken);
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        catch (Exception)
         {
             // Audit is diagnostic telemetry and must not revoke an accepted canonical operation.
         }
@@ -75,6 +92,14 @@ public sealed class GmWorkerAuditLog
 
     internal Task<bool> RecordTaskDispatchedIfCurrentSessionAsync(WorkerTaskPacket task) =>
         AppendEventIfCurrentSessionAsync(task.SessionGeneration, BuildTaskDispatchedEvent(task));
+
+    internal Task<bool> RecordTaskDispatchedIfCurrentSessionAsync(
+        WorkerTaskPacket task,
+        CancellationToken cancellationToken) =>
+        AppendEventIfCurrentSessionAsync(
+            task.SessionGeneration,
+            BuildTaskDispatchedEvent(task),
+            cancellationToken);
 
     private static WorkerAuditEvent BuildTaskDispatchedEvent(WorkerTaskPacket task) =>
         new()

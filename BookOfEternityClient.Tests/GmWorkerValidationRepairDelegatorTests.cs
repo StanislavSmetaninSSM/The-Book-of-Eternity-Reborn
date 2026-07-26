@@ -544,12 +544,96 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                 "2026-06-20T01:00:00Z",
                 attempt: 23);
 
-            Assert.NotEqual(GmWorkerValidationRepairOutcome.Applied, result.Outcome);
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
             Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
             Assert.False(result.ReadySignalCreated);
             Assert.Contains("session generation", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
             Assert.False(fs.FileExists(ReadyPath));
             Assert.False(fs.FileExists(LatestTaskPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_StaleBoundSessionDuringReadyPublication_ReturnsTypedReplacement()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            string expectedGeneration;
+            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                expectedGeneration = fs.GetOrCreateSessionGeneration(lease);
+            }
+
+            var profile = BuildProfile(root, "fake-bound-ready-generation-race.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_bound_ready_generation_race'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Repair accepted before a bound session is replaced.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('bound ready generation race')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var hooks = new GmWorkerValidationRepairDelegatorHooks
+            {
+                BeforeReadyPublicationAsync = async () =>
+                {
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+                }
+            };
+            var delegator = CreateDelegator(fs, delegatorHooks: hooks);
+            GmWorkerValidationRepairDispatchResult? capturedResult = null;
+
+            await Assert.ThrowsAsync<SessionReplacedException>(
+                () => SessionOperationContext.RunBoundAsync(
+                    fs,
+                    expectedGeneration,
+                    async () =>
+                    {
+                        capturedResult = await delegator.TryRunAsync(
+                            [profile],
+                            [MissingWeatherDescriptionIssue()],
+                            TurnReference(),
+                            "2026-06-20T01:00:00Z",
+                            attempt: 26);
+                    }));
+
+            Assert.NotNull(capturedResult);
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, capturedResult.Outcome);
+            Assert.Equal(ApplyGateResult.Accepted, capturedResult.ApplyDecision?.Result);
+            Assert.False(capturedResult.ReadySignalCreated);
+            Assert.False(fs.FileExists(ReadyPath));
         }
         finally
         {

@@ -245,6 +245,47 @@ public sealed class GmWorkerProposalStoreTests
         }
     }
 
+    [Fact]
+    public async Task PublishBundleAsync_DerivedAuditFailureAfterDurableTransitionPreservesPublishedOutcome()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+            {
+                ProposalId = "worker_proposal_audit_failure_after_publication"
+            };
+            var taskPath = GmWorkerBridgePool.GetTaskPacketPath(proposal.TaskId);
+            var taskBytes = System.Text.Encoding.UTF8.GetBytes("task-generation");
+            string sessionGeneration;
+            await using (var setupLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                sessionGeneration = fs.GetOrCreateSessionGeneration(setupLease);
+                await fs.WriteFileAtomicBytesAsync(setupLease, taskPath, taskBytes);
+            }
+
+            var store = new GmWorkerProposalStore(fs);
+            var result = await store.PublishBundleAsync(
+                proposal,
+                System.Text.Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(proposal)),
+                new Dictionary<string, byte[]>(),
+                taskPath,
+                taskBytes,
+                sessionGeneration,
+                GmWorkerBridgePool.GetProposalInboxPath(proposal.TaskId),
+                _ => Task.FromException(new InvalidOperationException("Synthetic audit failure.")));
+
+            Assert.True(result.Published);
+            Assert.Contains("audit", result.Warning!, StringComparison.OrdinalIgnoreCase);
+            Assert.NotNull(await store.ReadProposalAsync(proposal.ProposalId));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static FileSystemManager CreateFileSystem(string root)
     {
         var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);

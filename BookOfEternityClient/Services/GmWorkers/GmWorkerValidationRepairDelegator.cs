@@ -415,6 +415,13 @@ public sealed class GmWorkerValidationRepairDelegator
                 }
             });
         }
+        catch (SessionReplacedException ex)
+        {
+            return (
+                false,
+                $"Worker repair belonged to a replaced game session generation; no ready signal was published: {ex.Message}",
+                true);
+        }
         catch (Exception ex)
         {
             var diagnostic = $"Worker repair was applied, but ready signal publication failed: {ex.Message}";

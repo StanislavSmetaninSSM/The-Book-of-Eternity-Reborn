@@ -345,12 +345,26 @@ public class FileSystemManager
         string relativePath,
         string content)
     {
+        await AppendFileAtomicAsync(
+            writeLease,
+            relativePath,
+            content,
+            CancellationToken.None);
+    }
+
+    internal async Task AppendFileAtomicAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        string content,
+        CancellationToken cancellationToken)
+    {
         EnsureValidCanonicalWriteLease(writeLease);
+        cancellationToken.ThrowIfCancellationRequested();
         var fullPath = ResolvePath(relativePath);
         byte[] currentContent;
         try
         {
-            currentContent = await File.ReadAllBytesAsync(fullPath);
+            currentContent = await File.ReadAllBytesAsync(fullPath, cancellationToken);
         }
         catch (FileNotFoundException)
         {
@@ -365,7 +379,7 @@ public class FileSystemManager
         var nextContent = new byte[currentContent.Length + appendedContent.Length];
         Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
         Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
-        await WriteFileAtomicBytesCoreAsync(relativePath, nextContent);
+        await WriteFileAtomicBytesCoreAsync(relativePath, nextContent, cancellationToken);
     }
 
     internal async Task<bool> AppendFileAtomicIfCurrentSessionAsync(
@@ -373,11 +387,29 @@ public class FileSystemManager
         string content,
         string expectedSessionGeneration)
     {
-        await using var writeLease = await AcquireCanonicalWriteLeaseAsync();
+        return await AppendFileAtomicIfCurrentSessionAsync(
+            relativePath,
+            content,
+            expectedSessionGeneration,
+            CancellationToken.None);
+    }
+
+    internal async Task<bool> AppendFileAtomicIfCurrentSessionAsync(
+        string relativePath,
+        string content,
+        string expectedSessionGeneration,
+        CancellationToken cancellationToken)
+    {
+        await using var writeLease = await AcquireCanonicalWriteLeaseAsync(
+            cancellationToken: cancellationToken);
         if (!IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
             return false;
 
-        await AppendFileAtomicAsync(writeLease, relativePath, content);
+        await AppendFileAtomicAsync(
+            writeLease,
+            relativePath,
+            content,
+            cancellationToken);
         return true;
     }
 
@@ -423,8 +455,15 @@ public class FileSystemManager
         return CanonicalFileMutationResult.Applied;
     }
 
-    private async Task WriteFileAtomicBytesCoreAsync(string relativePath, byte[] content)
+    private Task WriteFileAtomicBytesCoreAsync(string relativePath, byte[] content) =>
+        WriteFileAtomicBytesCoreAsync(relativePath, content, CancellationToken.None);
+
+    private async Task WriteFileAtomicBytesCoreAsync(
+        string relativePath,
+        byte[] content,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var fullPath = ResolvePath(relativePath);
         var dir = Path.GetDirectoryName(fullPath);
         if (dir != null && !Directory.Exists(dir))
@@ -442,14 +481,16 @@ public class FileSystemManager
                              bufferSize: 4096,
                              FileOptions.Asynchronous | FileOptions.WriteThrough))
             {
-                await stream.WriteAsync(content);
+                await stream.WriteAsync(content, cancellationToken);
                 stream.Flush(flushToDisk: true);
             }
             if (_hooks?.BeforeCanonicalMutationBoundaryAsync != null)
                 await _hooks.BeforeCanonicalMutationBoundaryAsync(relativePath);
+            cancellationToken.ThrowIfCancellationRequested();
 
             for (var attempt = 0; ; attempt++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 try
                 {
                     EnsureCanonicalMutationBoundary(relativePath, fullPath);
@@ -458,7 +499,7 @@ public class FileSystemManager
                 }
                 catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
                 {
-                    await Task.Delay(TransientFileAccessRetryDelay);
+                    await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 }
             }
         }
@@ -537,7 +578,14 @@ public class FileSystemManager
 
     public async Task<byte[]?> ReadFileBytesAsync(string relativePath)
     {
-        return await ReadFileBytesCoreAsync(relativePath);
+        return await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
+    }
+
+    internal async Task<byte[]?> ReadFileBytesAsync(
+        string relativePath,
+        CancellationToken cancellationToken)
+    {
+        return await ReadFileBytesCoreAsync(relativePath, cancellationToken);
     }
 
     internal async Task<byte[]?> ReadFileBytesAsync(
@@ -545,23 +593,26 @@ public class FileSystemManager
         string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        return await ReadFileBytesCoreAsync(relativePath);
+        return await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
     }
 
-    private async Task<byte[]?> ReadFileBytesCoreAsync(string relativePath)
+    private async Task<byte[]?> ReadFileBytesCoreAsync(
+        string relativePath,
+        CancellationToken cancellationToken)
     {
         var fullPath = ResolvePath(relativePath);
         for (var attempt = 0; ; attempt++)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 if (!File.Exists(fullPath))
                     return null;
-                return await File.ReadAllBytesAsync(fullPath);
+                return await File.ReadAllBytesAsync(fullPath, cancellationToken);
             }
             catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
             {
-                await Task.Delay(TransientFileAccessRetryDelay);
+                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
             }
         }
     }
@@ -1205,7 +1256,9 @@ public class FileSystemManager
             {
                 EnsureSafeCanonicalRelativePath(entry.Path);
                 var baseline = ReadWorkerApplyBeforeImage(transactionRoot, entry);
-                var current = await ReadFileBytesCoreAsync(entry.Path);
+                var current = await ReadFileBytesCoreAsync(
+                    entry.Path,
+                    CancellationToken.None);
                 var currentHash = ComputeSha256OrMissing(current);
                 if (string.Equals(currentHash, entry.BeforeSha256, StringComparison.OrdinalIgnoreCase))
                     continue;

@@ -110,7 +110,7 @@ public sealed class GmWorkerProposalStore
             {
                 await _publishInboxAsync(writeLease, proposalInboxPath, proposalBytes);
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            catch (Exception ex)
             {
                 warning = $"Proposal bundle is durable, but derived inbox publication failed: {ex.Message}";
             }
@@ -121,7 +121,7 @@ public sealed class GmWorkerProposalStore
                 {
                     await publishDerivedAuditAsync(writeLease);
                 }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                catch (Exception ex)
                 {
                     warning = string.IsNullOrWhiteSpace(warning)
                         ? $"Proposal bundle is durable, but derived audit publication failed: {ex.Message}"
@@ -143,7 +143,7 @@ public sealed class GmWorkerProposalStore
                 if (Directory.Exists(stagingRoot))
                     Directory.Delete(stagingRoot, recursive: true);
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            catch (Exception)
             {
                 // Staging cleanup cannot revoke a bundle that is already durable.
             }
