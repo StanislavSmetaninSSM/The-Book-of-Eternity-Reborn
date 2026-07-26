@@ -33,6 +33,18 @@ public sealed class GmWorkerAuditLog
         await AppendEventCoreAsync(auditEvent, writeLease);
     }
 
+    internal async Task<bool> AppendEventIfCurrentSessionAsync(
+        string expectedSessionGeneration,
+        WorkerAuditEvent auditEvent)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+            return false;
+
+        await AppendEventCoreAsync(auditEvent, writeLease);
+        return true;
+    }
+
     private async Task AppendEventCoreAsync(
         WorkerAuditEvent auditEvent,
         FileSystemManager.CanonicalWriteLease? writeLease)
@@ -59,7 +71,13 @@ public sealed class GmWorkerAuditLog
     }
 
     public Task RecordTaskDispatchedAsync(WorkerTaskPacket task) =>
-        AppendEventAsync(new WorkerAuditEvent
+        AppendEventAsync(BuildTaskDispatchedEvent(task));
+
+    internal Task<bool> RecordTaskDispatchedIfCurrentSessionAsync(WorkerTaskPacket task) =>
+        AppendEventIfCurrentSessionAsync(task.SessionGeneration, BuildTaskDispatchedEvent(task));
+
+    private static WorkerAuditEvent BuildTaskDispatchedEvent(WorkerTaskPacket task) =>
+        new()
         {
             EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = "task-dispatched",
@@ -75,7 +93,7 @@ public sealed class GmWorkerAuditLog
                 ["allowedProposalPaths"] = task.AllowedProposalPaths,
                 ["acceptanceCriteria"] = task.AcceptanceCriteria
             }
-        });
+        };
 
     public Task RecordProposalReceivedAsync(WorkerProposal proposal) =>
         RecordProposalReceivedCoreAsync(proposal, writeLease: null);
@@ -109,7 +127,18 @@ public sealed class GmWorkerAuditLog
     }
 
     public Task RecordApplyDecisionAsync(WorkerProposal proposal, ApplyGateDecision decision) =>
-        AppendEventAsync(new WorkerAuditEvent
+        AppendEventAsync(BuildApplyDecisionEvent(proposal, decision));
+
+    internal Task RecordApplyDecisionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WorkerProposal proposal,
+        ApplyGateDecision decision) =>
+        AppendEventAsync(writeLease, BuildApplyDecisionEvent(proposal, decision));
+
+    private static WorkerAuditEvent BuildApplyDecisionEvent(
+        WorkerProposal proposal,
+        ApplyGateDecision decision) =>
+        new()
         {
             EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = decision.Result switch
@@ -128,7 +157,7 @@ public sealed class GmWorkerAuditLog
                 ["appliedFiles"] = decision.AppliedFiles,
                 ["rejectionReasons"] = decision.RejectionReasons
             }
-        });
+        };
 
     public async Task<IReadOnlyList<WorkerAuditEvent>> ReadEventsAsync()
     {

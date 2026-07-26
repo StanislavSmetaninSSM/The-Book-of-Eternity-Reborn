@@ -125,6 +125,8 @@ internal static class NpcCoreChangesContract
         new(StringComparer.Ordinal)
         {
             "inventory",
+            "tradeInventory",
+            "trainingShowcase",
             ActorMaterializationContract.PropertyName
         };
 

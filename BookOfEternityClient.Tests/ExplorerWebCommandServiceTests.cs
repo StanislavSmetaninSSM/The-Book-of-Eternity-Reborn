@@ -2794,6 +2794,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         soul["inkFeathers"] = new JsonObject { ["current"] = 600, ["total"] = 600 };
+        soul["afterlifeCombatProfile"]!["artTiers"]!["pressure"] = 0;
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
             "/spiritual_arts",
@@ -8645,12 +8646,13 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             "enlightenmentTier": 3,
             "radianceTier": 1,
             "spiritFocusTier": 2,
-            "standardArts": {
+            "artTiers": {
               "pressure": 2,
               "guard": 1,
               "counter": 1,
               "maneuver": 2,
-              "binding": 1
+              "binding": 1,
+              "recover_spiritual_power": 1
             }
           }
         }

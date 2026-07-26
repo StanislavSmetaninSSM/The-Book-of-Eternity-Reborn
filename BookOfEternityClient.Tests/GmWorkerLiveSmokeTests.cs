@@ -85,7 +85,7 @@ public sealed class GmWorkerLiveSmokeTests
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]),
                 audit);
-            var decision = await gate.ApplyAsync(run.Proposal!, task, profile);
+            var decision = await gate.ApplyReservedAsync(run.Proposal!, profile);
             var events = await audit.ReadEventsAsync();
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
@@ -177,6 +177,10 @@ public sealed class GmWorkerLiveSmokeTests
     {
         var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         fs.EnsureDirectoryStructure();
+        Directory.CreateDirectory(Path.GetDirectoryName(fs.SessionGenerationPath)!);
+        File.WriteAllText(
+            fs.SessionGenerationPath,
+            $$"""{"SchemaVersion":1,"GenerationId":"{{GmWorkerBridgeTestFixtures.SessionGeneration}}"}""");
         return fs;
     }
 

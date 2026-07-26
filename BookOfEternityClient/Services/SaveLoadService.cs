@@ -9,6 +9,12 @@ using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Services;
 
+internal sealed class SaveLoadServiceHooks
+{
+    internal Func<Task>? BeforeLoadLeaseAcquisitionAsync { get; init; }
+    internal Func<Task>? BeforeAutosaveCleanupLeaseAcquisitionAsync { get; init; }
+}
+
 /// <summary>
 /// Manages save/load with ZIP archives, autosaves, and metadata.
 /// </summary>
@@ -19,6 +25,7 @@ public class SaveLoadService
         "game_state/control/pending_turn_snapshot.json",
         "game_state/control/validation_repair_request.json",
         "game_state/control/validation_repair_ready.json",
+        GmWorkers.GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath,
         RealmSegregationAutoRollbackService.ReportPath,
         "game_state/control/terminal_protocol_failure_request.json",
         "game_state/control/life_transitions.json",
@@ -33,22 +40,35 @@ public class SaveLoadService
     private static readonly string[] EphemeralPathPrefixes =
     {
         "game_state/control/pending_turn_snapshot/",
-        QteSceneService.QteNormalizerBackupDirectory + "/"
+        QteSceneService.QteNormalizerBackupDirectory + "/",
+        "worker_tasks/",
+        "worker_proposals/"
     };
 
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly ILogger<SaveLoadService> _logger;
+    private readonly SaveLoadServiceHooks? _hooks;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
     private const int SaveMetadataReadAttempts = 10;
     private static readonly TimeSpan SaveMetadataReadRetryDelay = TimeSpan.FromMilliseconds(50);
 
     public SaveLoadService(FileSystemManager fs, StateManager stateManager, ILogger<SaveLoadService> logger)
+        : this(fs, stateManager, logger, hooks: null)
+    {
+    }
+
+    internal SaveLoadService(
+        FileSystemManager fs,
+        StateManager stateManager,
+        ILogger<SaveLoadService> logger,
+        SaveLoadServiceHooks? hooks)
     {
         _fs = fs;
         _stateManager = stateManager;
         _logger = logger;
+        _hooks = hooks;
     }
 
     public async Task<bool> SaveGameAsync(string saveName, string description, string saveDir = "saves/manual_saves", int turnNumber = 0)
@@ -97,7 +117,7 @@ public class SaveLoadService
 
                 // Add config
                 var configPath = _fs.ResolvePath("config.json");
-                if (File.Exists(configPath))
+                if (File.Exists(configPath) && !FileSystemManager.IsReparsePoint(configPath))
                     archive.CreateEntryFromFile(configPath, "config.json");
 
                 // Add metadata
@@ -133,9 +153,19 @@ public class SaveLoadService
 
     public async Task<bool> AutosaveAsync(int turnNumber)
     {
-        // Rotate autosaves
-        await CleanupOldSaves("saves/autosaves", _stateManager.Settings.MaxAutosaves);
-        return await SaveGameAsync($"autosave_turn{turnNumber}", $"Автосохранение - ход {turnNumber}", "saves/autosaves", turnNumber);
+        const string autosaveDirectory = "saves/autosaves";
+        var saved = await SaveGameAsync(
+            $"autosave_turn{turnNumber}",
+            $"Автосохранение - ход {turnNumber}",
+            autosaveDirectory,
+            turnNumber);
+        if (!saved)
+            return false;
+
+        if (_hooks?.BeforeAutosaveCleanupLeaseAcquisitionAsync != null)
+            await _hooks.BeforeAutosaveCleanupLeaseAcquisitionAsync();
+        await CleanupOldSaves(autosaveDirectory, _stateManager.Settings.MaxAutosaves);
+        return true;
     }
 
     public async Task<bool> LoadGameAsync(string saveFilePath)
@@ -181,10 +211,15 @@ public class SaveLoadService
             DeleteEphemeralArtifacts(transactionPaths.StagingSessionPath);
 
             var liveSessionPath = _fs.GameSessionPath;
-            var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
 
-            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            if (_hooks?.BeforeLoadLeaseAcquisitionAsync != null)
+                await _hooks.BeforeLoadLeaseAcquisitionAsync();
+            await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+            var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
+            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+                             CanonicalWritePurpose.SessionReplacement))
             {
+                _fs.RotateSessionGeneration(writeLease);
                 _fs.BeginLoadTransaction(writeLease, transactionId);
                 try
                 {
@@ -318,9 +353,10 @@ public class SaveLoadService
 
     private Task AddDirectoryToArchive(ZipArchive archive, string sourceDir, string entryPrefix)
     {
-        if (!Directory.Exists(sourceDir)) return Task.CompletedTask;
+        if (!Directory.Exists(sourceDir) || FileSystemManager.IsReparsePoint(sourceDir))
+            return Task.CompletedTask;
 
-        foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+        foreach (var file in FileSystemManager.EnumerateFilesWithoutFollowingReparsePoints(sourceDir, "*"))
         {
             var relativePath = Path.GetRelativePath(sourceDir, file);
             var entryPath = Path.Combine(entryPrefix, relativePath).Replace('\\', '/');
@@ -375,14 +411,16 @@ public class SaveLoadService
         }
     }
 
-    private Task CleanupOldSaves(string saveDir, int maxSaves)
+    private async Task CleanupOldSaves(string saveDir, int maxSaves)
     {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         var fullDir = _fs.ResolvePath(saveDir);
-        if (!Directory.Exists(fullDir)) return Task.CompletedTask;
+        if (!Directory.Exists(fullDir))
+            return;
 
         var files = Directory.GetFiles(fullDir, "*.zip")
             .OrderByDescending(f => File.GetCreationTime(f))
-            .Skip(maxSaves - 1)
+            .Skip(Math.Max(maxSaves, 0))
             .ToArray();
 
         foreach (var file in files)
@@ -390,7 +428,6 @@ public class SaveLoadService
             try { File.Delete(file); }
             catch { /* ignore cleanup errors */ }
         }
-        return Task.CompletedTask;
     }
 
     private static string SanitizeFileName(string name)

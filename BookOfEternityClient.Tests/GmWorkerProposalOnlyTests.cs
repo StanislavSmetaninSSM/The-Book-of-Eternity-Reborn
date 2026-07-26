@@ -29,7 +29,8 @@ public sealed class GmWorkerProposalOnlyTests
                 TargetLength = "120-180 words"
             },
             [new WorkerFileReference { Path = "game_state/world/current_location.json", Sha256 = "sha-location" }],
-            "2026-06-20T00:05:00Z");
+            "2026-06-20T00:05:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
 
         Assert.Equal(WorkerTaskType.NarrativeDraft, task.TaskType);
         Assert.Equal(profile.Role, task.Role);
@@ -62,7 +63,8 @@ public sealed class GmWorkerProposalOnlyTests
             "Review whether NPC quest details are sufficiently exposed to the player.",
             ["Which commands need additional detail menus?", "Which data should remain hidden from the player?"],
             [new WorkerFileReference { Path = "game_state/npcs/npc_journals.json", Sha256 = "sha-npc-journals" }],
-            "2026-06-20T00:30:00Z");
+            "2026-06-20T00:30:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
 
         Assert.Equal(WorkerTaskType.Analysis, task.TaskType);
         Assert.Equal(profile.Role, task.Role);
@@ -114,6 +116,7 @@ public sealed class GmWorkerProposalOnlyTests
                 new WorkerFileReference { Path = "OtherGuides/Afterlife_Contract_Matrix.md", Sha256 = "sha-matrix" }
             ],
             "2026-06-20T00:50:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration,
             contract);
 
         Assert.Same(contract, task.AfterlifeContract);
@@ -151,7 +154,8 @@ public sealed class GmWorkerProposalOnlyTests
                 OutputNotes = ["Do not write canonical item JSON; return proposal details for main-GM review."]
             },
             [new WorkerFileReference { Path = "game_state/world/current_location.json", Sha256 = "sha-location" }],
-            "2026-06-20T00:45:00Z");
+            "2026-06-20T00:45:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
 
         Assert.Equal(WorkerTaskType.InventoryContent, task.TaskType);
         Assert.Equal(profile.Role, task.Role);
@@ -375,7 +379,7 @@ public sealed class GmWorkerProposalOnlyTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAsync(proposal, task, profile);
+            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>

@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -7,6 +6,11 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 
 namespace BookOfEternityClient.Services;
+
+internal sealed class LiveTurnPreparationServiceHooks
+{
+    internal Func<Task>? BeforePublicationAsync { get; init; }
+}
 
 internal sealed class LiveTurnPreparationService
 {
@@ -40,10 +44,14 @@ internal sealed class LiveTurnPreparationService
     };
 
     private readonly FileSystemManager _fs;
+    private readonly LiveTurnPreparationServiceHooks? _hooks;
 
-    public LiveTurnPreparationService(FileSystemManager fs)
+    public LiveTurnPreparationService(
+        FileSystemManager fs,
+        LiveTurnPreparationServiceHooks? hooks = null)
     {
         _fs = fs;
+        _hooks = hooks;
     }
 
     public async Task<LiveTurnPreparationResult> PrepareAsync(LiveTurnPreparationOptions options)
@@ -51,11 +59,24 @@ internal sealed class LiveTurnPreparationService
         if (string.IsNullOrWhiteSpace(options.PlayerAction))
             throw new ArgumentException("Player action is required for prepare-turn.", nameof(options));
 
-        CleanupPreparedTurnArtifacts();
-        ClearStalePendingDiceState();
+        string generation;
+        await using (var generationLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            generation = _fs.GetOrCreateSessionGeneration(generationLease);
+
+        return await SessionOperationContext.RunBoundAsync(
+            _fs,
+            generation,
+            () => PrepareBoundAsync(options));
+    }
+
+    private async Task<LiveTurnPreparationResult> PrepareBoundAsync(LiveTurnPreparationOptions options)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CleanupPreparedTurnArtifacts(writeLease);
+        ClearStalePendingDiceState(writeLease);
 
         var currentRealm = string.IsNullOrWhiteSpace(options.CurrentRealm)
-            ? await ResolveCurrentRealmAsync()
+            ? await ResolveCurrentRealmAsync(writeLease)
             : options.CurrentRealm!.Trim();
         var request = new TurnRequest
         {
@@ -65,7 +86,7 @@ internal sealed class LiveTurnPreparationService
             RequestId = string.IsNullOrWhiteSpace(options.RequestId)
                 ? Guid.NewGuid().ToString("N")
                 : options.RequestId!.Trim(),
-            TurnNumber = options.TurnNumber.GetValueOrDefault(await ResolveNextTurnNumberAsync()),
+            TurnNumber = options.TurnNumber.GetValueOrDefault(await ResolveNextTurnNumberAsync(writeLease)),
             PlayerAction = options.PlayerAction.Trim(),
             Timestamp = string.IsNullOrWhiteSpace(options.Timestamp)
                 ? DateTime.UtcNow.ToString("o")
@@ -91,12 +112,12 @@ internal sealed class LiveTurnPreparationService
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var rollbackBaselineFiles = EnumerateSnapshotFiles()
+        var rollbackBaselineFiles = EnumerateSnapshotFiles(writeLease)
             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
         foreach (var file in rollbackBaselineFiles)
-            await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
+            await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
 
         var manifest = new LiveTurnPendingSnapshotManifest
         {
@@ -112,7 +133,7 @@ internal sealed class LiveTurnPreparationService
             ProgressionControl = request.ProgressionControl,
             Files = files,
             SnapshotFileHashes = snapshotHashes,
-            ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(),
+            ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease),
             RollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
             RollbackBaselineFiles = rollbackBaselineFiles,
             SourceLabel = SourceLabel
@@ -137,19 +158,26 @@ internal sealed class LiveTurnPreparationService
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFileFromWorkspace);
+            relativePath => ReadRelativeFileFromWorkspace(writeLease, relativePath));
+
+        if (_hooks?.BeforePublicationAsync != null)
+            await _hooks.BeforePublicationAsync();
 
         try
         {
             await _fs.WriteFileAtomicAsync(
+                writeLease,
                 PendingTurnSnapshotManifestPath,
                 JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-            await _fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
-            await _fs.WriteFileAtomicAsync(TurnRequestPath, SerializeTurnRequestWithCurrentRealm(request, currentRealm));
+            await _fs.WriteFileAtomicAsync(writeLease, PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                TurnRequestPath,
+                SerializeTurnRequestWithCurrentRealm(request, currentRealm));
         }
         catch
         {
-            CleanupPreparedTurnArtifacts();
+            CleanupPreparedTurnArtifacts(writeLease);
             throw;
         }
 
@@ -172,35 +200,28 @@ internal sealed class LiveTurnPreparationService
         return root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
     }
 
-    private IEnumerable<string> EnumerateSnapshotFiles()
+    private IEnumerable<string> EnumerateSnapshotFiles(FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var sessionRoot = GetSessionRoot();
         var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var root in SnapshotRoots)
+        foreach (var relative in _fs.EnumerateFiles(writeLease, "*"))
         {
-            var absoluteRoot = _fs.ResolvePath(root);
-            if (!Directory.Exists(absoluteRoot))
-                continue;
-
-            foreach (var absoluteFile in Directory.EnumerateFiles(absoluteRoot, "*", SearchOption.AllDirectories))
+            if (!SnapshotRoots.Any(root => IsPathInsideRoot(relative, root)) &&
+                !OptionalOutputFiles.Contains(relative, StringComparer.OrdinalIgnoreCase))
             {
-                if (!TryGetSafeRelativePath(sessionRoot, absoluteFile, out var relative))
-                    continue;
-                if (ShouldExcludeSnapshotFile(relative))
-                    continue;
-                files.Add(relative);
+                continue;
             }
-        }
 
-        foreach (var outputFile in OptionalOutputFiles)
-        {
-            if (_fs.FileExists(outputFile))
-                files.Add(outputFile);
+            if (!ShouldExcludeSnapshotFile(relative))
+                files.Add(relative);
         }
 
         return files;
     }
+
+    private static bool IsPathInsideRoot(string relativePath, string root) =>
+        string.Equals(relativePath, root, StringComparison.OrdinalIgnoreCase) ||
+        relativePath.StartsWith($"{root}/", StringComparison.OrdinalIgnoreCase);
 
     private static bool ShouldExcludeSnapshotFile(string relative) =>
         string.Equals(relative, TurnRequestPath, StringComparison.OrdinalIgnoreCase) ||
@@ -221,56 +242,53 @@ internal sealed class LiveTurnPreparationService
         relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
 
     private async Task SnapshotFileIfPresentAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string relativePath,
         IDictionary<string, string> files,
         IDictionary<string, string> snapshotHashes)
     {
-        var content = await _fs.ReadFileAsync(relativePath);
+        var content = await _fs.ReadFileAsync(writeLease, relativePath);
         if (content == null)
             return;
 
         var snapshotPath = $"{PendingTurnSnapshotDirectory}/{relativePath}";
-        await _fs.WriteFileAtomicAsync(snapshotPath, content);
+        await _fs.WriteFileAtomicAsync(writeLease, snapshotPath, content);
         files[relativePath] = snapshotPath;
         snapshotHashes[relativePath] = PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
-    private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync()
+    private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["game_state/history/chat_log.json"] = await ReadFileHashOrEmptyAsync("game_state/history/chat_log.json")
+            ["game_state/history/chat_log.json"] = await ReadFileHashOrEmptyAsync(
+                writeLease,
+                "game_state/history/chat_log.json")
         };
 
-        foreach (var storyPath in EnumerateStoryContinuityFiles())
-            result[storyPath] = await ReadFileHashOrEmptyAsync(storyPath);
+        foreach (var storyPath in EnumerateStoryContinuityFiles(writeLease))
+            result[storyPath] = await ReadFileHashOrEmptyAsync(writeLease, storyPath);
 
         return result;
     }
 
-    private async Task<string> ReadFileHashOrEmptyAsync(string relativePath)
+    private async Task<string> ReadFileHashOrEmptyAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string relativePath)
     {
-        var content = await _fs.ReadFileAsync(relativePath);
+        var content = await _fs.ReadFileAsync(writeLease, relativePath);
         return content == null ? string.Empty : PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
-    private IEnumerable<string> EnumerateStoryContinuityFiles()
-    {
-        var sessionRoot = GetSessionRoot();
-        var storiesRoot = _fs.ResolvePath("stories");
-        if (!Directory.Exists(storiesRoot))
-            yield break;
+    private IEnumerable<string> EnumerateStoryContinuityFiles(
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        _fs.EnumerateFiles(writeLease, "*.jsonl")
+            .Where(path => IsPathInsideRoot(path, "stories"));
 
-        foreach (var absoluteFile in Directory.EnumerateFiles(storiesRoot, "*.jsonl", SearchOption.AllDirectories))
-        {
-            if (TryGetSafeRelativePath(sessionRoot, absoluteFile, out var relative))
-                yield return relative;
-        }
-    }
-
-    private async Task<string> ResolveCurrentRealmAsync()
+    private async Task<string> ResolveCurrentRealmAsync(FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulJson = await _fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
         if (!string.IsNullOrWhiteSpace(soulJson))
         {
             try
@@ -289,7 +307,7 @@ internal sealed class LiveTurnPreparationService
         return "Unknown";
     }
 
-    private async Task<int> ResolveNextTurnNumberAsync()
+    private async Task<int> ResolveNextTurnNumberAsync(FileSystemManager.CanonicalWriteLease writeLease)
     {
         foreach (var path in new[]
                  {
@@ -297,7 +315,7 @@ internal sealed class LiveTurnPreparationService
                      "game_state/meta/soul_state.json"
                  })
         {
-            var json = await _fs.ReadFileAsync(path);
+            var json = await _fs.ReadFileAsync(writeLease, path);
             if (string.IsNullOrWhiteSpace(json))
                 continue;
 
@@ -332,18 +350,16 @@ internal sealed class LiveTurnPreparationService
         }
     }
 
-    private string? ReadRelativeFileFromWorkspace(string relativePath)
+    private string? ReadRelativeFileFromWorkspace(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        var fullPath = _fs.ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
-            return null;
-
         try
         {
-            return File.ReadAllText(fullPath, Encoding.UTF8);
+            return _fs.ReadFileAsync(writeLease, relativePath).GetAwaiter().GetResult();
         }
         catch
         {
@@ -351,36 +367,16 @@ internal sealed class LiveTurnPreparationService
         }
     }
 
-    private void CleanupPreparedTurnArtifacts()
+    private void CleanupPreparedTurnArtifacts(FileSystemManager.CanonicalWriteLease writeLease)
     {
-        _fs.DeleteFile(TurnRequestPath);
-        _fs.DeleteFile(PendingTurnSnapshotManifestPath);
-        _fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
-        DeleteDirectoryIfInsideSession(PendingTurnSnapshotDirectory);
+        _fs.DeleteFile(writeLease, TurnRequestPath);
+        _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);
+        _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
+        _fs.DeleteDirectoryTree(writeLease, PendingTurnSnapshotDirectory);
     }
 
-    private void ClearStalePendingDiceState() => _fs.DeleteFile(PendingTurnStateService.PendingDiceStatePath);
-
-    private void DeleteDirectoryIfInsideSession(string relativeDirectory)
-    {
-        var sessionRoot = Path.GetFullPath(GetSessionRoot()).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        var target = Path.GetFullPath(_fs.ResolvePath(relativeDirectory));
-        var sessionRootPrefix = sessionRoot + Path.DirectorySeparatorChar;
-
-        if (!target.StartsWith(sessionRootPrefix, StringComparison.OrdinalIgnoreCase))
-            throw new InvalidOperationException($"Refusing to delete directory outside game session: {target}");
-
-        if (Directory.Exists(target))
-            Directory.Delete(target, recursive: true);
-    }
-
-    private string GetSessionRoot() => Path.GetFullPath(_fs.ResolvePath(""));
-
-    private static bool TryGetSafeRelativePath(string sessionRoot, string absoluteFile, out string relative)
-    {
-        relative = Path.GetRelativePath(sessionRoot, absoluteFile).Replace('\\', '/');
-        return PendingTurnSnapshotAuthority.IsSafeRelativePath(relative);
-    }
+    private void ClearStalePendingDiceState(FileSystemManager.CanonicalWriteLease writeLease) =>
+        _fs.DeleteFile(writeLease, PendingTurnStateService.PendingDiceStatePath);
 }
 
 internal sealed class LiveTurnPreparationOptions

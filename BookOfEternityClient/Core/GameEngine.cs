@@ -12,6 +12,22 @@ using Microsoft.Extensions.Logging;
 using Spectre.Console;
 
 namespace BookOfEternityClient.Core;
+
+internal enum SessionFinalizationCheckpoint
+{
+    TerminalWaitStarted,
+    TerminalSignalInspectionLeaseAcquired,
+    TerminalSignalSnapshotCapturedBeforeResolution,
+    IncarnationOperationBound,
+    AcceptedOutcomeValidatedBeforeMaterialization,
+    RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites
+}
+
+internal sealed class GameEngineSessionFinalizationHooks
+{
+    internal Func<SessionFinalizationCheckpoint, Task>? AtCheckpointAsync { get; init; }
+}
+
 /// <summary>
 /// Main game orchestrator. Coordinates all subsystems:
 /// Menu → Game Loop → UI → State Management → Save/Load
@@ -49,6 +65,7 @@ public partial class GameEngine
     private readonly IConsoleInputSource _inputSource;
     private readonly ITextComposerConsole _textComposerConsole;
     private readonly ILogger<GameEngine> _logger;
+    private GameEngineSessionFinalizationHooks? _sessionFinalizationHooks;
 
     private bool _isRunning;
     private bool _inGame;
@@ -129,6 +146,19 @@ public partial class GameEngine
         _inputSource = inputSource ?? SystemConsoleInputSource.Instance;
         _textComposerConsole = new StandardTextComposerConsole(_inputSource);
         _logger = logger;
+    }
+
+    internal void ConfigureSessionFinalizationHooksForTesting(
+        GameEngineSessionFinalizationHooks? hooks)
+    {
+        _sessionFinalizationHooks = hooks;
+    }
+
+    private Task InvokeSessionFinalizationCheckpointAsync(
+        SessionFinalizationCheckpoint checkpoint)
+    {
+        return _sessionFinalizationHooks?.AtCheckpointAsync?.Invoke(checkpoint)
+               ?? Task.CompletedTask;
     }
 
     public async Task RunAsync()

@@ -44,6 +44,7 @@ Task packet:
 {
   "schemaVersion": 1,
   "taskId": "worker_task_afterlife_contract_0001",
+  "sessionGeneration": "11111111111111111111111111111111",
   "workerId": "analysis_codex",
   "role": "analysis",
   "taskType": "analysis",

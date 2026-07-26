@@ -500,97 +500,41 @@ public partial class ValidationService
         return !string.IsNullOrWhiteSpace(resolvedProfile);
     }
 
-    private static bool MortalBootstrapScaffoldRequestsTraining(JsonElement scaffold)
+    private static bool MortalBootstrapScaffoldRequestsTraining(JsonElement scaffold) =>
+        MortalBootstrapScaffoldRequiresActorCapability(scaffold, "canTeach");
+
+    private static bool MortalBootstrapScaffoldRequestsTrade(JsonElement scaffold) =>
+        MortalBootstrapScaffoldRequiresActorCapability(scaffold, "canTrade");
+
+    private static bool MortalBootstrapScaffoldRequiresActorCapability(
+        JsonElement scaffold,
+        string requiredCapability)
     {
         if (scaffold.ValueKind != JsonValueKind.Object ||
-            !scaffold.TryGetProperty("playerAuthoredStart", out var authoredStart) ||
-            authoredStart.ValueKind != JsonValueKind.Object)
+            !scaffold.TryGetProperty("structuredGmAuthority", out var authority) ||
+            authority.ValueKind != JsonValueKind.Object ||
+            !authority.TryGetProperty("actorCapabilities", out var capabilities) ||
+            capabilities.ValueKind != JsonValueKind.Array)
         {
             return false;
         }
 
-        foreach (var field in new[] { "startingCircumstances", "characterDescription" })
+        foreach (var declaration in capabilities.EnumerateArray())
         {
-            if (authoredStart.TryGetProperty(field, out var value) &&
-                value.ValueKind == JsonValueKind.String &&
-                ContainsTrainingAnchorKeyword(value.GetString()))
+            if (declaration.ValueKind != JsonValueKind.Object ||
+                !declaration.TryGetProperty("capability", out var capability) ||
+                capability.ValueKind != JsonValueKind.String ||
+                !string.Equals(capability.GetString(), requiredCapability, StringComparison.Ordinal) ||
+                !declaration.TryGetProperty("required", out var required) ||
+                required.ValueKind != JsonValueKind.True)
             {
-                return true;
+                continue;
             }
-        }
 
-        return false;
-    }
-
-    private static bool MortalBootstrapScaffoldRequestsTrade(JsonElement scaffold)
-    {
-        if (scaffold.ValueKind != JsonValueKind.Object)
-            return false;
-
-        if (scaffold.TryGetProperty("tradeAnchorRequirements", out var tradeRequirements) &&
-            tradeRequirements.ValueKind == JsonValueKind.Object)
-        {
             return true;
         }
 
-        if (!scaffold.TryGetProperty("playerAuthoredStart", out var authoredStart) ||
-            authoredStart.ValueKind != JsonValueKind.Object)
-        {
-            return false;
-        }
-
-        return authoredStart.TryGetProperty("startingCircumstances", out var value) &&
-               value.ValueKind == JsonValueKind.String &&
-               ContainsTradeAnchorKeyword(value.GetString());
-    }
-
-    private static bool ContainsTrainingAnchorKeyword(string? text) =>
-        ContainsAnyTrainingKeyword(
-            text,
-            "обуч",
-            "науч",
-            "учител",
-            "настав",
-            "тренер",
-            "трениров",
-            "урок",
-            "витрин",
-            "ученик",
-            "учениц",
-            "подмастерь",
-            "teacher",
-            "mentor",
-            "trainer",
-            "training",
-            "lesson",
-            "apprentice");
-
-    private static bool ContainsTradeAnchorKeyword(string? text) =>
-        ContainsAnyTrainingKeyword(
-            text,
-            "торгов",
-            "купец",
-            "лавк",
-            "магазин",
-            "купить",
-            "покуп",
-            "прода",
-            "товар",
-            "merchant",
-            "trade",
-            "trader",
-            "shop",
-            "buy",
-            "sell",
-            "vendor",
-            "goods");
-
-    private static bool ContainsAnyTrainingKeyword(string? text, params string[] keywords)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return false;
-
-        return keywords.Any(keyword => text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+        return false;
     }
 
     private static void ValidateTrainingShowcaseSnapshot(

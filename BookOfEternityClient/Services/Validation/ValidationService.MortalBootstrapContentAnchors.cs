@@ -23,6 +23,9 @@ public partial class ValidationService
                 return;
 
             await ValidateMortalBootstrapStarterCompetenciesAsync(scaffold.RootElement, issues);
+            await ValidateMortalBootstrapSettingOwnedMechanicsAuthorityAsync(
+                scaffold.RootElement,
+                issues);
             await ValidateMortalBootstrapOpeningWorldEventAsync(scaffold.RootElement, issues);
         }
         catch (JsonException)
@@ -67,11 +70,186 @@ public partial class ValidationService
         }
     }
 
+    private async Task ValidateMortalBootstrapSettingOwnedMechanicsAuthorityAsync(
+        JsonElement scaffold,
+        List<ValidationIssue> issues)
+    {
+        var authority = scaffold.TryGetProperty("structuredGmAuthority", out var candidate) &&
+                        candidate.ValueKind == JsonValueKind.Object
+            ? candidate
+            : default;
+
+        if (await MortalBootstrapFileContainsAnyPropertyAsync(
+                "game_state/player/experience.json",
+                [
+                    "playerLevel",
+                    "level",
+                    "currentExperience",
+                    "experience",
+                    "totalExperience",
+                    "experienceForNextLevel",
+                    "experienceGained"
+                ]) &&
+            !MortalBootstrapHasStructuredAuthorityEntry(authority, "playerProgression"))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/player/experience.json",
+                IssueSeverity.Error,
+                "Стартовая прогрессия смертного мира появилась без явного решения ГМа.",
+                code: "mortal_bootstrap_progression_requires_structured_gm_authority",
+                section: "MortalBootstrap",
+                expected: "non-empty structuredGmAuthority.playerProgression plus a complete setting-defined progression tuple",
+                actual: "progression fields exist without structured GM authority",
+                repairHint: "Запиши setting-aware решение о начальном уровне, шкале опыта и следующем пороге в mortal_bootstrap_scaffold.json.structuredGmAuthority.playerProgression, затем сохрани согласованный полный tuple в experience.json. Не используй клиентский порог по умолчанию."));
+        }
+
+        if (await MortalBootstrapFileContainsAnyPropertyAsync(
+                "game_state/inventory/items.json",
+                ["maxWeight", "totalWeight"]) &&
+            !MortalBootstrapHasStructuredAuthorityEntry(authority, "carryingRules"))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/inventory/items.json",
+                IssueSeverity.Error,
+                "Стартовая грузоподъёмность появилась без явного правила текущего мира.",
+                code: "mortal_bootstrap_carrying_requires_structured_gm_authority",
+                section: "MortalBootstrap",
+                expected: "non-empty structuredGmAuthority.carryingRules grounded in current-world authority",
+                actual: "carrying fields exist without structured GM authority",
+                repairHint: "Запиши формулу, единицы и источник грузоподъёмности в mortal_bootstrap_scaffold.json.structuredGmAuthority.carryingRules. Если мир не задаёт такую механику, убери maxWeight/totalWeight вместо изобретения универсальной формулы."));
+        }
+
+        if (await MortalBootstrapFactionMechanicsExistAsync() &&
+            !MortalBootstrapHasStructuredAuthorityEntry(authority, "factionMechanics"))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/factions/faction_core.json",
+                IssueSeverity.Error,
+                "Стартовые числовые механики фракции появились без явного решения ГМа.",
+                code: "mortal_bootstrap_faction_mechanics_require_structured_gm_authority",
+                section: "MortalBootstrap",
+                expected: "non-empty structuredGmAuthority.factionMechanics describing setting-owned progression, resources, influence/control, and power axes",
+                actual: "faction mechanics exist without structured GM authority",
+                repairHint: "Запиши выбранные для текущего мира оси силы, ресурсы, прогрессию и контроль в mortal_bootstrap_scaffold.json.structuredGmAuthority.factionMechanics. Не копируй универсальный фэнтезийный powerProfile или числовые значения клиента."));
+        }
+    }
+
+    private static bool MortalBootstrapHasStructuredAuthorityEntry(
+        JsonElement authority,
+        string propertyName) =>
+        authority.ValueKind == JsonValueKind.Object &&
+        authority.TryGetProperty(propertyName, out var entries) &&
+        entries.ValueKind == JsonValueKind.Array &&
+        entries.EnumerateArray().Any(entry => entry.ValueKind == JsonValueKind.Object);
+
+    private async Task<bool> MortalBootstrapFileContainsAnyPropertyAsync(
+        string path,
+        IReadOnlyCollection<string> propertyNames)
+    {
+        var raw = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        try
+        {
+            using var document = JsonDocument.Parse(raw);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+                return false;
+
+            return propertyNames.Any(propertyName =>
+                document.RootElement.TryGetProperty(propertyName, out _));
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private async Task<bool> MortalBootstrapFactionMechanicsExistAsync()
+    {
+        if (await MortalBootstrapFactionCoreMechanicsExistAsync())
+            return true;
+        if (await MortalBootstrapArrayHasEntriesAsync(
+                "game_state/factions/faction_resources.json",
+                "entries"))
+        {
+            return true;
+        }
+
+        return await MortalBootstrapArrayHasEntriesAsync(
+            "game_state/world/current_location.json",
+            "factionControl");
+    }
+
+    private async Task<bool> MortalBootstrapFactionCoreMechanicsExistAsync()
+    {
+        var raw = await _fs.ReadFileAsync("game_state/factions/faction_core.json");
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        try
+        {
+            using var document = JsonDocument.Parse(raw);
+            if (document.RootElement.ValueKind != JsonValueKind.Object ||
+                !document.RootElement.TryGetProperty("factions", out var factions) ||
+                factions.ValueKind != JsonValueKind.Array)
+            {
+                return false;
+            }
+
+            var mechanicalProperties = new[]
+            {
+                "developmentArchetype",
+                "level",
+                "experience",
+                "experienceForNextLevel",
+                "isPlayerFaction",
+                "isPlayerMember",
+                "reputation",
+                "influence",
+                "powerProfile",
+                "resources"
+            };
+            return factions.EnumerateArray().Any(faction =>
+                faction.ValueKind == JsonValueKind.Object &&
+                mechanicalProperties.Any(propertyName =>
+                    faction.TryGetProperty(propertyName, out _)));
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private async Task<bool> MortalBootstrapArrayHasEntriesAsync(
+        string path,
+        string propertyName)
+    {
+        var raw = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        try
+        {
+            using var document = JsonDocument.Parse(raw);
+            return document.RootElement.ValueKind == JsonValueKind.Object &&
+                   document.RootElement.TryGetProperty(propertyName, out var entries) &&
+                   entries.ValueKind == JsonValueKind.Array &&
+                   entries.GetArrayLength() > 0;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
     private async Task ValidateMortalBootstrapStarterCompetenciesAsync(
         JsonElement scaffold,
         List<ValidationIssue> issues)
     {
-        if (!scaffold.TryGetProperty("starterCompetencyRequirements", out var requirements) ||
+        if (!scaffold.TryGetProperty("structuredGmAuthority", out var authority) ||
+            authority.ValueKind != JsonValueKind.Object ||
+            !authority.TryGetProperty("playerSkills", out var requirements) ||
             requirements.ValueKind != JsonValueKind.Array)
         {
             return;
@@ -129,9 +307,9 @@ public partial class ValidationService
             $"Mortal bootstrap потерял явно заданную компетенцию персонажа «{skillName}».",
             code: "mortal_bootstrap_explicit_competency_missing",
             section: "MortalBootstrap",
-            expected: $"{skillKind} skill {skillId}/{skillName} from starterCompetencyRequirements",
+            expected: $"{skillKind} skill {skillId}/{skillName} from structuredGmAuthority.playerSkills",
             actual: actual,
-            repairHint: "Восстанови навык из game_state/control/mortal_bootstrap_scaffold.json.starterCompetencyRequirements в соответствующем skills_active/skills_passive файле. Для active-навыка сохрани matching skill mastery entry; не заменяй явную компетенцию одной прозой."));
+            repairHint: "Восстанови явно объявленный ГМ навык из game_state/control/mortal_bootstrap_scaffold.json.structuredGmAuthority.playerSkills в соответствующем skills_active/skills_passive файле. Для active-навыка сохрани matching skill mastery entry; playerAuthoredStart не является механическим авторитетом."));
     }
 
     private async Task<bool> MortalBootstrapSkillExistsAsync(

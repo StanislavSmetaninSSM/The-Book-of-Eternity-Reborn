@@ -1,9 +1,17 @@
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Tests;
 
 internal static class GmWorkerBridgeTestFixtures
 {
+    internal const string SessionGeneration = "11111111111111111111111111111111";
+
+    internal static Task WriteProposalFixtureAsync(FileSystemManager fs, WorkerProposal proposal) =>
+        fs.WriteFileAtomicAsync(
+            GmWorkerProposalStore.GetProposalPath(proposal.ProposalId),
+            GmWorkerJson.Serialize(proposal));
+
     public static WorkerBridgeProfile ValidationRepairCodexProfile() =>
         GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate() with { Enabled = true };
 
@@ -31,6 +39,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket ValidationRepairTask() => new()
     {
         TaskId = "worker_task_20260620_0001",
+        SessionGeneration = SessionGeneration,
         WorkerId = "validation_repair_codex",
         Role = WorkerRole.ValidationRepair,
         TaskType = WorkerTaskType.ValidationRepair,
@@ -76,6 +85,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket AnalysisTask() => new()
     {
         TaskId = "worker_task_20260620_analysis",
+        SessionGeneration = SessionGeneration,
         WorkerId = "analysis_codex",
         Role = WorkerRole.Analysis,
         TaskType = WorkerTaskType.Analysis,
@@ -104,6 +114,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket NarrativeDraftTask() => new()
     {
         TaskId = "worker_task_20260620_0002",
+        SessionGeneration = SessionGeneration,
         WorkerId = "narrative_draft_codex",
         Role = WorkerRole.NarrativeDraft,
         TaskType = WorkerTaskType.NarrativeDraft,
@@ -152,6 +163,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket InventoryContentTask() => new()
     {
         TaskId = "worker_task_20260620_0003",
+        SessionGeneration = SessionGeneration,
         WorkerId = "inventory_content_codex",
         Role = WorkerRole.InventoryContent,
         TaskType = WorkerTaskType.InventoryContent,
@@ -196,6 +208,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket SkillContentTask() => new()
     {
         TaskId = "worker_task_20260620_0004",
+        SessionGeneration = SessionGeneration,
         WorkerId = "skill_content_codex",
         Role = WorkerRole.SkillContent,
         TaskType = WorkerTaskType.SkillContent,
@@ -240,6 +253,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket NpcContentTask() => new()
     {
         TaskId = "worker_task_20260620_0005",
+        SessionGeneration = SessionGeneration,
         WorkerId = "npc_content_codex",
         Role = WorkerRole.NpcContent,
         TaskType = WorkerTaskType.NpcContent,
@@ -284,6 +298,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket AfterlifeWorkerTask() => new()
     {
         TaskId = "worker_task_afterlife_contract_0001",
+        SessionGeneration = SessionGeneration,
         WorkerId = "analysis_codex",
         Role = WorkerRole.Analysis,
         TaskType = WorkerTaskType.Analysis,
@@ -362,6 +377,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket GuardianAbodeContentTask() => new()
     {
         TaskId = "worker_task_guardian_abode_content_0001",
+        SessionGeneration = SessionGeneration,
         WorkerId = "guardian_abode_content_codex",
         Role = WorkerRole.GuardianAbodeContent,
         TaskType = WorkerTaskType.GuardianAbodeContent,
@@ -479,6 +495,7 @@ internal static class GmWorkerBridgeTestFixtures
     public static WorkerTaskPacket SoulContentTask() => new()
     {
         TaskId = "worker_task_soul_content_0001",
+        SessionGeneration = SessionGeneration,
         WorkerId = "soul_content_codex",
         Role = WorkerRole.SoulContent,
         TaskType = WorkerTaskType.SoulContent,

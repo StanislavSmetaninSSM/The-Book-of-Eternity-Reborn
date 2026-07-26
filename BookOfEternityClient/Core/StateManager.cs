@@ -8,6 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
 
+internal sealed class StateManagerHooks
+{
+    internal Func<Task>? AfterPlayerSoulProfileInputsReadAsync { get; init; }
+}
+
 /// <summary>
 /// Central game state manager. Loads aggregated state from files,
 /// manages settings, and coordinates between subsystems.
@@ -16,6 +21,7 @@ public class StateManager
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<StateManager> _logger;
+    private readonly StateManagerHooks? _hooks;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
@@ -23,10 +29,20 @@ public class StateManager
     public GameSettings Settings { get; }
 
     public StateManager(FileSystemManager fs, GameSettings settings, ILogger<StateManager> logger)
+        : this(fs, settings, logger, hooks: null)
+    {
+    }
+
+    internal StateManager(
+        FileSystemManager fs,
+        GameSettings settings,
+        ILogger<StateManager> logger,
+        StateManagerHooks? hooks)
     {
         _fs = fs;
         Settings = settings;
         _logger = logger;
+        _hooks = hooks;
     }
 
     public async Task LoadSettingsAsync()
@@ -68,7 +84,15 @@ public class StateManager
     /// </summary>
     public async Task RefreshGameStateAsync()
     {
-        await RepairClientOwnedProfileMirrorsAsync();
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        try
+        {
+            await RepairClientOwnedProfileMirrorsAsync(writeLease);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
+        }
         await RefreshGameStateCoreAsync();
     }
 
@@ -442,20 +466,11 @@ public class StateManager
         return words.Length <= 4 ? candidate : string.Join(' ', words.Take(4));
     }
 
-    private async Task RepairClientOwnedProfileMirrorsAsync()
-    {
-        try
-        {
-            await AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(_fs);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
-        }
-    }
-
     private Task RepairClientOwnedProfileMirrorsAsync(FileSystemManager.CanonicalWriteLease writeLease) =>
-        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(_fs, writeLease);
+        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(
+            _fs,
+            writeLease,
+            _hooks?.AfterPlayerSoulProfileInputsReadAsync);
 
     internal RuntimeSnapshot CaptureRuntimeSnapshot()
     {

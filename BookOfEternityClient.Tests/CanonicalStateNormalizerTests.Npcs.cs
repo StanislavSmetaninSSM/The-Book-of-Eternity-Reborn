@@ -17,9 +17,17 @@ public sealed partial class CanonicalStateNormalizerTests
             worldDescription: "Столица Этернии с городскими наставниками и витринами обучения.",
             startingCircumstances: "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-07T08:00:00Z"));
+        var explicitNpcRoot = MortalActorTestFixtures.CreateNpcCoreRoot();
+        var explicitTeacher = Assert.Single(
+            explicitNpcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        explicitTeacher["name"] = "Наставница семейного архива";
+        explicitTeacher["role"] = "Наставница";
 
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            explicitNpcRoot.ToJsonString());
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -29,7 +37,7 @@ public sealed partial class CanonicalStateNormalizerTests
         }
         """);
 
-        var npcRoot = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"].DeepClone());
+        var npcRoot = Assert.IsType<JsonObject>(explicitNpcRoot.DeepClone());
         var teacher = Assert.Single(npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
         var sourceHash = TrainingService.ComputeSourceSnapshotHash(teacher);
         npcRoot["UpdateNPCs"] = new JsonArray

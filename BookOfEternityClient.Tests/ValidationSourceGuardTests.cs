@@ -66,6 +66,56 @@ public sealed class ValidationSourceGuardTests
     }
 
     [Fact]
+    public void MortalBootstrapHarness_MustNotHideProseInferenceBehindHelpers()
+    {
+        var builderSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "MortalBootstrapStateBuilder.cs"));
+        var trainingSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.Training.cs"));
+        var scaffoldSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Core",
+            "GameEngine",
+            "GameEngine.TurnLifecycle.cs"));
+
+        Assert.DoesNotContain("ContainsAny(", builderSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("InferStarter", builderSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildStarterCompetency", builderSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildStarterTeacher", builderSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildStarterActiveSkills", builderSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildStarterPassiveSkills", builderSource, StringComparison.Ordinal);
+        Assert.Contains("\"structuredGmAuthority\"", scaffoldSource, StringComparison.Ordinal);
+        Assert.Contains("\"authoredBy\"", scaffoldSource, StringComparison.Ordinal);
+        Assert.Contains("\"GM\"", scaffoldSource, StringComparison.Ordinal);
+        Assert.Contains("\"proseIsMechanicalAuthority\"", scaffoldSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("client-declared mechanical requirements", scaffoldSource, StringComparison.Ordinal);
+
+        var bootstrapTrainingStart = trainingSource.IndexOf(
+            "private static bool MortalBootstrapScaffoldRequestsTraining(",
+            StringComparison.Ordinal);
+        var trainingSnapshotStart = trainingSource.IndexOf(
+            "private static void ValidateTrainingShowcaseSnapshot(",
+            bootstrapTrainingStart,
+            StringComparison.Ordinal);
+        Assert.True(
+            bootstrapTrainingStart >= 0 && trainingSnapshotStart > bootstrapTrainingStart,
+            "Expected the Mortal bootstrap capability-authority helper block.");
+        var bootstrapTrainingSource = trainingSource[bootstrapTrainingStart..trainingSnapshotStart];
+        Assert.Contains("structuredGmAuthority", bootstrapTrainingSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("playerAuthoredStart", bootstrapTrainingSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ContainsTrainingAnchorKeyword", bootstrapTrainingSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ContainsTradeAnchorKeyword", bootstrapTrainingSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalNpcTemplate_MustUseSettingDefinedCharacteristicAuthority()
     {
         var path = Path.Combine(

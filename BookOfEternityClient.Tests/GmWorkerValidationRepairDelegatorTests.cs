@@ -195,6 +195,239 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_NonZeroWorkerWithValidProposal_DoesNotApplyOrPublishReady()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-validation-repair-proposal-then-failure.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_failed_delegator'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'This proposal must remain diagnostic because the worker fails.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    draftText = $null
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('worker exits non-zero after writing')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                exit 7
+                """);
+            var delegator = CreateDelegator(fs);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 31);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            Assert.Null(result.RunResult?.Proposal);
+            Assert.Null(result.ApplyDecision);
+            Assert.False(result.ReadySignalCreated);
+            Assert.False(fs.FileExists(ReadyPath));
+            Assert.Equal("{\"before\":true}", await fs.ReadFileAsync(WeatherPath));
+            Assert.Null(await new GmWorkerProposalStore(fs).ReadProposalAsync("worker_proposal_failed_delegator"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedAfterContextCapture_DoesNotRebindOrLaunchStaleTask()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            string capturedGeneration;
+            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+                capturedGeneration = fs.GetOrCreateSessionGeneration(lease);
+
+            var workerLaunchMarker = Path.Combine(root, "stale-task-worker-launched");
+            var profile = BuildProfile(
+                root,
+                "fake-stale-task-must-not-launch.ps1",
+                $"New-Item -ItemType File -Force -Path '{workerLaunchMarker.Replace("'", "''", StringComparison.Ordinal)}' | Out-Null; exit 7");
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTaskReservationAsync = async () =>
+                {
+                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
+                    fs.RotateSessionGeneration(lease);
+                }
+            };
+            var delegator = CreateDelegator(fs, poolHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 22);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.NotNull(result.Task);
+            Assert.Equal(capturedGeneration, result.Task.SessionGeneration);
+            Assert.Contains("session generation", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(workerLaunchMarker));
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(result.Task.TaskId)));
+            Assert.False(Directory.Exists(Path.GetDirectoryName(
+                fs.ResolvePath(GmWorkerBridgePool.GetProposalInboxPath(result.Task.TaskId)))!));
+            Assert.False(fs.FileExists(LatestTaskPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedAfterReservation_DoesNotAuditOrLaunchStaleTask()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var workerLaunchMarker = Path.Combine(root, "post-reservation-stale-worker-launched");
+            var profile = BuildProfile(
+                root,
+                "fake-post-reservation-stale-worker.ps1",
+                $"New-Item -ItemType File -Force -Path '{workerLaunchMarker.Replace("'", "''", StringComparison.Ordinal)}' | Out-Null; exit 7");
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTaskDispatchAuditAsync = async () =>
+                {
+                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
+                    fs.RotateSessionGeneration(lease);
+                }
+            };
+            var delegator = CreateDelegator(fs, poolHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 25);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.False(File.Exists(workerLaunchMarker));
+            Assert.Empty(await new GmWorkerAuditLog(fs).ReadEventsAsync());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_CallerBoundSessionAlreadyReplaced_DoesNotRebindOrLaunchWorker()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            string capturedGeneration;
+            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                capturedGeneration = fs.GetOrCreateSessionGeneration(lease);
+                fs.RotateSessionGeneration(lease);
+            }
+
+            var workerLaunchMarker = Path.Combine(root, "caller-stale-task-worker-launched");
+            var profile = BuildProfile(
+                root,
+                "fake-caller-stale-task-must-not-launch.ps1",
+                $"New-Item -ItemType File -Force -Path '{workerLaunchMarker.Replace("'", "''", StringComparison.Ordinal)}' | Out-Null; exit 7");
+            var delegator = CreateDelegator(fs);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 23,
+                expectedSessionGeneration: capturedGeneration);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.False(File.Exists(workerLaunchMarker));
+            Assert.False(fs.FileExists(LatestTaskPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedWhileWorkerRuns_OverridesGenericWorkerFailure()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-session-rotated-worker-failure.ps1", "exit 7");
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeWorkerReleaseAsync = async () =>
+                {
+                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
+                    fs.RotateSessionGeneration(lease);
+                }
+            };
+            var delegator = CreateDelegator(fs, poolHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 24);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.NotNull(result.Task);
+            Assert.NotNull(result.RunResult);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_ApplyAcceptedButReadyWriteFails_ReturnsAppliedWithoutReady()
     {
         var root = CreateTempRoot();
@@ -251,6 +484,78 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             Assert.False(result.ReadySignalCreated);
             Assert.Contains("ready", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
             Assert.Equal("{\"after\":true}", await fs.ReadFileAsync(WeatherPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedAfterAcceptedApply_DoesNotPublishReadyOrReportCurrentSessionApplied()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-ready-generation-race.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_ready_generation_race'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Repair accepted before the session is replaced.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('ready generation race')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var hooks = new GmWorkerValidationRepairDelegatorHooks
+            {
+                BeforeReadyPublicationAsync = async () =>
+                {
+                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
+                    fs.RotateSessionGeneration(lease);
+                }
+            };
+            var delegator = CreateDelegator(fs, delegatorHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 23);
+
+            Assert.NotEqual(GmWorkerValidationRepairOutcome.Applied, result.Outcome);
+            Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
+            Assert.False(result.ReadySignalCreated);
+            Assert.Contains("session generation", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(ReadyPath));
+            Assert.False(fs.FileExists(LatestTaskPath));
         }
         finally
         {
@@ -743,14 +1048,17 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     private static GmWorkerValidationRepairDelegator CreateDelegator(
         FileSystemManager fs,
         Func<Task<IReadOnlyList<ValidationIssue>>>? validate = null,
-        GmWorkerAuditLog? audit = null)
+        GmWorkerAuditLog? audit = null,
+        GmWorkerBridgePoolHooks? poolHooks = null,
+        GmWorkerValidationRepairDelegatorHooks? delegatorHooks = null)
     {
         audit ??= new GmWorkerAuditLog(fs);
         return new GmWorkerValidationRepairDelegator(
             fs,
-            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
+            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit, poolHooks),
             new GmWorkerApplyGate(fs, validate ?? (() => Task.FromResult<IReadOnlyList<ValidationIssue>>([])), audit),
-            audit);
+            audit,
+            delegatorHooks);
     }
 
     private static WorkerBridgeProfile BuildProfile(string root, string fileName, string script)

@@ -209,7 +209,7 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
           "currentRealm": "Chaos Sea",
           "currentIncarnation": 12,
           "afterlifeCombatProfile": {
-            "standardArts": { "pressure": 2, "guard": 1 }
+            "artTiers": { "pressure": 2, "guard": 1 }
           }
         }
         """);

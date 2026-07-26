@@ -75,6 +75,10 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
                 snapshot => (snapshot["selectedIndex"]?.GetValue<int>() ?? -1) != initialSelectedIndex);
             Assert.Equal("main-menu", afterKeySnapshot["screenId"]!.GetValue<string>());
 
+            var events = JsonNode.Parse(await client.GetStringAsync("/api/agent-console/events"))!.AsArray();
+            Assert.Contains(events, node => node?["kind"]?.GetValue<string>() == "screenRendered");
+            Assert.Contains(events, node => node?["kind"]?.GetValue<string>() == "inputAccepted");
+
             using var activateExitResponse = await client.PostAsJsonAsync("/api/agent-console/action", new
             {
                 actionId = exitActionId,
@@ -84,10 +88,6 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
             Assert.True(
                 activateExitResponse.IsSuccessStatusCode,
                 $"Expected action endpoint to activate exit, got {(int)activateExitResponse.StatusCode}: {await activateExitResponse.Content.ReadAsStringAsync()}");
-
-            var events = JsonNode.Parse(await client.GetStringAsync("/api/agent-console/events"))!.AsArray();
-            Assert.Contains(events, node => node?["kind"]?.GetValue<string>() == "screenRendered");
-            Assert.Contains(events, node => node?["kind"]?.GetValue<string>() == "inputAccepted");
 
             var waitForExitTask = process.WaitForExitAsync();
             var exited = await Task.WhenAny(waitForExitTask, Task.Delay(TimeSpan.FromSeconds(30)));

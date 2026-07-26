@@ -88,7 +88,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 Перед первым ходом новой смертной жизни клиент создаёт `game_state/control/mortal_bootstrap_scaffold.json` и канонический baseline. Это не черновик, который можно сократить до одной прозы:
 
-- `starterCompetencyRequirements[]` перечисляет навыки, напрямую выведенные из описания персонажа игроком. Каждый active/passive навык должен остаться в соответствующем player skill file; active skill также сохраняет matching `skill_mastery.json` entry.
+- `playerAuthoredStart` является только нарративным контекстом и не выдаёт механику. Клиент оставляет `structuredGmAuthority` пустым, `experience.json` создаёт пустым и не назначает порог XP, грузоподъёмность, ресурсы/влияние/контроль фракций или универсальный `powerProfile`. Если ГМ принимает setting-aware решение, он записывает его в соответствующую секцию `structuredGmAuthority.playerProgression`, `carryingRules`, `factionMechanics`, `playerSkills`, `inventoryItems`, `actorCapabilities` или `resources` и создаёт соответствующее полное каноническое состояние; active skill также получает matching `skill_mastery.json` entry.
 - `worldEventRequirements.requiredEventIds[]` перечисляет стартовые события, которые должны остаться в `game_state/world/world_events.json.worldEventsLog`, чтобы `/новости_мира` было полезно сразу после воплощения.
 - `preMaterializedBaselineFiles` может включать `game_state/npcs/npc_core.json`. Такой NPC уже является client-owned якорем учителя/ученичества; его нужно художественно уточнить и согласовать с текущей локацией, а не удалить.
 - Технические scaffold-названия локаций, выходов, фракций и NPC нужно заменить конкретными названиями из `playerAuthoredStart`, сохранив стабильные id и сами сущности.

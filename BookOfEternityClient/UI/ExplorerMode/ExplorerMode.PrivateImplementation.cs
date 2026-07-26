@@ -667,6 +667,18 @@ public partial class ExplorerMode
         return snapshot;
     }
 
+    internal void ForgetSessionTransientState()
+    {
+        _pendingGmAction = null;
+        _pendingInPlaceGmRequest = null;
+        _currentCommandInput = string.Empty;
+        _currentCommandRemainder = string.Empty;
+        _pendingLocalTurnRollbackSnapshot = null;
+        _agentConsoleWaitKeyScreenIndex = 0;
+        _diceRevealed = false;
+        _agentConsoleCapture?.ClearCapture();
+    }
+
     internal Task StagePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles) =>
         EnsurePendingLocalTurnRollbackSnapshotAsync(trackedFiles);
 
@@ -708,21 +720,22 @@ public partial class ExplorerMode
         if (normalizedTrackedFiles.Count == 0)
             return;
 
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _pendingLocalTurnRollbackSnapshot ??= new PendingLocalTurnRollbackSnapshot();
         foreach (var trackedFile in normalizedTrackedFiles)
         {
             if (!_pendingLocalTurnRollbackSnapshot.TrackedFiles.Add(trackedFile))
                 continue;
 
-            if (!_fs.FileExists(trackedFile))
+            if (!_fs.FileExists(writeLease, trackedFile))
                 continue;
 
-            var backupContent = await _fs.ReadFileAsync(trackedFile);
+            var backupContent = await _fs.ReadFileAsync(writeLease, trackedFile);
             if (backupContent == null)
                 continue;
 
             var backupPath = CreateExplorerRollbackBackupPath(trackedFile);
-            await _fs.WriteFileAtomicAsync(backupPath, backupContent);
+            await _fs.WriteFileAtomicAsync(writeLease, backupPath, backupContent);
             _pendingLocalTurnRollbackSnapshot.BaselineFiles.Add(trackedFile);
             _pendingLocalTurnRollbackSnapshot.BackupFiles[trackedFile] = backupPath;
             _pendingLocalTurnRollbackSnapshot.BackupHashes[trackedFile] = ComputeExplorerRollbackHash(backupContent);
@@ -747,49 +760,61 @@ public partial class ExplorerMode
         if (snapshot == null)
             return;
 
-        foreach (var trackedFile in snapshot.TrackedFiles)
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
-            if (snapshot.BaselineFiles.Contains(trackedFile))
-                continue;
-
-            if (_fs.FileExists(trackedFile))
-                _fs.DeleteFile(trackedFile);
-        }
-
-        foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
-        {
-            var backupContent = await _fs.ReadFileAsync(backupPath);
-            if (backupContent == null)
-                continue;
-
-            if (snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) &&
-                !string.Equals(ComputeExplorerRollbackHash(backupContent), expectedHash, StringComparison.OrdinalIgnoreCase))
+            foreach (var trackedFile in snapshot.TrackedFiles)
             {
-                continue;
+                if (snapshot.BaselineFiles.Contains(trackedFile))
+                    continue;
+
+                if (_fs.FileExists(writeLease, trackedFile))
+                    _fs.DeleteFile(writeLease, trackedFile);
             }
 
-            await _fs.WriteFileAtomicAsync(originalPath, backupContent);
+            foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
+            {
+                var backupContent = await _fs.ReadFileAsync(writeLease, backupPath);
+                if (backupContent == null)
+                    continue;
+
+                if (snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) &&
+                    !string.Equals(ComputeExplorerRollbackHash(backupContent), expectedHash, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                await _fs.WriteFileAtomicAsync(writeLease, originalPath, backupContent);
+            }
+
+            DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
         }
 
-        await DiscardPendingLocalTurnRollbackSnapshotAsync();
+        DeleteEmptyExplorerRollbackDirectories();
         await _stateManager.RefreshGameStateAsync();
     }
 
     private async Task DiscardPendingLocalTurnRollbackSnapshotAsync()
     {
         var snapshot = _pendingLocalTurnRollbackSnapshot;
-        _pendingLocalTurnRollbackSnapshot = null;
         if (snapshot == null)
             return;
 
-        foreach (var backupPath in snapshot.BackupFiles.Values.Distinct(StringComparer.OrdinalIgnoreCase))
-        {
-            if (_fs.FileExists(backupPath))
-                _fs.DeleteFile(backupPath);
-        }
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
 
         DeleteEmptyExplorerRollbackDirectories();
-        await Task.CompletedTask;
+    }
+
+    private void DiscardPendingLocalTurnRollbackSnapshot(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingLocalTurnRollbackSnapshot snapshot)
+    {
+        _pendingLocalTurnRollbackSnapshot = null;
+        foreach (var backupPath in snapshot.BackupFiles.Values.Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (_fs.FileExists(writeLease, backupPath))
+                _fs.DeleteFile(writeLease, backupPath);
+        }
     }
 
     private void DeleteEmptyExplorerRollbackDirectories()

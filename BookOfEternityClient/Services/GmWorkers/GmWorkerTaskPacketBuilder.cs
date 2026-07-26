@@ -13,6 +13,7 @@ public static class GmWorkerTaskPacketBuilder
         IReadOnlyList<ValidationIssue> validationIssues,
         IReadOnlyDictionary<string, string> contextFileHashes,
         string createdAtUtc,
+        string sessionGeneration,
         WorkerAfterlifeTaskContract? afterlifeContract = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
@@ -126,6 +127,7 @@ public static class GmWorkerTaskPacketBuilder
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = WorkerTaskType.ValidationRepair,
@@ -253,6 +255,13 @@ public static class GmWorkerTaskPacketBuilder
     private static void ValidateMortalContinuityDispatchPolicy(
         IReadOnlyList<ValidationIssue> validationIssues)
     {
+        if (validationIssues.Any(issue => IsMainGmOnlyNpcCoreAuthorityIssue(issue.Code)))
+        {
+            throw new ArgumentException(
+                "NPCCoreChanges and direct NPC core-authority repairs require the main GM rollback/repair path.",
+                nameof(validationIssues));
+        }
+
         foreach (var issue in validationIssues)
         {
             if (!TryGetMortalContinuitySection(issue.Code, out var expectedSection))
@@ -291,6 +300,13 @@ public static class GmWorkerTaskPacketBuilder
                 nameof(validationIssues));
         }
     }
+
+    private static bool IsMainGmOnlyNpcCoreAuthorityIssue(string? code) =>
+        code?.StartsWith("npc_core_changes_", StringComparison.OrdinalIgnoreCase) == true ||
+        string.Equals(
+            code,
+            "npc_existing_core_direct_mutation_forbidden",
+            StringComparison.OrdinalIgnoreCase);
 
     private static void ValidateRealmIsolationBeforeFiltering(
         IReadOnlyList<ValidationIssue> validationIssues)
@@ -351,7 +367,8 @@ public static class GmWorkerTaskPacketBuilder
         WorkerTurnReference sourceTurn,
         WorkerDraftRequest draftRequest,
         IReadOnlyList<WorkerFileReference> contextFiles,
-        string createdAtUtc)
+        string createdAtUtc,
+        string sessionGeneration)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -364,6 +381,7 @@ public static class GmWorkerTaskPacketBuilder
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = WorkerTaskType.NarrativeDraft,
@@ -406,6 +424,7 @@ public static class GmWorkerTaskPacketBuilder
         IReadOnlyList<string> questions,
         IReadOnlyList<WorkerFileReference> contextFiles,
         string createdAtUtc,
+        string sessionGeneration,
         WorkerAfterlifeTaskContract? afterlifeContract = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
@@ -425,6 +444,7 @@ public static class GmWorkerTaskPacketBuilder
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = WorkerTaskType.Analysis,
@@ -471,6 +491,7 @@ public static class GmWorkerTaskPacketBuilder
         WorkerContentAuthoringRequest authoringRequest,
         IReadOnlyList<WorkerFileReference> contextFiles,
         string createdAtUtc,
+        string sessionGeneration,
         WorkerAfterlifeTaskContract? afterlifeContract = null,
         WorkerGuardianAbodeRequest? guardianAbodeRequest = null,
         WorkerSoulContentRequest? soulContentRequest = null)
@@ -500,6 +521,7 @@ public static class GmWorkerTaskPacketBuilder
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = taskType,

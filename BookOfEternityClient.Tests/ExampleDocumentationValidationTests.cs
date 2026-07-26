@@ -151,7 +151,52 @@ public sealed class ExampleDocumentationValidationTests
         Assert.Contains(afterlife, entry => entry.Realms.Contains("Chaos Sea", StringComparer.Ordinal));
         Assert.Contains(afterlife, entry => entry.Realms.Contains("Shining Abode", StringComparer.Ordinal));
         foreach (var entry in afterlife)
+        {
             AssertMaterializationCoverageEntry(entry, entry.Realms.Single());
+            AssertTruthfulValidationMetadata(entry);
+        }
+    }
+
+    [Fact]
+    public void HarnessContractManifestCoverage_IsTypedAndReferencesExistingExamples()
+    {
+        var manifest = ExampleValidationManifest.Load();
+
+        Assert.NotEmpty(manifest.TrainingShowcaseCoverage);
+        Assert.NotEmpty(manifest.GmWorkerBridgeCoverage);
+
+        foreach (var coverage in new[]
+                 {
+                     manifest.TrainingShowcaseCoverage,
+                     manifest.GmWorkerBridgeCoverage
+                 })
+        {
+            Assert.Equal(
+                coverage.Count,
+                coverage.Select(entry => entry.ContractId).Distinct(StringComparer.Ordinal).Count());
+            Assert.All(coverage, entry =>
+            {
+                Assert.False(string.IsNullOrWhiteSpace(entry.ContractId));
+                Assert.False(string.IsNullOrWhiteSpace(entry.File));
+                Assert.False(string.IsNullOrWhiteSpace(entry.StatePath));
+                Assert.False(string.IsNullOrWhiteSpace(entry.ResponseSurface));
+                Assert.False(string.IsNullOrWhiteSpace(entry.Description));
+                Assert.True(File.Exists(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File)));
+            });
+        }
+
+        var workerRepair = Assert.Single(
+            manifest.GmWorkerBridgeCoverage,
+            entry => string.Equals(
+                entry.ContractId,
+                "gm_worker_validation_repair_v1",
+                StringComparison.Ordinal));
+        Assert.Contains("private current-user named control/status pipe servers", workerRepair.Description, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("parent-side client PID authentication", workerRepair.Description, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("OutputDrained", workerRepair.Description, StringComparison.Ordinal);
+        Assert.Contains("confirmed zero exit", workerRepair.Description, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("confirmed process-tree termination", workerRepair.Description, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("must not be imported", workerRepair.Description, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void AssertMaterializationCoverageEntry(
@@ -1811,6 +1856,8 @@ internal sealed class ExampleValidationManifest
     public List<ActorMaterializationExampleCoverage> MortalActorMaterializationCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> MortalNpcCoreChangesCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> AfterlifeEntityProfileCoverage { get; set; } = new();
+    public List<ExampleContractCoverage> TrainingShowcaseCoverage { get; set; } = new();
+    public List<ExampleContractCoverage> GmWorkerBridgeCoverage { get; set; } = new();
 
     public static ExampleValidationManifest Load()
     {
@@ -1833,6 +1880,15 @@ internal sealed class ExampleValidationManifest
 
     public bool IsShapeExempt(ExampleSnippet snippet) =>
         ShapeExemptions.Any(exemption => exemption.Matches(snippet));
+}
+
+internal sealed class ExampleContractCoverage
+{
+    public string ContractId { get; set; } = "";
+    public string File { get; set; } = "";
+    public string StatePath { get; set; } = "";
+    public string ResponseSurface { get; set; } = "";
+    public string Description { get; set; } = "";
 }
 
 internal sealed class ActorMaterializationExampleCoverage

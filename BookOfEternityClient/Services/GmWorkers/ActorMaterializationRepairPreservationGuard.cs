@@ -243,6 +243,8 @@ internal static class ActorMaterializationRepairPreservationGuard
         IsMortalContinuityIssue(code);
 
     private static bool IsMortalContinuityIssue(string code) =>
+        code.StartsWith("npc_core_changes_", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(code, "npc_existing_core_direct_mutation_forbidden", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(code, "npc_initial_id_collides_with_existing_permanent_id", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(code, "npc_existing_inventory_resend_forbidden", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(code, "npc_characteristics_empty", StringComparison.OrdinalIgnoreCase);

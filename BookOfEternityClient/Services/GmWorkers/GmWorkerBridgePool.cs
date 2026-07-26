@@ -10,7 +10,99 @@ internal sealed class GmWorkerBridgePoolHooks
 {
     internal Func<Task>? BeforeWorkerSlotWaitAsync { get; init; }
     internal Func<Task>? BeforeTaskReservationAsync { get; init; }
+    internal Func<Task>? BeforeTaskDispatchAuditAsync { get; init; }
     internal Func<Task>? BeforeProposalPublicationAsync { get; init; }
+    internal Func<Task>? BeforeProcessTreeAttachAsync { get; init; }
+    internal Func<Task>? BeforeWorkerReleaseAsync { get; init; }
+    internal Func<string, Task>? BeforeWorkspaceCleanupAsync { get; init; }
+    internal CancellationToken TimeoutSignal { get; init; }
+}
+
+internal enum GmWorkerProcessCompletionOutcomeKind
+{
+    Completed,
+    Canceled,
+    TimedOut,
+    HostExited
+}
+
+internal readonly record struct GmWorkerProcessCompletionOutcome(
+    GmWorkerProcessCompletionOutcomeKind Kind,
+    int? ExitCode = null);
+
+internal static class GmWorkerProcessCompletionArbiter
+{
+    internal static async Task<GmWorkerProcessCompletionOutcome> WaitAsync(
+        Task<int> workerCompletionTask,
+        Func<CancellationToken, Task> waitForOutputDrainAsync,
+        Task hostExitTask,
+        CancellationToken timeoutToken,
+        CancellationToken cancellationToken)
+    {
+        var timeoutTask = Task.Delay(Timeout.InfiniteTimeSpan, timeoutToken);
+        var cancellationTask = Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+        _ = await Task.WhenAny(
+            workerCompletionTask,
+            hostExitTask,
+            timeoutTask,
+            cancellationTask);
+
+        if (cancellationToken.IsCancellationRequested)
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.Canceled);
+        if (timeoutToken.IsCancellationRequested)
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.TimedOut);
+        if (!workerCompletionTask.IsCompleted && hostExitTask.IsCompleted)
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.HostExited);
+
+        var exitCode = await workerCompletionTask;
+        if (cancellationToken.IsCancellationRequested)
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.Canceled);
+        if (timeoutToken.IsCancellationRequested)
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.TimedOut);
+
+        using var drainCancellation = new CancellationTokenSource();
+        var drainTask = waitForOutputDrainAsync(drainCancellation.Token);
+        _ = await Task.WhenAny(
+            drainTask,
+            hostExitTask,
+            timeoutTask,
+            cancellationTask);
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            CancelAndObserve(drainCancellation, drainTask);
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.Canceled);
+        }
+        if (timeoutToken.IsCancellationRequested)
+        {
+            CancelAndObserve(drainCancellation, drainTask);
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.TimedOut);
+        }
+        if (!drainTask.IsCompleted && hostExitTask.IsCompleted)
+        {
+            CancelAndObserve(drainCancellation, drainTask);
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.HostExited);
+        }
+
+        await drainTask;
+        if (cancellationToken.IsCancellationRequested)
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.Canceled);
+        if (timeoutToken.IsCancellationRequested)
+            return new GmWorkerProcessCompletionOutcome(GmWorkerProcessCompletionOutcomeKind.TimedOut);
+        return new GmWorkerProcessCompletionOutcome(
+            GmWorkerProcessCompletionOutcomeKind.Completed,
+            exitCode);
+    }
+
+    private static void CancelAndObserve(CancellationTokenSource cancellation, Task task)
+    {
+        cancellation.Cancel();
+        _ = task.ContinueWith(
+            completed => _ = completed.Exception,
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+    }
 }
 
 public sealed class GmWorkerBridgePool
@@ -21,11 +113,17 @@ public sealed class GmWorkerBridgePool
     public const string TaskPathEnvironmentVariable = "BOE_WORKER_TASK_PATH";
     public const string ProposalPathEnvironmentVariable = "BOE_WORKER_PROPOSAL_PATH";
     public const string SessionPathEnvironmentVariable = "BOE_WORKER_SESSION_PATH";
+    public const string WorkerRuntimeBaseEnvironmentVariable = "BOE_WORKER_RUNTIME_BASE_PATH";
+    internal const int MaxCapturedProcessOutputCharacters = 64 * 1024;
+    internal const int MaxProposalBytes = 1024 * 1024;
+    internal const int MaxContentRefBytes = 4 * 1024 * 1024;
+    internal const int MaxImportedContentBytes = 16 * 1024 * 1024;
 
     private readonly FileSystemManager _fs;
     private readonly GmWorkerProposalStore _proposalStore;
     private readonly GmWorkerAuditLog? _auditLog;
     private readonly GmWorkerBridgePoolHooks? _hooks;
+    private readonly IGmWorkerProcessTreeFactory _processTreeFactory;
     private static readonly ConcurrentDictionary<string, WorkerConcurrencyGate> WorkerConcurrencyGates =
         new(StringComparer.OrdinalIgnoreCase);
 
@@ -33,7 +131,7 @@ public sealed class GmWorkerBridgePool
         FileSystemManager fs,
         GmWorkerProposalStore? proposalStore = null,
         GmWorkerAuditLog? auditLog = null)
-        : this(fs, proposalStore, auditLog, hooks: null)
+        : this(fs, proposalStore, auditLog, hooks: null, GmWorkerProcessTreeFactory.Instance)
     {
     }
 
@@ -42,11 +140,22 @@ public sealed class GmWorkerBridgePool
         GmWorkerProposalStore? proposalStore,
         GmWorkerAuditLog? auditLog,
         GmWorkerBridgePoolHooks? hooks)
+        : this(fs, proposalStore, auditLog, hooks, GmWorkerProcessTreeFactory.Instance)
+    {
+    }
+
+    internal GmWorkerBridgePool(
+        FileSystemManager fs,
+        GmWorkerProposalStore? proposalStore,
+        GmWorkerAuditLog? auditLog,
+        GmWorkerBridgePoolHooks? hooks,
+        IGmWorkerProcessTreeFactory processTreeFactory)
     {
         _fs = fs;
         _proposalStore = proposalStore ?? new GmWorkerProposalStore(fs);
         _auditLog = auditLog;
         _hooks = hooks;
+        _processTreeFactory = processTreeFactory;
     }
 
     public static WorkerRoutingResult SelectWorkerForTask(
@@ -134,42 +243,71 @@ public sealed class GmWorkerBridgePool
 
         var taskPath = GetTaskPacketPath(task.TaskId);
         var proposalInboxPath = GetProposalInboxPath(task.TaskId);
-        var taskBytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(task));
         if (_hooks?.BeforeTaskReservationAsync != null)
             await _hooks.BeforeTaskReservationAsync();
-        var taskReserved = await TryReserveTaskAsync(taskPath, proposalInboxPath, taskBytes);
-        if (!taskReserved)
+        var reservation = await TryReserveTaskAsync(task, taskPath, proposalInboxPath);
+        if (!reservation.Reserved)
         {
-            var message = $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.";
+            var message = reservation.Error ??
+                          $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.";
             var status = Track(WorkerBridgeState.Failed, ready: false, message);
             return new GmWorkerTaskRunResult
             {
                 Status = status,
-                StatusHistory = statusHistory.ToArray()
+                StatusHistory = statusHistory.ToArray(),
+                SessionReplaced = reservation.SessionReplaced
             };
         }
 
-        var proposalInboxDirectory = Path.GetDirectoryName(_fs.ResolvePath(proposalInboxPath));
-        if (!string.IsNullOrWhiteSpace(proposalInboxDirectory))
-            Directory.CreateDirectory(proposalInboxDirectory);
-        if (_auditLog != null)
-            await _auditLog.RecordTaskDispatchedAsync(task);
+        task = reservation.Task!;
+        var taskBytes = reservation.TaskBytes!;
+
+        if (_hooks?.BeforeTaskDispatchAuditAsync != null)
+            await _hooks.BeforeTaskDispatchAuditAsync();
+        if (_auditLog != null &&
+            !await _auditLog.RecordTaskDispatchedIfCurrentSessionAsync(task))
+        {
+            const string message =
+                "Worker task context does not belong to the current game session generation.";
+            var status = Track(WorkerBridgeState.Failed, ready: false, message);
+            return new GmWorkerTaskRunResult
+            {
+                Status = status,
+                StatusHistory = statusHistory.ToArray(),
+                BoundTask = task,
+                SessionReplaced = true
+            };
+        }
 
         Process? process = null;
+        IGmWorkerProcessTree? processTree = null;
+        GmWorkerProcessHostLaunch? processHostLaunch = null;
         var processStarted = false;
         GmWorkerExecutionWorkspace? workspace = null;
+        var timeout = TimeSpan.FromSeconds(Math.Max(1, profile.TimeoutSeconds));
+        using var timeoutCancellation = CancellationTokenSource.CreateLinkedTokenSource(
+            _hooks?.TimeoutSignal ?? CancellationToken.None);
+        timeoutCancellation.CancelAfter(timeout);
+        using var lifecycleCancellation = CancellationTokenSource.CreateLinkedTokenSource(
+            cancellationToken,
+            timeoutCancellation.Token);
+        using var completionWaitCancellation = new CancellationTokenSource();
+        Task<int>? workerCompletionTask = null;
         try
         {
             workspace = await GmWorkerExecutionWorkspace.CreateAsync(_fs, task);
             Track(WorkerBridgeState.Starting, ready: false);
-            var startInfo = CreateWorkerStartInfo(profile, workspace.GameSessionPath);
-            startInfo.Environment[TaskPathEnvironmentVariable] = workspace.TaskPath;
-            startInfo.Environment[ProposalPathEnvironmentVariable] = workspace.ProposalPath;
-            startInfo.Environment[SessionPathEnvironmentVariable] = workspace.GameSessionPath;
+            var workerStartInfo = CreateWorkerStartInfo(profile, workspace.GameSessionPath);
+            workerStartInfo.Environment[TaskPathEnvironmentVariable] = workspace.TaskPath;
+            workerStartInfo.Environment[ProposalPathEnvironmentVariable] = workspace.ProposalPath;
+            workerStartInfo.Environment[SessionPathEnvironmentVariable] = workspace.GameSessionPath;
+            processHostLaunch = GmWorkerProcessHostLaunch.Create(
+                workerStartInfo,
+                Path.GetDirectoryName(workspace.GameSessionPath)!);
 
             process = new Process
             {
-                StartInfo = startInfo,
+                StartInfo = processHostLaunch.StartInfo,
                 EnableRaisingEvents = true
             };
             if (!process.Start())
@@ -184,118 +322,122 @@ public sealed class GmWorkerBridgePool
                 };
             }
             processStarted = true;
+            try
+            {
+                if (_hooks?.BeforeProcessTreeAttachAsync != null)
+                {
+                    await _hooks.BeforeProcessTreeAttachAsync()
+                        .WaitAsync(lifecycleCancellation.Token);
+                }
+                processTree = _processTreeFactory.Attach(process);
+                await processHostLaunch.WaitUntilReadyAsync(
+                    process,
+                    lifecycleCancellation.Token);
+                if (_hooks?.BeforeWorkerReleaseAsync != null)
+                {
+                    await _hooks.BeforeWorkerReleaseAsync()
+                        .WaitAsync(lifecycleCancellation.Token);
+                }
+                await processHostLaunch.ReleaseAsync(lifecycleCancellation.Token);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (OperationCanceledException) when (timeoutCancellation.IsCancellationRequested)
+            {
+                var message = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
+                await RecordTerminalEventAsync("task-timed-out", profile, task, message, []);
+                var status = Track(WorkerBridgeState.TimedOut, ready: false, message, process.Id);
+                return new GmWorkerTaskRunResult
+                {
+                    Status = status,
+                    StatusHistory = statusHistory.ToArray(),
+                    BoundTask = task,
+                    TimedOut = true
+                };
+            }
 
             var processId = process.Id;
             Track(WorkerBridgeState.Busy, ready: false, processId: processId);
-            var outputTask = process.StandardOutput.ReadToEndAsync(CancellationToken.None);
-            var errorTask = process.StandardError.ReadToEndAsync(CancellationToken.None);
-            var timeout = TimeSpan.FromSeconds(Math.Max(1, profile.TimeoutSeconds));
+            var outputTask = CaptureProcessOutputAsync(process.StandardOutput);
+            var errorTask = CaptureProcessOutputAsync(process.StandardError);
             var waitTask = process.WaitForExitAsync(CancellationToken.None);
-            var timeoutTask = Task.Delay(timeout, CancellationToken.None);
-            var cancellationTask = cancellationToken.CanBeCanceled
-                ? Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken)
-                : Task.Delay(Timeout.InfiniteTimeSpan, CancellationToken.None);
-            var completed = await Task.WhenAny(waitTask, timeoutTask, cancellationTask);
+            workerCompletionTask = processHostLaunch.WaitForWorkerCompletionAsync(
+                process,
+                completionWaitCancellation.Token);
+            var completionOutcome = await GmWorkerProcessCompletionArbiter.WaitAsync(
+                workerCompletionTask,
+                token => processHostLaunch.WaitForOutputDrainAsync(process, token),
+                waitTask,
+                timeoutCancellation.Token,
+                cancellationToken);
 
-            if (completed == cancellationTask)
+            if (completionOutcome.Kind == GmWorkerProcessCompletionOutcomeKind.Canceled)
             {
-                await StopProcessTreeAsync(process, waitTask);
-                await ReadProcessOutputAsync(outputTask);
-                await ReadProcessOutputAsync(errorTask);
+                completionWaitCancellation.Cancel();
+                try
+                {
+                    await processTree.StopAndWaitAsync();
+                }
+                catch (Exception)
+                {
+                    workerSlot.Quarantine();
+                }
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
-            if (completed == timeoutTask)
+            if (completionOutcome.Kind == GmWorkerProcessCompletionOutcomeKind.TimedOut)
             {
-                await StopProcessTreeAsync(process, waitTask);
-                var output = await ReadProcessOutputAsync(outputTask);
-                var stderr = await ReadProcessOutputAsync(errorTask);
-                var message = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
-                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(
-                    profile,
-                    task,
-                    taskPath,
-                    taskBytes,
-                    proposalInboxPath,
-                    workspace);
-                if (existingProposalResult.Attempted)
+                completionWaitCancellation.Cancel();
+                var cleanupConfirmed = true;
+                try
                 {
-                    var proposalRejected = existingProposalResult.Proposal == null;
-                    var state = proposalRejected ? WorkerBridgeState.TimedOut : WorkerBridgeState.Stopped;
-                    var terminalMessage = proposalRejected
-                        ? $"{message} Proposal handoff was rejected: {existingProposalResult.Result.Status.LastError}"
-                        : message;
-                    if (proposalRejected)
-                        await RecordTerminalEventAsync("task-timed-out", profile, task, terminalMessage, []);
-                    var proposalStatus = Track(
-                        state,
-                        ready: false,
-                        terminalMessage,
-                        processId);
-                    return existingProposalResult.Result with
-                    {
-                        Status = proposalStatus,
-                        StatusHistory = statusHistory.ToArray(),
-                        Proposal = existingProposalResult.Proposal,
-                        StandardOutput = output,
-                        StandardError = stderr,
-                        TimedOut = true
-                    };
+                    await processTree.StopAndWaitAsync();
                 }
-
+                catch (Exception)
+                {
+                    workerSlot.Quarantine();
+                    cleanupConfirmed = false;
+                }
+                var output = cleanupConfirmed ? await ReadProcessOutputAsync(outputTask) : "";
+                var stderr = cleanupConfirmed ? await ReadProcessOutputAsync(errorTask) : "";
+                var message = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
                 await RecordTerminalEventAsync("task-timed-out", profile, task, message, stderr.Length == 0 ? [] : [stderr]);
                 var status = Track(WorkerBridgeState.TimedOut, ready: false, message, processId);
                 return new GmWorkerTaskRunResult
                 {
                     Status = status,
                     StatusHistory = statusHistory.ToArray(),
+                    BoundTask = task,
                     StandardOutput = output,
                     StandardError = stderr,
                     TimedOut = true
                 };
             }
+            if (completionOutcome.Kind == GmWorkerProcessCompletionOutcomeKind.HostExited)
+            {
+                await waitTask;
+                throw new InvalidOperationException(
+                    $"Worker process host exited before worker completion with code {process.ExitCode}.");
+            }
+
+            var exitCode = completionOutcome.ExitCode!.Value;
+            await processTree.StopAndWaitAsync();
             await waitTask;
 
             var standardOutput = await ReadProcessOutputAsync(outputTask);
             var standardError = await ReadProcessOutputAsync(errorTask);
-            var exitCode = process.ExitCode;
             if (exitCode != 0)
             {
                 var message = $"Worker process exited with code {exitCode}.";
-                var existingProposalResult = await TryReadAndStoreExistingProposalAsync(
-                    profile,
-                    task,
-                    taskPath,
-                    taskBytes,
-                    proposalInboxPath,
-                    workspace);
-                if (existingProposalResult.Attempted)
-                {
-                    var state = existingProposalResult.Proposal == null
-                        ? existingProposalResult.Result.Status.State
-                        : WorkerBridgeState.Stopped;
-                    var proposalStatus = Track(
-                        state,
-                        ready: false,
-                        existingProposalResult.Proposal == null ? existingProposalResult.Result.Status.LastError : message,
-                        processId);
-                    return existingProposalResult.Result with
-                    {
-                        Status = proposalStatus,
-                        StatusHistory = statusHistory.ToArray(),
-                        Proposal = existingProposalResult.Proposal,
-                        ExitCode = exitCode,
-                        StandardOutput = standardOutput,
-                        StandardError = standardError
-                    };
-                }
-
                 await RecordTerminalEventAsync("task-failed", profile, task, message, standardError.Length == 0 ? [] : [standardError]);
                 var status = Track(WorkerBridgeState.Failed, ready: false, message, processId);
                 return new GmWorkerTaskRunResult
                 {
                     Status = status,
                     StatusHistory = statusHistory.ToArray(),
+                    BoundTask = task,
                     ExitCode = exitCode,
                     StandardOutput = standardOutput,
                     StandardError = standardError
@@ -308,7 +450,8 @@ public sealed class GmWorkerBridgePool
                 taskPath,
                 taskBytes,
                 proposalInboxPath,
-                workspace);
+                workspace,
+                lifecycleCancellation.Token);
             if (proposalResult.Proposal == null)
             {
                 var status = Track(
@@ -332,9 +475,25 @@ public sealed class GmWorkerBridgePool
                 Status = stoppedStatus,
                 StatusHistory = statusHistory.ToArray(),
                 Proposal = proposalResult.Proposal,
+                BoundTask = task,
                 ExitCode = exitCode,
                 StandardOutput = standardOutput,
                 StandardError = standardError
+            };
+        }
+        catch (OperationCanceledException) when (
+            timeoutCancellation.IsCancellationRequested &&
+            !cancellationToken.IsCancellationRequested)
+        {
+            var message = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
+            await RecordTerminalEventAsync("task-timed-out", profile, task, message, []);
+            var status = Track(WorkerBridgeState.TimedOut, ready: false, message);
+            return new GmWorkerTaskRunResult
+            {
+                Status = status,
+                StatusHistory = statusHistory.ToArray(),
+                BoundTask = task,
+                TimedOut = true
             };
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -349,23 +508,58 @@ public sealed class GmWorkerBridgePool
         }
         finally
         {
-            if (processStarted && process is { HasExited: false })
+            completionWaitCancellation.Cancel();
+            Exception? processCleanupFailure = null;
+            if (processStarted)
             {
                 try
                 {
-                    await StopProcessTreeAsync(process, process.WaitForExitAsync(CancellationToken.None));
+                    if (processTree != null)
+                        await processTree.StopAndWaitAsync();
+                    else if (process != null)
+                        await StopUnattachedProcessTreeAsync(process);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // The primary result remains authoritative; cleanup is best effort here.
+                    workerSlot.Quarantine();
+                    processCleanupFailure = ex;
+                }
+            }
+
+            if (processTree != null)
+            {
+                try
+                {
+                    await processTree.DisposeAsync();
+                }
+                catch (Exception ex)
+                {
+                    workerSlot.Quarantine();
+                    processCleanupFailure ??= ex;
+                }
+            }
+
+            if (workerCompletionTask != null)
+            {
+                try
+                {
+                    await workerCompletionTask;
+                }
+                catch (Exception)
+                {
+                    // Completion observation is subordinate to process-tree cleanup and result state.
                 }
             }
 
             process?.Dispose();
+            if (processHostLaunch != null)
+                await processHostLaunch.DisposeAsync();
             if (workspace != null)
             {
                 try
                 {
+                    if (_hooks?.BeforeWorkspaceCleanupAsync != null)
+                        await _hooks.BeforeWorkspaceCleanupAsync(workspace.GameSessionPath);
                     await workspace.DisposeAsync();
                 }
                 catch (Exception cleanupException) when (
@@ -385,6 +579,24 @@ public sealed class GmWorkerBridgePool
                     {
                         // Cleanup diagnostics must not replace the completed worker result either.
                     }
+                }
+            }
+
+            if (processCleanupFailure != null)
+            {
+                try
+                {
+                    await RecordTerminalEventAsync(
+                        "process-tree-cleanup-unconfirmed",
+                        profile,
+                        task,
+                        processCleanupFailure.Message,
+                        [processCleanupFailure.GetType().Name]);
+                }
+                catch (Exception auditException) when (
+                    auditException is IOException or UnauthorizedAccessException)
+                {
+                    // Cleanup uncertainty remains subordinate to the authoritative task outcome.
                 }
             }
         }
@@ -519,9 +731,22 @@ public sealed class GmWorkerBridgePool
         string taskPath,
         byte[] expectedTaskBytes,
         string proposalInboxPath,
-        GmWorkerExecutionWorkspace workspace)
+        GmWorkerExecutionWorkspace workspace,
+        CancellationToken cancellationToken)
     {
-        var proposalBytes = await workspace.ReadProposalBytesAsync();
+        byte[]? proposalBytes;
+        try
+        {
+            proposalBytes = await workspace.ReadProposalBytesAsync(cancellationToken);
+        }
+        catch (InvalidDataException ex)
+        {
+            await RecordTerminalEventAsync("proposal-rejected", profile, task, ex.Message, []);
+            return (null, new GmWorkerTaskRunResult
+            {
+                Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, ex.Message)
+            });
+        }
         var proposalJson = DecodeUtf8(proposalBytes);
         if (string.IsNullOrWhiteSpace(proposalJson))
         {
@@ -560,16 +785,43 @@ public sealed class GmWorkerBridgePool
         }
 
         var importedContent = new Dictionary<string, byte[]>(GmWorkerContractValidator.CanonicalPathComparer);
+        long importedContentBytes = 0;
         foreach (var changedFile in proposal!.ChangedFiles)
         {
             if (changedFile.ChangeKind == WorkerFileChangeKind.Delete)
                 continue;
 
-            var content = await workspace.ReadFileBytesAsync(changedFile.ContentRef!);
+            byte[]? content;
+            try
+            {
+                content = await workspace.ReadFileBytesAsync(
+                    changedFile.ContentRef!,
+                    cancellationToken);
+            }
+            catch (InvalidDataException ex)
+            {
+                await RecordTerminalEventAsync("proposal-rejected", profile, task, ex.Message, []);
+                return (null, new GmWorkerTaskRunResult
+                {
+                    Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, ex.Message)
+                });
+            }
             if (content == null)
             {
                 var message = $"Worker proposal contentRef is missing from detached execution output: {changedFile.ContentRef}.";
                 await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [changedFile.ContentRef!]);
+                return (null, new GmWorkerTaskRunResult
+                {
+                    Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
+                });
+            }
+
+            importedContentBytes += content.LongLength;
+            if (importedContentBytes > MaxImportedContentBytes)
+            {
+                var message =
+                    $"Worker proposal contentRef bundle exceeds the {MaxImportedContentBytes}-byte aggregate import limit.";
+                await RecordTerminalEventAsync("proposal-rejected", profile, task, message, []);
                 return (null, new GmWorkerTaskRunResult
                 {
                     Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
@@ -592,44 +844,68 @@ public sealed class GmWorkerBridgePool
         }
 
         if (_hooks?.BeforeProposalPublicationAsync != null)
-            await _hooks.BeforeProposalPublicationAsync();
+        {
+            await _hooks.BeforeProposalPublicationAsync()
+                .WaitAsync(cancellationToken);
+        }
         var publication = await _proposalStore.PublishBundleAsync(
             proposal!,
             proposalBytes!,
             importedContent,
             taskPath,
             expectedTaskBytes,
+            task.SessionGeneration,
             proposalInboxPath,
             _auditLog == null
                 ? null
-                : lease => _auditLog.RecordProposalReceivedAsync(lease, proposal!));
+                : lease => _auditLog.RecordProposalReceivedAsync(lease, proposal!),
+            cancellationToken);
         if (!publication.Published)
         {
             var message = publication.Error ?? "Worker proposal bundle publication was rejected.";
-            await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [proposal.ProposalId]);
+            if (!publication.SessionReplaced)
+                await RecordTerminalEventAsync("proposal-rejected", profile, task, message, [proposal.ProposalId]);
             return (null, new GmWorkerTaskRunResult
             {
-                Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message)
+                Status = CreateStatus(profile, WorkerBridgeState.Failed, ready: false, task.TaskId, message),
+                BoundTask = task,
+                SessionReplaced = publication.SessionReplaced
             });
         }
 
         return (proposal, new GmWorkerTaskRunResult());
     }
 
-    private async Task<bool> TryReserveTaskAsync(
+    private async Task<WorkerTaskReservation> TryReserveTaskAsync(
+        WorkerTaskPacket task,
         string taskPath,
-        string proposalInboxPath,
-        byte[] taskBytes)
+        string proposalInboxPath)
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
-            return false;
+            return WorkerTaskReservation.Reject(
+                $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
 
-        return await _fs.CompareExchangeFileBytesAsync(
-                   writeLease,
-                   taskPath,
-                   expectedContent: null,
-                   desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
+        if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
+        {
+            return WorkerTaskReservation.SessionWasReplaced(
+                "Worker task context does not belong to the current game session generation.");
+        }
+
+        var taskBytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(task));
+        var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(taskBytes)!);
+        if (reservedTask == null)
+            throw new InvalidDataException("Serialized worker task reservation could not be read back.");
+
+        var reserved = await _fs.CompareExchangeFileBytesAsync(
+                           writeLease,
+                           taskPath,
+                           expectedContent: null,
+                           desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
+        return reserved
+            ? new WorkerTaskReservation(true, reservedTask, taskBytes, null, false)
+            : WorkerTaskReservation.Reject(
+                $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
     }
 
     private async Task<WorkerSlotAcquisition> AcquireWorkerSlotAsync(
@@ -754,6 +1030,13 @@ public sealed class GmWorkerBridgePool
     {
         private WorkerConcurrencyGate? _gate = gate;
 
+        internal void Quarantine()
+        {
+            // Retain the acquired semaphore and reference count permanently. Releasing either
+            // would permit another worker to start while the prior process tree is unconfirmed.
+            Interlocked.Exchange(ref _gate, null);
+        }
+
         public void Dispose()
         {
             var ownedGate = Interlocked.Exchange(ref _gate, null);
@@ -768,15 +1051,27 @@ public sealed class GmWorkerBridgePool
         internal static WorkerSlotAcquisition Failed(string error) => new(null, error);
     }
 
+    private sealed record WorkerTaskReservation(
+        bool Reserved,
+        WorkerTaskPacket? Task,
+        byte[]? TaskBytes,
+        string? Error,
+        bool SessionReplaced)
+    {
+        internal static WorkerTaskReservation Reject(string error) => new(false, null, null, error, false);
+        internal static WorkerTaskReservation SessionWasReplaced(string error) => new(false, null, null, error, true);
+    }
+
     private async Task<(bool Attempted, WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> TryReadAndStoreExistingProposalAsync(
         WorkerBridgeProfile profile,
         WorkerTaskPacket task,
         string taskPath,
         byte[] expectedTaskBytes,
         string proposalInboxPath,
-        GmWorkerExecutionWorkspace workspace)
+        GmWorkerExecutionWorkspace workspace,
+        CancellationToken cancellationToken)
     {
-        if (await workspace.ReadProposalBytesAsync() == null)
+        if (!workspace.ProposalExists())
             return (false, null, new GmWorkerTaskRunResult());
 
         var proposalResult = await ReadAndStoreProposalAsync(
@@ -785,7 +1080,8 @@ public sealed class GmWorkerBridgePool
             taskPath,
             expectedTaskBytes,
             proposalInboxPath,
-            workspace);
+            workspace,
+            cancellationToken);
         return (true, proposalResult.Proposal, proposalResult.Result);
     }
 
@@ -817,13 +1113,19 @@ public sealed class GmWorkerBridgePool
             UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O")
         };
 
-    private Task RecordTerminalEventAsync(
+    private async Task RecordTerminalEventAsync(
         string eventType,
         WorkerBridgeProfile profile,
         WorkerTaskPacket task,
         string summary,
-        IReadOnlyList<string> details) =>
-        _auditLog?.AppendEventAsync(new WorkerAuditEvent
+        IReadOnlyList<string> details)
+    {
+        if (_auditLog == null)
+            return;
+
+        _ = await _auditLog.AppendEventIfCurrentSessionAsync(
+            task.SessionGeneration,
+            new WorkerAuditEvent
         {
             EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = eventType,
@@ -837,27 +1139,36 @@ public sealed class GmWorkerBridgePool
                 {
                     ["details"] = details
                 }
-        }) ?? Task.CompletedTask;
-
-    private static void TryKillProcess(Process process)
-    {
-        try
-        {
-            if (!process.HasExited)
-                process.Kill(entireProcessTree: true);
-        }
-        catch
-        {
-            // Process may have exited between timeout detection and kill.
-        }
+        });
     }
 
-    private static async Task StopProcessTreeAsync(Process process, Task waitTask)
+    internal static async Task StopUnattachedProcessTreeAsync(
+        Process process,
+        TimeSpan? timeout = null,
+        Func<Process, CancellationToken, Task>? waitForExitAsync = null)
     {
-        TryKillProcess(process);
-        await waitTask;
+        var confirmationTimeout = timeout ?? ProcessTreeTerminationConfirmation.DefaultTimeout;
+        if (confirmationTimeout <= TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(timeout));
         if (!process.HasExited)
-            throw new IOException("Worker process tree did not exit after termination.");
+            process.Kill(entireProcessTree: true);
+        using var cancellation = new CancellationTokenSource(confirmationTimeout);
+        try
+        {
+            var wait = waitForExitAsync ??
+                       ((Process target, CancellationToken token) => target.WaitForExitAsync(token));
+            await wait(process, cancellation.Token);
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            throw new TimeoutException(
+                "Unattached worker process tree did not confirm termination before the ownership deadline.");
+        }
+        if (!process.HasExited)
+        {
+            throw new TimeoutException(
+                "Unattached worker process tree did not confirm termination before the ownership deadline.");
+        }
     }
 
     private static async Task<string> ReadProcessOutputAsync(Task<string> outputTask)
@@ -870,5 +1181,33 @@ public sealed class GmWorkerBridgePool
         {
             return "";
         }
+    }
+
+    private static async Task<string> CaptureProcessOutputAsync(StreamReader reader)
+    {
+        const int bufferSize = 4096;
+        var buffer = new char[bufferSize];
+        var captured = new StringBuilder(MaxCapturedProcessOutputCharacters);
+        var truncated = false;
+        while (true)
+        {
+            var read = await reader.ReadAsync(buffer);
+            if (read == 0)
+                break;
+
+            var remaining = MaxCapturedProcessOutputCharacters - captured.Length;
+            if (remaining > 0)
+                captured.Append(buffer, 0, Math.Min(remaining, read));
+            if (read > remaining)
+                truncated = true;
+        }
+
+        if (truncated)
+        {
+            captured.Append(
+                $"{Environment.NewLine}[worker output truncated after {MaxCapturedProcessOutputCharacters} characters]");
+        }
+
+        return captured.ToString();
     }
 }

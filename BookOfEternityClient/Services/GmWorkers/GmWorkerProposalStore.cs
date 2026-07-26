@@ -23,39 +23,22 @@ public sealed class GmWorkerProposalStore
         _publishInboxAsync = publishInboxAsync ?? throw new ArgumentNullException(nameof(publishInboxAsync));
     }
 
-    public async Task<string> SaveProposalAsync(WorkerProposal proposal)
-    {
-        if (!IsSafeId(proposal.ProposalId))
-            throw new ArgumentException("Proposal id must be a safe lowercase identifier.", nameof(proposal));
-
-        var path = GetProposalPath(proposal.ProposalId);
-        var proposalRootPath = _fs.ResolvePath($"{ProposalRoot}/{proposal.ProposalId}");
-        var proposalBytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(proposal));
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (Directory.Exists(proposalRootPath) ||
-            await _fs.CompareExchangeFileBytesAsync(
-                writeLease,
-                path,
-                expectedContent: null,
-                desiredContent: proposalBytes) != CanonicalFileMutationResult.Applied)
-        {
-            throw new IOException($"Worker proposal id already exists: {proposal.ProposalId}.");
-        }
-
-        return path;
-    }
-
     internal async Task<WorkerProposalPublicationResult> PublishBundleAsync(
         WorkerProposal proposal,
         byte[] proposalBytes,
         IReadOnlyDictionary<string, byte[]> importedContent,
         string taskPath,
         byte[] expectedTaskBytes,
+        string expectedSessionGeneration,
         string proposalInboxPath,
-        Func<FileSystemManager.CanonicalWriteLease, Task>? publishDerivedAuditAsync = null)
+        Func<FileSystemManager.CanonicalWriteLease, Task>? publishDerivedAuditAsync = null,
+        CancellationToken cancellationToken = default)
     {
         if (!IsSafeId(proposal.ProposalId))
             return WorkerProposalPublicationResult.Rejected("Worker proposal id is unsafe.");
+        if (IsReservedProposalId(proposal.ProposalId))
+            return WorkerProposalPublicationResult.Rejected(
+                "Worker proposal id is reserved for the derived proposal inbox namespace.");
 
         var stagingRoot = Path.Combine(
             _fs.BasePath,
@@ -66,13 +49,16 @@ public sealed class GmWorkerProposalStore
         var finalBundleRoot = _fs.ResolvePath($"{ProposalRoot}/{proposal.ProposalId}");
         var contentRefPrefix = $"{ProposalRoot}/{proposal.ProposalId}/";
 
+        using var publicationAuthority = new WorkerProposalPublicationAuthority(cancellationToken);
         try
         {
             await WriteStagedFileAsync(
                 ResolveStagedPath(stagingBundleRoot, "proposal.json"),
-                proposalBytes);
+                proposalBytes,
+                cancellationToken);
             foreach (var (contentRef, content) in importedContent)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (!contentRef.StartsWith(contentRefPrefix, StringComparison.Ordinal))
                     return WorkerProposalPublicationResult.Rejected(
                         $"Worker proposal contentRef is outside its bundle: {contentRef}.");
@@ -80,10 +66,18 @@ public sealed class GmWorkerProposalStore
                 var relativePath = contentRef[contentRefPrefix.Length..];
                 await WriteStagedFileAsync(
                     ResolveStagedPath(stagingBundleRoot, relativePath),
-                    content);
+                    content,
+                    cancellationToken);
             }
 
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+                cancellationToken: cancellationToken);
+            if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+            {
+                return WorkerProposalPublicationResult.SessionWasReplaced(
+                    "Worker task no longer belongs to the current game session generation.");
+            }
+
             var currentTaskBytes = await _fs.ReadFileBytesAsync(taskPath);
             if (!ExactBytesEqual(currentTaskBytes, expectedTaskBytes))
             {
@@ -96,6 +90,9 @@ public sealed class GmWorkerProposalStore
                 return WorkerProposalPublicationResult.Rejected(
                     $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
             }
+
+            if (!publicationAuthority.TryBeginPublication())
+                throw new OperationCanceledException(cancellationToken);
 
             Directory.CreateDirectory(Path.GetDirectoryName(finalBundleRoot)!);
             try
@@ -155,8 +152,10 @@ public sealed class GmWorkerProposalStore
 
     public async Task<WorkerProposal?> ReadProposalAsync(string proposalId)
     {
-        if (!IsSafeId(proposalId))
-            throw new ArgumentException("Proposal id must be a safe lowercase identifier.", nameof(proposalId));
+        if (!IsSafeId(proposalId) || IsReservedProposalId(proposalId))
+            throw new ArgumentException(
+                "Proposal id must be a safe, non-reserved lowercase identifier.",
+                nameof(proposalId));
 
         var json = await _fs.ReadFileAsync(GetProposalPath(proposalId));
         return string.IsNullOrWhiteSpace(json)
@@ -170,6 +169,9 @@ public sealed class GmWorkerProposalStore
     private static bool IsSafeId(string value) =>
         !string.IsNullOrWhiteSpace(value) &&
         value.All(ch => char.IsLower(ch) || char.IsDigit(ch) || ch is '_' or '-');
+
+    internal static bool IsReservedProposalId(string? value) =>
+        string.Equals(value, "inbox", StringComparison.Ordinal);
 
     private static string ResolveStagedPath(string stagingBundleRoot, string relativePath)
     {
@@ -190,8 +192,12 @@ public sealed class GmWorkerProposalStore
         return candidate;
     }
 
-    private static async Task WriteStagedFileAsync(string path, byte[] content)
+    private static async Task WriteStagedFileAsync(
+        string path,
+        byte[] content,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         await using var stream = new FileStream(
             path,
@@ -200,26 +206,68 @@ public sealed class GmWorkerProposalStore
             FileShare.None,
             bufferSize: 4096,
             FileOptions.Asynchronous | FileOptions.WriteThrough);
-        await stream.WriteAsync(content);
+        await stream.WriteAsync(content, cancellationToken);
         stream.Flush(flushToDisk: true);
     }
 
     private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>
         left == null ? right == null : right != null && left.AsSpan().SequenceEqual(right);
 
-    private static byte[] EncodeUtf8WithPreamble(string content)
+}
+
+internal sealed class WorkerProposalPublicationAuthority : IDisposable
+{
+    private readonly object _sync = new();
+    private readonly CancellationTokenRegistration _registration;
+    private WorkerProposalPublicationState _state;
+
+    internal WorkerProposalPublicationAuthority(CancellationToken cancellationToken)
     {
-        var preamble = Encoding.UTF8.GetPreamble();
-        var body = Encoding.UTF8.GetBytes(content);
-        var bytes = new byte[preamble.Length + body.Length];
-        Buffer.BlockCopy(preamble, 0, bytes, 0, preamble.Length);
-        Buffer.BlockCopy(body, 0, bytes, preamble.Length, body.Length);
-        return bytes;
+        _registration = cancellationToken.Register(
+            static state => ((WorkerProposalPublicationAuthority)state!).CancelPendingPublication(),
+            this);
+    }
+
+    internal bool TryBeginPublication()
+    {
+        lock (_sync)
+        {
+            if (_state == WorkerProposalPublicationState.Canceled)
+                return false;
+            if (_state != WorkerProposalPublicationState.Pending)
+                throw new InvalidOperationException("Worker proposal publication was already decided.");
+
+            _state = WorkerProposalPublicationState.Publishing;
+            return true;
+        }
+    }
+
+    public void Dispose() => _registration.Dispose();
+
+    private void CancelPendingPublication()
+    {
+        lock (_sync)
+        {
+            if (_state == WorkerProposalPublicationState.Pending)
+                _state = WorkerProposalPublicationState.Canceled;
+        }
+    }
+
+    private enum WorkerProposalPublicationState
+    {
+        Pending,
+        Canceled,
+        Publishing
     }
 }
 
-internal sealed record WorkerProposalPublicationResult(bool Published, string? Error, string? Warning)
+internal sealed record WorkerProposalPublicationResult(
+    bool Published,
+    bool SessionReplaced,
+    string? Error,
+    string? Warning)
 {
-    internal static WorkerProposalPublicationResult Rejected(string error) => new(false, error, null);
-    internal static WorkerProposalPublicationResult PublishedWithWarning(string? warning) => new(true, null, warning);
+    internal static WorkerProposalPublicationResult Rejected(string error) => new(false, false, error, null);
+    internal static WorkerProposalPublicationResult SessionWasReplaced(string error) => new(false, true, error, null);
+    internal static WorkerProposalPublicationResult PublishedWithWarning(string? warning) => new(true, false, null, warning);
 }

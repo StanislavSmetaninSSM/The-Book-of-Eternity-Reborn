@@ -13,24 +13,147 @@ public sealed class GmWorkerApplyGate
 
     public GmWorkerApplyGate(
         FileSystemManager fs,
-        Func<Task<IReadOnlyList<ValidationIssue>>>? validateGameStateAsync = null,
+        ValidationService validationService,
+        GmWorkerAuditLog? auditLog = null)
+        : this(
+            fs,
+            CreateProductionValidator(validationService),
+            auditLog)
+    {
+    }
+
+    internal GmWorkerApplyGate(
+        FileSystemManager fs,
+        Func<Task<IReadOnlyList<ValidationIssue>>> validateGameStateAsync,
         GmWorkerAuditLog? auditLog = null)
     {
-        _fs = fs;
-        _validateGameStateAsync = validateGameStateAsync ?? (() => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+        _fs = fs ?? throw new ArgumentNullException(nameof(fs));
+        _validateGameStateAsync = validateGameStateAsync ??
+            throw new ArgumentNullException(nameof(validateGameStateAsync));
         _auditLog = auditLog;
     }
 
-    public async Task<ApplyGateDecision> ApplyAsync(
+    private static Func<Task<IReadOnlyList<ValidationIssue>>> CreateProductionValidator(
+        ValidationService validationService)
+    {
+        ArgumentNullException.ThrowIfNull(validationService);
+        return async () =>
+            (IReadOnlyList<ValidationIssue>)await validationService.ValidateGameStateAsync();
+    }
+
+    public Task<ApplyGateDecision> ApplyReservedAsync(
+        WorkerProposal proposal,
+        WorkerBridgeProfile profile) =>
+        ApplyReservedAsync(proposal, profile, expectedSessionGeneration: null);
+
+    internal async Task<ApplyGateDecision> ApplyReservedAsync(
+        WorkerProposal proposal,
+        WorkerBridgeProfile profile,
+        string? expectedSessionGeneration)
+    {
+        var checkedPaths = proposal.ChangedFiles.Select(file => file.Path).ToArray();
+        ApplyGateDecision decision;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            if (!IsSafeIdentifier(proposal.TaskId))
+            {
+                decision = BuildRejectedDecision(
+                    proposal,
+                    profile,
+                    checkedPaths,
+                    "Worker proposal taskId is unsafe.");
+            }
+            else
+            {
+                var taskPath = GmWorkerBridgePool.GetTaskPacketPath(proposal.TaskId);
+                var taskBytes = await _fs.ReadFileBytesAsync(writeLease, taskPath);
+                if (taskBytes == null)
+                {
+                    decision = !string.IsNullOrWhiteSpace(expectedSessionGeneration) &&
+                               !_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration)
+                        ? BuildSessionReplacedDecision(proposal, profile, checkedPaths)
+                        : BuildRejectedDecision(
+                            proposal,
+                            profile,
+                            checkedPaths,
+                            $"Canonical worker task reservation is missing: {taskPath}.");
+                }
+                else
+                {
+                    WorkerTaskPacket? reservedTask;
+                    try
+                    {
+                        reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(taskBytes)!);
+                    }
+                    catch (Exception ex) when (ex is InvalidDataException or System.Text.Json.JsonException)
+                    {
+                        reservedTask = null;
+                        decision = BuildRejectedDecision(
+                            proposal,
+                            profile,
+                            checkedPaths,
+                            $"Canonical worker task reservation is malformed: {ex.Message}");
+                    }
+
+                    if (reservedTask == null)
+                    {
+                        decision = BuildRejectedDecision(
+                            proposal,
+                            profile,
+                            checkedPaths,
+                            "Canonical worker task reservation is empty.");
+                    }
+                    else
+                    {
+                        decision = await ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(
+                            proposal,
+                            reservedTask,
+                            profile,
+                            checkedPaths,
+                            writeLease);
+                    }
+                }
+            }
+            if (decision.Result != ApplyGateResult.SessionReplaced && _auditLog != null)
+                await _auditLog.RecordApplyDecisionAsync(writeLease, proposal, decision);
+        }
+
+        return decision;
+    }
+
+    internal async Task<ApplyGateDecision> ApplyAuthoritativeTaskAsync(
         WorkerProposal proposal,
         WorkerTaskPacket task,
         WorkerBridgeProfile profile)
     {
         var checkedPaths = proposal.ChangedFiles.Select(file => file.Path).ToArray();
+        ApplyGateDecision decision;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            decision = await ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(
+                proposal,
+                task,
+                profile,
+                checkedPaths,
+                writeLease);
+            if (decision.Result != ApplyGateResult.SessionReplaced && _auditLog != null)
+                await _auditLog.RecordApplyDecisionAsync(writeLease, proposal, decision);
+        }
+
+        return decision;
+    }
+
+    private async Task<ApplyGateDecision> ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(
+        WorkerProposal proposal,
+        WorkerTaskPacket task,
+        WorkerBridgeProfile profile,
+        IReadOnlyList<string> checkedPaths,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
         var proposalValidation = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
         if (!proposalValidation.IsValid)
         {
-            var decision = BuildDecision(
+            return BuildDecision(
                 proposal.ProposalId,
                 ApplyGateResult.Rejected,
                 checkedPaths,
@@ -41,14 +164,12 @@ public sealed class GmWorkerApplyGate
                 issueCount: 0,
                 appliedFiles: [],
                 rejectionReasons: proposalValidation.Errors);
-            await RecordDecisionAsync(proposal, decision);
-            return decision;
         }
 
         if (proposal.Status != WorkerProposalStatus.Completed)
         {
             var rejectionReasons = new[] { "Only completed worker proposals can enter the apply gate." };
-            var decision = BuildDecision(
+            return BuildDecision(
                 proposal.ProposalId,
                 ApplyGateResult.Rejected,
                 checkedPaths,
@@ -59,15 +180,13 @@ public sealed class GmWorkerApplyGate
                 issueCount: 0,
                 appliedFiles: [],
                 rejectionReasons: rejectionReasons);
-            await RecordDecisionAsync(proposal, decision);
-            return decision;
         }
 
         var capturedContents = new Dictionary<string, byte[]>(GmWorkerContractValidator.CanonicalPathComparer);
-        var contentErrors = await VerifyProposalContentRefsAsync(proposal, capturedContents);
+        var contentErrors = await VerifyProposalContentRefsAsync(proposal, capturedContents, writeLease);
         if (contentErrors.Count > 0)
         {
-            var decision = BuildDecision(
+            return BuildDecision(
                 proposal.ProposalId,
                 ApplyGateResult.Rejected,
                 checkedPaths,
@@ -78,24 +197,34 @@ public sealed class GmWorkerApplyGate
                 issueCount: 0,
                 appliedFiles: [],
                 rejectionReasons: contentErrors);
-            await RecordDecisionAsync(proposal, decision);
-            return decision;
         }
 
-        ApplyGateDecision transactionDecision;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
         {
-            transactionDecision = await ApplyWithinCanonicalLeaseAsync(
-                proposal,
-                task,
-                profile,
+            var generationErrors = new[]
+            {
+                "Worker task does not belong to the current game session generation."
+            };
+            return BuildDecision(
+                proposal.ProposalId,
+                ApplyGateResult.SessionReplaced,
                 checkedPaths,
-                capturedContents,
-                writeLease);
+                scopePassed: false,
+                violations: generationErrors,
+                validationRequired: profile.Permissions.RequiresValidation,
+                validationPassed: false,
+                issueCount: 0,
+                appliedFiles: [],
+                rejectionReasons: generationErrors);
         }
 
-        await RecordDecisionAsync(proposal, transactionDecision);
-        return transactionDecision;
+        return await ApplyWithinCanonicalLeaseAsync(
+            proposal,
+            task,
+            profile,
+            checkedPaths,
+            capturedContents,
+            writeLease);
     }
 
     private async Task<ApplyGateDecision> ApplyWithinCanonicalLeaseAsync(
@@ -144,25 +273,41 @@ public sealed class GmWorkerApplyGate
                 rejectionReasons: preservationErrors);
         }
 
-        var rollback = new List<RollbackEntry>();
-        var appliedFiles = new List<string>();
-        try
-        {
-            foreach (var changedFile in proposal.ChangedFiles)
+        var rollback = proposal.ChangedFiles
+            .Select(changedFile =>
             {
                 baselines.TryGetValue(changedFile.Path, out var baselineBytes);
                 var appliedBytes = changedFile.ChangeKind == WorkerFileChangeKind.Delete
                     ? null
                     : capturedContents[changedFile.Path];
+                return new RollbackEntry(changedFile.Path, baselineBytes, appliedBytes);
+            })
+            .ToList();
+        var appliedFiles = new List<string>();
+        CanonicalWorkerApplyTransaction? durableTransaction = null;
+        try
+        {
+            if (rollback.Count > 0)
+            {
+                durableTransaction = await _fs.BeginWorkerApplyTransactionAsync(
+                    writeLease,
+                    rollback.Select(entry => new CanonicalWorkerApplyChange(
+                        entry.Path,
+                        entry.BaselineBytes,
+                        entry.AppliedBytes)).ToArray());
+            }
+
+            foreach (var entry in rollback)
+            {
                 var mutationResult = await _fs.CompareExchangeFileBytesAsync(
                     writeLease,
-                    changedFile.Path,
-                    baselineBytes,
-                    appliedBytes);
+                    entry.Path,
+                    entry.BaselineBytes,
+                    entry.AppliedBytes);
                 if (mutationResult == CanonicalFileMutationResult.Conflict)
                 {
-                    var rollbackErrors = await RollbackOwnedChangesAsync(writeLease, rollback);
-                    var conflict = $"canonical file changed concurrently before worker apply: {changedFile.Path}.";
+                    var rollbackErrors = await RollbackDurableTransactionAsync(writeLease, durableTransaction);
+                    var conflict = $"canonical file changed concurrently before worker apply: {entry.Path}.";
                     var rejectionReasons = new[] { conflict }.Concat(rollbackErrors).ToArray();
                     return BuildDecision(
                         proposal.ProposalId,
@@ -177,8 +322,7 @@ public sealed class GmWorkerApplyGate
                         rejectionReasons: rejectionReasons);
                 }
 
-                rollback.Add(new RollbackEntry(changedFile.Path, baselineBytes, appliedBytes));
-                appliedFiles.Add(changedFile.Path);
+                appliedFiles.Add(entry.Path);
             }
 
             var validationIssues = profile.Permissions.RequiresValidation
@@ -186,7 +330,7 @@ public sealed class GmWorkerApplyGate
                 : [];
             if (validationIssues.Count > 0)
             {
-                var rollbackErrors = await RollbackOwnedChangesAsync(writeLease, rollback);
+                var rollbackErrors = await RollbackDurableTransactionAsync(writeLease, durableTransaction);
                 var rejectionReasons = validationIssues
                     .Select(issue => issue.ToString())
                     .Concat(rollbackErrors)
@@ -209,7 +353,7 @@ public sealed class GmWorkerApplyGate
                 .ToArray();
             if (ownershipErrors.Length > 0)
             {
-                var rollbackErrors = await RollbackOwnedChangesAsync(writeLease, rollback);
+                var rollbackErrors = await RollbackDurableTransactionAsync(writeLease, durableTransaction);
                 var rejectionReasons = ownershipErrors.Concat(rollbackErrors).ToArray();
                 return BuildDecision(
                     proposal.ProposalId,
@@ -223,6 +367,9 @@ public sealed class GmWorkerApplyGate
                     appliedFiles: [],
                     rejectionReasons: rejectionReasons);
             }
+
+            if (durableTransaction != null)
+                _fs.CommitWorkerApplyTransaction(writeLease, durableTransaction);
 
             return BuildDecision(
                 proposal.ProposalId,
@@ -238,14 +385,15 @@ public sealed class GmWorkerApplyGate
         }
         catch
         {
-            await RollbackOwnedChangesAsync(writeLease, rollback);
+            await RollbackDurableTransactionAsync(writeLease, durableTransaction);
             throw;
         }
     }
 
     private async Task<IReadOnlyList<string>> VerifyProposalContentRefsAsync(
         WorkerProposal proposal,
-        IDictionary<string, byte[]> capturedContents)
+        IDictionary<string, byte[]> capturedContents,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var errors = new List<string>();
         foreach (var changedFile in proposal.ChangedFiles)
@@ -258,7 +406,7 @@ public sealed class GmWorkerApplyGate
                 continue;
             }
 
-            var content = await _fs.ReadFileBytesAsync(changedFile.ContentRef);
+            var content = await _fs.ReadFileBytesAsync(writeLease, changedFile.ContentRef);
             if (content == null)
             {
                 errors.Add($"changedFiles contentRef does not exist: {changedFile.ContentRef}");
@@ -413,23 +561,16 @@ public sealed class GmWorkerApplyGate
         return errors;
     }
 
-    private async Task<IReadOnlyList<string>> RollbackOwnedChangesAsync(
+    private async Task<IReadOnlyList<string>> RollbackDurableTransactionAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        IReadOnlyList<RollbackEntry> rollback)
+        CanonicalWorkerApplyTransaction? transaction)
     {
-        var errors = new List<string>();
-        foreach (var entry in rollback.AsEnumerable().Reverse())
-        {
-            var result = await _fs.CompareExchangeFileBytesAsync(
-                writeLease,
-                entry.Path,
-                entry.AppliedBytes,
-                entry.BaselineBytes);
-            if (result == CanonicalFileMutationResult.Conflict)
-                errors.Add($"rollback conflict preserved a newer canonical write: {entry.Path}.");
-        }
-
-        return errors;
+        if (transaction == null)
+            return [];
+        var errors = await _fs.RollbackWorkerApplyTransactionAsync(writeLease, transaction);
+        return errors
+            .Select(error => $"rollback conflict or recovery failure: {error}")
+            .ToArray();
     }
 
     private static string? DecodeUtf8(byte[]? content)
@@ -445,6 +586,46 @@ public sealed class GmWorkerApplyGate
 
     private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>
         left == null ? right == null : right != null && left.AsSpan().SequenceEqual(right);
+
+    private static bool IsSafeIdentifier(string? value) =>
+        !string.IsNullOrWhiteSpace(value) &&
+        value.All(ch => char.IsLower(ch) || char.IsDigit(ch) || ch is '_' or '-');
+
+    private static ApplyGateDecision BuildRejectedDecision(
+        WorkerProposal proposal,
+        WorkerBridgeProfile profile,
+        IReadOnlyList<string> checkedPaths,
+        string reason) =>
+        BuildDecision(
+            proposal.ProposalId,
+            ApplyGateResult.Rejected,
+            checkedPaths,
+            scopePassed: false,
+            violations: [reason],
+            validationRequired: profile.Permissions.RequiresValidation,
+            validationPassed: false,
+            issueCount: 0,
+            appliedFiles: [],
+            rejectionReasons: [reason]);
+
+    private static ApplyGateDecision BuildSessionReplacedDecision(
+        WorkerProposal proposal,
+        WorkerBridgeProfile profile,
+        IReadOnlyList<string> checkedPaths)
+    {
+        const string reason = "Worker task does not belong to the current game session generation.";
+        return BuildDecision(
+            proposal.ProposalId,
+            ApplyGateResult.SessionReplaced,
+            checkedPaths,
+            scopePassed: false,
+            violations: [reason],
+            validationRequired: profile.Permissions.RequiresValidation,
+            validationPassed: false,
+            issueCount: 0,
+            appliedFiles: [],
+            rejectionReasons: [reason]);
+    }
 
     private static ApplyGateDecision BuildDecision(
         string proposalId,
@@ -479,9 +660,6 @@ public sealed class GmWorkerApplyGate
             RejectionReasons = rejectionReasons,
             DecidedAtUtc = DateTimeOffset.UtcNow.ToString("O")
         };
-
-    private Task RecordDecisionAsync(WorkerProposal proposal, ApplyGateDecision decision) =>
-        _auditLog?.RecordApplyDecisionAsync(proposal, decision) ?? Task.CompletedTask;
 
     private const string MissingFileSha256 = "missing";
 

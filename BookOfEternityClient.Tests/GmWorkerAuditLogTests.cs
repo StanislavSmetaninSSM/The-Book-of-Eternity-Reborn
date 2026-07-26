@@ -123,6 +123,41 @@ public sealed class GmWorkerAuditLogTests
     }
 
     [Fact]
+    public async Task AppendEventIfCurrentSessionAsync_StaleGeneration_DropsAuditEvent()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            string staleGeneration;
+            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                staleGeneration = fs.GetOrCreateSessionGeneration(writeLease);
+                fs.RotateSessionGeneration(writeLease);
+            }
+
+            var appended = await new GmWorkerAuditLog(fs).AppendEventIfCurrentSessionAsync(
+                staleGeneration,
+                new WorkerAuditEvent
+                {
+                    EventId = "worker_audit_stale_session",
+                    EventType = "task-dispatched",
+                    WorkerId = "validation_repair_codex",
+                    TaskId = "worker_task_stale_session",
+                    TimestampUtc = "2026-07-22T00:00:00Z",
+                    Summary = "Must not cross the session boundary."
+                });
+
+            Assert.False(appended);
+            Assert.False(fs.FileExists(GmWorkerAuditLog.AuditLogPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public void SharedAuditEventIdGenerator_DeterministicInputsProduceReadableStableId()
     {
         var generatorType = typeof(GmWorkerAuditLog).Assembly.GetType(

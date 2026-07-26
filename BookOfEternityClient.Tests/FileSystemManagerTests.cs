@@ -1,5 +1,7 @@
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text.Json;
 using Xunit;
 
@@ -62,6 +64,37 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task ClearGameStateAsync_DoesNotTraverseDirectoryJunction()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-manager-outside-" + Guid.NewGuid().ToString("N"));
+        var outsideFile = Path.Combine(outsideRoot, "external.json");
+        var junctionPath = _fs.ResolvePath("game_state/world/external-link");
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllTextAsync(outsideFile, "{\"mustRemain\":true}");
+        try
+        {
+            CreateDirectoryJunction(junctionPath, outsideRoot);
+
+            await _fs.ClearGameStateAsync();
+
+            Assert.True(File.Exists(outsideFile));
+            Assert.Equal("{\"mustRemain\":true}", await File.ReadAllTextAsync(outsideFile));
+        }
+        finally
+        {
+            if (Directory.Exists(junctionPath))
+                Directory.Delete(junctionPath, recursive: false);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task WriteFileAtomicBytesAsync_PreservesExactBytes()
     {
         byte[] expected = [0xEF, 0xBB, 0xBF, 0x00, 0xFF, 0x41];
@@ -107,6 +140,56 @@ public sealed class FileSystemManagerTests : IDisposable
         var actual = await _fs.ReadFileBytesAsync("game_state/world/weather.json");
         Assert.NotNull(actual);
         Assert.True(actual.SequenceEqual(first) || actual.SequenceEqual(second));
+    }
+
+    [Fact]
+    public async Task TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull()
+    {
+        string staleGeneration;
+        await using (var canonicalLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            staleGeneration = _fs.GetOrCreateSessionGeneration(canonicalLease);
+            _fs.RotateSessionGeneration(canonicalLease);
+        }
+
+        var lifecycleLease = await _fs.TryAcquireSessionLifecycleLeaseAsync(staleGeneration);
+
+        Assert.Null(lifecycleLease);
+    }
+
+    [Fact]
+    public async Task ClearGameStateAsync_WaitsForActiveSessionLifecycleLease()
+    {
+        var lifecycleContended = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var competingFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                SessionLifecycleLockContendedAsync = () =>
+                {
+                    lifecycleContended.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            });
+        competingFs.EnsureDirectoryStructure();
+
+        var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+        Task clearTask;
+        try
+        {
+            clearTask = competingFs.ClearGameStateAsync();
+            await lifecycleContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(clearTask.IsCompleted);
+        }
+        finally
+        {
+            await lifecycleLease.DisposeAsync();
+        }
+
+        await clearTask;
     }
 
     [Fact]
@@ -181,6 +264,27 @@ public sealed class FileSystemManagerTests : IDisposable
 
         await restoreTask;
         Assert.Equal("restored", await _fs.ReadFileAsync(path));
+    }
+
+    [Fact]
+    public async Task CleanupBackup_WaitsForCanonicalWriteLease()
+    {
+        const string path = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(path, "current");
+        var backupPath = _fs.ResolvePath(path) + ".test-backup";
+        await File.WriteAllTextAsync(backupPath, "backup");
+        Task cleanupTask;
+
+        await using (await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            cleanupTask = Task.Run(() => _fs.CleanupBackup(backupPath));
+            await Task.Delay(150);
+            Assert.False(cleanupTask.IsCompleted);
+            Assert.True(File.Exists(backupPath));
+        }
+
+        await cleanupTask;
+        Assert.False(File.Exists(backupPath));
     }
 
     [Fact]
@@ -289,6 +393,381 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal("{\"state\":\"last-valid\"}", await _fs.ReadFileAsync(markerPath));
         Assert.False(File.Exists(journalPath));
         Assert.False(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
+    public async Task CanonicalWriter_RecoversInterruptedWorkerApplyBeforeWriting()
+    {
+        const string firstPath = "game_state/world/weather.json";
+        const string secondPath = "game_state/world/current_location.json";
+        byte[] firstBaseline = [0x10, 0x11];
+        byte[] firstApplied = [0x20, 0x21];
+        byte[] secondBaseline = [0x30, 0x31];
+        byte[] secondApplied = [0x40, 0x41];
+        await _fs.WriteFileAtomicBytesAsync(firstPath, firstBaseline);
+        await _fs.WriteFileAtomicBytesAsync(secondPath, secondBaseline);
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            transactionId);
+        var beforeRoot = Path.Combine(transactionRoot, "before");
+        Directory.CreateDirectory(beforeRoot);
+        await File.WriteAllBytesAsync(Path.Combine(beforeRoot, "0000.bin"), firstBaseline);
+        await File.WriteAllBytesAsync(Path.Combine(beforeRoot, "0001.bin"), secondBaseline);
+        await File.WriteAllTextAsync(
+            Path.Combine(transactionRoot, "manifest.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                entries = new[]
+                {
+                    new
+                    {
+                        path = firstPath,
+                        baselineExists = true,
+                        beforeImage = "before/0000.bin",
+                        beforeSha256 = Sha256(firstBaseline),
+                        appliedSha256 = Sha256(firstApplied)
+                    },
+                    new
+                    {
+                        path = secondPath,
+                        baselineExists = true,
+                        beforeImage = "before/0001.bin",
+                        beforeSha256 = Sha256(secondBaseline),
+                        appliedSha256 = Sha256(secondApplied)
+                    }
+                }
+            }));
+        var activeJournalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            "active.json");
+        await File.WriteAllTextAsync(
+            activeJournalPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = false
+            }));
+
+        await File.WriteAllBytesAsync(_fs.ResolvePath(firstPath), firstApplied);
+
+        await _fs.WriteFileAtomicBytesAsync("game_state/world/after_recovery.json", [0x55]);
+
+        Assert.Equal(firstBaseline, await _fs.ReadFileBytesAsync(firstPath));
+        Assert.Equal(secondBaseline, await _fs.ReadFileBytesAsync(secondPath));
+        Assert.Equal([0x55], await _fs.ReadFileBytesAsync("game_state/world/after_recovery.json"));
+        Assert.False(File.Exists(activeJournalPath));
+        Assert.False(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
+    public async Task CanonicalWriter_CompletesEveryRecoverableRollbackEntryBeforeFailingClosed()
+    {
+        const string restorablePath = "game_state/world/weather.json";
+        const string unownedPath = "game_state/world/current_location.json";
+        byte[] restorableBaseline = [0x10];
+        byte[] restorableApplied = [0x20];
+        byte[] unownedBaseline = [0x30];
+        byte[] unownedApplied = [0x40];
+        byte[] unownedNewer = [0x50];
+        await _fs.WriteFileAtomicBytesAsync(restorablePath, restorableBaseline);
+        await _fs.WriteFileAtomicBytesAsync(unownedPath, unownedBaseline);
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            transactionId);
+        var beforeRoot = Path.Combine(transactionRoot, "before");
+        Directory.CreateDirectory(beforeRoot);
+        await File.WriteAllBytesAsync(Path.Combine(beforeRoot, "0000.bin"), restorableBaseline);
+        await File.WriteAllBytesAsync(Path.Combine(beforeRoot, "0001.bin"), unownedBaseline);
+        await File.WriteAllTextAsync(
+            Path.Combine(transactionRoot, "manifest.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                entries = new[]
+                {
+                    new
+                    {
+                        path = restorablePath,
+                        baselineExists = true,
+                        beforeImage = "before/0000.bin",
+                        beforeSha256 = Sha256(restorableBaseline),
+                        appliedSha256 = Sha256(restorableApplied)
+                    },
+                    new
+                    {
+                        path = unownedPath,
+                        baselineExists = true,
+                        beforeImage = "before/0001.bin",
+                        beforeSha256 = Sha256(unownedBaseline),
+                        appliedSha256 = Sha256(unownedApplied)
+                    }
+                }
+            }));
+        var activeJournalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            "active.json");
+        await File.WriteAllTextAsync(
+            activeJournalPath,
+            JsonSerializer.Serialize(new { schemaVersion = 1, transactionId, committed = false }));
+        await File.WriteAllBytesAsync(_fs.ResolvePath(restorablePath), restorableApplied);
+        await File.WriteAllBytesAsync(_fs.ResolvePath(unownedPath), unownedNewer);
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            _fs.WriteFileAtomicBytesAsync("game_state/world/must_not_write.json", [0x60]));
+
+        Assert.Contains("unowned canonical bytes", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(restorableBaseline, await _fs.ReadFileBytesAsync(restorablePath));
+        Assert.Equal(unownedNewer, await _fs.ReadFileBytesAsync(unownedPath));
+        Assert.False(_fs.FileExists("game_state/world/must_not_write.json"));
+        Assert.True(File.Exists(activeJournalPath));
+    }
+
+    [Fact]
+    public async Task CanonicalWriter_CleansCommittedWorkerApplyWithoutRollingItBack()
+    {
+        const string path = "game_state/world/weather.json";
+        byte[] baseline = [0x10];
+        byte[] applied = [0x20];
+        await _fs.WriteFileAtomicBytesAsync(path, applied);
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            transactionId);
+        var beforeRoot = Path.Combine(transactionRoot, "before");
+        Directory.CreateDirectory(beforeRoot);
+        await File.WriteAllBytesAsync(Path.Combine(beforeRoot, "0000.bin"), baseline);
+        await File.WriteAllTextAsync(
+            Path.Combine(transactionRoot, "manifest.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                entries = new[]
+                {
+                    new
+                    {
+                        path,
+                        baselineExists = true,
+                        beforeImage = "before/0000.bin",
+                        beforeSha256 = Sha256(baseline),
+                        appliedSha256 = Sha256(applied)
+                    }
+                }
+            }));
+        var activeJournalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            "active.json");
+        await File.WriteAllTextAsync(
+            activeJournalPath,
+            JsonSerializer.Serialize(new { schemaVersion = 1, transactionId, committed = true }));
+
+        await _fs.WriteFileAtomicBytesAsync("game_state/world/after_commit.json", [0x70]);
+
+        Assert.Equal(applied, await _fs.ReadFileBytesAsync(path));
+        Assert.Equal([0x70], await _fs.ReadFileBytesAsync("game_state/world/after_commit.json"));
+        Assert.False(File.Exists(activeJournalPath));
+        Assert.False(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
+    public async Task CommittedWorkerApply_CleanupFailureRetainsJournalForNextWriterRetry()
+    {
+        const string path = "game_state/world/weather.json";
+        byte[] baseline = [0x10];
+        byte[] applied = [0x20];
+        var operations = new WorkerCleanupFaultOperations();
+        var fs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            operations);
+        fs.EnsureDirectoryStructure();
+        await fs.WriteFileAtomicBytesAsync(path, baseline);
+
+        CanonicalWorkerApplyTransaction transaction;
+        await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await fs.BeginWorkerApplyTransactionAsync(
+                lease,
+                [new CanonicalWorkerApplyChange(path, baseline, applied)]);
+            Assert.Equal(
+                CanonicalFileMutationResult.Applied,
+                await fs.CompareExchangeFileBytesAsync(lease, path, baseline, applied));
+            operations.FailWorkerTransactionDelete = true;
+            fs.CommitWorkerApplyTransaction(lease, transaction);
+        }
+
+        Assert.True(File.Exists(fs.ActiveWorkerApplyTransactionJournalPath));
+        Assert.True(Directory.Exists(transaction.TransactionRoot));
+        Assert.Equal(applied, await fs.ReadFileBytesAsync(path));
+
+        operations.FailWorkerTransactionDelete = false;
+        await fs.WriteFileAtomicBytesAsync("game_state/world/after_retry.json", [0x30]);
+
+        Assert.Equal(applied, await fs.ReadFileBytesAsync(path));
+        Assert.Equal([0x30], await fs.ReadFileBytesAsync("game_state/world/after_retry.json"));
+        Assert.False(File.Exists(fs.ActiveWorkerApplyTransactionJournalPath));
+        Assert.False(Directory.Exists(transaction.TransactionRoot));
+    }
+
+    [Fact]
+    public async Task RolledBackWorkerApply_JournalDeleteFailureDoesNotPoisonNextWriter()
+    {
+        const string path = "game_state/world/weather.json";
+        byte[] baseline = [0x10];
+        byte[] applied = [0x20];
+        var operations = new WorkerCleanupFaultOperations();
+        var fs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            operations);
+        fs.EnsureDirectoryStructure();
+        await fs.WriteFileAtomicBytesAsync(path, baseline);
+
+        CanonicalWorkerApplyTransaction transaction;
+        IReadOnlyList<string> rollbackErrors;
+        await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await fs.BeginWorkerApplyTransactionAsync(
+                lease,
+                [new CanonicalWorkerApplyChange(path, baseline, applied)]);
+            Assert.Equal(
+                CanonicalFileMutationResult.Applied,
+                await fs.CompareExchangeFileBytesAsync(lease, path, baseline, applied));
+            operations.FailWorkerTransactionJournalDelete = true;
+            rollbackErrors = await fs.RollbackWorkerApplyTransactionAsync(lease, transaction);
+        }
+
+        Assert.NotEmpty(rollbackErrors);
+        Assert.Equal(baseline, await fs.ReadFileBytesAsync(path));
+        Assert.False(Directory.Exists(transaction.TransactionRoot));
+        Assert.True(File.Exists(fs.ActiveWorkerApplyTransactionJournalPath));
+
+        operations.FailWorkerTransactionJournalDelete = false;
+        await fs.WriteFileAtomicBytesAsync("game_state/world/after_rollback_retry.json", [0x30]);
+
+        Assert.Equal(baseline, await fs.ReadFileBytesAsync(path));
+        Assert.Equal([0x30], await fs.ReadFileBytesAsync("game_state/world/after_rollback_retry.json"));
+        Assert.False(File.Exists(fs.ActiveWorkerApplyTransactionJournalPath));
+    }
+
+    [Fact]
+    public async Task AppendFileAtomicIfCurrentSessionAsync_DropsStaleSessionTelemetry()
+    {
+        const string path = "game_state/control/gm_trajectory_ledger.jsonl";
+        string capturedGeneration;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            capturedGeneration = _fs.GetOrCreateSessionGeneration(lease);
+
+        Assert.True(await _fs.AppendFileAtomicIfCurrentSessionAsync(
+            path,
+            "{\"record\":1}" + Environment.NewLine,
+            capturedGeneration));
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.RotateSessionGeneration(lease);
+
+        Assert.False(await _fs.AppendFileAtomicIfCurrentSessionAsync(
+            path,
+            "{\"record\":\"stale\"}" + Environment.NewLine,
+            capturedGeneration));
+
+        var ledger = await _fs.ReadFileAsync(path);
+        Assert.Contains("\"record\":1", ledger, StringComparison.Ordinal);
+        Assert.DoesNotContain("stale", ledger, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SessionGeneration_RejectsUppercaseNonCanonicalGuidText()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(_fs.SessionGenerationPath)!);
+        await File.WriteAllTextAsync(
+            _fs.SessionGenerationPath,
+            "{\"schemaVersion\":1,\"generationId\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"}");
+
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var exception = Assert.Throws<InvalidDataException>(() => _fs.GetOrCreateSessionGeneration(lease));
+
+        Assert.Contains("invalid", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string Sha256(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
+
+    private sealed class WorkerCleanupFaultOperations : ILoadTransactionOperations
+    {
+        internal bool FailWorkerTransactionDelete { get; set; }
+        internal bool FailWorkerTransactionJournalDelete { get; set; }
+
+        public bool DirectoryExists(string path) => Directory.Exists(path);
+        public void CreateDirectory(string path) => Directory.CreateDirectory(path);
+        public void MoveDirectory(string sourcePath, string destinationPath) =>
+            Directory.Move(sourcePath, destinationPath);
+        public void DeleteDirectory(string path, bool recursive)
+        {
+            if (FailWorkerTransactionDelete &&
+                path.Contains(
+                    $"{Path.DirectorySeparatorChar}worker-apply-transactions{Path.DirectorySeparatorChar}",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new IOException("Injected worker apply transaction cleanup failure.");
+            }
+
+            Directory.Delete(path, recursive);
+        }
+
+        public bool FileExists(string path) => File.Exists(path);
+        public string ReadAllText(string path) => File.ReadAllText(path);
+        public void WriteAllTextAtomic(string path, string content) =>
+            PhysicalLoadTransactionOperations.Instance.WriteAllTextAtomic(path, content);
+        public void DeleteFile(string path)
+        {
+            if (FailWorkerTransactionJournalDelete &&
+                path.EndsWith(
+                    $"{Path.DirectorySeparatorChar}worker-apply-transactions{Path.DirectorySeparatorChar}active.json",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new IOException("Injected worker apply active journal cleanup failure.");
+            }
+
+            File.Delete(path);
+        }
+    }
+
+    private static void CreateDirectoryJunction(string junctionPath, string targetPath)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(junctionPath)!);
+        using var process = Process.Start(new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            Arguments = $"/d /c mklink /J \"{junctionPath}\" \"{targetPath}\""
+        });
+        if (process == null)
+            throw new InvalidOperationException("Failed to start junction helper.");
+        process.WaitForExit();
+        if (process.ExitCode != 0)
+            throw new InvalidOperationException($"Failed to create test junction: exit code {process.ExitCode}.");
     }
 
     public void Dispose()

@@ -4168,6 +4168,12 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("playerLevel", template, StringComparison.Ordinal);
             Assert.Contains("stat points", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("level-up", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("empty structural file", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("first complete progression tuple", template, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "Fresh Mortal bootstrap creates the baseline file with `playerLevel`",
+                template,
+                StringComparison.Ordinal);
 
             var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
             Assert.True(WaitForFileContaining(readmePath, "Mortal World experience and level progression", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
@@ -4253,8 +4259,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("skillMasteryChanges", template, StringComparison.Ordinal);
             Assert.Contains("attribute-only check", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("prose-only learning", template, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("starter active and passive skills", template, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("starterCompetencyRequirements", template, StringComparison.Ordinal);
+            Assert.Contains("explicit GM-authored active and passive skills", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("structuredGmAuthority.playerSkills", template, StringComparison.Ordinal);
             Assert.Contains("fresh Mortal bootstrap", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Чтение свидетельских меток", template, StringComparison.Ordinal);
             Assert.DoesNotContain("Р§С‚РµРЅРёРµ", template, StringComparison.Ordinal);
@@ -4692,12 +4698,18 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
-    public void MortalBootstrapGuidance_PreservesClientAuthoredCompetenciesNpcAndOpeningWorldEvent()
+    public void MortalBootstrapGuidance_UsesStructuredGmAuthorityAndPreservesOpeningWorldEvent()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
-        Assert.Contains("starterCompetencyRequirements", daemon, StringComparison.Ordinal);
+        Assert.Contains("structuredGmAuthority", daemon, StringComparison.Ordinal);
+        Assert.Contains("playerAuthoredStart is narrative context", daemon, StringComparison.Ordinal);
         Assert.Contains("worldEventRequirements", daemon, StringComparison.Ordinal);
-        Assert.Contains("preMaterializedBaselineFiles includes game_state/npcs/npc_core.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("playerProgression", daemon, StringComparison.Ordinal);
+        Assert.Contains("carryingRules", daemon, StringComparison.Ordinal);
+        Assert.Contains("factionMechanics", daemon, StringComparison.Ordinal);
+        Assert.Contains("experience.json is an empty structural object", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("starterCompetencyRequirements", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("preMaterializedBaselineFiles includes game_state/npcs/npc_core.json", daemon, StringComparison.Ordinal);
 
         var gmFacingSources = new[]
         {
@@ -4710,8 +4722,12 @@ public sealed class GmTurnHelperContractTests
 
         foreach (var source in gmFacingSources)
         {
-            Assert.Contains("starterCompetencyRequirements", source, StringComparison.Ordinal);
+            Assert.Contains("structuredGmAuthority", source, StringComparison.Ordinal);
             Assert.Contains("worldEventRequirements", source, StringComparison.Ordinal);
+            Assert.Contains("playerProgression", source, StringComparison.Ordinal);
+            Assert.Contains("carryingRules", source, StringComparison.Ordinal);
+            Assert.Contains("factionMechanics", source, StringComparison.Ordinal);
+            Assert.DoesNotContain("starterCompetencyRequirements", source, StringComparison.Ordinal);
         }
     }
 

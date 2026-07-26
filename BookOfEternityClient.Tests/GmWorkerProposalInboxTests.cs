@@ -17,9 +17,12 @@ public sealed class GmWorkerProposalInboxTests
             var fs = CreateFileSystem(root);
             await WriteTaskAsync(fs, GmWorkerBridgeTestFixtures.ValidationRepairTask());
             await WriteTaskAsync(fs, GmWorkerBridgeTestFixtures.NarrativeDraftTask());
-            var store = new GmWorkerProposalStore(fs);
-            await store.SaveProposalAsync(GmWorkerBridgeTestFixtures.ValidationRepairProposal());
-            await store.SaveProposalAsync(GmWorkerBridgeTestFixtures.NarrativeDraftProposal());
+            await GmWorkerBridgeTestFixtures.WriteProposalFixtureAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairProposal());
+            await GmWorkerBridgeTestFixtures.WriteProposalFixtureAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.NarrativeDraftProposal());
             var inbox = new GmWorkerProposalInboxService(fs);
 
             var entries = await inbox.ListAsync();
@@ -113,7 +116,7 @@ public sealed class GmWorkerProposalInboxTests
             var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
             var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
             await WriteTaskAsync(fs, task);
-            await new GmWorkerProposalStore(fs).SaveProposalAsync(proposal);
+            await GmWorkerBridgeTestFixtures.WriteProposalFixtureAsync(fs, proposal);
             var audit = new GmWorkerAuditLog(fs);
             await audit.RecordProposalReceivedAsync(proposal);
             await audit.RecordApplyDecisionAsync(proposal, new ApplyGateDecision

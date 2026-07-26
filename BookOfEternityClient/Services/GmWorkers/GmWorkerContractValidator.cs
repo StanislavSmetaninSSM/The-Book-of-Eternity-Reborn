@@ -55,6 +55,18 @@ public static class GmWorkerContractValidator
         if (task.SchemaVersion != 1)
             errors.Add("schemaVersion must be 1.");
         ValidateId(task.TaskId, "taskId", errors);
+        if (string.IsNullOrWhiteSpace(task.SessionGeneration))
+        {
+            errors.Add("sessionGeneration is required.");
+        }
+        else if (!Guid.TryParseExact(task.SessionGeneration, "N", out var parsedGeneration) ||
+                 !string.Equals(
+                     task.SessionGeneration,
+                     parsedGeneration.ToString("N"),
+                     StringComparison.Ordinal))
+        {
+            errors.Add("sessionGeneration must be a canonical lowercase GUID in N format.");
+        }
         ValidateId(task.WorkerId, "workerId", errors);
         if (!string.Equals(task.WorkerId, profile.WorkerId, StringComparison.Ordinal))
             errors.Add("task.workerId must match profile.workerId.");
@@ -195,6 +207,8 @@ public static class GmWorkerContractValidator
         if (proposal.SchemaVersion != 1)
             errors.Add("schemaVersion must be 1.");
         ValidateId(proposal.ProposalId, "proposalId", errors);
+        if (GmWorkerProposalStore.IsReservedProposalId(proposal.ProposalId))
+            errors.Add("proposalId is reserved for the derived proposal inbox namespace.");
         ValidateId(proposal.TaskId, "taskId", errors);
         ValidateId(proposal.WorkerId, "workerId", errors);
         if (!string.Equals(proposal.TaskId, task.TaskId, StringComparison.Ordinal))

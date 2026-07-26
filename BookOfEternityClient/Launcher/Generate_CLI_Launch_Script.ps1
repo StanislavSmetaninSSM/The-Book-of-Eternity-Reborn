@@ -138,6 +138,21 @@ are shared across pool instances; cancellation awaits the complete process tree
 before slot reuse. Built-in backup, restore, clear, save, and load operations
 share the external canonical write lease. Load recovery uses a durable external
 journal and preserves the previous valid backup if immediate rollback fails.
+Session generation is external to the swappable save, rotates on load and New
+Game, and makes prior worker handoffs stale. The client starts a configured
+worker only after attaching its hidden process host to the supported Windows Job
+Object boundary. The parent creates private current-user named control/status
+pipe servers and starts the hidden host with endpoint names plus a per-launch
+nonce only. Parent-side client PID authentication accepts both channels only
+from the exact host before the client sends the typed worker payload; the host
+retains both channels and the configured worker receives no
+pipe handle. Typed frames and an explicit `OutputDrained` acknowledgement replace
+worker-accessible marker files; unsupported platforms fail closed before worker
+release. Timeout/cancellation remains authoritative,
+and cleanup uncertainty quarantines the worker slot. Canonical writers recover
+an interrupted load and the durable `.boe_runtime/worker-apply-transactions`
+journal after lease acquisition or fail closed; state refresh holds the same
+lease across its complete read/modify/write.
 Detached workspace cleanup never follows reparse points and cannot replace a
 worker result with a cleanup exception.
 
@@ -184,7 +199,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 
 ### PHASE 1: WORLD ASSESSMENT
 - Mortal World: analyze elapsed time, NPC thoughts, world/faction progression
-- First Mortal bootstrap: when `game_state/control/mortal_bootstrap_scaffold.json` exists, preserve every `starterCompetencyRequirements[]` active/passive skill (and active mastery), every `worldEventRequirements.requiredEventIds[]` opening event, and every pre-materialized starter NPC. Enrich or rename these anchors from `playerAuthoredStart`; do not delete them or leave `/навыки`, `/нпс`, or `/новости_мира` empty.
+- First Mortal bootstrap: `playerAuthoredStart` is narrative context only. The client creates no skills, items, NPCs, capabilities, money, progression, carrying values, faction resources, influence/control, or universal power profile from prose or defaults; `experience.json` starts empty. Record each setting-aware decision in the matching `structuredGmAuthority.playerProgression`, `carryingRules`, `factionMechanics`, `playerSkills`, `inventoryItems`, `actorCapabilities`, or `resources` section, write matching complete canonical GM state, and preserve every `worldEventRequirements.requiredEventIds[]` opening event. Every new NPC requires a complete materialization envelope.
 - Chaos Sea / active Shining Abode: review Guardian/afterlife state and update only the Guardian mood, projects, musings, lore unlocks or other meta surfaces that this turn actually changes
 - Shining Abode pending-bootstrap handoff: do not advance ordinary afterlife systems; write only `TriggerIncarnation` and preserve the prepared package for client-side Mortal bootstrap
 - Shining Abode package fault: if `preparedIncarnationPackage` is present but invalid, preserve it and all pending Shining files for repair; do not process ordinary Shining gameplay

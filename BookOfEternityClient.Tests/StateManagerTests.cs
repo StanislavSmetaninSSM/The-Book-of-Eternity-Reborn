@@ -10,6 +10,16 @@ namespace BookOfEternityClient.Tests;
 public sealed class StateManagerTests
 {
     [Fact]
+    public void AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite()
+    {
+        Assert.DoesNotContain(
+            typeof(BookOfEternityClient.Services.AfterlifeEntityProfileState).GetMethods(),
+            method => method.IsPublic &&
+                      method.IsStatic &&
+                      method.Name == "ApplyPlayerSoulProfileClientAuthorityAsync");
+    }
+
+    [Fact]
     public void GameSettings_DefaultGmCliLaunchCommand_UsesExplicitCodexHighReasoning()
     {
         var settings = new GameSettings();
@@ -423,6 +433,110 @@ public sealed class StateManagerTests
         }
         finally
         {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease()
+    {
+        var root = CreateTempRoot();
+        var mirrorInputsRead = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseMirrorRepair = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var writerContended = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        try
+        {
+            var fs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                new FileSystemManagerHooks
+                {
+                    CanonicalWriteLockContendedAsync = () =>
+                    {
+                        writerContended.TrySetResult();
+                        return Task.CompletedTask;
+                    }
+                });
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(
+                fs,
+                new GameSettings(),
+                NullLogger<StateManager>.Instance,
+                new StateManagerHooks
+                {
+                    AfterPlayerSoulProfileInputsReadAsync = async () =>
+                    {
+                        mirrorInputsRead.SetResult();
+                        await releaseMirrorRepair.Task;
+                    }
+                });
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+            {
+              "soulName": "Пепельная Искра",
+              "currentRealm": "Chaos Sea",
+              "inkFeathers": { "current": 0, "total": 0 },
+              "enlightenment": { "experience": 0, "level": 0 },
+              "afterlifeCombatProfile": {
+                "spiritFocusTier": 0,
+                "artTiers": { "guard": 0, "recover_spiritual_power": 0 }
+              }
+            }
+            """);
+            await fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "player_soul",
+                  "actorId": "player_soul",
+                  "displayName": "Пепельная Искра",
+                  "realm": "Chaos Sea",
+                  "gmRevision": "before",
+                  "currencies": { "inkFeathers": 4, "lightSparks": 0 },
+                  "progression": {},
+                  "standardArts": { "guard": 1, "recover_spiritual_power": 1 },
+                  "progressionLedger": []
+                }
+              ]
+            }
+            """);
+
+            var refreshTask = manager.RefreshGameStateAsync();
+            await mirrorInputsRead.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            var writerTask = fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "player_soul",
+                  "actorId": "player_soul",
+                  "displayName": "Пепельная Искра",
+                  "realm": "Chaos Sea",
+                  "gmRevision": "accepted-after-read",
+                  "currencies": { "inkFeathers": 9, "lightSparks": 0 },
+                  "progression": {},
+                  "standardArts": { "guard": 2, "recover_spiritual_power": 1 },
+                  "progressionLedger": []
+                }
+              ]
+            }
+            """);
+
+            await writerContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(writerTask.IsCompleted);
+            releaseMirrorRepair.SetResult();
+            await Task.WhenAll(refreshTask, writerTask);
+
+            using var finalDocument = JsonDocument.Parse(
+                await fs.ReadFileAsync("game_state/meta/afterlife_entity_profiles.json") ?? "{}");
+            var player = finalDocument.RootElement.GetProperty("profiles").EnumerateArray().Single();
+            Assert.Equal("accepted-after-read", player.GetProperty("gmRevision").GetString());
+        }
+        finally
+        {
+            releaseMirrorRepair.TrySetResult();
             CleanupTempRoot(root);
         }
     }

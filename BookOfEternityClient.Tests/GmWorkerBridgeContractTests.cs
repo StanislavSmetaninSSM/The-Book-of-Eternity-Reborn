@@ -119,6 +119,58 @@ public sealed class GmWorkerBridgeContractTests
     }
 
     [Fact]
+    public void ValidateTaskPacket_MissingSessionGenerationIsRejected()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            SessionGeneration = ""
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("sessionGeneration", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("required", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateTaskPacket_UppercaseSessionGenerationIsRejected()
+    {
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            SessionGeneration = "ABCDEF0123456789ABCDEF0123456789"
+        };
+
+        var result = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("sessionGeneration", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("lowercase", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateProposal_ReservedInboxProposalIdIsRejected()
+    {
+        var profile = GmWorkerBridgeTestFixtures.NarrativeDraftCodexProfile();
+        var task = GmWorkerBridgeTestFixtures.NarrativeDraftTask();
+        var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+        {
+            ProposalId = "inbox"
+        };
+
+        var result = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, error =>
+            error.Contains("proposalId", StringComparison.OrdinalIgnoreCase) &&
+            error.Contains("reserved", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidationRepairProposal_RejectsDuplicateChangedFilePaths()
     {
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();

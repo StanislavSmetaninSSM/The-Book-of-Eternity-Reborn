@@ -1,3 +1,5 @@
+using BookOfEternityClient.Core;
+
 namespace BookOfEternityClient.Services.GmWorkers;
 
 public enum WorkerLaunchVisibility
@@ -135,7 +137,8 @@ public enum ApplyGateResult
 {
     Accepted,
     Rejected,
-    ValidationFailed
+    ValidationFailed,
+    SessionReplaced
 }
 
 public sealed record WorkerBridgeProfile
@@ -164,6 +167,7 @@ public sealed record WorkerTaskPacket
 {
     public int SchemaVersion { get; init; } = 1;
     public string TaskId { get; init; } = "";
+    public string SessionGeneration { get; init; } = "";
     public string WorkerId { get; init; } = "";
     public WorkerRole Role { get; init; } = WorkerRole.ValidationRepair;
     public WorkerTaskType TaskType { get; init; } = WorkerTaskType.ValidationRepair;
@@ -444,11 +448,16 @@ public sealed record GmWorkerTaskRunResult
     public WorkerBridgeStatus Status { get; init; } = new();
     public IReadOnlyList<WorkerBridgeStatus> StatusHistory { get; init; } = [];
     public WorkerProposal? Proposal { get; init; }
+    public WorkerTaskPacket? BoundTask { get; init; }
     public int? ExitCode { get; init; }
     public string StandardOutput { get; init; } = "";
     public string StandardError { get; init; } = "";
     public bool TimedOut { get; init; }
+    public bool SessionReplaced { get; init; }
 }
+
+internal sealed class GmWorkerSessionReplacedException(string message)
+    : SessionReplacedException(message, string.Empty, null);
 
 public sealed record WorkerAuditEvent
 {

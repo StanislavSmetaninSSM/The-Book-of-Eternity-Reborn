@@ -2254,6 +2254,36 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnContinuity_DeletedMortalAuthorityFile_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalPromotionStateJson(promotion: null);
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+        File.Delete(_fs.ResolvePath(path));
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_current_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnContinuity_DeletedEnvelopeFreeMortalActor_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalPromotionStateJson(promotion: null);
+        const string currentJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_current_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_CurrentAfterlifeProfileWithConflictingIdentityAliases_IsRejected()
     {
         const string path = "game_state/meta/afterlife_entity_profiles.json";
@@ -2928,19 +2958,13 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public void CanonicalMortalActorSnapshotAuthority_RealBootstrapNpcIdPair_IsAccepted()
+    public void CanonicalMortalActorSnapshotAuthority_ExplicitMatchingNpcIdPair_IsAccepted()
     {
-        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
-            incarnationNumber: 1,
-            turnNumber: 8,
-            characterDescription: "Архивист новой жизни.",
-            worldDescription: "Нейтральный испытательный мир.",
-            startingCircumstances: "Наставник готов провести первый урок.",
-            createdAtUtc: DateTimeOffset.Parse("2026-07-19T00:00:00Z"));
+        var root = MortalActorTestFixtures.CreateNpcCoreRoot();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        actor["npcId"] = actor["NPCId"]!.GetValue<string>();
 
-        var snapshotJson = files["game_state/npcs/npc_core.json"].ToJsonString();
-
-        Assert.True(CanReadCanonicalMortalActorSnapshotAuthority(snapshotJson));
+        Assert.True(CanReadCanonicalMortalActorSnapshotAuthority(root.ToJsonString()));
     }
 
     [Theory]
@@ -4142,18 +4166,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         bool includeEnvelope,
         bool includeInventory = false)
     {
-        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
-            incarnationNumber: 1,
-            turnNumber: 8,
-            characterDescription: "Архивист новой жизни.",
-            worldDescription: "Городской архив с практическим наставником.",
-            startingCircumstances: "Наставник готов обучить чтению печатей.",
-            createdAtUtc: DateTimeOffset.Parse("2026-07-19T00:00:00Z"));
-        var sourceRoot = files["game_state/npcs/npc_core.json"].AsObject();
-        var actor = sourceRoot["NPCsInScene"]![0]!.DeepClone().AsObject();
-        actor["NPCId"] = actorId;
-        actor.Remove("npcId");
-        actor.Remove("id");
+        var actor = MortalActorTestFixtures.CreateActor(actorId);
         if (!canTeach)
         {
             actor["teacherProfile"] = new JsonObject
@@ -4165,10 +4178,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
 
         if (includeInventory)
         {
-            var inventoryItem = files["game_state/inventory/items.json"]["items"]![0]!.DeepClone().AsObject();
             var inventoryItemId = $"item_{actorId}_archive_key";
-            inventoryItem["itemId"] = inventoryItemId;
-            inventoryItem["existedId"] = inventoryItemId;
+            var inventoryItem = MortalActorTestFixtures.CreateInventoryItem(inventoryItemId);
             actor["inventory"] = new JsonArray(inventoryItem);
         }
 

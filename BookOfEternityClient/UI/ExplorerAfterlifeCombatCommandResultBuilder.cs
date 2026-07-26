@@ -4762,6 +4762,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     }
 
     private static JsonObject? ResolveStandardArts(JsonObject? combatProfile) =>
+        combatProfile?["artTiers"] as JsonObject ??
         combatProfile?["standardArts"] as JsonObject ??
         combatProfile?["spiritualArts"] as JsonObject ??
         combatProfile?["arts"] as JsonObject;

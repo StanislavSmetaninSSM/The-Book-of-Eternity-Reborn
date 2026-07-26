@@ -758,6 +758,23 @@ public sealed class NpcCoreChangesTests : IDisposable
             issue.Actor == $"mortal_npc:{fixture.ActorId}");
     }
 
+    [Theory]
+    [InlineData("tradeInventory", """{"tradeCycleId":"cycle_request_bound","items":[]}""")]
+    [InlineData("trainingShowcase", """{"requestId":"training_request_bound","offers":[]}""")]
+    public async Task ValidatePreNormalizationNpcCoreChanges_RequestBoundSurfaceMutation_IsLeftToDedicatedValidator(
+        string propertyName,
+        string valueJson)
+    {
+        var fixture = await WriteFixtureAsync((_, actor, _) =>
+            actor[propertyName] = JsonNode.Parse(valueJson));
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
     [Fact]
     public async Task ValidatePreNormalizationNpcCoreChanges_UnchangedHistoricalSceneAndNewActor_AreAccepted()
     {
@@ -1149,7 +1166,10 @@ public sealed class NpcCoreChangesTests : IDisposable
         }
         """);
 
-        var preTurnRoot = files[NpcCorePath].DeepClone().AsObject();
+        var currentLocation = files["game_state/world/current_location.json"];
+        var preTurnRoot = MortalActorTestFixtures.CreateNpcCoreRoot(
+            currentLocationId: currentLocation["locationId"]!.GetValue<string>(),
+            currentLocationName: currentLocation["name"]!.GetValue<string>());
         var preTurnActor = Assert.Single(preTurnRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
         preTurnActor["factionAffiliations"] = new JsonArray();
         var currentRoot = preTurnRoot.DeepClone().AsObject();

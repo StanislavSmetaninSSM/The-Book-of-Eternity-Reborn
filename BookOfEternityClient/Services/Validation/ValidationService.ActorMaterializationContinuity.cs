@@ -200,9 +200,22 @@ public partial class ValidationService
 
     private async Task ValidateAcceptedTurnMortalActorMaterializationCompletenessAsync(List<ValidationIssue> issues)
     {
+        var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         var currentJson = await _fs.ReadFileAsync(MortalActorMaterializationStatePath);
         if (string.IsNullOrWhiteSpace(currentJson))
+        {
+            if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+                snapshotLookup.Manifest != null &&
+                (snapshotLookup.Manifest.Files?.ContainsKey(MortalActorMaterializationStatePath) == true ||
+                 snapshotLookup.Manifest.RollbackBaselineFiles?.Contains(
+                     MortalActorMaterializationStatePath,
+                     StringComparer.OrdinalIgnoreCase) == true))
+            {
+                AddUnusableMortalActorMaterializationCurrentAuthorityIssue(issues);
+            }
+
             return;
+        }
         string? preTurnJson = null;
         var currentDocumentParsed = false;
 
@@ -214,7 +227,6 @@ public partial class ValidationService
                 return;
 
             issues.AddRange(ValidateCurrentMortalMaterializationIds(currentDocument.RootElement));
-            var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
             if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
                 return;
             if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
@@ -241,6 +253,7 @@ public partial class ValidationService
             }
 
             var evaluatedHistoricalActors = new HashSet<string>(StringComparer.Ordinal);
+            var currentActorIds = new HashSet<string>(StringComparer.Ordinal);
             foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
             {
                 if (!currentDocument.RootElement.TryGetProperty(sectionName, out var actors) ||
@@ -256,6 +269,7 @@ public partial class ValidationService
                     if (!TryReadCanonicalCurrentMortalActorId(actor, out var actorId))
                         continue;
 
+                    currentActorIds.Add(actorId);
                     var currentSignals = ReadMortalActorMaterializationPromotionSignals(actor);
                     if (preTurnActors.TryGetValue(actorId, out var previousState))
                     {
@@ -318,6 +332,9 @@ public partial class ValidationService
                         requireEnvelope: true));
                 }
             }
+
+            if (preTurnActors.Keys.Any(actorId => !currentActorIds.Contains(actorId)))
+                AddUnusableMortalActorMaterializationCurrentAuthorityIssue(issues);
 
             foreach (var (actorId, previousState) in preTurnActors)
             {

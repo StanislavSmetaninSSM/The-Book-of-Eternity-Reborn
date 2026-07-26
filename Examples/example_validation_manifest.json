@@ -74,7 +74,7 @@
       "file": "E_CLI_GM_Worker_Validation_Repair.txt",
       "statePath": "game_state/control/gm_worker_audit.jsonl",
       "responseSurface": "worker-proposal-v1 / apply gate",
-      "description": "Hidden/background validation-repair worker profile, detached .worker_runtime execution snapshot with only pinned context, exact digest verification, create-only task reservation, complete session-generation-bound proposal bundle publication through one atomic directory rename, mandatory explicit proposal status whose omission is invalid, exact read-only setting and Soul authority, every game_state/meta target classified as afterlife, one external canonical write lease through publication/validation/decision/save/load, durable interrupted-load recovery journal, process-tree-safe slot cancellation, client-created validation_repair_ready signal, collision-safe shared UTC-millisecond plus GUID audit event IDs, proposal-applied/validation-repair-ready-created audit events, and fallback to legacy repair request."
+      "description": "Hidden/background validation-repair worker profile, detached .worker_runtime execution snapshot with only pinned context, exact digest verification, create-only task reservation, complete proposal bundle publication through one atomic directory rename bound to the durable external session generation, one atomic cancellation/publication transition that leaves no applyable bundle when cancellation wins and preserves the complete durable bundle when publication wins, stale handoff invalidation on load/New Game, mandatory explicit proposal status whose omission is invalid, exact read-only setting and Soul authority, every game_state/meta target classified as afterlife, production ValidationService required by the apply gate with exact-byte rollback on full-state validation failure, one external canonical write lease through publication/validation/decision/save/load/recovery/refresh, durable interrupted-load and worker-apply recovery journals, timeout/cancellation-aware attach-before-launch hidden process host, parent-created private current-user named control/status pipe servers with unique endpoint names, endpoint-and-nonce-only host arguments, parent-side client PID authentication of the exact hidden host before the typed Launch payload, host-owned channels never passed to the configured worker, strict typed Ready/Release/Completed/OutputDrained frames, no worker-accessible marker files, a proposal applyable only after confirmed zero exit and confirmed process-tree termination, failed execution output that must not be imported, explicit OutputDrained acknowledgement after bounded output capture, supported Windows Job Object cancellation with fail-closed unsupported platforms, authoritative timeout/cancellation, bounded cleanup, and slot quarantine when complete-tree exit is unconfirmed, client-created validation_repair_ready signal, collision-safe shared UTC-millisecond plus GUID audit event IDs, proposal-applied/validation-repair-ready-created audit events, and fallback to legacy repair request."
     },
     {
       "contractId": "gm_worker_narrative_draft_v1",
@@ -135,6 +135,9 @@
       "realms": [
         "Chaos Sea"
       ],
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeDocumentationCoverageTests.AfterlifeActorMaterializationWorkedExample_PassesExecutableContract -> ValidationService.ValidateResponse + ActorMaterializationContract.ValidateAfterlifeProfile",
+      "coverageLimit": "Validates the extracted GameResponse-shaped Chaos Sea profile through the production response validator and the exact actor materialization contract; it does not claim accepted-turn cross-file binding or StateDistributor execution.",
       "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, actor-owned memory, real goals/quests/activity agency, exact current abode Guardian trade authority or secure/contested operational Shining head trade tier authority, and bounded repairs that preserve protected actor data. The first envelope on an existing profile revalidates actor-owned memory; a common-profile repair changes only the exact actor's gmThoughtsSummary."
     },
     {
@@ -145,6 +148,9 @@
       "realms": [
         "Shining Abode"
       ],
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeDocumentationCoverageTests.ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract -> ValidationService.ValidateResponse + ValidateAcceptedTurnActorMaterializationCompletenessAsync -> ValidateAcceptedTurnAfterlifeActorProfileBindingsAsync -> ActorMaterializationContract.ValidateAfterlifeProfile",
+      "coverageLimit": "Validates the extracted profile against exact current and validated pre-turn Shining faction-head and trade authority through the production accepted-turn binding path; it does not claim StateDistributor or the complete accepted-turn lifecycle.",
       "description": "A complete Shining Abode faction-head profile binds exact structured leadership authority, actor-owned memory, agency, progression history, and realm-local positive trade capability without title, prose, or genre inference."
     },
     {

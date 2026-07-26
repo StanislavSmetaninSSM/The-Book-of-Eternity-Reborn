@@ -182,6 +182,83 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts()
+    {
+        await WriteCanonicalAndGeneratedHarnessFilesAsync();
+        await using (var generationLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.GetOrCreateSessionGeneration(generationLease);
+
+        var preparationReachedPublication = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releasePreparation = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var replacementContended = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var replacementFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                }
+            });
+        var service = new LiveTurnPreparationService(
+            _fs,
+            new LiveTurnPreparationServiceHooks
+            {
+                BeforePublicationAsync = async () =>
+                {
+                    preparationReachedPublication.TrySetResult();
+                    await releasePreparation.Task;
+                }
+            });
+
+        var preparationTask = service.PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "old-live-session",
+            RequestId = "old-live-request",
+            TurnNumber = 4,
+            PlayerAction = "Продолжить старый ход.",
+            PreGeneratedDices1d20 = new[] { 12, 7, 19 }
+        });
+        await preparationReachedPublication.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        var replacementTask = Task.Run(async () =>
+        {
+            await using var replacementLease = await replacementFs.AcquireCanonicalWriteLeaseAsync(
+                CanonicalWritePurpose.SessionReplacement);
+            replacementFs.RotateSessionGeneration(replacementLease);
+            replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.TurnRequestPath);
+            replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            replacementFs.DeleteFile(replacementLease, PendingTurnSnapshotAuthority.AuthorityPath);
+            replacementFs.DeleteDirectoryTree(
+                replacementLease,
+                LiveTurnPreparationService.PendingTurnSnapshotDirectory);
+            await replacementFs.WriteFileAtomicAsync(
+                replacementLease,
+                "game_state/core/replacement_marker.json",
+                """{"session":"replacement"}""");
+        });
+
+        await Task.WhenAny(replacementTask, replacementContended.Task)
+            .WaitAsync(TimeSpan.FromSeconds(10));
+        releasePreparation.TrySetResult();
+
+        await preparationTask.WaitAsync(TimeSpan.FromSeconds(10));
+        await replacementTask.WaitAsync(TimeSpan.FromSeconds(10));
+
+        Assert.True(_fs.FileExists("game_state/core/replacement_marker.json"));
+        Assert.False(_fs.FileExists(LiveTurnPreparationService.TurnRequestPath));
+        Assert.False(_fs.FileExists(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+        Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        Assert.False(Directory.Exists(_fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotDirectory)));
+    }
+
+    [Fact]
     public void LauncherAndQuickstartDocumentPrepareTurnCommand()
     {
         var launcher = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");

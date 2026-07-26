@@ -135,6 +135,28 @@ skill structure. A complete Block 7 skill does not require `skillId` or `id`;
 legacy identifier-only records remain detectable for migration without changing
 the production skill validator.
 
+### Fresh Mortal bootstrap mechanical authority
+
+The client creates only neutral structural containers before the first Mortal
+turn. `game_state/player/experience.json` is empty; inventory contains empty
+`items` and `equipment` without carrying totals; faction resources and current
+location control arrays are empty; the temporary faction identity has no level,
+XP threshold, reputation, influence, resources, or universal `powerProfile`.
+
+The scaffold exposes empty `structuredGmAuthority.playerProgression`,
+`carryingRules`, and `factionMechanics` arrays. If the accepted first turn adds
+any progression tuple, carrying result, faction resource/control value, or
+faction progression/power field, the matching authority array contains at least
+one non-empty domain-specific GM decision whose structured fields bind the exact
+values being introduced. An empty object, an unrelated object, or prose alone
+does not grant authority. Missing or unbound authority is a blocking, focused
+validation issue. The bootstrap also leaves location type, biome, traversal
+difficulty, faction chronicle, quests, and objectives absent until the GM
+materializes them. This allows arbitrary Mortal settings while preventing the
+client from silently imposing fantasy vocabulary, indoor/walkable assumptions,
+a fixed XP threshold, a universal carrying formula, or a fixed faction power
+model.
+
 ## Afterlife actor contract
 
 ### Supported `actorType` values
@@ -190,6 +212,61 @@ Exceptions:
 4. `complete` -> ordinary update: dedicated delta commands mutate their owned gameplay fields; valid `NPCCoreChanges` mutates only its closed core groups; envelope identity remains stable.
 5. `complete` -> resent as first materialization: rejected for existing actors when it attempts to bypass delta authority.
 6. `complete` -> invalid contradiction: blocked with bounded repair.
+
+Legacy Mortal promotion is a distinct accepted-turn transition, not an ordinary
+full-object update. It binds one validated pre-turn permanent identity without a
+materialization envelope to one current carrier with its first complete
+envelope. Only the closed promotion-owned role fields may differ; exact
+inventory and every unrelated actor-owned field remain equal to pre-turn
+authority. Stock and training showcase payloads are not promotion fields and
+require their own request/receipt authority.
+
+Afterlife `departure_only` is the only binding-removal transition. It requires
+the exact validated pending transfer, departure receipt, and history record for
+the same resident identity. A missing target alone never authorizes deletion.
+
+## Session replacement and canonical mutation authority
+
+A canonical lease carries an explicit purpose. Ordinary mutation leases cannot
+rotate session generation. A replacement capability is created only while an
+active lifecycle lease is held and binds the physical canonical root plus the
+replacement purpose.
+
+The durable load journal records:
+
+- transaction identity and phase;
+- physical canonical root;
+- previous and replacement generation values;
+- staged, live-backup, failed-live, and worker-evidence locations;
+- commit state.
+
+Recovery restores canonical bytes, previous generation, and previous worker
+evidence together for every uncommitted replacement. A committed replacement
+ensures the replacement generation and strips stale loaded worker evidence.
+
+Rollback before-images are byte arrays with exact SHA-256 hashes and an explicit
+missing baseline. A baseline enters the manifest only after durable capture.
+Restore failure is aggregate and evidence remains until every target succeeds.
+
+## Worker terminal authority
+
+The immutable task snapshot is created before validation, queueing, hooks, or
+reservation. Its durable reservation supplies scope, identity, generation, and
+hash authority to apply. The production apply gate derives the same physical
+canonical filesystem from `ValidationService`.
+
+Proposal publication is the only success linearization point. Before it,
+cancellation or timeout wins over malformed input, rejection, generic faults,
+audit failure, and cleanup failure. After it, later cancellation cannot revoke
+the complete bundle. Ready publication against a replacement session returns
+typed `SessionReplaced`.
+
+## Browser mutation authority
+
+Browser direct actions bind a session operation before reading canonical state.
+Spend, snapshot, authority, and request files form one canonical transaction.
+Media generation downloads to an external staging file and commits the final
+bytes atomically only after generation verification under canonical authority.
 
 ## Validation issue families
 
@@ -254,9 +331,48 @@ create-only compare/exchange before launch. A proposal's JSON and declared
 content form one staged bundle; after exact task-byte/session-generation
 verification under the canonical lease, one create-only directory rename makes
 the complete bundle durable. The bundle remains authority if derived inbox or
-audit publication fails. A reference-counted per-session/per-worker gate owns a
+audit publication fails. The proposal id `inbox` is reserved for the derived
+inbox directory and cannot identify a proposal.
+Cancellation/timeout and publication meet at one lock-protected transition.
+Staging writes and canonical-lease acquisition remain cancellable. If
+cancellation wins, staged content is removed and neither the bundle nor derived
+inbox can appear later. If publication wins, cancellation no longer revokes the
+complete durable bundle or its apply authority.
+A reference-counted
+per-session/per-worker gate owns a
 `MaxConcurrentTasks` slot before any task artifact is written, retires when idle,
 and is not released on cancellation until the complete process tree has exited.
+Session-generation authority is the versioned document
+`.boe_runtime/session-generation/current.json`, outside `game_session`; load and
+New Game rotate it under the canonical lease, delete live worker task/proposal
+roots, and save snapshots omit those roots. Reservation, bundle publication,
+and apply compare the bound nonce, so restoring byte-identical handoff files
+cannot restore their authority.
+
+A worker process begins as a gated hidden client-owned host. The parent creates
+private current-user named control/status pipe servers with unique endpoint
+names and starts the host with those names plus one unique 32-lowercase-hex
+launch nonce only. Parent-side client PID authentication accepts both channels
+only from the expected hidden host. The configured executable, arguments,
+working directory, and environment then cross the control pipe in typed
+`Launch`; the host retains both channels and the configured worker receives no
+pipe handle. The configured command is released only after the host belongs to
+the supported kill-on-close Windows Job Object. No
+ready/release/completion marker exists in a worker-accessible directory. Every
+frame carries schema, nonce, and explicit kind; completion additionally carries
+a non-null direct-worker exit code. The host publishes completion immediately
+after direct-process exit and before bounded output draining. An explicit
+`OutputDrained` acknowledgement follows bounded capture and is awaited before
+ordinary host teardown. Missing/default kinds, malformed frames, wrong nonces,
+unexpected client PIDs, and missing exit codes fail closed.
+
+A platform without an equivalent queryable kernel complete-tree boundary rejects
+worker execution before release. Cancellation and normal completion terminate
+and query the complete Windows Job before slot release. Complete-tree and
+unattached-host termination confirmation have bounded deadlines. Timeout or
+cancellation remains the authoritative task result even if cleanup fails; any
+failure to confirm stop or dispose process-tree authority quarantines the slot
+for the remaining client process lifetime.
 An observed timeout remains the execution result even when malformed proposal
 bytes also exist. Built-in backup, restore, game-state clear, and current-world
 lore clear participate in the canonical write lease. Save reads and
@@ -264,9 +380,55 @@ live-session replacement on load participate in that lease as well; the lock
 file and a durable load journal live under `.boe_runtime` outside the replaceable
 `game_session` directory. The journal identifies staged, backup, and failed
 session directories so startup can restore interrupted swaps before normal
-initialization and retain the last valid backup when rollback fails. Detached cleanup traverses only
+initialization and retain the last valid backup when rollback fails. Every
+later canonical writer repeats recovery immediately after lease acquisition or
+fails closed. Public state refresh holds one lease across profile-mirror read,
+repair, and aggregate refresh, while lease-aware callers reuse that same lease.
+Multi-file worker apply has a separate external durable journal under
+`.boe_runtime/worker-apply-transactions`. Before the first canonical mutation it
+stores transaction intent, the complete target manifest, exact before-images or
+missing baselines, baseline hashes, and expected applied hashes. Every canonical
+writer recovers an uncommitted journal after acquiring the same lease or fails
+closed. Recovery restores entries in reverse, continues across independent
+restore failures, and preserves evidence if current bytes match neither baseline
+nor expected applied bytes. Commit is journaled before cleanup; a committed
+cleanup failure remains retryable and cannot revoke or roll back accepted bytes.
+Detached cleanup traverses only
 ordinary child entries, removes reparse entries as links, and records exhausted
 cleanup failure without replacing the worker result.
+
+The exact durable reserved task is the sole apply authority. The apply gate
+reloads it under the canonical lease, while reservation gives execution an
+independent copy of those exact persisted bytes so caller mutation cannot widen
+scope. Session identity is lowercase canonical GUID text in `N` format. Typed
+`SessionReplaced` aborts the old repair before legacy fallback or rollback can
+touch a replacement session. Repair telemetry uses a generation-bound atomic
+append, and the latest validation-repair task is ephemeral and omitted from save
+archives. Committed apply cleanup deletes the transaction directory before its
+active journal, preserving retry evidence if cleanup fails.
+Every public production apply gate is constructed with `ValidationService`.
+Only an internal test seam accepts a non-null validation delegate. A scope-valid
+proposal that leaves any production validation issue restores exact before
+images and returns `ValidationFailed`; no runtime empty-validator path exists.
+
+The durable generation also owns every complete logical GM flow through an
+immutable session operation. Its binding contains the normalized canonical root,
+the expected generation, sticky replacement state, and a closed flag. Every
+canonical mutation verifies that binding after recovery and under the canonical
+write lease. Terminal polling verifies it before reading completion signals, and
+the outer scope verifies it once more before returning. Nested same-generation
+work reuses the binding; a conflicting generation, replacement, or escaped task
+after scope closure produces typed `SessionReplaced`. The client must not hold
+the lifecycle lease while waiting for the GM. The lifecycle lease is short,
+serializes only load/New Game replacement, and precedes the canonical lease in
+the global lock order.
+
+Detached worker runtime lives outside the replaceable game session. An absolute
+`BOE_WORKER_RUNTIME_BASE_PATH` may select its base; otherwise the client derives a
+platform base and separates sessions with a canonical-path hash. The bounded
+handoff data model admits at most 1 MiB of proposal JSON, 4 MiB per `contentRef`,
+16 MiB of aggregate imported content, and 65,536 characters of captured output
+per stream plus a truncation marker.
 
 `WorkerProposalStatus.Unspecified=0` is never a completion state. JSON `status` is required; omission fails deserialization, while direct unspecified/unknown models fail contract validation and apply. Only explicit `status=completed` proposals may reach the apply path. `failed`, `timed-out`, and `rejected` proposals carry no `changedFiles` and remain diagnostic records. Worker audit lines use one lock-protected read-and-append operation so concurrent writers preserve every event. Every producer calls one shared generator with `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>`; a source guard forbids hand-built prefixes elsewhere, and audit publication failure is telemetry loss that cannot revoke an already accepted canonical commit.
 

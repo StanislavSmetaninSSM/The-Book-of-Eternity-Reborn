@@ -36,7 +36,8 @@ public sealed class GmWorkerValidationRepairTests
             sourceTurn,
             issues,
             contextHashes,
-            "2026-06-20T00:00:00Z");
+            "2026-06-20T00:00:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
 
         Assert.Equal("worker_task_test", task.TaskId);
         Assert.Equal(profile.WorkerId, task.WorkerId);
@@ -89,7 +90,8 @@ public sealed class GmWorkerValidationRepairTests
                 },
                 [issue],
                 hashes,
-                "2026-07-23T00:10:00Z"));
+                "2026-07-23T00:10:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration));
 
         Assert.Contains("contextFileHashes", exception.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("duplicate", exception.Message, StringComparison.OrdinalIgnoreCase);
@@ -128,7 +130,8 @@ public sealed class GmWorkerValidationRepairTests
             sourceTurn,
             issues,
             contextHashes,
-            "2026-06-20T00:00:00Z");
+            "2026-06-20T00:00:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
 
         Assert.Equal(new[] { "game_state/npcs/npc_core.json" }, task.AllowedProposalPaths);
         var packagedIssue = Assert.Single(task.ValidationIssues);
@@ -192,7 +195,8 @@ public sealed class GmWorkerValidationRepairTests
                 },
                 [issue],
                 contextHashes,
-                "2026-06-20T00:00:00Z");
+                "2026-06-20T00:00:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration);
         }
 
         if (!shouldDispatch)
@@ -238,7 +242,8 @@ public sealed class GmWorkerValidationRepairTests
                 sourceTurn,
                 [issue],
                 new Dictionary<string, string> { [npcPath] = new string('a', 64) },
-                "2026-06-20T00:00:00Z"));
+                "2026-06-20T00:00:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration));
         Assert.Contains(authorityPath, missingAuthority.Message, StringComparison.Ordinal);
 
         var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
@@ -251,7 +256,8 @@ public sealed class GmWorkerValidationRepairTests
                 [npcPath] = new string('a', 64),
                 [authorityPath] = new string('b', 64)
             },
-            "2026-06-20T00:00:00Z");
+            "2026-06-20T00:00:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
 
         Assert.Equal([npcPath], task.AllowedProposalPaths);
         Assert.Contains(task.ContextFiles, file =>
@@ -296,7 +302,8 @@ public sealed class GmWorkerValidationRepairTests
                 sourceTurn,
                 [characteristicIssue, authorityIssue],
                 contextHashes,
-                "2026-07-23T00:00:00Z"));
+                "2026-07-23T00:00:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration));
         Assert.Contains("read-only", buildError.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(authorityPath, buildError.Message, StringComparison.Ordinal);
 
@@ -306,7 +313,8 @@ public sealed class GmWorkerValidationRepairTests
             sourceTurn,
             [characteristicIssue],
             contextHashes,
-            "2026-07-23T00:00:00Z");
+            "2026-07-23T00:00:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
         var forgedTask = validTask with
         {
             AllowedProposalPaths = [npcPath, authorityPath]
@@ -349,7 +357,8 @@ public sealed class GmWorkerValidationRepairTests
                 [npcPath] = new string('a', 64),
                 [authorityPath] = new string('b', 64)
             },
-            "2026-07-23T00:09:00Z");
+            "2026-07-23T00:09:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration);
         var forgedTask = validTask with
         {
             ContextFiles = validTask.ContextFiles
@@ -397,7 +406,44 @@ public sealed class GmWorkerValidationRepairTests
                 },
                 [issue],
                 new Dictionary<string, string>(),
-                "2026-06-20T00:00:00Z"));
+                "2026-06-20T00:00:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration));
+
+        Assert.Contains("main GM", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("npc_core_changes_reason_required")]
+    [InlineData("npc_existing_core_direct_mutation_forbidden")]
+    public void BuildValidationRepairTask_NpcCoreAuthorityIssue_ForcesMainGm(string code)
+    {
+        const string npcPath = "game_state/npcs/npc_core.json";
+        var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();
+        var issue = new ValidationIssue(
+            $"{npcPath}.NPCCoreChanges[0]",
+            IssueSeverity.Error,
+            "NPC core authority repair must preserve the exact target command.",
+            code: code,
+            actor: "mortal_npc:npc_core_target",
+            section: "NPCCoreChanges");
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                profile,
+                "worker_task_npc_core_authority",
+                new WorkerTurnReference
+                {
+                    SessionId = "test-session",
+                    RequestId = "test-request",
+                    TurnNumber = 12
+                },
+                [issue],
+                new Dictionary<string, string>
+                {
+                    [npcPath] = new string('a', 64)
+                },
+                "2026-07-26T00:00:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration));
 
         Assert.Contains("main GM", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
@@ -450,6 +496,7 @@ public sealed class GmWorkerValidationRepairTests
             [issue],
             hashes,
             "2026-06-20T00:00:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration,
             BuildAfterlifeRepairContract(expectedTargetPath));
 
         Assert.Equal(new[] { expectedTargetPath }, task.AllowedProposalPaths);
@@ -488,6 +535,7 @@ public sealed class GmWorkerValidationRepairTests
                 [issue],
                 new Dictionary<string, string> { [targetPath] = new string('c', 64) },
                 "2026-06-20T00:00:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration,
                 BuildAfterlifeRepairContract(targetPath)));
 
         Assert.Contains("soul_state.json", exception.Message, StringComparison.OrdinalIgnoreCase);
@@ -642,6 +690,7 @@ public sealed class GmWorkerValidationRepairTests
                     [AfterlifeRealmAuthorityContract.StatePath] = new string('c', 64)
                 },
                 "2026-07-23T00:08:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration,
                 BuildAfterlifeRepairContract(afterlifePath)));
 
         Assert.Contains("mixed", exception.Message, StringComparison.OrdinalIgnoreCase);
@@ -696,6 +745,7 @@ public sealed class GmWorkerValidationRepairTests
                     [AfterlifeRealmAuthorityContract.StatePath] = new string('c', 64)
                 },
                 "2026-07-23T02:03:00Z",
+                GmWorkerBridgeTestFixtures.SessionGeneration,
                 BuildAfterlifeRepairContract(afterlifePath)));
 
         Assert.Contains("mixed", exception.Message, StringComparison.OrdinalIgnoreCase);
@@ -944,10 +994,11 @@ public sealed class GmWorkerValidationRepairTests
                     RequestId = "test-request",
                     TurnNumber = 12
                 },
-                issues,
-                hashes,
-                "2026-06-20T00:00:00Z",
-                BuildAfterlifeRepairContract(AfterlifeEntityProfileState.StatePath)));
+            issues,
+            hashes,
+            "2026-06-20T00:00:00Z",
+            GmWorkerBridgeTestFixtures.SessionGeneration,
+            BuildAfterlifeRepairContract(AfterlifeEntityProfileState.StatePath)));
 
         Assert.Contains("mixed", exception.Message, StringComparison.OrdinalIgnoreCase);
     }

@@ -224,17 +224,18 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         const string requestId = "request-npc-core-raw-lifecycle";
         const int turnNumber = 12;
 
-        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
-            incarnationNumber: 1,
-            turnNumber: turnNumber - 1,
-            characterDescription: "Архивист пограничного города.",
-            worldDescription: "Город архивов и сигнальных башен.",
-            startingCircumstances: "Наставник предлагает первый урок чтения печатей.",
-            createdAtUtc: DateTimeOffset.Parse("2026-07-22T00:00:00Z"));
-        foreach (var (path, node) in files)
-            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
-
-        var preTurnRoot = files[npcCorePath].DeepClone().AsObject();
+        var preTurnRoot = new JsonObject
+        {
+            ["NPCsInScene"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["NPCId"] = "npc_archive_mentor",
+                    ["NPCName"] = "Смотритель архива",
+                    ["worldview"] = "Знание требует осторожности."
+                }
+            }
+        };
         var currentRoot = preTurnRoot.DeepClone().AsObject();
         var currentActor = Assert.Single(currentRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
         currentActor["worldview"] = "Несанкционированная подмена убеждений.";
@@ -443,6 +444,513 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             : "audit path intentionally unavailable";
         Assert.True(_fs.FileExists("game_state/control/validation_repair_ready.json"), auditDiagnostic);
         Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
+    }
+
+    [Fact]
+    public async Task WaitForContractRepairAsync_WhenSessionIsReplaced_AbortsBeforeLegacyRepairOrRollback()
+    {
+        const string sessionId = "session-worker-repair-replaced";
+        const string requestId = "request-worker-repair-replaced";
+        const int turnNumber = 5;
+        const string trackedPath = "game_state/world/weather.json";
+        const string replacementWeather = "{\"replacementSession\":true}";
+
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"before\":true}");
+        await _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", "{\"before\":true}");
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new { sessionId, requestId, turnNumber });
+        string capturedGeneration;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            capturedGeneration = _fs.GetOrCreateSessionGeneration(lease);
+
+        var canonicalGenerationPath = _fs.SessionGenerationPath.Replace("'", "''", StringComparison.Ordinal);
+        var canonicalWeatherPath = _fs.ResolvePath(trackedPath).Replace("'", "''", StringComparison.Ordinal);
+        var replacementGeneration = Guid.NewGuid().ToString("N");
+        var scriptPath = Path.Combine(_rootPath, "fake-validation-repair-session-replaced.ps1");
+        await File.WriteAllTextAsync(scriptPath, $$"""
+            $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+            Set-Content -Path '{{canonicalGenerationPath}}' -Value '{"schemaVersion":1,"generationId":"{{replacementGeneration}}"}' -Encoding UTF8 -NoNewline
+            Set-Content -Path '{{canonicalWeatherPath}}' -Value '{{replacementWeather}}' -Encoding UTF8 -NoNewline
+            $proposalId = 'worker_proposal_session_replaced'
+            $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+            $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+            New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+            Set-Content -Path $contentPath -Value '{"description":"stale worker bytes"}' -Encoding UTF8 -NoNewline
+            $sha = [System.Security.Cryptography.SHA256]::Create()
+            try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+            finally { $sha.Dispose() }
+            $proposal = [ordered]@{
+                schemaVersion = 1
+                proposalId = $proposalId
+                taskId = $task.taskId
+                workerId = $task.workerId
+                status = 'completed'
+                summary = 'Stale proposal after replacement session became current.'
+                changedFiles = @([ordered]@{
+                    path = 'game_state/world/weather.json'
+                    changeKind = 'replace'
+                    beforeSha256 = $task.contextFiles[0].sha256
+                    afterSha256 = $afterSha256
+                    contentRef = $contentRef
+                })
+                findings = @()
+                selfCheck = [ordered]@{
+                    scopeReviewed = $true
+                    validationExpectedToPass = $true
+                    notes = @('session replacement regression')
+                }
+                createdAtUtc = '2026-07-23T01:00:05Z'
+            }
+            $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+            """, Encoding.UTF8);
+        var engine = CreateGameEngine(configureSettings: settings =>
+        {
+            settings.GmWorkerBridgeProfiles.Add(GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            });
+        });
+        var issue = new ValidationIssue(
+            trackedPath,
+            IssueSeverity.Error,
+            "Synthetic repair request for replacement-session ownership test.",
+            code: "normalized_weather_missing_description");
+
+        var method = typeof(GameEngine).GetMethod(
+            "WaitForContractRepairAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object?[]
+            {
+                "state validation",
+                new List<ValidationIssue> { issue },
+                1,
+                null,
+                capturedGeneration
+            })!);
+
+        await Assert.ThrowsAsync<GmWorkerSessionReplacedException>(() => task);
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
+        Assert.Equal(replacementWeather, await _fs.ReadFileAsync(trackedPath));
+    }
+
+    [Fact]
+    public async Task WaitForContractRepairAsync_StaleCapturedSession_AbortsBeforeDispatchAndRollback()
+    {
+        const string trackedPath = "game_state/world/weather.json";
+        const string originalWeather = "{\"description\":\"old session\"}";
+        const string replacementWeather = "{\"description\":\"replacement session\"}";
+        await _fs.WriteFileAtomicAsync(trackedPath, originalWeather);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Escape)]));
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "stale_repair_generation");
+
+        string capturedGeneration;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            capturedGeneration = _fs.GetOrCreateSessionGeneration(lease);
+            _fs.RotateSessionGeneration(lease);
+            await _fs.WriteFileAtomicAsync(lease, trackedPath, replacementWeather);
+        }
+
+        var issue = new ValidationIssue(
+            trackedPath,
+            IssueSeverity.Error,
+            "Synthetic stale repair request.",
+            code: "normalized_weather_missing_description");
+        var method = typeof(GameEngine).GetMethod(
+            "WaitForContractRepairAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object?[]
+            {
+                "state validation",
+                new List<ValidationIssue> { issue },
+                1,
+                rollbackSnapshot,
+                capturedGeneration
+            })!);
+
+        await Assert.ThrowsAsync<GmWorkerSessionReplacedException>(() => task);
+        Assert.Equal(replacementWeather, await _fs.ReadFileAsync(trackedPath));
+        Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
+    }
+
+    [Fact]
+    public async Task WaitForGmResponse_TerminalErrorDoesNotHoldSessionLifecycleLease()
+    {
+        const string sessionId = "session-cancel-lifecycle";
+        const string requestId = "request-cancel-lifecycle";
+        const int turnNumber = 4;
+        const string trackedPath = "game_state/world/weather.json";
+
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"description\":\"stable\"}");
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{trackedPath}",
+            "{\"description\":\"stable\"}");
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("ready/turn_error.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            status = "error",
+            error = "synthetic terminal failure"
+        });
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+
+        var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+        try
+        {
+            var accepted = await InvokePrivateAsync<bool>(
+                    engine,
+                    "WaitForGmResponse")
+                .WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(accepted);
+            Assert.False(_fs.FileExists("input/turn_request.json"));
+        }
+        finally
+        {
+            await lifecycleLease.DisposeAsync();
+        }
+    }
+
+    [Fact]
+    public async Task WaitForGmResponse_SessionRotationDuringTerminalWait_ThrowsWithoutCleaningReplacement()
+    {
+        const string sessionId = "session-terminal-rotation";
+        const string requestId = "request-terminal-rotation";
+        const int turnNumber = 8;
+        const string trackedPath = "game_state/world/weather.json";
+
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"description\":\"old\"}");
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{trackedPath}",
+            "{\"description\":\"old\"}");
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var terminalWaitStarted = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var engine = CreateGameEngine(
+            new QueuedConsoleInputSource([]),
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = checkpoint =>
+                {
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
+                        terminalWaitStarted.TrySetResult();
+                    return Task.CompletedTask;
+                }
+            });
+
+        var waitTask = InvokePrivateAsync<bool>(engine, "WaitForGmResponse");
+        await terminalWaitStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        await _fs.ClearGameStateAsync();
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1,
+            status = "success"
+        });
+
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.True(_fs.FileExists("input/turn_request.json"));
+        Assert.True(_fs.FileExists("ready/turn_complete.json"));
+        Assert.Contains(
+            "replacement-session",
+            await _fs.ReadFileAsync("input/turn_request.json"),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task WaitForGmResponse_LoadBetweenGenerationCheckAndTerminalRead_DoesNotConsumeReplacementSignal()
+    {
+        const string sessionId = "session-terminal-inspection-race";
+        const string requestId = "request-terminal-inspection-race";
+        const int turnNumber = 8;
+        const string trackedPath = "game_state/world/weather.json";
+
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"description\":\"old\"}");
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{trackedPath}",
+            "{\"description\":\"old\"}");
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var inspectionLeaseAcquired = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseInspection = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var firstInspection = 0;
+        var engine = CreateGameEngine(
+            new QueuedConsoleInputSource([]),
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired ||
+                        Interlocked.Exchange(ref firstInspection, 1) != 0)
+                    {
+                        return;
+                    }
+
+                    inspectionLeaseAcquired.TrySetResult();
+                    await releaseInspection.Task;
+                }
+            });
+
+        var waitTask = InvokePrivateAsync<bool>(engine, "WaitForGmResponse");
+        await inspectionLeaseAcquired.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var replaceTask = Task.Run(async () =>
+        {
+            await _fs.ClearGameStateAsync();
+            await WriteJsonAsync("input/turn_request.json", new
+            {
+                sessionId = "replacement-session",
+                requestId = "replacement-request",
+                turnNumber = 1
+            });
+            await WriteJsonAsync("ready/turn_complete.json", new
+            {
+                sessionId = "replacement-session",
+                requestId = "replacement-request",
+                turnNumber = 1,
+                status = "success"
+            });
+        });
+
+        await Task.Yield();
+        releaseInspection.TrySetResult();
+        await replaceTask.WaitAsync(TimeSpan.FromSeconds(5));
+
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.True(_fs.FileExists("input/turn_request.json"));
+        Assert.True(_fs.FileExists("ready/turn_complete.json"));
+        Assert.Contains(
+            "replacement-session",
+            await _fs.ReadFileAsync("ready/turn_complete.json"),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task WaitForGmResponse_LoadAfterTerminalSnapshotBeforeResolution_DoesNotReadReplacementSignal()
+    {
+        const string sessionId = "session-terminal-snapshot-race";
+        const string requestId = "request-terminal-snapshot-race";
+        const int turnNumber = 9;
+        const string trackedPath = "game_state/world/weather.json";
+
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"description\":\"old\"}");
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{trackedPath}",
+            "{\"description\":\"old\"}");
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            status = "success"
+        });
+
+        var snapshotCaptured = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseResolution = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var engine = CreateGameEngine(
+            new QueuedConsoleInputSource([]),
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution)
+                        return;
+
+                    snapshotCaptured.TrySetResult();
+                    await releaseResolution.Task;
+                }
+            });
+
+        var waitTask = InvokePrivateAsync<bool>(engine, "WaitForGmResponse");
+        await snapshotCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        await _fs.ClearGameStateAsync();
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1,
+            status = "success"
+        });
+
+        releaseResolution.TrySetResult();
+
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.Contains(
+            "replacement-session",
+            await _fs.ReadFileAsync("ready/turn_complete.json"),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """{ "soulName": "Старая душа", "currentRealm": "Chaos Sea" }""");
+        await GetOrCreateSessionGenerationAsync();
+
+        var operationBound = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseOperation = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var engine = CreateGameEngine(
+            new QueuedConsoleInputSource([]),
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.IncarnationOperationBound)
+                        return;
+
+                    operationBound.TrySetResult();
+                    await releaseOperation.Task;
+                }
+            });
+
+        var incarnationTask = InvokePrivateTaskAsync(engine, "HandleIncarnation");
+        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        await _fs.ClearGameStateAsync();
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """{ "soulName": "Новая душа", "currentRealm": "Chaos Sea" }""");
+        await _fs.WriteFileAtomicAsync(
+            WorldDirectiveService.PendingSetupPath,
+            """{ "worldDescription": "replacement sentinel" }""");
+        releaseOperation.TrySetResult();
+
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => incarnationTask.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.Contains(
+            "replacement sentinel",
+            await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Новая душа",
+            await _fs.ReadFileAsync("game_state/meta/soul_state.json"),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState()
+    {
+        await _fs.ClearGameStateAsync();
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """{ "soulName": "Новая душа", "currentRealm": "Chaos Sea", "currentIncarnation": 2 }""");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/history/chat_log.json",
+            """{ "sessionId": "replacement-session", "messages": [] }""");
+        await _fs.WriteFileAtomicAsync(
+            "stories/replacement.json",
+            """{ "turn": 7, "response": "replacement" }""");
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        var explorer = GetPrivateField<ExplorerMode>(engine, "_explorer");
+        gameLoop.SetSession("old-session", 42);
+        SetPrivateField(engine, "_lastResponse", new GameResponse { Response = "old response" });
+        SetPrivateField(engine, "_pendingImagePrompt", "old image prompt");
+        SetPrivateField(engine, "_pendingMemoryLegacyAwaitingConsumption", true);
+        SetPrivateField(engine, "_mainMenuSessionWarning", "old warning");
+        SetPrivateField(engine, "_lastConsoleWidth", 180);
+        SetPrivateField(engine, "_lastKnownLevel", 9);
+        SetPrivateField(engine, "_inGame", true);
+        SetPrivateField(explorer, "_pendingGmAction", "old pending action");
+        SetPrivateField(explorer, "_currentCommandInput", "/old");
+        SetPrivateField(explorer, "_currentCommandRemainder", "old");
+        SetPrivateField(explorer, "_diceRevealed", true);
+
+        await InvokePrivateTaskAsync(engine, "RebindRuntimeAfterSessionReplacementAsync");
+
+        Assert.Equal("replacement-session", gameLoop.SessionId);
+        Assert.Equal(7, gameLoop.TurnNumber);
+        Assert.True(GetPrivateFieldValue<bool>(engine, "_inGame"));
+        Assert.Null(GetPrivateFieldValue<GameResponse?>(engine, "_lastResponse"));
+        Assert.Null(GetPrivateFieldValue<string?>(engine, "_pendingImagePrompt"));
+        Assert.False(GetPrivateFieldValue<bool>(engine, "_pendingMemoryLegacyAwaitingConsumption"));
+        Assert.Null(GetPrivateFieldValue<string?>(engine, "_mainMenuSessionWarning"));
+        Assert.Equal(0, GetPrivateFieldValue<int>(engine, "_lastConsoleWidth"));
+        Assert.Equal(1, GetPrivateFieldValue<int>(engine, "_lastKnownLevel"));
+        Assert.Null(GetPrivateFieldValue<string?>(explorer, "_pendingGmAction"));
+        Assert.Equal(string.Empty, GetPrivateFieldValue<string>(explorer, "_currentCommandInput"));
+        Assert.Equal(string.Empty, GetPrivateFieldValue<string>(explorer, "_currentCommandRemainder"));
+        Assert.False(GetPrivateFieldValue<bool>(explorer, "_diceRevealed"));
+    }
+
+    [Fact]
+    public async Task RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu()
+    {
+        await _fs.ClearGameStateAsync();
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        gameLoop.SetSession("old-session", 42);
+        SetPrivateField(engine, "_inGame", true);
+
+        await InvokePrivateTaskAsync(engine, "RebindRuntimeAfterSessionReplacementAsync");
+
+        Assert.Equal(string.Empty, gameLoop.SessionId);
+        Assert.Equal(0, gameLoop.TurnNumber);
+        Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
     }
 
     [Fact]
@@ -681,6 +1189,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 code: "guardian_materialized_state_outside_authority",
                 section: "Guardians")
         };
+        var repairSessionGeneration = await GetOrCreateSessionGenerationAsync();
 
         var repairTask = InvokePrivateAsync<bool>(
             engine,
@@ -688,7 +1197,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "active validation repair stall test",
             issues,
             1,
-            null);
+            null,
+            repairSessionGeneration);
 
         var deadline = DateTime.UtcNow.AddSeconds(5);
         while (!_fs.FileExists("game_state/control/validation_repair_request.json") && DateTime.UtcNow < deadline)
@@ -750,6 +1260,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 code: "guardian_materialized_state_outside_authority",
                 section: "Guardians")
         };
+        var repairSessionGeneration = await GetOrCreateSessionGenerationAsync();
 
         var repairTask = InvokePrivateAsync<bool>(
             engine,
@@ -757,7 +1268,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "active validation repair stall test without turn_complete",
             issues,
             1,
-            null);
+            null,
+            repairSessionGeneration);
 
         var deadline = DateTime.UtcNow.AddSeconds(5);
         while (!_fs.FileExists("game_state/control/validation_repair_request.json") && DateTime.UtcNow < deadline)
@@ -792,6 +1304,49 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task TryPromoteValidationRepairArtifactStallToTerminalErrorAsync_StaleSession_DoesNotReplaceReadySignal()
+    {
+        const string sessionId = "session-stale-stall";
+        const string requestId = "request-stale-stall";
+        const int turnNumber = 4;
+        const string trackedPath = "game_state/meta/soul_state.json";
+        await WriteJsonAsync(trackedPath, new { currentRealm = "Mortal World" });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{trackedPath}", new { currentRealm = "Mortal World" });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, trackedPath);
+        await WriteJsonAsync("game_state/control/validation_repair_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
+        {
+            isStalled = true
+        });
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var pendingResolution = await InvokePrivateTaskResultAsync(
+            engine,
+            "ResolveActivePendingTurnSnapshotContextAsync");
+        var context = pendingResolution.GetType().GetProperty("Context")!.GetValue(pendingResolution);
+        Assert.NotNull(context);
+        var staleGeneration = await GetOrCreateSessionGenerationAsync();
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.RotateSessionGeneration(writeLease);
+        const string replacementSignal = "{\"status\":\"replacement-session\"}";
+        await _fs.WriteFileAtomicAsync("ready/turn_error.json", replacementSignal);
+
+        await Assert.ThrowsAsync<GmWorkerSessionReplacedException>(() =>
+            InvokePrivateAsync<bool>(
+                engine,
+                "TryPromoteValidationRepairArtifactStallToTerminalErrorAsync",
+                context,
+                staleGeneration));
+
+        Assert.Equal(replacementSignal, await _fs.ReadFileAsync("ready/turn_error.json"));
+    }
+
+    [Fact]
     public async Task WaitForContractRepairAsync_AcceptedRepairReady_WritesAcceptedTrajectoryRecord()
     {
         const string sessionId = "session-repair-ledger";
@@ -822,6 +1377,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             IssueSeverity.Error,
             "Current location references an unknown location id.",
             code: "current_location_unknown_location_id");
+        var repairSessionGeneration = await GetOrCreateSessionGenerationAsync();
 
         var gmRepair = Task.Run(async () =>
         {
@@ -844,7 +1400,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "обработки хода",
             new List<ValidationIssue> { issue },
             2,
-            null);
+            null,
+            repairSessionGeneration);
 
         await gmRepair;
 
@@ -885,9 +1442,50 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task AppendClearedValidationRepairTrajectoryAsync_StaleSession_AbortsRepairCycle()
+    {
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var staleGeneration = await GetOrCreateSessionGenerationAsync();
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.RotateSessionGeneration(writeLease);
+
+        var exception = await Assert.ThrowsAsync<GmWorkerSessionReplacedException>(() =>
+            InvokePrivateTaskAsync(
+                engine,
+                "AppendClearedValidationRepairTrajectoryAsync",
+                "state validation",
+                Array.Empty<ValidationIssue>(),
+                1,
+                staleGeneration));
+
+        Assert.Contains("session", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists("game_state/control/gm_trajectory_ledger.jsonl"));
+    }
+
+    [Fact]
+    public async Task RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync_StaleSession_DoesNotRewriteReplacementState()
+    {
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var staleGeneration = await GetOrCreateSessionGenerationAsync();
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.RotateSessionGeneration(writeLease);
+        const string replacement = "{\"guardians\":[],\"questProgressUpdates\":[{\"questId\":\"new-session\"}]}";
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", replacement);
+
+        await Assert.ThrowsAsync<GmWorkerSessionReplacedException>(() =>
+            InvokePrivateTaskAsync(
+                engine,
+                "RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync",
+                staleGeneration));
+
+        Assert.Equal(replacement, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+    }
+
+    [Fact]
     public async Task ReportRejectedRepairReadyAsync_ReturnsExclusiveDispatchStateToCaller()
     {
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var sessionGeneration = await GetOrCreateSessionGenerationAsync();
         var issue = new ValidationIssue(
             "game_state/control/validation_repair_ready.json",
             IssueSeverity.Error,
@@ -909,7 +1507,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 "Malformed ready signal.",
                 "Valid correlated ready signal",
                 "Malformed JSON",
-                "Publish a fresh correlated ready signal."
+                "Publish a fresh correlated ready signal.",
+                sessionGeneration
             })!);
 
         await task;
@@ -975,6 +1574,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             IssueSeverity.Error,
             "Current location references an unknown location id.",
             code: "current_location_unknown_location_id");
+        var repairSessionGeneration = await GetOrCreateSessionGenerationAsync();
 
         var repairTask = InvokePrivateAsync<bool>(
             engine,
@@ -982,7 +1582,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "обработки хода",
             new List<ValidationIssue> { issue },
             2,
-            null);
+            null,
+            repairSessionGeneration);
 
         var completed = await Task.WhenAny(repairTask, Task.Delay(TimeSpan.FromSeconds(8)));
 
@@ -3977,15 +4578,15 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(expectedShape, item => item.Contains("readable_document_missing_detail_authority", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("canonical_faction_custom_state_missing_required_fields", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("teacherProfile.canTeach=true", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(expectedShape, item => item.Contains("starterCompetencyRequirements", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("structuredGmAuthority.playerSkills", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(expectedShape, item => item.Contains("worldEventRequirements", StringComparison.OrdinalIgnoreCase));
 
         var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(steps, step => step.Contains("mortal_bootstrap_scaffold.json", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("current-world", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("readable", StringComparison.OrdinalIgnoreCase) && step.Contains("document", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(steps, step => step.Contains("requested training", StringComparison.OrdinalIgnoreCase) && step.Contains("teacherProfile", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(steps, step => step.Contains("starter competencies", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("structuredGmAuthority.actorCapabilities", StringComparison.OrdinalIgnoreCase) && step.Contains("teacherProfile", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("structuredGmAuthority.playerSkills", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("opening world news", StringComparison.OrdinalIgnoreCase));
     }
 
@@ -4030,13 +4631,13 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(expectedShape, item => item.Contains("tradeInventory", StringComparison.OrdinalIgnoreCase) && item.Contains("object", StringComparison.OrdinalIgnoreCase));
 
         var steps = packet.GetProperty("steps").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
-        Assert.Contains(steps, step => step.Contains("requested trade", StringComparison.OrdinalIgnoreCase) && step.Contains("tradeState", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(steps, step => step.Contains("structuredGmAuthority.actorCapabilities", StringComparison.OrdinalIgnoreCase) && step.Contains("tradeState", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("tradeBlockedReason", StringComparison.OrdinalIgnoreCase) && step.Contains("string", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(steps, step => step.Contains("do not include inventory", StringComparison.OrdinalIgnoreCase) && step.Contains("UpdateNPCs", StringComparison.OrdinalIgnoreCase));
 
         var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(doNotDo, item => item.Contains("tradeInventory", StringComparison.OrdinalIgnoreCase) && item.Contains("scalar", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(doNotDo, item => item.Contains("promised trader", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("structuredGmAuthority canTrade", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -4766,6 +5367,116 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.False(_fs.FileExists("ready/turn_error.json"));
         Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
         Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.authority.json"));
+    }
+
+    [Fact]
+    public async Task ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var acceptedValidationReached = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseOldFinalizer = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var engine = CreateGameEngine(
+            new QueuedConsoleInputSource([]),
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+                        return;
+
+                    acceptedValidationReached.TrySetResult();
+                    await releaseOldFinalizer.Task;
+                }
+            });
+        var gmOutputTask = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            var outputTimestamp = DateTime.UtcNow.ToString("o");
+            await WriteJsonAsync("output/narrative_response.json", new
+            {
+                response = "Старый ход успешно прошёл проверку, но не должен затронуть загруженную сессию.",
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/interface_updates.json", new
+            {
+                dialogueOptions = new[]
+                {
+                    new
+                    {
+                        text = "Продолжить.",
+                        category = "neutral"
+                    }
+                },
+                timestamp = outputTimestamp
+            });
+            await WriteJsonAsync("output/debug_logs.json", new
+            {
+                timestamp = outputTimestamp,
+                gm_thoughts_markdown = string.Join(
+                    "\n",
+                    "## NPC Scope",
+                    "- Mode: Scene-local",
+                    "- Relevant actors: нет",
+                    "- Why relevant: Синтетический ход без акторов проверяет session fence.",
+                    "- Actors outside scope: нет",
+                    "- Why outside scope: Структурные акторы не меняются.",
+                    "",
+                    "## Reasoning",
+                    "- Accepted result is paused before materialization.")
+            });
+            await WriteJsonAsync("ready/turn_complete.json", new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = outputTimestamp,
+                status = "success",
+                filesModified = new[]
+                {
+                    "output/narrative_response.json",
+                    "output/interface_updates.json",
+                    "output/debug_logs.json"
+                }
+            });
+        });
+
+        var oldTurn = InvokePrivateTaskAsync(
+            engine,
+            "ProcessPlayerTurn",
+            "Проверить финализацию старого хода.",
+            null);
+        await acceptedValidationReached.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        await _fs.ClearGameStateAsync();
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1,
+            status = "success"
+        });
+        releaseOldFinalizer.TrySetResult();
+
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => oldTurn.WaitAsync(TimeSpan.FromSeconds(5)));
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.Contains(
+            "replacement-session",
+            await _fs.ReadFileAsync("input/turn_request.json"),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "replacement-session",
+            await _fs.ReadFileAsync("ready/turn_complete.json"),
+            StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("stories/story.md"));
     }
 
     [Fact]
@@ -6892,6 +7603,141 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement()
+    {
+        const string acceptedSessionId = "session_life_eval_rotation";
+        const string acceptedRequestId = "request_life_eval_rotation";
+        const int acceptedTurnNumber = 2;
+        var preTurnSoul = new
+        {
+            soulName = "Пепельная Искра",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
+            inkFeathers = new { current = 0, total = 0 },
+            soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() },
+            afterlifeArchive = new { stored = Array.Empty<object>() },
+            livesHistory = Array.Empty<object>(),
+            pendingMemoryLegacy = (object?)null
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            activeGuardian = (object?)null,
+            guardians = Array.Empty<object>(),
+            chaosSeaNavigation = new { currentAbodeId = (string?)null }
+        });
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            playerAction = "Я осознанно завершаю эту смертную жизнь."
+        });
+        await WritePendingTurnSnapshotManifestAsync(
+            acceptedSessionId,
+            acceptedRequestId,
+            acceptedTurnNumber,
+            "game_state/meta/soul_state.json");
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = acceptedSessionId,
+            requestId = acceptedRequestId,
+            turnNumber = acceptedTurnNumber,
+            status = "success",
+            timestamp = "2026-06-19T01:00:00Z",
+            filesModified = new[] { "game_state/control/life_transitions.json" }
+        });
+        await WriteJsonAsync("game_state/control/life_transitions.json", new
+        {
+            reason = "Voluntary",
+            summary = "Добровольное завершение тестовой смертной жизни."
+        });
+
+        var rawValidationReached = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseOldFinalizer = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var engine = CreateGameEngine(
+            new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4)),
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint != SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
+                        return;
+
+                    rawValidationReached.TrySetResult();
+                    await releaseOldFinalizer.Task;
+                }
+            });
+        var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var acceptedSnapshotContext = await InvokePrivateTaskResultAsync(
+            engine,
+            "LoadValidatedPendingTurnSnapshotContextAsync",
+            manifest,
+            true);
+        var responder = Task.Run(async () =>
+        {
+            var deadline = DateTime.UtcNow.AddSeconds(10);
+            while (DateTime.UtcNow < deadline)
+            {
+                var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+                if (!string.IsNullOrWhiteSpace(requestJson) &&
+                    requestJson.Contains("Оценка Жизни", StringComparison.Ordinal))
+                {
+                    using var requestDoc = JsonDocument.Parse(requestJson);
+                    var requestRoot = requestDoc.RootElement;
+                    await WriteAcceptedLifeEvaluationResponseAsync(
+                        requestRoot.GetProperty("sessionId").GetString(),
+                        requestRoot.GetProperty("requestId").GetString(),
+                        requestRoot.GetProperty("turnNumber").GetInt32());
+                    return;
+                }
+
+                await Task.Delay(50);
+            }
+        });
+
+        var oldTransition = InvokePrivateTaskAsync(
+            engine,
+            "CheckLifeTransitions",
+            acceptedSnapshotContext);
+        await rawValidationReached.Task.WaitAsync(TimeSpan.FromSeconds(12));
+
+        await _fs.ClearGameStateAsync();
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = "replacement-session",
+            requestId = "replacement-request",
+            turnNumber = 1,
+            status = "success"
+        });
+        releaseOldFinalizer.TrySetResult();
+
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => oldTransition.WaitAsync(TimeSpan.FromSeconds(5)));
+        await responder.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.Contains(
+            "replacement-session",
+            await _fs.ReadFileAsync("input/turn_request.json"),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "replacement-session",
+            await _fs.ReadFileAsync("ready/turn_complete.json"),
+            StringComparison.Ordinal);
+        Assert.False(File.Exists(Path.Combine(_fs.GameSessionPath, "error_log.txt")));
+    }
+
+    [Fact]
     public async Task CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog()
     {
         const string acceptedSessionId = "session_life_eval_dispatch_failure";
@@ -8048,7 +8894,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
     private GameEngine CreateGameEngine(
         IConsoleInputSource? inputSource = null,
-        Action<GameSettings>? configureSettings = null)
+        Action<GameSettings>? configureSettings = null,
+        GameEngineSessionFinalizationHooks? finalizationHooks = null)
     {
         var settings = new GameSettings();
         configureSettings?.Invoke(settings);
@@ -8091,7 +8938,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             stateManager,
             NullLogger<QteSceneService>.Instance);
 
-        return new GameEngine(
+        var engine = new GameEngine(
             _fs,
             stateManager,
             gameLoop,
@@ -8122,6 +8969,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             clipboardService,
             NullLogger<GameEngine>.Instance,
             inputSource);
+        engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
+        return engine;
     }
 
     private static ConsoleKeyInfo Key(ConsoleKey key)
@@ -8208,45 +9057,53 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         field!.SetValue(instance, value);
     }
 
+    private static T GetPrivateFieldValue<T>(object instance, string fieldName)
+    {
+        var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field);
+        return (T)field!.GetValue(instance)!;
+    }
+
+    private async Task<string> GetOrCreateSessionGenerationAsync()
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return _fs.GetOrCreateSessionGeneration(writeLease);
+    }
+
     private static async Task<T> InvokePrivateAsync<T>(object instance, string methodName, params object?[]? args)
     {
-        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        var task = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task<T>;
+        var method = ResolvePrivateMethod(instance, methodName, args);
+        var task = method.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task<T>;
         Assert.NotNull(task);
         return await task!;
     }
 
     private static async Task InvokePrivateTaskAsync(object instance, string methodName, params object?[]? args)
     {
-        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        var task = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task;
+        var method = ResolvePrivateMethod(instance, methodName, args);
+        var task = method.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task;
         Assert.NotNull(task);
         await task!;
     }
 
     private static void InvokePrivate(object instance, string methodName, params object?[]? args)
     {
-        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        method!.Invoke(instance, BuildPrivateInvocationArguments(method, args));
+        var method = ResolvePrivateMethod(instance, methodName, args);
+        method.Invoke(instance, BuildPrivateInvocationArguments(method, args));
     }
 
     private static T InvokePrivateValue<T>(object instance, string methodName, params object?[]? args)
     {
-        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        var value = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args));
+        var method = ResolvePrivateMethod(instance, methodName, args);
+        var value = method.Invoke(instance, BuildPrivateInvocationArguments(method, args));
         Assert.IsType<T>(value);
         return (T)value!;
     }
 
     private static async Task<object> InvokePrivateTaskResultAsync(object instance, string methodName, params object?[]? args)
     {
-        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        var task = method!.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task;
+        var method = ResolvePrivateMethod(instance, methodName, args);
+        var task = method.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task;
         Assert.NotNull(task);
         await task!;
         var resultProperty = task.GetType().GetProperty("Result");
@@ -8254,6 +9111,53 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var result = resultProperty!.GetValue(task);
         Assert.NotNull(result);
         return result!;
+    }
+
+    private static MethodInfo ResolvePrivateMethod(
+        object instance,
+        string methodName,
+        object?[]? args)
+    {
+        var supplied = args ?? Array.Empty<object?>();
+        var compatible = instance
+            .GetType()
+            .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+            .Where(method => string.Equals(method.Name, methodName, StringComparison.Ordinal))
+            .Where(method => CanInvokeWith(method, supplied))
+            .ToArray();
+
+        var exactArity = compatible
+            .Where(method => method.GetParameters().Length == supplied.Length)
+            .ToArray();
+        return exactArity.Length > 0
+            ? Assert.Single(exactArity)
+            : Assert.Single(compatible);
+    }
+
+    private static bool CanInvokeWith(MethodInfo method, IReadOnlyList<object?> supplied)
+    {
+        var parameters = method.GetParameters();
+        if (supplied.Count > parameters.Length)
+            return false;
+
+        for (var i = 0; i < supplied.Count; i++)
+        {
+            var argument = supplied[i];
+            var parameterType = parameters[i].ParameterType;
+            if (argument == null)
+            {
+                if (parameterType.IsValueType && Nullable.GetUnderlyingType(parameterType) == null)
+                    return false;
+                continue;
+            }
+
+            if (!parameterType.IsInstanceOfType(argument))
+                return false;
+        }
+
+        return parameters
+            .Skip(supplied.Count)
+            .All(parameter => parameter.HasDefaultValue);
     }
 
     private static object?[]? BuildPrivateInvocationArguments(MethodInfo method, object?[]? args)

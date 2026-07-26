@@ -124,6 +124,54 @@ public sealed class GmWorkerProposalOnlyDispatchTests
     }
 
     [Fact]
+    public async Task DispatchAsync_SessionRotatedAfterContextCapture_DoesNotRebindOrLaunchStaleTask()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(LocationPath, "{\"name\":\"Коридор\"}");
+            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+                _ = fs.GetOrCreateSessionGeneration(lease);
+
+            var workerLaunchMarker = Path.Combine(root, "stale-proposal-only-worker-launched");
+            var profile = BuildProfile(
+                root,
+                GmWorkerBridgeTestFixtures.AnalysisCodexProfile(),
+                "fake-stale-proposal-only-must-not-launch.ps1",
+                $"New-Item -ItemType File -Force -Path '{workerLaunchMarker.Replace("'", "''", StringComparison.Ordinal)}' | Out-Null; exit 7");
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTaskReservationAsync = async () =>
+                {
+                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
+                    fs.RotateSessionGeneration(lease);
+                }
+            };
+            var service = CreateService(fs, hooks);
+
+            var result = await service.DispatchAsync(
+                [profile],
+                GmWorkerProposalOnlyDispatchRequest.Analysis(
+                    TurnReference(),
+                    "Check the current scene state.",
+                    ["Is the context internally consistent?"],
+                    [LocationPath]));
+
+            Assert.Equal(GmWorkerProposalOnlyDispatchOutcome.SessionReplaced, result.Outcome);
+            Assert.Contains("session generation", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(workerLaunchMarker));
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(result.TaskId)));
+            Assert.False(Directory.Exists(Path.GetDirectoryName(
+                fs.ResolvePath(GmWorkerBridgePool.GetProposalInboxPath(result.TaskId)))!));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task DispatchAsync_FakeInventoryContentWorker_StoresStructuredAuthoringProposalInInbox()
     {
         var root = CreateTempRoot();
@@ -310,12 +358,14 @@ public sealed class GmWorkerProposalOnlyDispatchTests
         }
     }
 
-    private static GmWorkerProposalOnlyDispatchService CreateService(FileSystemManager fs)
+    private static GmWorkerProposalOnlyDispatchService CreateService(
+        FileSystemManager fs,
+        GmWorkerBridgePoolHooks? poolHooks = null)
     {
         var audit = new GmWorkerAuditLog(fs);
         return new GmWorkerProposalOnlyDispatchService(
             fs,
-            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
+            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit, poolHooks),
             audit);
     }
 

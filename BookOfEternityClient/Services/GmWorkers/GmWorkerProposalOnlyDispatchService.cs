@@ -8,6 +8,7 @@ public enum GmWorkerProposalOnlyDispatchOutcome
     Completed,
     SkippedNoWorker,
     InvalidRequest,
+    SessionReplaced,
     WorkerFailed,
     WorkerTimedOut,
     ProposalRejected
@@ -151,13 +152,15 @@ public sealed class GmWorkerProposalOnlyDispatchService
         if (run.Proposal == null)
         {
             var lastError = run.Status.LastError ?? "Worker did not return a valid proposal.";
-            var outcome = run.TimedOut || run.Status.State == WorkerBridgeState.TimedOut
-                ? GmWorkerProposalOnlyDispatchOutcome.WorkerTimedOut
-                : lastError.Contains("proposal-only", StringComparison.OrdinalIgnoreCase) ||
-                  lastError.Contains("changedFiles", StringComparison.OrdinalIgnoreCase) ||
-                  lastError.Contains("proposal JSON is malformed", StringComparison.OrdinalIgnoreCase)
-                    ? GmWorkerProposalOnlyDispatchOutcome.ProposalRejected
-                    : GmWorkerProposalOnlyDispatchOutcome.WorkerFailed;
+            var outcome = run.SessionReplaced
+                ? GmWorkerProposalOnlyDispatchOutcome.SessionReplaced
+                : run.TimedOut || run.Status.State == WorkerBridgeState.TimedOut
+                    ? GmWorkerProposalOnlyDispatchOutcome.WorkerTimedOut
+                    : lastError.Contains("proposal-only", StringComparison.OrdinalIgnoreCase) ||
+                      lastError.Contains("changedFiles", StringComparison.OrdinalIgnoreCase) ||
+                      lastError.Contains("proposal JSON is malformed", StringComparison.OrdinalIgnoreCase)
+                        ? GmWorkerProposalOnlyDispatchOutcome.ProposalRejected
+                        : GmWorkerProposalOnlyDispatchOutcome.WorkerFailed;
             return new GmWorkerProposalOnlyDispatchResult
             {
                 Outcome = outcome,
@@ -184,9 +187,15 @@ public sealed class GmWorkerProposalOnlyDispatchService
     {
         var taskId = $"worker_task_{TaskTypeSegment(request.TaskType)}_{Guid.NewGuid():N}";
         var createdAtUtc = DateTimeOffset.UtcNow.ToString("O");
-        var contextFiles = await BuildContextFilesAsync(profile, request.ContextPaths);
+        IReadOnlyList<WorkerFileReference> contextFiles;
+        string sessionGeneration;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            sessionGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+            contextFiles = await BuildContextFilesAsync(profile, request.ContextPaths, writeLease);
+        }
 
-        return request.TaskType switch
+        var task = request.TaskType switch
         {
             WorkerTaskType.NarrativeDraft => GmWorkerTaskPacketBuilder.BuildNarrativeDraftTask(
                 profile,
@@ -200,7 +209,8 @@ public sealed class GmWorkerProposalOnlyDispatchService
                     TargetLength = request.TargetLength
                 },
                 contextFiles,
-                createdAtUtc),
+                createdAtUtc,
+                sessionGeneration),
             WorkerTaskType.Analysis => GmWorkerTaskPacketBuilder.BuildAnalysisTask(
                 profile,
                 taskId,
@@ -209,6 +219,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
                 request.Questions,
                 contextFiles,
                 createdAtUtc,
+                sessionGeneration,
                 request.AfterlifeContract),
             _ when WorkerTaskTypes.IsContentAuthoring(request.TaskType) =>
                 GmWorkerTaskPacketBuilder.BuildContentAuthoringTask(
@@ -219,15 +230,18 @@ public sealed class GmWorkerProposalOnlyDispatchService
                     request.AuthoringRequest ?? new WorkerContentAuthoringRequest(),
                     contextFiles,
                     createdAtUtc,
+                    sessionGeneration,
                     request.AfterlifeContract,
                     request.GuardianAbodeRequest),
             _ => throw new InvalidOperationException($"Unsupported proposal-only task type: {request.TaskType}.")
         };
+        return task;
     }
 
     private async Task<IReadOnlyList<WorkerFileReference>> BuildContextFilesAsync(
         WorkerBridgeProfile profile,
-        IReadOnlyList<string> contextPaths)
+        IReadOnlyList<string> contextPaths,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var result = new List<WorkerFileReference>();
         foreach (var path in contextPaths
@@ -237,7 +251,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
                      .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
                      .Order(GmWorkerContractValidator.CanonicalPathComparer))
         {
-            var content = await _fs.ReadFileBytesAsync(path);
+            var content = await _fs.ReadFileBytesAsync(writeLease, path);
             result.Add(new WorkerFileReference
             {
                 Path = path,

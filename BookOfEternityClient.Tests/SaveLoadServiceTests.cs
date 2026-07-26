@@ -62,6 +62,23 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveAndLoad_TreatsLatestWorkerRepairTaskAsEphemeralControlFile()
+    {
+        const string path = "game_state/control/gm_worker_latest_validation_repair_task.json";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Chaos Sea\"}");
+        await _fs.WriteFileAtomicAsync(path, "{\"taskId\":\"stale_worker_task\"}");
+
+        Assert.True(await _service.SaveGameAsync("ephemeral_worker_task", "worker task save/load regression"));
+
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        using (var archive = ZipFile.OpenRead(savePath))
+            Assert.Null(archive.GetEntry(path));
+
+        Assert.True(await _service.LoadGameAsync(savePath));
+        Assert.False(_fs.FileExists(path));
+    }
+
+    [Fact]
     public async Task GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -108,6 +125,80 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-save-load-outside-" + Guid.NewGuid().ToString("N"));
+        var outsideFile = Path.Combine(outsideRoot, "external-secret.txt");
+        var junctionPath = _fs.ResolvePath("game_state/world/external-link");
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllTextAsync(outsideFile, "must-not-enter-save");
+        try
+        {
+            CreateDirectoryJunction(junctionPath, outsideRoot);
+
+            Assert.True(await _service.SaveGameAsync("no_reparse_traversal", "junction regression"));
+
+            var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+            using var archive = ZipFile.OpenRead(savePath);
+            Assert.DoesNotContain(
+                archive.Entries,
+                entry => entry.FullName.Contains("external-secret", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            if (Directory.Exists(junctionPath))
+                Directory.Delete(junctionPath, recursive: false);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication()
+    {
+        var cleanupReached = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseCleanup = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var settings = new GameSettings { MaxAutosaves = 1 };
+        var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeAutosaveCleanupLeaseAcquisitionAsync = async () =>
+                {
+                    cleanupReached.TrySetResult();
+                    await releaseCleanup.Task;
+                }
+            });
+
+        var autosaveTask = service.AutosaveAsync(1);
+        await cleanupReached.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        try
+        {
+            releaseCleanup.TrySetResult();
+            await Task.Delay(200);
+            Assert.False(autosaveTask.IsCompleted);
+        }
+        finally
+        {
+            await writeLease.DisposeAsync();
+        }
+
+        Assert.True(await autosaveTask.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.Single(Directory.GetFiles(_fs.ResolvePath("saves/autosaves"), "*.zip"));
+    }
+
+    [Fact]
     public async Task LoadGameAsync_WaitsForCanonicalWriteLeaseBeforeReplacingLiveSession()
     {
         const string weatherPath = "game_state/world/weather.json";
@@ -128,6 +219,59 @@ public sealed class SaveLoadServiceTests : IDisposable
         finally
         {
             await writeLease.DisposeAsync();
+        }
+
+        Assert.True(await loadTask);
+        Assert.Equal("{\"state\":\"saved\"}", await _fs.ReadFileAsync(weatherPath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_WaitsForSessionLifecycleLeaseBeforeReplacingLiveSession()
+    {
+        const string weatherPath = "game_state/world/weather.json";
+        await _fs.WriteFileAtomicAsync(weatherPath, "{\"state\":\"saved\"}");
+        Assert.True(await _service.SaveGameAsync("lifecycle_load", "session lifecycle regression"));
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        await _fs.WriteFileAtomicAsync(weatherPath, "{\"state\":\"live\"}");
+
+        var lifecycleContended = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var competingFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                SessionLifecycleLockContendedAsync = () =>
+                {
+                    lifecycleContended.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            });
+        competingFs.EnsureDirectoryStructure();
+        var settings = new GameSettings();
+        var stateManager = new StateManager(
+            competingFs,
+            settings,
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            competingFs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance);
+
+        var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+        Task<bool> loadTask;
+        try
+        {
+            loadTask = service.LoadGameAsync(savePath);
+            await lifecycleContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(loadTask.IsCompleted);
+            Assert.Equal("{\"state\":\"live\"}", await _fs.ReadFileAsync(weatherPath));
+        }
+        finally
+        {
+            await lifecycleLease.DisposeAsync();
         }
 
         Assert.True(await loadTask);
@@ -430,6 +574,49 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task UnresolvedLoadRollback_FencesCanonicalWritersUntilRecoverySucceeds()
+    {
+        var root = Path.Combine(_rootPath, "rollback-writer-fence");
+        Directory.CreateDirectory(root);
+        var operations = new FaultInjectingLoadTransactionOperations();
+        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, operations);
+        fs.EnsureDirectoryStructure();
+        const string markerPath = "game_state/world/recovery_marker.json";
+        const string laterWritePath = "game_state/world/later_write.json";
+        await fs.WriteFileAtomicAsync(markerPath, "{\"state\":\"last-valid\"}");
+        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+
+        var archivePath = Path.Combine(root, "activation-failure.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+            await WriteArchiveEntryAsync(archive, markerPath, "{\"state\":\"replacement\"}");
+
+        operations.FailStagedActivationMove = true;
+        operations.FailBackupRestoreMove = true;
+        var service = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.True(File.Exists(fs.ActiveLoadTransactionJournalPath));
+
+        await Assert.ThrowsAsync<IOException>(() =>
+            fs.WriteFileAtomicAsync(laterWritePath, "{\"state\":\"must-not-commit\"}"));
+        await Assert.ThrowsAsync<IOException>(() => fs.ClearGameStateAsync());
+        Assert.False(await service.SaveGameAsync("must-not-save", "unresolved rollback fence"));
+        Assert.False(fs.FileExists(laterWritePath));
+        var saveDirectory = fs.ResolvePath("saves/manual_saves");
+        Assert.True(!Directory.Exists(saveDirectory) || Directory.GetFiles(saveDirectory, "*.zip").Length == 0);
+        Assert.True(File.Exists(fs.ActiveLoadTransactionJournalPath));
+
+        operations.FailStagedActivationMove = false;
+        operations.FailBackupRestoreMove = false;
+        await fs.WriteFileAtomicAsync(laterWritePath, "{\"state\":\"after-recovery\"}");
+
+        Assert.Equal("{\"state\":\"last-valid\"}", await fs.ReadFileAsync(markerPath));
+        Assert.Equal("{\"state\":\"after-recovery\"}", await fs.ReadFileAsync(laterWritePath));
+        Assert.False(File.Exists(fs.ActiveLoadTransactionJournalPath));
+    }
+
+    [Fact]
     public async Task SaveGameAsync_ExcludesLifecycleTriggers_AndLoadRemovesLegacyTriggerFiles()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -501,6 +688,23 @@ public sealed class SaveLoadServiceTests : IDisposable
         Assert.False(_fs.FileExists("game_state/control/life_transitions.json"));
         Assert.False(_fs.FileExists("game_state/control/incarnation_trigger.json"));
         Assert.False(_fs.FileExists("game_state/control/ascension.json"));
+    }
+
+    private static void CreateDirectoryJunction(string junctionPath, string targetPath)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(junctionPath)!);
+        using var process = Process.Start(new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            Arguments = $"/d /c mklink /J \"{junctionPath}\" \"{targetPath}\""
+        });
+        if (process == null)
+            throw new InvalidOperationException("Failed to start junction helper.");
+        process.WaitForExit();
+        if (process.ExitCode != 0)
+            throw new InvalidOperationException($"Failed to create test junction: exit code {process.ExitCode}.");
     }
 
     public void Dispose()

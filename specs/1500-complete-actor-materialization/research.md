@@ -362,6 +362,9 @@ verify the exact task bytes still identify the current session generation and
 publish the complete bundle through one create-only atomic directory rename.
 The durable bundle is authoritative; derived inbox/audit failure cannot erase
 it. A losing publisher fails without overwriting prior evidence.
+The proposal id `inbox` is reserved for the derived inbox directory and is
+rejected before staging, so proposal identity cannot collide with that storage
+namespace.
 
 **Rationale**: Sequential existence checks cannot prevent two bridge-pool
 instances from launching the same task, and a separate proposal claim followed
@@ -414,6 +417,332 @@ session keys. Releasing a slot while a canceled parent or child remains alive ca
 let two workers mutate detached handoff state concurrently despite a one-slot
 profile. Process-tree termination and gate lifetime are harness responsibilities,
 not timing assumptions or prompt instructions.
+
+## Tenth review hardening decisions
+
+### Decision 50: Lease acquisition includes a recovery fence
+
+**Decision**: Every canonical writer runs interrupted-load recovery immediately
+after obtaining the external canonical write lease. Recovery failure disposes
+the lease and rejects the writer before it can touch canonical state.
+
+**Rationale**: Startup-only recovery leaves a process that survives a failed load
+able to perform later writes against an unresolved transaction. The writer
+boundary, not caller memory or timing, must make that state unrepresentable.
+
+### Decision 51: Session generation is external durable authority
+
+**Decision**: Store one nonce at
+`.boe_runtime/session-generation/current.json`, rotate it under the canonical
+lease on load and New Game, bind task reservation, proposal publication, and
+apply to it, remove worker roots during transitions, and omit those roots from
+save archives.
+
+**Rationale**: A task file inside `game_session` can be restored byte-for-byte by
+load and falsely look current. Authority must survive replacement of the very
+directory whose identity it distinguishes.
+
+### Decision 52: Refresh owns one read/modify/write lease
+
+**Decision**: Public refresh acquires one canonical write lease before reading
+profile mirrors, retains it through mirror repair and aggregate state refresh,
+and exposes an internal lease-aware overload for callers that already own it.
+
+**Rationale**: Locking only the final write allows a concurrent accepted update
+to land between mirror read and repair write. A single transaction closes that
+TOCTOU window without a replaceable in-session lock.
+
+### Decision 53: Worker code starts only inside privately controlled process-tree authority
+
+**Decision**: Start a hidden client-owned host and attach it to a kill-on-close
+Windows Job Object before the configured command can launch. Parent and host use
+private current-user named control/status pipe servers with unique endpoint
+names. The host command line contains only those endpoints and a unique
+per-launch nonce. Parent-side client PID authentication accepts both connected
+clients only from that exact host PID before the parent sends the executable, arguments, working directory, and
+environment in typed `Launch`; the host retains both channels and passes no pipe
+handle to the configured worker. Every complete typed frame binds the nonce, and
+no worker-accessible ready/release/completion marker exists. Completion
+requires the direct-worker exit code and is sent immediately after direct-process
+exit, before bounded output draining. An explicit `OutputDrained`
+acknowledgement follows bounded capture and is awaited before ordinary host
+teardown. Profile timeout and caller cancellation begin
+before and cover the ownership handshake. Platforms without an equivalent
+queryable kernel complete-tree boundary fail closed before worker release.
+Complete-tree and unattached-host termination confirmation are bounded; timeout
+and cancellation remain authoritative, while every cleanup uncertainty
+quarantines capacity for the remainder of the process lifetime.
+
+**Rationale**: Worker-visible markers let descendants forge readiness or success.
+Attaching after direct launch leaves a child-escape race, beginning timeout after
+release allows canceled work to perform external side effects, and waiting for
+stdout/stderr EOF can deadlock when descendants inherit those pipes. A managed
+Unix process-group abstraction cannot prove that every descendant remains owned
+and queryable, so claiming an equivalent boundary is unsafe. Releasing capacity
+after uncertain cleanup or waiting forever for an unconfirmable stop violates
+`MaxConcurrentTasks`. These are harness-owned facts and cannot be repaired by
+worker prompts.
+
+### Decision 54: Worker apply is an externally journaled canonical transaction
+
+**Decision**: Before the first canonical write of a non-empty proposal, persist
+an external journal under `.boe_runtime/worker-apply-transactions` with intent,
+the complete target manifest, exact before-images or missing baselines, and both
+baseline and expected-applied hashes. Every canonical writer recovers an active
+uncommitted transaction immediately after lease acquisition or fails closed.
+Recovery walks entries in reverse and attempts every independently recoverable
+restore while preserving the journal when bytes are unowned or any restore
+fails. Commit is made durable before cleanup; committed cleanup is retryable and
+never rolls accepted bytes back.
+
+**Rationale**: In-memory rollback cannot survive process interruption between
+two canonical writes. A journal inside `game_session` can be replaced by load,
+and deleting recovery evidence before commit is durable can revoke a valid apply.
+External intent plus before-images lets the next canonical writer finish recovery
+without guessing and makes partial accepted proposals unrepresentable.
+
+### Decision 55: Durable reservation and session replacement are typed authority boundaries
+
+**Decision**: At apply time, reload the exact durable reserved task under the
+canonical lease and treat it as the sole apply authority. Return an independent
+copy of those exact persisted task bytes from reservation, require lowercase
+canonical GUID text in `N` format, and propagate typed `SessionReplaced` through
+reservation, proposal publication, apply, ready publication, and the repair
+loop. A replacement aborts the old repair; no legacy fallback or rollback may
+write into the replacement session. Repair telemetry uses a generation-bound
+atomic append, the latest validation-repair task is excluded from saves, and a
+committed apply transaction directory is removed before its active journal.
+
+**Rationale**: Caller-owned task objects are mutable and cannot be authority.
+Likewise, a generic worker failure can trigger legacy repair or rollback against
+bytes that belong to a newly loaded game. Durable bytes plus typed replacement
+make both error classes mechanically unrepresentable, while generation-bound
+telemetry and save exclusions prevent stale evidence from crossing sessions.
+
+**Alternatives rejected**:
+- Trust the task object returned by the dispatcher: caller mutation can widen
+  allowed paths after reservation.
+- Convert generation replacement into a normal failed worker result: the old
+  game loop can then fall back or roll back in the new session.
+- Append trajectory records directly: a load can redirect stale telemetry into
+  replacement state.
+
+### Decision 56: Complete GM flows use an immutable session operation
+
+**Decision**: Capture the durable session generation once at each outer
+player-turn, raw life-evaluation, transition, incarnation, GM-wait, or New Game
+bootstrap entrypoint. Bind all nested asynchronous work to that immutable
+session operation. Every canonical mutation compares the bound generation after
+recovery and under the canonical write lease. Terminal polling verifies the
+generation before consuming ready/error signals, and the outer operation performs
+a final durable verification before returning. Replacement is sticky across
+nested catches and escaped tasks. The client must not hold the lifecycle lease
+while waiting for the GM; the lifecycle lease exists only for short load/New
+Game replacement and is acquired before the canonical lease. Any mismatch
+propagates typed `SessionReplaced`.
+
+**Rationale**: A canonical lease protects one mutation, not the complete logical
+turn. Without an immutable operation generation, load can land after validation
+but before materialization, cleanup, story append, or life-transition final
+writes. A repair retry can also recapture the replacement generation and continue
+an old turn in a new save. Sticky ambient authority plus in-lease checking makes
+that class of write unrepresentable without holding a long-lived lock across a
+human/model wait.
+
+**Alternatives rejected**:
+- Hold the lifecycle or canonical lease for the complete GM wait: this blocks
+  load/New Game for an unbounded external operation and creates deadlock risk.
+- Check generation only before starting the wait: replacement may occur during
+  terminal polling or after validation.
+- Let leaf callers catch replacement: an old outer flow could continue with
+  cleanup or final writes.
+
+### Decision 57: Worker runtime and handoff resources are externally bounded
+
+**Decision**: Store detached execution snapshots outside the replaceable game
+session. Accept an absolute `BOE_WORKER_RUNTIME_BASE_PATH` override and otherwise
+choose a platform runtime base separated by a canonical-session-path hash. Limit
+`proposal.json` to 1 MiB, each `contentRef` to 4 MiB, aggregate imported content
+to 16 MiB, and captured stdout/stderr to 65,536 characters per stream with a truncation
+marker.
+
+**Rationale**: A runtime under the session can be archived, replaced, or traversed
+as canonical state. Unbounded model output and artifacts allow one subordinate
+worker to consume arbitrary process memory or disk before contract validation.
+
+## Final Sol/max review hardening decisions
+
+### Decision 58: Terminal resolution consumes one immutable signal snapshot
+
+**Decision**: After terminal polling observes a ready file, acquire one canonical
+write lease and read both `ready/turn_complete.json` and
+`ready/turn_error.json` into one immutable snapshot. Parse, correlate, resolve,
+and render only those captured bytes. Do not re-open either ready file after the
+lease is released.
+
+**Rationale**: A generation check followed by an unlocked file read still permits
+load to replace the session in the verify/read interval. One leased byte snapshot
+turns terminal selection into a single authority moment while preserving the
+short-lease rule across the model wait.
+
+### Decision 59: Process success, not proposal presence, grants handoff authority
+
+**Decision**: A worker proposal is applyable only after confirmed zero exit and
+confirmed process-tree termination. Timeout, cancellation, host failure,
+non-zero exit, or unconfirmed cleanup returns no applyable proposal and performs
+no workspace import; captured output remains diagnostic evidence.
+
+**Rationale**: A syntactically valid proposal written before a crash or timeout
+does not prove that the worker completed its self-check or stopped mutating its
+workspace. Proposal presence cannot override the authoritative process result.
+
+### Decision 60: Mortal bootstrap prose is never mechanical authority
+
+**Decision**: The client-owned Mortal bootstrap writes only neutral canonical
+scaffolding and empty mechanical collections. Skills, inventory, NPCs,
+capabilities, resources, and carrying values appear only when the GM records an
+explicit setting-aware decision in `structuredGmAuthority` and writes the
+matching complete canonical state. Contract tests construct explicit actor
+fixtures independently of the production bootstrap builder.
+
+**Rationale**: Any mortal world may be fantasy, science fiction, post-apocalyptic,
+historical, or another setting. Keyword inference makes mechanics accidental,
+grandfathers incomplete same-turn actors into pre-turn authority, and lets test
+fixtures normalize the very behavior the contract forbids.
+
+### Decision 61: Replacement and rollback leave durable, retryable authority
+
+**Decision**: Save/load replacement resets all session-local runtime fields and
+rebinds `GameLoop` from the replacement state, or exits to the menu when no
+active game exists. Worker rollback writes a durable `rolledBack` journal state
+before deleting transaction artifacts. Configured worker runtime paths are
+compared to the physical canonical session identity and reject reparse aliases.
+
+**Rationale**: Disk replacement without runtime rebinding sends the next turn
+with stale identity. Cleanup order must survive every partial failure, and
+lexical path checks cannot protect canonical state from junction aliases.
+
+## Final Sol/max follow-up hardening decisions
+
+### Decision 62: Live-turn preparation is one immutable session transaction
+
+**Decision**: Capture and bind the durable generation before `prepare-live-turn`
+performs cleanup or reads canonical state. Hold one generation-checked canonical
+write lease through no-follow cleanup, snapshot enumeration and capture, and
+publication of the snapshot manifest, authority packet, and turn request.
+
+**Rationale**: Separate public reads and writes allow load or New Game to replace
+the session between phases. An old preparation can otherwise delete replacement
+artifacts or publish an internally consistent old request into the new session.
+
+### Decision 63: Proposal publication has one cancellation linearization point
+
+**Decision**: Cancellation and timeout remain authoritative while a successful
+worker proposal is staged and waits for publication authority. Under the
+canonical lease, one atomic transition chooses either cancellation or durable
+publication. Cancellation first leaves no bundle; publication first completes
+the durable bundle and derived evidence without later cancellation revoking it.
+
+**Rationale**: A token check before a non-cancellable publish leaves a race in
+which the bridge reports `Stopped` or `TimedOut` while an applyable proposal
+appears afterward. A shared transition makes the two outcomes mutually
+exclusive.
+
+### Decision 64: Production apply cannot bypass complete-state validation
+
+**Decision**: The public `GmWorkerApplyGate` constructor requires the production
+`ValidationService`. A non-null delegate constructor remains internal for
+focused tests only.
+
+**Rationale**: An optional validation delegate whose default is success turns a
+security and consistency boundary into a fail-open API. Construction must make
+the production invariant explicit and unskippable.
+
+### Decision 65: Bootstrap scalar mechanics require structured GM authority
+
+**Decision**: The client-owned Mortal bootstrap may create empty collections and
+temporary identity/navigation scaffolding, but it does not assign player
+progression thresholds, carrying values, faction progression/resources,
+influence/control values, or a universal power profile. The GM supplies those
+setting-owned mechanics through `structuredGmAuthority` and matching canonical
+state during the first accepted turn.
+
+**Rationale**: Zero, one, and one hundred are still authored mechanical values,
+not neutral absence. The game may use any setting and progression model; a
+client default silently becomes canonical pre-turn authority and constrains the
+GM to mechanics the world never selected.
+
+## Four-review integration hardening decisions
+
+### Decision 66: Session closure and replacement are typed linearization boundaries
+
+**Decision**: The outer session operation enters a closing state, performs its
+final generation check, and closes while holding canonical authority. Session
+replacement requires a purpose-bound replacement capability derived from an
+active lifecycle lease. Load journals both old and new generation authority
+before the first mutation and the actual UI load path always rebinds runtime
+state from canonical replacement bytes.
+
+**Rationale**: A final check followed by an unlocked close admits an escaped
+writer. An untyped canonical lease can rotate generation accidentally, and a
+session-byte rollback without generation/worker-evidence rollback leaves two
+different notions of the active game.
+
+### Decision 67: Canonical paths and rollback are physical and byte-exact
+
+**Decision**: Canonical authority uses one physical session identity, rejects
+traversal and reparse ancestors, and rechecks no-follow confinement at mutation.
+Rollback captures exact bytes before recording a baseline, reports aggregate
+restore failure, and retains evidence until the complete restore succeeds.
+Snapshot capture/publication is one generation-bound canonical transaction.
+
+**Rationale**: Lexical paths, text re-encoding, swallowed backup errors, and
+multi-lease snapshots cannot prove that the bytes restored belong to the same
+session and transaction that were validated.
+
+### Decision 68: Durable worker reservation is the only task authority
+
+**Decision**: `ValidationService` supplies the apply gate's filesystem identity.
+The bridge deep-snapshots a task before any asynchronous boundary and persists
+that exact snapshot before execution. Apply reloads only that reservation.
+Cancellation/timeout remains authoritative until durable publication; audit,
+cleanup, malformed handoff, or stale ready publication cannot rewrite the
+result.
+
+**Rationale**: Separately supplied roots and mutable caller objects defeat scope
+validation. Terminal telemetry is evidence, not authority.
+
+### Decision 69: Browser and image writes obey the same session fence
+
+**Decision**: Browser multi-write actions enter `SessionOperationContext` before
+their first read and commit under one canonical generation check. Remote image
+generation writes to external staging and atomically commits only if the bound
+generation remains active.
+
+**Rationale**: UI-local locks and semaphores do not serialize console load. A
+long remote request must not publish old-session data into a replacement save.
+
+### Decision 70: Actor authority is explicit, bounded, and setting-neutral
+
+**Decision**: Effective actor identities are unique. Legacy promotion receives
+one closed accepted-turn path; stock/showcase replacement requires exact request
+authority. Empty `structuredGmAuthority`, prose keywords, and client-authored
+setting defaults grant no mechanics. Afterlife departure, mentoring, and
+visibility use exact structured evidence shared by both projections.
+
+**Rationale**: A complete-looking object is not authority. The game can use any
+setting, so neither names nor bootstrap convenience values may silently choose
+mechanics, and documented afterlife lifecycle operations must agree with common
+profile binding.
+
+### Decision 71: Clean-checkout and active-prompt coverage are release gates
+
+**Decision**: Every intended source is tracked before final verification. Source
+guards enumerate all active Mortal and afterlife rules, examples, manifests, and
+daemon entrypoints rather than a selected subset.
+
+**Rationale**: SDK globs can hide missing files locally, while stale active
+instructions can make the GM generate state the validator correctly rejects.
 
 ## Existing integration findings
 

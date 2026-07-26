@@ -145,6 +145,7 @@ public partial class GameEngine
         public bool MetadataDiagnosticOnly { get; init; }
         public bool WorkerApplyAccepted { get; init; }
         public bool ReadySignalCreated { get; init; }
+        public bool SessionReplaced { get; init; }
         public GmWorkerValidationRepairDispatchResult? WorkerResult { get; init; }
     }
 
@@ -179,5 +180,18 @@ public partial class GameEngine
         public string Kind { get; set; } = "failure";
         public ReadySignalMetadata? Signal { get; set; }
     }
+
+    private sealed record TerminalSignalSnapshot(
+        string? CompletionJson,
+        string? ErrorJson)
+    {
+        public bool CompletionExists => CompletionJson != null;
+        public bool ErrorExists => ErrorJson != null;
+    }
+
+    private sealed record ConcurrentTerminalSignalResolution(
+        bool Failed,
+        bool UseCompletion,
+        bool UseError);
 }
 

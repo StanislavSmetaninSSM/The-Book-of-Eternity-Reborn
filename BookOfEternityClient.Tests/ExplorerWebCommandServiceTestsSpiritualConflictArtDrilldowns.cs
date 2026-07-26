@@ -301,7 +301,7 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
             "enlightenmentTier": 3,
             "radianceTier": 1,
             "spiritFocusTier": 2,
-            "standardArts": {
+            "artTiers": {
               "pressure": 2,
               "guard": 1,
               "counter": 1
@@ -318,6 +318,20 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
               "actorId": "player_soul",
               "displayName": "Тестовая Душа",
               "realm": "Chaos Sea",
+              "currencies": {
+                "inkFeathers": 9,
+                "lightSparks": 0
+              },
+              "progression": {
+                "enlightenment": {
+                  "experience": 0,
+                  "tier": 0
+                },
+                "radiance": {
+                  "experience": 0,
+                  "tier": 0
+                }
+              },
               "standardArts": {
                 "pressure": 2,
                 "guard": 1,

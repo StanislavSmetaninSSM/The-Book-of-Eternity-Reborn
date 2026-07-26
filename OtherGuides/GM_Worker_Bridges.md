@@ -25,6 +25,10 @@ game state.
 - Status is mandatory; omission is invalid and must never default to completed.
 - The apply gate checks scope, reads proposal `contentRef` files, applies
   allowed changes, runs validation when required, and rolls back failed repairs.
+- Production apply-gate construction requires the real `ValidationService`.
+  There is no public fail-open or empty-validator construction path; the
+  internal delegate seam exists only for focused tests and is not a runtime
+  profile/configuration option.
 - The apply gate holds one canonical write lease from exact context/authority
   verification through all proposal writes, validation, read-only context
   revalidation, rollback when required, and the final accept/reject decision.
@@ -68,6 +72,24 @@ When the worker pool launches a worker task, it starts the configured
   under the client-owned `.worker_runtime` directory. The snapshot exposes only pinned task context,
   not the live canonical `game_session` directory.
 
+The client places detached worker workspaces outside the replaceable game session.
+`BOE_WORKER_RUNTIME_BASE_PATH` may override the runtime base, but it must be an
+absolute path and must not be equal to or nested under the canonical `game_session`.
+The same rule is checked after resolving the path: a
+reparse-point alias into the canonical session is rejected. Without the
+override, Windows sessions on a non-system volume use
+`<session-volume>/BookOfEternityRuntime`; other sessions use the local application
+data directory, with the operating-system temporary directory only as a final
+fallback. A stable hash of the canonical session path separates concurrent game
+sessions under that base.
+
+Worker handoff resources are bounded by the harness: `proposal.json` is limited
+to 1 MiB, each declared `contentRef` to 4 MiB, and the aggregate imported
+`contentRef` payload to 16 MiB. Captured standard output and standard error are
+each limited to 65,536 characters and receive an explicit truncation marker when
+the limit is reached. Exceeding an artifact budget rejects the handoff instead
+of allowing unbounded memory or disk use.
+
 The task, proposal inbox, and declared content files all live in that detached
 execution snapshot. Direct worker writes to copied `game_state/...`, `lore/...`,
 or any other snapshot path are discarded. After contract validation, the pool
@@ -96,11 +118,83 @@ belong to the current game session generation. The durable bundle is authority;
 the proposal inbox and audit record are derived views whose publication failure
 cannot erase or invalidate it. Validation-repair task IDs are globally unique
 per dispatch while retaining the repair-attempt number as a readable prefix.
+Caller cancellation/timeout and publication meet at one atomic transition.
+Staging and canonical-lease waiting remain cancellable. If cancellation wins
+before the transition, staging is removed and no durable bundle, derived inbox,
+or applyable proposal may appear later. If publication wins, the complete
+create-only directory rename is authoritative and the remaining derived
+publication finishes without revoking that bundle.
+The proposal id `inbox` is reserved for the derived inbox directory and is
+invalid for every worker proposal.
 `maxConcurrentTasks` is enforced at runtime for the same worker and game
 session, including calls made through separate bridge-pool instances. Worker
 slots use reference-counted gates that retire when idle, so an idle profile can
 change its limit; an active limit change fails as a worker result. Cancellation
 kills and awaits the complete worker process tree before releasing its worker slot.
+The durable session generation lives under `.boe_runtime/session-generation/current.json`
+and rotates on load and New Game. Task reservation, proposal publication, and
+apply are bound to that exact generation, while save archives exclude worker
+task/proposal roots. A result from an earlier generation is rejected even when
+its task and proposal bytes are later restored unchanged.
+`sessionGeneration` is mandatory in every task packet and contains exactly 32
+lowercase hexadecimal characters. The bridge captures it together with pinned
+context bytes under one canonical write lease; workers and callers must never
+invent, replace, or rebind this value after task construction.
+
+At apply time, the exact durable reserved task is the sole apply authority. The
+gate reloads that task under the canonical lease instead of trusting a mutable
+caller object, and reservation returns a deep copy of the exact persisted bytes.
+`sessionGeneration` must also be lowercase canonical GUID text in `N` format.
+When load or New Game rotates the generation, typed `SessionReplaced` aborts the
+old repair; no legacy fallback or rollback may write into the replacement
+session. Repair trajectory records use a generation-bound atomic append, and
+the latest validation-repair task is ephemeral and excluded from saves. For a
+committed worker apply, cleanup deletes the transaction directory before the
+active journal so a cleanup failure remains retryable without revoking accepted
+bytes.
+
+The same generation is also bound to each complete logical GM interaction as an
+immutable session operation. Every canonical mutation checks that generation
+after recovery and under the canonical write lease; a mismatch marks the whole
+operation replaced even when an inner caller catches an exception. Terminal
+polling verifies the generation before reading completion signals, and the
+operation performs a final durable check before returning. The client must not
+hold the lifecycle lease while waiting for the GM: the lifecycle lease is short
+and exists only to serialize load/New Game replacement, while typed
+`SessionReplaced` unwinds the old turn without cleanup, rollback, telemetry, or
+final writes entering the replacement session.
+
+Worker startup uses a hidden client-owned host gate: the configured worker
+command cannot start until process-tree ownership is attached. The parent creates
+private current-user named control/status pipe servers with unique endpoint names
+and starts the hidden host with only the two endpoint names and the per-launch
+nonce in its command line. The configured worker payload never appears in the
+hidden-host command line, and no worker-accessible marker files are created.
+After the hidden host connects both channels, parent-side client PID
+authentication authenticates both connected pipe clients as the exact
+hidden-host PID. The parent only after authentication sends a typed `Launch`
+frame containing the executable, arguments, working directory, and environment.
+The hidden host retains both channels; the configured worker receives neither
+channel nor any pipe handle.
+
+Unknown, duplicate, or missing frame fields are rejected. The hidden host
+returns typed `Ready` after accepting the launch payload while the configured
+worker is still stopped. The parent then sends typed `Release`, and only then
+does the host start the configured worker. The host publishes typed `Completed`
+with a non-null exit code immediately after the direct worker exits and before
+output pipes are drained. Typed `OutputDrained` follows bounded output capture
+and is awaited before ordinary host teardown. This explicit `OutputDrained`
+acknowledgement prevents descendants from delaying or forging the authoritative
+result. All readiness, release, completion, and
+output-drain messages are complete typed frames bound to the per-launch nonce.
+
+Windows Job Object is the supported complete descendant boundary. Platforms
+without an equivalent queryable kernel containment boundary fail closed before
+worker release. Timeout and cancellation remain authoritative; cleanup
+uncertainty quarantines the worker slot instead of changing the result or
+admitting another worker into uncertain capacity. Complete-tree termination and
+unattached-host cleanup is bounded; an expired confirmation deadline also
+quarantines the slot.
 
 Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
 must be the exact 64-character SHA-256 digest of the same canonical file bytes,
@@ -155,15 +249,23 @@ state during worker apply. Load uses an external durable journal under
 `.boe_runtime/load-transactions`: startup recovers an interrupted swap before
 creating session directories, and rollback failure preserves the last valid
 backup plus journal for a later retry. State refresh and client-owned mirror
-repair reuse the already-held lease instead of trying to reacquire it. Detached runtime cleanup
+repair use one lease-scoped read/modify/write instead of reading before lease
+acquisition or trying to reacquire it. Every canonical writer must recover an interrupted load transaction immediately after acquiring the canonical write lease
+or fail closed before touching live state. Worker apply uses an external durable
+journal under `.boe_runtime/worker-apply-transactions`: intent, exact before-images,
+and expected applied hashes are durable before the first canonical mutation.
+Every canonical writer recovers an interrupted worker apply transaction after
+lease acquisition or fails closed before mutation. A committed transaction keeps
+accepted canonical bytes authoritative; committed journal cleanup cannot roll
+back accepted bytes and may be retried later. Detached runtime cleanup
 never follows reparse points. A cleanup failure is an audit diagnostic and does
 not replace an already completed, timed-out, or rejected worker result.
 
-If a worker CLI writes a valid proposal and only then times out or exits with a
-nonzero code, the worker pool preserves the proposal and records it as
-`proposal-received`. The abnormal exit remains diagnostic evidence, but the
-proposal is still proposal-only: the main GM must review it and any canonical
-change must still pass the apply gate.
+A proposal becomes applyable only after confirmed zero exit and confirmed process-tree termination.
+A timeout, cancellation, nonzero exit, missing exit
+code, incomplete process-tree cleanup, or uncertain host cleanup is
+diagnostic-only: any bytes written by that execution must not be imported as a
+worker proposal or passed to the apply gate.
 
 ## Local CLI Worker Runner
 

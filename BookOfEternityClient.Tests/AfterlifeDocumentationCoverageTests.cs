@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -4031,7 +4032,7 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
-    public void ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract()
+    public async Task ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract()
     {
         var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
             string.Equals(candidate.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase) &&
@@ -4040,15 +4041,150 @@ public sealed class AfterlifeDocumentationCoverageTests
         var profile = Assert.Single(document.RootElement.GetProperty("afterlifeEntityProfileUpdates").EnumerateArray());
 
         var runtimeIssues = ValidateResponseWithRuntimeValidator(document.RootElement);
-        var materializationIssues = ActorMaterializationContract.ValidateAfterlifeProfile(
-            profile,
-            "Examples/E_CLI_Afterlife_Turns.txt.afterlifeEntityProfileUpdates[0]",
-            requireEnvelope: true,
-            canTradeEvidence: true);
+        var acceptedTurnIssues = await ValidateShiningExampleAcceptedTurnBindingAsync(profile);
 
         Assert.Equal("Shining Abode", profile.GetProperty("realm").GetString());
         Assert.DoesNotContain(runtimeIssues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.Empty(materializationIssues);
+        Assert.DoesNotContain(acceptedTurnIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Actor, "radiant_actor:radiant_archive_head", StringComparison.Ordinal));
+    }
+
+    private static async Task<List<ValidationIssue>> ValidateShiningExampleAcceptedTurnBindingAsync(
+        JsonElement profile)
+    {
+        var rootPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "boe-test-artifacts",
+            "afterlife-doc-shining-binding-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            Directory.CreateDirectory(rootPath);
+            var fs = new FileSystemManager(rootPath, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            var profileNode = JsonNode.Parse(profile.GetRawText()) ??
+                              throw new InvalidOperationException("Shining profile example is empty.");
+            var currentProfiles = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profileNode)
+            }.ToJsonString();
+            var preTurnProfiles = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray()
+            }.ToJsonString();
+            var currentShining = BuildShiningExampleAuthority(
+                ShiningAbodeState.LeadershipStateSecure,
+                includeTradeAuthority: true);
+            var preTurnShining = BuildShiningExampleAuthority(
+                ShiningAbodeState.LeadershipStateVacant,
+                includeTradeAuthority: false);
+
+            await fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, currentProfiles);
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, currentShining);
+            await WriteShiningExampleSnapshotAsync(
+                fs,
+                (AfterlifeEntityProfileState.StatePath, preTurnProfiles),
+                (ShiningAbodeState.StatePath, preTurnShining));
+
+            var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+            var method = typeof(ValidationService).GetMethod(
+                "ValidateAcceptedTurnActorMaterializationCompletenessAsync",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(method);
+            var issues = new List<ValidationIssue>();
+            await Assert.IsAssignableFrom<Task>(method.Invoke(validator, new object[] { issues }));
+            return issues;
+        }
+        finally
+        {
+            if (Directory.Exists(rootPath))
+                Directory.Delete(rootPath, recursive: true);
+        }
+    }
+
+    private static string BuildShiningExampleAuthority(
+        string leadershipState,
+        bool includeTradeAuthority)
+    {
+        var isVacant = string.Equals(
+            leadershipState,
+            ShiningAbodeState.LeadershipStateVacant,
+            StringComparison.Ordinal);
+        return new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["factions"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_first_light_archive",
+                ["factionStrength"] = includeTradeAuthority ? 50 : 0,
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+                },
+                ["leadership"] = new JsonObject
+                {
+                    ["leadershipState"] = leadershipState,
+                    ["headActorType"] = isVacant ? null : "radiant_actor",
+                    ["headActorId"] = isVacant ? null : "radiant_archive_head"
+                }
+            }),
+            ["shiningPoliticalActors"] = new JsonArray()
+        }.ToJsonString();
+    }
+
+    private static async Task WriteShiningExampleSnapshotAsync(
+        FileSystemManager fs,
+        params (string Path, string Json)[] snapshotFiles)
+    {
+        const string sessionId = "session_shining_materialization_example";
+        const string requestId = "request_shining_materialization_example";
+        const int turnNumber = 24;
+        const string playerAction = "Проверить полномочия главы Архива Первого Света.";
+        await fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
+        {
+          "sessionId": "{{sessionId}}",
+          "requestId": "{{requestId}}",
+          "turnNumber": {{turnNumber}},
+          "playerAction": {{JsonSerializer.Serialize(playerAction)}}
+        }
+        """);
+
+        var files = new JsonObject();
+        var snapshotHashes = new JsonObject();
+        var rollbackBaselineFiles = new JsonArray();
+        foreach (var (path, json) in snapshotFiles)
+        {
+            var snapshotPath = $"game_state/control/pending_turn_snapshot/{path}";
+            await fs.WriteFileAtomicAsync(snapshotPath, json);
+            files[path] = snapshotPath;
+            snapshotHashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(json);
+            rollbackBaselineFiles.Add(path);
+        }
+
+        var manifest = new JsonObject
+        {
+            ["sessionId"] = sessionId,
+            ["requestId"] = requestId,
+            ["turnNumber"] = turnNumber,
+            ["requestTimestamp"] = "2026-07-26T00:00:00Z",
+            ["playerAction"] = playerAction,
+            ["files"] = files,
+            ["snapshotFileHashes"] = snapshotHashes,
+            ["clientOwnedValidationHashes"] = new JsonObject(),
+            ["rollbackBackups"] = new JsonObject(),
+            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
+            ["sourceLabel"] = "Shining faction-head worked example",
+            ["manifestPayloadHash"] = string.Empty
+        };
+        manifest["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fs);
     }
 
     private static List<ValidationIssue> ValidateResponseWithRuntimeValidator(JsonElement response)

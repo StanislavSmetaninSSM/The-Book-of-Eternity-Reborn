@@ -34,9 +34,7 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         FileSystemManager fs,
         WorkerTaskPacket task)
     {
-        var basePath = Directory.GetParent(fs.GameSessionPath)?.FullName ??
-                       throw new InvalidOperationException("Cannot resolve worker runtime parent directory.");
-        var runtimeRoot = Path.GetFullPath(Path.Combine(basePath, GmWorkerBridgePool.WorkerRuntimeRoot));
+        var runtimeRoot = ResolveRuntimeRoot(fs.BasePath);
         var safeTaskId = SanitizeSegment(task.TaskId);
         var workspaceRoot = Path.GetFullPath(
             Path.Combine(runtimeRoot, $"{safeTaskId}-{Guid.NewGuid():N}"));
@@ -82,21 +80,71 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         }
     }
 
-    internal async Task<byte[]?> ReadFileBytesAsync(string relativePath)
+    internal bool ProposalExists() => File.Exists(ProposalPath);
+
+    internal async Task<byte[]?> ReadFileBytesAsync(
+        string relativePath,
+        CancellationToken cancellationToken = default)
     {
         var fullPath = ResolveWorkspacePath(GameSessionPath, relativePath);
         if (!File.Exists(fullPath))
             return null;
 
         RejectReparsePoints(GameSessionPath, fullPath);
-        return await File.ReadAllBytesAsync(fullPath);
+        return await ReadBoundedFileAsync(
+            fullPath,
+            GmWorkerBridgePool.MaxContentRefBytes,
+            $"Worker contentRef '{relativePath}'",
+            cancellationToken);
     }
 
-    internal Task<byte[]?> ReadProposalBytesAsync() =>
-        ReadFileBytesAsync(Path.GetRelativePath(GameSessionPath, ProposalPath).Replace('\\', '/'));
+    internal async Task<byte[]?> ReadProposalBytesAsync(CancellationToken cancellationToken = default)
+    {
+        if (!File.Exists(ProposalPath))
+            return null;
+
+        RejectReparsePoints(GameSessionPath, ProposalPath);
+        return await ReadBoundedFileAsync(
+            ProposalPath,
+            GmWorkerBridgePool.MaxProposalBytes,
+            "Worker proposal",
+            cancellationToken);
+    }
 
     public async ValueTask DisposeAsync() =>
         await DeleteWorkspaceAsync(_runtimeRoot, _workspaceRoot);
+
+    internal static string ResolveRuntimeRoot(string canonicalBasePath)
+    {
+        var configuredBase = Environment.GetEnvironmentVariable(
+            GmWorkerBridgePool.WorkerRuntimeBaseEnvironmentVariable);
+        var runtimeBase = string.IsNullOrWhiteSpace(configuredBase)
+            ? ResolveDefaultRuntimeBase(canonicalBasePath)
+            : ResolveConfiguredRuntimeBase(configuredBase);
+        return BuildValidatedRuntimeRoot(canonicalBasePath, runtimeBase);
+    }
+
+    internal static string ResolveRuntimeRoot(
+        string canonicalBasePath,
+        string configuredRuntimeBase)
+    {
+        var runtimeBase = ResolveConfiguredRuntimeBase(configuredRuntimeBase);
+        return BuildValidatedRuntimeRoot(canonicalBasePath, runtimeBase);
+    }
+
+    private static string BuildValidatedRuntimeRoot(
+        string canonicalBasePath,
+        string runtimeBase)
+    {
+        EnsureRuntimeOutsideCanonicalSession(canonicalBasePath, runtimeBase);
+        var sessionIdentity = Convert.ToHexString(
+                SHA256.HashData(Encoding.UTF8.GetBytes(NormalizeIdentityPath(canonicalBasePath))))
+            .ToLowerInvariant()[..24];
+        var runtimeRoot = Path.GetFullPath(
+            Path.Combine(runtimeBase, GmWorkerBridgePool.WorkerRuntimeRoot, sessionIdentity));
+        EnsureRuntimeOutsideCanonicalSession(canonicalBasePath, runtimeRoot);
+        return runtimeRoot;
+    }
 
     private static void VerifyPinnedContext(WorkerFileReference contextFile, byte[]? content)
     {
@@ -129,6 +177,44 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
         await File.WriteAllBytesAsync(fullPath, content);
     }
+
+    private static async Task<byte[]?> ReadBoundedFileAsync(
+        string fullPath,
+        int maxBytes,
+        string artifactName,
+        CancellationToken cancellationToken)
+    {
+        if (!File.Exists(fullPath))
+            return null;
+
+        await using var stream = new FileStream(
+            fullPath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: 81920,
+            useAsync: true);
+        if (stream.Length > maxBytes)
+            throw CreateArtifactLimitException(artifactName, maxBytes);
+
+        using var content = new MemoryStream(
+            capacity: checked((int)Math.Min(stream.Length, maxBytes)));
+        var buffer = new byte[Math.Min(81920, maxBytes + 1)];
+        while (true)
+        {
+            var read = await stream.ReadAsync(buffer, cancellationToken);
+            if (read == 0)
+                break;
+            if (content.Length + read > maxBytes)
+                throw CreateArtifactLimitException(artifactName, maxBytes);
+            await content.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+        }
+
+        return content.ToArray();
+    }
+
+    private static InvalidDataException CreateArtifactLimitException(string artifactName, int maxBytes) =>
+        new($"{artifactName} exceeds the {maxBytes}-byte import limit.");
 
     private static string ResolveWorkspacePath(string gameSessionPath, string relativePath)
     {
@@ -235,6 +321,111 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
 
     private static string EnsureTrailingSeparator(string path) =>
         path.EndsWith(Path.DirectorySeparatorChar) ? path : path + Path.DirectorySeparatorChar;
+
+    private static string ResolveConfiguredRuntimeBase(string configuredBase)
+    {
+        if (!Path.IsPathRooted(configuredBase))
+        {
+            throw new InvalidOperationException(
+                $"{GmWorkerBridgePool.WorkerRuntimeBaseEnvironmentVariable} must be an absolute path.");
+        }
+
+        return Path.GetFullPath(configuredBase);
+    }
+
+    private static string ResolveDefaultRuntimeBase(string canonicalBasePath)
+    {
+        var fullBasePath = Path.GetFullPath(canonicalBasePath);
+        if (OperatingSystem.IsWindows())
+        {
+            var canonicalVolume = Path.GetPathRoot(fullBasePath);
+            var systemVolume = Path.GetPathRoot(Environment.SystemDirectory);
+            if (!string.IsNullOrWhiteSpace(canonicalVolume) &&
+                !string.Equals(canonicalVolume, systemVolume, StringComparison.OrdinalIgnoreCase))
+            {
+                return Path.Combine(canonicalVolume, "BookOfEternityRuntime");
+            }
+        }
+
+        var localApplicationData = Environment.GetFolderPath(
+            Environment.SpecialFolder.LocalApplicationData);
+        if (!string.IsNullOrWhiteSpace(localApplicationData))
+            return Path.Combine(localApplicationData, "BookOfEternityReborn");
+
+        return Path.Combine(Path.GetTempPath(), "BookOfEternityReborn");
+    }
+
+    private static string NormalizeIdentityPath(string path)
+    {
+        var normalized = Path.GetFullPath(path)
+            .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        return OperatingSystem.IsWindows()
+            ? normalized.ToUpperInvariant()
+            : normalized;
+    }
+
+    private static void EnsureRuntimeOutsideCanonicalSession(
+        string canonicalBasePath,
+        string candidatePath)
+    {
+        var canonicalSessionIdentity = ResolvePhysicalIdentityPath(
+            Path.Combine(Path.GetFullPath(canonicalBasePath), "game_session"));
+        var candidateIdentity = ResolvePhysicalIdentityPath(candidatePath);
+        if (!IsSameOrDescendant(candidateIdentity, canonicalSessionIdentity))
+            return;
+
+        throw new InvalidOperationException(
+            $"Worker runtime path must stay outside canonical game_session: {candidatePath}.");
+    }
+
+    private static string ResolvePhysicalIdentityPath(string path)
+    {
+        var fullPath = Path.GetFullPath(path);
+        var root = Path.GetPathRoot(fullPath);
+        if (string.IsNullOrWhiteSpace(root))
+            return NormalizeIdentityPath(fullPath);
+
+        var current = root;
+        var relative = Path.GetRelativePath(root, fullPath);
+        if (string.Equals(relative, ".", StringComparison.Ordinal))
+            return NormalizeIdentityPath(current);
+
+        foreach (var segment in relative.Split(
+                     [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                     StringSplitOptions.RemoveEmptyEntries))
+        {
+            var candidate = Path.Combine(current, segment);
+            FileSystemInfo? entry = Directory.Exists(candidate)
+                ? new DirectoryInfo(candidate)
+                : File.Exists(candidate)
+                    ? new FileInfo(candidate)
+                    : null;
+            if (entry != null && (entry.Attributes & FileAttributes.ReparsePoint) != 0)
+            {
+                var resolved = entry.ResolveLinkTarget(returnFinalTarget: true);
+                current = resolved == null
+                    ? candidate
+                    : Path.GetFullPath(resolved.FullName);
+                continue;
+            }
+
+            current = candidate;
+        }
+
+        return NormalizeIdentityPath(current);
+    }
+
+    private static bool IsSameOrDescendant(string candidatePath, string rootPath)
+    {
+        var comparison = OperatingSystem.IsWindows()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
+        if (string.Equals(candidatePath, rootPath, comparison))
+            return true;
+
+        var rootWithSeparator = EnsureTrailingSeparator(rootPath);
+        return candidatePath.StartsWith(rootWithSeparator, comparison);
+    }
 
     private static string SanitizeSegment(string value)
     {
