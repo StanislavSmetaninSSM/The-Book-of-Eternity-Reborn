@@ -291,7 +291,7 @@ public static class TrainingRequestState
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(root, JsonOpts));
     }
 
-    private static IReadOnlyList<PendingTrainingShowcaseRequest> DeserializeRequests(string? raw)
+    internal static IReadOnlyList<PendingTrainingShowcaseRequest> ParseRequests(string? raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
             return Array.Empty<PendingTrainingShowcaseRequest>();
@@ -306,6 +306,9 @@ public static class TrainingRequestState
             return Array.Empty<PendingTrainingShowcaseRequest>();
         }
     }
+
+    private static IReadOnlyList<PendingTrainingShowcaseRequest> DeserializeRequests(string? raw) =>
+        ParseRequests(raw);
 
     private static string SerializeRequest(PendingTrainingShowcaseRequest request) =>
         JsonSerializer.Serialize(request, JsonOpts);

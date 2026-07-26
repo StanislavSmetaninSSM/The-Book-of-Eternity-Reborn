@@ -315,6 +315,53 @@ public sealed class ValidationSourceGuardTests
     }
 
     [Fact]
+    public void MortalAcceptedTurnAuthority_MustKeepPromotionAndRequestOwnedDisplaysBounded()
+    {
+        var block19 = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Rules",
+            "Block_19.txt"));
+        var daemon = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "game_master_daemon.ps1"));
+        var trainingExample = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "E_CLI_Training_Showcases.txt"));
+        var authoritySource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "MortalActorAcceptedTurnAuthority.cs"));
+        var continuitySource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.ActorMaterializationContinuity.cs"));
+
+        Assert.All(new[] { block19, daemon }, source =>
+        {
+            Assert.Contains("teacherProfile", source, StringComparison.Ordinal);
+            Assert.Contains("tradeState", source, StringComparison.Ordinal);
+            Assert.Contains("activeSkills", source, StringComparison.Ordinal);
+            Assert.Contains("currentActivity", source, StringComparison.Ordinal);
+            Assert.Contains("tradeInventory", source, StringComparison.Ordinal);
+            Assert.Contains("trainingShowcase", source, StringComparison.Ordinal);
+        });
+        Assert.Contains("only exact identity/display fields", daemon, StringComparison.Ordinal);
+        Assert.Contains("sourceActorId", trainingExample, StringComparison.Ordinal);
+        Assert.Contains("sourceActorName", trainingExample, StringComparison.Ordinal);
+        Assert.Contains("AuthorizesDedicatedTrainingPatch", authoritySource, StringComparison.Ordinal);
+        Assert.Contains("UpdateReceiptsProperty", authoritySource, StringComparison.Ordinal);
+        Assert.Contains(
+            "actor_materialization_duplicate_effective_identity",
+            continuitySource,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalNpcAuthoringSources_MustUseOnlyExplicitSettingCharacteristicAuthority()
     {
         var block19 = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Rules", "Block_19.txt"));

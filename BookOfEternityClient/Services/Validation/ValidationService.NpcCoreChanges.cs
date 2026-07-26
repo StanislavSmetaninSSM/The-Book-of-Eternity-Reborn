@@ -118,12 +118,21 @@ public partial class ValidationService
         }
 
         var authority = await NpcCoreChangesContract.ReadAuthorityAsync(_fs);
+        var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
+            currentRoot,
+            await ReadValidatedPendingTurnSnapshotFileAsync(
+                lookup.Manifest,
+                NpcTradeRequestState.PendingRequestPath),
+            await ReadValidatedPendingTurnSnapshotFileAsync(
+                lookup.Manifest,
+                TrainingRequestState.PendingRequestPath));
         var evaluation = NpcCoreChangesContract.Evaluate(
             currentRoot,
             preTurnRoot,
             authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
-            detectDirectMutations: true);
+            detectDirectMutations: true,
+            acceptedTurnAuthority);
         issues.AddRange(evaluation.Issues);
         return issues;
     }

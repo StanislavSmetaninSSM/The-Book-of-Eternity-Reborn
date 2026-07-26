@@ -124,10 +124,7 @@ internal static class NpcCoreChangesContract
     private static readonly HashSet<string> ActorFieldsWithDedicatedContinuityValidation =
         new(StringComparer.Ordinal)
         {
-            "inventory",
-            "tradeInventory",
-            "trainingShowcase",
-            ActorMaterializationContract.PropertyName
+            "inventory"
         };
 
     internal sealed record Authority(
@@ -156,14 +153,21 @@ internal static class NpcCoreChangesContract
         JsonObject preTurnRoot,
         Authority authority,
         Func<JsonArray, string, IReadOnlyList<ValidationIssue>> validateProductionFateCards,
-        bool detectDirectMutations)
+        bool detectDirectMutations,
+        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority = null)
     {
         var evaluation = new Evaluation { HasCommand = HasCommandLikeProperty(currentRoot) };
         var currentActors = CollectActors(currentRoot);
         var preTurnActors = CollectActors(preTurnRoot);
 
         if (detectDirectMutations)
-            ValidateDirectCoreMutationBypass(currentActors, preTurnActors, evaluation.Issues);
+        {
+            ValidateDirectCoreMutationBypass(
+                currentActors,
+                preTurnActors,
+                acceptedTurnAuthority,
+                evaluation.Issues);
+        }
 
         evaluation.Issues.AddRange(ValidateCommandTopLevelNames(currentRoot));
         if (evaluation.Issues.Any(issue => issue.Code == "npc_core_changes_invalid_top_level_name"))
@@ -497,6 +501,7 @@ internal static class NpcCoreChangesContract
     private static void ValidateDirectCoreMutationBypass(
         IReadOnlyList<ActorReference> currentActors,
         IReadOnlyList<ActorReference> preTurnActors,
+        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority,
         List<ValidationIssue> issues)
     {
         foreach (var preTurnGroup in preTurnActors
@@ -508,7 +513,12 @@ internal static class NpcCoreChangesContract
                          string.Equals(actor.NpcId, preTurnGroup.Key, StringComparison.Ordinal)))
             {
                 var baseline = ResolveDirectMutationBaseline(current, candidates);
-                if (baseline == null || !HasDirectActorMutation(baseline.Actor, current.Actor))
+                if (baseline == null ||
+                    !HasDirectActorMutation(
+                        baseline.Actor,
+                        current.Actor,
+                        current.NpcId!,
+                        acceptedTurnAuthority))
                     continue;
 
                 issues.Add(Error(
@@ -539,8 +549,22 @@ internal static class NpcCoreChangesContract
         return preTurnCandidates.Count > 0 ? preTurnCandidates[0] : null;
     }
 
-    private static bool HasDirectActorMutation(JsonObject baseline, JsonObject current)
+    private static bool HasDirectActorMutation(
+        JsonObject baseline,
+        JsonObject current,
+        string actorId,
+        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority)
     {
+        var promotionFields =
+            MortalActorLegacyPromotionAuthority.ResolveAuthorizedFields(baseline, current);
+        if (acceptedTurnAuthority?.AuthorizesDedicatedTrainingPatch(
+                actorId,
+                baseline,
+                current) == true)
+        {
+            return false;
+        }
+
         foreach (var field in baseline.Select(property => property.Key)
                      .Concat(current.Select(property => property.Key))
                      .Distinct(StringComparer.Ordinal))
@@ -548,8 +572,18 @@ internal static class NpcCoreChangesContract
             if (ActorFieldsWithDedicatedContinuityValidation.Contains(field))
                 continue;
 
-            if (!JsonNode.DeepEquals(baseline[field], current[field]))
-                return true;
+            if (JsonNode.DeepEquals(baseline[field], current[field]))
+                continue;
+            if (promotionFields.Contains(field))
+                continue;
+            if (acceptedTurnAuthority?.AuthorizesFieldMutation(
+                    actorId,
+                    baseline,
+                    current,
+                    field) == true)
+                continue;
+
+            return true;
         }
 
         return false;

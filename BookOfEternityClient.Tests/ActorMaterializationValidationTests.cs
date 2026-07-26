@@ -2419,6 +2419,40 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnContinuity_DuplicateSameTurnEffectiveMortalIdentity_IsRejected()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string effectiveActorId = "same_turn_duplicate_actor";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            effectiveActorId,
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var actors = currentRoot["NPCsInScene"]!.AsArray();
+        var first = actors[0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            first,
+            effectiveActorId,
+            "mat_same_turn_duplicate_first");
+        var second = first.DeepClone().AsObject();
+        second["name"] = "Вторая несовместимая запись";
+        second["materialization"]!["materializationId"] =
+            "mat_same_turn_duplicate_second";
+        actors.Add(second);
+
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            currentRoot.ToJsonString(),
+            """{ "UpdateNPCs": [], "NPCsInScene": [] }""");
+
+        var issues = await InvokeAcceptedTurnContinuityAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_duplicate_effective_identity" &&
+            issue.Actor == $"mortal_npc:{effectiveActorId}");
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnContinuity_DeletedMortalAuthorityFile_IsRejected()
     {
         const string path = "game_state/npcs/npc_core.json";
