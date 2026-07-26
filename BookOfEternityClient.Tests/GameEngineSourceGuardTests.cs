@@ -190,8 +190,8 @@ public sealed class GameEngineSourceGuardTests
         var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
 
         Assert.Contains("\"canonicalShapeHints\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"factionCoreMinimum\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"factionCustomStateMinimum\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"factionCoreMinimum\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"factionCustomStateMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"npcCoreMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"currentLocationMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"worldMapMinimum\"", method, StringComparison.Ordinal);
@@ -200,10 +200,6 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"codexEntryMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"sourceFilePrefixRequired\"", method, StringComparison.Ordinal);
         Assert.Contains("current_world/", method, StringComparison.Ordinal);
-        Assert.Contains("\"canonicalFactionCustomStateRequiredFields\"", method, StringComparison.Ordinal);
-        Assert.Contains("currentValue", method, StringComparison.Ordinal);
-        Assert.Contains("progressionRule", method, StringComparison.Ordinal);
-        Assert.Contains("thresholds", method, StringComparison.Ordinal);
         Assert.Contains("\"allowedThreatMotivations\"", method, StringComparison.Ordinal);
         Assert.Contains("Domination", method, StringComparison.Ordinal);
         Assert.Contains("Preservation", method, StringComparison.Ordinal);
@@ -218,14 +214,12 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"allowedEquipmentSlots\"", method, StringComparison.Ordinal);
         Assert.Contains("MainHand", method, StringComparison.Ordinal);
         Assert.Contains("Accessory1", method, StringComparison.Ordinal);
-        Assert.Contains("\"allowedFactionControlTypes\"", method, StringComparison.Ordinal);
-        Assert.Contains("Military", method, StringComparison.Ordinal);
-        Assert.Contains("Covert", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"allowedFactionControlTypes\"", method, StringComparison.Ordinal);
         Assert.Contains("\"repairPreventionChecklist\"", method, StringComparison.Ordinal);
         Assert.Contains("bootstrap_codex_missing_current_world_entries", method, StringComparison.Ordinal);
         Assert.Contains("npc_contract_unknown_top_level_key", method, StringComparison.Ordinal);
         Assert.Contains("player character", method, StringComparison.Ordinal);
-        Assert.Contains("world_map_link_preview_missing_difficulty_profile", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("world_map_link_preview_missing_difficulty_profile", method, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -266,6 +260,8 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"playerProgression\"", method, StringComparison.Ordinal);
         Assert.Contains("\"carryingRules\"", method, StringComparison.Ordinal);
         Assert.Contains("\"factionMechanics\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"canonicalPath\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"values\"", method, StringComparison.Ordinal);
         Assert.DoesNotContain("BuildStarterCompetency", method, StringComparison.Ordinal);
         Assert.Contains("\"worldEventRequirements\"", method, StringComparison.Ordinal);
         Assert.Contains("world_event_{idSuffix}_opening", method, StringComparison.Ordinal);
@@ -273,6 +269,10 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"game_state/player/skills_active.json\"", method, StringComparison.Ordinal);
         Assert.Contains("\"game_state/player/skills_passive.json\"", method, StringComparison.Ordinal);
         Assert.Contains("\"game_state/player/skill_mastery.json\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"primaryFactionId\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"startingObjectiveId\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"difficultyProfilesRequired\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"startingQuestIfNarrated\"", method, StringComparison.Ordinal);
     }
 
     [Fact]

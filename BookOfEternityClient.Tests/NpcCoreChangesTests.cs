@@ -1142,13 +1142,7 @@ public sealed class NpcCoreChangesTests : IDisposable
     private async Task<NpcCoreFixture> WriteFixtureAsync(
         Action<JsonObject, JsonObject, JsonObject>? mutateCurrent = null)
     {
-        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
-            incarnationNumber: 1,
-            turnNumber: 8,
-            characterDescription: "Архивист пограничного города.",
-            worldDescription: "Город архивов и сигнальных башен.",
-            startingCircumstances: "Наставник предлагает первый урок чтения печатей.",
-            createdAtUtc: DateTimeOffset.Parse("2026-07-22T00:00:00Z"));
+        var files = CreateNpcCoreWorldFixtureFiles();
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
 
@@ -1194,6 +1188,103 @@ public sealed class NpcCoreChangesTests : IDisposable
         await _fs.WriteFileAtomicAsync(NpcCorePath, currentRoot.ToJsonString());
         await WriteSnapshotAsync(fixture);
         return fixture;
+    }
+
+    private static IReadOnlyDictionary<string, JsonObject> CreateNpcCoreWorldFixtureFiles()
+    {
+        const string locationId = "loc_npc_contract_fixture";
+        const string locationName = "Contract test location";
+        const string factionId = "faction_npc_contract_fixture";
+        const string factionName = "Contract test faction";
+        JsonObject Coordinates(int x, int y, int z) => new()
+        {
+            ["x"] = x,
+            ["y"] = y,
+            ["z"] = z
+        };
+        JsonObject DifficultyProfile() => new()
+        {
+            ["combat"] = 1,
+            ["environment"] = 1,
+            ["social"] = 1,
+            ["exploration"] = 1,
+            ["summary"] = "Explicit test-only difficulty authority."
+        };
+
+        return new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["game_state/world/current_location.json"] = new JsonObject
+            {
+                ["locationId"] = locationId,
+                ["name"] = locationName,
+                ["displayName"] = locationName,
+                ["region"] = "Contract test region",
+                ["type"] = "test_location",
+                ["locationType"] = "test_location",
+                ["description"] = "An explicit world fixture for NPC core contract tests.",
+                ["coordinates"] = Coordinates(0, 0, 0),
+                ["knownExits"] = new JsonArray(),
+                ["adjacencyMap"] = new JsonArray(),
+                ["factionControl"] = new JsonArray(),
+                ["locationStorages"] = new JsonArray(),
+                ["activeThreats"] = new JsonArray(),
+                ["internalDifficultyProfile"] = DifficultyProfile(),
+                ["externalDifficultyProfile"] = DifficultyProfile(),
+                ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
+            },
+            ["game_state/world/world_map.json"] = new JsonObject
+            {
+                ["newLocations"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["locationId"] = locationId,
+                        ["name"] = locationName,
+                        ["displayName"] = locationName,
+                        ["region"] = "Contract test region",
+                        ["type"] = "test_location",
+                        ["locationType"] = "test_location",
+                        ["description"] = "An explicit world-map fixture for NPC core contract tests.",
+                        ["coordinates"] = Coordinates(0, 0, 0),
+                        ["exits"] = new JsonArray(),
+                        ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
+                    }
+                },
+                ["newLinks"] = new JsonArray(),
+                ["worldMapUpdates"] = new JsonObject
+                {
+                    ["currentLocationId"] = locationId,
+                    ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
+                }
+            },
+            ["game_state/factions/faction_core.json"] = new JsonObject
+            {
+                ["factions"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["name"] = factionName,
+                        ["displayName"] = factionName,
+                        ["description"] = "An explicit faction fixture for NPC core contract tests.",
+                        ["type"] = "test_faction",
+                        ["status"] = "active",
+                        ["visibility"] = "known",
+                        ["ranks"] = new JsonObject
+                        {
+                            ["entries"] = new JsonArray(),
+                            ["hierarchySummary"] = "No fixture ranks."
+                        },
+                        ["rankBranches"] = new JsonArray(),
+                        ["relations"] = new JsonArray(),
+                        ["controlledTerritories"] = new JsonArray(),
+                        ["projects"] = new JsonArray(),
+                        ["chronicle"] = new JsonArray(),
+                        ["customStates"] = new JsonArray()
+                    }
+                }
+            }
+        };
     }
 
     private async Task WriteSnapshotAsync(NpcCoreFixture fixture)

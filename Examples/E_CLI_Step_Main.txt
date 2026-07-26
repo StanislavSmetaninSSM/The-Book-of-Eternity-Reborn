@@ -728,22 +728,22 @@ Mortal bootstrap materialization repair packet:
     "item durability: starting inventory items must write durability as a percentage string such as 100%, never a bare number such as 100.",
     "item journalEntries: journalEntries[] entries must be non-empty strings, not objects.",
     "current_location_coordinates_mismatch: if currentLocationData uses a known locationId from the bootstrap scaffold, copy that locationId coordinates exactly from canonicalCoordinateAuthority.",
-    "location shape: current_location and durable world_map locations must include knownExits, adjacencyMap, factionControl, locationStorages, activeThreats, internalDifficultyProfile, and externalDifficultyProfile.",
-    "world_map_new_link_missing_required_fields: every map link preview must include targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
-    "mortal_bootstrap_placeholder_player_visible_name: accepted Mortal bootstrap must replace client scaffold labels such as Стартовая сцена, Силы стартовой сцены, Путь из стартовой сцены, Ближайший выход из стартовой сцены, or Наставник стартовой сцены with concrete in-world names.",
+    "location shape: the neutral bootstrap current_location and world_map retain identity, coordinates, knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats; location type, traversal, safety, and difficulty are setting-owned and must not be invented by the client.",
+    "world_map_new_link_missing_required_fields: every neutral map link preview must include targetLocationId, targetName, and targetCoordinates; setting-owned link type, travel mode, and difficulty are optional until explicitly materialized by the GM.",
+    "mortal_bootstrap_placeholder_player_visible_name: accepted Mortal bootstrap must replace client scaffold labels in identity/title fields such as Стартовая сцена, Путь из стартовой сцены, or Ближайший выход из стартовой сцены with concrete in-world names; ordinary description/history prose may quote those phrases.",
     "mortal_bootstrap_requested_teacher_missing: every structuredGmAuthority.actorCapabilities declaration with capability=canTeach and required=true needs a usable NPC teacherProfile with canTeach=true and non-empty skills[].",
-    "mortal_bootstrap_requested_trade_missing: every structuredGmAuthority.actorCapabilities declaration with capability=canTrade and required=true needs a usable NPC tradeState with canTrade=true and a valid or resolvable merchantProfile.",
+    "mortal_bootstrap_requested_trade_missing: every structuredGmAuthority.actorCapabilities declaration with capability=canTrade and required=true needs a usable NPC tradeState with canTrade=true and an explicit valid merchantProfile; NPC prose never resolves it.",
     "mortal_bootstrap_explicit_competency_missing: every structuredGmAuthority.playerSkills entry must remain in the matching active/passive skill state, with active mastery preserved.",
     "mortal_bootstrap_world_event_missing: worldEventRequirements.requiredEventIds must remain in world_events.json so /новости_мира is useful after bootstrap.",
     "canonical_faction_custom_state_missing_required_fields: faction state must keep required identity, rank/reputation/progression, and sidecar-compatible fields."
   ],
   "steps": [
     "Read game_state/control/mortal_bootstrap_scaffold.json first and use it as the client-authored checklist for this first Mortal World materialization.",
-    "Treat scaffold labels as temporary internal anchors only: before Complete-BoeTurn, rename the visible current location, map locations, exits/links, and factions to concrete world-specific names derived from playerAuthoredStart. Do not leave Стартовая сцена, Силы стартовой сцены, Путь из стартовой сцены, or Ближайший выход из стартовой сцены in accepted state.",
+    "Treat identity/title scaffold labels as temporary internal anchors only: before Complete-BoeTurn, rename the visible current location, map locations, and exits/links to concrete world-specific names chosen through setting-aware GM judgment. Do not leave Стартовая сцена, Путь из стартовой сцены, or Ближайший выход из стартовой сцены in accepted identity fields; the same phrase inside ordinary narrative prose is allowed.",
     "When editing current_location.json or world_map.json, use mortal_bootstrap_scaffold.json canonicalCoordinateAuthority: the same locationId must have identical coordinates in current_location, world_map newLocations, adjacencyMap targetCoordinates, and newLinks targetCoordinates.",
-    "Patch current_location.json and every durable world_map location object with required arrays/collections and internal/external difficulty profiles before completing repair.",
-    "Patch every new map link preview with targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
-    "Patch the current-world bootstrap files in place: current location/map, current-world codex/lore, starting inventory/readable document details, factions, and NPC bootstrap surfaces listed in targetFiles.",
+    "Preserve current_location.json and durable world_map identity, arrays, coordinates, and navigation links. Do not add type, traversal, safety, biome, or difficulty merely to complete the bootstrap.",
+    "Patch every neutral map link preview with targetLocationId, targetName, and targetCoordinates. Add setting-owned traversal or difficulty only when the GM explicitly materializes it for the current world.",
+    "Patch only current-world bootstrap files named in targetFiles. Keep empty faction and quest collections empty unless the GM explicitly creates complete world-specific entities.",
     "Do not reuse previous-life lore/current_world files; every current-world codex or lore entry must describe the life being created now.",
     "Do not derive a teacher from words in playerAuthoredStart. If the GM makes a setting-aware decision that a teacher is present, record a required canTeach entry in structuredGmAuthority.actorCapabilities and materialize the NPC as a complete first-materialization NPCsInScene or UpdateNPCs object with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[].",
     "Do not derive a merchant from words in playerAuthoredStart. If the GM makes a setting-aware decision that trade is available, record a required canTrade entry in structuredGmAuthority.actorCapabilities and materialize the NPC as a complete first-materialization NPCsInScene or UpdateNPCs object with tradeState.canTrade=true, merchantProfile, relationshipLevel, summary, and matching currentLocationId.",
@@ -765,15 +765,62 @@ If the turn request says `MORTAL BOOTSTRAP BASELINE`, do not start from large ex
 - `game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md`
 - `game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json`
 
-`playerAuthoredStart` is narrative context only. The client baseline contains no inferred or default skills, items, NPCs, capabilities, money, progression, carrying values, faction resources, influence/control, or universal power-profile axes; `game_state/player/experience.json` starts as an empty structural object. When the GM makes a setting-aware decision, record it in the matching `structuredGmAuthority.playerProgression`, `carryingRules`, `factionMechanics`, `playerSkills`, `inventoryItems`, `actorCapabilities`, or `resources` section and write matching complete canonical state. Every GM-created NPC requires the complete first-materialization envelope.
+`playerAuthoredStart` is narrative context only. The client baseline contains no inferred or default skills, items, NPCs, capabilities, money, progression, carrying values, factions, quests, location type/traversal/difficulty, faction resources, influence/control, or universal power-profile axes; `game_state/player/experience.json` starts as an empty structural object. Every `structuredGmAuthority.playerProgression`, `carryingRules`, or `factionMechanics` entry must include the exact `canonicalPath` and a non-empty `values` object that repeats every authorized canonical value. `{}`, reason-only records, unrelated paths, and prose do not grant authority. Record other setting-aware decisions in `playerSkills`, `inventoryItems`, `actorCapabilities`, or `resources` and write matching complete canonical state. Every GM-created NPC requires the complete first-materialization envelope.
+
+Worked domain-bound authority example (the values below belong only to this orbital-colony example and are not universal defaults):
+
+```json
+{
+  "structuredGmAuthority": {
+    "playerProgression": [
+      {
+        "canonicalPath": "game_state/player/experience.json",
+        "values": {
+          "playerLevel": 1,
+          "level": 1,
+          "currentExperience": 0,
+          "experience": 0,
+          "totalExperience": 0,
+          "experienceForNextLevel": 240,
+          "experienceGained": 0
+        },
+        "reason": "Навигационная служба использует 240-очковый первый интервал подготовки."
+      }
+    ],
+    "carryingRules": [
+      {
+        "canonicalPath": "game_state/inventory/items.json",
+        "values": {
+          "maxWeight": 35,
+          "totalWeight": 0
+        },
+        "reason": "В этой колонии нагрузка учитывается в килограммах."
+      }
+    ],
+    "factionMechanics": [
+      {
+        "canonicalPath": "game_state/factions/faction_core.json",
+        "factionId": "faction_orbital_navigation",
+        "values": {
+          "influence": 12,
+          "powerProfile": {
+            "orbitalReach": 4
+          }
+        },
+        "reason": "ГМ явно выбрал модель влияния навигационной службы."
+      }
+    ]
+  }
+}
+```
 
 When `structuredGmAuthority.playerSkills[]` is non-empty, preserve every matching active/passive skill and the active-skill mastery entry. When `worldEventRequirements` exists, preserve its required opening event in `game_state/world/world_events.json`; explicit GM mechanics and `/новости_мира` must not disappear into prose-only narration.
 
 Every structured actor characteristic must be a finite JSON number. Values such as `1e9999`, `NaN`, infinity, quoted numbers, booleans, nulls, arrays, or objects are not valid repairs; preserve valid numeric characteristics and replace only the exact malformed coordinate named by validation.
 
-When `mortal_bootstrap_scaffold.json.structuredGmAuthority.actorCapabilities` explicitly contains required `canTrade`, at least one scene NPC must be usable by `/торговля_нпс`: write `tradeState.canTrade=true`, a valid `merchantProfile`, `relationshipLevel`, `summary`, and a current location matching the scene. `class: Торговец` or `progressionType: static_trade_npc` alone does not open the local trade panel.
+When `mortal_bootstrap_scaffold.json.structuredGmAuthority.actorCapabilities` explicitly contains required `canTrade`, at least one scene NPC must be usable by `/торговля_нпс`: write `tradeState.canTrade=true`, an explicit valid `merchantProfile`, `relationshipLevel`, `summary`, and a current location matching the scene. Role, occupation, class, progression type, name, and description never infer a merchant profile.
 
-The scaffold baseline may contain temporary labels such as `Стартовая сцена`, `Силы стартовой сцены`, `Путь из стартовой сцены`, or `Ближайший выход из стартовой сцены`. These labels are never acceptable player-visible names after the first Mortal bootstrap is accepted. Before `Complete-BoeTurn`, rename the durable current location, map locations, exits/links, and factions to concrete in-world names based on `playerAuthoredStart.characterDescription`, `playerAuthoredStart.worldDescription`, and `playerAuthoredStart.startingCircumstances`. Do not delete the entities and do not expect the client to invent names.
+The neutral scaffold baseline may contain temporary location/navigation identity labels such as `Стартовая сцена`, `Путь из стартовой сцены`, or `Ближайший выход из стартовой сцены`. These labels are never acceptable in player-visible identity/title fields after the first Mortal bootstrap is accepted. Before `Complete-BoeTurn`, rename the durable current location, map locations, and exits/links through setting-aware GM judgment. The validator does not reject the same words when they appear naturally inside a description, history, summary, or other narrative prose.
 
 Minimum successful output for the first Mortal scene:
 - `output/narrative_response.json`: the first playable Mortal scene text with a timestamp.

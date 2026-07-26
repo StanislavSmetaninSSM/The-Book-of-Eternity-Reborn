@@ -541,47 +541,17 @@ public sealed partial class NpcTradeService
         _ => "Неизвестный"
     };
 
-    internal static string? ResolveMerchantProfileCode(string? explicitProfile, params string?[] sourceParts)
-    {
-        if (TryNormalizeMerchantProfileCode(explicitProfile, out var normalizedProfile))
-            return normalizedProfile;
-
-        var source = string.Join(" ", sourceParts.Where(s => !string.IsNullOrWhiteSpace(s))).ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(source))
-            return null;
-
-        if (ContainsAny(source, "контраб", "тенев", "подполь", "smugg", "black market", "fence", "fixer"))
-            return "IllicitGoods";
-        if (ContainsAny(source, "инжен", "техн", "mechanic", "engineer", "technician", "cyber", "электр", "diagnostic", "repair depot"))
-            return "TechnicalGoods";
-        if (ContainsAny(source, "антиквар", "artifact", "curio", "collect", "relic", "диковин", "коллекц"))
-            return "ArtifactsAndCurios";
-        if (ContainsAny(source, "декор", "роскош", "luxury", "jewel", "atelier", "tailor", "furniture", "gallery", "salon", "ювел"))
-            return "LuxuryAndDecor";
-        if (ContainsAny(source, "книг", "архив", "scribe", "scholar", "library", "bookseller", "media", "editor", "printer", "document", "учен", "редак"))
-            return "KnowledgeAndMedia";
-        if (ContainsAny(source, "аптек", "зель", "alchem", "grocer", "provision", "baker", "cook", "innkeep", "food", "bar", "cafe", "consum"))
-            return "Consumables";
-        if (ContainsAny(source, "оруж", "брон", "gear", "equipment", "armorer", "smith", "кузнец", "outfit", "quartermaster", "патрон"))
-            return "Equipment";
-        if (ContainsAny(source, "ремес", "materials", "supplier", "hardware", "workshop", "реагент", "мастерск", "склад", "fabric", "textile"))
-            return "CraftingSupplies";
-        if (ContainsAny(source, "торгов", "merchant", "trader", "vendor", "shopkeep", "market", "лавк"))
-            return "GeneralGoods";
-
-        return null;
-    }
+    internal static string? ResolveMerchantProfileCode(string? explicitProfile) =>
+        TryNormalizeMerchantProfileCode(explicitProfile, out var normalizedProfile)
+            ? normalizedProfile
+            : null;
 
     internal static NpcTradeAvailability EvaluateTradeAvailability(JsonElement npc, string currentLocationId, string currentLocationName)
     {
         var merchantProfile = ResolveMerchantProfileCode(
             npc.TryGetProperty("tradeState", out var tradeState) && tradeState.ValueKind == JsonValueKind.Object
                 ? GetFirstNonEmptyString(tradeState, "merchantProfile")
-                : null,
-            GetFirstNonEmptyString(npc, "role"),
-            GetFirstNonEmptyString(npc, "occupation"),
-            GetFirstNonEmptyString(npc, "class"),
-            GetFirstNonEmptyString(npc, "name"));
+                : null);
 
         return BuildTradeAvailability(
             merchantProfile,
@@ -598,11 +568,7 @@ public sealed partial class NpcTradeService
     {
         var tradeState = npc["tradeState"] as JsonObject;
         var merchantProfile = ResolveMerchantProfileCode(
-            GetNodeString(tradeState?["merchantProfile"]),
-            GetNodeString(npc["role"]),
-            GetNodeString(npc["occupation"]),
-            GetNodeString(npc["class"]),
-            GetNodeString(npc["name"]));
+            GetNodeString(tradeState?["merchantProfile"]));
 
         return BuildTradeAvailability(
             merchantProfile,
@@ -1087,11 +1053,7 @@ public sealed partial class NpcTradeService
     {
         var tradeState = npc["tradeState"] as JsonObject;
         var profileCode = ResolveMerchantProfileCode(
-            GetNodeString(tradeState?["merchantProfile"]),
-            GetNodeString(npc["role"]),
-            GetNodeString(npc["occupation"]),
-            GetNodeString(npc["class"]),
-            GetNodeString(npc["name"]));
+            GetNodeString(tradeState?["merchantProfile"]));
         return !string.IsNullOrWhiteSpace(profileCode) && MerchantProfiles.TryGetValue(profileCode, out var profile)
             ? profile
             : null;

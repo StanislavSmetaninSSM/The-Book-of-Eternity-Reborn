@@ -139,23 +139,25 @@ the production skill validator.
 
 The client creates only neutral structural containers before the first Mortal
 turn. `game_state/player/experience.json` is empty; inventory contains empty
-`items` and `equipment` without carrying totals; faction resources and current
-location control arrays are empty; the temporary faction identity has no level,
-XP threshold, reputation, influence, resources, or universal `powerProfile`.
+`items` and `equipment` without carrying totals; faction and quest collections,
+faction resources, and current-location control arrays are empty. No temporary
+faction identity, faction chronicle, or quest/objective is generated.
 
 The scaffold exposes empty `structuredGmAuthority.playerProgression`,
 `carryingRules`, and `factionMechanics` arrays. If the accepted first turn adds
 any progression tuple, carrying result, faction resource/control value, or
 faction progression/power field, the matching authority array contains at least
-one non-empty domain-specific GM decision whose structured fields bind the exact
-values being introduced. An empty object, an unrelated object, or prose alone
-does not grant authority. Missing or unbound authority is a blocking, focused
-validation issue. The bootstrap also leaves location type, biome, traversal
-difficulty, faction chronicle, quests, and objectives absent until the GM
-materializes them. This allows arbitrary Mortal settings while preventing the
-client from silently imposing fantasy vocabulary, indoor/walkable assumptions,
-a fixed XP threshold, a universal carrying formula, or a fixed faction power
-model.
+one non-empty domain-specific GM decision. Each decision names the exact
+`canonicalPath` and contains a non-empty `values` object whose members and values
+match the mechanics introduced at that path; a faction decision additionally
+names the exact `factionId`. An empty object, a reason-only record, an unrelated
+path, or prose alone does not grant authority. Missing or unbound authority is a
+blocking, focused validation issue. The bootstrap also leaves location type,
+biome, traversal, safety, difficulty, faction chronicle, quests, and objectives
+absent until the GM materializes them. This allows arbitrary Mortal settings
+while preventing the client from silently imposing fantasy vocabulary,
+indoor/walkable assumptions, a fixed XP threshold, a universal carrying formula,
+or a fixed faction power model.
 
 ## Afterlife actor contract
 

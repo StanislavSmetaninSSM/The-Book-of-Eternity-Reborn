@@ -6458,12 +6458,7 @@ public partial class ValidationService
         if (npc.TryGetProperty("tradeState", out var tradeState) && tradeState.ValueKind == JsonValueKind.Object)
             merchantProfile = GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "";
 
-        return NpcTradeService.ResolveMerchantProfileCode(
-            merchantProfile,
-            GetFirstNonEmptyString(npc, "role"),
-            GetFirstNonEmptyString(npc, "occupation"),
-            GetFirstNonEmptyString(npc, "class"),
-            GetFirstNonEmptyString(npc, "name")) ?? string.Empty;
+        return NpcTradeService.ResolveMerchantProfileCode(merchantProfile) ?? string.Empty;
     }
 
     private void ValidateNpcTradeState(JsonElement npc, string npcContext, List<ValidationIssue> issues)
@@ -6525,6 +6520,19 @@ public partial class ValidationService
         var normalizedMerchantProfile = ResolveNormalizedMerchantProfileForValidation(npc);
 
         ValidateNpcBuybackInventory(npc, npcContext, normalizedMerchantProfile, issues);
+
+        if (hasCanTradeTrue && string.IsNullOrWhiteSpace(normalizedMerchantProfile))
+        {
+            issues.Add(new ValidationIssue(
+                $"{npcContext}.tradeState.merchantProfile",
+                IssueSeverity.Error,
+                "tradeState.canTrade = true требует явно заданный валидный merchantProfile",
+                code: "npc_trade_requires_valid_profile",
+                section: "tradeInventory",
+                expected: "explicit valid merchant profile",
+                actual: hasTradeState ? GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "missing" : "missing",
+                repairHint: "Выбери merchantProfile как явное структурированное решение ГМа. Не выводи торговый профиль из имени, роли, класса, профессии или описания NPC."));
+        }
 
         if (!npc.TryGetProperty("tradeInventory", out var tradeInventory))
             return;
@@ -6618,18 +6626,6 @@ public partial class ValidationService
                 expected: "6-20 trade slots",
                 actual: items.GetArrayLength().ToString(),
                 repairHint: "Сохраняй в tradeInventory.items от 6 до 20 торговых слотов по canonical NPC trade contract."));
-        }
-
-        if (hasCanTradeTrue && string.IsNullOrWhiteSpace(normalizedMerchantProfile))
-        {
-            issues.Add(new ValidationIssue(
-                $"{npcContext}.tradeState.merchantProfile",
-                IssueSeverity.Error,
-                "tradeState.canTrade = true требует валидный merchantProfile или разрешимый торговый archetype NPC",
-                code: "npc_trade_requires_valid_profile",
-                section: "tradeInventory",
-                expected: "valid merchant profile",
-                actual: hasTradeState ? GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "missing" : "missing"));
         }
 
         if (!hasCanTradeTrue)
