@@ -5087,13 +5087,13 @@ public sealed class GmTurnHelperContractTests
             Encoding.UTF8);
     }
 
-    private static string? ReadSessionRelativeFile(string session, string relativePath)
+    private static byte[]? ReadSessionRelativeFile(string session, string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
         var fullPath = Path.Combine(session, relativePath.Replace('/', Path.DirectorySeparatorChar));
-        return File.Exists(fullPath) ? File.ReadAllText(fullPath, Encoding.UTF8) : null;
+        return File.Exists(fullPath) ? File.ReadAllBytes(fullPath) : null;
     }
 
     private static readonly JsonSerializerOptions PendingTurnSnapshotManifestJsonOptions = new()
