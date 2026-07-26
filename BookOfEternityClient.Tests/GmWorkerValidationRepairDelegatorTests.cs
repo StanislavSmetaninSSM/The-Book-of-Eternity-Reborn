@@ -282,8 +282,7 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             {
                 BeforeTaskReservationAsync = async () =>
                 {
-                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
-                    fs.RotateSessionGeneration(lease);
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
                 }
             };
             var delegator = CreateDelegator(fs, poolHooks: hooks);
@@ -328,8 +327,7 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             {
                 BeforeTaskDispatchAuditAsync = async () =>
                 {
-                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
-                    fs.RotateSessionGeneration(lease);
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
                 }
             };
             var delegator = CreateDelegator(fs, poolHooks: hooks);
@@ -361,10 +359,8 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
             string capturedGeneration;
             await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
-            {
                 capturedGeneration = fs.GetOrCreateSessionGeneration(lease);
-                fs.RotateSessionGeneration(lease);
-            }
+            await SessionReplacementTestHarness.RotateGenerationAsync(fs);
 
             var workerLaunchMarker = Path.Combine(root, "caller-stale-task-worker-launched");
             var profile = BuildProfile(
@@ -404,8 +400,7 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             {
                 BeforeWorkerReleaseAsync = async () =>
                 {
-                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
-                    fs.RotateSessionGeneration(lease);
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
                 }
             };
             var delegator = CreateDelegator(fs, poolHooks: hooks);
@@ -537,8 +532,7 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             {
                 BeforeReadyPublicationAsync = async () =>
                 {
-                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
-                    fs.RotateSessionGeneration(lease);
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
                 }
             };
             var delegator = CreateDelegator(fs, delegatorHooks: hooks);

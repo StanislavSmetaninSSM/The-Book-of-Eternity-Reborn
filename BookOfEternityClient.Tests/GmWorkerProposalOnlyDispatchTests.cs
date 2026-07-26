@@ -144,8 +144,7 @@ public sealed class GmWorkerProposalOnlyDispatchTests
             {
                 BeforeTaskReservationAsync = async () =>
                 {
-                    await using var lease = await fs.AcquireCanonicalWriteLeaseAsync();
-                    fs.RotateSessionGeneration(lease);
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
                 }
             };
             var service = CreateService(fs, hooks);

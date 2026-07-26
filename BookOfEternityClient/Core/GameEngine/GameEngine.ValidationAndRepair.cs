@@ -4935,11 +4935,15 @@ public partial class GameEngine
     {
         try
         {
-            var audit = new GmWorkerAuditLog(_fs);
+            var workerFileSystem = _validator.CanonicalFileSystem;
+            var audit = new GmWorkerAuditLog(workerFileSystem);
             var delegator = new GmWorkerValidationRepairDelegator(
-                _fs,
-                new GmWorkerBridgePool(_fs, new GmWorkerProposalStore(_fs), audit),
-                new GmWorkerApplyGate(_fs, _validator, audit),
+                workerFileSystem,
+                new GmWorkerBridgePool(
+                    workerFileSystem,
+                    new GmWorkerProposalStore(workerFileSystem),
+                    audit),
+                new GmWorkerApplyGate(_validator, audit),
                 audit);
             var result = await delegator.TryRunAsync(
                 _stateManager.Settings.GmWorkerBridgeProfiles,

@@ -195,6 +195,9 @@ public sealed class GmWorkerBridgePool
         WorkerTaskPacket task,
         CancellationToken cancellationToken = default)
     {
+        var taskSnapshot = CaptureTaskSnapshot(task);
+        task = taskSnapshot.Task;
+        var taskBytes = taskSnapshot.Bytes;
         var statusHistory = new List<WorkerBridgeStatus>();
         WorkerBridgeStatus Track(
             WorkerBridgeState state,
@@ -245,7 +248,11 @@ public sealed class GmWorkerBridgePool
         var proposalInboxPath = GetProposalInboxPath(task.TaskId);
         if (_hooks?.BeforeTaskReservationAsync != null)
             await _hooks.BeforeTaskReservationAsync();
-        var reservation = await TryReserveTaskAsync(task, taskPath, proposalInboxPath);
+        var reservation = await TryReserveTaskAsync(
+            task,
+            taskBytes,
+            taskPath,
+            proposalInboxPath);
         if (!reservation.Reserved)
         {
             var message = reservation.Error ??
@@ -260,7 +267,7 @@ public sealed class GmWorkerBridgePool
         }
 
         task = reservation.Task!;
-        var taskBytes = reservation.TaskBytes!;
+        taskBytes = reservation.TaskBytes!;
 
         if (_hooks?.BeforeTaskDispatchAuditAsync != null)
             await _hooks.BeforeTaskDispatchAuditAsync();
@@ -878,6 +885,7 @@ public sealed class GmWorkerBridgePool
 
     private async Task<WorkerTaskReservation> TryReserveTaskAsync(
         WorkerTaskPacket task,
+        byte[] taskBytes,
         string taskPath,
         string proposalInboxPath)
     {
@@ -892,7 +900,6 @@ public sealed class GmWorkerBridgePool
                 "Worker task context does not belong to the current game session generation.");
         }
 
-        var taskBytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(task));
         var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(taskBytes)!);
         if (reservedTask == null)
             throw new InvalidDataException("Serialized worker task reservation could not be read back.");
@@ -906,6 +913,16 @@ public sealed class GmWorkerBridgePool
             ? new WorkerTaskReservation(true, reservedTask, taskBytes, null, false)
             : WorkerTaskReservation.Reject(
                 $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
+    }
+
+    private static WorkerTaskSnapshot CaptureTaskSnapshot(WorkerTaskPacket task)
+    {
+        ArgumentNullException.ThrowIfNull(task);
+        var bytes = EncodeUtf8WithPreamble(GmWorkerJson.Serialize(task));
+        var snapshot = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(bytes)!);
+        if (snapshot == null)
+            throw new InvalidDataException("Serialized worker task snapshot could not be read back.");
+        return new WorkerTaskSnapshot(snapshot, bytes);
     }
 
     private async Task<WorkerSlotAcquisition> AcquireWorkerSlotAsync(
@@ -1061,6 +1078,8 @@ public sealed class GmWorkerBridgePool
         internal static WorkerTaskReservation Reject(string error) => new(false, null, null, error, false);
         internal static WorkerTaskReservation SessionWasReplaced(string error) => new(false, null, null, error, true);
     }
+
+    private sealed record WorkerTaskSnapshot(WorkerTaskPacket Task, byte[] Bytes);
 
     private async Task<(bool Attempted, WorkerProposal? Proposal, GmWorkerTaskRunResult Result)> TryReadAndStoreExistingProposalAsync(
         WorkerBridgeProfile profile,

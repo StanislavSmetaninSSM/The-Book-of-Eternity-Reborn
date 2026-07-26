@@ -715,6 +715,26 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("GmWorkerJson.Deserialize<WorkerTaskPacket>", applyGate, StringComparison.Ordinal);
         Assert.Contains("GmWorkerJson.Deserialize<WorkerTaskPacket>", bridgePool, StringComparison.Ordinal);
         Assert.Contains("ApplyReservedAsync", delegator, StringComparison.Ordinal);
+        Assert.DoesNotContain("run.BoundTask ?? task", delegator, StringComparison.Ordinal);
+        Assert.Contains("run.BoundTask == null", delegator, StringComparison.Ordinal);
+        Assert.Contains(
+            "var workerFileSystem = _validator.CanonicalFileSystem;",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "new GmWorkerAuditLog(workerFileSystem)",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "new GmWorkerBridgePool(",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "new GmWorkerProposalStore(workerFileSystem)",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("new GmWorkerAuditLog(_fs)", gameEngine, StringComparison.Ordinal);
+        Assert.DoesNotContain("new GmWorkerBridgePool(_fs", gameEngine, StringComparison.Ordinal);
         Assert.Contains("GmWorkerValidationRepairOutcome.SessionReplaced", delegator, StringComparison.Ordinal);
         Assert.Contains("GmWorkerSessionReplacedException", gameEngine, StringComparison.Ordinal);
         Assert.Contains("AppendFileAtomicIfCurrentSessionAsync", gameEngine, StringComparison.Ordinal);

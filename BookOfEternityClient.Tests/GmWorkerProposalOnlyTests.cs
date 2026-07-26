@@ -378,8 +378,14 @@ public sealed class GmWorkerProposalOnlyTests
                 ]
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+            await fs.WriteFileAtomicAsync(
+                GmWorkerBridgePool.GetTaskPacketPath(task.TaskId),
+                GmWorkerJson.Serialize(task));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await gate.ApplyReservedAsync(
+                proposal,
+                profile,
+                task.SessionGeneration);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>

@@ -1080,6 +1080,66 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_CallerMutationBeforeSlotWaitCannotChangeDurableReservation()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string weatherPath = "game_state/world/weather.json";
+            const string secretPath = "game_state/world/secret.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(weatherPath, "{\"weather\":true}");
+            await fs.WriteFileAtomicAsync(secretPath, "{\"secret\":true}");
+            var mutableAllowedPaths = new[] { weatherPath };
+            var scriptPath = Path.Combine(root, "fake-worker-pre-reservation-mutation.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 0");
+            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand =
+                    $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+                {
+                    TaskId = "worker_task_pre_reservation_mutation",
+                    TimeoutSeconds = profile.TimeoutSeconds,
+                    ContextFiles =
+                    [
+                        new WorkerFileReference { Path = weatherPath },
+                        new WorkerFileReference { Path = secretPath }
+                    ],
+                    AllowedProposalPaths = mutableAllowedPaths
+                });
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                new GmWorkerBridgePoolHooks
+                {
+                    BeforeWorkerSlotWaitAsync = () =>
+                    {
+                        mutableAllowedPaths[0] = secretPath;
+                        return Task.CompletedTask;
+                    }
+                });
+
+            _ = await pool.RunTaskAsync(profile, task);
+
+            var reservedJson = await fs.ReadFileAsync(
+                GmWorkerBridgePool.GetTaskPacketPath(task.TaskId));
+            var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(reservedJson!);
+            Assert.NotNull(reservedTask);
+            Assert.Equal([weatherPath], reservedTask.AllowedProposalPaths);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_CallerMutationAfterReservationCannotExpandAuthoritativeTaskScope()
     {
         var root = CreateTempRoot();

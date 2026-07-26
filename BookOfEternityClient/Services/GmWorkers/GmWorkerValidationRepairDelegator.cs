@@ -168,7 +168,19 @@ public sealed class GmWorkerValidationRepairDelegator
             };
         }
 
-        var boundTask = run.BoundTask ?? task;
+        if (run.BoundTask == null)
+        {
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.WorkerFailed,
+                Task = task,
+                RunResult = run,
+                FallbackReason =
+                    "Worker completed without an exact durable task reservation binding."
+            };
+        }
+
+        var boundTask = run.BoundTask;
         var decision = await _applyGate.ApplyReservedAsync(
             run.Proposal,
             routing.Profile,
