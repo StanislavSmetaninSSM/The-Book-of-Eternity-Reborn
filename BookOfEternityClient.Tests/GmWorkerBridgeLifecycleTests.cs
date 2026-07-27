@@ -1080,6 +1080,66 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_CallerMutationBeforeSlotWaitCannotChangeDurableReservation()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string weatherPath = "game_state/world/weather.json";
+            const string secretPath = "game_state/world/secret.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(weatherPath, "{\"weather\":true}");
+            await fs.WriteFileAtomicAsync(secretPath, "{\"secret\":true}");
+            var mutableAllowedPaths = new[] { weatherPath };
+            var scriptPath = Path.Combine(root, "fake-worker-pre-reservation-mutation.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 0");
+            var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
+            {
+                LaunchCommand =
+                    $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 10
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+                {
+                    TaskId = "worker_task_pre_reservation_mutation",
+                    TimeoutSeconds = profile.TimeoutSeconds,
+                    ContextFiles =
+                    [
+                        new WorkerFileReference { Path = weatherPath },
+                        new WorkerFileReference { Path = secretPath }
+                    ],
+                    AllowedProposalPaths = mutableAllowedPaths
+                });
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                new GmWorkerBridgePoolHooks
+                {
+                    BeforeWorkerSlotWaitAsync = () =>
+                    {
+                        mutableAllowedPaths[0] = secretPath;
+                        return Task.CompletedTask;
+                    }
+                });
+
+            _ = await pool.RunTaskAsync(profile, task);
+
+            var reservedJson = await fs.ReadFileAsync(
+                GmWorkerBridgePool.GetTaskPacketPath(task.TaskId));
+            var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(reservedJson!);
+            Assert.NotNull(reservedTask);
+            Assert.Equal([weatherPath], reservedTask.AllowedProposalPaths);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_CallerMutationAfterReservationCannotExpandAuthoritativeTaskScope()
     {
         var root = CreateTempRoot();
@@ -2632,6 +2692,535 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
+    public async Task RunTaskAsync_CancellationBeforeContextStagingWinsOverContextMismatch()
+    {
+        var root = CreateTempRoot();
+        var releaseDispatchAudit = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                TimeoutSeconds = 60
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_cancel_before_context_staging",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var dispatchAuditReached = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTaskDispatchAuditAsync = async () =>
+                {
+                    dispatchAuditReached.TrySetResult();
+                    await releaseDispatchAudit.Task;
+                }
+            };
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+            using var cancellation = new CancellationTokenSource();
+
+            var runTask = pool.RunTaskAsync(profile, task, cancellation.Token);
+            await dispatchAuditReached.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            cancellation.Cancel();
+            await fs.WriteFileAtomicAsync(task.ContextFiles[0].Path, "{\"changed\":true}");
+            releaseDispatchAudit.TrySetResult();
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                () => runTask.WaitAsync(TimeSpan.FromSeconds(10)));
+        }
+        finally
+        {
+            releaseDispatchAudit.TrySetResult();
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_TimeoutBeforeContextStagingWinsOverContextMismatch()
+    {
+        var root = CreateTempRoot();
+        var releaseDispatchAudit = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                TimeoutSeconds = 60
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_timeout_before_context_staging",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var dispatchAuditReached = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            using var timeoutSignal = new CancellationTokenSource();
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                TimeoutSignal = timeoutSignal.Token,
+                BeforeTaskDispatchAuditAsync = async () =>
+                {
+                    dispatchAuditReached.TrySetResult();
+                    await releaseDispatchAudit.Task;
+                }
+            };
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+
+            var runTask = pool.RunTaskAsync(profile, task);
+            await dispatchAuditReached.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            timeoutSignal.Cancel();
+            await fs.WriteFileAtomicAsync(task.ContextFiles[0].Path, "{\"changed\":true}");
+            releaseDispatchAudit.TrySetResult();
+
+            var result = await runTask.WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
+            Assert.Contains("timed out", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            releaseDispatchAudit.TrySetResult();
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_GenericFaultAfterTimeoutPreservesTimedOutOutcome()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-timeout-before-attach.ps1");
+            await File.WriteAllTextAsync(scriptPath, "Start-Sleep -Seconds 30");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_generic_fault_after_timeout",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            using var timeoutSignal = new CancellationTokenSource();
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                TimeoutSignal = timeoutSignal.Token,
+                BeforeProcessTreeAttachAsync = () =>
+                {
+                    timeoutSignal.Cancel();
+                    return Task.FromException(
+                        new InvalidOperationException("Synthetic fault after timeout."));
+                }
+            };
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+
+            var result = await pool.RunTaskAsync(profile, task).WaitAsync(TimeSpan.FromSeconds(15));
+
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
+            Assert.Contains("timed out", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_TimeoutAfterWorkerExitWinsOverRejectedHandoff()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-empty-handoff.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 0");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_timeout_before_rejected_handoff",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            using var timeoutSignal = new CancellationTokenSource();
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                TimeoutSignal = timeoutSignal.Token
+            };
+            var processTreeFactory = new TerminalSignalProcessTreeFactory(timeoutSignal.Cancel);
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks,
+                processTreeFactory);
+
+            var result = await pool.RunTaskAsync(profile, task).WaitAsync(TimeSpan.FromSeconds(15));
+
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
+            Assert.Null(result.Proposal);
+            Assert.Contains("timed out", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_CancellationAfterWorkerExitWinsOverRejectedHandoff()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var scriptPath = Path.Combine(root, "fake-worker-empty-handoff-canceled.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 0");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_cancel_before_rejected_handoff",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            using var cancellation = new CancellationTokenSource();
+            var processTreeFactory = new TerminalSignalProcessTreeFactory(cancellation.Cancel);
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks: null,
+                processTreeFactory);
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                () => pool.RunTaskAsync(profile, task, cancellation.Token)
+                    .WaitAsync(TimeSpan.FromSeconds(15)));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_TerminalAuditFailureDoesNotReplaceTimedOutOutcome()
+    {
+        var root = CreateTempRoot();
+        var auditMutationCount = 0;
+        try
+        {
+            var fs = CreateFileSystem(
+                root,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = path =>
+                    {
+                        if (string.Equals(
+                                path,
+                                GmWorkerAuditLog.AuditLogPath,
+                                StringComparison.OrdinalIgnoreCase) &&
+                            Interlocked.Increment(ref auditMutationCount) > 1)
+                        {
+                            throw new InvalidOperationException("Synthetic terminal audit failure.");
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                });
+            var scriptPath = Path.Combine(root, "fake-worker-terminal-audit-timeout.ps1");
+            await File.WriteAllTextAsync(scriptPath, "Start-Sleep -Seconds 30");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 1
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_terminal_audit_failure",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs));
+
+            var result = await pool.RunTaskAsync(profile, task).WaitAsync(TimeSpan.FromSeconds(15));
+
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
+            Assert.Contains("timed out", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_TimeoutDuringFailureAuditWinsOverFailedOutcome()
+    {
+        var root = CreateTempRoot();
+        var auditMutationCount = 0;
+        using var timeoutSignal = new CancellationTokenSource();
+        try
+        {
+            var fs = CreateFileSystem(
+                root,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = path =>
+                    {
+                        if (string.Equals(
+                                path,
+                                GmWorkerAuditLog.AuditLogPath,
+                                StringComparison.OrdinalIgnoreCase) &&
+                            Interlocked.Increment(ref auditMutationCount) == 2)
+                        {
+                            timeoutSignal.Cancel();
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                });
+            var scriptPath = Path.Combine(root, "fake-worker-timeout-during-failure-audit.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 7");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_timeout_during_failure_audit",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                TimeoutSignal = timeoutSignal.Token
+            };
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+
+            var result = await pool.RunTaskAsync(profile, task).WaitAsync(TimeSpan.FromSeconds(15));
+
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
+            Assert.Contains("timed out", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_CancellationDuringRejectedProposalAuditWinsOverFailure()
+    {
+        var root = CreateTempRoot();
+        var auditMutationCount = 0;
+        using var cancellation = new CancellationTokenSource();
+        try
+        {
+            var fs = CreateFileSystem(
+                root,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = path =>
+                    {
+                        if (string.Equals(
+                                path,
+                                GmWorkerAuditLog.AuditLogPath,
+                                StringComparison.OrdinalIgnoreCase) &&
+                            Interlocked.Increment(ref auditMutationCount) == 2)
+                        {
+                            cancellation.Cancel();
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                });
+            var scriptPath = Path.Combine(root, "fake-worker-cancel-during-rejected-audit.ps1");
+            await File.WriteAllTextAsync(
+                scriptPath,
+                "Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Value '{bad json' -Encoding UTF8 -NoNewline");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60
+            };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_cancel_during_rejected_audit",
+                    TimeoutSeconds = profile.TimeoutSeconds
+                });
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs));
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                () => pool.RunTaskAsync(profile, task, cancellation.Token)
+                    .WaitAsync(TimeSpan.FromSeconds(15)));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_CancellationAtDuplicateReservationDecisionWinsOverRejection()
+    {
+        var root = CreateTempRoot();
+        using var cancellation = new CancellationTokenSource();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_cancel_duplicate_reservation",
+                    TimeoutSeconds = 60
+                });
+            var taskPath = GmWorkerBridgePool.GetTaskPacketPath(task.TaskId);
+            const string priorTaskJson = "{\"prior\":true}";
+            await fs.WriteFileAtomicAsync(taskPath, priorTaskJson);
+            var scriptPath = Path.Combine(root, "fake-worker-cancel-duplicate-reservation.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 0");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60
+            };
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTerminalFailureDecisionAsync = () =>
+                {
+                    cancellation.Cancel();
+                    return Task.CompletedTask;
+                }
+            };
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                () => pool.RunTaskAsync(profile, task, cancellation.Token));
+
+            Assert.Equal(priorTaskJson, await fs.ReadFileAsync(taskPath));
+            Assert.Empty(await new GmWorkerAuditLog(fs).ReadEventsAsync());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_TimeoutAtStaleDispatchDecisionWinsOverSessionReplacement()
+    {
+        var root = CreateTempRoot();
+        using var timeoutSignal = new CancellationTokenSource();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_task_timeout_stale_dispatch",
+                    TimeoutSeconds = 60
+                });
+            var scriptPath = Path.Combine(root, "fake-worker-timeout-stale-dispatch.ps1");
+            await File.WriteAllTextAsync(scriptPath, "exit 0");
+            var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+            {
+                LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                TimeoutSeconds = 60
+            };
+            var terminalDecisionReached = false;
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                TimeoutSignal = timeoutSignal.Token,
+                BeforeTaskDispatchAuditAsync = async () =>
+                {
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+                },
+                BeforeTerminalFailureDecisionAsync = () =>
+                {
+                    terminalDecisionReached = true;
+                    timeoutSignal.Cancel();
+                    return Task.CompletedTask;
+                }
+            };
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                new GmWorkerAuditLog(fs),
+                hooks);
+
+            var result = await pool.RunTaskAsync(profile, task);
+
+            Assert.True(terminalDecisionReached);
+            Assert.True(result.TimedOut);
+            Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
+            Assert.False(result.SessionReplaced);
+            Assert.Contains("timed out", result.Status.LastError!, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RunTaskAsync_ExistingTaskId_RejectsWithoutOverwritingPriorDispatchArtifact()
     {
         var root = CreateTempRoot();
@@ -2712,9 +3301,15 @@ public sealed class GmWorkerBridgeLifecycleTests
         }
     }
 
-    private static FileSystemManager CreateFileSystem(string root)
+    private static FileSystemManager CreateFileSystem(
+        string root,
+        FileSystemManagerHooks? hooks = null)
     {
-        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        var fs = new FileSystemManager(
+            root,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
         fs.EnsureDirectoryStructure();
         Directory.CreateDirectory(Path.GetDirectoryName(fs.SessionGenerationPath)!);
         File.WriteAllText(
@@ -2954,6 +3549,36 @@ public sealed class GmWorkerBridgeLifecycleTests
             }
 
             await process.WaitForExitAsync(CancellationToken.None);
+        }
+    }
+
+    private sealed class TerminalSignalProcessTreeFactory(Action signal) : IGmWorkerProcessTreeFactory
+    {
+        public IGmWorkerProcessTree Attach(Process process) =>
+            new TerminalSignalProcessTree(process, signal);
+    }
+
+    private sealed class TerminalSignalProcessTree(
+        Process process,
+        Action signal) : IGmWorkerProcessTree
+    {
+        private readonly object _sync = new();
+        private Task? _stopTask;
+
+        public Task StopAndWaitAsync()
+        {
+            lock (_sync)
+                return _stopTask ??= StopCoreAsync();
+        }
+
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+
+        private async Task StopCoreAsync()
+        {
+            if (!process.HasExited)
+                process.Kill(entireProcessTree: true);
+            await process.WaitForExitAsync(CancellationToken.None);
+            signal();
         }
     }
 

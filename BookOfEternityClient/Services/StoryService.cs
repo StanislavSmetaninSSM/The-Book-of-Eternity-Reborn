@@ -57,6 +57,10 @@ public class StoryService
             var line = JsonSerializer.Serialize(entry, JsonOpts);
             await _fs.AppendFileAtomicAsync(path, line + "\n");
         }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to append story entry for turn {Turn}", turnNumber);
@@ -83,6 +87,10 @@ public class StoryService
 
             var line = JsonSerializer.Serialize(entry, JsonOpts);
             await _fs.AppendFileAtomicAsync(path, line + "\n");
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

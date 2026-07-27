@@ -18,6 +18,7 @@ internal sealed record ActorMaterializationEvidence(
 internal static class ActorMaterializationContract
 {
     internal const string PropertyName = "materialization";
+    internal const string SystemActorType = "system_actor";
     internal const int SchemaVersion = 1;
 
     private static readonly HashSet<string> EnvelopeFields = new(StringComparer.Ordinal)
@@ -75,7 +76,7 @@ internal static class ActorMaterializationContract
         "shining_faction_head",
         "radiant_actor",
         "saref_agent",
-        "system_actor",
+        SystemActorType,
         "custom_afterlife_actor"
     };
 
@@ -878,11 +879,11 @@ internal static class ActorMaterializationContract
 
     internal static bool HasUsableAfterlifeMentorAuthority(JsonElement profile)
     {
-        var hasShowcase = HasStructuredMentorShowcase(profile);
+        var hasShowcase = HasPositiveMentorShowcase(profile);
         var hasRootAuthority = HasTrueBoolean(profile, "canTeachPlayer");
         var hasMentorProfileAuthority = HasNestedTrueBoolean(profile, "mentorProfile", "canTeach");
         var hasTeachableSpecialArt = HasArrayObjectMatching(profile, "specialArts", specialArt =>
-            IsStructuredSpecialArt(specialArt) && HasTrueBoolean(specialArt, "canTeachPlayer"));
+            IsPositiveSpecialArt(specialArt) && HasTrueBoolean(specialArt, "canTeachPlayer"));
         var hasDeclaredAuthority = hasShowcase ||
                                    hasRootAuthority ||
                                    hasMentorProfileAuthority ||
@@ -890,7 +891,8 @@ internal static class ActorMaterializationContract
         var hasTeachableContent = hasShowcase ||
                                   hasTeachableSpecialArt ||
                                   ((hasRootAuthority || hasMentorProfileAuthority) &&
-                                   (HasStructuredStandardArt(profile) || HasStructuredSpecialArt(profile)));
+                                   (HasPositiveNumericObjectValue(profile, "standardArts") ||
+                                    HasArrayObjectMatching(profile, "specialArts", IsPositiveSpecialArt)));
         return hasDeclaredAuthority && hasTeachableContent;
     }
 
@@ -1021,7 +1023,13 @@ internal static class ActorMaterializationContract
         tier.TryGetInt32(out var tierValue) &&
         tierValue >= 0;
 
-    private static bool HasStructuredMentorShowcase(JsonElement profile)
+    private static bool IsPositiveSpecialArt(JsonElement specialArt) =>
+        IsStructuredSpecialArt(specialArt) &&
+        specialArt.TryGetProperty("tier", out var tier) &&
+        tier.TryGetInt32(out var tierValue) &&
+        tierValue > 0;
+
+    private static bool HasPositiveMentorShowcase(JsonElement profile)
     {
         if (!profile.TryGetProperty("mentorTrainingShowcase", out var showcase) ||
             showcase.ValueKind != JsonValueKind.Object)
@@ -1033,7 +1041,11 @@ internal static class ActorMaterializationContract
             !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "offerId")) &&
             !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "targetKind")) &&
             !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "targetId")) &&
-            !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "targetName", "displayName", "name")));
+            !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(offer, "targetName", "displayName", "name")) &&
+            offer.TryGetProperty("sourceCap", out var sourceCap) &&
+            sourceCap.ValueKind == JsonValueKind.Number &&
+            sourceCap.TryGetInt32(out var sourceCapValue) &&
+            sourceCapValue > 0);
     }
 
     private static bool HasObjectArrayEntries(JsonElement value, string propertyName) =>

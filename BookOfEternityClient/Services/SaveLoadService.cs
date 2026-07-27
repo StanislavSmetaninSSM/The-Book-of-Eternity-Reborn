@@ -256,10 +256,9 @@ public class SaveLoadService
                 await _hooks.BeforeLoadLeaseAcquisitionAsync();
             await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
             var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
-            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
-                             CanonicalWritePurpose.SessionReplacement))
+            await using (var writeLease =
+                         await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease))
             {
-                _fs.RotateSessionGeneration(writeLease);
                 _fs.BeginLoadTransaction(writeLease, transactionId);
                 try
                 {
@@ -270,6 +269,7 @@ public class SaveLoadService
                     }
 
                     _fs.MoveLoadDirectory(transactionPaths.StagingSessionPath, liveSessionPath);
+                    _fs.ActivateLoadTransactionSession(writeLease, transactionId);
                     _fs.EnsureDirectoryStructure(writeLease);
                     await _stateManager.RefreshGameStateAsync(writeLease);
                     await _stateManager.LoadSettingsAsync();

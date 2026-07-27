@@ -103,12 +103,41 @@ internal static class SessionOperationContext
                 state,
                 fileSystem,
                 operation,
-                writeLease);
+                writeLease,
+                verifyAfterOperation: writeLease != null);
         }
         finally
         {
-            state.Close();
-            CurrentFrame.Value = previous;
+            if (writeLease != null)
+            {
+                state.Close();
+                CurrentFrame.Value = previous;
+            }
+            else
+            {
+                state.BeginClosing();
+                try
+                {
+                    await fileSystem.InvokeSessionOperationClosingHookAsync();
+                    await using var finalizationLease = await fileSystem.AcquireCanonicalWriteLeaseAsync(
+                        CanonicalWritePurpose.SessionFinalization);
+                    if (!fileSystem.IsCurrentSessionGeneration(
+                            finalizationLease,
+                            state.ExpectedGeneration))
+                    {
+                        throw state.MarkReplaced(
+                            actualGeneration: null,
+                            "The game session was replaced before the bound operation could close.");
+                    }
+
+                    state.Close();
+                }
+                finally
+                {
+                    state.Close();
+                    CurrentFrame.Value = previous;
+                }
+            }
         }
     }
 
@@ -149,16 +178,17 @@ internal static class SessionOperationContext
         BindingState state,
         FileSystemManager fileSystem,
         Func<Task<T>> operation,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        bool verifyAfterOperation = true)
     {
         state.ThrowIfInvalid();
         try
         {
             var result = await operation();
-            if (writeLease == null)
-                await fileSystem.VerifyCurrentSessionOperationAsync();
-            else
+            if (verifyAfterOperation && writeLease != null)
                 fileSystem.VerifyCurrentSessionOperation(writeLease);
+            else if (verifyAfterOperation)
+                await fileSystem.VerifyCurrentSessionOperationAsync();
             state.ThrowIfInvalid();
             return result;
         }
@@ -205,6 +235,7 @@ internal static class SessionOperationContext
     private sealed class BindingState
     {
         private readonly object _sync = new();
+        private bool _closing;
         private bool _closed;
         private bool _replaced;
         private string? _actualGeneration;
@@ -236,11 +267,17 @@ internal static class SessionOperationContext
         {
             lock (_sync)
             {
-                if (!_replaced && !_closed)
+                if (!_replaced && !_closing && !_closed)
                     return;
 
                 throw BuildException(innerException);
             }
+        }
+
+        internal void BeginClosing()
+        {
+            lock (_sync)
+                _closing = true;
         }
 
         internal void Close()

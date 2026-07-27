@@ -19,6 +19,7 @@ public sealed class ValidationSourceGuardTests
             {
                 Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "ActorMaterializationContract.cs"),
                 Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "MortalBootstrapStateBuilder.cs"),
+                Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "NpcTradeService.cs"),
                 Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "SystemGuardianLibraryService.cs"),
                 Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "CanonicalStateNormalizer", "CanonicalStateNormalizer.Npcs.cs"),
                 Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "CanonicalStateNormalizer", "CanonicalStateNormalizer.AfterlifeEntityProfiles.cs"),
@@ -63,6 +64,128 @@ public sealed class ValidationSourceGuardTests
         Assert.DoesNotMatch(proseAuthorityRead, source);
         Assert.DoesNotMatch(proseStringMatching, source);
         Assert.DoesNotMatch(genreKeywordTable, source);
+
+        var tradeSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "NpcTradeService.cs"));
+        var npcValidationSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.NpcWorldAndMeta.cs"));
+        var trainingValidationSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.Training.cs"));
+        Assert.DoesNotContain("sourceParts", tradeSource, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "GetFirstNonEmptyString(npc, \"occupation\")",
+            npcValidationSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "GetTrainingString(npc, \"occupation\")",
+            trainingValidationSource,
+            StringComparison.Ordinal);
+
+        var normalizedProfileStart = npcValidationSource.IndexOf(
+            "private static string ResolveNormalizedMerchantProfileForValidation(",
+            StringComparison.Ordinal);
+        var tradeValidationStart = npcValidationSource.IndexOf(
+            "private void ValidateNpcTradeState(",
+            normalizedProfileStart,
+            StringComparison.Ordinal);
+        Assert.True(
+            normalizedProfileStart >= 0 && tradeValidationStart > normalizedProfileStart,
+            "Expected the explicit merchant-profile normalization helper.");
+        var normalizedProfileSource =
+            npcValidationSource[normalizedProfileStart..tradeValidationStart];
+
+        var usableTradeStart = trainingValidationSource.IndexOf(
+            "private static bool HasUsableMortalTradeState(",
+            StringComparison.Ordinal);
+        var capabilityStart = trainingValidationSource.IndexOf(
+            "private static bool MortalBootstrapScaffoldRequestsTraining(",
+            usableTradeStart,
+            StringComparison.Ordinal);
+        Assert.True(
+            usableTradeStart >= 0 && capabilityStart > usableTradeStart,
+            "Expected the Mortal bootstrap trade-state helper.");
+        var usableTradeSource = trainingValidationSource[usableTradeStart..capabilityStart];
+
+        foreach (var proseField in new[] { "\"role\"", "\"occupation\"", "\"class\"", "\"name\"", "\"description\"" })
+        {
+            Assert.DoesNotContain(proseField, normalizedProfileSource, StringComparison.Ordinal);
+            Assert.DoesNotContain(proseField, usableTradeSource, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void NpcCoreChangesTests_MustNotUseProductionMortalBootstrapAsFixtureAuthority()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient.Tests",
+            "NpcCoreChangesTests.cs"));
+
+        Assert.DoesNotContain("MortalBootstrapStateBuilder", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalBootstrapAuthorityGuidance_MustRequireCanonicalPathAndExactValues()
+    {
+        var sources = new[]
+        {
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "BookOfEternityClient",
+                "Core",
+                "GameEngine",
+                "GameEngine.TurnLifecycle.cs"),
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "BookOfEternityClient",
+                "Launcher",
+                "Generate_CLI_Launch_Script.ps1"),
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "BookOfEternityClient",
+                "Launcher",
+                "CLI_Launch_Script.md"),
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "Examples",
+                "E_CLI_Step_Main.txt"),
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "TaskGuides",
+                "CLI_Step_Main.txt"),
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "CLI_Agent_Daemon_Specification.md"),
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "BookOfEternityClient",
+                "game_master_daemon.ps1"),
+            Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "BookOfEternityClient",
+                "Core",
+                "GameEngine",
+                "GameEngine.ValidationAndRepair.cs")
+        };
+
+        Assert.All(sources, path =>
+        {
+            var source = File.ReadAllText(path);
+            Assert.Contains("canonicalPath", source, StringComparison.Ordinal);
+            Assert.Contains("values", source, StringComparison.Ordinal);
+            Assert.DoesNotContain("valid or resolvable merchantProfile", source, StringComparison.OrdinalIgnoreCase);
+        });
     }
 
     [Fact]
@@ -189,6 +312,53 @@ public sealed class ValidationSourceGuardTests
         var mismatchExample = example[start..end];
         Assert.Contains("NPCCoreChanges", mismatchExample, StringComparison.Ordinal);
         Assert.DoesNotContain("UpdateNPCs", mismatchExample, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalAcceptedTurnAuthority_MustKeepPromotionAndRequestOwnedDisplaysBounded()
+    {
+        var block19 = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Rules",
+            "Block_19.txt"));
+        var daemon = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "game_master_daemon.ps1"));
+        var trainingExample = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "E_CLI_Training_Showcases.txt"));
+        var authoritySource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "MortalActorAcceptedTurnAuthority.cs"));
+        var continuitySource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.ActorMaterializationContinuity.cs"));
+
+        Assert.All(new[] { block19, daemon }, source =>
+        {
+            Assert.Contains("teacherProfile", source, StringComparison.Ordinal);
+            Assert.Contains("tradeState", source, StringComparison.Ordinal);
+            Assert.Contains("activeSkills", source, StringComparison.Ordinal);
+            Assert.Contains("currentActivity", source, StringComparison.Ordinal);
+            Assert.Contains("tradeInventory", source, StringComparison.Ordinal);
+            Assert.Contains("trainingShowcase", source, StringComparison.Ordinal);
+        });
+        Assert.Contains("only exact identity/display fields", daemon, StringComparison.Ordinal);
+        Assert.Contains("sourceActorId", trainingExample, StringComparison.Ordinal);
+        Assert.Contains("sourceActorName", trainingExample, StringComparison.Ordinal);
+        Assert.Contains("AuthorizesDedicatedTrainingPatch", authoritySource, StringComparison.Ordinal);
+        Assert.Contains("UpdateReceiptsProperty", authoritySource, StringComparison.Ordinal);
+        Assert.Contains(
+            "actor_materialization_duplicate_effective_identity",
+            continuitySource,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -424,7 +594,7 @@ public sealed class ValidationSourceGuardTests
         Assert.Contains("PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(", source, StringComparison.Ordinal);
         Assert.Contains("static snapshotManifest => snapshotManifest.RollbackBaselineFiles", source, StringComparison.Ordinal);
         Assert.Contains("static snapshotManifest => snapshotManifest.RollbackBackups", source, StringComparison.Ordinal);
-        Assert.Contains("ReadRelativeFileFromWorkspace", source, StringComparison.Ordinal);
+        Assert.Contains("ReadRelativeFileBytesFromWorkspace", source, StringComparison.Ordinal);
         Assert.DoesNotContain("PendingTurnSnapshotAuthority.TryValidateManifestAgainstAuthority(", source, StringComparison.Ordinal);
     }
 
@@ -439,7 +609,10 @@ public sealed class ValidationSourceGuardTests
             "GameEngine.SessionAndSnapshots.cs");
         var source = File.ReadAllText(path);
 
-        Assert.Contains("if (_fs.FileExists(SarefMainStoryState.StatePath))", source, StringComparison.Ordinal);
+        Assert.Contains(
+            "if (_fs.FileExists(writeLease, SarefMainStoryState.StatePath))",
+            source,
+            StringComparison.Ordinal);
         Assert.Contains("TryAddOptionalCanonicalBaselineSnapshotAsync(", source, StringComparison.Ordinal);
         Assert.Contains("SarefMainStoryState.StatePath))", source, StringComparison.Ordinal);
     }
@@ -465,12 +638,12 @@ public sealed class ValidationSourceGuardTests
         Assert.Contains("PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(", normalizerSource, StringComparison.Ordinal);
         Assert.Contains("JsonObject? GachaBaseResult", normalizerSource, StringComparison.Ordinal);
         Assert.Contains("static snapshotManifest => snapshotManifest.RollbackBackups", normalizerSource, StringComparison.Ordinal);
-        Assert.Contains("relativePath => ReadRelativeFileFromWorkspace(fs, relativePath)", normalizerSource, StringComparison.Ordinal);
+        Assert.Contains("relativePath => ReadRelativeFileBytesFromWorkspace(fs, relativePath)", normalizerSource, StringComparison.Ordinal);
 
         Assert.Contains("PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(", guardianPowerSource, StringComparison.Ordinal);
         Assert.Contains("JsonObject? GachaBaseResult", guardianPowerSource, StringComparison.Ordinal);
         Assert.Contains("static snapshotManifest => snapshotManifest.RollbackBackups", guardianPowerSource, StringComparison.Ordinal);
-        Assert.Contains("relativePath => ReadRelativeFileFromWorkspace(fs, relativePath)", guardianPowerSource, StringComparison.Ordinal);
+        Assert.Contains("relativePath => ReadRelativeFileBytesFromWorkspace(fs, relativePath)", guardianPowerSource, StringComparison.Ordinal);
     }
 
     [Fact]

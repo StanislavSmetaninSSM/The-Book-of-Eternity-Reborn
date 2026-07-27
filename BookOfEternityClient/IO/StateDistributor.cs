@@ -161,17 +161,26 @@ public class StateDistributor
 
         if (!string.IsNullOrWhiteSpace(existingJson))
         {
-            using var doc = JsonDocument.Parse(existingJson);
-            existingData = new Dictionary<string, JsonElement>();
-            if (doc.RootElement.ValueKind == JsonValueKind.Object)
+            try
             {
-                foreach (var prop in doc.RootElement.EnumerateObject())
-                    existingData[prop.Name] = prop.Value.Clone();
+                using var doc = JsonDocument.Parse(existingJson);
+                existingData = new Dictionary<string, JsonElement>();
+                if (doc.RootElement.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var prop in doc.RootElement.EnumerateObject())
+                        existingData[prop.Name] = prop.Value.Clone();
+                }
+                // If root is array, wrap it under a data key to preserve it
+                else if (doc.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    existingData["_previousData"] = doc.RootElement.Clone();
+                }
             }
-            // If root is array, wrap it under a data key to preserve it
-            else if (doc.RootElement.ValueKind == JsonValueKind.Array)
+            catch (JsonException ex)
             {
-                existingData["_previousData"] = doc.RootElement.Clone();
+                throw new InvalidDataException(
+                    $"Canonical state file '{relativePath}' contains malformed JSON and cannot be merged safely.",
+                    ex);
             }
         }
         else

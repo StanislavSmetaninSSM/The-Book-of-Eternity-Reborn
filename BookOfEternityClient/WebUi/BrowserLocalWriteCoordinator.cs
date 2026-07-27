@@ -28,6 +28,19 @@ public sealed class BrowserLocalWriteCoordinator
             // Lease acquisition performs fail-closed recovery of interrupted browser writes.
         }
 
+        return await BuildStatusCoreAsync();
+    }
+
+    internal async Task<BrowserLocalWriteStatus> BuildStatusAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        _fs.VerifyCurrentSessionOperation(writeLease);
+        return await BuildStatusCoreAsync();
+    }
+
+    private async Task<BrowserLocalWriteStatus> BuildStatusCoreAsync()
+    {
         var pending = BrowserPendingTurnInspector.Build(_fs);
         var lockSnapshot = await _lockService.InspectAsync(LockLease);
         var lockStatus = BrowserLocalUiLockStatus.FromSnapshot(lockSnapshot);
@@ -384,14 +397,10 @@ public sealed class BrowserLocalWriteCoordinator
         {
             try
             {
-                var content = await ExplorerLocalTurnRollbackArtifacts.ReadBrowserWriteBeforeImageAsync(
+                await ExplorerLocalTurnRollbackArtifacts.RestoreBrowserWriteEntryAsync(
                     _fs,
                     writeLease,
                     backup);
-                if (backup.Existed)
-                    await _fs.WriteFileAtomicBytesAsync(writeLease, backup.TrackedFile, content!);
-                else if (_fs.FileExists(writeLease, backup.TrackedFile))
-                    _fs.DeleteFile(writeLease, backup.TrackedFile);
             }
             catch (Exception ex)
             {

@@ -21,6 +21,18 @@ public sealed class LocalWebUiSessionStatusService
     public async Task<LocalWebUiSessionStatus> BuildStatusAsync()
     {
         var writeStatus = await _writeCoordinator.BuildStatusAsync();
+        return BuildStatus(writeStatus);
+    }
+
+    internal async Task<LocalWebUiSessionStatus> BuildStatusAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var writeStatus = await _writeCoordinator.BuildStatusAsync(writeLease);
+        return BuildStatus(writeStatus);
+    }
+
+    private LocalWebUiSessionStatus BuildStatus(BrowserLocalWriteStatus writeStatus)
+    {
         return new LocalWebUiSessionStatus(
             SchemaVersion: 1,
             Status: "ok",

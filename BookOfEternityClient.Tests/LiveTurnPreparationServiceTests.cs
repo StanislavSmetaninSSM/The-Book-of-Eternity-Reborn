@@ -229,8 +229,9 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
         var replacementTask = Task.Run(async () =>
         {
-            await using var replacementLease = await replacementFs.AcquireCanonicalWriteLeaseAsync(
-                CanonicalWritePurpose.SessionReplacement);
+            await using var lifecycleLease = await replacementFs.AcquireSessionLifecycleLeaseAsync();
+            await using var replacementLease =
+                await replacementFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
             replacementFs.RotateSessionGeneration(replacementLease);
             replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.TurnRequestPath);
             replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
@@ -302,7 +303,7 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/control/gm_trajectory_ledger.jsonl", """{"turn":1}""");
         await _fs.WriteFileAtomicAsync("game_state/control/validation_repair_request.json", """{"issues":[]}""");
         await _fs.WriteFileAtomicAsync("game_state/control/terminal_protocol_failure_request.json", """{"failure":true}""");
-        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot/game_state/./meta/soul_state.json", """{"stale":true}""");
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", """{"stale":true}""");
     }
 
     private async Task WriteAfterlifeActiveConflictStateAsync()

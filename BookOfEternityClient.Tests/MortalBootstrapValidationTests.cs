@@ -1,6 +1,8 @@
+using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -51,35 +53,35 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.StartsWith("#[3]. Начало смертной жизни:", lastEventsDescription, StringComparison.Ordinal);
         Assert.DoesNotContain("#3 -", lastEventsDescription, StringComparison.Ordinal);
 
-        var faction = files["game_state/factions/faction_core.json"]!["factions"]!.AsArray()[0]!.AsObject();
-        Assert.Equal("faction_life_001_initial_context", faction["factionId"]!.GetValue<string>());
-        Assert.False(faction.ContainsKey("initialId"));
-        Assert.False(faction.ContainsKey("isNewFaction"));
-        foreach (var settingOwnedField in new[]
-                 {
-                     "developmentArchetype",
-                     "level",
-                     "experience",
-                     "experienceForNextLevel",
-                     "reputation",
-                     "influence",
-                     "powerProfile",
-                     "resources"
-                 })
+        Assert.False(currentLocation.ContainsKey("type"));
+        Assert.False(currentLocation.ContainsKey("locationType"));
+        Assert.False(currentLocation.ContainsKey("internalDifficultyProfile"));
+        Assert.False(currentLocation.ContainsKey("externalDifficultyProfile"));
+        var currentAdjacency = Assert.Single(currentLocation["adjacencyMap"]!.AsArray().OfType<JsonObject>());
+        Assert.False(currentAdjacency.ContainsKey("travelMode"));
+        Assert.False(currentAdjacency.ContainsKey("linkType"));
+        Assert.False(currentAdjacency.ContainsKey("estimatedInternalDifficultyProfile"));
+        Assert.False(currentAdjacency.ContainsKey("estimatedExternalDifficultyProfile"));
+
+        var worldMap = files["game_state/world/world_map.json"];
+        Assert.All(worldMap["newLocations"]!.AsArray().OfType<JsonObject>(), location =>
         {
-            Assert.False(
-                faction.ContainsKey(settingOwnedField),
-                $"Mortal bootstrap must not invent faction field '{settingOwnedField}'.");
-        }
+            Assert.False(location.ContainsKey("type"));
+            Assert.False(location.ContainsKey("locationType"));
+        });
+        var worldMapLink = Assert.Single(worldMap["newLinks"]!.AsArray().OfType<JsonObject>());
+        Assert.False(worldMapLink.ContainsKey("travelMode"));
+        Assert.False(worldMapLink.ContainsKey("linkType"));
+        Assert.False(worldMapLink.ContainsKey("estimatedInternalDifficultyProfile"));
+        Assert.False(worldMapLink.ContainsKey("estimatedExternalDifficultyProfile"));
+
+        Assert.Empty(files["game_state/factions/faction_core.json"]!["factions"]!.AsArray());
 
         var factionResources = files["game_state/factions/faction_resources.json"];
         Assert.Empty(factionResources["entries"]!.AsArray());
         Assert.Empty(currentLocation["factionControl"]!.AsArray());
 
-        var quest = files["game_state/quests/regular_quests.json"]!["quests"]!.AsArray()[0]!.AsObject();
-        var detailsLog = quest["detailsLog"]!.AsArray();
-        Assert.Equal("#[3]. Первая цель новой жизни связала выбранные обстоятельства стартовой сцены.", detailsLog[0]!.GetValue<string>());
-        AssertPlayerFacingBootstrapTextIsClean(quest, "fresh mortal bootstrap quest");
+        Assert.Empty(files["game_state/quests/regular_quests.json"]!["quests"]!.AsArray());
 
         var inventory = files["game_state/inventory/items.json"];
         Assert.Empty(inventory["items"]!.AsArray());
@@ -102,12 +104,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Empty(skillMastery["skillMasteryChanges"]!.AsArray());
 
         var codexEntries = files["lore/codex_entries.json"]!["entries"]!.AsArray();
-        var currentWorldEntry = codexEntries
-            .OfType<JsonObject>()
-            .Single(entry => string.Equals(
-                entry["entryId"]?.GetValue<string>(),
-                "codex_life_001_world",
-                StringComparison.Ordinal));
+        var currentWorldEntry = Assert.Single(codexEntries.OfType<JsonObject>());
+        Assert.Equal("codex_life_001_world", currentWorldEntry["entryId"]!.GetValue<string>());
         Assert.StartsWith(
             "current_world/",
             currentWorldEntry["sourceFile"]!.GetValue<string>(),
@@ -138,10 +136,16 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task ValidateGameStateAsync_FirstBootstrapMechanicsRequireStructuredGmAuthority(
-        bool includeStructuredAuthority)
+    [InlineData("missing", true)]
+    [InlineData("empty-object", true)]
+    [InlineData("prose-only", true)]
+    [InlineData("wrong-domain", true)]
+    [InlineData("empty-values", true)]
+    [InlineData("wrong-values", true)]
+    [InlineData("bound", false)]
+    public async Task ValidateGameStateAsync_FirstBootstrapMechanicsRequireDomainBoundStructuredGmAuthority(
+        string authorityMode,
+        bool expectAuthorityIssues)
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -161,22 +165,146 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         files["game_state/inventory/items.json"]["maxWeight"] = 35;
         files["game_state/inventory/items.json"]["totalWeight"] = 0;
 
-        var faction = files["game_state/factions/faction_core.json"]["factions"]![0]!.AsObject();
+        const string factionId = "faction_orbital_navigation";
+        var faction = new JsonObject
+        {
+            ["factionId"] = factionId,
+            ["name"] = "Навигаторы Кольца",
+            ["displayName"] = "Навигаторы Кольца",
+            ["description"] = "Служба дальней навигации орбитальной колонии.",
+            ["type"] = "navigation_service",
+            ["status"] = "active",
+            ["visibility"] = "known",
+            ["ranks"] = new JsonObject
+            {
+                ["entries"] = new JsonArray(),
+                ["hierarchySummary"] = "Служебная иерархия навигаторов."
+            },
+            ["rankBranches"] = new JsonArray(),
+            ["relations"] = new JsonArray(),
+            ["controlledTerritories"] = new JsonArray(),
+            ["projects"] = new JsonArray(),
+            ["chronicle"] = new JsonArray(),
+            ["customStates"] = new JsonArray()
+        };
         faction["influence"] = 12;
         faction["powerProfile"] = new JsonObject { ["orbitalReach"] = 4 };
+        files["game_state/factions/faction_core.json"]["factions"] = new JsonArray(faction);
         files["game_state/factions/faction_resources.json"]["entries"] = new JsonArray(
             new JsonObject
             {
-                ["factionId"] = faction["factionId"]!.GetValue<string>(),
+                ["factionId"] = factionId,
                 ["signalRelays"] = 2
             });
         files["game_state/world/current_location.json"]["factionControl"] = new JsonArray(
             new JsonObject
             {
-                ["factionId"] = faction["factionId"]!.GetValue<string>(),
+                ["factionId"] = factionId,
                 ["controlType"] = "Network",
                 ["controlLevel"] = 12
             });
+
+        JsonArray AuthorityEntries(string domain) =>
+            authorityMode switch
+            {
+                "missing" => new JsonArray(),
+                "empty-object" => new JsonArray(new JsonObject()),
+                "prose-only" => new JsonArray(
+                    new JsonObject { ["reason"] = $"Setting-defined {domain}." }),
+                "wrong-domain" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "lore/current_world/world_setting.json",
+                        ["values"] = new JsonObject { ["summary"] = "Unrelated prose." }
+                    }),
+                "empty-values" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = domain switch
+                        {
+                            "progression" => "game_state/player/experience.json",
+                            "carrying" => "game_state/inventory/items.json",
+                            "faction" => "game_state/factions/faction_core.json",
+                            _ => throw new ArgumentOutOfRangeException(nameof(domain), domain, null)
+                        },
+                        ["factionId"] = domain == "faction" ? factionId : null,
+                        ["values"] = new JsonObject()
+                    }),
+                "wrong-values" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = domain switch
+                        {
+                            "progression" => "game_state/player/experience.json",
+                            "carrying" => "game_state/inventory/items.json",
+                            "faction" => "game_state/factions/faction_core.json",
+                            _ => throw new ArgumentOutOfRangeException(nameof(domain), domain, null)
+                        },
+                        ["factionId"] = domain == "faction" ? factionId : null,
+                        ["values"] = domain switch
+                        {
+                            "progression" => new JsonObject { ["experienceForNextLevel"] = 999 },
+                            "carrying" => new JsonObject { ["maxWeight"] = 999 },
+                            "faction" => new JsonObject { ["influence"] = 999 },
+                            _ => throw new ArgumentOutOfRangeException(nameof(domain), domain, null)
+                        }
+                    }),
+                "bound" when domain == "progression" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/player/experience.json",
+                        ["values"] = new JsonObject
+                        {
+                            ["playerLevel"] = 1,
+                            ["level"] = 1,
+                            ["currentExperience"] = 0,
+                            ["experience"] = 0,
+                            ["totalExperience"] = 0,
+                            ["experienceForNextLevel"] = 240,
+                            ["experienceGained"] = 0
+                        },
+                        ["reason"] = "The orbital setting uses a 240-point first progression interval."
+                    }),
+                "bound" when domain == "carrying" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/inventory/items.json",
+                        ["values"] = new JsonObject
+                        {
+                            ["maxWeight"] = 35,
+                            ["totalWeight"] = 0
+                        },
+                        ["reason"] = "The current load system uses kilograms."
+                    }),
+                "bound" when domain == "faction" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/factions/faction_core.json",
+                        ["factionId"] = factionId,
+                        ["values"] = new JsonObject
+                        {
+                            ["influence"] = 12,
+                            ["powerProfile"] = new JsonObject { ["orbitalReach"] = 4 }
+                        }
+                    },
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/factions/faction_resources.json",
+                        ["factionId"] = factionId,
+                        ["values"] = new JsonObject { ["signalRelays"] = 2 }
+                    },
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/world/current_location.json",
+                        ["factionId"] = factionId,
+                        ["values"] = new JsonObject
+                        {
+                            ["controlType"] = "Network",
+                            ["controlLevel"] = 12
+                        }
+                    }),
+                _ => throw new ArgumentOutOfRangeException(nameof(authorityMode), authorityMode, null)
+            };
 
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
@@ -197,15 +325,9 @@ public sealed class MortalBootstrapValidationTests : IDisposable
                 ["structuredGmAuthority"] = new JsonObject
                 {
                     ["playerSkills"] = new JsonArray(),
-                    ["playerProgression"] = includeStructuredAuthority
-                        ? new JsonArray(new JsonObject { ["reason"] = "Setting-defined progression curve." })
-                        : new JsonArray(),
-                    ["carryingRules"] = includeStructuredAuthority
-                        ? new JsonArray(new JsonObject { ["reason"] = "Setting-defined inventory capacity." })
-                        : new JsonArray(),
-                    ["factionMechanics"] = includeStructuredAuthority
-                        ? new JsonArray(new JsonObject { ["reason"] = "Setting-defined orbital faction model." })
-                        : new JsonArray()
+                    ["playerProgression"] = AuthorityEntries("progression"),
+                    ["carryingRules"] = AuthorityEntries("carrying"),
+                    ["factionMechanics"] = AuthorityEntries("faction")
                 },
                 ["worldEventRequirements"] = new JsonObject
                 {
@@ -231,14 +353,14 @@ public sealed class MortalBootstrapValidationTests : IDisposable
 
         foreach (var code in expectedCodes)
         {
-            if (includeStructuredAuthority)
+            if (expectAuthorityIssues)
             {
-                Assert.DoesNotContain(issues, issue =>
+                Assert.Contains(issues, issue =>
                     string.Equals(issue.Code, code, StringComparison.OrdinalIgnoreCase));
             }
             else
             {
-                Assert.Contains(issues, issue =>
+                Assert.DoesNotContain(issues, issue =>
                     string.Equals(issue.Code, code, StringComparison.OrdinalIgnoreCase));
             }
         }
@@ -877,6 +999,16 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             worldDescription: "Портовый город-государство с купеческими гильдиями, архивами и тайными культами.",
             startingCircumstances: "Эйра просыпается до рассвета в комнате при архиве; на столе лежит чужая опечатанная расписка.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+        const string narrativeWithPlaceholderPhrase =
+            "Летописцы позже назовут этот эпизод стартовой сценой архивного расследования.";
+        files["game_state/world/current_location.json"]["description"] = narrativeWithPlaceholderPhrase;
+        files["game_state/factions/faction_core.json"]["factions"] = new JsonArray(
+            new JsonObject
+            {
+                ["factionId"] = "faction_life_001_initial_context",
+                ["name"] = "Силы стартовой сцены",
+                ["displayName"] = "Силы стартовой сцены"
+            });
 
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
@@ -940,6 +1072,37 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase) &&
             issue.FilePath.Contains("world_map.json", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(issue.Actual, "Путь из стартовой сцены", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".description", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actual, narrativeWithPlaceholderPhrase, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalBootstrapPlaceholderValidation_InspectsOnlyIdentityAndTitleFields()
+    {
+        const string narrativePhrase = "Летописцы называют эпизод стартовой сценой.";
+        const string rolePhrase = "Наставник стартовой сцены в театральной постановке";
+        using var document = JsonDocument.Parse($$"""
+        {
+          "name": "Стартовая сцена новой жизни",
+          "title": "Путь из стартовой сцены",
+          "description": "{{narrativePhrase}}",
+          "role": "{{rolePhrase}}"
+        }
+        """);
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateMortalBootstrapPlayerVisibleNamesInElement",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.NotNull(method);
+        method.Invoke(_validator, [document.RootElement, "fixture", null, issues]);
+
+        Assert.Contains(issues, issue => issue.FilePath == "fixture.name");
+        Assert.Contains(issues, issue => issue.FilePath == "fixture.title");
+        Assert.DoesNotContain(issues, issue => issue.FilePath == "fixture.description");
+        Assert.DoesNotContain(issues, issue => issue.FilePath == "fixture.role");
     }
 
     [Fact]

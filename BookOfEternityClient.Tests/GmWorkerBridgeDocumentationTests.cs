@@ -627,21 +627,20 @@ public sealed class GmWorkerBridgeDocumentationTests
             clearOverloadOffset,
             StringComparison.Ordinal);
         var replacementLeaseOffset = fileSystemManager.IndexOf(
-            "AcquireCanonicalWriteLeaseAsync(",
+            "AcquireSessionReplacementWriteLeaseAsync(lifecycleLease)",
             lifecycleValidationOffset,
-            StringComparison.Ordinal);
-        var replacementPurposeOffset = fileSystemManager.IndexOf(
-            "CanonicalWritePurpose.SessionReplacement",
-            replacementLeaseOffset,
             StringComparison.Ordinal);
         Assert.True(
             clearWrapperOffset >= 0 &&
             lifecycleLeaseOffset > clearWrapperOffset &&
             clearOverloadOffset > lifecycleLeaseOffset &&
             lifecycleValidationOffset > clearOverloadOffset &&
-            replacementLeaseOffset > lifecycleValidationOffset &&
-            replacementPurposeOffset > replacementLeaseOffset,
+            replacementLeaseOffset > lifecycleValidationOffset,
             "ClearGameStateAsync must acquire the lifecycle lease first and the replacement canonical lease only inside the validated overload.");
+        Assert.Contains(
+            "EnsureValidSessionReplacementLease(writeLease)",
+            fileSystemManager,
+            StringComparison.Ordinal);
         Assert.Contains("detached execution snapshot", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("never copy direct snapshot edits", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("detached execution snapshot", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);
@@ -716,6 +715,26 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("GmWorkerJson.Deserialize<WorkerTaskPacket>", applyGate, StringComparison.Ordinal);
         Assert.Contains("GmWorkerJson.Deserialize<WorkerTaskPacket>", bridgePool, StringComparison.Ordinal);
         Assert.Contains("ApplyReservedAsync", delegator, StringComparison.Ordinal);
+        Assert.DoesNotContain("run.BoundTask ?? task", delegator, StringComparison.Ordinal);
+        Assert.Contains("run.BoundTask == null", delegator, StringComparison.Ordinal);
+        Assert.Contains(
+            "var workerFileSystem = _validator.CanonicalFileSystem;",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "new GmWorkerAuditLog(workerFileSystem)",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "new GmWorkerBridgePool(",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "new GmWorkerProposalStore(workerFileSystem)",
+            gameEngine,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("new GmWorkerAuditLog(_fs)", gameEngine, StringComparison.Ordinal);
+        Assert.DoesNotContain("new GmWorkerBridgePool(_fs", gameEngine, StringComparison.Ordinal);
         Assert.Contains("GmWorkerValidationRepairOutcome.SessionReplaced", delegator, StringComparison.Ordinal);
         Assert.Contains("GmWorkerSessionReplacedException", gameEngine, StringComparison.Ordinal);
         Assert.Contains("AppendFileAtomicIfCurrentSessionAsync", gameEngine, StringComparison.Ordinal);

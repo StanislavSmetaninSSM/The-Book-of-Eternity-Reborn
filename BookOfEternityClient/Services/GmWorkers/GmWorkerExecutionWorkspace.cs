@@ -32,8 +32,10 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
 
     internal static async Task<GmWorkerExecutionWorkspace> CreateAsync(
         FileSystemManager fs,
-        WorkerTaskPacket task)
+        WorkerTaskPacket task,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var runtimeRoot = ResolveRuntimeRoot(fs.BasePath);
         var safeTaskId = SanitizeSegment(task.TaskId);
         var workspaceRoot = Path.GetFullPath(
@@ -53,18 +55,29 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         {
             foreach (var contextFile in task.ContextFiles)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (!GmWorkerContractValidator.IsSafeRelativePath(contextFile.Path))
                     throw new InvalidOperationException($"Worker context path is unsafe: {contextFile.Path}.");
 
-                var content = await fs.ReadFileBytesAsync(contextFile.Path);
+                var content = await fs.ReadFileBytesAsync(
+                    contextFile.Path,
+                    cancellationToken);
                 VerifyPinnedContext(contextFile, content);
                 if (content == null)
                     continue;
 
-                await WriteWorkspaceFileAsync(gameSessionPath, contextFile.Path, content);
+                await WriteWorkspaceFileAsync(
+                    gameSessionPath,
+                    contextFile.Path,
+                    content,
+                    cancellationToken);
             }
 
-            await WriteAbsoluteFileAsync(taskPath, Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task)));
+            await WriteAbsoluteFileAsync(
+                taskPath,
+                Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(task)),
+                cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             Directory.CreateDirectory(Path.GetDirectoryName(proposalPath)!);
             return new GmWorkerExecutionWorkspace(
                 runtimeRoot,
@@ -75,7 +88,14 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
         }
         catch
         {
-            await DeleteWorkspaceAsync(runtimeRoot, workspaceRoot);
+            try
+            {
+                await DeleteWorkspaceAsync(runtimeRoot, workspaceRoot);
+            }
+            catch
+            {
+                // Staging cleanup must not replace the authoritative staging failure.
+            }
             throw;
         }
     }
@@ -166,16 +186,21 @@ internal sealed class GmWorkerExecutionWorkspace : IAsyncDisposable
     private static async Task WriteWorkspaceFileAsync(
         string gameSessionPath,
         string relativePath,
-        byte[] content)
+        byte[] content,
+        CancellationToken cancellationToken)
     {
         var fullPath = ResolveWorkspacePath(gameSessionPath, relativePath);
-        await WriteAbsoluteFileAsync(fullPath, content);
+        await WriteAbsoluteFileAsync(fullPath, content, cancellationToken);
     }
 
-    private static async Task WriteAbsoluteFileAsync(string fullPath, byte[] content)
+    private static async Task WriteAbsoluteFileAsync(
+        string fullPath,
+        byte[] content,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-        await File.WriteAllBytesAsync(fullPath, content);
+        await File.WriteAllBytesAsync(fullPath, content, cancellationToken);
     }
 
     private static async Task<byte[]?> ReadBoundedFileAsync(

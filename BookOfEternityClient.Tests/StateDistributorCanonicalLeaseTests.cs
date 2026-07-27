@@ -145,17 +145,18 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
     }
 
     [Fact]
-    public async Task DistributeAsync_MalformedExistingCanonicalJsonFailsClosedWithoutReplacingIt()
+    public async Task DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes()
     {
-        const string malformedJson = "{\"marker\":\"baseline\"";
-        await _fs.WriteFileAtomicAsync(WeatherPath, malformedJson);
+        var malformedBytes = new byte[] { 0xEF, 0xBB, 0xBF, (byte)'{', (byte)'"', (byte)'b', (byte)'r', (byte)'o', (byte)'k', (byte)'e', (byte)'n' };
+        await _fs.WriteFileAtomicBytesAsync(WeatherPath, malformedBytes);
         var distributor = new StateDistributor(
             _fs,
             NullLogger<StateDistributor>.Instance);
 
-        await Assert.ThrowsAnyAsync<JsonException>(() => distributor.DistributeAsync(CreateWeatherResponse()));
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => distributor.DistributeAsync(CreateWeatherResponse()));
 
-        Assert.Equal(malformedJson, await _fs.ReadFileAsync(WeatherPath));
+        Assert.Equal(malformedBytes, await _fs.ReadFileBytesAsync(WeatherPath));
     }
 
     private FileSystemManager CreateFileSystem(FileSystemManagerHooks? hooks = null)

@@ -131,10 +131,8 @@ public sealed class GmWorkerAuditLogTests
             var fs = CreateFileSystem(root);
             string staleGeneration;
             await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
-            {
                 staleGeneration = fs.GetOrCreateSessionGeneration(writeLease);
-                fs.RotateSessionGeneration(writeLease);
-            }
+            await SessionReplacementTestHarness.RotateGenerationAsync(fs);
 
             var appended = await new GmWorkerAuditLog(fs).AppendEventIfCurrentSessionAsync(
                 staleGeneration,

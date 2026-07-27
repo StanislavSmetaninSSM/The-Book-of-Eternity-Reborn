@@ -693,26 +693,19 @@ public partial class GameEngine
     // GAME LOOP
     // ═══════════════════════════════════════════════
 
-    private async Task EnterGameLoop()
+    private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
-        _inGame = true;
-        await _audioService.PlayInGameMusicAsync();
-        await NormalizePendingRepairArtifactsAsync();
-        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
-
-        // Check if there's already a correlated completion signal waiting
-        if (_fs.FileExists("ready/turn_complete.json"))
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
         {
-            await RefreshRuntimeStateAsync();
-        }
+            await InvokeSessionFinalizationCheckpointAsync(
+                SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
 
-        while (_inGame)
-        {
-            try
-            {
-            // Pick up late responses (agent finished after cancel/timeout, or response from previous turn)
+            // Pick up late responses (agent finished after cancel/timeout, or response from previous turn).
             var manifest = await LoadPendingTurnSnapshotManifestAsync();
-            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false);
+            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(
+                manifest,
+                requireCurrentContext: false);
             var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
             var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
             var completionSignal = ParseReadySignalMetadata(
@@ -728,32 +721,37 @@ public partial class GameEngine
                 snapshotContext,
                 rollbackSnapshot);
             if (concurrentResolution.Failed)
-                continue;
+                return true;
 
             if (concurrentResolution.UseError)
             {
                 var signal = errorSignal;
                 if (await DiscardMismatchedReadySignalAsync("late turn_error", signal, snapshotContext))
-                    continue;
+                    return true;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
                 if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
                 {
-                    _logger.LogWarning("Игнорируется late error для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _logger.LogWarning(
+                        "Игнорируется late error для хода {Turn}, ожидался ход {ExpectedTurn}",
+                        signalTurn.Value,
+                        expectedTurn);
                     _fs.DeleteFile("ready/turn_error.json");
                     ClearTransientOutputFiles();
                     await CleanupPendingTurnSnapshotAsync();
-                    continue;
+                    return true;
                 }
 
                 if (signal != null &&
                     snapshotContext != null &&
                     HasValidTerminalSignalContract("turn_error", signal))
                 {
-                    var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(signal, snapshotContext);
+                    var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(
+                        signal,
+                        snapshotContext);
                     if (recoveredSignal != null)
-                        continue;
+                        return true;
                 }
 
                 ShowTurnErrorMessage(terminalSignals.ErrorJson);
@@ -761,29 +759,33 @@ public partial class GameEngine
                 {
                     await RestorePreTurnBackup(rollbackSnapshot!);
                     CleanupBackup(rollbackSnapshot!);
-                    AnsiConsole.MarkupLine("[yellow]↩ Поздний сигнал ошибки GM восстановил последнюю стабильную версию состояния.[/]");
+                    AnsiConsole.MarkupLine(
+                        "[yellow]↩ Поздний сигнал ошибки GM восстановил последнюю стабильную версию состояния.[/]");
                 }
 
                 _fs.DeleteFile("ready/turn_error.json");
                 await CleanupPendingTurnSnapshotAsync();
-                continue;
+                return true;
             }
 
-        if (concurrentResolution.UseCompletion)
-        {
-            var signal = completionSignal;
+            if (concurrentResolution.UseCompletion)
+            {
+                var signal = completionSignal;
                 if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, snapshotContext))
-                    continue;
+                    return true;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
                 if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
                 {
-                    _logger.LogWarning("Игнорируется late response для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _logger.LogWarning(
+                        "Игнорируется late response для хода {Turn}, ожидался ход {ExpectedTurn}",
+                        signalTurn.Value,
+                        expectedTurn);
                     _fs.DeleteFile("ready/turn_complete.json");
                     ClearTransientOutputFiles();
                     await CleanupPendingTurnSnapshotAsync();
-                    continue;
+                    return true;
                 }
 
                 var acceptedLateResponse = false;
@@ -809,7 +811,7 @@ public partial class GameEngine
                             rollbackSnapshot,
                             "[yellow]↩ Поздний ответ GM отклонён после материализации. Состояние откатилось к последней стабильной версии.[/]");
                         await CleanupPendingTurnSnapshotAsync();
-                        continue;
+                        return true;
                     }
 
                     _lastResponse = lateResponse;
@@ -831,8 +833,9 @@ public partial class GameEngine
                         acceptedLateResponse = true;
                         if (HasRollbackCapability(rollbackSnapshot))
                             CleanupBackup(rollbackSnapshot!);
-                        continue;
+                        return true;
                     }
+
                     await CheckAscensionTrigger();
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
@@ -862,6 +865,7 @@ public partial class GameEngine
 
                     acceptedLateResponse = true;
                 }
+
                 if (acceptedLateResponse)
                 {
                     if (!await CheckGmIncarnationTrigger(snapshotContext))
@@ -877,7 +881,7 @@ public partial class GameEngine
                 }
             }
 
-            // Check for GM-initiated incarnation (GM sends player to Mortal World)
+            // Check for GM-initiated incarnation (GM sends player to Mortal World).
             await CheckAscensionTrigger();
             await CheckGmIncarnationTrigger();
 
@@ -889,8 +893,32 @@ public partial class GameEngine
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
                 await CheckLifeTransitions();
                 await CheckAscensionTrigger();
-                continue;
+                return true;
             }
+
+            return false;
+        });
+    }
+
+    private async Task EnterGameLoop()
+    {
+        _inGame = true;
+        await _audioService.PlayInGameMusicAsync();
+        await NormalizePendingRepairArtifactsAsync();
+        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+
+        // Check if there's already a correlated completion signal waiting
+        if (_fs.FileExists("ready/turn_complete.json"))
+        {
+            await RefreshRuntimeStateAsync();
+        }
+
+        while (_inGame)
+        {
+            try
+            {
+            if (await ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync())
+                continue;
 
             // Detect console resize — if width changed, just re-render (loop continues)
             try
@@ -1110,9 +1138,6 @@ public partial class GameEngine
 
         try
         {
-            await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
-            await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync();
-
             // Create backup of game state files before sending turn (for escape-rollback)
             var backupId = DateTime.UtcNow.Ticks.ToString();
             backedUpFiles = await CreatePreTurnBackup(backupId);
@@ -2919,7 +2944,15 @@ public partial class GameEngine
                 ["authoritySource"] = "explicit_structured_gm_output_only",
                 ["authoredBy"] = "GM",
                 ["proseIsMechanicalAuthority"] = false,
-                ["rule"] = "The client leaves these arrays empty and creates no skills, items, NPCs, capabilities, money, progression values, carrying values, faction resources, influence, control, or universal power profile. The GM may add entries only as explicit setting-aware decisions and must write matching canonical state; never derive mechanics through client keyword or prose matching.",
+                ["rule"] = "The client leaves these arrays empty and creates no skills, items, NPCs, capabilities, money, progression values, carrying values, faction resources, influence, control, or universal power profile. The GM may add entries only as explicit setting-aware decisions and must write matching canonical state; never derive mechanics through client keyword or prose matching. playerProgression, carryingRules, and factionMechanics entries require canonicalPath plus a non-empty values object that exactly repeats every authorized canonical value.",
+                ["authorityRecordContract"] = new JsonObject
+                {
+                    ["playerProgression"] = "canonicalPath must equal game_state/player/experience.json; values must bind every progression field written there.",
+                    ["carryingRules"] = "canonicalPath must equal game_state/inventory/items.json; values must bind maxWeight and totalWeight when written.",
+                    ["factionMechanics"] = "canonicalPath must identify faction_core.json, faction_resources.json, or current_location.json; factionId and values must bind every faction mechanic written on that surface.",
+                    ["requiredFields"] = new JsonArray("canonicalPath", "values"),
+                    ["valuesRule"] = "values must be a non-empty object with exact JSON values. Empty objects, reason-only records, unrelated paths, and prose do not authorize mechanics."
+                },
                 ["playerSkills"] = new JsonArray(),
                 ["inventoryItems"] = new JsonArray(),
                 ["actorCapabilities"] = new JsonArray(),
@@ -2937,9 +2970,7 @@ public partial class GameEngine
             ["suggestedStableIds"] = new JsonObject
             {
                 ["currentLocationId"] = $"loc_{idSuffix}_start",
-                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit",
-                ["primaryFactionId"] = $"faction_{idSuffix}_initial_context",
-                ["startingObjectiveId"] = $"quest_{idSuffix}_opening_hook"
+                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit"
             },
             ["requiredMortalBootstrapFiles"] = requiredMortalBootstrapFiles,
             ["preMaterializedBaselineFiles"] = preMaterializedBaselineFiles,
@@ -2957,8 +2988,7 @@ public partial class GameEngine
                     "knownExits"
                 },
                 ["noNullForRequiredCollectionsOnBootstrap"] = true,
-                ["coordinatesRequired"] = true,
-                ["difficultyProfilesRequired"] = true
+                ["coordinatesRequired"] = true
             },
             ["canonicalCoordinateAuthority"] = new JsonObject
             {
@@ -2987,19 +3017,14 @@ public partial class GameEngine
             },
             ["factionRequirements"] = new JsonObject
             {
-                ["persistentFactionIdRequired"] = true,
-                ["noNullFactionIdInCanonicalFactionCore"] = true,
-                ["sameTurnInitialIdAllowedOnlyInGmDelta"] = true,
-                ["canonicalFactionCoreMustUsePermanentId"] = true,
-                ["resourcesMustIncludeMetaResourcesAndStrategicGoodsArrays"] = true
+                ["bootstrapCollectionStartsEmpty"] = true,
+                ["creationRule"] = "Do not create a faction from playerAuthoredStart vocabulary. A GM-created faction uses a complete canonical record, and every numeric/resource/control mechanic must be bound by structuredGmAuthority.factionMechanics."
             },
             ["sceneAnchorRequirements"] = new JsonObject
             {
                 ["materializeActionableStartingProps"] = true,
                 ["startingItemOrPropIfNarrated"] = "If narration gives the player an inspectable object, sealed container, letter, weapon, clue, or tool, create or reference a matching canonical inventory/storage/location object.",
-                ["startingQuestIfNarrated"] = "If the opening scene creates an obvious investigation, escape, delivery, social, or survival hook, create a readable starting quest/objective instead of relying on narrative only.",
-                ["mapExitIfNarrated"] = "If the scene implies a door, corridor, road, gate, or route, create at least one known exit and map link.",
-                ["factionHookIfNarrated"] = "If the scene names an organization, house, guild, cult, guard, or authority, materialize it with a permanent factionId.",
+                ["navigationScaffoldRule"] = "Preserve the client-owned current location, known exit, coordinates, and map link as neutral identity/navigation scaffolding. Do not assign location type, travel mode, link type, biome, safety, or difficulty until the GM explicitly materializes those setting-owned values.",
                 ["actorRule"] = "Use semantic GM judgment over the complete setting and scene. When a non-player actor becomes concrete, author the complete setting-appropriate actor and materialization envelope; never ask the client to derive an actor from vocabulary."
             },
             ["trainingAuthoringGuidance"] = new JsonObject
@@ -3028,83 +3053,6 @@ public partial class GameEngine
             },
             ["canonicalShapeHints"] = new JsonObject
             {
-                ["factionCoreMinimum"] = new JsonObject
-                {
-                    ["targetFile"] = "game_state/factions/faction_core.json",
-                    ["collection"] = "factions",
-                    ["requiredIdentityFields"] = new JsonArray
-                    {
-                        "factionId",
-                        "name",
-                        "displayName",
-                        "description",
-                        "status",
-                        "visibility",
-                        "developmentArchetype"
-                    },
-                    ["requiredProgressionFields"] = new JsonArray
-                    {
-                        "level",
-                        "experience",
-                        "experienceForNextLevel",
-                        "isPlayerFaction",
-                        "isPlayerMember"
-                    },
-                    ["requiredObjects"] = new JsonArray
-                    {
-                        "powerProfile",
-                        "ranks",
-                        "resources"
-                    },
-                    ["requiredArraysOrCollections"] = new JsonArray
-                    {
-                        "rankBranches",
-                        "relations",
-                        "projects",
-                        "chronicle",
-                        "customStates",
-                        "resources.metaResources",
-                        "resources.strategicGoods"
-                    },
-                    ["liveRepairNote"] = "Do not create a partial full faction object. If the faction is durable, create the complete canonical factions[] object with a permanent factionId before sidecars reference it."
-                },
-                ["factionCustomStateMinimum"] = new JsonObject
-                {
-                    ["targetFile"] = "game_state/factions/faction_custom.json",
-                    ["canonicalFactionCustomStateRequiredFields"] = new JsonArray
-                    {
-                        "stateId",
-                        "name",
-                        "currentValue",
-                        "minValue",
-                        "maxValue",
-                        "description",
-                        "progressionRule",
-                        "thresholds"
-                    },
-                    ["progressionRuleRequiredFields"] = new JsonArray
-                    {
-                        "changePerTurn",
-                        "description"
-                    },
-                    ["thresholdsRule"] = "thresholds must be an array; use [] when no threshold is needed.",
-                    ["minimalExample"] = new JsonObject
-                    {
-                        ["stateId"] = "state_life_001_social_pressure",
-                        ["name"] = "Социальное давление",
-                        ["currentValue"] = 1,
-                        ["minValue"] = 0,
-                        ["maxValue"] = 10,
-                        ["description"] = "Дом или организация начинает реагировать на событие первой сцены.",
-                        ["progressionRule"] = new JsonObject
-                        {
-                            ["changePerTurn"] = 0,
-                            ["description"] = "Не меняется автоматически; обновляется только после значимых сцен."
-                        },
-                        ["thresholds"] = new JsonArray()
-                    },
-                    ["avoidPartialSidecarRule"] = "If you only need a narrative note, put it in faction_core chronicle/description. Create faction_custom.json only when you can write the full Custom State Object above."
-                },
                 ["npcCoreMinimum"] = new JsonObject
                 {
                     ["targetFile"] = "game_state/npcs/npc_core.json",
@@ -3166,30 +3114,13 @@ public partial class GameEngine
                         "displayName",
                         "description",
                         "region",
-                        "type",
                         "coordinates",
                         "knownExits",
                         "adjacencyMap",
                         "factionControl",
                         "locationStorages",
                         "activeThreats",
-                        "internalDifficultyProfile",
-                        "externalDifficultyProfile",
                         "lastEventsDescription"
-                    },
-                    ["difficultyProfileFacets"] = new JsonArray
-                    {
-                        "combat",
-                        "environment",
-                        "social",
-                        "exploration"
-                    },
-                    ["allowedFactionControlTypes"] = new JsonArray
-                    {
-                        "Military",
-                        "Economic",
-                        "Social",
-                        "Covert"
                     },
                     ["lastEventsTimestampRule"] = "Use canonical historical-entry timestamp format when lastEventsDescription carries a timestamp; otherwise keep a readable event summary without a fake timestamp."
                 },
@@ -3202,7 +3133,6 @@ public partial class GameEngine
                         "name",
                         "displayName",
                         "region",
-                        "type",
                         "description",
                         "coordinates"
                     },
@@ -3210,9 +3140,7 @@ public partial class GameEngine
                     {
                         "targetLocationId",
                         "targetName",
-                        "targetCoordinates",
-                        "estimatedInternalDifficultyProfile",
-                        "estimatedExternalDifficultyProfile"
+                        "targetCoordinates"
                     },
                     ["requiredActiveThreatFields"] = new JsonArray
                     {
@@ -3284,7 +3212,7 @@ public partial class GameEngine
                         },
                         ["narrativePressureRule"] = "If a scene has only vague pressure or tension, keep activeThreats empty and describe it in faction chronicle or current location events. Do not create string-only activeThreat stubs."
                     },
-                    ["linkRule"] = "If the opening scene names a route, create a map location/link pair with targetCoordinates and both estimated difficulty profiles."
+                    ["linkRule"] = "Preserve the neutral bootstrap map location/link pair and exact targetCoordinates. Add setting-owned traversal or difficulty fields only through explicit GM materialization."
                 },
                 ["inventoryItemMinimum"] = new JsonObject
                 {
@@ -3362,7 +3290,6 @@ public partial class GameEngine
                 "Prevent npc_scene_location_mismatch: NPCsInScene is only for actors physically present in currentLocationData; offscreen voices, nearbyExitLocationId actors, and corridor/door pressure must stay outside NPCsInScene until the player reaches or directly interacts with them.",
                 "Prevent mortal_relevant_actor_missing_persistence: every Mortal relevant actor in gm_thoughts_markdown needs a matching persistent surface or must be moved outside scope.",
                 "Prevent player character NPC false positives: the player character is controlled by player state, not game_state/npcs, and should not be materialized as an NPC.",
-                "Prevent world_map_link_preview_missing_difficulty_profile: every opening map link preview needs estimatedInternalDifficultyProfile and estimatedExternalDifficultyProfile.",
                 "Prevent current_location_coordinates_mismatch: copy canonicalCoordinateAuthority coordinates exactly for suggested stable location ids across current_location, world_map newLocations, adjacencyMap, and newLinks.",
                 "Prevent faction_full_object_partial_optional_extension_data: if you create a durable faction, create complete faction core plus sidecars; do not mix partial optional arrays into a full faction object.",
                 "Prevent item_missing_equipment_slot/item_missing_durability: every starting item needs a valid slot when equipment-like and durability as a percentage string such as 100% when player-visible.",

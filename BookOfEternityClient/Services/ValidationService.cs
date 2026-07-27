@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 
 namespace BookOfEternityClient.Services;
@@ -8,6 +9,8 @@ namespace BookOfEternityClient.Services;
 /// </summary>
 public partial class ValidationService
 {
+    internal FileSystemManager CanonicalFileSystem => _fs;
+
     /// <summary>
     /// Run all validations on the current game state. Returns list of issues found.
     /// </summary>

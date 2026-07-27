@@ -12,11 +12,10 @@ public sealed class GmWorkerApplyGate
     private readonly GmWorkerAuditLog? _auditLog;
 
     public GmWorkerApplyGate(
-        FileSystemManager fs,
         ValidationService validationService,
         GmWorkerAuditLog? auditLog = null)
         : this(
-            fs,
+            GetProductionFileSystem(validationService),
             CreateProductionValidator(validationService),
             auditLog)
     {
@@ -33,6 +32,13 @@ public sealed class GmWorkerApplyGate
         _auditLog = auditLog;
     }
 
+    private static FileSystemManager GetProductionFileSystem(
+        ValidationService validationService)
+    {
+        ArgumentNullException.ThrowIfNull(validationService);
+        return validationService.CanonicalFileSystem;
+    }
+
     private static Func<Task<IReadOnlyList<ValidationIssue>>> CreateProductionValidator(
         ValidationService validationService)
     {
@@ -41,16 +47,12 @@ public sealed class GmWorkerApplyGate
             (IReadOnlyList<ValidationIssue>)await validationService.ValidateGameStateAsync();
     }
 
-    public Task<ApplyGateDecision> ApplyReservedAsync(
-        WorkerProposal proposal,
-        WorkerBridgeProfile profile) =>
-        ApplyReservedAsync(proposal, profile, expectedSessionGeneration: null);
-
     internal async Task<ApplyGateDecision> ApplyReservedAsync(
         WorkerProposal proposal,
         WorkerBridgeProfile profile,
-        string? expectedSessionGeneration)
+        string expectedSessionGeneration)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(expectedSessionGeneration);
         var checkedPaths = proposal.ChangedFiles.Select(file => file.Path).ToArray();
         ApplyGateDecision decision;
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
@@ -69,8 +71,7 @@ public sealed class GmWorkerApplyGate
                 var taskBytes = await _fs.ReadFileBytesAsync(writeLease, taskPath);
                 if (taskBytes == null)
                 {
-                    decision = !string.IsNullOrWhiteSpace(expectedSessionGeneration) &&
-                               !_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration)
+                    decision = !_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration)
                         ? BuildSessionReplacedDecision(proposal, profile, checkedPaths)
                         : BuildRejectedDecision(
                             proposal,
@@ -105,37 +106,23 @@ public sealed class GmWorkerApplyGate
                     }
                     else
                     {
-                        decision = await ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(
-                            proposal,
-                            reservedTask,
-                            profile,
-                            checkedPaths,
-                            writeLease);
+                        decision = !string.Equals(
+                                reservedTask.SessionGeneration,
+                                expectedSessionGeneration,
+                                StringComparison.Ordinal)
+                            ? BuildSessionReplacedDecision(
+                                proposal,
+                                profile,
+                                checkedPaths)
+                            : await ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(
+                                proposal,
+                                reservedTask,
+                                profile,
+                                checkedPaths,
+                                writeLease);
                     }
                 }
             }
-            if (decision.Result != ApplyGateResult.SessionReplaced && _auditLog != null)
-                await _auditLog.RecordApplyDecisionAsync(writeLease, proposal, decision);
-        }
-
-        return decision;
-    }
-
-    internal async Task<ApplyGateDecision> ApplyAuthoritativeTaskAsync(
-        WorkerProposal proposal,
-        WorkerTaskPacket task,
-        WorkerBridgeProfile profile)
-    {
-        var checkedPaths = proposal.ChangedFiles.Select(file => file.Path).ToArray();
-        ApplyGateDecision decision;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-        {
-            decision = await ApplyAuthoritativeTaskWithinCanonicalLeaseAsync(
-                proposal,
-                task,
-                profile,
-                checkedPaths,
-                writeLease);
             if (decision.Result != ApplyGateResult.SessionReplaced && _auditLog != null)
                 await _auditLog.RecordApplyDecisionAsync(writeLease, proposal, decision);
         }
@@ -235,7 +222,10 @@ public sealed class GmWorkerApplyGate
         IReadOnlyDictionary<string, byte[]> capturedContents,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var (contextErrors, baselines) = await CaptureAndVerifyTaskContextAsync(proposal, task);
+        var (contextErrors, baselines) = await CaptureAndVerifyTaskContextAsync(
+            proposal,
+            task,
+            writeLease);
         if (contextErrors.Count > 0)
         {
             return BuildDecision(
@@ -348,8 +338,12 @@ public sealed class GmWorkerApplyGate
                     rejectionReasons: rejectionReasons);
             }
 
-            var ownershipErrors = (await VerifyAppliedFilesRemainOwnedAsync(rollback))
-                .Concat(await VerifyReadOnlyTaskContextRemainsOwnedAsync(task, proposal, baselines))
+            var ownershipErrors = (await VerifyAppliedFilesRemainOwnedAsync(rollback, writeLease))
+                .Concat(await VerifyReadOnlyTaskContextRemainsOwnedAsync(
+                    task,
+                    proposal,
+                    baselines,
+                    writeLease))
                 .ToArray();
             if (ownershipErrors.Length > 0)
             {
@@ -430,7 +424,8 @@ public sealed class GmWorkerApplyGate
     private async Task<(IReadOnlyList<string> Errors, IReadOnlyDictionary<string, byte[]?> Baselines)>
         CaptureAndVerifyTaskContextAsync(
             WorkerProposal proposal,
-            WorkerTaskPacket task)
+            WorkerTaskPacket task,
+            FileSystemManager.CanonicalWriteLease writeLease)
     {
         var errors = new List<string>();
         var baselines = new Dictionary<string, byte[]?>(GmWorkerContractValidator.CanonicalPathComparer);
@@ -440,7 +435,7 @@ public sealed class GmWorkerApplyGate
 
         foreach (var contextFile in task.ContextFiles)
         {
-            var content = await _fs.ReadFileBytesAsync(contextFile.Path);
+            var content = await _fs.ReadFileBytesAsync(writeLease, contextFile.Path);
             baselines[contextFile.Path] = content;
             var actualSha256 = content == null ? MissingFileSha256 : ComputeSha256(content);
             if (!string.Equals(actualSha256, contextFile.Sha256, StringComparison.OrdinalIgnoreCase))
@@ -525,12 +520,13 @@ public sealed class GmWorkerApplyGate
     }
 
     private async Task<IReadOnlyList<string>> VerifyAppliedFilesRemainOwnedAsync(
-        IReadOnlyList<RollbackEntry> rollback)
+        IReadOnlyList<RollbackEntry> rollback,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var errors = new List<string>();
         foreach (var entry in rollback)
         {
-            var current = await _fs.ReadFileBytesAsync(entry.Path);
+            var current = await _fs.ReadFileBytesAsync(writeLease, entry.Path);
             if (!ExactBytesEqual(current, entry.AppliedBytes))
                 errors.Add($"canonical file changed concurrently after worker apply: {entry.Path}.");
         }
@@ -541,7 +537,8 @@ public sealed class GmWorkerApplyGate
     private async Task<IReadOnlyList<string>> VerifyReadOnlyTaskContextRemainsOwnedAsync(
         WorkerTaskPacket task,
         WorkerProposal proposal,
-        IReadOnlyDictionary<string, byte[]?> baselines)
+        IReadOnlyDictionary<string, byte[]?> baselines,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var changedPaths = proposal.ChangedFiles
             .Select(file => file.Path)
@@ -553,7 +550,7 @@ public sealed class GmWorkerApplyGate
                 continue;
 
             baselines.TryGetValue(contextFile.Path, out var baseline);
-            var current = await _fs.ReadFileBytesAsync(contextFile.Path);
+            var current = await _fs.ReadFileBytesAsync(writeLease, contextFile.Path);
             if (!ExactBytesEqual(current, baseline))
                 errors.Add($"read-only task context changed during worker apply: {contextFile.Path}.");
         }

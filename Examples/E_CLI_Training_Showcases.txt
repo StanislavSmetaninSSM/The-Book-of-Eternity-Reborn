@@ -64,8 +64,10 @@ Shared rules
   unavailable and manual fallback is necessary, include only the identity
   (`npcId`/`name`) and the fresh `trainingShowcase`. Do not resend `inventory`,
   do not replace the whole NPC object, and do not repeat `teacherProfile` unless
-  the turn is intentionally creating or changing the teacher profile itself. The
-  client normalizer applies the showcase patch to the existing full NPC object.
+  the turn is a separate bounded legacy promotion. The showcase request itself
+  never authorizes that promotion or any unrelated actor field. The client
+  normalizer applies the exact request-bound showcase patch to the existing full
+  NPC object.
 - During validation repair, when `harnessRepairPackets[].kind` is
   `training_showcase_snapshot_hash_repair`, apply
   `exactFieldCorrections[]` first. Set each listed
@@ -286,6 +288,8 @@ receipt; it is the list of available lessons.
         "schemaVersion": 1,
         "requestId": "training_req_hunter_roden_001",
         "requestKind": "mortal_teacher_showcase",
+        "sourceActorId": "npc_hunter_roden",
+        "sourceActorName": "Роден, охотник у северных ворот",
         "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
         "preparedAtTurn": 12,
         "summary": "Роден готов провести короткое практическое занятие за оплату и часть опыта текущего уровня.",

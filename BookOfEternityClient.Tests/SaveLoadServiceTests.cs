@@ -537,6 +537,13 @@ public sealed class SaveLoadServiceTests : IDisposable
         await fs.WriteFileAtomicAsync("config.json", """
         { "language": "ru" }
         """);
+        const string workerTaskPath = "worker_tasks/actor-materialization/task.json";
+        const string workerProposalPath = "worker_proposals/actor-materialization/proposal.json";
+        await fs.WriteFileAtomicAsync(workerTaskPath, "{\"owner\":\"old-session\"}");
+        await fs.WriteFileAtomicAsync(workerProposalPath, "{\"owner\":\"old-session\"}");
+        string previousGeneration;
+        await using (var generationLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            previousGeneration = fs.GetOrCreateSessionGeneration(generationLease);
         await stateManager.RefreshGameStateAsync();
         await stateManager.LoadSettingsAsync();
 
@@ -558,6 +565,10 @@ public sealed class SaveLoadServiceTests : IDisposable
         Assert.Equal("Старый герой", stateManager.CurrentState.CharacterName);
         Assert.Equal("ru", stateManager.Settings.Language);
         Assert.Contains("Старый герой", await fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal("{\"owner\":\"old-session\"}", await fs.ReadFileAsync(workerTaskPath));
+        Assert.Equal("{\"owner\":\"old-session\"}", await fs.ReadFileAsync(workerProposalPath));
+        await using (var generationLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            Assert.True(fs.IsCurrentSessionGeneration(generationLease, previousGeneration));
         Assert.False(File.Exists(fs.ActiveLoadTransactionJournalPath));
     }
 

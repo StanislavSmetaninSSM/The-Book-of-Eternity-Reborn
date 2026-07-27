@@ -213,6 +213,27 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
     }
 
     [Fact]
+    public async Task TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed()
+    {
+        const string logicalPath = "game_state/meta/soul_state.json";
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 13);
+        var authorityJson = CreateDetachedAuthorityJson(manifest);
+        var rollbackPath = manifest.RollbackBackups[logicalPath];
+        var originalBytes = await _fs.ReadFileBytesAsync(rollbackPath);
+
+        Assert.NotNull(originalBytes);
+        var preamble = Encoding.UTF8.GetPreamble();
+        Assert.True(originalBytes.AsSpan().StartsWith(preamble));
+
+        await _fs.WriteFileAtomicBytesAsync(rollbackPath, originalBytes[preamble.Length..]);
+
+        var valid = TryValidateReaderAuthority(manifest, authorityJson, out _, out var failureCode);
+
+        Assert.False(valid);
+        Assert.Equal("detached_authority_mismatch", failureCode);
+    }
+
+    [Fact]
     public void TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure()
     {
         var manifest = new TestManifest
@@ -311,6 +332,11 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
     private static string ComputeSha256(string content)
     {
         return PendingTurnSnapshotAuthority.ComputeSha256(content);
+    }
+
+    private static string ComputeSha256(byte[] content)
+    {
+        return Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
     }
 
     private async Task<TestManifest> CreateManifestWithSnapshotAndRollbackAsync(int turnNumber)

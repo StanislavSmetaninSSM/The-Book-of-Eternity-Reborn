@@ -32,6 +32,19 @@ public partial class ValidationService
         "game_state/npcs/npc_core.json"
     ];
 
+    private static readonly HashSet<string> MortalBootstrapPlayerVisibleIdentityFields =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            "name",
+            "displayName",
+            "title",
+            "targetName",
+            "npcName",
+            "locationName",
+            "factionName",
+            "questName"
+        };
+
     private async Task ValidateMortalBootstrapPlayerVisibleNamesAsync(List<ValidationIssue> issues)
     {
         if (!await IsAcceptedMortalBootstrapMaterializationAsync())
@@ -93,6 +106,7 @@ public partial class ValidationService
             ValidateMortalBootstrapPlayerVisibleNamesInElement(
                 doc.RootElement,
                 relativePath,
+                propertyName: null,
                 issues);
         }
         catch (JsonException)
@@ -104,6 +118,7 @@ public partial class ValidationService
     private void ValidateMortalBootstrapPlayerVisibleNamesInElement(
         JsonElement element,
         string context,
+        string? propertyName,
         List<ValidationIssue> issues)
     {
         switch (element.ValueKind)
@@ -113,6 +128,7 @@ public partial class ValidationService
                     ValidateMortalBootstrapPlayerVisibleNamesInElement(
                         property.Value,
                         $"{context}.{property.Name}",
+                        property.Name,
                         issues);
                 break;
             case JsonValueKind.Array:
@@ -121,11 +137,13 @@ public partial class ValidationService
                     ValidateMortalBootstrapPlayerVisibleNamesInElement(
                         item,
                         $"{context}[{index++}]",
+                        propertyName,
                         issues);
                 break;
             case JsonValueKind.String:
                 var value = element.GetString();
-                if (ContainsMortalBootstrapPlaceholderName(value))
+                if (MortalBootstrapPlayerVisibleIdentityFields.Contains(propertyName ?? string.Empty) &&
+                    ContainsMortalBootstrapPlaceholderName(value))
                     AddMortalBootstrapPlaceholderNameIssue(context, value!, issues);
                 break;
         }

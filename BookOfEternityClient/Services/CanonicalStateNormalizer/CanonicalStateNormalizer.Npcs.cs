@@ -19,12 +19,17 @@ public partial class CanonicalStateNormalizer
 
         var result = CloneObject(currentRoot);
         var authority = await ReadNpcCoreAuthorityAsync();
+        var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
+            result,
+            await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath),
+            await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath));
         var evaluation = NpcCoreChangesContract.Evaluate(
             result,
             preTurnRoot,
             authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
-            detectDirectMutations: true);
+            detectDirectMutations: true,
+            acceptedTurnAuthority);
         if (!evaluation.CanApply)
             return;
 

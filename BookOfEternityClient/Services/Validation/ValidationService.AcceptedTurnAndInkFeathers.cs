@@ -1574,12 +1574,19 @@ public partial class ValidationService
             return false;
         }
 
-        var rollbackJson = await _fs.ReadFileAsync(rollbackPath);
-        if (string.IsNullOrWhiteSpace(rollbackJson) ||
-            !string.Equals(ComputeSha256(rollbackJson), expectedHash, StringComparison.OrdinalIgnoreCase))
+        var rollbackBytes = await _fs.ReadFileBytesAsync(rollbackPath);
+        if (rollbackBytes == null ||
+            !string.Equals(
+                PendingTurnSnapshotAuthority.ComputeRollbackBackupHash(payload, rollbackBytes),
+                expectedHash,
+                StringComparison.OrdinalIgnoreCase))
         {
             return false;
         }
+
+        var rollbackJson = DecodePendingSnapshotText(rollbackBytes);
+        if (string.IsNullOrWhiteSpace(rollbackJson))
+            return false;
 
         try
         {

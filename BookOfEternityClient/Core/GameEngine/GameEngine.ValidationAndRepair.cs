@@ -3274,7 +3274,8 @@ public partial class GameEngine
             ExpectedShape = new List<string>
             {
                 $"Repair these bootstrap issue codes first: {string.Join(", ", issueCodes)}.",
-                "The first Mortal World turn must materialize the player-facing anchors from game_state/control/mortal_bootstrap_scaffold.json into canonical current-world files.",
+                "The first Mortal World turn must materialize only explicit GM-authored player-facing anchors from game_state/control/mortal_bootstrap_scaffold.json into canonical current-world files; the neutral baseline does not require factions, quests, or setting-owned location mechanics.",
+                "Every structuredGmAuthority.playerProgression, carryingRules, or factionMechanics record must name the exact canonicalPath and contain a non-empty values object that repeats every authorized canonical value; faction records also identify factionId. Empty objects, reasons, unrelated paths, and prose do not grant authority.",
                 "Current-world codex entries must describe this Mortal World, not afterlife lore or a previous world; sourceFile must start with current_world/ (for example current_world/world_setting.json), not lore/current_world/.",
                 "Readable document/book inventory items need matching detail authority so /книги or document-reading surfaces can show contents.",
                 "Starting items need canonical quality/rarity, durability when inspectable, and a valid equipment/accessory slot when item type implies one.",
@@ -3285,12 +3286,12 @@ public partial class GameEngine
             "The player character is not an NPC persistence target. If the current protagonist is named in Relevant actors, mark them as player character and do not create NPCsInScene/UpdateNPCs for them.",
             "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, people behind a door, nearbyExitLocationId actors, and route pressure do not belong in NPCsInScene for the current room.",
             "Only an explicit structuredGmAuthority.actorCapabilities[] declaration with capability=canTeach and required=true requires a matching NPC with teacherProfile.canTeach=true and non-empty teacherProfile.skills[]. playerAuthoredStart prose alone never creates this requirement.",
-            "Only an explicit structuredGmAuthority.actorCapabilities[] declaration with capability=canTrade and required=true requires a matching NPC with tradeState.canTrade=true, a valid merchantProfile, relationshipLevel, and summary. Leave tradeInventory absent until a trade vitrine is actually ready; if tradeInventory is present, it must be a full object, never a scalar/string/array placeholder.",
+            "Only an explicit structuredGmAuthority.actorCapabilities[] declaration with capability=canTrade and required=true requires a matching NPC with tradeState.canTrade=true, an explicit valid merchantProfile, relationshipLevel, and summary. Never infer merchantProfile from role, occupation, class, progression type, name, description, genre, or keywords. Leave tradeInventory absent until a trade vitrine is actually ready; if tradeInventory is present, it must be a full object, never a scalar/string/array placeholder.",
             "Every structuredGmAuthority.playerSkills[] entry is explicit GM authority. Preserve each matching active/passive skill and the active-skill mastery entry; do not infer any skill from playerAuthoredStart prose.",
             "worldEventRequirements requires the client-authored opening event to remain in game_state/world/world_events.json.worldEventsLog so /новости_мира is useful immediately after incarnation.",
             "Faction custom sidecars must carry full Custom State Objects: stateId/name, currentValue, minValue, maxValue, description, progressionRule { changePerTurn, description }, and thresholds[]; if you only need a narrative note, use faction_core chronicle instead.",
             "Active threats must be full objects, not strings: threatId/name/longTermGoal plus threatArchetype { motivation, method } and impactProfile { primaryTargetType, primaryTargetId, primaryTargetName, primaryImpact, baseImpactValue }. Use canonical enum values or keep activeThreats empty for vague pressure.",
-            "current_location coordinates/factionControl must match world_map and use object-shaped faction-control data."
+            "current_location and world_map must agree on shared identity, coordinates, and navigation links. Location type, traversal, safety, biome, difficulty, faction control, factions, chronicles, and quests are setting-owned and remain absent or empty unless the GM explicitly materializes them with complete canonical data."
             },
             SafeCorrectionRules = new List<string>
             {
@@ -3309,21 +3310,21 @@ public partial class GameEngine
                 "Patch string-array fields as JSON arrays of strings, not scalar text or semicolon-delimited strings.",
                 "Patch output/debug_logs.json Relevant actors: keep the current protagonist as player character, materialize real non-player Mortal actors through NPC/faction/quest/inventory surfaces, or move background objects to Actors outside scope with a clear reason.",
                 "Patch requested training anchors only from structuredGmAuthority.actorCapabilities: for each required canTeach declaration, add the explicitly selected NPC to NPCsInScene or UpdateNPCs with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
-                "Patch requested trade anchors only from structuredGmAuthority.actorCapabilities: for each required canTrade declaration, add the explicitly selected NPC to NPCsInScene or UpdateNPCs with tradeState.canTrade=true, tradeState.merchantProfile, relationshipLevel, summary, and a player-facing role that makes /торговля_нпс discoverable.",
+                "Patch requested trade anchors only from structuredGmAuthority.actorCapabilities: for each required canTrade declaration, add the explicitly selected NPC to NPCsInScene or UpdateNPCs with tradeState.canTrade=true, an explicit valid tradeState.merchantProfile, relationshipLevel, summary, and a player-facing role that makes /торговля_нпс discoverable. Never infer the profile from NPC prose or genre.",
                 "Patch explicit GM-authored starter competencies: copy every structuredGmAuthority.playerSkills[] entry into the matching skills_active.json or skills_passive.json canonical collection and restore matching skill_mastery.json data for active skills.",
                 "Patch opening world news: restore each worldEventRequirements.requiredEventIds entry in world_events.json.worldEventsLog and keep its title/description grounded in playerAuthoredStart.startingCircumstances.",
                 "For a promised trader, use tradeBlockedReason only when canTrade=false, and keep it a string explaining the story gate. When canTrade=true, omit tradeBlockedReason or keep it as an empty string; never write null/object/array.",
                 "For a promised trader, do not include inventory in UpdateNPCs when updating an existing NPC. Use inventory: [] only for a genuinely new full NPC object; use NPC inventory delta commands for existing NPC inventory changes.",
                 "For a promised trader, do not fabricate a partial tradeInventory just to prove the NPC can trade. Leave tradeInventory absent so /торговля_нпс can request a vitrine, unless you are writing a complete canonical tradeInventory object with valid items and matching receipts.",
                 "Patch NPCsInScene location scope: if an actor is behind a door, near nearbyExitLocationId, in another corridor, or only heard offscreen, remove them from NPCsInScene and represent them through narrative/location/quest/faction memory or UpdateNPCs at their actual location only when they are durable known actors.",
-                "Patch factions: complete faction custom/progression sidecar fields with full Custom State Objects, or move narrative-only pressure into faction_core chronicle and leave faction_custom customStates empty.",
+                "Patch factions only when the GM explicitly created them: complete faction custom/progression sidecar fields with full Custom State Objects, or move narrative-only pressure into an explicitly materialized faction chronicle. Keep neutral bootstrap faction collections empty.",
                 "Patch active threats: either write complete Active Threat Objects with canonical enum values, or remove vague string-only threats and represent pressure through location events/faction chronicle.",
-                "Patch location/map data: synchronize current_location coordinates with world_map and make factionControl an object-shaped authority.",
+                "Patch location/map data: synchronize shared identity, coordinates, and navigation links. Do not invent location type, traversal, safety, biome, difficulty, faction control, faction chronicles, or quest mechanics merely to satisfy bootstrap.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
             },
             DoNotDo = new List<string>
             {
-                "Do not delete the opening book, letter, NPC, faction, map exit, or codex hook just to silence validation.",
+                "Do not delete an explicitly GM-authored opening book, letter, NPC, faction, quest, map exit, or codex hook just to silence validation; neutral empty faction and quest collections do not require replacement entities.",
                 "Do not copy afterlife lore or previous-world lore into current-world bootstrap files.",
                 "Do not write item durability as bare numbers such as 100; use percentage strings such as 100%.",
                 "Do not write item journalEntries as objects; journalEntries[] entries must be non-empty strings.",
@@ -4934,11 +4935,15 @@ public partial class GameEngine
     {
         try
         {
-            var audit = new GmWorkerAuditLog(_fs);
+            var workerFileSystem = _validator.CanonicalFileSystem;
+            var audit = new GmWorkerAuditLog(workerFileSystem);
             var delegator = new GmWorkerValidationRepairDelegator(
-                _fs,
-                new GmWorkerBridgePool(_fs, new GmWorkerProposalStore(_fs), audit),
-                new GmWorkerApplyGate(_fs, _validator, audit),
+                workerFileSystem,
+                new GmWorkerBridgePool(
+                    workerFileSystem,
+                    new GmWorkerProposalStore(workerFileSystem),
+                    audit),
+                new GmWorkerApplyGate(_validator, audit),
                 audit);
             var result = await delegator.TryRunAsync(
                 _stateManager.Settings.GmWorkerBridgeProfiles,
@@ -5298,11 +5303,11 @@ public partial class GameEngine
         return Task.CompletedTask;
     }
 
-    private void DeleteTerminalProtocolFailureRequest(
+    private Task DeleteTerminalProtocolFailureRequestAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
-        if (_fs.FileExists(writeLease, TerminalProtocolFailureRequestPath))
-            _fs.DeleteFile(writeLease, TerminalProtocolFailureRequestPath);
+        _fs.DeleteFile(writeLease, TerminalProtocolFailureRequestPath);
+        return Task.CompletedTask;
     }
 
     private Task DeleteValidationRepairReadyAsync()

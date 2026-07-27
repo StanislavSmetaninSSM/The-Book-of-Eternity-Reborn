@@ -4566,6 +4566,29 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonPendingSnapshotAuthority_AcceptsVersionedExactByteHashContracts()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var envelopeBlock = ExtractFunctionBlock(
+            daemon,
+            "function Test-PendingTurnSnapshotAuthorityEnvelope");
+        var rollbackHashBlock = ExtractFunctionBlock(
+            daemon,
+            "function Test-PendingTurnSnapshotRollbackBackupHashes");
+        var snapshotHashBlock = ExtractFunctionBlock(
+            daemon,
+            "function Test-PendingTurnSnapshotFileHashes");
+
+        Assert.Contains("@(2, 3, 4) -notcontains $formatVersion", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("rollbackHashMode", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("snapshotHashMode", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("-HashBytesExactly ($formatVersion -ge 3)", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("-HashBytesExactly ($formatVersion -ge 4)", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("[System.IO.File]::ReadAllBytes", rollbackHashBlock, StringComparison.Ordinal);
+        Assert.Contains("[System.IO.File]::ReadAllBytes", snapshotHashBlock, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

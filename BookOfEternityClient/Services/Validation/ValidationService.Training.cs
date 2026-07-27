@@ -304,7 +304,7 @@ public partial class ValidationService
                 TrainingNpcCorePath,
                 "mortal_bootstrap_requested_trade_missing",
                 "Mortal bootstrap обещает торговлю, но не материализует ни одного NPC-торговца для /торговля_нпс.",
-                "NPCsInScene/UpdateNPCs entry with tradeState.canTrade=true and a valid or resolvable merchant profile",
+                "NPCsInScene/UpdateNPCs entry with tradeState.canTrade=true and an explicit valid merchantProfile",
                 "missing usable tradeState",
                 "Создай или обнови NPC-торговца из стартовой сцены в game_state/npcs/npc_core.json: добавь tradeState.canTrade=true, merchantProfile, relationshipLevel и summary. Если торговля сюжетно заблокирована, убери обещание немедленной покупки из player-facing сцены и запиши tradeBlockedReason.",
                 issues);
@@ -487,17 +487,8 @@ public partial class ValidationService
             return false;
         }
 
-        var merchantProfile = GetTrainingString(tradeState, "merchantProfile");
-        if (NpcTradeService.IsValidMerchantProfileCode(merchantProfile))
-            return true;
-
-        var resolvedProfile = NpcTradeService.ResolveMerchantProfileCode(
-            merchantProfile,
-            GetTrainingString(npc, "role"),
-            GetTrainingString(npc, "occupation"),
-            GetTrainingString(npc, "class"),
-            GetTrainingString(npc, "name"));
-        return !string.IsNullOrWhiteSpace(resolvedProfile);
+        return NpcTradeService.IsValidMerchantProfileCode(
+            GetTrainingString(tradeState, "merchantProfile"));
     }
 
     private static bool MortalBootstrapScaffoldRequestsTraining(JsonElement scaffold) =>

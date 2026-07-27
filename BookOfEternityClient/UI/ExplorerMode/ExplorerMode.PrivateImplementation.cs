@@ -762,6 +762,24 @@ public partial class ExplorerMode
 
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
+            var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
+            {
+                var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath)
+                    ?? throw new FileNotFoundException("Explorer rollback evidence is missing.", backupPath);
+                if (!snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) ||
+                    !string.Equals(
+                        ComputeExplorerRollbackHash(backupContent),
+                        expectedHash,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidDataException(
+                        $"Explorer rollback evidence hash mismatch for '{originalPath}'.");
+                }
+
+                validatedBackups[originalPath] = backupContent;
+            }
+
             foreach (var trackedFile in snapshot.TrackedFiles)
             {
                 if (snapshot.BaselineFiles.Contains(trackedFile))
@@ -771,25 +789,15 @@ public partial class ExplorerMode
                     _fs.DeleteFile(writeLease, trackedFile);
             }
 
-            foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
+            foreach (var (originalPath, backupContent) in validatedBackups)
             {
-                var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath);
-                if (backupContent == null)
-                    continue;
-
-                if (snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) &&
-                    !string.Equals(ComputeExplorerRollbackHash(backupContent), expectedHash, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
                 await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);
             }
 
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
+            ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
         }
 
-        DeleteEmptyExplorerRollbackDirectories();
         await _stateManager.RefreshGameStateAsync();
     }
 
@@ -800,9 +808,10 @@ public partial class ExplorerMode
             return;
 
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
-
-        DeleteEmptyExplorerRollbackDirectories();
+            ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+        }
     }
 
     private void DiscardPendingLocalTurnRollbackSnapshot(
@@ -817,27 +826,8 @@ public partial class ExplorerMode
         }
     }
 
-    private void DeleteEmptyExplorerRollbackDirectories()
-    {
-        var rollbackRoot = _fs.ResolvePath(ExplorerLocalTurnRollbackRoot);
-        if (!Directory.Exists(rollbackRoot))
-            return;
-
-        foreach (var directory in Directory.GetDirectories(rollbackRoot, "*", SearchOption.AllDirectories)
-                     .OrderByDescending(path => path.Length))
-        {
-            if (!Directory.EnumerateFileSystemEntries(directory).Any())
-                Directory.Delete(directory);
-        }
-
-        if (!Directory.EnumerateFileSystemEntries(rollbackRoot).Any())
-            Directory.Delete(rollbackRoot);
-    }
-
-    private static string ComputeExplorerRollbackHash(byte[] content)
-    {
-        return Convert.ToHexString(SHA256.HashData(content));
-    }
+    private static string ComputeExplorerRollbackHash(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content));
 
     private async Task ShowScenarioCoreReviewAsync()
     {

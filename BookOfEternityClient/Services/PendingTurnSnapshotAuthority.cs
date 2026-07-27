@@ -900,6 +900,16 @@ internal static class PendingTurnSnapshotAuthority
         byte[] content) =>
         ComputeSnapshotFileHash(payload.SnapshotHashMode, content);
 
+    internal static string ComputeRollbackBackupHash(
+        PendingTurnSnapshotAuthorityPayload payload,
+        byte[] content) =>
+        string.Equals(
+            payload.RollbackHashMode,
+            ExactRollbackHashMode,
+            StringComparison.Ordinal)
+            ? ComputeSha256(content)
+            : ComputeSha256(DecodeLegacyText(content));
+
     internal static string ComputeSnapshotFileHash(
         string? snapshotHashMode,
         byte[] content)

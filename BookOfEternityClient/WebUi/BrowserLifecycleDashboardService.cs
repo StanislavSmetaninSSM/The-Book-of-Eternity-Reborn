@@ -25,6 +25,19 @@ public sealed class BrowserLifecycleDashboardService
     public async Task<BrowserLifecycleDashboardDto> BuildDashboardAsync()
     {
         var session = await _sessionStatus.BuildStatusAsync();
+        return await BuildDashboardAsync(session);
+    }
+
+    internal async Task<BrowserLifecycleDashboardDto> BuildDashboardAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var session = await _sessionStatus.BuildStatusAsync(writeLease);
+        return await BuildDashboardAsync(session);
+    }
+
+    private async Task<BrowserLifecycleDashboardDto> BuildDashboardAsync(
+        LocalWebUiSessionStatus session)
+    {
         var soul = await BuildSoulSummaryAsync();
         var validation = await BuildValidationAsync();
 

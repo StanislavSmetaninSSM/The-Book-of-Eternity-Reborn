@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Collections;
+using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -552,10 +553,13 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         string capturedGeneration;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
-        {
             capturedGeneration = _fs.GetOrCreateSessionGeneration(lease);
-            _fs.RotateSessionGeneration(lease);
-            await _fs.WriteFileAtomicAsync(lease, trackedPath, replacementWeather);
+        await using (var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync())
+        await using (var replacementLease =
+                     await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease))
+        {
+            _fs.RotateSessionGeneration(replacementLease);
+            await _fs.WriteFileAtomicAsync(replacementLease, trackedPath, replacementWeather);
         }
 
         var issue = new ValidationIssue(
@@ -841,6 +845,50 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement()
+    {
+        const string replacementPath = "game_state/world/late-idle-replacement.json";
+        var operationBound = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseOldOperation = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var engine = CreateGameEngine(
+            new QueuedConsoleInputSource([]),
+            finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (!string.Equals(
+                            checkpoint.ToString(),
+                            "LateTerminalAndIdleOperationBound",
+                            StringComparison.Ordinal))
+                    {
+                        return;
+                    }
+
+                    operationBound.TrySetResult();
+                    await releaseOldOperation.Task;
+                }
+            });
+        var method = typeof(GameEngine).GetMethod(
+            "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var oldOperation = Assert.IsAssignableFrom<Task<bool>>(method!.Invoke(engine, null));
+
+        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await _fs.ClearGameStateAsync();
+        await _fs.WriteFileAtomicAsync(replacementPath, "{\"owner\":\"replacement\"}");
+        releaseOldOperation.TrySetResult();
+
+        await Assert.ThrowsAsync<SessionReplacedException>(
+            () => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));
+        Assert.Equal(
+            "{\"owner\":\"replacement\"}",
+            await _fs.ReadFileAsync(replacementPath));
+    }
+
+    [Fact]
     public async Task HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement()
     {
         await _fs.WriteFileAtomicAsync(
@@ -951,6 +999,46 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal(string.Empty, gameLoop.SessionId);
         Assert.Equal(0, gameLoop.TurnNumber);
         Assert.False(GetPrivateFieldValue<bool>(engine, "_inGame"));
+    }
+
+    [Fact]
+    public async Task LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """{ "soulName": "Старая душа", "currentRealm": "Chaos Sea" }""");
+        var savePath = _fs.ResolvePath("saves/manual_saves/runtime-rebind.zip");
+        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
+        using (var archive = ZipFile.Open(savePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveTextEntryAsync(
+                archive,
+                "game_state/meta/soul_state.json",
+                """{ "soulName": "Загруженная душа", "currentRealm": "Chaos Sea" }""");
+            await WriteArchiveTextEntryAsync(
+                archive,
+                "game_state/history/chat_log.json",
+                """{ "sessionId": "loaded-session", "messages": [] }""");
+            await WriteArchiveTextEntryAsync(
+                archive,
+                "stories/loaded-turn.json",
+                """{ "turn": 7, "response": "loaded" }""");
+        }
+
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        gameLoop.SetSession("save-list-metadata-session", 99);
+        var method = typeof(GameEngine).GetMethod(
+            "LoadSelectedSaveAndRebindRuntimeAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        var loaded = await Assert.IsAssignableFrom<Task<bool>>(
+            method!.Invoke(engine, [savePath]));
+
+        Assert.True(loaded);
+        Assert.Equal("loaded-session", gameLoop.SessionId);
+        Assert.Equal(7, gameLoop.TurnNumber);
     }
 
     [Fact]
@@ -1331,8 +1419,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var context = pendingResolution.GetType().GetProperty("Context")!.GetValue(pendingResolution);
         Assert.NotNull(context);
         var staleGeneration = await GetOrCreateSessionGenerationAsync();
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            _fs.RotateSessionGeneration(writeLease);
+        await SessionReplacementTestHarness.RotateGenerationAsync(_fs);
         const string replacementSignal = "{\"status\":\"replacement-session\"}";
         await _fs.WriteFileAtomicAsync("ready/turn_error.json", replacementSignal);
 
@@ -1446,8 +1533,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
         var staleGeneration = await GetOrCreateSessionGenerationAsync();
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            _fs.RotateSessionGeneration(writeLease);
+        await SessionReplacementTestHarness.RotateGenerationAsync(_fs);
 
         var exception = await Assert.ThrowsAsync<GmWorkerSessionReplacedException>(() =>
             InvokePrivateTaskAsync(
@@ -1467,8 +1553,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
         var staleGeneration = await GetOrCreateSessionGenerationAsync();
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            _fs.RotateSessionGeneration(writeLease);
+        await SessionReplacementTestHarness.RotateGenerationAsync(_fs);
         const string replacement = "{\"guardians\":[],\"questProgressUpdates\":[{\"questId\":\"new-session\"}]}";
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", replacement);
 
@@ -8116,6 +8201,79 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles()
+    {
+        const string firstPath = "game_state/core/a_atomic_snapshot.json";
+        const string laterPath = "game_state/world/z_atomic_snapshot.json";
+        const string firstBaseline = """{"version":"first-baseline"}""";
+        const string laterBaseline = """{"version":"later-baseline"}""";
+        const string laterConcurrent = """{"version":"concurrent-writer"}""";
+        await _fs.WriteFileAtomicAsync(firstPath, firstBaseline);
+        await _fs.WriteFileAtomicAsync(laterPath, laterBaseline);
+
+        var writerContended = NewSignal();
+        var writerFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    writerContended.TrySetResult(true);
+                    return Task.CompletedTask;
+                }
+            });
+        var firstCaptured = NewSignal();
+        var releaseSnapshot = NewSignal();
+        var engine = CreateGameEngine();
+        engine.ConfigureSnapshotPublicationHooksForTesting(
+            new GameEngineSnapshotPublicationHooks
+            {
+                AfterSnapshotFileCapturedAsync = async path =>
+                {
+                    if (!path.Equals(firstPath, StringComparison.OrdinalIgnoreCase))
+                        return;
+
+                    firstCaptured.TrySetResult(true);
+                    await releaseSnapshot.Task;
+                }
+            });
+        var request = new TurnRequest
+        {
+            SessionId = "session_atomic_snapshot",
+            RequestId = "request_atomic_snapshot",
+            TurnNumber = 42,
+            PlayerAction = "atomic snapshot test",
+            Timestamp = "2026-07-26T00:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+        };
+
+        var snapshotTask = InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            null,
+            "atomic snapshot test");
+        await firstCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var writerTask = writerFs.WriteFileAtomicAsync(laterPath, laterConcurrent);
+        await writerContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.False(writerTask.IsCompleted);
+
+        releaseSnapshot.TrySetResult(true);
+        await snapshotTask;
+        await writerTask;
+
+        Assert.Equal(
+            firstBaseline,
+            await _fs.ReadFileAsync($"game_state/control/pending_turn_snapshot/{firstPath}"));
+        Assert.Equal(
+            laterBaseline,
+            await _fs.ReadFileAsync($"game_state/control/pending_turn_snapshot/{laterPath}"));
+        Assert.Equal(laterConcurrent, await _fs.ReadFileAsync(laterPath));
+    }
+
+    [Fact]
     public async Task LoadCanonicalBaselineSnapshotAsync_AbsentCanonicalFiles_DoNotInvalidateExistingBaseline()
     {
         const string soulStatePath = "game_state/meta/soul_state.json";
@@ -8806,6 +8964,58 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom()
+    {
+        const string path = "game_state/world/weather.json";
+        var baseline = Encoding.UTF8.GetBytes("""{"weather":"exact"}""");
+        await _fs.WriteFileAtomicBytesAsync(path, baseline);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "exact_bytes");
+
+        await _fs.WriteFileAtomicAsync(path, """{"weather":"changed"}""");
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
+
+        Assert.Equal(baseline, await _fs.ReadFileBytesAsync(path));
+    }
+
+    [Fact]
+    public async Task CreatePreTurnBackup_WhenAnyTrackedFileCannotBeCaptured_FailsInsteadOfReturningPartialAuthority()
+    {
+        const string path = "game_state/world/weather.json";
+        const string backupId = "capture_failure";
+        await _fs.WriteFileAtomicAsync(path, """{"weather":"baseline"}""");
+        Directory.CreateDirectory(_fs.ResolvePath(path + $".rollback.{backupId}"));
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+
+        await Assert.ThrowsAnyAsync<Exception>(
+            () => InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", backupId));
+    }
+
+    [Fact]
+    public async Task RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence()
+    {
+        const string path = "game_state/world/weather.json";
+        const string backupPath = path + ".rollback.corrupt_evidence";
+        await _fs.WriteFileAtomicAsync(path, """{"weather":"baseline"}""");
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "corrupt_evidence");
+        await _fs.WriteFileAtomicAsync(backupPath, """{"weather":"tampered"}""");
+        await _fs.WriteFileAtomicAsync(path, """{"weather":"changed"}""");
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot));
+
+        Assert.True(_fs.FileExists(backupPath));
+        Assert.Contains("changed", await _fs.ReadFileAsync(path), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles()
     {
         const string worldSettingPath = "lore/current_world/world_setting.json";
@@ -9269,7 +9479,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
     private async Task<TurnRequest> WaitForTurnRequestAsync()
     {
-        var deadline = DateTime.UtcNow.AddSeconds(5);
+        var deadline = DateTime.UtcNow.AddSeconds(30);
         while (DateTime.UtcNow < deadline)
         {
             var json = await _fs.ReadFileAsync("input/turn_request.json");
@@ -9335,6 +9545,20 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         return _fs.GetOrCreateSessionGeneration(writeLease);
+    }
+
+    private static TaskCompletionSource<bool> NewSignal() =>
+        new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private static async Task WriteArchiveTextEntryAsync(
+        ZipArchive archive,
+        string path,
+        string content)
+    {
+        var entry = archive.CreateEntry(path);
+        await using var stream = entry.Open();
+        await using var writer = new StreamWriter(stream);
+        await writer.WriteAsync(content);
     }
 
     private static async Task<T> InvokePrivateAsync<T>(object instance, string methodName, params object?[]? args)

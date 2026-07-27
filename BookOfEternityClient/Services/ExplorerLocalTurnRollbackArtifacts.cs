@@ -44,16 +44,20 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string trackedFile,
         string scope)
     {
-        if (string.IsNullOrWhiteSpace(trackedFile) || !fs.FileExists(trackedFile))
+        if (string.IsNullOrWhiteSpace(trackedFile))
             return null;
 
-        var content = await fs.ReadFileAsync(trackedFile);
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        if (!fs.FileExists(writeLease, trackedFile))
+            return null;
+
+        var content = await fs.ReadFileBytesAsync(writeLease, trackedFile);
         if (content == null)
             return null;
 
         var backupPath =
             $"{Root}/{SafeSegment(scope)}/{DateTime.UtcNow.Ticks}_{Guid.NewGuid():N}/{CreateSafeBackupFileName(trackedFile)}.rollback.{Guid.NewGuid():N}";
-        await fs.WriteFileAtomicAsync(backupPath, content);
+        await fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
         return backupPath;
     }
 
@@ -156,7 +160,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 }
             }
 
-            TryDeleteEmptyDirectories(fs);
+            TryDeleteEmptyDirectories(fs, writeLease);
             throw;
         }
     }
@@ -255,6 +259,26 @@ public static class ExplorerLocalTurnRollbackArtifacts
             throw new InvalidDataException($"Rollback evidence for '{entry.TrackedFile}' failed its exact-byte hash check.");
 
         return content;
+    }
+
+    internal static async Task RestoreBrowserWriteEntryAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserWriteRollbackEntry entry)
+    {
+        var content = await ReadBrowserWriteBeforeImageAsync(fs, writeLease, entry);
+        if (entry.Existed)
+        {
+            var current = await fs.ReadFileBytesAsync(writeLease, entry.TrackedFile);
+            if (current != null && current.AsSpan().SequenceEqual(content))
+                return;
+
+            await fs.WriteFileAtomicBytesAsync(writeLease, entry.TrackedFile, content!);
+            return;
+        }
+
+        if (fs.FileExists(writeLease, entry.TrackedFile))
+            fs.DeleteFile(writeLease, entry.TrackedFile);
     }
 
     internal static bool TryDeleteBrowserWriteTransaction(
@@ -391,11 +415,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         {
             try
             {
-                var content = await ReadBrowserWriteBeforeImageAsync(fs, writeLease, entry);
-                if (entry.Existed)
-                    await fs.WriteFileAtomicBytesAsync(writeLease, entry.TrackedFile, content!);
-                else if (fs.FileExists(writeLease, entry.TrackedFile))
-                    fs.DeleteFile(writeLease, entry.TrackedFile);
+                await RestoreBrowserWriteEntryAsync(fs, writeLease, entry);
             }
             catch (Exception ex)
             {
@@ -485,6 +505,16 @@ public static class ExplorerLocalTurnRollbackArtifacts
             return Array.Empty<StagedBackup>();
 
         var gameSessionRoot = fs.ResolvePath("");
+        var options = new EnumerationOptions
+        {
+            RecurseSubdirectories = true,
+            AttributesToSkip = FileAttributes.ReparsePoint,
+            IgnoreInaccessible = false
+        };
+        var availableBackups = Directory
+            .EnumerateFiles(root, "*.rollback.*", options)
+            .Select(path => new FileInfo(path))
+            .ToArray();
         var backups = new List<StagedBackup>();
         foreach (var trackedFile in trackedFiles
                      .Where(static path => !string.IsNullOrWhiteSpace(path))
@@ -492,9 +522,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
                      .Distinct(StringComparer.OrdinalIgnoreCase))
         {
             var safeName = CreateSafeBackupFileName(trackedFile);
-            var match = Directory
-                .GetFiles(root, $"{safeName}.rollback.*", SearchOption.AllDirectories)
-                .Select(static path => new FileInfo(path))
+            var match = availableBackups
+                .Where(file => file.Name.StartsWith(
+                    $"{safeName}.rollback.",
+                    StringComparison.OrdinalIgnoreCase))
                 .OrderByDescending(static file => file.LastWriteTimeUtc)
                 .ThenByDescending(static file => file.FullName, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault();
@@ -534,10 +565,17 @@ public static class ExplorerLocalTurnRollbackArtifacts
 
     public static void DeleteBackup(FileSystemManager fs, string? backupPath)
     {
-        if (!string.IsNullOrWhiteSpace(backupPath) && fs.FileExists(backupPath))
-            fs.DeleteFile(backupPath);
-
-        DeleteEmptyDirectories(fs);
+        var writeLease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(backupPath))
+                fs.DeleteFile(writeLease, backupPath);
+            DeleteEmptyDirectories(fs, writeLease);
+        }
+        finally
+        {
+            writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        }
     }
 
     internal static void DeleteBackup(
@@ -548,31 +586,29 @@ public static class ExplorerLocalTurnRollbackArtifacts
         if (!string.IsNullOrWhiteSpace(backupPath) && fs.FileExists(writeLease, backupPath))
             fs.DeleteFile(writeLease, backupPath);
 
-        DeleteEmptyDirectories(fs);
+        DeleteEmptyDirectories(fs, writeLease);
     }
 
     public static void DeleteEmptyDirectories(FileSystemManager fs)
     {
-        var rollbackRoot = fs.ResolvePath(Root);
-        if (!Directory.Exists(rollbackRoot))
-            return;
-
-        foreach (var directory in Directory.GetDirectories(rollbackRoot, "*", SearchOption.AllDirectories)
-                     .OrderByDescending(static path => path.Length))
+        var writeLease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        try
         {
-            if (!Directory.EnumerateFileSystemEntries(directory).Any())
-                Directory.Delete(directory);
+            DeleteEmptyDirectories(fs, writeLease);
         }
-
-        if (!Directory.EnumerateFileSystemEntries(rollbackRoot).Any())
-            Directory.Delete(rollbackRoot);
+        finally
+        {
+            writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        }
     }
 
-    private static void TryDeleteEmptyDirectories(FileSystemManager fs)
+    private static void TryDeleteEmptyDirectories(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         try
         {
-            DeleteEmptyDirectories(fs);
+            DeleteEmptyDirectories(fs, writeLease);
         }
         catch
         {
@@ -595,6 +631,11 @@ public static class ExplorerLocalTurnRollbackArtifacts
 
         return 0;
     }
+
+    internal static void DeleteEmptyDirectories(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        fs.DeleteEmptyDirectories(writeLease, Root);
 
     private static string CreateSafeBackupFileName(string trackedFile)
     {

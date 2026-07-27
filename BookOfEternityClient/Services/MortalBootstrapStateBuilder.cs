@@ -35,11 +35,8 @@ public static class MortalBootstrapStateBuilder
         var circumstances = FirstNonEmpty(startingCircumstances, "первая сцена смертной жизни ещё не уточнена");
         var currentLocationId = $"loc_{idSuffix}_start";
         var nearbyExitId = $"loc_{idSuffix}_nearby_exit";
-        var factionId = $"faction_{idSuffix}_initial_context";
-        var questId = $"quest_{idSuffix}_opening_hook";
         var locationName = "Стартовая сцена новой жизни";
         var exitName = "Ближайший выход из стартовой сцены";
-        var factionName = "Силы стартовой сцены";
         var shortCircumstances = TrimSentence(circumstances, 180);
         var turnAnchor = $"#[{turn}].";
 
@@ -98,12 +95,10 @@ public static class MortalBootstrapStateBuilder
                     }
                 }
             },
-            ["lore/codex_entries.json"] = BuildCodexEntries(idSuffix, lifeNumber, timestamp, world, factionName),
+            ["lore/codex_entries.json"] = BuildCodexEntries(idSuffix, lifeNumber, timestamp, world),
             ["game_state/world/current_location.json"] = BuildCurrentLocation(
                 currentLocationId,
                 nearbyExitId,
-                factionId,
-                factionName,
                 locationName,
                 exitName,
                 shortCircumstances,
@@ -125,12 +120,18 @@ public static class MortalBootstrapStateBuilder
             ["game_state/player/skills_active.json"] = BuildActiveSkills(),
             ["game_state/player/skills_passive.json"] = BuildPassiveSkills(),
             ["game_state/player/skill_mastery.json"] = BuildSkillMastery(),
-            ["game_state/factions/faction_core.json"] = BuildFactionCore(factionId, factionName, shortCircumstances, turn, timestamp),
+            ["game_state/factions/faction_core.json"] = new()
+            {
+                ["factions"] = new JsonArray()
+            },
             ["game_state/factions/faction_resources.json"] = new()
             {
                 ["entries"] = new JsonArray()
             },
-            ["game_state/quests/regular_quests.json"] = BuildRegularQuests(questId, currentLocationId, factionId, shortCircumstances, turn)
+            ["game_state/quests/regular_quests.json"] = new()
+            {
+                ["quests"] = new JsonArray()
+            }
         };
 
         return files;
@@ -201,8 +202,6 @@ public static class MortalBootstrapStateBuilder
     private static JsonObject BuildCurrentLocation(
         string currentLocationId,
         string nearbyExitId,
-        string factionId,
-        string factionName,
         string locationName,
         string exitName,
         string shortCircumstances,
@@ -213,8 +212,6 @@ public static class MortalBootstrapStateBuilder
             ["name"] = locationName,
             ["displayName"] = locationName,
             ["region"] = "Стартовый регион",
-            ["type"] = "indoor",
-            ["locationType"] = "indoor",
             ["description"] = shortCircumstances,
             ["coordinates"] = Coordinates(0, 0, 0),
             ["knownExits"] = new JsonArray
@@ -225,7 +222,6 @@ public static class MortalBootstrapStateBuilder
                     ["targetName"] = exitName,
                     ["direction"] = "наружу",
                     ["isKnown"] = true,
-                    ["isBlocked"] = false,
                     ["summary"] = "Первый очевидный путь из стартовой сцены."
                 }
             },
@@ -236,22 +232,16 @@ public static class MortalBootstrapStateBuilder
                     ["targetLocationId"] = nearbyExitId,
                     ["targetName"] = exitName,
                     ["direction"] = "наружу",
-                    ["travelMode"] = "walk",
                     ["isKnown"] = true,
                     ["name"] = "Путь из стартовой сцены",
                     ["shortDescription"] = "Первый известный выход, который ГМ может уточнить художественно.",
-                    ["linkType"] = "passage",
                     ["linkState"] = "known",
-                    ["targetCoordinates"] = Coordinates(1, 0, 0),
-                    ["estimatedInternalDifficultyProfile"] = DifficultyProfile(1, 1, 1, 2, "Выход известен, но подробности сцены определит ГМ."),
-                    ["estimatedExternalDifficultyProfile"] = DifficultyProfile(1, 1, 1, 2, "За пределами стартовой сцены мир ещё не раскрыт.")
+                    ["targetCoordinates"] = Coordinates(1, 0, 0)
                 }
             },
             ["factionControl"] = new JsonArray(),
             ["locationStorages"] = new JsonArray(),
             ["activeThreats"] = new JsonArray(),
-            ["internalDifficultyProfile"] = DifficultyProfile(1, 1, 1, 2, "Стартовая сцена безопасна как baseline; ГМ может добавить давление валидным обновлением."),
-            ["externalDifficultyProfile"] = DifficultyProfile(1, 1, 1, 2, "Ближайшее окружение ещё не раскрыто."),
             ["lastEventsDescription"] = lastEventsDescription
         };
 
@@ -272,8 +262,6 @@ public static class MortalBootstrapStateBuilder
                     ["name"] = locationName,
                     ["displayName"] = locationName,
                     ["region"] = "Стартовый регион",
-                    ["type"] = "indoor",
-                    ["locationType"] = "indoor",
                     ["description"] = shortCircumstances,
                     ["coordinates"] = Coordinates(0, 0, 0),
                     ["exits"] = new JsonArray
@@ -293,8 +281,6 @@ public static class MortalBootstrapStateBuilder
                     ["name"] = exitName,
                     ["displayName"] = exitName,
                     ["region"] = "Стартовый регион",
-                    ["type"] = "indoor",
-                    ["locationType"] = "indoor",
                     ["description"] = "Ближайшая ещё не раскрытая точка выхода из стартовой сцены.",
                     ["coordinates"] = Coordinates(1, 0, 0),
                     ["exits"] = new JsonArray
@@ -317,14 +303,11 @@ public static class MortalBootstrapStateBuilder
                     ["targetLocationId"] = nearbyExitId,
                     ["name"] = "Путь из стартовой сцены",
                     ["shortDescription"] = "Связь между стартовой точкой и ближайшим выходом.",
-                    ["linkType"] = "passage",
                     ["linkState"] = "known",
                     ["direction"] = "наружу",
                     ["isKnown"] = true,
                     ["targetName"] = exitName,
-                    ["targetCoordinates"] = Coordinates(1, 0, 0),
-                    ["estimatedInternalDifficultyProfile"] = DifficultyProfile(1, 1, 1, 2, "Безопасный первый переход."),
-                    ["estimatedExternalDifficultyProfile"] = DifficultyProfile(1, 1, 1, 2, "Подробности окружения появятся в ходе игры.")
+                    ["targetCoordinates"] = Coordinates(1, 0, 0)
                 }
             },
             ["worldMapUpdates"] = new JsonObject
@@ -334,93 +317,11 @@ public static class MortalBootstrapStateBuilder
             }
         };
 
-    private static JsonObject BuildFactionCore(
-        string factionId,
-        string factionName,
-        string shortCircumstances,
-        int turn,
-        string timestamp) =>
-        new()
-        {
-            ["factions"] = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["name"] = factionName,
-                    ["displayName"] = factionName,
-                    ["description"] = $"Минимальная стартовая фракционная опора для первой смертной сцены: {shortCircumstances}",
-                    ["type"] = "local_context",
-                    ["status"] = "active",
-                    ["visibility"] = "known",
-                    ["ranks"] = new JsonObject
-                    {
-                        ["entries"] = new JsonArray(),
-                        ["hierarchySummary"] = "Ранги пока не раскрыты."
-                    },
-                    ["rankBranches"] = new JsonArray(),
-                    ["relations"] = new JsonArray(),
-                    ["controlledTerritories"] = new JsonArray(),
-                    ["projects"] = new JsonArray(),
-                    ["chronicle"] = new JsonArray
-                    {
-                        new JsonObject
-                        {
-                            ["entryId"] = $"chron_{factionId}_bootstrap",
-                            ["title"] = "Стартовая сцена",
-                            ["summary"] = "Фракционная опора появилась вместе с первыми обстоятельствами смертной жизни.",
-                            ["turn"] = turn,
-                            ["timestamp"] = timestamp,
-                            ["visibility"] = "known"
-                        }
-                    },
-                    ["customStates"] = new JsonArray()
-                }
-            }
-        };
-
-    private static JsonObject BuildRegularQuests(
-        string questId,
-        string currentLocationId,
-        string factionId,
-        string shortCircumstances,
-        int turn) =>
-        new()
-        {
-            ["quests"] = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["questId"] = questId,
-                    ["questName"] = "Первые минуты новой жизни",
-                    ["title"] = "Первые минуты новой жизни",
-                    ["status"] = "Active",
-                    ["category"] = "opening",
-                    ["summary"] = shortCircumstances,
-                    ["description"] = $"Разобраться в обстоятельствах первой сцены: {shortCircumstances}",
-                    ["questBackground"] = "Первая цель новой жизни удерживает выбранные обстоятельства старта и помогает не потерять ближайшие зацепки.",
-                    ["questGiver"] = "Обстоятельства новой жизни",
-                    ["objectives"] = new JsonArray
-                    {
-                        new JsonObject
-                        {
-                            ["objectiveId"] = $"obj_{questId}_orient",
-                            ["description"] = "Осмотреться и понять ближайшую угрозу или возможность.",
-                            ["status"] = "Active"
-                        }
-                    },
-                    ["relatedLocationIds"] = new JsonArray(currentLocationId),
-                    ["relatedFactionIds"] = new JsonArray(factionId),
-                    ["relatedItemIds"] = new JsonArray(),
-                    ["startedAtTurn"] = turn,
-                    ["lastUpdatedTurn"] = turn,
-                    ["visibility"] = "known",
-                    ["detailsLog"] = new JsonArray($"#[{turn}]. Первая цель новой жизни связала выбранные обстоятельства стартовой сцены.")
-                }
-            }
-        };
-
-    private static JsonObject BuildCodexEntries(string idSuffix, int incarnationNumber, string timestamp, string world, string factionName)
+    private static JsonObject BuildCodexEntries(
+        string idSuffix,
+        int incarnationNumber,
+        string timestamp,
+        string world)
     {
         var entries = new JsonArray
         {
@@ -433,17 +334,7 @@ public static class MortalBootstrapStateBuilder
                 timestamp,
                 incarnationNumber,
                 "Стартовая запись текущего смертного мира",
-                "current_world"),
-            BuildCodexEntry(
-                $"codex_{idSuffix}_starting_faction",
-                factionName,
-                "factions",
-                "Стартовая фракционная опора текущей сцены. ГМ может уточнить её название, роль и связи валидным обновлением.",
-                "game_state/factions/faction_core.json",
-                timestamp,
-                incarnationNumber,
-                "Начало текущей смертной жизни",
-                "faction")
+                "current_world")
         };
 
         return new JsonObject
@@ -505,15 +396,6 @@ public static class MortalBootstrapStateBuilder
         ["x"] = x,
         ["y"] = y,
         ["z"] = z
-    };
-
-    private static JsonObject DifficultyProfile(int combat, int environment, int social, int exploration, string summary) => new()
-    {
-        ["combat"] = combat,
-        ["environment"] = environment,
-        ["social"] = social,
-        ["exploration"] = exploration,
-        ["summary"] = summary
     };
 
     private static string FirstNonEmpty(params string?[] values) =>

@@ -759,9 +759,9 @@ public sealed class NpcCoreChangesTests : IDisposable
     }
 
     [Theory]
-    [InlineData("tradeInventory", """{"tradeCycleId":"cycle_request_bound","items":[]}""")]
-    [InlineData("trainingShowcase", """{"requestId":"training_request_bound","offers":[]}""")]
-    public async Task ValidatePreNormalizationNpcCoreChanges_RequestBoundSurfaceMutation_IsLeftToDedicatedValidator(
+    [InlineData("tradeInventory", """{"tradeCycleId":"cycle_without_request","items":[]}""")]
+    [InlineData("trainingShowcase", """{"requestId":"training_without_request","offers":[]}""")]
+    public async Task ValidatePreNormalizationNpcCoreChanges_RequestBoundSurfaceWithoutRequest_IsRejected(
         string propertyName,
         string valueJson)
     {
@@ -770,7 +770,207 @@ public sealed class NpcCoreChangesTests : IDisposable
 
         var issues = await InvokePreNormalizationValidationAsync();
 
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_ExactTradeRequestWithoutReceipt_IsRejected()
+    {
+        NpcCoreFixture? fixture = null;
+        fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            actor["tradeInventory"] = BuildRequestBoundTradeInventory();
+            root["UpdateNpcTradeInventoryReceipts"] = new JsonArray();
+        });
+        var requestJson = BuildNpcTradeRequestJson(fixture.ActorId);
+        await AddValidatedSnapshotFileAsync(NpcTradeRequestState.PendingRequestPath, requestJson);
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_ExactTradeRequestAndReceipt_AuthorizeStockReplacement()
+    {
+        NpcCoreFixture? fixture = null;
+        fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            actor["tradeInventory"] = BuildRequestBoundTradeInventory();
+            root["UpdateNpcTradeInventoryReceipts"] = new JsonArray(
+                BuildRequestBoundTradeReceipt(actor["NPCId"]!.GetValue<string>()));
+        });
+        var requestJson = BuildNpcTradeRequestJson(fixture.ActorId);
+        await AddValidatedSnapshotFileAsync(NpcTradeRequestState.PendingRequestPath, requestJson);
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
         Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_TradeReceiptCannotAuthorizeNonObjectStockSlot()
+    {
+        NpcCoreFixture? fixture = null;
+        fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            var inventory = BuildRequestBoundTradeInventory();
+            inventory["items"] = new JsonArray("not_an_item_object");
+            actor["tradeInventory"] = inventory;
+
+            var receipt = BuildRequestBoundTradeReceipt(actor["NPCId"]!.GetValue<string>());
+            receipt["itemCount"] = 0;
+            root["UpdateNpcTradeInventoryReceipts"] = new JsonArray(receipt);
+        });
+        await AddValidatedSnapshotFileAsync(
+            NpcTradeRequestState.PendingRequestPath,
+            BuildNpcTradeRequestJson(fixture.ActorId));
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_ExactTrainingRequest_AuthorizesShowcaseReplacement()
+    {
+        NpcCoreFixture? fixture = null;
+        string? sourceHash = null;
+        fixture = await WriteFixtureAsync((_, actor, _) =>
+        {
+            sourceHash = TrainingService.ComputeSourceSnapshotHash(actor);
+            actor["trainingShowcase"] = BuildRequestBoundTrainingShowcase(
+                actor["NPCId"]!.GetValue<string>(),
+                sourceHash);
+        });
+        var requestJson = BuildTrainingShowcaseRequestJson(fixture.ActorId, sourceHash!);
+        await AddValidatedSnapshotFileAsync(TrainingRequestState.PendingRequestPath, requestJson);
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_ExactTrainingRequest_AuthorizesDedicatedNarrowPatch()
+    {
+        NpcCoreFixture? fixture = null;
+        string? sourceHash = null;
+        fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            sourceHash = TrainingService.ComputeSourceSnapshotHash(actor);
+            root["UpdateNPCs"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["name"] = actor["name"]!.GetValue<string>(),
+                ["trainingShowcase"] = BuildRequestBoundTrainingShowcase(
+                    actor["NPCId"]!.GetValue<string>(),
+                    sourceHash)
+            });
+        });
+        await AddValidatedSnapshotFileAsync(
+            TrainingRequestState.PendingRequestPath,
+            BuildTrainingShowcaseRequestJson(fixture.ActorId, sourceHash!));
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_TrainingPatchWithChangedDisplayIdentity_IsRejected()
+    {
+        NpcCoreFixture? fixture = null;
+        string? sourceHash = null;
+        fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            sourceHash = TrainingService.ComputeSourceSnapshotHash(actor);
+            root["UpdateNPCs"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["name"] = "Подменённый наставник",
+                ["trainingShowcase"] = BuildRequestBoundTrainingShowcase(
+                    actor["NPCId"]!.GetValue<string>(),
+                    sourceHash)
+            });
+        });
+        await AddValidatedSnapshotFileAsync(
+            TrainingRequestState.PendingRequestPath,
+            BuildTrainingShowcaseRequestJson(fixture.ActorId, sourceHash!));
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_TrainingPatchWithUnrelatedField_IsRejected()
+    {
+        NpcCoreFixture? fixture = null;
+        string? sourceHash = null;
+        fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            sourceHash = TrainingService.ComputeSourceSnapshotHash(actor);
+            root["UpdateNPCs"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["name"] = actor["name"]!.GetValue<string>(),
+                ["history"] = "Постороннее изменение, замаскированное под подготовку витрины.",
+                ["trainingShowcase"] = BuildRequestBoundTrainingShowcase(
+                    actor["NPCId"]!.GetValue<string>(),
+                    sourceHash)
+            });
+        });
+        await AddValidatedSnapshotFileAsync(
+            TrainingRequestState.PendingRequestPath,
+            BuildTrainingShowcaseRequestJson(fixture.ActorId, sourceHash!));
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_TrueLegacyPromotionWithClosedRoleFields_IsAccepted()
+    {
+        var fixture = await WriteFixtureAsync((_, actor, preTurnActor) =>
+            ConfigureTrueLegacyTeacherPromotion(actor, preTurnActor));
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
+            issue.Actor == $"mortal_npc:{fixture.ActorId}");
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_TrueLegacyPromotionWithUnrelatedMutation_IsRejected()
+    {
+        var fixture = await WriteFixtureAsync((_, actor, preTurnActor) =>
+        {
+            ConfigureTrueLegacyTeacherPromotion(actor, preTurnActor);
+            actor["history"] = "Попытка провести постороннее изменение вместе с promotion.";
+        });
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
             issue.Code == "npc_existing_core_direct_mutation_forbidden" &&
             issue.Actor == $"mortal_npc:{fixture.ActorId}");
     }
@@ -1142,13 +1342,7 @@ public sealed class NpcCoreChangesTests : IDisposable
     private async Task<NpcCoreFixture> WriteFixtureAsync(
         Action<JsonObject, JsonObject, JsonObject>? mutateCurrent = null)
     {
-        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
-            incarnationNumber: 1,
-            turnNumber: 8,
-            characterDescription: "Архивист пограничного города.",
-            worldDescription: "Город архивов и сигнальных башен.",
-            startingCircumstances: "Наставник предлагает первый урок чтения печатей.",
-            createdAtUtc: DateTimeOffset.Parse("2026-07-22T00:00:00Z"));
+        var files = CreateNpcCoreWorldFixtureFiles();
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
 
@@ -1194,6 +1388,103 @@ public sealed class NpcCoreChangesTests : IDisposable
         await _fs.WriteFileAtomicAsync(NpcCorePath, currentRoot.ToJsonString());
         await WriteSnapshotAsync(fixture);
         return fixture;
+    }
+
+    private static IReadOnlyDictionary<string, JsonObject> CreateNpcCoreWorldFixtureFiles()
+    {
+        const string locationId = "loc_npc_contract_fixture";
+        const string locationName = "Contract test location";
+        const string factionId = "faction_npc_contract_fixture";
+        const string factionName = "Contract test faction";
+        JsonObject Coordinates(int x, int y, int z) => new()
+        {
+            ["x"] = x,
+            ["y"] = y,
+            ["z"] = z
+        };
+        JsonObject DifficultyProfile() => new()
+        {
+            ["combat"] = 1,
+            ["environment"] = 1,
+            ["social"] = 1,
+            ["exploration"] = 1,
+            ["summary"] = "Explicit test-only difficulty authority."
+        };
+
+        return new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["game_state/world/current_location.json"] = new JsonObject
+            {
+                ["locationId"] = locationId,
+                ["name"] = locationName,
+                ["displayName"] = locationName,
+                ["region"] = "Contract test region",
+                ["type"] = "test_location",
+                ["locationType"] = "test_location",
+                ["description"] = "An explicit world fixture for NPC core contract tests.",
+                ["coordinates"] = Coordinates(0, 0, 0),
+                ["knownExits"] = new JsonArray(),
+                ["adjacencyMap"] = new JsonArray(),
+                ["factionControl"] = new JsonArray(),
+                ["locationStorages"] = new JsonArray(),
+                ["activeThreats"] = new JsonArray(),
+                ["internalDifficultyProfile"] = DifficultyProfile(),
+                ["externalDifficultyProfile"] = DifficultyProfile(),
+                ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
+            },
+            ["game_state/world/world_map.json"] = new JsonObject
+            {
+                ["newLocations"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["locationId"] = locationId,
+                        ["name"] = locationName,
+                        ["displayName"] = locationName,
+                        ["region"] = "Contract test region",
+                        ["type"] = "test_location",
+                        ["locationType"] = "test_location",
+                        ["description"] = "An explicit world-map fixture for NPC core contract tests.",
+                        ["coordinates"] = Coordinates(0, 0, 0),
+                        ["exits"] = new JsonArray(),
+                        ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
+                    }
+                },
+                ["newLinks"] = new JsonArray(),
+                ["worldMapUpdates"] = new JsonObject
+                {
+                    ["currentLocationId"] = locationId,
+                    ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
+                }
+            },
+            ["game_state/factions/faction_core.json"] = new JsonObject
+            {
+                ["factions"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["name"] = factionName,
+                        ["displayName"] = factionName,
+                        ["description"] = "An explicit faction fixture for NPC core contract tests.",
+                        ["type"] = "test_faction",
+                        ["status"] = "active",
+                        ["visibility"] = "known",
+                        ["ranks"] = new JsonObject
+                        {
+                            ["entries"] = new JsonArray(),
+                            ["hierarchySummary"] = "No fixture ranks."
+                        },
+                        ["rankBranches"] = new JsonArray(),
+                        ["relations"] = new JsonArray(),
+                        ["controlledTerritories"] = new JsonArray(),
+                        ["projects"] = new JsonArray(),
+                        ["chronicle"] = new JsonArray(),
+                        ["customStates"] = new JsonArray()
+                    }
+                }
+            }
+        };
     }
 
     private async Task WriteSnapshotAsync(NpcCoreFixture fixture)
@@ -1273,6 +1564,190 @@ public sealed class NpcCoreChangesTests : IDisposable
         await _fs.WriteFileAtomicAsync(manifestPath, manifest.ToJsonString());
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
+
+    private async Task AddValidatedSnapshotFileAsync(string path, string json)
+    {
+        var snapshotPath = $"game_state/control/pending_turn_snapshot/{path}";
+        await _fs.WriteFileAtomicAsync(path, json);
+        await _fs.WriteFileAtomicAsync(snapshotPath, json);
+
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var manifest = JsonNode.Parse((await _fs.ReadFileAsync(manifestPath))!)!.AsObject();
+        manifest["files"]![path] = snapshotPath;
+        manifest["snapshotFileHashes"]![path] =
+            PendingTurnSnapshotAuthority.ComputeSha256(json);
+        manifest["rollbackBaselineFiles"]!.AsArray().Add(path);
+        manifest["manifestPayloadHash"] = string.Empty;
+        manifest["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await _fs.WriteFileAtomicAsync(manifestPath, manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
+    private static JsonObject BuildRequestBoundTradeInventory() =>
+        new()
+        {
+            ["tradeCycleId"] = "cycle_request_bound",
+            ["generatedAtWorldDate"] = 10,
+            ["refreshAfterWorldDate"] = 20,
+            ["generationTradeTier"] = "Good",
+            ["pricingTradeTier"] = "Neutral",
+            ["items"] = new JsonArray(new JsonObject
+            {
+                ["slotId"] = "slot_request_bound_1",
+                ["merchantProfile"] = "GeneralGoods"
+            })
+        };
+
+    private static JsonObject BuildRequestBoundTradeReceipt(string actorId) =>
+        new()
+        {
+            ["requestId"] = "npc_trade_request_bound",
+            ["npcId"] = actorId,
+            ["npcName"] = "Test mentor",
+            ["tradeCycleId"] = "cycle_request_bound",
+            ["merchantProfile"] = "GeneralGoods",
+            ["status"] = NpcTradeRequestState.ReceiptStatusReady,
+            ["itemCount"] = 1,
+            ["resolvedAtTurn"] = 42,
+            ["resolvedAtUtc"] = "2026-07-22T00:01:00Z"
+        };
+
+    private static string BuildNpcTradeRequestJson(string actorId) =>
+        new JsonObject
+        {
+            ["requests"] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = "npc_trade_request_bound",
+                ["npcId"] = actorId,
+                ["npcName"] = "Test mentor",
+                ["merchantProfile"] = "GeneralGoods",
+                ["tradeCycleId"] = "cycle_request_bound",
+                ["derivedTradeSlotCount"] = 1,
+                ["createdAtTurn"] = 42,
+                ["createdAtUtc"] = "2026-07-22T00:00:00Z",
+                ["createdAtWorldDate"] = 10,
+                ["refreshAfterWorldDate"] = 20
+            })
+        }.ToJsonString();
+
+    private static JsonObject BuildRequestBoundTrainingShowcase(
+        string actorId,
+        string sourceHash) =>
+        new()
+        {
+            ["schemaVersion"] = 1,
+            ["requestId"] = "training_request_bound",
+            ["requestKind"] = "mortal_teacher_showcase",
+            ["sourceActorId"] = actorId,
+            ["sourceActorName"] = "Test mentor",
+            ["sourceActorSnapshotHash"] = sourceHash,
+            ["preparedAtTurn"] = 42,
+            ["preparedAtUtc"] = "2026-07-22T00:01:00Z",
+            ["offers"] = new JsonArray()
+        };
+
+    private static string BuildTrainingShowcaseRequestJson(
+        string actorId,
+        string sourceHash) =>
+        new JsonObject
+        {
+            ["requests"] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = "training_request_bound",
+                ["requestKind"] = "mortal_teacher_showcase",
+                ["sourceActorId"] = actorId,
+                ["sourceActorName"] = "Test mentor",
+                ["sourceActorKind"] = "mortal_npc",
+                ["realm"] = "mortal_world",
+                ["createdAtTurn"] = 42,
+                ["createdAtUtc"] = "2026-07-22T00:00:00Z",
+                ["sourceActorSnapshotHash"] = sourceHash,
+                ["reason"] = "Refresh the exact teacher showcase."
+            })
+        }.ToJsonString();
+
+    private static void ConfigureTrueLegacyTeacherPromotion(
+        JsonObject actor,
+        JsonObject preTurnActor)
+    {
+        var traits = new JsonArray(
+            new JsonObject { ["name"] = "Внимательность", ["description"] = "Проверяет детали.", ["value"] = 7 },
+            new JsonObject { ["name"] = "Терпение", ["description"] = "Не торопит ученика.", ["value"] = 8 },
+            new JsonObject { ["name"] = "Прямота", ["description"] = "Говорит без уловок.", ["value"] = 6 });
+        preTurnActor["personalityTraits"] = traits.DeepClone();
+        actor["personalityTraits"] = traits.DeepClone();
+
+        var unavailableTeacher = new JsonObject
+        {
+            ["canTeach"] = false,
+            ["relationshipLevel"] = 25,
+            ["summary"] = "Пока не предлагает обучение.",
+            ["skills"] = new JsonArray()
+        };
+        preTurnActor["teacherProfile"] = unavailableTeacher.DeepClone();
+        actor["teacherProfile"] = new JsonObject
+        {
+            ["canTeach"] = true,
+            ["relationshipLevel"] = 25,
+            ["summary"] = "Теперь готов провести обучение.",
+            ["skills"] = new JsonArray(new JsonObject
+            {
+                ["skillId"] = "setting_defined_test_skill",
+                ["skillName"] = "Setting-defined test skill",
+                ["displayName"] = "Setting-defined test skill",
+                ["skillKind"] = "passive_skill_mastery",
+                ["masteryLevel"] = 2,
+                ["currentMasteryLevel"] = 2,
+                ["maxMasteryLevel"] = 2,
+                ["summary"] = "A test-only skill supplied by explicit fixture authority."
+            })
+        };
+        actor["materialization"] = BuildLegacyPromotionMaterialization(
+            actor["NPCId"]!.GetValue<string>());
+    }
+
+    private static JsonObject BuildLegacyPromotionMaterialization(string actorId) =>
+        new()
+        {
+            ["schemaVersion"] = 1,
+            ["materializationId"] = $"mat_{actorId}_promotion",
+            ["actorType"] = "mortal_npc",
+            ["actorId"] = actorId,
+            ["materializedAtTurn"] = 42,
+            ["state"] = "complete",
+            ["capabilities"] = new JsonObject
+            {
+                ["canFight"] = false,
+                ["canTeach"] = true,
+                ["canTrade"] = false,
+                ["ownsItems"] = false
+            },
+            ["sections"] = new JsonObject
+            {
+                ["skills"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Боевые навыки не заявлены."
+                },
+                ["inventory"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Личных предметов нет."
+                },
+                ["fateCards"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Карты судьбы не открыты."
+                },
+                ["personalQuests"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Личные задания не сформированы."
+                },
+                ["relationships"] = new JsonObject { ["state"] = "populated" }
+            }
+        };
 
     private static JsonObject BuildProfileChange(JsonObject actor) =>
         new()

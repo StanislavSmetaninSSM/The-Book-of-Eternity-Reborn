@@ -77,7 +77,7 @@ public sealed class BrowserPlayerActionService
         BrowserPlayerActionRequest? request,
         string text)
     {
-        var status = await _coordinator.BuildStatusAsync();
+        var status = await _coordinator.BuildStatusAsync(writeLease);
         if (!status.CanStartBrowserWrite)
         {
             var reason = status.PendingTurn.HasActiveGmTurn

@@ -136,4 +136,41 @@ public sealed class NpcTradeServiceTests
         Assert.False(availability.TradeAvailable);
         Assert.Equal("Этот НПС не является торговцем.", availability.BlockReason);
     }
+
+    [Fact]
+    public void EvaluateTradeAvailability_DoesNotInferMerchantProfileFromNpcProse()
+    {
+        const string json = """
+        {
+          "npcId": "npc_quartermaster_001",
+          "name": "Купец дальних дорог",
+          "role": "Торговец и снабженец",
+          "occupation": "Starship trader",
+          "class": "Black-market vendor",
+          "currentLocationId": "loc_market_square",
+          "currentLocation": "Рыночная площадь",
+          "tradeState": {
+            "canTrade": true
+          }
+        }
+        """;
+
+        using var doc = JsonDocument.Parse(json);
+        var node = JsonNode.Parse(json)!.AsObject();
+
+        var fromElement = NpcTradeService.EvaluateTradeAvailability(
+            doc.RootElement,
+            "loc_market_square",
+            "Рыночная площадь");
+        var fromObject = NpcTradeService.EvaluateTradeAvailability(
+            node,
+            "loc_market_square",
+            "Рыночная площадь");
+
+        Assert.False(fromElement.IsMerchant);
+        Assert.False(fromElement.TradeAvailable);
+        Assert.Null(fromElement.MerchantProfile);
+        Assert.Equal("Этот НПС не является торговцем.", fromElement.BlockReason);
+        Assert.Equal(fromElement, fromObject);
+    }
 }

@@ -126,7 +126,7 @@ public sealed class LocalWebUiMainMenuService
                 Menu: currentMenu);
         }
 
-        var writeStatus = await _writeCoordinator.BuildStatusAsync();
+        var writeStatus = await _writeCoordinator.BuildStatusAsync(writeLease);
         if (!writeStatus.CanStartBrowserWrite)
         {
             return new BrowserCreateSaveResultDto(
@@ -176,7 +176,7 @@ public sealed class LocalWebUiMainMenuService
     private async Task<BrowserMainMenuDto> BuildBoundAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var dashboard = await _lifecycle.BuildDashboardAsync();
+        var dashboard = await _lifecycle.BuildDashboardAsync(writeLease);
         var terminalSoulDissipationMessage = await TryReadTerminalSoulDissipationMessageAsync();
         var saves = await BuildSaveSlotsAsync();
         var session = await BuildSessionSummaryAsync(

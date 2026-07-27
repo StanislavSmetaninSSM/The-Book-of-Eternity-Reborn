@@ -85,7 +85,10 @@ public sealed class GmWorkerLiveSmokeTests
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]),
                 audit);
-            var decision = await gate.ApplyReservedAsync(run.Proposal!, profile);
+            var decision = await gate.ApplyReservedAsync(
+                run.Proposal!,
+                profile,
+                run.BoundTask!.SessionGeneration);
             var events = await audit.ReadEventsAsync();
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);

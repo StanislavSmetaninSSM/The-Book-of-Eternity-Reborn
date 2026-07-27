@@ -362,6 +362,9 @@ public partial class ValidationService
     {
         var issues = new List<ValidationIssue>();
         var currentActors = new List<(JsonElement Actor, string Context, string ActorType, string ActorId)>();
+        var effectiveIdentities =
+            new Dictionary<string, (string ExactId, string Section, bool IsSameTurn)>(
+                StringComparer.OrdinalIgnoreCase);
         foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
             if (!root.TryGetProperty(sectionName, out var actors) || actors.ValueKind != JsonValueKind.Array)
@@ -371,7 +374,10 @@ public partial class ValidationService
             foreach (var actor in actors.EnumerateArray())
             {
                 var context = $"{MortalActorMaterializationStatePath}.{sectionName}[{index++}]";
-                var hasActorId = TryReadCanonicalCurrentMortalActorId(actor, out var actorId);
+                var hasActorId = TryReadCanonicalCurrentMortalActorIdentity(
+                    actor,
+                    out var actorId,
+                    out var isSameTurn);
                 if (TryFindDuplicateJsonProperty(actor, out var duplicatePath))
                 {
                     AddDuplicateActorMaterializationAuthorityIssue(
@@ -386,6 +392,28 @@ public partial class ValidationService
                 {
                     AddUnusableMortalActorMaterializationCurrentAuthorityIssue(issues);
                     continue;
+                }
+
+                if (effectiveIdentities.TryGetValue(actorId, out var previousIdentity) &&
+                    (isSameTurn ||
+                     previousIdentity.IsSameTurn ||
+                     string.Equals(previousIdentity.Section, sectionName, StringComparison.Ordinal) ||
+                     !string.Equals(previousIdentity.ExactId, actorId, StringComparison.Ordinal)))
+                {
+                    issues.Add(new ValidationIssue(
+                        context,
+                        IssueSeverity.Error,
+                        "Текущая Mortal authority содержит несколько actor records с одной эффективной идентичностью.",
+                        code: "actor_materialization_duplicate_effective_identity",
+                        actor: $"mortal_npc:{actorId}",
+                        section: "NPCIdentity",
+                        expected: "one unambiguous actor record per effective same-turn identity and carrier",
+                        actual: $"duplicate identity also present in {previousIdentity.Section}",
+                        repairHint: "Оставь один canonical actor record для same-turn initialId; постоянные cross-carrier mirrors допустимы только под точной одной identity и не должны дублироваться внутри carrier."));
+                }
+                else
+                {
+                    effectiveIdentities[actorId] = (actorId, sectionName, isSameTurn);
                 }
 
                 currentActors.Add((actor, context, "mortal_npc", actorId));
@@ -794,7 +822,19 @@ public partial class ValidationService
         JsonElement actor,
         out string actorId)
     {
+        return TryReadCanonicalCurrentMortalActorIdentity(
+            actor,
+            out actorId,
+            out _);
+    }
+
+    private static bool TryReadCanonicalCurrentMortalActorIdentity(
+        JsonElement actor,
+        out string actorId,
+        out bool isSameTurn)
+    {
         actorId = string.Empty;
+        isSameTurn = false;
         if (actor.ValueKind != JsonValueKind.Object)
             return false;
 
@@ -821,7 +861,11 @@ public partial class ValidationService
             }
         }
 
-        return TryReadExactNonEmptyString(actor, "initialId", out actorId);
+        if (!TryReadExactNonEmptyString(actor, "initialId", out actorId))
+            return false;
+
+        isSameTurn = true;
+        return true;
     }
 
     private static ActorMaterializationPromotionSignals ReadMortalActorMaterializationPromotionSignals(

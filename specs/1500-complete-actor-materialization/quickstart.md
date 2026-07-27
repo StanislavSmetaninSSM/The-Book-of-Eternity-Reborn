@@ -17,10 +17,13 @@ Use this checklist when implementing or reviewing issue #1500. It is not a playe
 9. Reject duplicate members in current actor/inventory/materialization data and validated pre-turn actor/inventory authority before semantic comparison; property order alone remains irrelevant.
 
 For fresh Mortal bootstrap, keep `experience.json` empty, omit carrying totals,
-leave faction resource/control arrays empty, and omit faction progression,
-influence, resources, and universal power axes. Any first-turn values require a
-matching non-empty `structuredGmAuthority.playerProgression`, `carryingRules`,
-or `factionMechanics` entry.
+leave faction, quest, resource, and control collections empty, and omit
+location type/traversal/difficulty, faction progression, influence, resources,
+chronicles, and universal power axes. Any first-turn progression, carrying, or
+faction value requires a matching non-empty
+`structuredGmAuthority.playerProgression`, `carryingRules`, or
+`factionMechanics` entry with the exact `canonicalPath` and a non-empty
+exact-value `values` object; faction entries also name `factionId`.
 
 ## Ordinary existing Mortal NPC
 

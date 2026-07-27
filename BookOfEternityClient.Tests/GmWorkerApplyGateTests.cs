@@ -3,6 +3,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -20,8 +21,71 @@ public sealed class GmWorkerApplyGateTests
         var constructor = Assert.Single(constructors);
         var parameters = constructor.GetParameters();
         Assert.Contains(parameters, parameter => parameter.ParameterType == typeof(ValidationService));
+        Assert.DoesNotContain(parameters, parameter => parameter.ParameterType == typeof(FileSystemManager));
         Assert.DoesNotContain(parameters, parameter =>
             parameter.ParameterType == typeof(Func<Task<IReadOnlyList<ValidationIssue>>>));
+    }
+
+    [Fact]
+    public async Task ProductionConstruction_DerivesCanonicalRootOnlyFromValidationService()
+    {
+        var decoyRoot = CreateTempRoot();
+        var validationRoot = CreateTempRoot();
+        try
+        {
+            var decoyFs = CreateFileSystem(decoyRoot);
+            var validationFs = CreateFileSystem(validationRoot);
+            await decoyFs.WriteFileAtomicAsync("game_state/world/weather.json", "{\"decoy\":true}");
+            var (profile, task, proposal) = await PrepareAllowedRepairAsync(validationFs);
+            await ReserveTaskAsync(validationFs, task);
+            var validator = new ValidationService(
+                validationFs,
+                NullLogger<ValidationService>.Instance);
+            var constructor = typeof(GmWorkerApplyGate).GetConstructor(
+                [typeof(ValidationService), typeof(GmWorkerAuditLog)]);
+
+            Assert.NotNull(constructor);
+            var gate = Assert.IsType<GmWorkerApplyGate>(
+                constructor.Invoke([validator, null]));
+            var decision = await gate.ApplyReservedAsync(
+                proposal,
+                profile,
+                task.SessionGeneration);
+
+            Assert.True(
+                decision.Result == ApplyGateResult.ValidationFailed,
+                $"Expected ValidationFailed, got {decision.Result}: " +
+                string.Join(" | ", decision.RejectionReasons));
+            Assert.Equal(
+                "{\"before\":true}",
+                await validationFs.ReadFileAsync("game_state/world/weather.json"));
+            Assert.Equal(
+                "{\"decoy\":true}",
+                await decoyFs.ReadFileAsync("game_state/world/weather.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(decoyRoot);
+            CleanupTempRoot(validationRoot);
+        }
+    }
+
+    [Fact]
+    public void ApplySurface_HasNoMutableTaskOrUnboundReservationBypass()
+    {
+        var applyMethods = typeof(GmWorkerApplyGate)
+            .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            .Where(method =>
+                !method.IsPrivate &&
+                method.Name.StartsWith("Apply", StringComparison.Ordinal))
+            .ToArray();
+
+        Assert.DoesNotContain(applyMethods, method =>
+            method.GetParameters().Any(parameter =>
+                parameter.ParameterType == typeof(WorkerTaskPacket)));
+        Assert.DoesNotContain(applyMethods, method =>
+            method.Name == "ApplyReservedAsync" &&
+            method.GetParameters().Length < 3);
     }
 
     [Fact]
@@ -35,9 +99,9 @@ public sealed class GmWorkerApplyGateTests
             var originalBytes = await File.ReadAllBytesAsync(
                 fs.ResolvePath("game_state/world/weather.json"));
             var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
-            var gate = new GmWorkerApplyGate(fs, validator);
+            var gate = new GmWorkerApplyGate(validator);
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
             Assert.NotEqual(0, decision.ValidationCheck.IssueCount);
@@ -85,7 +149,7 @@ public sealed class GmWorkerApplyGateTests
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyReservedAsync(proposal, profile);
+            var decision = await gate.ApplyReservedAsync(proposal, profile, task.SessionGeneration);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -107,8 +171,7 @@ public sealed class GmWorkerApplyGateTests
             var fs = CreateFileSystem(root);
             var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
             await ReserveTaskAsync(fs, task);
-            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
-                fs.RotateSessionGeneration(writeLease);
+            await SessionReplacementTestHarness.RotateGenerationAsync(fs);
             var gate = new GmWorkerApplyGate(
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
@@ -138,7 +201,7 @@ public sealed class GmWorkerApplyGateTests
             var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
             Assert.True(decision.ScopeCheck.Passed);
@@ -177,7 +240,7 @@ public sealed class GmWorkerApplyGateTests
                 "{\"bad\":true}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.False(decision.ScopeCheck.Passed);
@@ -214,7 +277,7 @@ public sealed class GmWorkerApplyGateTests
                     return Task.FromResult<IReadOnlyList<ValidationIssue>>([validationIssue]);
                 });
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
             Assert.True(decision.ScopeCheck.Passed);
@@ -290,7 +353,11 @@ public sealed class GmWorkerApplyGateTests
                     return [];
                 });
 
-            var applyTask = gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            await ReserveTaskAsync(fs, task);
+            var applyTask = gate.ApplyReservedAsync(
+                proposal,
+                profile,
+                task.SessionGeneration);
             await validationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             Assert.False(fs.FileExists("game_state/control/gm_worker_apply.lock"));
             var loadTask = saveLoad.LoadGameAsync(savePath);
@@ -331,7 +398,7 @@ public sealed class GmWorkerApplyGateTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -355,7 +422,7 @@ public sealed class GmWorkerApplyGateTests
             proposal = proposal with { Status = (WorkerProposalStatus)0 };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -389,7 +456,7 @@ public sealed class GmWorkerApplyGateTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -438,7 +505,7 @@ public sealed class GmWorkerApplyGateTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
             var actualCanonicalBytes = await File.ReadAllBytesAsync(fs.ResolvePath(path));
             var canonicalBytesPreserved = staleCanonicalBytes.AsSpan().SequenceEqual(actualCanonicalBytes);
 
@@ -463,7 +530,9 @@ public sealed class GmWorkerApplyGateTests
             var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
             var contentRef = Assert.Single(proposal.ChangedFiles).ContentRef!;
             var proposalBytes = await File.ReadAllBytesAsync(fs.ResolvePath(contentRef));
-            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            await using (var lifecycleLease = await fs.AcquireSessionLifecycleLeaseAsync())
+            await using (var writeLease =
+                         await fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease))
             {
                 fs.RotateSessionGeneration(writeLease);
                 var restoreResult = await fs.CompareExchangeFileBytesAsync(
@@ -478,7 +547,7 @@ public sealed class GmWorkerApplyGateTests
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.SessionReplaced, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -522,7 +591,7 @@ public sealed class GmWorkerApplyGateTests
             await fs.WriteFileAtomicAsync(proposal.ChangedFiles[0].ContentRef!, mutatedProposalContent);
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
             var canonicalContent = await fs.ReadFileAsync(path);
 
             Assert.True(
@@ -580,7 +649,7 @@ public sealed class GmWorkerApplyGateTests
                     return issues;
                 });
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
             Assert.Equal(concurrentMutation, await fs.ReadFileAsync(path));
@@ -603,6 +672,7 @@ public sealed class GmWorkerApplyGateTests
             var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
             var lockPath = fs.CanonicalWriteLockPath;
             Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
+            await ReserveTaskAsync(fs, task);
             await using var canonicalLock = new FileStream(
                 lockPath,
                 FileMode.OpenOrCreate,
@@ -610,7 +680,10 @@ public sealed class GmWorkerApplyGateTests
                 FileShare.None);
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var applyTask = gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var applyTask = gate.ApplyReservedAsync(
+                proposal,
+                profile,
+                task.SessionGeneration);
             await Task.Delay(200);
             await File.WriteAllBytesAsync(fs.ResolvePath(path), concurrentBytes);
             await canonicalLock.DisposeAsync();
@@ -651,7 +724,7 @@ public sealed class GmWorkerApplyGateTests
                     return [validationIssue];
                 });
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
             Assert.Equal(concurrentBytes, await fs.ReadFileBytesAsync(path));
@@ -733,7 +806,7 @@ public sealed class GmWorkerApplyGateTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
             var canonicalContent = await fs.ReadFileAsync(path);
 
             Assert.True(
@@ -815,7 +888,7 @@ public sealed class GmWorkerApplyGateTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Equal(baseline, await fs.ReadFileAsync(path));
@@ -898,7 +971,7 @@ public sealed class GmWorkerApplyGateTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
             var canonicalContent = await fs.ReadFileAsync(outsidePath);
 
             Assert.True(
@@ -926,7 +999,7 @@ public sealed class GmWorkerApplyGateTests
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]),
                 audit);
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
             var events = await audit.ReadEventsAsync();
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
@@ -954,7 +1027,7 @@ public sealed class GmWorkerApplyGateTests
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]),
                 new GmWorkerAuditLog(fs));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
             Assert.Equal("{\"after\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
@@ -977,7 +1050,7 @@ public sealed class GmWorkerApplyGateTests
                 changeProtectedData: true);
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -1034,7 +1107,7 @@ public sealed class GmWorkerApplyGateTests
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -1059,7 +1132,7 @@ public sealed class GmWorkerApplyGateTests
                 changeProtectedData: false);
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
             var current = JsonNode.Parse((await fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
@@ -1128,7 +1201,7 @@ public sealed class GmWorkerApplyGateTests
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(expectedResult, decision.Result);
             if (expectedResult == ApplyGateResult.Rejected)
@@ -1162,7 +1235,7 @@ public sealed class GmWorkerApplyGateTests
                 fs,
                 () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Equal(baseline, await fs.ReadFileAsync(path));
@@ -1199,7 +1272,7 @@ public sealed class GmWorkerApplyGateTests
                     return [];
                 });
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
             Assert.Equal(baseline, await fs.ReadFileAsync(path));
@@ -1226,7 +1299,7 @@ public sealed class GmWorkerApplyGateTests
                 changeSiblingData: true);
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -1250,7 +1323,7 @@ public sealed class GmWorkerApplyGateTests
                 changeSiblingData: false);
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
         }
@@ -1292,7 +1365,7 @@ public sealed class GmWorkerApplyGateTests
                 $"{path}.NPCsInScene[0].materialization");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -1356,7 +1429,7 @@ public sealed class GmWorkerApplyGateTests
                 $"resident:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.True(
                 decision.Result == expectedResult,
@@ -1413,7 +1486,7 @@ public sealed class GmWorkerApplyGateTests
                 $"resident:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -1470,7 +1543,7 @@ public sealed class GmWorkerApplyGateTests
                 $"guardian:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -1525,7 +1598,7 @@ public sealed class GmWorkerApplyGateTests
                 $"guardian:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
         }
@@ -1575,7 +1648,7 @@ public sealed class GmWorkerApplyGateTests
             proposal = proposal with { ProposalId = proposalId };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
         }
@@ -1625,7 +1698,7 @@ public sealed class GmWorkerApplyGateTests
             };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Equal(baseline.ToJsonString(), await fs.ReadFileAsync(path));
@@ -1671,7 +1744,7 @@ public sealed class GmWorkerApplyGateTests
             await fs.WriteFileAtomicAsync(soulStatePath, "{\"currentRealm\":\"Shining Abode\"}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Equal(baseline.ToJsonString(), await fs.ReadFileAsync(path));
@@ -1728,7 +1801,7 @@ public sealed class GmWorkerApplyGateTests
                     return [];
                 });
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
             Assert.NotNull(realmWrite);
             await realmWrite;
 
@@ -1783,7 +1856,7 @@ public sealed class GmWorkerApplyGateTests
                     return [];
                 });
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
             Assert.Equal(baseline.ToJsonString(), await fs.ReadFileAsync(path));
@@ -1828,7 +1901,7 @@ public sealed class GmWorkerApplyGateTests
                 $"guardian:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
             var appliedJson = await fs.ReadFileAsync(path);
@@ -1879,7 +1952,7 @@ public sealed class GmWorkerApplyGateTests
                 $"guardian:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.False(File.Exists(fs.ResolvePath(path)));
@@ -1931,7 +2004,7 @@ public sealed class GmWorkerApplyGateTests
             proposal = proposal with { ProposalId = proposalId };
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -1989,7 +2062,7 @@ public sealed class GmWorkerApplyGateTests
                 $"resident:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.True(
                 decision.Result == expectedResult,
@@ -2030,7 +2103,7 @@ public sealed class GmWorkerApplyGateTests
                 $"{actorType}:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.True(
                 decision.Result == ApplyGateResult.Accepted,
@@ -2111,7 +2184,7 @@ public sealed class GmWorkerApplyGateTests
                 $"{actorType}:{actorId}");
             var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
 
-            var decision = await gate.ApplyAuthoritativeTaskAsync(proposal, task, profile);
+            var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.Rejected, decision.Result);
             Assert.Contains(decision.RejectionReasons, reason =>
@@ -2691,6 +2764,20 @@ public sealed class GmWorkerApplyGateTests
         fs.WriteFileAtomicAsync(
             GmWorkerBridgePool.GetTaskPacketPath(task.TaskId),
             GmWorkerJson.Serialize(task));
+
+    private static async Task<ApplyGateDecision> ApplyReservedTaskAsync(
+        FileSystemManager fs,
+        GmWorkerApplyGate gate,
+        WorkerProposal proposal,
+        WorkerTaskPacket task,
+        WorkerBridgeProfile profile)
+    {
+        await ReserveTaskAsync(fs, task);
+        return await gate.ApplyReservedAsync(
+            proposal,
+            profile,
+            task.SessionGeneration);
+    }
 
     private static string CreateTempRoot()
     {

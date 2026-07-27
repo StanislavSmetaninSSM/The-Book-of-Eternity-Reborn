@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Models;
 
 namespace BookOfEternityClient.Services;
@@ -79,18 +80,22 @@ public partial class ValidationService
             ? candidate
             : default;
 
-        if (await MortalBootstrapFileContainsAnyPropertyAsync(
-                "game_state/player/experience.json",
-                [
-                    "playerLevel",
-                    "level",
-                    "currentExperience",
-                    "experience",
-                    "totalExperience",
-                    "experienceForNextLevel",
-                    "experienceGained"
-                ]) &&
-            !MortalBootstrapHasStructuredAuthorityEntry(authority, "playerProgression"))
+        var progressionClaims = await ReadMortalBootstrapRootMechanicClaimsAsync(
+            "game_state/player/experience.json",
+            [
+                "playerLevel",
+                "level",
+                "currentExperience",
+                "experience",
+                "totalExperience",
+                "experienceForNextLevel",
+                "experienceGained"
+            ]);
+        if (progressionClaims.Count > 0 &&
+            !MortalBootstrapAuthorityBindsAllClaims(
+                authority,
+                "playerProgression",
+                progressionClaims))
         {
             issues.Add(new ValidationIssue(
                 "game_state/player/experience.json",
@@ -98,15 +103,19 @@ public partial class ValidationService
                 "Стартовая прогрессия смертного мира появилась без явного решения ГМа.",
                 code: "mortal_bootstrap_progression_requires_structured_gm_authority",
                 section: "MortalBootstrap",
-                expected: "non-empty structuredGmAuthority.playerProgression plus a complete setting-defined progression tuple",
+                expected: "structuredGmAuthority.playerProgression entry with canonicalPath=game_state/player/experience.json and non-empty exact-value values",
                 actual: "progression fields exist without structured GM authority",
-                repairHint: "Запиши setting-aware решение о начальном уровне, шкале опыта и следующем пороге в mortal_bootstrap_scaffold.json.structuredGmAuthority.playerProgression, затем сохрани согласованный полный tuple в experience.json. Не используй клиентский порог по умолчанию."));
+                repairHint: "Добавь в structuredGmAuthority.playerProgression запись с canonicalPath=game_state/player/experience.json и values, точно повторяющим полный progression tuple из experience.json. Не используй клиентский порог по умолчанию; reason без values не даёт authority."));
         }
 
-        if (await MortalBootstrapFileContainsAnyPropertyAsync(
-                "game_state/inventory/items.json",
-                ["maxWeight", "totalWeight"]) &&
-            !MortalBootstrapHasStructuredAuthorityEntry(authority, "carryingRules"))
+        var carryingClaims = await ReadMortalBootstrapRootMechanicClaimsAsync(
+            "game_state/inventory/items.json",
+            ["maxWeight", "totalWeight"]);
+        if (carryingClaims.Count > 0 &&
+            !MortalBootstrapAuthorityBindsAllClaims(
+                authority,
+                "carryingRules",
+                carryingClaims))
         {
             issues.Add(new ValidationIssue(
                 "game_state/inventory/items.json",
@@ -114,13 +123,17 @@ public partial class ValidationService
                 "Стартовая грузоподъёмность появилась без явного правила текущего мира.",
                 code: "mortal_bootstrap_carrying_requires_structured_gm_authority",
                 section: "MortalBootstrap",
-                expected: "non-empty structuredGmAuthority.carryingRules grounded in current-world authority",
+                expected: "structuredGmAuthority.carryingRules entry with canonicalPath=game_state/inventory/items.json and non-empty exact-value values",
                 actual: "carrying fields exist without structured GM authority",
-                repairHint: "Запиши формулу, единицы и источник грузоподъёмности в mortal_bootstrap_scaffold.json.structuredGmAuthority.carryingRules. Если мир не задаёт такую механику, убери maxWeight/totalWeight вместо изобретения универсальной формулы."));
+                repairHint: "Добавь в structuredGmAuthority.carryingRules запись с canonicalPath=game_state/inventory/items.json и values, точно повторяющим maxWeight/totalWeight. Если мир не задаёт такую механику, убери эти поля вместо изобретения универсальной формулы."));
         }
 
-        if (await MortalBootstrapFactionMechanicsExistAsync() &&
-            !MortalBootstrapHasStructuredAuthorityEntry(authority, "factionMechanics"))
+        var factionClaims = await ReadMortalBootstrapFactionMechanicClaimsAsync();
+        if (factionClaims.Count > 0 &&
+            !MortalBootstrapAuthorityBindsAllClaims(
+                authority,
+                "factionMechanics",
+                factionClaims))
         {
             issues.Add(new ValidationIssue(
                 "game_state/factions/faction_core.json",
@@ -128,75 +141,105 @@ public partial class ValidationService
                 "Стартовые числовые механики фракции появились без явного решения ГМа.",
                 code: "mortal_bootstrap_faction_mechanics_require_structured_gm_authority",
                 section: "MortalBootstrap",
-                expected: "non-empty structuredGmAuthority.factionMechanics describing setting-owned progression, resources, influence/control, and power axes",
+                expected: "structuredGmAuthority.factionMechanics entries with exact canonicalPath, factionId, and non-empty exact-value values",
                 actual: "faction mechanics exist without structured GM authority",
-                repairHint: "Запиши выбранные для текущего мира оси силы, ресурсы, прогрессию и контроль в mortal_bootstrap_scaffold.json.structuredGmAuthority.factionMechanics. Не копируй универсальный фэнтезийный powerProfile или числовые значения клиента."));
+                repairHint: "Для каждой затронутой canonical surface добавь factionMechanics запись с точными canonicalPath, factionId и values, повторяющими её механику. Не копируй универсальный фэнтезийный powerProfile и не заменяй структурную authority прозой."));
         }
     }
 
-    private static bool MortalBootstrapHasStructuredAuthorityEntry(
+    private static bool MortalBootstrapAuthorityBindsAllClaims(
         JsonElement authority,
-        string propertyName) =>
-        authority.ValueKind == JsonValueKind.Object &&
-        authority.TryGetProperty(propertyName, out var entries) &&
-        entries.ValueKind == JsonValueKind.Array &&
-        entries.EnumerateArray().Any(entry => entry.ValueKind == JsonValueKind.Object);
-
-    private async Task<bool> MortalBootstrapFileContainsAnyPropertyAsync(
-        string path,
-        IReadOnlyCollection<string> propertyNames)
+        string propertyName,
+        IReadOnlyCollection<MortalBootstrapAuthorityClaim> claims)
     {
-        var raw = await _fs.ReadFileAsync(path);
-        if (string.IsNullOrWhiteSpace(raw))
-            return false;
-
-        try
-        {
-            using var document = JsonDocument.Parse(raw);
-            if (document.RootElement.ValueKind != JsonValueKind.Object)
-                return false;
-
-            return propertyNames.Any(propertyName =>
-                document.RootElement.TryGetProperty(propertyName, out _));
-        }
-        catch (JsonException)
+        if (authority.ValueKind != JsonValueKind.Object ||
+            !authority.TryGetProperty(propertyName, out var entries) ||
+            entries.ValueKind != JsonValueKind.Array)
         {
             return false;
         }
+
+        var authorityEntries = entries
+            .EnumerateArray()
+            .Where(entry => entry.ValueKind == JsonValueKind.Object)
+            .ToArray();
+        return claims.All(claim => authorityEntries.Any(entry =>
+            MortalBootstrapAuthorityEntryBindsClaim(entry, claim)));
     }
 
-    private async Task<bool> MortalBootstrapFactionMechanicsExistAsync()
+    private static bool MortalBootstrapAuthorityEntryBindsClaim(
+        JsonElement entry,
+        MortalBootstrapAuthorityClaim claim)
     {
-        if (await MortalBootstrapFactionCoreMechanicsExistAsync())
-            return true;
-        if (await MortalBootstrapArrayHasEntriesAsync(
-                "game_state/factions/faction_resources.json",
-                "entries"))
+        if (!entry.TryGetProperty("canonicalPath", out var pathNode) ||
+            pathNode.ValueKind != JsonValueKind.String ||
+            !string.Equals(
+                pathNode.GetString()?.Trim(),
+                claim.CanonicalPath,
+                StringComparison.OrdinalIgnoreCase))
         {
-            return true;
+            return false;
         }
 
-        return await MortalBootstrapArrayHasEntriesAsync(
-            "game_state/world/current_location.json",
-            "factionControl");
-    }
-
-    private async Task<bool> MortalBootstrapFactionCoreMechanicsExistAsync()
-    {
-        var raw = await _fs.ReadFileAsync("game_state/factions/faction_core.json");
-        if (string.IsNullOrWhiteSpace(raw))
-            return false;
-
-        try
+        if (!string.IsNullOrWhiteSpace(claim.FactionId) &&
+            (!entry.TryGetProperty("factionId", out var factionIdNode) ||
+             factionIdNode.ValueKind != JsonValueKind.String ||
+             !string.Equals(
+                 factionIdNode.GetString()?.Trim(),
+                 claim.FactionId,
+                 StringComparison.Ordinal)))
         {
-            using var document = JsonDocument.Parse(raw);
-            if (document.RootElement.ValueKind != JsonValueKind.Object ||
-                !document.RootElement.TryGetProperty("factions", out var factions) ||
-                factions.ValueKind != JsonValueKind.Array)
+            return false;
+        }
+
+        if (!entry.TryGetProperty("values", out var valuesNode) ||
+            valuesNode.ValueKind != JsonValueKind.Object ||
+            !valuesNode.EnumerateObject().Any())
+        {
+            return false;
+        }
+
+        foreach (var (propertyName, expectedValue) in claim.Values)
+        {
+            if (!valuesNode.TryGetProperty(propertyName, out var actualValue) ||
+                !JsonNode.DeepEquals(
+                    JsonNode.Parse(actualValue.GetRawText()),
+                    expectedValue))
             {
                 return false;
             }
+        }
 
+        return true;
+    }
+
+    private async Task<IReadOnlyList<MortalBootstrapAuthorityClaim>> ReadMortalBootstrapRootMechanicClaimsAsync(
+        string path,
+        IReadOnlyCollection<string> propertyNames)
+    {
+        var root = await ReadMortalBootstrapObjectAsync(path);
+        if (root == null)
+            return [];
+
+        var values = new JsonObject();
+        foreach (var propertyName in propertyNames)
+        {
+            if (root.TryGetPropertyValue(propertyName, out var value))
+                values[propertyName] = value?.DeepClone();
+        }
+
+        return values.Count == 0
+            ? []
+            : [new MortalBootstrapAuthorityClaim(path, null, values)];
+    }
+
+    private async Task<IReadOnlyList<MortalBootstrapAuthorityClaim>> ReadMortalBootstrapFactionMechanicClaimsAsync()
+    {
+        var claims = new List<MortalBootstrapAuthorityClaim>();
+        var factionRoot = await ReadMortalBootstrapObjectAsync(
+            "game_state/factions/faction_core.json");
+        if (factionRoot?["factions"] is JsonArray factions)
+        {
             var mechanicalProperties = new[]
             {
                 "developmentArchetype",
@@ -210,38 +253,99 @@ public partial class ValidationService
                 "powerProfile",
                 "resources"
             };
-            return factions.EnumerateArray().Any(faction =>
-                faction.ValueKind == JsonValueKind.Object &&
-                mechanicalProperties.Any(propertyName =>
-                    faction.TryGetProperty(propertyName, out _)));
+            foreach (var faction in factions.OfType<JsonObject>())
+            {
+                var values = new JsonObject();
+                foreach (var propertyName in mechanicalProperties)
+                {
+                    if (faction.TryGetPropertyValue(propertyName, out var value))
+                        values[propertyName] = value?.DeepClone();
+                }
+
+                if (values.Count == 0)
+                    continue;
+
+                claims.Add(new MortalBootstrapAuthorityClaim(
+                    "game_state/factions/faction_core.json",
+                    ReadMortalBootstrapNodeString(faction["factionId"]),
+                    values));
+            }
         }
-        catch (JsonException)
+
+        await AddMortalBootstrapArrayMechanicClaimsAsync(
+            claims,
+            "game_state/factions/faction_resources.json",
+            "entries",
+            ["factionId", "factionName"]);
+        await AddMortalBootstrapArrayMechanicClaimsAsync(
+            claims,
+            "game_state/world/current_location.json",
+            "factionControl",
+            ["factionId", "factionName"]);
+        return claims;
+    }
+
+    private async Task AddMortalBootstrapArrayMechanicClaimsAsync(
+        ICollection<MortalBootstrapAuthorityClaim> claims,
+        string path,
+        string arrayProperty,
+        IReadOnlyCollection<string> identityProperties)
+    {
+        var root = await ReadMortalBootstrapObjectAsync(path);
+        if (root?[arrayProperty] is not JsonArray entries)
+            return;
+
+        foreach (var entry in entries.OfType<JsonObject>())
         {
-            return false;
+            var values = new JsonObject();
+            foreach (var (propertyName, value) in entry)
+            {
+                if (!identityProperties.Contains(propertyName, StringComparer.OrdinalIgnoreCase))
+                    values[propertyName] = value?.DeepClone();
+            }
+
+            if (values.Count == 0)
+                continue;
+
+            claims.Add(new MortalBootstrapAuthorityClaim(
+                path,
+                ReadMortalBootstrapNodeString(entry["factionId"]),
+                values));
         }
     }
 
-    private async Task<bool> MortalBootstrapArrayHasEntriesAsync(
-        string path,
-        string propertyName)
+    private async Task<JsonObject?> ReadMortalBootstrapObjectAsync(string path)
     {
         var raw = await _fs.ReadFileAsync(path);
         if (string.IsNullOrWhiteSpace(raw))
-            return false;
+            return null;
 
         try
         {
-            using var document = JsonDocument.Parse(raw);
-            return document.RootElement.ValueKind == JsonValueKind.Object &&
-                   document.RootElement.TryGetProperty(propertyName, out var entries) &&
-                   entries.ValueKind == JsonValueKind.Array &&
-                   entries.GetArrayLength() > 0;
+            return JsonNode.Parse(raw) as JsonObject;
         }
         catch (JsonException)
         {
-            return false;
+            return null;
         }
     }
+
+    private static string? ReadMortalBootstrapNodeString(JsonNode? node)
+    {
+        try
+        {
+            return node?.GetValue<string>()?.Trim();
+        }
+        catch (InvalidOperationException)
+        {
+            return null;
+        }
+    }
+
+    private sealed record MortalBootstrapAuthorityClaim(
+        string CanonicalPath,
+        string? FactionId,
+        JsonObject Values);
 
     private async Task ValidateMortalBootstrapStarterCompetenciesAsync(
         JsonElement scaffold,
