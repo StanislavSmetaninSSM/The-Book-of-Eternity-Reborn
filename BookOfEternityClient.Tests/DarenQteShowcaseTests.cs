@@ -425,7 +425,12 @@ public sealed class DarenQteShowcaseTests : IDisposable
             stateManager,
             NullLogger<QteSceneService>.Instance);
         _profile = new DarenQteRewardProfileService(_fs);
-        _web = new QteWebInteractionService(_fs, _qte);
+        _web = new QteWebInteractionService(
+            _fs,
+            _qte,
+            new BrowserLocalWriteCoordinator(
+                _fs,
+                new LocalUiSessionLockService(_fs)));
     }
 
     [Fact]

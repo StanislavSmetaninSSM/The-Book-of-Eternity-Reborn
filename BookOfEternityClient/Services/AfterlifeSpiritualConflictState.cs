@@ -120,11 +120,28 @@ public static class AfterlifeSpiritualConflictState
     public static async Task<string?> TryDescribeActiveConflictBlockerAsync(
         FileSystemManager fs,
         string closureHint)
+        => await TryDescribeActiveConflictBlockerCoreAsync(fs, writeLease: null, closureHint);
+
+    internal static async Task<string?> TryDescribeActiveConflictBlockerAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string closureHint)
+        => await TryDescribeActiveConflictBlockerCoreAsync(fs, writeLease, closureHint);
+
+    private static async Task<string?> TryDescribeActiveConflictBlockerCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string closureHint)
     {
-        if (!fs.FileExists(StatePath))
+        var fileExists = writeLease == null
+            ? fs.FileExists(StatePath)
+            : fs.FileExists(writeLease, StatePath);
+        if (!fileExists)
             return null;
 
-        var raw = await fs.ReadFileAsync(StatePath);
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(StatePath)
+            : await fs.ReadFileAsync(writeLease, StatePath);
         if (string.IsNullOrWhiteSpace(raw))
             return $"{StatePath}: поврежденный файл духовного конфликта; {closureHint}";
 

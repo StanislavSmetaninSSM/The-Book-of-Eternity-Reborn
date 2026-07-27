@@ -147,6 +147,33 @@ internal static class ActorSocialInteractionRequestState
         await WriteGuardianRequestsAsync(fs, existing);
     }
 
+    internal static async Task<bool> TryWriteGuardianRequestIfAbsentAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianSocialInteractionRequest request)
+    {
+        var existingState = await ReadGuardianRequestsStateAsync(fs, writeLease);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_guardian_social_interactions.json повреждён и должен быть исправлен или очищен до записи нового guardian social request.");
+
+        var existing = existingState.Requests.ToList();
+        if (existing.Any(existingRequest =>
+                string.Equals(existingRequest.GuardianId, request.GuardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(existingRequest.InteractionType, request.InteractionType, StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        existing.Add(request);
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingGuardianRequestPath,
+            JsonSerializer.Serialize(
+                new Dictionary<string, object?> { [RequestsProperty] = existing },
+                JsonOpts));
+        return true;
+    }
+
     public static async Task WriteNpcRequestsAsync(FileSystemManager fs, IReadOnlyCollection<PendingNpcSocialInteractionRequest> requests)
     {
         var existingState = await ReadNpcRequestsStateAsync(fs);
@@ -218,6 +245,28 @@ internal static class ActorSocialInteractionRequestState
         }
     }
 
+    internal static async Task<bool> TryWriteNpcRequestIfAbsentAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingNpcSocialInteractionRequest request)
+    {
+        var existingState = await ReadNpcRequestsStateAsync(fs, writeLease);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_npc_social_interactions.json повреждён и должен быть исправлен или очищен до записи нового NPC social request.");
+
+        var existing = existingState.Requests.ToList();
+        if (existing.Any(existingRequest =>
+                string.Equals(existingRequest.NpcId, request.NpcId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(existingRequest.InteractionType, request.InteractionType, StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        existing.Add(request);
+        await WriteNpcRequestsSnapshotAsync(fs, writeLease, existing);
+        return true;
+    }
+
     public static async Task<IReadOnlyList<PendingGuardianSocialInteractionRequest>> ReadGuardianRequestsAsync(FileSystemManager fs) =>
         (await ReadGuardianRequestsStateAsync(fs)).Requests;
 
@@ -237,11 +286,46 @@ internal static class ActorSocialInteractionRequestState
             JsonSerializer.Serialize(new Dictionary<string, object?> { [RequestsProperty] = requests }, JsonOpts));
     }
 
+    private static async Task WriteNpcRequestsSnapshotAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IReadOnlyCollection<PendingNpcSocialInteractionRequest> requests)
+    {
+        if (requests.Count == 0)
+        {
+            fs.DeleteFile(writeLease, PendingNpcRequestPath);
+            return;
+        }
+
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingNpcRequestPath,
+            JsonSerializer.Serialize(new Dictionary<string, object?> { [RequestsProperty] = requests }, JsonOpts));
+    }
+
     internal static async Task<RequestReadState<PendingGuardianSocialInteractionRequest>> ReadGuardianRequestsStateAsync(FileSystemManager fs) =>
         await ReadRequestsStateAsync(fs, PendingGuardianRequestPath, static json => JsonSerializer.Deserialize<PendingGuardianSocialInteractionRequest>(json, JsonOpts));
 
+    internal static async Task<RequestReadState<PendingGuardianSocialInteractionRequest>> ReadGuardianRequestsStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        await ReadRequestsStateAsync(
+            fs,
+            writeLease,
+            PendingGuardianRequestPath,
+            static json => JsonSerializer.Deserialize<PendingGuardianSocialInteractionRequest>(json, JsonOpts));
+
     internal static async Task<RequestReadState<PendingNpcSocialInteractionRequest>> ReadNpcRequestsStateAsync(FileSystemManager fs) =>
         await ReadRequestsStateAsync(fs, PendingNpcRequestPath, static json => JsonSerializer.Deserialize<PendingNpcSocialInteractionRequest>(json, JsonOpts));
+
+    internal static async Task<RequestReadState<PendingNpcSocialInteractionRequest>> ReadNpcRequestsStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        await ReadRequestsStateAsync(
+            fs,
+            writeLease,
+            PendingNpcRequestPath,
+            static json => JsonSerializer.Deserialize<PendingNpcSocialInteractionRequest>(json, JsonOpts));
 
     public static async Task<PendingGuardianSocialInteractionRequest?> FindPendingGuardianRequestAsync(FileSystemManager fs, string guardianId, string interactionType)
     {
@@ -400,6 +484,16 @@ internal static class ActorSocialInteractionRequestState
     {
         var json = await fs.ReadFileAsync(path);
         return AnalyzeRequests(json, fs.FileExists(path), singleDeserializer);
+    }
+
+    private static async Task<RequestReadState<T>> ReadRequestsStateAsync<T>(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        Func<string, T?> singleDeserializer) where T : class
+    {
+        var json = await fs.ReadFileAsync(writeLease, path);
+        return AnalyzeRequests(json, fs.FileExists(writeLease, path), singleDeserializer);
     }
 
     private static RequestReadState<T> AnalyzeRequests<T>(

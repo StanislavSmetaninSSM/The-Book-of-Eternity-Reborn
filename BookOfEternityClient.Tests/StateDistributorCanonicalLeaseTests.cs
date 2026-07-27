@@ -144,6 +144,20 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
             "weather.json.backup.*"));
     }
 
+    [Fact]
+    public async Task DistributeAsync_MalformedExistingCanonicalJsonFailsClosedWithoutReplacingIt()
+    {
+        const string malformedJson = "{\"marker\":\"baseline\"";
+        await _fs.WriteFileAtomicAsync(WeatherPath, malformedJson);
+        var distributor = new StateDistributor(
+            _fs,
+            NullLogger<StateDistributor>.Instance);
+
+        await Assert.ThrowsAnyAsync<JsonException>(() => distributor.DistributeAsync(CreateWeatherResponse()));
+
+        Assert.Equal(malformedJson, await _fs.ReadFileAsync(WeatherPath));
+    }
+
     private FileSystemManager CreateFileSystem(FileSystemManagerHooks? hooks = null)
     {
         var fs = new FileSystemManager(

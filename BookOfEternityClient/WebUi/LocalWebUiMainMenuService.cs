@@ -75,12 +75,11 @@ public sealed class LocalWebUiMainMenuService
         }
 
         var loaded = false;
-        var writeResult = await _writeCoordinator.ExecuteAsync(
+        var writeResult = await _writeCoordinator.ExecuteSessionReplacementAsync(
             new BrowserLocalWriteRequest(
                 OwnerId: "browser-main-menu-load",
                 OwnerLabel: "Browser main menu",
                 OperationLabel: "browser save load"),
-            Array.Empty<string>(),
             async () =>
             {
                 loaded = await _saveLoad.LoadGameAsync(match.FullPath);
@@ -98,7 +97,26 @@ public sealed class LocalWebUiMainMenuService
 
     public async Task<BrowserCreateSaveResultDto> CreateManualSaveAsync(BrowserCreateSaveRequest request)
     {
-        var currentMenu = await BuildAsync();
+        try
+        {
+            return await _writeCoordinator.RunBoundTransactionAsync(
+                writeLease => CreateManualSaveBoundAsync(writeLease, request));
+        }
+        catch (SessionReplacedException)
+        {
+            return new BrowserCreateSaveResultDto(
+                Success: false,
+                Error: "Игровая сессия изменилась во время сохранения. Повторите действие.",
+                CreatedSaveId: string.Empty,
+                Menu: await BuildAsync());
+        }
+    }
+
+    private async Task<BrowserCreateSaveResultDto> CreateManualSaveBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserCreateSaveRequest request)
+    {
+        var currentMenu = await BuildBoundAsync(writeLease);
         if (!currentMenu.Session.GameSessionExists || !currentMenu.Session.HasReadableSoul)
         {
             return new BrowserCreateSaveResultDto(
@@ -121,15 +139,17 @@ public sealed class LocalWebUiMainMenuService
         var saveName = BuildManualSaveName(request.SaveName, currentMenu.Session);
         var description = BuildManualSaveDescription(currentMenu.Session);
         var saved = false;
-        var writeResult = await _writeCoordinator.ExecuteAsync(
+        var writeResult = await _writeCoordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
             new BrowserLocalWriteRequest(
                 OwnerId: "browser-main-menu-save",
                 OwnerLabel: "Browser main menu",
                 OperationLabel: "browser manual save"),
             Array.Empty<string>(),
-            async () =>
+            async writeLease =>
             {
                 saved = await _saveLoad.SaveGameAsync(
+                    writeLease,
                     saveName,
                     description,
                     "saves/manual_saves",
@@ -138,7 +158,7 @@ public sealed class LocalWebUiMainMenuService
                     throw new InvalidOperationException("Не удалось создать ручное сохранение.");
             });
 
-        var updatedMenu = await BuildAsync();
+        var updatedMenu = await BuildBoundAsync(writeLease);
         var createdSaveId = updatedMenu.Saves
             .Where(save => string.Equals(save.Scope, "manual", StringComparison.Ordinal) &&
                            string.Equals(save.DisplayName, saveName, StringComparison.Ordinal))
@@ -153,11 +173,40 @@ public sealed class LocalWebUiMainMenuService
             Menu: updatedMenu);
     }
 
+    private async Task<BrowserMainMenuDto> BuildBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var dashboard = await _lifecycle.BuildDashboardAsync();
+        var terminalSoulDissipationMessage = await TryReadTerminalSoulDissipationMessageAsync();
+        var saves = await BuildSaveSlotsAsync();
+        var session = await BuildSessionSummaryAsync(
+            dashboard,
+            terminalSoulDissipationMessage,
+            writeLease);
+        var actions = BuildActions(session, saves, dashboard);
+
+        return new BrowserMainMenuDto(
+            SchemaVersion: 1,
+            Session: session,
+            Actions: actions,
+            Saves: saves,
+            Options: BuildOptionsSummary(),
+            About: BuildAboutSummary(),
+            AdvancedShell: new BrowserAdvancedShellDto(
+                Label: "Расширенный режим",
+                Description: "Служебные сведения и перенесённые команды скрыты от обычного главного меню, но остаются доступны для проверки в расширенном режиме.",
+                InitiallyExpanded: false));
+    }
+
     private async Task<BrowserMainMenuSessionDto> BuildSessionSummaryAsync(
         BrowserLifecycleDashboardDto dashboard,
-        string? terminalSoulDissipationMessage)
+        string? terminalSoulDissipationMessage,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        await _stateManager.RefreshGameStateAsync();
+        if (writeLease == null)
+            await _stateManager.RefreshGameStateAsync();
+        else
+            await _stateManager.RefreshGameStateAsync(writeLease);
         var turnNumber = _stateManager.CurrentState.TurnNumber;
         var hasReadableSoul = dashboard.Soul.IsReadable;
         var hasCurrentSession = dashboard.Session.GameSessionExists && hasReadableSoul;

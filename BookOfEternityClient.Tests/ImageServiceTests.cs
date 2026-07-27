@@ -82,6 +82,63 @@ public sealed class ImageServiceTests
         }
     }
 
+    [Fact]
+    public void GetEntityImagePath_TraversalEntityTypeCannotReadOutsideImages()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var service = CreateService(root);
+            var escapedDir = Path.Combine(root, "game_session", "game_state", "meta");
+            Directory.CreateDirectory(escapedDir);
+            File.WriteAllText(Path.Combine(escapedDir, "secret.png"), "outside-images");
+
+            var result = service.GetEntityImagePath("../game_state/meta", "secret");
+
+            Assert.Null(result);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public void GetEntityImagePath_PermanentJunctionCannotExposeOutsideImage()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var outsideRoot = CreateTempRoot();
+        var junctionPath = Path.Combine(root, "game_session", "images", "npcs");
+        try
+        {
+            var service = CreateService(root);
+            Directory.CreateDirectory(outsideRoot);
+            File.WriteAllText(
+                Path.Combine(outsideRoot, "npc_alpha__img_20260520_010101001.png"),
+                "outside-image");
+            if (Directory.Exists(junctionPath))
+                Directory.Delete(junctionPath, recursive: true);
+            CreateDirectoryJunction(junctionPath, outsideRoot);
+
+            Assert.Throws<InvalidDataException>(
+                () => service.GetEntityImagePath("npc", "npc_alpha"));
+        }
+        finally
+        {
+            if (Directory.Exists(junctionPath) &&
+                (File.GetAttributes(junctionPath) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(junctionPath, recursive: false);
+            }
+
+            CleanupTempRoot(root);
+            CleanupTempRoot(outsideRoot);
+        }
+    }
+
     private static ImageService CreateService(string root)
     {
         var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
@@ -126,6 +183,26 @@ public sealed class ImageServiceTests
         catch
         {
             // best-effort cleanup
+        }
+    }
+
+    private static void CreateDirectoryJunction(string junctionPath, string targetPath)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(junctionPath)!);
+        using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = $"/d /c mklink /J \"{junctionPath}\" \"{targetPath}\"",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        }) ?? throw new InvalidOperationException("Failed to start junction helper.");
+        process.WaitForExit();
+        if (process.ExitCode != 0)
+        {
+            throw new InvalidOperationException(
+                $"Failed to create test junction: exit code {process.ExitCode}.");
         }
     }
 }

@@ -15,13 +15,19 @@ public sealed class BrowserAudioService
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly AudioService _audioService;
+    private readonly BrowserLocalWriteCoordinator _coordinator;
     internal static readonly SemaphoreSlim SettingsWriteGate = new SemaphoreSlim(1, 1);
 
-    public BrowserAudioService(FileSystemManager fs, StateManager stateManager, AudioService audioService)
+    public BrowserAudioService(
+        FileSystemManager fs,
+        StateManager stateManager,
+        AudioService audioService,
+        BrowserLocalWriteCoordinator coordinator)
     {
         _fs = fs;
         _stateManager = stateManager;
         _audioService = audioService;
+        _coordinator = coordinator;
     }
 
     public async Task<BrowserAudioSettingsDto> BuildSettingsAsync()
@@ -29,8 +35,7 @@ public sealed class BrowserAudioService
         await SettingsWriteGate.WaitAsync();
         try
         {
-            await _stateManager.LoadSettingsAsync();
-            return BuildSettings();
+            return await _coordinator.RunBoundTransactionAsync(BuildSettingsBoundAsync);
         }
         finally
         {
@@ -43,26 +48,62 @@ public sealed class BrowserAudioService
         await SettingsWriteGate.WaitAsync();
         try
         {
-            await _stateManager.LoadSettingsAsync();
-            var settings = _stateManager.Settings;
-
-            if (request.MusicEnabled.HasValue)
-                settings.MusicEnabled = request.MusicEnabled.Value;
-            if (request.MusicVolume.HasValue)
-                settings.MusicVolume = Math.Clamp(request.MusicVolume.Value, 0, 100);
-            if (request.SoundEnabled.HasValue)
-                settings.SoundEnabled = request.SoundEnabled.Value;
-            if (request.SoundVolume.HasValue)
-                settings.SoundVolume = Math.Clamp(request.SoundVolume.Value, 0, 100);
-
-            await _stateManager.SaveSettingsAsync();
-            await _audioService.ApplySettingsAsync();
-            return BuildSettings();
+            return await _coordinator.RunBoundTransactionAsync(
+                writeLease => UpdateSettingsBoundAsync(writeLease, request));
         }
         finally
         {
             SettingsWriteGate.Release();
         }
+    }
+
+    private async Task<BrowserAudioSettingsDto> BuildSettingsBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        await _stateManager.LoadSettingsAsync(writeLease);
+        return BuildSettings();
+    }
+
+    private async Task<BrowserAudioSettingsDto> UpdateSettingsBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserAudioSettingsUpdateRequest request)
+    {
+        await _stateManager.LoadSettingsAsync(writeLease);
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            new BrowserLocalWriteRequest(
+                OwnerId: $"browser-audio:{Environment.MachineName}:{Environment.ProcessId}",
+                OwnerLabel: "Browser audio settings",
+                OperationLabel: "Browser audio settings update"),
+            ["config.json"],
+            async transactionLease =>
+            {
+                var settings = _stateManager.Settings;
+                if (request.MusicEnabled.HasValue)
+                    settings.MusicEnabled = request.MusicEnabled.Value;
+                if (request.MusicVolume.HasValue)
+                    settings.MusicVolume = Math.Clamp(request.MusicVolume.Value, 0, 100);
+                if (request.SoundEnabled.HasValue)
+                    settings.SoundEnabled = request.SoundEnabled.Value;
+                if (request.SoundVolume.HasValue)
+                    settings.SoundVolume = Math.Clamp(request.SoundVolume.Value, 0, 100);
+
+                await _stateManager.SaveSettingsAsync(transactionLease);
+                await _audioService.ApplySettingsAsync();
+            },
+            prepareAfterRollback: () =>
+            {
+                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
+                return () =>
+                {
+                    _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
+                    _audioService.ApplySettingsAsync().GetAwaiter().GetResult();
+                };
+            });
+
+        if (!result.Success)
+            throw new InvalidOperationException(result.Message);
+        return BuildSettings();
     }
 
     public IResult ServeAsset(string assetId)

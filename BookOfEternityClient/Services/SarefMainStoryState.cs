@@ -468,6 +468,15 @@ internal static class SarefMainStoryState
     public static async Task WriteWingsInfiltrationRequestAsync(FileSystemManager fs, JsonObject request) =>
         await fs.WriteFileAtomicAsync(PendingWingsInfiltrationPath, request.ToJsonString(JsonOptions));
 
+    internal static async Task WriteWingsInfiltrationRequestAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        JsonObject request) =>
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingWingsInfiltrationPath,
+            request.ToJsonString(JsonOptions));
+
     public static void ClearWingsInfiltrationRequest(FileSystemManager fs) =>
         fs.DeleteFile(PendingWingsInfiltrationPath);
 

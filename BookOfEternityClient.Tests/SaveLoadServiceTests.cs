@@ -31,6 +31,32 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile()
+    {
+        var settings = new GameSettings();
+        var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeSaveCommitAsync = () =>
+                    throw new InvalidOperationException("simulated save commit failure")
+            });
+
+        var saved = await service.SaveGameAsync(
+            "atomic_failure",
+            "must not publish a partial archive");
+
+        Assert.False(saved);
+        var saveDirectory = _fs.ResolvePath("saves/manual_saves");
+        Assert.Empty(Directory.GetFiles(saveDirectory, "*.zip"));
+        Assert.Empty(Directory.GetFiles(saveDirectory, "*.tmp.*"));
+    }
+
+    [Fact]
     public async Task SaveAndLoad_TreatsProgressionReportAsEphemeralControlFile()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

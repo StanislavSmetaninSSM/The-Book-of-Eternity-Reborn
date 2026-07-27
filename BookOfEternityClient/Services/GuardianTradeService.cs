@@ -160,19 +160,39 @@ public sealed class GuardianTradeService
             .ToList();
     }
 
-    public async Task<GuardianTradeView?> EnsureTradeInventoryAsync(string guardianId, int currentIncarnation, int currentTurn, bool createPendingRequests = true)
+    public Task<GuardianTradeView?> EnsureTradeInventoryAsync(
+        string guardianId,
+        int currentIncarnation,
+        int currentTurn,
+        bool createPendingRequests = true) =>
+        EnsureTradeInventoryCoreAsync(writeLease: null, guardianId, currentIncarnation, currentTurn, createPendingRequests);
+
+    internal Task<GuardianTradeView?> EnsureTradeInventoryAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string guardianId,
+        int currentIncarnation,
+        int currentTurn,
+        bool createPendingRequests = true) =>
+        EnsureTradeInventoryCoreAsync(writeLease, guardianId, currentIncarnation, currentTurn, createPendingRequests);
+
+    private async Task<GuardianTradeView?> EnsureTradeInventoryCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string guardianId,
+        int currentIncarnation,
+        int currentTurn,
+        bool createPendingRequests)
     {
         if (currentTurn <= 0)
             throw new ArgumentOutOfRangeException(nameof(currentTurn), "Подготовка или проверка витрины Хранителя требует актуальный номер хода.");
 
-        var localScope = await ResolveChaosTradeScopeAsync();
+        var localScope = await ResolveChaosTradeScopeAsync(writeLease);
         if (localScope == null)
             return null;
 
-        var root = await ReadGuardiansRootAsync();
+        var root = await ReadGuardiansRootAsync(writeLease);
         if (root == null)
             return null;
-        var trackerRoot = await ReadGuardianProjectTrackerRootAsync();
+        var trackerRoot = await ReadGuardianProjectTrackerRootAsync(writeLease);
 
         var guardian = FindGuardian(root, guardianId);
         if (guardian == null || !LocalInteractionScopeService.IsAfterlifeActorLocal(localScope, guardian))
@@ -187,10 +207,11 @@ public sealed class GuardianTradeService
             currentTurn,
             trackerRoot,
             preGuardiansJson,
-            createPendingRequests);
+            createPendingRequests,
+            writeLease);
         if (changed || trackerChanged)
         {
-            var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preGuardiansJson);
+            var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preGuardiansJson, writeLease);
             if (commitScope == null)
                 return null;
 
@@ -209,7 +230,7 @@ public sealed class GuardianTradeService
                     true));
             }
 
-            if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes.ToArray()))
+            if (!await TryCommitAsync(writeLease, writes.ToArray()))
             {
                 return view with
                 {
@@ -220,7 +241,7 @@ public sealed class GuardianTradeService
             }
         }
 
-        if (!await IsCurrentGuardianTradeTargetAsync(guardianId, root.ToJsonString(JsonOpts)))
+        if (!await IsCurrentGuardianTradeTargetAsync(guardianId, root.ToJsonString(JsonOpts), writeLease))
             return null;
 
         return view;
@@ -275,18 +296,38 @@ public sealed class GuardianTradeService
             : Array.Empty<GuardianSellOffer>();
     }
 
-    public async Task<GuardianTradeOperationResult> BuyAsync(string guardianId, string slotId, int currentIncarnation, int currentTurn)
+    public Task<GuardianTradeOperationResult> BuyAsync(
+        string guardianId,
+        string slotId,
+        int currentIncarnation,
+        int currentTurn) =>
+        BuyCoreAsync(writeLease: null, guardianId, slotId, currentIncarnation, currentTurn);
+
+    internal Task<GuardianTradeOperationResult> BuyAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string guardianId,
+        string slotId,
+        int currentIncarnation,
+        int currentTurn) =>
+        BuyCoreAsync(writeLease, guardianId, slotId, currentIncarnation, currentTurn);
+
+    private async Task<GuardianTradeOperationResult> BuyCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string guardianId,
+        string slotId,
+        int currentIncarnation,
+        int currentTurn)
     {
         if (currentTurn <= 0)
             return new GuardianTradeOperationResult(false, false, "Локальная покупка реликвии требует актуальный номер хода.");
 
-        var localScope = await ResolveChaosTradeScopeAsync();
+        var localScope = await ResolveChaosTradeScopeAsync(writeLease);
         if (localScope == null)
             return new GuardianTradeOperationResult(false, false, "Торговля с Хранителем недоступна в текущем мире или обители.");
 
-        var guardiansRoot = await ReadGuardiansRootAsync();
-        var soulRoot = await ReadSoulStateRootAsync();
-        var trackerRoot = await ReadGuardianProjectTrackerRootAsync();
+        var guardiansRoot = await ReadGuardiansRootAsync(writeLease);
+        var soulRoot = await ReadSoulStateRootAsync(writeLease);
+        var trackerRoot = await ReadGuardianProjectTrackerRootAsync(writeLease);
         if (guardiansRoot == null || soulRoot == null)
             return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
 
@@ -310,7 +351,8 @@ public sealed class GuardianTradeService
             currentTurn,
             trackerRoot,
             preBuyGuardiansJson,
-            createPendingRequests: true);
+            createPendingRequests: true,
+            writeLease);
         if (view.TradeBlocked)
             return new GuardianTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
         if (!view.InventoryReady)
@@ -342,7 +384,10 @@ public sealed class GuardianTradeService
         if (slot["relicData"] is not JsonObject relicData)
             return new GuardianTradeOperationResult(false, false, "Данные реликвии повреждены.");
 
-        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preBuyGuardiansJson);
+        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(
+            guardianId,
+            preBuyGuardiansJson,
+            writeLease);
         if (commitScope == null)
             return new GuardianTradeOperationResult(false, false, "Хранитель покинул текущую обитель до завершения покупки. Перья не списаны.");
 
@@ -378,7 +423,7 @@ public sealed class GuardianTradeService
                 true));
         }
 
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, coordinatedWrites.ToArray()))
+        if (!await TryCommitAsync(writeLease, coordinatedWrites.ToArray()))
         {
             return new GuardianTradeOperationResult(
                 false,
@@ -390,17 +435,34 @@ public sealed class GuardianTradeService
         return new GuardianTradeOperationResult(true, true, $"Куплена реликвия «{relicName}» за {price} 🪶.");
     }
 
-    public async Task<GuardianTradeOperationResult> SellAsync(string guardianId, string relicId, int currentTurn)
+    public Task<GuardianTradeOperationResult> SellAsync(
+        string guardianId,
+        string relicId,
+        int currentTurn) =>
+        SellCoreAsync(writeLease: null, guardianId, relicId, currentTurn);
+
+    internal Task<GuardianTradeOperationResult> SellAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string guardianId,
+        string relicId,
+        int currentTurn) =>
+        SellCoreAsync(writeLease, guardianId, relicId, currentTurn);
+
+    private async Task<GuardianTradeOperationResult> SellCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string guardianId,
+        string relicId,
+        int currentTurn)
     {
         if (currentTurn <= 0)
             return new GuardianTradeOperationResult(false, false, "Локальная продажа реликвии требует актуальный номер хода.");
 
-        var localScope = await ResolveChaosTradeScopeAsync();
+        var localScope = await ResolveChaosTradeScopeAsync(writeLease);
         if (localScope == null)
             return new GuardianTradeOperationResult(false, false, "Торговля с Хранителем недоступна в текущем мире или обители.");
 
-        var guardiansRoot = await ReadGuardiansRootAsync();
-        var soulRoot = await ReadSoulStateRootAsync();
+        var guardiansRoot = await ReadGuardiansRootAsync(writeLease);
+        var soulRoot = await ReadSoulStateRootAsync(writeLease);
         if (guardiansRoot == null || soulRoot == null)
             return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
 
@@ -420,7 +482,10 @@ public sealed class GuardianTradeService
         if (tier == TradeReputationTier.Hostile)
             return new GuardianTradeOperationResult(false, false, "Этот Хранитель отказывается торговать с вами.");
 
-        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preSellGuardiansJson);
+        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(
+            guardianId,
+            preSellGuardiansJson,
+            writeLease);
         if (commitScope == null)
             return new GuardianTradeOperationResult(false, false, "Хранитель покинул текущую обитель до завершения продажи. Реликвия не изменена.");
 
@@ -453,8 +518,8 @@ public sealed class GuardianTradeService
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
                 removedSoulRelicIds: new[] { relicId })).ToJsonString(JsonOpts);
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
-                _fs,
+        if (!await TryCommitAsync(
+                writeLease,
                 CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
                     .Concat(new[]
                     {
@@ -473,17 +538,34 @@ public sealed class GuardianTradeService
         return new GuardianTradeOperationResult(true, true, $"Продана реликвия «{relicName}» за {price} 🪶.");
     }
 
-    public async Task<GuardianTradeOperationResult> BuyBackAsync(string guardianId, string buybackEntryId, int currentTurn)
+    public Task<GuardianTradeOperationResult> BuyBackAsync(
+        string guardianId,
+        string buybackEntryId,
+        int currentTurn) =>
+        BuyBackCoreAsync(writeLease: null, guardianId, buybackEntryId, currentTurn);
+
+    internal Task<GuardianTradeOperationResult> BuyBackAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string guardianId,
+        string buybackEntryId,
+        int currentTurn) =>
+        BuyBackCoreAsync(writeLease, guardianId, buybackEntryId, currentTurn);
+
+    private async Task<GuardianTradeOperationResult> BuyBackCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string guardianId,
+        string buybackEntryId,
+        int currentTurn)
     {
         if (currentTurn <= 0)
             return new GuardianTradeOperationResult(false, false, "Локальный выкуп реликвии требует актуальный номер хода.");
 
-        var localScope = await ResolveChaosTradeScopeAsync();
+        var localScope = await ResolveChaosTradeScopeAsync(writeLease);
         if (localScope == null)
             return new GuardianTradeOperationResult(false, false, "Торговля с Хранителем недоступна в текущем мире или обители.");
 
-        var guardiansRoot = await ReadGuardiansRootAsync();
-        var soulRoot = await ReadSoulStateRootAsync();
+        var guardiansRoot = await ReadGuardiansRootAsync(writeLease);
+        var soulRoot = await ReadSoulStateRootAsync(writeLease);
         if (guardiansRoot == null || soulRoot == null)
             return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
 
@@ -521,7 +603,10 @@ public sealed class GuardianTradeService
         if (price <= 0)
             return new GuardianTradeOperationResult(false, false, "Цена обратного выкупа повреждена.");
 
-        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, preBuybackGuardiansJson);
+        var commitScope = await ResolveCurrentGuardianTradeTargetScopeAsync(
+            guardianId,
+            preBuybackGuardiansJson,
+            writeLease);
         if (commitScope == null)
             return new GuardianTradeOperationResult(false, false, "Хранитель покинул текущую обитель до завершения выкупа. Перья не списаны.");
 
@@ -544,8 +629,8 @@ public sealed class GuardianTradeService
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
                 upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts);
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
-                _fs,
+        if (!await TryCommitAsync(
+                writeLease,
                 CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
                     .Concat(new[]
                     {
@@ -571,7 +656,8 @@ public sealed class GuardianTradeService
         int currentTurn,
         JsonObject? trackerRoot,
         string expectedGuardiansRootJson,
-        bool createPendingRequests)
+        bool createPendingRequests,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
         var guardianName = GuardianManifestation.GetDisplayName(guardian);
@@ -595,7 +681,9 @@ public sealed class GuardianTradeService
         if (!blocked)
         {
             var tradeInventory = guardian["tradeInventory"] as JsonObject;
-            var pendingRequestState = await GuardianTradeRequestState.ReadStateAsync(_fs);
+            var pendingRequestState = writeLease == null
+                ? await GuardianTradeRequestState.ReadStateAsync(_fs)
+                : await GuardianTradeRequestState.ReadStateAsync(_fs, writeLease);
             var pendingRequest = pendingRequestState.Request;
             if (GuardianTradeRequestState.TryFindDuplicateTradeSlotId(tradeInventory, out var duplicateSlotId))
             {
@@ -700,7 +788,8 @@ public sealed class GuardianTradeService
                         {
                             var requestScope = await ResolveCurrentGuardianTradeTargetScopeAsync(
                                 guardianId,
-                                expectedGuardiansRootJson);
+                                expectedGuardiansRootJson,
+                                writeLease);
                             if (requestScope == null)
                             {
                                 blocked = true;
@@ -710,11 +799,19 @@ public sealed class GuardianTradeService
                             }
                             else
                             {
-                                if (await GuardianTradeRequestState.TryWriteScopedAsync(
+                                var requestWritten = writeLease == null
+                                    ? await GuardianTradeRequestState.TryWriteScopedAsync(
                                         _fs,
                                         pendingRequest,
                                         requestScope,
-                                        expectedGuardiansRootJson))
+                                        expectedGuardiansRootJson)
+                                    : await GuardianTradeRequestState.TryWriteScopedAsync(
+                                        _fs,
+                                        writeLease,
+                                        pendingRequest,
+                                        requestScope,
+                                        expectedGuardiansRootJson);
+                                if (requestWritten)
                                 {
                                     inventoryRequestPending = true;
                                     inventoryRequestCreatedThisCall = true;
@@ -743,8 +840,13 @@ public sealed class GuardianTradeService
 
                 if (pendingRequest != null && requestMatchesCurrentContract && (hasMatchingReceipt || hasCanonicalReadyReceipt))
                 {
-                    if (await IsCurrentGuardianTradeTargetAsync(guardianId))
-                        await GuardianTradeRequestState.ClearIfMatchesAsync(_fs, pendingRequest);
+                    if (await IsCurrentGuardianTradeTargetAsync(guardianId, writeLease: writeLease))
+                    {
+                        if (writeLease == null)
+                            await GuardianTradeRequestState.ClearIfMatchesAsync(_fs, pendingRequest);
+                        else
+                            await GuardianTradeRequestState.ClearIfMatchesAsync(_fs, writeLease, pendingRequest);
+                    }
                 }
             }
             else
@@ -815,7 +917,8 @@ public sealed class GuardianTradeService
                     {
                         var requestScope = await ResolveCurrentGuardianTradeTargetScopeAsync(
                             guardianId,
-                            expectedGuardiansRootJson);
+                            expectedGuardiansRootJson,
+                            writeLease);
                         if (requestScope == null)
                         {
                             blocked = true;
@@ -825,11 +928,19 @@ public sealed class GuardianTradeService
                         }
                         else
                         {
-                            if (await GuardianTradeRequestState.TryWriteScopedAsync(
+                            var requestWritten = writeLease == null
+                                ? await GuardianTradeRequestState.TryWriteScopedAsync(
                                     _fs,
                                     pendingRequest,
                                     requestScope,
-                                    expectedGuardiansRootJson))
+                                    expectedGuardiansRootJson)
+                                : await GuardianTradeRequestState.TryWriteScopedAsync(
+                                    _fs,
+                                    writeLease,
+                                    pendingRequest,
+                                    requestScope,
+                                    expectedGuardiansRootJson);
+                            if (requestWritten)
                             {
                                 inventoryRequestPending = true;
                                 inventoryRequestCreatedThisCall = true;
@@ -943,9 +1054,12 @@ public sealed class GuardianTradeService
             buybackOffers);
     }
 
-    private async Task<JsonObject?> ReadGuardiansRootAsync()
+    private async Task<JsonObject?> ReadGuardiansRootAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync(GuardiansPath);
+        var json = writeLease == null
+            ? await _fs.ReadFileAsync(GuardiansPath)
+            : await _fs.ReadFileAsync(writeLease, GuardiansPath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -960,9 +1074,12 @@ public sealed class GuardianTradeService
         }
     }
 
-    private async Task<JsonObject?> ReadSoulStateRootAsync()
+    private async Task<JsonObject?> ReadSoulStateRootAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync(SoulStatePath);
+        var json = writeLease == null
+            ? await _fs.ReadFileAsync(SoulStatePath)
+            : await _fs.ReadFileAsync(writeLease, SoulStatePath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -977,9 +1094,12 @@ public sealed class GuardianTradeService
         }
     }
 
-    private async Task<JsonObject?> ReadGuardianProjectTrackerRootAsync()
+    private async Task<JsonObject?> ReadGuardianProjectTrackerRootAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var json = writeLease == null
+            ? await _fs.ReadFileAsync(GuardianProjectState.TrackerPath)
+            : await _fs.ReadFileAsync(writeLease, GuardianProjectState.TrackerPath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -1068,24 +1188,31 @@ public sealed class GuardianTradeService
                string.Equals(abodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task<LocalInteractionScope?> ResolveChaosTradeScopeAsync()
+    private async Task<LocalInteractionScope?> ResolveChaosTradeScopeAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var scope = await _localScopeService.ResolveAsync();
+        var scope = writeLease == null
+            ? await _localScopeService.ResolveAsync()
+            : await _localScopeService.ResolveAsync(writeLease);
         return scope.IsResolved && scope.RealmKind == LocalInteractionRealmKind.ChaosSea ? scope : null;
     }
 
-    private async Task<bool> IsCurrentGuardianTradeTargetAsync(string guardianId, string? expectedGuardiansRootJson = null) =>
-        await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, expectedGuardiansRootJson) != null;
+    private async Task<bool> IsCurrentGuardianTradeTargetAsync(
+        string guardianId,
+        string? expectedGuardiansRootJson = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null) =>
+        await ResolveCurrentGuardianTradeTargetScopeAsync(guardianId, expectedGuardiansRootJson, writeLease) != null;
 
     private async Task<LocalInteractionScope?> ResolveCurrentGuardianTradeTargetScopeAsync(
         string guardianId,
-        string? expectedGuardiansRootJson = null)
+        string? expectedGuardiansRootJson = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var scope = await ResolveChaosTradeScopeAsync();
+        var scope = await ResolveChaosTradeScopeAsync(writeLease);
         if (scope == null)
             return null;
 
-        var root = await ReadGuardiansRootAsync();
+        var root = await ReadGuardiansRootAsync(writeLease);
         if (root == null ||
             (expectedGuardiansRootJson != null &&
              !string.Equals(root.ToJsonString(JsonOpts), expectedGuardiansRootJson, StringComparison.Ordinal)))
@@ -1101,12 +1228,19 @@ public sealed class GuardianTradeService
             return null;
         }
 
-        return await CoordinatedStateWriteHelper.TryCommitAsync(
-            _fs,
+        return await TryCommitAsync(
+            writeLease,
             CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope))
             ? scope
             : null;
     }
+
+    private Task<bool> TryCommitAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        params CoordinatedStateWriteHelper.PlannedWrite[] writes) =>
+        writeLease == null
+            ? CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes)
+            : CoordinatedStateWriteHelper.TryCommitAsync(_fs, writeLease, writes);
 
     private static string BuildTradeBlockedReason(JsonObject root, JsonObject guardian, int reputation)
     {

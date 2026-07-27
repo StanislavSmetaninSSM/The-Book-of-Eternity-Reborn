@@ -35,7 +35,12 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
             null!,
             null!,
             NullLogger<QteSceneService>.Instance);
-        _web = new QteWebInteractionService(_fs, qte);
+        _web = new QteWebInteractionService(
+            _fs,
+            qte,
+            new BrowserLocalWriteCoordinator(
+                _fs,
+                new LocalUiSessionLockService(_fs)));
     }
 
     [Fact]
@@ -85,6 +90,7 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
     private Dictionary<string, string> SnapshotFiles() =>
         Directory.EnumerateFiles(_rootPath, "*", SearchOption.AllDirectories)
             .Select(path => (Path: Path.GetRelativePath(_rootPath, path).Replace('\\', '/'), Contents: File.ReadAllText(path)))
+            .Where(item => !item.Path.StartsWith(".boe_runtime/", StringComparison.OrdinalIgnoreCase))
             .OrderBy(item => item.Path, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(item => item.Path, item => item.Contents, StringComparer.OrdinalIgnoreCase);
 

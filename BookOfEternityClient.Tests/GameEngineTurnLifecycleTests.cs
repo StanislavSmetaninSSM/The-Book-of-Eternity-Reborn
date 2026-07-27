@@ -6307,9 +6307,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             Assert.True(snapshotHashes.TryGetPropertyValue(fileEntry.Key, out var hashNode));
             var expectedHash = hashNode?.GetValue<string>();
             Assert.False(string.IsNullOrWhiteSpace(expectedHash));
-            var snapshotContent = await _fs.ReadFileAsync(snapshotPath!);
+            var snapshotContent = await _fs.ReadFileBytesAsync(snapshotPath!);
             Assert.NotNull(snapshotContent);
-            Assert.Equal(expectedHash, ComputeSha256(snapshotContent!), ignoreCase: true);
+            Assert.Equal(
+                expectedHash,
+                Convert.ToHexString(SHA256.HashData(snapshotContent!)),
+                ignoreCase: true);
         }
     }
 
@@ -8568,6 +8571,241 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task RestorePreTurnBackup_BrowserDirectGachaPreservesExactPreSpendSoulBytes()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string browserRollbackPath = "game_state/control/explorer_local_turn_rollback/browser_direct_gacha/game_state_meta_soul_state.json.rollback.exact";
+        const string preSpendSoulJson = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 18, "total": 55 },
+          "soulRelics": { "stored": [], "equipped": [] }
+        }
+        """;
+        const string postSpendSoulJson = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 11, "total": 55 },
+          "soulRelics": { "stored": [], "equipped": [] }
+        }
+        """;
+        var preSpendBytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(preSpendSoulJson);
+
+        await _fs.WriteFileAtomicAsync(soulStatePath, postSpendSoulJson);
+        await _fs.WriteFileAtomicBytesAsync(browserRollbackPath, preSpendBytes);
+        var engine = CreateGameEngine();
+        var request = CreateBrowserDirectGachaRequest("exact_bytes");
+
+        var initialRollback = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "browser_direct_gacha_exact_bytes");
+        await InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            initialRollback,
+            "browser-direct-gacha-exact-bytes-test");
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var loadedManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var validatedRollback = await InvokePrivateTaskResultAsync(
+            engine,
+            "GetValidatedRollbackSnapshotAsync",
+            loadedManifest);
+
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", validatedRollback);
+
+        Assert.Equal(preSpendBytes, await _fs.ReadFileBytesAsync(soulStatePath));
+    }
+
+    [Fact]
+    public async Task GetValidatedRollbackSnapshotAsync_BrowserDirectGachaRejectsByteChangedRollbackEvidence()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string browserRollbackPath = "game_state/control/explorer_local_turn_rollback/browser_direct_gacha/game_state_meta_soul_state.json.rollback.tamper";
+        const string preSpendSoulJson = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 18, "total": 55 },
+          "soulRelics": { "stored": [], "equipped": [] }
+        }
+        """;
+        const string postSpendSoulJson = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 11, "total": 55 },
+          "soulRelics": { "stored": [], "equipped": [] }
+        }
+        """;
+        var noBomBytes = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false).GetBytes(preSpendSoulJson);
+
+        await _fs.WriteFileAtomicAsync(soulStatePath, postSpendSoulJson);
+        await _fs.WriteFileAtomicBytesAsync(browserRollbackPath, noBomBytes);
+        var engine = CreateGameEngine();
+        var request = CreateBrowserDirectGachaRequest("byte_tamper");
+
+        var initialRollback = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "browser_direct_gacha_byte_tamper");
+        await InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            initialRollback,
+            "browser-direct-gacha-byte-tamper-test");
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var withBomBytes = Encoding.UTF8.GetPreamble().Concat(noBomBytes).ToArray();
+        await _fs.WriteFileAtomicBytesAsync(browserRollbackPath, withBomBytes);
+
+        var loadedManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var validatedRollback = await InvokePrivateTaskNullableResultAsync(
+            engine,
+            "GetValidatedRollbackSnapshotAsync",
+            loadedManifest);
+
+        Assert.Null(validatedRollback);
+    }
+
+    [Fact]
+    public async Task CreatePreTurnBackup_UnreadableCanonicalFileFailsClosed()
+    {
+        const string trackedPath = "lore/current_world/world_setting.json";
+        await _fs.WriteFileAtomicAsync(trackedPath, """{ "worldName": "Unreadable baseline" }""");
+        var engine = CreateGameEngine();
+        await using var exclusiveHandle = new FileStream(
+            _fs.ResolvePath(trackedPath),
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.None);
+
+        await Assert.ThrowsAsync<IOException>(() =>
+            InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "capture_failure"));
+    }
+
+    [Fact]
+    public async Task RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence()
+    {
+        const string trackedPath = "lore/current_world/world_setting.json";
+        const string baselineJson = """{ "worldName": "Baseline" }""";
+        const string changedJson = """{ "worldName": "Changed" }""";
+        await _fs.WriteFileAtomicAsync(trackedPath, baselineJson);
+        var engine = CreateGameEngine();
+        var generation = await GetOrCreateSessionGenerationAsync();
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "restore_hash_mismatch");
+        var backupFilesValue = rollbackSnapshot.GetType().GetProperty("BackupFiles")?.GetValue(rollbackSnapshot);
+        var backupFiles = Assert.IsAssignableFrom<Dictionary<string, string>>(backupFilesValue);
+        var backupPath = Assert.Contains(trackedPath, backupFiles);
+
+        await _fs.WriteFileAtomicAsync(trackedPath, changedJson);
+        await _fs.WriteFileAtomicAsync(backupPath, """{ "worldName": "Tampered evidence" }""");
+
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            InvokePrivateTaskAsync(
+                engine,
+                "RestorePreTurnBackupForSessionAsync",
+                rollbackSnapshot,
+                generation));
+
+        Assert.True(_fs.FileExists(backupPath));
+        Assert.Equal(changedJson, await _fs.ReadFileAsync(trackedPath));
+    }
+
+    [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes()
+    {
+        const string trackedPath = "lore/codex_entries.json";
+        var bodyBytes = Encoding.UTF8.GetBytes("""{ "entries": [] }""");
+        var exactBytes = Encoding.UTF8.GetPreamble().Concat(bodyBytes).ToArray();
+        await _fs.WriteFileAtomicBytesAsync(trackedPath, exactBytes);
+        var engine = CreateGameEngine();
+        var request = CreateSnapshotByteContractRequest("preserve");
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "snapshot_exact_bytes");
+
+        await InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            rollbackSnapshot,
+            "snapshot-exact-byte-test");
+
+        var manifest = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json"))!)!.AsObject();
+        var snapshotPath = manifest["files"]![trackedPath]!.GetValue<string>();
+        var snapshotHash = manifest["snapshotFileHashes"]![trackedPath]!.GetValue<string>();
+        var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
+        Assert.True(PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var payload));
+        var snapshotHashMode = payload!
+            .GetType()
+            .GetProperty("SnapshotHashMode")?
+            .GetValue(payload) as string;
+
+        Assert.Equal(exactBytes, await _fs.ReadFileBytesAsync(snapshotPath));
+        Assert.Equal(
+            Convert.ToHexString(SHA256.HashData(exactBytes)),
+            snapshotHash,
+            ignoreCase: true);
+        Assert.Equal("bytes", snapshotHashMode);
+    }
+
+    [Fact]
+    public async Task LoadCanonicalBaselineSnapshotAsync_RejectsBomOnlySnapshotByteChange()
+    {
+        const string trackedPath = "lore/codex_entries.json";
+        var bodyBytes = Encoding.UTF8.GetBytes("""{ "entries": [] }""");
+        var exactBytes = Encoding.UTF8.GetPreamble().Concat(bodyBytes).ToArray();
+        await _fs.WriteFileAtomicBytesAsync(trackedPath, exactBytes);
+        var engine = CreateGameEngine();
+        var request = CreateSnapshotByteContractRequest("tamper");
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "snapshot_byte_tamper");
+        await InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            rollbackSnapshot,
+            "snapshot-byte-tamper-test");
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var manifest = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json"))!)!.AsObject();
+        var snapshotPath = manifest["files"]![trackedPath]!.GetValue<string>();
+        await _fs.WriteFileAtomicBytesAsync(snapshotPath, bodyBytes);
+
+        var loadedSnapshot = await InvokePrivateTaskNullableResultAsync(
+            engine,
+            "LoadCanonicalBaselineSnapshotAsync",
+            request.TurnNumber,
+            null);
+
+        Assert.Null(loadedSnapshot);
+    }
+
+    [Fact]
     public async Task ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles()
     {
         const string worldSettingPath = "lore/current_world/world_setting.json";
@@ -8610,6 +8848,35 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
         Assert.False(Directory.Exists(_fs.ResolvePath("game_state/control/explorer_local_turn_rollback")));
     }
+
+    private static TurnRequest CreateBrowserDirectGachaRequest(string idSuffix) => new()
+    {
+        SessionId = $"session_browser_gacha_{idSuffix}",
+        RequestId = $"request_browser_gacha_{idSuffix}",
+        TurnNumber = 42,
+        PlayerAction = "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 7 Чернильных Перьев.",
+        Timestamp = "2026-06-02T00:00:00Z",
+        PreGeneratedDices1d20 = Enumerable.Range(1, 20).ToArray(),
+        GachaBaseResult = new GachaResult
+        {
+            DiceUsed = [18, 18, 18, 18],
+            BaseScore = 72,
+            BaseRarity = "Rare",
+            Formula = "client-computed gacha base (range 4-80)"
+        },
+        ProgressionControl = new ProgressionControl { CurrentRealm = "Chaos Sea" }
+    };
+
+    private static TurnRequest CreateSnapshotByteContractRequest(string idSuffix) => new()
+    {
+        SessionId = $"session_snapshot_bytes_{idSuffix}",
+        RequestId = $"request_snapshot_bytes_{idSuffix}",
+        TurnNumber = 52,
+        PlayerAction = "Проверить точные байты snapshot.",
+        Timestamp = "2026-07-27T00:00:00Z",
+        PreGeneratedDices1d20 = Enumerable.Range(1, 20).ToArray(),
+        ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+    };
 
     private async Task WriteJsonAsync(string relativePath, object payload)
     {
@@ -9111,6 +9378,20 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var result = resultProperty!.GetValue(task);
         Assert.NotNull(result);
         return result!;
+    }
+
+    private static async Task<object?> InvokePrivateTaskNullableResultAsync(
+        object instance,
+        string methodName,
+        params object?[]? args)
+    {
+        var method = ResolvePrivateMethod(instance, methodName, args);
+        var task = method.Invoke(instance, BuildPrivateInvocationArguments(method, args)) as Task;
+        Assert.NotNull(task);
+        await task!;
+        var resultProperty = task.GetType().GetProperty("Result");
+        Assert.NotNull(resultProperty);
+        return resultProperty!.GetValue(task);
     }
 
     private static MethodInfo ResolvePrivateMethod(

@@ -49,9 +49,21 @@ internal static class SourceOfLightCapstoneState
             PassiveId,
             RelicId);
 
-    public static async Task<SourceOfLightCapstoneReadState> ReadRequestStateAsync(FileSystemManager fs)
+    public static Task<SourceOfLightCapstoneReadState> ReadRequestStateAsync(FileSystemManager fs) =>
+        ReadRequestStateCoreAsync(fs, writeLease: null);
+
+    internal static Task<SourceOfLightCapstoneReadState> ReadRequestStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadRequestStateCoreAsync(fs, writeLease);
+
+    private static async Task<SourceOfLightCapstoneReadState> ReadRequestStateCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var raw = await fs.ReadFileAsync(PendingRequestPath);
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(PendingRequestPath)
+            : await fs.ReadFileAsync(writeLease, PendingRequestPath);
         if (raw == null)
             return new SourceOfLightCapstoneReadState(null, false, false, null, null);
 
@@ -96,6 +108,15 @@ internal static class SourceOfLightCapstoneState
 
     public static async Task WriteRequestAsync(FileSystemManager fs, SourceOfLightCapstoneRequest request) =>
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+
+    internal static async Task WriteRequestAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        SourceOfLightCapstoneRequest request) =>
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingRequestPath,
+            JsonSerializer.Serialize(request, JsonOpts));
 
     public static void ClearRequest(FileSystemManager fs) => fs.DeleteFile(PendingRequestPath);
 
@@ -150,35 +171,80 @@ internal static class SourceOfLightCapstoneState
         return sb.ToString();
     }
 
-    public static async Task<string?> TryDescribeBlockingPendingContractAsync(FileSystemManager fs, JsonObject? shiningRoot)
+    public static Task<string?> TryDescribeBlockingPendingContractAsync(
+        FileSystemManager fs,
+        JsonObject? shiningRoot) =>
+        TryDescribeBlockingPendingContractCoreAsync(fs, writeLease: null, shiningRoot);
+
+    internal static Task<string?> TryDescribeBlockingPendingContractAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        JsonObject? shiningRoot) =>
+        TryDescribeBlockingPendingContractCoreAsync(fs, writeLease, shiningRoot);
+
+    private static async Task<string?> TryDescribeBlockingPendingContractCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        JsonObject? shiningRoot)
     {
-        var coreState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs);
+        var coreState = writeLease == null
+            ? await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs)
+            : await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs, writeLease);
         if (coreState.IsMalformed || coreState.Requests.Count > 0)
             return $"active/malformed {ShiningCoreActionRequestState.PendingActionsRequestPath}";
 
-        var tradeState = await ShiningTradeRequestState.ReadRequestsStateAsync(fs);
+        var tradeState = writeLease == null
+            ? await ShiningTradeRequestState.ReadRequestsStateAsync(fs)
+            : await ShiningTradeRequestState.ReadRequestsStateAsync(fs, writeLease);
         if (tradeState.IsMalformed || tradeState.Requests.Count > 0)
             return $"active/malformed {ShiningTradeRequestState.PendingRequestsPath}";
 
-        var foundingMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
-            fs,
-            ShiningFactionRequestState.PendingFoundingsRequestPath,
-            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        if (foundingMalformed || (await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs)).Count > 0)
+        var foundingMalformed = writeLease == null
+            ? await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))
+            : await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                writeLease,
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var foundingRequests = writeLease == null
+            ? await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs)
+            : await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs, writeLease);
+        if (foundingMalformed || foundingRequests.Count > 0)
             return $"active/malformed {ShiningFactionRequestState.PendingFoundingsRequestPath}";
 
-        var realignmentMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
-            fs,
-            ShiningFactionRequestState.PendingRealignmentsRequestPath,
-            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionRealignmentRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        if (realignmentMalformed || (await ShiningFactionRequestState.ReadRealignmentRequestsAsync(fs)).Count > 0)
+        var realignmentMalformed = writeLease == null
+            ? await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionRealignmentRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))
+            : await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                writeLease,
+                ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionRealignmentRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var realignmentRequests = writeLease == null
+            ? await ShiningFactionRequestState.ReadRealignmentRequestsAsync(fs)
+            : await ShiningFactionRequestState.ReadRealignmentRequestsAsync(fs, writeLease);
+        if (realignmentMalformed || realignmentRequests.Count > 0)
             return $"active/malformed {ShiningFactionRequestState.PendingRealignmentsRequestPath}";
 
-        var leadershipMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
-            fs,
-            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
-            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        if (leadershipMalformed || (await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(fs)).Count > 0)
+        var leadershipMalformed = writeLease == null
+            ? await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))
+            : await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                writeLease,
+                ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var leadershipRequests = writeLease == null
+            ? await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(fs)
+            : await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(fs, writeLease);
+        if (leadershipMalformed || leadershipRequests.Count > 0)
             return $"active/malformed {ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath}";
 
         if (shiningRoot?.TryGetPropertyValue("pendingNativeFactionDiscovery", out var pendingDiscovery) == true &&
@@ -187,24 +253,35 @@ internal static class SourceOfLightCapstoneState
             return $"legacy pendingNativeFactionDiscovery in {ShiningAbodeState.StatePath}";
         }
 
-        var activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
-            fs,
-            "resolve or repair_cancel the active afterlife spiritual conflict before Source of Light");
+        var activeConflictBlocker = writeLease == null
+            ? await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
+                fs,
+                "resolve or repair_cancel the active afterlife spiritual conflict before Source of Light")
+            : await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
+                fs,
+                writeLease,
+                "resolve or repair_cancel the active afterlife spiritual conflict before Source of Light");
         if (activeConflictBlocker != null)
             return activeConflictBlocker;
 
-        if (await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(fs))
+        var manifestationMalformed = writeLease == null
+            ? await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(fs)
+            : await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(fs, writeLease);
+        if (manifestationMalformed)
             return $"malformed next-life manifestation handoff {GuardianAbodeResidentRequestState.PendingManifestationRequestPath}";
 
         foreach (var path in BlockingAfterlifeSingletonPendingPaths)
         {
-            if (fs.FileExists(path))
+            var fileExists = writeLease == null
+                ? fs.FileExists(path)
+                : fs.FileExists(writeLease, path);
+            if (fileExists)
                 return $"active/malformed afterlife pending/control contract {path}";
         }
 
         foreach (var path in BlockingAfterlifeRequestsPendingPaths)
         {
-            var blocker = await DescribeBlockingRequestsPendingFileAsync(fs, path);
+            var blocker = await DescribeBlockingRequestsPendingFileAsync(fs, writeLease, path);
             if (blocker != null)
                 return blocker;
         }
@@ -212,12 +289,20 @@ internal static class SourceOfLightCapstoneState
         return null;
     }
 
-    private static async Task<string?> DescribeBlockingRequestsPendingFileAsync(FileSystemManager fs, string path)
+    private static async Task<string?> DescribeBlockingRequestsPendingFileAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path)
     {
-        if (!fs.FileExists(path))
+        var fileExists = writeLease == null
+            ? fs.FileExists(path)
+            : fs.FileExists(writeLease, path);
+        if (!fileExists)
             return null;
 
-        var raw = await fs.ReadFileAsync(path);
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(path)
+            : await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(raw))
             return $"active/malformed afterlife pending/control contract {path}";
 

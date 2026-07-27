@@ -46,14 +46,52 @@ public sealed class AfterlifeArchiveConsultationService
         string ReservedSoulStateJson,
         string? PreviousSoulStateJson);
 
-    public async Task<ConsultationRequestResult?> CreateRequestAsync(
+    public Task<ConsultationRequestResult?> CreateRequestAsync(
         string guardianId,
         string guardianName,
         string archiveId,
         int currentIncarnation,
         string? currentRealm,
         int currentTurn,
-        bool commit = true)
+        bool commit = true) =>
+        CreateRequestCoreAsync(
+            writeLease: null,
+            guardianId,
+            guardianName,
+            archiveId,
+            currentIncarnation,
+            currentRealm,
+            currentTurn,
+            commit);
+
+    internal Task<ConsultationRequestResult?> CreateRequestAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string guardianId,
+        string guardianName,
+        string archiveId,
+        int currentIncarnation,
+        string? currentRealm,
+        int currentTurn,
+        bool commit = true) =>
+        CreateRequestCoreAsync(
+            writeLease,
+            guardianId,
+            guardianName,
+            archiveId,
+            currentIncarnation,
+            currentRealm,
+            currentTurn,
+            commit);
+
+    private async Task<ConsultationRequestResult?> CreateRequestCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string guardianId,
+        string guardianName,
+        string archiveId,
+        int currentIncarnation,
+        string? currentRealm,
+        int currentTurn,
+        bool commit)
     {
         if (!IsAfterlifeRealm(currentRealm) ||
             string.IsNullOrWhiteSpace(guardianId) ||
@@ -62,11 +100,13 @@ public sealed class AfterlifeArchiveConsultationService
             return null;
         }
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulJson = await ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
             return null;
 
-        var pendingRequestState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        var pendingRequestState = writeLease == null
+            ? await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs)
+            : await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs, writeLease);
         if (pendingRequestState.Exists)
             return null;
 
@@ -84,7 +124,7 @@ public sealed class AfterlifeArchiveConsultationService
         if (soulRoot == null)
             return null;
 
-        var preConsultationRequestJson = await _fs.ReadFileAsync(AfterlifeArchiveActionState.ConsultationRequestPath);
+        var preConsultationRequestJson = await ReadFileAsync(writeLease, AfterlifeArchiveActionState.ConsultationRequestPath);
         var preSoulJson = soulJson;
 
         GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
@@ -99,7 +139,7 @@ public sealed class AfterlifeArchiveConsultationService
         if (!AfterlifeArchiveState.IsAllowedEntryType(entryType))
             return null;
 
-        var reputation = await ReadGuardianReputationAsync(guardianId);
+        var reputation = await ReadGuardianReputationAsync(writeLease, guardianId);
         if (reputation < 50)
             return null;
 
@@ -137,8 +177,8 @@ public sealed class AfterlifeArchiveConsultationService
                 affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts);
 
         if (commit &&
-            !await CoordinatedStateWriteHelper.TryCommitAsync(
-                    _fs,
+            !await TryCommitAsync(
+                    writeLease,
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         AfterlifeArchiveActionState.ConsultationRequestPath,
                         preConsultationRequestJson,
@@ -186,10 +226,19 @@ public sealed class AfterlifeArchiveConsultationService
             preSoulJson);
     }
 
-    public async Task<bool> CommitPreparedRequestAsync(ConsultationRequestResult result)
-    {
-        return await CoordinatedStateWriteHelper.TryCommitAsync(
-            _fs,
+    public Task<bool> CommitPreparedRequestAsync(ConsultationRequestResult result) =>
+        CommitPreparedRequestCoreAsync(writeLease: null, result);
+
+    internal Task<bool> CommitPreparedRequestAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        ConsultationRequestResult result) =>
+        CommitPreparedRequestCoreAsync(writeLease, result);
+
+    private async Task<bool> CommitPreparedRequestCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        ConsultationRequestResult result) =>
+        await TryCommitAsync(
+            writeLease,
             new CoordinatedStateWriteHelper.PlannedWrite(
                 result.PendingRequestPath,
                 result.PreviousPendingRequestJson,
@@ -200,11 +249,12 @@ public sealed class AfterlifeArchiveConsultationService
                 result.PreviousSoulStateJson,
                 result.ReservedSoulStateJson,
                 RequireCurrentBaseline: true));
-    }
 
-    private async Task<int> ReadGuardianReputationAsync(string guardianId)
+    private async Task<int> ReadGuardianReputationAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string guardianId)
     {
-        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var guardiansJson = await ReadFileAsync(writeLease, "game_state/meta/guardians.json");
         if (string.IsNullOrWhiteSpace(guardiansJson))
             return 0;
 
@@ -242,6 +292,20 @@ public sealed class AfterlifeArchiveConsultationService
 
         return 0;
     }
+
+    private Task<string?> ReadFileAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path) =>
+        writeLease == null
+            ? _fs.ReadFileAsync(path)
+            : _fs.ReadFileAsync(writeLease, path);
+
+    private Task<bool> TryCommitAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        params CoordinatedStateWriteHelper.PlannedWrite[] writes) =>
+        writeLease == null
+            ? CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes)
+            : CoordinatedStateWriteHelper.TryCommitAsync(_fs, writeLease, writes);
 
     private static string? GetNodeString(JsonNode? node)
     {

@@ -13,6 +13,7 @@ internal sealed class SaveLoadServiceHooks
 {
     internal Func<Task>? BeforeLoadLeaseAcquisitionAsync { get; init; }
     internal Func<Task>? BeforeAutosaveCleanupLeaseAcquisitionAsync { get; init; }
+    internal Func<Task>? BeforeSaveCommitAsync { get; init; }
 }
 
 /// <summary>
@@ -76,6 +77,26 @@ public class SaveLoadService
         try
         {
             await using var canonicalSnapshotLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            return await SaveGameAsync(canonicalSnapshotLease, saveName, description, saveDir, turnNumber);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
+            return false;
+        }
+    }
+
+    internal async Task<bool> SaveGameAsync(
+        FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
+        string saveName,
+        string description,
+        string saveDir = "saves/manual_saves",
+        int turnNumber = 0)
+    {
+        string? temporaryPath = null;
+        try
+        {
+            _fs.EnsureCanonicalWriteLeaseActive(canonicalSnapshotLease);
             var state = _stateManager.CurrentState;
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var fileName = SanitizeFileName($"{saveName}_{timestamp}.zip");
@@ -84,8 +105,9 @@ public class SaveLoadService
             var dir = Path.GetDirectoryName(fullPath);
             if (dir != null && !Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
+            temporaryPath = fullPath + ".tmp." + Guid.NewGuid().ToString("N");
 
-            using (var archive = ZipFile.Open(fullPath, ZipArchiveMode.Create))
+            using (var archive = ZipFile.Open(temporaryPath, ZipArchiveMode.Create))
             {
                 // Add game_state directory
                 await AddDirectoryToArchive(archive, _fs.ResolvePath("game_state"), "game_state");
@@ -140,12 +162,30 @@ public class SaveLoadService
                 using var stream = entry.Open();
                 await stream.WriteAsync(Encoding.UTF8.GetBytes(metadataJson));
             }
+            if (_hooks?.BeforeSaveCommitAsync != null)
+                await _hooks.BeforeSaveCommitAsync();
+            File.Move(temporaryPath, fullPath);
+            temporaryPath = null;
 
             _logger.LogInformation("Игра сохранена: {Name}", saveName);
             return true;
         }
         catch (Exception ex)
         {
+            if (!string.IsNullOrWhiteSpace(temporaryPath) && File.Exists(temporaryPath))
+            {
+                try
+                {
+                    File.Delete(temporaryPath);
+                }
+                catch (Exception cleanupEx)
+                {
+                    _logger.LogWarning(
+                        cleanupEx,
+                        "Не удалось удалить временный файл сохранения: {Path}",
+                        temporaryPath);
+                }
+            }
             _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
             return false;
         }

@@ -106,6 +106,364 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteFileAtomicAsync_RelativeTraversalFailsClosed()
+    {
+        var escapedPath = Path.Combine(_rootPath, "escaped.json");
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.WriteFileAtomicAsync("../escaped.json", """{ "escaped": true }"""));
+
+        Assert.False(File.Exists(escapedPath));
+    }
+
+    [Fact]
+    public async Task CanonicalWrite_GameSessionJunctionAliasFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var aliasRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-manager-alias-" + Guid.NewGuid().ToString("N"));
+        var aliasSession = Path.Combine(aliasRoot, "game_session");
+        Directory.CreateDirectory(aliasRoot);
+        try
+        {
+            CreateDirectoryJunction(aliasSession, _fs.GameSessionPath);
+            var aliasFileSystem = new FileSystemManager(
+                aliasRoot,
+                NullLogger<FileSystemManager>.Instance);
+
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => aliasFileSystem.WriteFileAtomicAsync(
+                    "game_state/meta/alias-write.json",
+                    """{ "session": "stale-alias" }"""));
+
+            Assert.False(_fs.FileExists("game_state/meta/alias-write.json"));
+        }
+        finally
+        {
+            if (Directory.Exists(aliasSession))
+                Directory.Delete(aliasSession, recursive: false);
+            if (Directory.Exists(aliasRoot))
+                Directory.Delete(aliasRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task WriteFileAtomicBytesAsync_ParentReplacedByJunctionBeforeCommitFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/meta/race-target.bin";
+        var raceRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-mutation-race-" + Guid.NewGuid().ToString("N"));
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-mutation-outside-" + Guid.NewGuid().ToString("N"));
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedMeta = canonicalMeta + "-before-race";
+        var outsideTarget = Path.Combine(outsideRoot, "race-target.bin");
+        var armed = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = mutationPath =>
+            {
+                if (!armed ||
+                    swapped ||
+                    !string.Equals(mutationPath, relativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                Directory.Move(canonicalMeta, displacedMeta);
+                CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllBytesAsync(outsideTarget, [0xA1]);
+
+        try
+        {
+            var fs = new FileSystemManager(
+                raceRoot,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicBytesAsync(relativePath, [0x11]);
+            armed = true;
+
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => fs.WriteFileAtomicBytesAsync(relativePath, [0x22]));
+
+            Assert.True(swapped);
+            Assert.Equal(new byte[] { 0xA1 }, await File.ReadAllBytesAsync(outsideTarget));
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) &&
+                (File.GetAttributes(canonicalMeta) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(canonicalMeta, recursive: false);
+            }
+
+            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
+                Directory.Move(displacedMeta, canonicalMeta);
+            if (Directory.Exists(raceRoot))
+                Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task ReadFileBytesAsync_ParentReplacedByJunctionBeforeOpenFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/meta/read-race-target.bin";
+        var raceRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-read-race-" + Guid.NewGuid().ToString("N"));
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-read-outside-" + Guid.NewGuid().ToString("N"));
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedMeta = canonicalMeta + "-before-race";
+        var outsideTarget = Path.Combine(outsideRoot, "read-race-target.bin");
+        var armed = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = readPath =>
+            {
+                if (!armed ||
+                    swapped ||
+                    !string.Equals(readPath, relativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                Directory.Move(canonicalMeta, displacedMeta);
+                CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllBytesAsync(outsideTarget, [0xD4]);
+
+        try
+        {
+            var fs = new FileSystemManager(
+                raceRoot,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicBytesAsync(relativePath, [0x44]);
+            armed = true;
+
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => fs.ReadFileBytesAsync(relativePath));
+
+            Assert.True(swapped);
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) &&
+                (File.GetAttributes(canonicalMeta) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(canonicalMeta, recursive: false);
+            }
+
+            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
+                Directory.Move(displacedMeta, canonicalMeta);
+            if (Directory.Exists(raceRoot))
+                Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Theory]
+    [InlineData("append")]
+    [InlineData("compare-exchange")]
+    [InlineData("create-backup")]
+    [InlineData("restore-backup")]
+    public async Task CanonicalReadModifyWriteOperation_ParentReplacedByJunctionFailsClosed(
+        string operation)
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/meta/read-modify-write.bin";
+        const string backupRelativePath = "game_state/meta/read-modify-write.bin.test-backup";
+        var raceRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-rmw-race-" + Guid.NewGuid().ToString("N"));
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-rmw-outside-" + Guid.NewGuid().ToString("N"));
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedMeta = canonicalMeta + "-before-race";
+        var readPath = string.Equals(operation, "restore-backup", StringComparison.Ordinal)
+            ? backupRelativePath
+            : relativePath;
+        var armed = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = candidatePath =>
+            {
+                if (!armed ||
+                    swapped ||
+                    !string.Equals(candidatePath, readPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                Directory.Move(canonicalMeta, displacedMeta);
+                CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllBytesAsync(
+            Path.Combine(outsideRoot, Path.GetFileName(readPath)),
+            [0xE5]);
+
+        try
+        {
+            var fs = new FileSystemManager(
+                raceRoot,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicBytesAsync(relativePath, [0x55]);
+            await fs.WriteFileAtomicBytesAsync(backupRelativePath, [0x66]);
+            var backupFullPath = fs.ResolvePath(backupRelativePath);
+            armed = true;
+
+            Task operationTask = operation switch
+            {
+                "append" => fs.AppendFileAtomicAsync(relativePath, "x"),
+                "compare-exchange" => fs.CompareExchangeFileBytesAsync(
+                    relativePath,
+                    [0x55],
+                    [0x77]),
+                "create-backup" => Task.Run(() => fs.CreateBackup(relativePath)),
+                "restore-backup" => Task.Run(() => fs.RestoreBackup(
+                    backupFullPath,
+                    relativePath)),
+                _ => throw new ArgumentOutOfRangeException(nameof(operation))
+            };
+
+            await Assert.ThrowsAsync<InvalidDataException>(() => operationTask);
+            Assert.True(swapped);
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) &&
+                (File.GetAttributes(canonicalMeta) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(canonicalMeta, recursive: false);
+            }
+
+            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
+                Directory.Move(displacedMeta, canonicalMeta);
+            if (Directory.Exists(raceRoot))
+                Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task DeleteFile_ParentReplacedByJunctionBeforeMutationFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/meta/delete-target.bin";
+        var raceRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-delete-race-" + Guid.NewGuid().ToString("N"));
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-filesystem-delete-outside-" + Guid.NewGuid().ToString("N"));
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedMeta = canonicalMeta + "-before-race";
+        var outsideTarget = Path.Combine(outsideRoot, "delete-target.bin");
+        var armed = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = mutationPath =>
+            {
+                if (!armed ||
+                    swapped ||
+                    !string.Equals(mutationPath, relativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                Directory.Move(canonicalMeta, displacedMeta);
+                CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        File.WriteAllBytes(outsideTarget, [0xB2]);
+
+        try
+        {
+            var fs = new FileSystemManager(
+                raceRoot,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicBytesAsync(relativePath, [0x33]);
+            armed = true;
+
+            Assert.Throws<InvalidDataException>(() => fs.DeleteFile(relativePath));
+
+            Assert.True(swapped);
+            Assert.Equal(new byte[] { 0xB2 }, File.ReadAllBytes(outsideTarget));
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) &&
+                (File.GetAttributes(canonicalMeta) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(canonicalMeta, recursive: false);
+            }
+
+            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
+                Directory.Move(displacedMeta, canonicalMeta);
+            if (Directory.Exists(raceRoot))
+                Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting()
     {
         byte[] baseline = [0x01, 0x02, 0x03];

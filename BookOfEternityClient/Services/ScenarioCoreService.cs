@@ -157,6 +157,11 @@ public sealed class ScenarioCoreService
     public async Task<ScenarioCoreManifest?> ReadAsync()
     {
         var raw = await _fs.ReadFileAsync(ManifestPath);
+        return DeserializeManifest(raw);
+    }
+
+    private ScenarioCoreManifest? DeserializeManifest(string? raw)
+    {
         if (string.IsNullOrWhiteSpace(raw))
             return null;
 
@@ -209,6 +214,56 @@ public sealed class ScenarioCoreService
         await _fs.WriteFileAtomicAsync(ManifestPath, JsonSerializer.Serialize(manifest, JsonOpts));
     }
 
+    internal async Task RefreshFromPendingSetupAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var pendingRaw = await _fs.ReadFileAsync(
+            writeLease,
+            WorldDirectiveService.PendingSetupPath);
+        if (string.IsNullOrWhiteSpace(pendingRaw))
+        {
+            _fs.DeleteFile(writeLease, ManifestPath);
+            return;
+        }
+
+        WorldDirectiveService.PendingWorldSetup? pendingSetup;
+        try
+        {
+            pendingSetup = JsonSerializer.Deserialize<WorldDirectiveService.PendingWorldSetup>(
+                pendingRaw,
+                JsonOpts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Не удалось распарсить pending world setup для scenario core");
+            return;
+        }
+
+        if (pendingSetup == null)
+        {
+            _fs.DeleteFile(writeLease, ManifestPath);
+            return;
+        }
+
+        var existing = DeserializeManifest(await _fs.ReadFileAsync(writeLease, ManifestPath));
+        var confirmedCandidateIds = existing?.ScenarioCoreAssertions
+            .Where(assertion =>
+                string.Equals(
+                    assertion.Source,
+                    "extracted_freeform_confirmed",
+                    StringComparison.OrdinalIgnoreCase) &&
+                assertion.CandidateId is { Length: > 0 })
+            .Select(assertion => assertion.CandidateId!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase)
+            ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        var manifest = BuildManifest(pendingSetup, confirmedCandidateIds);
+        await _fs.WriteFileAtomicAsync(
+            writeLease,
+            ManifestPath,
+            JsonSerializer.Serialize(manifest, JsonOpts));
+    }
+
     public async Task SetCandidateConfirmedAsync(string candidateId, bool confirmed)
     {
         if (string.IsNullOrWhiteSpace(candidateId))
@@ -252,6 +307,12 @@ public sealed class ScenarioCoreService
     {
         _fs.DeleteFile(ManifestPath);
         await Task.CompletedTask;
+    }
+
+    internal Task ClearAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        _fs.DeleteFile(writeLease, ManifestPath);
+        return Task.CompletedTask;
     }
 
     public async Task<string?> BuildSystemReminderFragmentAsync(string? currentRealm)

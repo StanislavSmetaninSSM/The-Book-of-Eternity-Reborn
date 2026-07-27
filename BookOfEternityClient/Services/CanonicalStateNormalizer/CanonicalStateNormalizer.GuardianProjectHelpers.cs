@@ -1377,12 +1377,12 @@ public partial class CanonicalStateNormalizer
         if (currentNode is JsonObject currentObject)
             await WriteIfChangedAsync(GuardianProjectState.JournalPath, currentObject, result);
         else
-            await _fs.WriteFileAtomicAsync(GuardianProjectState.JournalPath, result.ToJsonString(JsonOpts));
+            await WriteCanonicalFileAtomicAsync(GuardianProjectState.JournalPath, result.ToJsonString(JsonOpts));
     }
 
     private async Task<int> TryReadCurrentTurnNumberAsync()
     {
-        var raw = await _fs.ReadFileAsync("input/turn_request.json");
+        var raw = await ReadCanonicalFileAsync("input/turn_request.json");
         if (string.IsNullOrWhiteSpace(raw))
             return 0;
 

@@ -76,6 +76,58 @@ public sealed class LocalUiSessionLockService
             BuildActiveOwnerBlocker(freshSnapshot, operationLabel));
     }
 
+    internal async Task<LocalUiSessionLockResult> AcquireOrRefreshAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockOwner owner,
+        string operationLabel)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(owner);
+
+        var now = _timeProvider.GetUtcNow().UtcDateTime;
+        var snapshot = await TryReadSnapshotAsync(writeLease, now, owner.LeaseDuration);
+        if (snapshot is { IsReadable: true } &&
+            string.Equals(snapshot.OwnerId, owner.OwnerId, StringComparison.Ordinal))
+        {
+            await WriteLockAsync(writeLease, owner, operationLabel, now);
+            return LocalUiSessionLockResult.AcquiredFor(snapshot with
+            {
+                HeartbeatAtUtc = now,
+                LastOperation = operationLabel
+            });
+        }
+
+        if (snapshot is { IsReadable: true, IsStale: false })
+        {
+            return LocalUiSessionLockResult.BlockedBy(
+                snapshot,
+                BuildActiveOwnerBlocker(snapshot, operationLabel));
+        }
+
+        if (snapshot is { IsReadable: false, IsStale: false })
+        {
+            return LocalUiSessionLockResult.BlockedBy(
+                snapshot,
+                $"{operationLabel} заблокировано: файл локальной UI-блокировки повреждён и ещё не устарел. " +
+                $"Закройте другой интерфейс или удалите {LockPath}, если уверены, что другой UI не работает.");
+        }
+
+        if (_fs.FileExists(writeLease, LockPath))
+            _fs.DeleteFile(writeLease, LockPath);
+
+        await WriteLockAsync(writeLease, owner, operationLabel, now);
+        return LocalUiSessionLockResult.AcquiredFor(new LocalUiSessionLockSnapshot(
+            owner.OwnerId,
+            owner.OwnerKind,
+            owner.OwnerLabel,
+            now,
+            now,
+            owner.LeaseDuration,
+            operationLabel,
+            IsReadable: true,
+            IsStale: false));
+    }
+
     public async Task ReleaseAsync(LocalUiSessionLockOwner owner)
     {
         ArgumentNullException.ThrowIfNull(owner);
@@ -89,12 +141,48 @@ public sealed class LocalUiSessionLockService
         }
     }
 
+    internal async Task ReleaseAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockOwner owner)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(owner);
+
+        var snapshot = await TryReadSnapshotAsync(
+            writeLease,
+            _timeProvider.GetUtcNow().UtcDateTime,
+            owner.LeaseDuration);
+        if (snapshot is { IsReadable: true } &&
+            string.Equals(snapshot.OwnerId, owner.OwnerId, StringComparison.Ordinal) &&
+            _fs.FileExists(writeLease, LockPath))
+        {
+            _fs.DeleteFile(writeLease, LockPath);
+        }
+    }
+
     public Task<LocalUiSessionLockSnapshot?> InspectAsync(TimeSpan? fallbackLease = null) =>
         TryReadSnapshotAsync(_timeProvider.GetUtcNow().UtcDateTime, fallbackLease ?? TimeSpan.FromSeconds(120));
 
     private async Task<LocalUiSessionLockSnapshot?> TryReadSnapshotAsync(DateTime nowUtc, TimeSpan fallbackLease)
     {
         var json = await _fs.ReadFileAsync(LockPath);
+        return ParseSnapshot(json, nowUtc, fallbackLease);
+    }
+
+    private async Task<LocalUiSessionLockSnapshot?> TryReadSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        DateTime nowUtc,
+        TimeSpan fallbackLease)
+    {
+        var json = await _fs.ReadFileAsync(writeLease, LockPath);
+        return ParseSnapshot(json, nowUtc, fallbackLease);
+    }
+
+    private LocalUiSessionLockSnapshot? ParseSnapshot(
+        string? json,
+        DateTime nowUtc,
+        TimeSpan fallbackLease)
+    {
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -188,6 +276,16 @@ public sealed class LocalUiSessionLockService
 
     private Task WriteLockAsync(LocalUiSessionLockOwner owner, string operationLabel, DateTime nowUtc) =>
         _fs.WriteFileAtomicAsync(LockPath, BuildLockJson(owner, operationLabel, nowUtc));
+
+    private Task WriteLockAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockOwner owner,
+        string operationLabel,
+        DateTime nowUtc) =>
+        _fs.WriteFileAtomicAsync(
+            writeLease,
+            LockPath,
+            BuildLockJson(owner, operationLabel, nowUtc));
 
     private static string BuildLockJson(LocalUiSessionLockOwner owner, string operationLabel, DateTime nowUtc)
     {

@@ -49,6 +49,17 @@ public class StateDistributor
     /// </summary>
     public async Task<List<string>> DistributeAsync(GameResponse response)
     {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await DistributeAsync(writeLease, response);
+    }
+
+    internal async Task<List<string>> DistributeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        GameResponse response)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(response);
+
         var modifiedFiles = new List<string>();
         var fileUpdates = CollectFileUpdates(response);
         var targetPaths = fileUpdates.Keys
@@ -58,7 +69,6 @@ public class StateDistributor
         var mutations = new Dictionary<string, DistributionMutation>(
             StringComparer.OrdinalIgnoreCase);
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         try
         {
             // Phase 1: Create backups for all affected files
@@ -151,24 +161,17 @@ public class StateDistributor
 
         if (!string.IsNullOrWhiteSpace(existingJson))
         {
-            try
+            using var doc = JsonDocument.Parse(existingJson);
+            existingData = new Dictionary<string, JsonElement>();
+            if (doc.RootElement.ValueKind == JsonValueKind.Object)
             {
-                var doc = JsonDocument.Parse(existingJson);
-                existingData = new Dictionary<string, JsonElement>();
-                if (doc.RootElement.ValueKind == JsonValueKind.Object)
-                {
-                    foreach (var prop in doc.RootElement.EnumerateObject())
-                        existingData[prop.Name] = prop.Value.Clone();
-                }
-                // If root is array, wrap it under a data key to preserve it
-                else if (doc.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    existingData["_previousData"] = doc.RootElement.Clone();
-                }
+                foreach (var prop in doc.RootElement.EnumerateObject())
+                    existingData[prop.Name] = prop.Value.Clone();
             }
-            catch
+            // If root is array, wrap it under a data key to preserve it
+            else if (doc.RootElement.ValueKind == JsonValueKind.Array)
             {
-                existingData = new Dictionary<string, JsonElement>();
+                existingData["_previousData"] = doc.RootElement.Clone();
             }
         }
         else

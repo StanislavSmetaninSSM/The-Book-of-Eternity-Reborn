@@ -1,4 +1,6 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
@@ -22,37 +24,81 @@ public sealed class QteWebInteractionService
 
     private readonly FileSystemManager _fs;
     private readonly QteSceneService _qteSceneService;
+    private readonly BrowserLocalWriteCoordinator _coordinator;
     private QteSceneService.QtePracticeAttemptState? _practiceAttempt;
+    private string? _practiceAttemptGeneration;
     private QteSceneService.DarenShowcaseAttemptState? _darenAttempt;
+    private string? _darenAttemptGeneration;
 
-    public QteWebInteractionService(FileSystemManager fs, QteSceneService qteSceneService)
+    public QteWebInteractionService(
+        FileSystemManager fs,
+        QteSceneService qteSceneService,
+        BrowserLocalWriteCoordinator coordinator)
     {
         _fs = fs;
         _qteSceneService = qteSceneService;
+        _coordinator = coordinator;
     }
 
-    public Task<QteWebStateDto> BuildStateAsync(
+    public async Task<QteWebStateDto> BuildStateAsync(
         string? stateOverride = null,
         QteSceneService.QteActionResolution? resolution = null,
-        string? notification = null) =>
-        BuildStateCoreAsync(normalizeRuntime: true, stateOverride, resolution, notification);
+        string? notification = null)
+    {
+        try
+        {
+            return await _coordinator.RunBoundTransactionAsync(
+                async writeLease =>
+                {
+                    QteWebStateDto? state = null;
+                    var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+                        writeLease,
+                        BuildWriteRequest("QTE runtime normalization"),
+                        QteSceneService.BrowserTransactionRollbackPaths,
+                        async transactionLease =>
+                        {
+                            state = await BuildStateCoreAsync(
+                                transactionLease,
+                                normalizeRuntime: true,
+                                stateOverride,
+                                resolution,
+                                notification);
+                        });
 
-    public Task<QteWebStateDto> BuildReadOnlyStateAsync(
+                    return result.Success
+                        ? state ?? Failed("QTE state transaction completed without a state.")
+                        : Failed(result.Message);
+                });
+        }
+        catch (SessionReplacedException)
+        {
+            return Failed("Игровая сессия изменилась во время подготовки QTE. Повторите действие.");
+        }
+    }
+
+    public async Task<QteWebStateDto> BuildReadOnlyStateAsync(
         string? stateOverride = null,
         QteSceneService.QteActionResolution? resolution = null,
         string? notification = null) =>
-        BuildStateCoreAsync(normalizeRuntime: false, stateOverride, resolution, notification);
+        await _coordinator.RunBoundTransactionAsync(
+            writeLease => BuildStateCoreAsync(
+                writeLease,
+                normalizeRuntime: false,
+                stateOverride,
+                resolution,
+                notification));
 
     private async Task<QteWebStateDto> BuildStateCoreAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         bool normalizeRuntime,
         string? stateOverride,
         QteSceneService.QteActionResolution? resolution,
         string? notification)
     {
         if (normalizeRuntime)
-            await _qteSceneService.EnsureRuntimeStateHealthyAsync();
+            await _qteSceneService.EnsureRuntimeStateHealthyAsync(writeLease);
 
-        var offer = await _qteSceneService.TryReadOfferAsync();
+        var offer = await _qteSceneService.TryReadOfferAsync(writeLease);
         if (offer != null)
         {
             return new QteWebStateDto
@@ -64,13 +110,13 @@ public sealed class QteWebInteractionService
             };
         }
 
-        var runtime = await _qteSceneService.ReadRuntimeStateAsync();
+        var runtime = await _qteSceneService.ReadRuntimeStateAsync(writeLease);
         if (runtime.ActiveScene is { Offer: not null } active)
         {
             return new QteWebStateDto
             {
                 State = stateOverride ?? "Active",
-                ActiveScene = await BuildActiveSceneAsync(active),
+                ActiveScene = await BuildActiveSceneAsync(active, writeLease),
                 Resolution = resolution == null ? null : BuildResolution(resolution),
                 Completion = resolution?.Completion == null ? null : BuildCompletion(resolution.Completion),
                 AvailableOperations = ["submitAction"],
@@ -92,144 +138,462 @@ public sealed class QteWebInteractionService
 
     public async Task<QteWebStateDto> ResolveOfferDecisionAsync(QteWebOfferDecisionRequest? request)
     {
+        try
+        {
+            return await _coordinator.RunBoundTransactionAsync(
+                writeLease => ResolveOfferDecisionBoundAsync(writeLease, request));
+        }
+        catch (SessionReplacedException)
+        {
+            return Failed("Игровая сессия изменилась во время обработки QTE. Повторите действие.");
+        }
+    }
+
+    private async Task<QteWebStateDto> ResolveOfferDecisionBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        QteWebOfferDecisionRequest? request)
+    {
         var decision = request?.Decision?.Trim().ToLowerInvariant();
         if (decision is not ("accept" or "decline"))
             return Failed("decision must be accept or decline.");
 
-        var offer = await _qteSceneService.TryReadOfferAsync();
-        if (offer == null)
-            return Failed("No pending QTE offer is available.");
+        QteWebStateDto? state = null;
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            BuildWriteRequest($"QTE offer: {decision}"),
+            QteSceneService.BrowserTransactionRollbackPaths,
+            async transactionLease =>
+            {
+                var offer = await _qteSceneService.TryReadOfferAsync(transactionLease);
+                if (offer == null)
+                    throw new InvalidOperationException("No pending QTE offer is available.");
 
-        var turnNumber = await ReadCurrentTurnNumberAsync();
-        if (decision == "decline")
+                var turnNumber = await ReadCurrentTurnNumberAsync(transactionLease);
+                if (decision == "decline")
+                {
+                    await _qteSceneService.RecordDeclineAsync(
+                        transactionLease,
+                        offer,
+                        turnNumber);
+                    DeleteIfExists(transactionLease, "ready/turn_complete.json");
+                    DeleteIfExists(transactionLease, "ready/turn_error.json");
+                    state = await BuildStateCoreAsync(
+                        transactionLease,
+                        normalizeRuntime: false,
+                        stateOverride: "Declined",
+                        resolution: null,
+                        notification: "QTE отклонено. Консольный режим повторно отправляет исходное действие GM; браузерный протокол фиксирует отказ и очищает offer.");
+                    return;
+                }
+
+                await _qteSceneService.BeginAcceptedSceneAsync(
+                    transactionLease,
+                    offer,
+                    turnNumber);
+                state = await BuildStateCoreAsync(
+                    transactionLease,
+                    normalizeRuntime: false,
+                    stateOverride: "Active",
+                    resolution: null,
+                    notification: "QTE принято. Выберите действие текущей сцены.");
+            });
+
+        if (!result.Success)
         {
-            await _qteSceneService.RecordDeclineAsync(offer, turnNumber);
-            _fs.DeleteFile("ready/turn_complete.json");
-            _fs.DeleteFile("ready/turn_error.json");
-            return await BuildStateAsync("Declined", notification: "QTE отклонено. Консольный режим повторно отправляет исходное действие GM; браузерный протокол фиксирует отказ и очищает offer.");
+            return Failed(result.Message);
         }
 
-        await _qteSceneService.BeginAcceptedSceneAsync(offer, turnNumber);
-        return await BuildStateAsync("Active", notification: "QTE принято. Выберите действие текущей сцены.");
+        return state ?? Failed("QTE offer transaction completed without a state.");
     }
 
     public async Task<QteWebStateDto> ResolveActionAsync(QteWebActionRequest? request)
+    {
+        try
+        {
+            return await _coordinator.RunBoundTransactionAsync(
+                writeLease => ResolveActionBoundAsync(writeLease, request));
+        }
+        catch (SessionReplacedException)
+        {
+            return Failed("Игровая сессия изменилась во время обработки QTE. Повторите действие.");
+        }
+    }
+
+    private async Task<QteWebStateDto> ResolveActionBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        QteWebActionRequest? request)
     {
         var actionId = request?.ActionId?.Trim();
         if (string.IsNullOrWhiteSpace(actionId))
             return Failed("actionId is required.");
 
-        try
-        {
-            var resolution = await _qteSceneService.ResolveActiveActionAsync(
-                actionId,
-                request?.Grade,
-                await ReadCurrentTurnNumberAsync(),
-                allowPreexistingStateIssues: true);
+        QteWebStateDto? state = null;
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            BuildWriteRequest("QTE action"),
+            QteSceneService.BrowserTransactionRollbackPaths,
+            async transactionLease =>
+            {
+                var resolution = await _qteSceneService.ResolveActiveActionAsync(
+                    transactionLease,
+                    actionId,
+                    request?.Grade,
+                    await ReadCurrentTurnNumberAsync(transactionLease),
+                    allowPreexistingStateIssues: true);
 
-            return await BuildStateAsync(resolution.State, resolution, "QTE action resolved.");
-        }
-        catch (Exception ex)
+                state = await BuildStateCoreAsync(
+                    transactionLease,
+                    normalizeRuntime: false,
+                    resolution.State,
+                    resolution,
+                    "QTE action resolved.");
+            },
+            prepareAfterRollback: _qteSceneService.PrepareStateManagerRollback);
+
+        if (!result.Success)
         {
-            return Failed(ex.Message);
+            return Failed(result.Message);
         }
+
+        return state ?? Failed("QTE action transaction completed without a state.");
     }
 
     public Task<QtePracticeWebStateDto> BuildPracticeStateAsync() =>
-        BuildPracticeStateCoreAsync(notification: null, error: null);
+        _coordinator.RunBoundTransactionAsync(
+            writeLease =>
+            {
+                var discardedStaleAttempt = DiscardStalePracticeAttempt(writeLease);
+                return BuildPracticeStateCoreAsync(
+                    writeLease,
+                    notification: discardedStaleAttempt
+                        ? "Предыдущая тренировка закрыта после смены игровой сессии."
+                        : null,
+                    error: null);
+            });
 
     public Task<DarenShowcaseWebStateDto> BuildDarenShowcaseStateAsync() =>
-        BuildDarenShowcaseStateCoreAsync(notification: null, error: null);
+        _coordinator.RunBoundTransactionAsync(
+            writeLease =>
+            {
+                var discardedStaleAttempt = DiscardStaleDarenAttempt(writeLease);
+                return BuildDarenShowcaseStateCoreAsync(
+                    writeLease,
+                    notification: discardedStaleAttempt
+                        ? "Предыдущая вылазка закрыта после смены игровой сессии."
+                        : null,
+                    error: null);
+            });
 
     public async Task<QtePracticeWebStateDto> StartPracticeAttemptAsync(QtePracticeStartRequest? request)
     {
-        try
-        {
-            _practiceAttempt = _qteSceneService.StartPracticeAttempt(request?.TypeId, request?.DifficultyId);
-            return await BuildPracticeStateCoreAsync("Тренировка началась.", error: null);
-        }
-        catch (Exception ex)
-        {
-            return await BuildPracticeStateCoreAsync(notification: null, error: ex.Message, stateOverride: "Failed");
-        }
+        return await _coordinator.RunBoundTransactionAsync(
+            async writeLease =>
+            {
+                DiscardStalePracticeAttempt(writeLease);
+                var attemptBefore = _practiceAttempt == null
+                    ? null
+                    : ClonePracticeAttempt(_practiceAttempt);
+                var generationBefore = _practiceAttemptGeneration;
+                try
+                {
+                    _practiceAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+                    _practiceAttempt = _qteSceneService.StartPracticeAttempt(
+                        request?.TypeId,
+                        request?.DifficultyId);
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        "Тренировка началась.",
+                        error: null);
+                }
+                catch (Exception ex)
+                {
+                    _practiceAttempt = attemptBefore;
+                    _practiceAttemptGeneration = generationBefore;
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: ex.Message,
+                        stateOverride: "Failed");
+                }
+            });
     }
 
     public async Task<QtePracticeWebStateDto> ResolvePracticeActionAsync(QtePracticeActionRequest? request)
     {
-        var actionId = request?.ActionId?.Trim();
-        if (string.IsNullOrWhiteSpace(actionId))
-            return await BuildPracticeStateCoreAsync(notification: null, error: "actionId is required.", stateOverride: "Failed");
+        return await _coordinator.RunBoundTransactionAsync(
+            async writeLease =>
+            {
+                if (DiscardStalePracticeAttempt(writeLease))
+                {
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: "Игровая сессия изменилась. Начните тренировку заново.",
+                        stateOverride: "Failed");
+                }
 
-        if (_practiceAttempt == null || !string.Equals(_practiceAttempt.State, "Active", StringComparison.OrdinalIgnoreCase))
-            return await BuildPracticeStateCoreAsync(notification: null, error: "Тренировка не запущена.", stateOverride: "Failed");
+                var actionId = request?.ActionId?.Trim();
+                if (string.IsNullOrWhiteSpace(actionId))
+                {
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: "actionId is required.",
+                        stateOverride: "Failed");
+                }
 
-        try
-        {
-            _qteSceneService.ResolvePracticeAction(_practiceAttempt, actionId, request?.Grade);
-            return await BuildPracticeStateCoreAsync("Попытка завершена.", error: null);
-        }
-        catch (Exception ex)
-        {
-            return await BuildPracticeStateCoreAsync(notification: null, error: ex.Message, stateOverride: "Failed");
-        }
+                if (_practiceAttempt == null ||
+                    !string.Equals(
+                        _practiceAttempt.State,
+                        "Active",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: "Тренировка не запущена.",
+                        stateOverride: "Failed");
+                }
+
+                var attemptBefore = ClonePracticeAttempt(_practiceAttempt);
+                try
+                {
+                    _qteSceneService.ResolvePracticeAction(
+                        _practiceAttempt,
+                        actionId,
+                        request?.Grade);
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        "Попытка завершена.",
+                        error: null);
+                }
+                catch (Exception ex)
+                {
+                    _practiceAttempt = attemptBefore;
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: ex.Message,
+                        stateOverride: "Failed");
+                }
+            });
     }
 
     public async Task<QtePracticeWebStateDto> RetryPracticeAttemptAsync()
     {
-        if (_practiceAttempt == null)
-            return await BuildPracticeStateCoreAsync(notification: null, error: "Сначала выберите QTE для тренировки.", stateOverride: "Failed");
+        return await _coordinator.RunBoundTransactionAsync(
+            async writeLease =>
+            {
+                if (DiscardStalePracticeAttempt(writeLease))
+                {
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: "Игровая сессия изменилась. Начните тренировку заново.",
+                        stateOverride: "Failed");
+                }
 
-        _practiceAttempt = _qteSceneService.StartPracticeAttempt(_practiceAttempt.TypeId, _practiceAttempt.DifficultyId);
-        return await BuildPracticeStateCoreAsync("Тренировка повторена.", error: null);
+                if (_practiceAttempt == null)
+                {
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: "Сначала выберите QTE для тренировки.",
+                        stateOverride: "Failed");
+                }
+
+                var attemptBefore = ClonePracticeAttempt(_practiceAttempt);
+                var generationBefore = _practiceAttemptGeneration;
+                try
+                {
+                    _practiceAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+                    _practiceAttempt = _qteSceneService.StartPracticeAttempt(
+                        attemptBefore.TypeId,
+                        attemptBefore.DifficultyId);
+                    return await BuildPracticeStateCoreAsync(
+                        writeLease,
+                        "Тренировка повторена.",
+                        error: null);
+                }
+                catch
+                {
+                    _practiceAttempt = attemptBefore;
+                    _practiceAttemptGeneration = generationBefore;
+                    throw;
+                }
+            });
     }
 
-    public Task<QtePracticeWebStateDto> ExitPracticeAttemptAsync()
+    public async Task<QtePracticeWebStateDto> ExitPracticeAttemptAsync()
     {
-        _practiceAttempt = null;
-        return BuildPracticeStateCoreAsync("Тренировка закрыта.", error: null);
+        return await _coordinator.RunBoundTransactionAsync(
+            writeLease =>
+            {
+                _practiceAttempt = null;
+                _practiceAttemptGeneration = null;
+                return BuildPracticeStateCoreAsync(
+                    writeLease,
+                    "Тренировка закрыта.",
+                    error: null);
+            });
     }
 
     public async Task<DarenShowcaseWebStateDto> StartDarenShowcaseAsync()
     {
-        _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
-        return await BuildDarenShowcaseStateCoreAsync("Вылазка Дарена началась.", error: null);
+        return await _coordinator.RunBoundTransactionAsync(
+            async writeLease =>
+            {
+                DiscardStaleDarenAttempt(writeLease);
+                var attemptBefore = _darenAttempt == null
+                    ? null
+                    : CloneDarenAttempt(_darenAttempt);
+                var generationBefore = _darenAttemptGeneration;
+                try
+                {
+                    _darenAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+                    _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
+                    return await BuildDarenShowcaseStateCoreAsync(
+                        writeLease,
+                        "Вылазка Дарена началась.",
+                        error: null);
+                }
+                catch
+                {
+                    _darenAttempt = attemptBefore;
+                    _darenAttemptGeneration = generationBefore;
+                    throw;
+                }
+            });
     }
 
     public async Task<DarenShowcaseWebStateDto> ResolveDarenShowcaseActionAsync(DarenShowcaseActionRequest? request)
     {
+        return await _coordinator.RunBoundTransactionAsync(
+            writeLease => ResolveDarenShowcaseActionBoundAsync(
+                writeLease,
+                request));
+    }
+
+    private async Task<DarenShowcaseWebStateDto> ResolveDarenShowcaseActionBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        DarenShowcaseActionRequest? request)
+    {
+        if (DiscardStaleDarenAttempt(writeLease))
+        {
+            return await BuildDarenShowcaseStateCoreAsync(
+                writeLease,
+                notification: null,
+                error: "Игровая сессия изменилась. Начните вылазку Дарена заново.",
+                stateOverride: "Failed");
+        }
+
         var actionId = request?.ActionId?.Trim();
         if (string.IsNullOrWhiteSpace(actionId))
-            return await BuildDarenShowcaseStateCoreAsync(notification: null, error: "actionId is required.", stateOverride: "Failed");
+            return await BuildDarenShowcaseStateCoreAsync(
+                writeLease,
+                notification: null,
+                error: "actionId is required.",
+                stateOverride: "Failed");
 
         if (_darenAttempt == null || !string.Equals(_darenAttempt.State, "Active", StringComparison.OrdinalIgnoreCase))
-            return await BuildDarenShowcaseStateCoreAsync(notification: null, error: "Вылазка Дарена не запущена.", stateOverride: "Failed");
-
-        try
-        {
-            var resolution = await _qteSceneService.ResolveDarenShowcaseActionAsync(_darenAttempt, actionId, request?.Grade);
             return await BuildDarenShowcaseStateCoreAsync(
-                resolution.Completion == null ? "Вылазка продолжается." : "Вылазка завершена.",
-                error: null);
-        }
-        catch (Exception ex)
+                writeLease,
+                notification: null,
+                error: "Вылазка Дарена не запущена.",
+                stateOverride: "Failed");
+
+        var attemptBefore = CloneDarenAttempt(_darenAttempt);
+        DarenShowcaseWebStateDto? state = null;
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            BuildWriteRequest("Daren QTE action"),
+            QteSceneService.BrowserTransactionRollbackPaths,
+            async transactionLease =>
+            {
+                var resolution = await _qteSceneService.ResolveDarenShowcaseActionAsync(
+                    transactionLease,
+                    _darenAttempt,
+                    actionId,
+                    request?.Grade);
+                state = await BuildDarenShowcaseStateCoreAsync(
+                    transactionLease,
+                    resolution.Completion == null
+                        ? "Вылазка продолжается."
+                        : "Вылазка завершена.",
+                    error: null);
+            },
+            prepareAfterRollback: () =>
+                _qteSceneService.PrepareDarenProfileRollback(writeLease));
+
+        if (!result.Success)
         {
-            return await BuildDarenShowcaseStateCoreAsync(notification: null, error: ex.Message, stateOverride: "Failed");
+            _darenAttempt = attemptBefore;
+            return await BuildDarenShowcaseStateCoreAsync(
+                writeLease,
+                notification: null,
+                error: result.Message,
+                stateOverride: "Failed");
         }
+
+        return state ?? await BuildDarenShowcaseStateCoreAsync(
+            writeLease,
+            notification: null,
+            error: "Daren QTE transaction completed without a state.",
+            stateOverride: "Failed");
     }
 
     public async Task<DarenShowcaseWebStateDto> RetryDarenShowcaseAsync()
     {
-        _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
-        return await BuildDarenShowcaseStateCoreAsync("Вылазка Дарена началась заново.", error: null);
+        return await _coordinator.RunBoundTransactionAsync(
+            async writeLease =>
+            {
+                if (DiscardStaleDarenAttempt(writeLease))
+                {
+                    return await BuildDarenShowcaseStateCoreAsync(
+                        writeLease,
+                        notification: null,
+                        error: "Игровая сессия изменилась. Начните вылазку Дарена заново.",
+                        stateOverride: "Failed");
+                }
+
+                var attemptBefore = _darenAttempt == null
+                    ? null
+                    : CloneDarenAttempt(_darenAttempt);
+                var generationBefore = _darenAttemptGeneration;
+                try
+                {
+                    _darenAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+                    _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
+                    return await BuildDarenShowcaseStateCoreAsync(
+                        writeLease,
+                        "Вылазка Дарена началась заново.",
+                        error: null);
+                }
+                catch
+                {
+                    _darenAttempt = attemptBefore;
+                    _darenAttemptGeneration = generationBefore;
+                    throw;
+                }
+            });
     }
 
-    public Task<DarenShowcaseWebStateDto> ExitDarenShowcaseAsync()
+    public async Task<DarenShowcaseWebStateDto> ExitDarenShowcaseAsync()
     {
-        _darenAttempt = null;
-        return BuildDarenShowcaseStateCoreAsync("Вылазка Дарена закрыта.", error: null);
+        return await _coordinator.RunBoundTransactionAsync(
+            writeLease =>
+            {
+                _darenAttempt = null;
+                _darenAttemptGeneration = null;
+                return BuildDarenShowcaseStateCoreAsync(
+                    writeLease,
+                    "Вылазка Дарена закрыта.",
+                    error: null);
+            });
     }
 
     private async Task<QtePracticeWebStateDto> BuildPracticeStateCoreAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string? notification,
         string? error,
         string? stateOverride = null)
@@ -238,7 +602,7 @@ public sealed class QteWebInteractionService
         var catalog = QteSceneService.GetPracticeCatalog().Select(BuildPracticeCatalogEntry).ToList();
         var state = stateOverride ?? attempt?.State ?? "Catalog";
         var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
-            ? await BuildActiveSceneAsync(attempt.ActiveScene)
+            ? await BuildActiveSceneAsync(attempt.ActiveScene, writeLease)
             : null;
 
         return new QtePracticeWebStateDto
@@ -271,6 +635,7 @@ public sealed class QteWebInteractionService
     }
 
     private async Task<DarenShowcaseWebStateDto> BuildDarenShowcaseStateCoreAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string? notification,
         string? error,
         string? stateOverride = null)
@@ -278,9 +643,9 @@ public sealed class QteWebInteractionService
         var attempt = _darenAttempt;
         var state = stateOverride ?? attempt?.State ?? "Intro";
         var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
-            ? await BuildActiveSceneAsync(attempt.ActiveScene)
+            ? await BuildActiveSceneAsync(attempt.ActiveScene, writeLease)
             : null;
-        var profile = await new DarenQteRewardProfileService(_fs).ReadProfileAsync();
+        var profile = await _qteSceneService.ReadDarenRewardProfileAsync(writeLease);
 
         return new DarenShowcaseWebStateDto
         {
@@ -367,7 +732,9 @@ public sealed class QteWebInteractionService
             StartChapterId = offer.StartChapterId
         };
 
-    private async Task<QteWebActiveSceneDto> BuildActiveSceneAsync(QteSceneService.ActiveQteSceneState active)
+    private async Task<QteWebActiveSceneDto> BuildActiveSceneAsync(
+        QteSceneService.ActiveQteSceneState active,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var offer = active.Offer!;
         var chapter = offer.Chapters.FirstOrDefault(item =>
@@ -378,14 +745,19 @@ public sealed class QteWebInteractionService
             QteId = offer.QteId,
             Title = offer.Title ?? "QTE событие",
             AcceptedAtTurn = active.AcceptedAtTurn,
-            CurrentChapter = chapter == null ? null : await BuildChapterAsync(chapter),
+            CurrentChapter = chapter == null
+                ? null
+                : await BuildChapterAsync(chapter, writeLease),
             ScoreState = BuildActiveScoreState(active.ScoreState)
         };
     }
 
-    private async Task<QteWebChapterDto> BuildChapterAsync(QteSceneService.QteChapter chapter)
+    private async Task<QteWebChapterDto> BuildChapterAsync(
+        QteSceneService.QteChapter chapter,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var actions = await Task.WhenAll(chapter.Actions.Select(BuildActionAsync));
+        var actions = await Task.WhenAll(
+            chapter.Actions.Select(action => BuildActionAsync(action, writeLease)));
         return new QteWebChapterDto
         {
             ChapterId = chapter.ChapterId,
@@ -396,10 +768,14 @@ public sealed class QteWebInteractionService
         };
     }
 
-    private async Task<QteWebActionDto> BuildActionAsync(QteSceneService.QteAction action)
+    private async Task<QteWebActionDto> BuildActionAsync(
+        QteSceneService.QteAction action,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var checkType = action.Check.Type;
-        var statTier = await _qteSceneService.ResolveQteStatTierAsync(action.Check.PrimaryCharacteristic);
+        var statTier = await _qteSceneService.ResolveQteStatTierAsync(
+            writeLease,
+            action.Check.PrimaryCharacteristic);
         var checkConfig = BuildCheckConfig(action, statTier);
         return new QteWebActionDto
         {
@@ -1078,9 +1454,10 @@ public sealed class QteWebInteractionService
             Visibility = metric.Visibility
         };
 
-    private async Task<int> ReadCurrentTurnNumberAsync()
+    private async Task<int> ReadCurrentTurnNumberAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var json = await _fs.ReadFileAsync("input/turn_request.json");
+        var json = await _fs.ReadFileAsync(writeLease, "input/turn_request.json");
         if (string.IsNullOrWhiteSpace(json))
             return 0;
 
@@ -1100,6 +1477,78 @@ public sealed class QteWebInteractionService
         }
 
         return 0;
+    }
+
+    private static BrowserLocalWriteRequest BuildWriteRequest(string operationLabel) =>
+        new(
+            OwnerId: $"browser-qte:{Environment.ProcessId}",
+            OwnerLabel: "Browser QTE",
+            OperationLabel: operationLabel);
+
+    private void DeleteIfExists(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        if (_fs.FileExists(writeLease, relativePath))
+            _fs.DeleteFile(writeLease, relativePath);
+    }
+
+    private bool DiscardStalePracticeAttempt(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        if (_practiceAttempt == null)
+        {
+            _practiceAttemptGeneration = null;
+            return false;
+        }
+
+        if (_fs.IsCurrentSessionGeneration(writeLease, _practiceAttemptGeneration))
+            return false;
+
+        _practiceAttempt = null;
+        _practiceAttemptGeneration = null;
+        return true;
+    }
+
+    private bool DiscardStaleDarenAttempt(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        if (_darenAttempt == null)
+        {
+            _darenAttemptGeneration = null;
+            return false;
+        }
+
+        if (_fs.IsCurrentSessionGeneration(writeLease, _darenAttemptGeneration))
+            return false;
+
+        _darenAttempt = null;
+        _darenAttemptGeneration = null;
+        return true;
+    }
+
+    private static QteSceneService.QtePracticeAttemptState ClonePracticeAttempt(
+        QteSceneService.QtePracticeAttemptState attempt)
+    {
+        var json = JsonSerializer.Serialize(
+            attempt,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        return JsonSerializer.Deserialize<QteSceneService.QtePracticeAttemptState>(
+                   json,
+                   SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+               ?? throw new InvalidOperationException("Не удалось создать rollback snapshot тренировки QTE.");
+    }
+
+    private static QteSceneService.DarenShowcaseAttemptState CloneDarenAttempt(
+        QteSceneService.DarenShowcaseAttemptState attempt)
+    {
+        var json = JsonSerializer.Serialize(
+            attempt,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        return JsonSerializer.Deserialize<QteSceneService.DarenShowcaseAttemptState>(
+                   json,
+                   SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+               ?? throw new InvalidOperationException("Не удалось создать rollback snapshot вылазки Дарена.");
     }
 
     private static QteWebStateDto Failed(string message) =>

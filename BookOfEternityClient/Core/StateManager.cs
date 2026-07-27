@@ -48,6 +48,17 @@ public class StateManager
     public async Task LoadSettingsAsync()
     {
         var json = await _fs.ReadFileAsync("config.json");
+        LoadSettingsJson(json);
+    }
+
+    internal async Task LoadSettingsAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await _fs.ReadFileAsync(writeLease, "config.json");
+        LoadSettingsJson(json);
+    }
+
+    private void LoadSettingsJson(string? json)
+    {
         if (json == null)
             return;
 
@@ -77,6 +88,12 @@ public class StateManager
     {
         var json = JsonSerializer.Serialize(Settings, JsonOpts);
         await _fs.WriteFileAtomicAsync("config.json", json);
+    }
+
+    internal async Task SaveSettingsAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = JsonSerializer.Serialize(Settings, JsonOpts);
+        await _fs.WriteFileAtomicAsync(writeLease, "config.json", json);
     }
 
     /// <summary>

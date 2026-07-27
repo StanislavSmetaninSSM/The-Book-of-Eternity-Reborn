@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Tests;
@@ -26,7 +27,15 @@ internal sealed class SequenceLocalInteractionScopeResolver : ILocalInteractionS
 
     public int ResolveCallCount { get; private set; }
 
-    public async Task<LocalInteractionScope> ResolveAsync(string? currentRealm = null)
+    public Task<LocalInteractionScope> ResolveAsync(string? currentRealm = null) =>
+        ResolveNextAsync();
+
+    public Task<LocalInteractionScope> ResolveAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string? currentRealm = null) =>
+        ResolveNextAsync();
+
+    private async Task<LocalInteractionScope> ResolveNextAsync()
     {
         ResolveCallCount += 1;
         if (_beforeResolve != null)

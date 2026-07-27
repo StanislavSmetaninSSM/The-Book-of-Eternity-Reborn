@@ -41,43 +41,7 @@ internal static class CoordinatedStateWriteHelper
         await CommitGate.WaitAsync();
         try
         {
-            var completedWrites = new List<PlannedWrite>();
-            foreach (var write in writes)
-            {
-                if (write.RequireCurrentBaseline &&
-                    !await CurrentMatchesExpectedBaselineAsync(fs, write))
-                {
-                    return false;
-                }
-            }
-
-            try
-            {
-                foreach (var write in writes)
-                {
-                    if (write.GuardOnly)
-                        continue;
-
-                    await ApplyWriteAsync(fs, write.Path, write.NextJson);
-                    completedWrites.Add(write);
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                for (var index = completedWrites.Count - 1; index >= 0; index--)
-                {
-                    if (await TryRestoreAsync(fs, completedWrites[index]))
-                        continue;
-
-                    throw new InvalidOperationException(
-                        $"Не удалось безопасно откатить coordinated state write для {completedWrites[index].Path}.",
-                        ex);
-                }
-
-                return false;
-            }
+            return await TryCommitCoreAsync(fs, writeLease: null, writes);
         }
         finally
         {
@@ -85,9 +49,62 @@ internal static class CoordinatedStateWriteHelper
         }
     }
 
-    private static async Task<bool> CurrentMatchesExpectedBaselineAsync(FileSystemManager fs, PlannedWrite write)
+    internal static async Task<bool> TryCommitAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        params PlannedWrite[] writes) =>
+        await TryCommitCoreAsync(fs, writeLease, writes);
+
+    private static async Task<bool> TryCommitCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        PlannedWrite[] writes)
     {
-        var currentJson = await fs.ReadFileAsync(write.Path);
+        var completedWrites = new List<PlannedWrite>();
+        foreach (var write in writes)
+        {
+            if (write.RequireCurrentBaseline &&
+                !await CurrentMatchesExpectedBaselineAsync(fs, writeLease, write))
+            {
+                return false;
+            }
+        }
+
+        try
+        {
+            foreach (var write in writes)
+            {
+                if (write.GuardOnly)
+                    continue;
+
+                await ApplyWriteAsync(fs, writeLease, write.Path, write.NextJson);
+                completedWrites.Add(write);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            for (var index = completedWrites.Count - 1; index >= 0; index--)
+            {
+                if (await TryRestoreAsync(fs, writeLease, completedWrites[index]))
+                    continue;
+
+                throw new InvalidOperationException(
+                    $"Не удалось безопасно откатить coordinated state write для {completedWrites[index].Path}.",
+                    ex);
+            }
+
+            return false;
+        }
+    }
+
+    private static async Task<bool> CurrentMatchesExpectedBaselineAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        PlannedWrite write)
+    {
+        var currentJson = await ReadAsync(fs, writeLease, write.Path);
         return JsonMatches(currentJson, write.PreviousJson);
     }
 
@@ -108,15 +125,18 @@ internal static class CoordinatedStateWriteHelper
         }
     }
 
-    private static async Task<bool> TryRestoreAsync(FileSystemManager fs, PlannedWrite write)
+    private static async Task<bool> TryRestoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        PlannedWrite write)
     {
         try
         {
-            var currentJson = await fs.ReadFileAsync(write.Path);
+            var currentJson = await ReadAsync(fs, writeLease, write.Path);
             if (!JsonMatches(currentJson, write.NextJson))
                 return false;
 
-            await ApplyWriteAsync(fs, write.Path, write.PreviousJson);
+            await ApplyWriteAsync(fs, writeLease, write.Path, write.PreviousJson);
             return true;
         }
         catch
@@ -125,15 +145,37 @@ internal static class CoordinatedStateWriteHelper
         }
     }
 
-    private static async Task ApplyWriteAsync(FileSystemManager fs, string path, string? json)
+    private static async Task ApplyWriteAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path,
+        string? json)
     {
         if (json == null)
         {
-            if (fs.FileExists(path))
-                fs.DeleteFile(path);
+            if (writeLease == null)
+            {
+                if (fs.FileExists(path))
+                    fs.DeleteFile(path);
+            }
+            else if (fs.FileExists(writeLease, path))
+            {
+                fs.DeleteFile(writeLease, path);
+            }
             return;
         }
 
-        await fs.WriteFileAtomicAsync(path, json);
+        if (writeLease == null)
+            await fs.WriteFileAtomicAsync(path, json);
+        else
+            await fs.WriteFileAtomicAsync(writeLease, path, json);
     }
+
+    private static Task<string?> ReadAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path) =>
+        writeLease == null
+            ? fs.ReadFileAsync(path)
+            : fs.ReadFileAsync(writeLease, path);
 }

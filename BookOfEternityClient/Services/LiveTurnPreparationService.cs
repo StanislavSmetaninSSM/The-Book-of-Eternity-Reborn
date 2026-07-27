@@ -158,7 +158,7 @@ internal sealed class LiveTurnPreparationService
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            relativePath => ReadRelativeFileFromWorkspace(writeLease, relativePath));
+            relativePath => ReadRelativeFileBytesFromWorkspace(writeLease, relativePath));
 
         if (_hooks?.BeforePublicationAsync != null)
             await _hooks.BeforePublicationAsync();
@@ -247,12 +247,12 @@ internal sealed class LiveTurnPreparationService
         IDictionary<string, string> files,
         IDictionary<string, string> snapshotHashes)
     {
-        var content = await _fs.ReadFileAsync(writeLease, relativePath);
+        var content = await _fs.ReadFileBytesAsync(writeLease, relativePath);
         if (content == null)
             return;
 
         var snapshotPath = $"{PendingTurnSnapshotDirectory}/{relativePath}";
-        await _fs.WriteFileAtomicAsync(writeLease, snapshotPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, snapshotPath, content);
         files[relativePath] = snapshotPath;
         snapshotHashes[relativePath] = PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
@@ -350,7 +350,7 @@ internal sealed class LiveTurnPreparationService
         }
     }
 
-    private string? ReadRelativeFileFromWorkspace(
+    private byte[]? ReadRelativeFileBytesFromWorkspace(
         FileSystemManager.CanonicalWriteLease writeLease,
         string relativePath)
     {
@@ -359,7 +359,7 @@ internal sealed class LiveTurnPreparationService
 
         try
         {
-            return _fs.ReadFileAsync(writeLease, relativePath).GetAwaiter().GetResult();
+            return _fs.ReadFileBytesAsync(writeLease, relativePath).GetAwaiter().GetResult();
         }
         catch
         {

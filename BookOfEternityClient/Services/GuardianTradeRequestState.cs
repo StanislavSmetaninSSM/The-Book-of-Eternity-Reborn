@@ -100,11 +100,15 @@ internal static class GuardianTradeRequestState
 
     public static async Task WriteAsync(FileSystemManager fs, PendingGuardianTradeRequest request)
     {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         await RequestWriteGate.WaitAsync();
         try
         {
-            ValidateReplacement(await ReadStateAsync(fs), request);
-            await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+            ValidateReplacement(await ReadStateAsync(fs, writeLease), request);
+            await fs.WriteFileAtomicAsync(
+                writeLease,
+                PendingRequestPath,
+                JsonSerializer.Serialize(request, JsonOpts));
         }
         finally
         {
@@ -118,11 +122,31 @@ internal static class GuardianTradeRequestState
         LocalInteractionScope scope,
         string expectedGuardiansRootJson)
     {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return await TryWriteScopedCoreAsync(fs, writeLease, request, scope, expectedGuardiansRootJson);
+    }
+
+    internal static async Task<bool> TryWriteScopedAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianTradeRequest request,
+        LocalInteractionScope scope,
+        string expectedGuardiansRootJson) =>
+        await TryWriteScopedCoreAsync(fs, writeLease, request, scope, expectedGuardiansRootJson);
+
+    private static async Task<bool> TryWriteScopedCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianTradeRequest request,
+        LocalInteractionScope scope,
+        string expectedGuardiansRootJson)
+    {
         await RequestWriteGate.WaitAsync();
         try
         {
-            var previousJson = await fs.ReadFileAsync(PendingRequestPath);
-            ValidateReplacement(ParseState(previousJson, fs.FileExists(PendingRequestPath)), request);
+            var previousJson = await fs.ReadFileAsync(writeLease, PendingRequestPath);
+            var fileExists = fs.FileExists(writeLease, PendingRequestPath);
+            ValidateReplacement(ParseState(previousJson, fileExists), request);
             var nextJson = JsonSerializer.Serialize(request, JsonOpts);
             var writes = CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope)
                 .Concat(new[]
@@ -136,7 +160,7 @@ internal static class GuardianTradeRequestState
                 })
                 .ToArray();
 
-            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes);
+            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writeLease, writes);
         }
         finally
         {
@@ -174,6 +198,14 @@ internal static class GuardianTradeRequestState
         return ParseState(json, fs.FileExists(PendingRequestPath));
     }
 
+    internal static async Task<PendingGuardianTradeRequestReadResult> ReadStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingRequestPath);
+        return ParseState(json, fs.FileExists(writeLease, PendingRequestPath));
+    }
+
     internal static PendingGuardianTradeRequestReadResult ParseState(string? json, bool fileExists)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -202,11 +234,27 @@ internal static class GuardianTradeRequestState
         FileSystemManager fs,
         PendingGuardianTradeRequest expectedRequest)
     {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return await ClearIfMatchesCoreAsync(fs, writeLease, expectedRequest);
+    }
+
+    internal static async Task<bool> ClearIfMatchesAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianTradeRequest expectedRequest) =>
+        await ClearIfMatchesCoreAsync(fs, writeLease, expectedRequest);
+
+    private static async Task<bool> ClearIfMatchesCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianTradeRequest expectedRequest)
+    {
         await RequestWriteGate.WaitAsync();
         try
         {
-            var previousJson = await fs.ReadFileAsync(PendingRequestPath);
-            var current = ParseState(previousJson, fs.FileExists(PendingRequestPath));
+            var previousJson = await fs.ReadFileAsync(writeLease, PendingRequestPath);
+            var fileExists = fs.FileExists(writeLease, PendingRequestPath);
+            var current = ParseState(previousJson, fileExists);
             if (current.Request == null ||
                 !JsonNode.DeepEquals(
                     JsonSerializer.SerializeToNode(current.Request, JsonOpts),
@@ -215,13 +263,12 @@ internal static class GuardianTradeRequestState
                 return false;
             }
 
-            return await CoordinatedStateWriteHelper.TryCommitAsync(
-                fs,
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    PendingRequestPath,
-                    previousJson,
-                    NextJson: null,
-                    RequireCurrentBaseline: true));
+            var write = new CoordinatedStateWriteHelper.PlannedWrite(
+                PendingRequestPath,
+                previousJson,
+                NextJson: null,
+                RequireCurrentBaseline: true);
+            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writeLease, write);
         }
         finally
         {
@@ -409,20 +456,22 @@ internal static class GuardianTradeRequestState
 
     public static async Task EnsureHealthyAsync(FileSystemManager fs, string? currentRealm)
     {
-        if (!fs.FileExists(PendingRequestPath))
-            return;
-
         if (!RealmSemantics.HasResolvedRealm(currentRealm))
             return;
 
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         await RequestWriteGate.WaitAsync();
         try
         {
-            var json = await fs.ReadFileAsync(PendingRequestPath);
+            if (!fs.FileExists(writeLease, PendingRequestPath))
+                return;
+
+            var json = await fs.ReadFileAsync(writeLease, PendingRequestPath);
             if (!IsAfterlifeRealm(currentRealm))
             {
                 await CoordinatedStateWriteHelper.TryCommitAsync(
                     fs,
+                    writeLease,
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         PendingRequestPath,
                         json,
@@ -455,7 +504,7 @@ internal static class GuardianTradeRequestState
                 return;
             }
 
-            var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+            var guardiansJson = await fs.ReadFileAsync(writeLease, "game_state/meta/guardians.json");
             if (string.IsNullOrWhiteSpace(guardiansJson))
                 return;
 
@@ -481,6 +530,7 @@ internal static class GuardianTradeRequestState
 
                 await CoordinatedStateWriteHelper.TryCommitAsync(
                     fs,
+                    writeLease,
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         PendingRequestPath,
                         json,

@@ -3549,7 +3549,7 @@ public partial class ValidationService
         }
     }
 
-    private string? ReadRelativeFileFromWorkspace(string relativePath)
+    private byte[]? ReadRelativeFileBytesFromWorkspace(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -3560,7 +3560,7 @@ public partial class ValidationService
 
         try
         {
-            return File.ReadAllText(fullPath);
+            return File.ReadAllBytes(fullPath);
         }
         catch
         {
@@ -3618,15 +3618,25 @@ public partial class ValidationService
             return null;
         }
 
-        var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
-        if (string.IsNullOrWhiteSpace(snapshotJson))
+        var snapshotBytes = await _fs.ReadFileBytesAsync(snapshotPath);
+        if (snapshotBytes == null)
             return null;
 
-        var actualSnapshotHash = ComputeSha256(snapshotJson);
+        var authorityPayload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync();
+        if (authorityPayload == null &&
+            !ReferenceEquals(manifest, _prevalidatedPendingTurnSnapshotOverride))
+        {
+            return null;
+        }
+
+        var actualSnapshotHash = authorityPayload == null
+            ? ComputeSha256(DecodePendingSnapshotText(snapshotBytes))
+            : PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(authorityPayload, snapshotBytes);
         if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
             return null;
 
-        return snapshotJson;
+        var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
+        return string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
     }
 
     private string? ReadValidatedPendingTurnSnapshotFileSync(
@@ -3648,26 +3658,47 @@ public partial class ValidationService
             return null;
         }
 
-        var resolvedSnapshotPath = _fs.ResolvePath(snapshotPath);
-        if (!File.Exists(resolvedSnapshotPath))
-            return null;
-
+        byte[]? snapshotBytes;
         try
         {
-            var snapshotJson = File.ReadAllText(resolvedSnapshotPath);
-            if (string.IsNullOrWhiteSpace(snapshotJson))
-                return null;
-
-            var actualSnapshotHash = ComputeSha256(snapshotJson);
-            if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
-                return null;
-
-            return snapshotJson;
+            snapshotBytes = _fs.ReadFileBytesAsync(snapshotPath).GetAwaiter().GetResult();
         }
         catch
         {
             return null;
         }
+
+        if (snapshotBytes == null)
+            return null;
+
+        var authorityJson = ReadPendingTurnSnapshotAuthoritySync();
+        PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(
+            authorityJson,
+            out var authorityPayload);
+        if (authorityPayload == null &&
+            !ReferenceEquals(manifest, _prevalidatedPendingTurnSnapshotOverride))
+        {
+            return null;
+        }
+
+        var actualSnapshotHash = authorityPayload == null
+            ? ComputeSha256(DecodePendingSnapshotText(snapshotBytes))
+            : PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(authorityPayload, snapshotBytes);
+        if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
+        return string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
+    }
+
+    private static string DecodePendingSnapshotText(byte[] content)
+    {
+        using var stream = new MemoryStream(content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
     }
 
     private string? ReadRelativeWorkspaceFileSync(string relativePath)
@@ -5204,7 +5235,7 @@ public partial class ValidationService
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                ReadRelativeFileFromWorkspace,
+                ReadRelativeFileBytesFromWorkspace,
                 out _,
                 out _))
         {

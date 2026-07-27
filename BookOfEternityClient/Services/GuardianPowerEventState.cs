@@ -374,8 +374,8 @@ internal static class GuardianPowerEventState
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                relativePath => ReadRelativeFileFromWorkspace(fs, relativePath),
-                out _,
+                relativePath => ReadRelativeFileBytesFromWorkspace(fs, relativePath),
+                out var authorityPayload,
                 out _))
         {
             return null;
@@ -398,18 +398,30 @@ internal static class GuardianPowerEventState
             return null;
         }
 
-        var snapshotContent = await fs.ReadFileAsync(snapshotPath);
-        if (string.IsNullOrWhiteSpace(snapshotContent))
+        var snapshotContent = await fs.ReadFileBytesAsync(snapshotPath);
+        if (snapshotContent == null || authorityPayload == null)
             return null;
 
-        var actualSnapshotHash = ComputeSha256(snapshotContent);
+        var actualSnapshotHash = PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(
+            authorityPayload,
+            snapshotContent);
         if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
             return null;
 
-        return snapshotContent;
+        return DecodeSnapshotText(snapshotContent);
     }
 
-    private static string? ReadRelativeFileFromWorkspace(FileSystemManager fs, string relativePath)
+    private static string DecodeSnapshotText(byte[] content)
+    {
+        using var stream = new MemoryStream(content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
+    }
+
+    private static byte[]? ReadRelativeFileBytesFromWorkspace(FileSystemManager fs, string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -418,7 +430,7 @@ internal static class GuardianPowerEventState
         if (!File.Exists(fullPath))
             return null;
 
-        return File.ReadAllText(fullPath, Encoding.UTF8);
+        return File.ReadAllBytes(fullPath);
     }
 
     private static async Task<bool> IsCurrentPendingTurnSnapshotAsync(FileSystemManager fs, PendingTurnSnapshotManifest manifest)

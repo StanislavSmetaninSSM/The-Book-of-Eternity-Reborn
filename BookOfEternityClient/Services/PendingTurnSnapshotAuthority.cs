@@ -8,8 +8,12 @@ namespace BookOfEternityClient.Services;
 internal static class PendingTurnSnapshotAuthority
 {
     internal const string AuthorityPath = "game_state/control/pending_turn_snapshot.authority.json";
-    private const int PortableAuthorityFormatVersion = 2;
+    private const int LegacyPortableAuthorityFormatVersion = 2;
+    private const int ExactRollbackPortableAuthorityFormatVersion = 3;
+    private const int PortableAuthorityFormatVersion = 4;
     private const string PortableIntegrityAlgorithm = "SHA256-PAYLOAD-JSON";
+    internal const string ExactRollbackHashMode = "bytes";
+    internal const string ExactSnapshotHashMode = "bytes";
 
     private static readonly JsonSerializerOptions AuthorityJsonOpts = new()
     {
@@ -35,9 +39,11 @@ internal static class PendingTurnSnapshotAuthority
         public string ManifestPayloadHash { get; set; } = string.Empty;
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public string? SnapshotHashMode { get; set; }
         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackupHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public string? RollbackHashMode { get; set; }
         public List<string> RollbackBaselineFiles { get; set; } = new();
         public string? SourceLabel { get; set; }
     }
@@ -290,7 +296,8 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups = null,
-        Func<string, string?>? readRelativeFile = null)
+        Func<string, byte[]?>? readRelativeFileBytes = null,
+        bool hashSnapshotBytesExactly = true)
         where TManifest : class
     {
         var payload = BuildAuthorityPayload(
@@ -307,12 +314,16 @@ internal static class PendingTurnSnapshotAuthority
             getRollbackBaselineFiles,
             getSourceLabel,
             getRollbackBackups,
-            readRelativeFile);
+            readRelativeFileBytes,
+            hashRollbackBytesExactly: true,
+            hashSnapshotBytesExactly);
 
         var payloadBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload, AuthorityJsonOpts));
         var envelope = new PendingTurnSnapshotAuthorityEnvelope
         {
-            FormatVersion = PortableAuthorityFormatVersion,
+            FormatVersion = hashSnapshotBytesExactly
+                ? PortableAuthorityFormatVersion
+                : ExactRollbackPortableAuthorityFormatVersion,
             IntegrityAlgorithm = PortableIntegrityAlgorithm,
             PayloadJsonBase64 = Convert.ToBase64String(payloadBytes),
             PayloadSha256 = ComputeSha256(payloadBytes)
@@ -336,7 +347,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
-        Func<string, string?>? readRelativeFile,
+        Func<string, byte[]?>? readRelativeFileBytes,
         out PendingTurnSnapshotAuthorityPayload? payload,
         out string failureCode)
         where TManifest : class
@@ -356,7 +367,7 @@ internal static class PendingTurnSnapshotAuthority
             getRollbackBaselineFiles,
             getSourceLabel,
             getRollbackBackups,
-            readRelativeFile,
+            readRelativeFileBytes,
             out payload,
             out failureCode,
             requireRollbackArtifactPaths: true);
@@ -377,7 +388,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?> getRollbackBackups,
-        Func<string, string?> readRelativeFile,
+        Func<string, byte[]?> readRelativeFileBytes,
         out PendingTurnSnapshotAuthorityPayload? payload,
         out string failureCode)
         where TManifest : class
@@ -397,7 +408,7 @@ internal static class PendingTurnSnapshotAuthority
             getRollbackBaselineFiles,
             getSourceLabel,
             getRollbackBackups,
-            readRelativeFile,
+            readRelativeFileBytes,
             out payload,
             out failureCode,
             requireRollbackArtifactPaths: false);
@@ -418,7 +429,7 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
-        Func<string, string?>? readRelativeFile,
+        Func<string, byte[]?>? readRelativeFileBytes,
         out PendingTurnSnapshotAuthorityPayload? payload,
         out string failureCode,
         bool requireRollbackArtifactPaths)
@@ -487,7 +498,15 @@ internal static class PendingTurnSnapshotAuthority
                 getRollbackBaselineFiles,
                 getSourceLabel,
                 getRollbackBackups,
-                readRelativeFile);
+                readRelativeFileBytes,
+                hashRollbackBytesExactly: string.Equals(
+                    actualPayload.RollbackHashMode,
+                    ExactRollbackHashMode,
+                    StringComparison.Ordinal),
+                hashSnapshotBytesExactly: string.Equals(
+                    actualPayload.SnapshotHashMode,
+                    ExactSnapshotHashMode,
+                    StringComparison.Ordinal));
         }
         catch (InvalidOperationException)
         {
@@ -579,7 +598,8 @@ internal static class PendingTurnSnapshotAuthority
         try
         {
             var payloadBytes = Convert.FromBase64String(envelope.PayloadJsonBase64);
-            if (IsPortableAuthorityEnvelope(envelope))
+            var isPortable = IsPortableAuthorityEnvelope(envelope);
+            if (isPortable)
             {
                 if (!VerifyPortableAuthorityIntegrity(payloadBytes, envelope))
                     return false;
@@ -596,7 +616,26 @@ internal static class PendingTurnSnapshotAuthority
             payload = JsonSerializer.Deserialize<PendingTurnSnapshotAuthorityPayload>(
                 Encoding.UTF8.GetString(payloadBytes),
                 AuthorityJsonOpts);
-            return payload != null;
+            if (payload == null)
+                return false;
+
+            var hasExactRollbackMode = string.Equals(
+                payload.RollbackHashMode,
+                ExactRollbackHashMode,
+                StringComparison.Ordinal);
+            var hasExactSnapshotMode = string.Equals(
+                payload.SnapshotHashMode,
+                ExactSnapshotHashMode,
+                StringComparison.Ordinal);
+            if (isPortable && envelope.FormatVersion == PortableAuthorityFormatVersion)
+                return hasExactRollbackMode && hasExactSnapshotMode;
+            if (isPortable && envelope.FormatVersion == ExactRollbackPortableAuthorityFormatVersion)
+                return hasExactRollbackMode && string.IsNullOrWhiteSpace(payload.SnapshotHashMode);
+
+            return !hasExactRollbackMode &&
+                   !hasExactSnapshotMode &&
+                   string.IsNullOrWhiteSpace(payload.RollbackHashMode) &&
+                   string.IsNullOrWhiteSpace(payload.SnapshotHashMode);
         }
         catch
         {
@@ -619,7 +658,9 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IEnumerable<string>?> getRollbackBaselineFiles,
         Func<TManifest, string?> getSourceLabel,
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
-        Func<string, string?>? readRelativeFile)
+        Func<string, byte[]?>? readRelativeFileBytes,
+        bool hashRollbackBytesExactly,
+        bool hashSnapshotBytesExactly)
         where TManifest : class
     {
         var rollbackBackups = getRollbackBackups != null
@@ -637,11 +678,16 @@ internal static class PendingTurnSnapshotAuthority
                 setHash),
             Files = CopyNormalizedFilesDictionary(getFiles(manifest)),
             SnapshotFileHashes = CopyNormalizedHashDictionary(getSnapshotFileHashes(manifest)),
+            SnapshotHashMode = hashSnapshotBytesExactly ? ExactSnapshotHashMode : null,
             ClientOwnedValidationHashes = CopyNormalizedHashDictionary(getClientOwnedValidationHashes(manifest)),
             RollbackBackups = rollbackBackups,
             RollbackBackupHashes = rollbackBackups.Count == 0
                 ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-                : CopyNormalizedFileHashes(rollbackBackups, readRelativeFile),
+                : CopyNormalizedFileHashes(
+                    rollbackBackups,
+                    readRelativeFileBytes,
+                    hashRollbackBytesExactly),
+            RollbackHashMode = hashRollbackBytesExactly ? ExactRollbackHashMode : null,
             RollbackBaselineFiles = CopyNormalizedBaselineFiles(getRollbackBaselineFiles(manifest)),
             SourceLabel = string.IsNullOrWhiteSpace(getSourceLabel(manifest))
                 ? null
@@ -698,22 +744,25 @@ internal static class PendingTurnSnapshotAuthority
 
     private static Dictionary<string, string> CopyNormalizedFileHashes(
         IDictionary<string, string> fileMap,
-        Func<string, string?>? readRelativeFile)
+        Func<string, byte[]?>? readRelativeFileBytes,
+        bool hashBytesExactly)
     {
-        if (readRelativeFile == null)
+        if (readRelativeFileBytes == null)
             throw new InvalidOperationException("Validated pending snapshot authority requires a readable file delegate for rollback-backed authority.");
 
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (logicalPath, relativePath) in fileMap)
         {
-            var content = readRelativeFile(relativePath);
+            var content = readRelativeFileBytes(relativePath);
             if (content == null)
             {
                 throw new InvalidOperationException(
                     $"Validated pending snapshot authority requires readable file '{relativePath}' for '{logicalPath}'.");
             }
 
-            result[logicalPath] = ComputeSha256(content);
+            result[logicalPath] = hashBytesExactly
+                ? ComputeSha256(content)
+                : ComputeSha256(DecodeLegacyText(content));
         }
 
         return result;
@@ -730,9 +779,17 @@ internal static class PendingTurnSnapshotAuthority
                string.Equals(expected.ManifestPayloadHash, actual.ManifestPayloadHash, StringComparison.OrdinalIgnoreCase) &&
                DictionaryEquals(expected.Files, actual.Files, compareValuesIgnoreCase: true) &&
                DictionaryEquals(expected.SnapshotFileHashes, actual.SnapshotFileHashes, compareValuesIgnoreCase: true) &&
+               string.Equals(
+                   expected.SnapshotHashMode ?? string.Empty,
+                   actual.SnapshotHashMode ?? string.Empty,
+                   StringComparison.Ordinal) &&
                DictionaryEquals(expected.ClientOwnedValidationHashes, actual.ClientOwnedValidationHashes, compareValuesIgnoreCase: true) &&
                (!compareRollbackBackups || DictionaryEquals(expected.RollbackBackups, actual.RollbackBackups, compareValuesIgnoreCase: true)) &&
                (!compareRollbackBackups || DictionaryEquals(expected.RollbackBackupHashes, actual.RollbackBackupHashes, compareValuesIgnoreCase: true)) &&
+               (!compareRollbackBackups || string.Equals(
+                   expected.RollbackHashMode ?? string.Empty,
+                   actual.RollbackHashMode ?? string.Empty,
+                   StringComparison.Ordinal)) &&
                BaselineFilesEqual(expected.RollbackBaselineFiles, actual.RollbackBaselineFiles) &&
                string.Equals(expected.SourceLabel ?? string.Empty, actual.SourceLabel ?? string.Empty, StringComparison.Ordinal);
     }
@@ -775,7 +832,7 @@ internal static class PendingTurnSnapshotAuthority
 
     private static string NormalizePath(string value) => value.Replace('\\', '/').Trim();
 
-    private static string ComputeSha256(byte[] content)
+    internal static string ComputeSha256(byte[] content)
     {
         using var sha = SHA256.Create();
         var bytes = sha.ComputeHash(content);
@@ -791,7 +848,10 @@ internal static class PendingTurnSnapshotAuthority
         byte[] payloadBytes,
         PendingTurnSnapshotAuthorityEnvelope envelope)
     {
-        if (envelope.FormatVersion != PortableAuthorityFormatVersion ||
+        if (envelope.FormatVersion is not (
+                LegacyPortableAuthorityFormatVersion or
+                ExactRollbackPortableAuthorityFormatVersion or
+                PortableAuthorityFormatVersion) ||
             !string.Equals(envelope.IntegrityAlgorithm, PortableIntegrityAlgorithm, StringComparison.Ordinal) ||
             string.IsNullOrWhiteSpace(envelope.PayloadSha256))
         {
@@ -834,4 +894,31 @@ internal static class PendingTurnSnapshotAuthority
     }
 
     private const string AuthorityKeyName = "BookOfEternityClient.PendingTurnSnapshotAuthority";
+
+    internal static string ComputeSnapshotFileHash(
+        PendingTurnSnapshotAuthorityPayload payload,
+        byte[] content) =>
+        ComputeSnapshotFileHash(payload.SnapshotHashMode, content);
+
+    internal static string ComputeSnapshotFileHash(
+        string? snapshotHashMode,
+        byte[] content)
+    {
+        return string.Equals(
+            snapshotHashMode,
+            ExactSnapshotHashMode,
+            StringComparison.Ordinal)
+            ? ComputeSha256(content)
+            : ComputeSha256(DecodeLegacyText(content));
+    }
+
+    private static string DecodeLegacyText(byte[] content)
+    {
+        using var stream = new MemoryStream(content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
+    }
 }

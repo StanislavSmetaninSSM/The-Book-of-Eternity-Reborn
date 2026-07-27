@@ -488,7 +488,7 @@ public partial class CanonicalStateNormalizer
         result.Remove("guardianPowerEvents");
         await WriteIfChangedAsync(path, currentNode, result);
         if (powerJournalEntries.Count > 0)
-            await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, powerJournalEntries);
+            await AppendGuardianPowerJournalEntriesAsync(powerJournalEntries);
     }
 
     private async Task NormalizeGuardianAbodeResidentsAsync(IReadOnlyDictionary<string, string>? backups)
@@ -617,9 +617,9 @@ public partial class CanonicalStateNormalizer
         }
 
         var previousSoulQuestJson = backups != null && backups.TryGetValue("game_state/quests/soul_quests.json", out var previousSoulQuestBackupPath)
-            ? await ReadFileIfExistsAsync(previousSoulQuestBackupPath)
+            ? await ReadBackupTextAsync(previousSoulQuestBackupPath)
             : null;
-        var currentSoulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
+        var currentSoulQuestJson = await ReadCanonicalFileAsync("game_state/quests/soul_quests.json");
         var previousQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(previousSoulQuestJson);
         var currentQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(currentSoulQuestJson);
 
@@ -726,14 +726,6 @@ public partial class CanonicalStateNormalizer
         return result;
     }
 
-    private static async Task<string?> ReadFileIfExistsAsync(string? absolutePath)
-    {
-        if (string.IsNullOrWhiteSpace(absolutePath) || !File.Exists(absolutePath))
-            return null;
-
-        return await File.ReadAllTextAsync(absolutePath);
-    }
-
     private async Task NormalizeCharacterChronicleAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/meta/character_chronicle.json";
@@ -832,12 +824,74 @@ public partial class CanonicalStateNormalizer
             guardiansChanged = GuardianPowerEventState.ApplyEvents(guardiansRoot, pendingPowerEvents, currentTurn, powerJournalEntries) || guardiansChanged;
 
         if (powerJournalEntries.Count > 0)
-            await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, powerJournalEntries);
+            await AppendGuardianPowerJournalEntriesAsync(powerJournalEntries);
         else
-            await GuardianPowerEventState.RepairJournalAsync(_fs);
+            await RepairGuardianPowerJournalAsync();
 
         if (guardiansChanged && guardiansRoot != null)
-            await _fs.WriteFileAtomicAsync(GuardiansStatePath, guardiansRoot.ToJsonString(JsonOpts));
+            await WriteCanonicalFileAtomicAsync(GuardiansStatePath, guardiansRoot.ToJsonString(JsonOpts));
+    }
+
+    private async Task AppendGuardianPowerJournalEntriesAsync(
+        IEnumerable<JsonObject> entries)
+    {
+        var buffered = entries.Where(static item => item != null).ToList();
+        if (buffered.Count == 0)
+            return;
+
+        if (_writeLease == null)
+        {
+            await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, buffered);
+            return;
+        }
+
+        JsonObject root;
+        var existing = await ReadCanonicalFileAsync(GuardianPowerEventState.JournalPath);
+        try
+        {
+            root = string.IsNullOrWhiteSpace(existing)
+                ? new JsonObject()
+                : JsonNode.Parse(existing) as JsonObject ?? new JsonObject();
+        }
+        catch
+        {
+            root = new JsonObject();
+        }
+
+        var journal = root["entries"] as JsonArray ?? new JsonArray();
+        root["entries"] = journal;
+        foreach (var entry in buffered)
+        {
+            var eventId = GetNodeString(entry["eventId"]);
+            if (journal.OfType<JsonObject>().Any(existingEntry =>
+                    string.Equals(
+                        GetNodeString(existingEntry["eventId"]),
+                        eventId,
+                        StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            journal.Add(entry.DeepClone());
+        }
+
+        await WriteCanonicalFileAtomicAsync(
+            GuardianPowerEventState.JournalPath,
+            root.ToJsonString(JsonOpts));
+    }
+
+    private async Task RepairGuardianPowerJournalAsync()
+    {
+        if (_writeLease == null)
+        {
+            await GuardianPowerEventState.RepairJournalAsync(_fs);
+            return;
+        }
+
+        // Browser QTE normalization preserves existing journal entries under the
+        // same canonical lease. Political legacy backfill remains a turn-level
+        // repair concern and must not reacquire canonical authority here.
+        _ = await ReadCanonicalFileAsync(GuardianPowerEventState.JournalPath);
     }
 
     private static bool HasGuardianProjectCommandPayload(JsonObject? trackerRoot)

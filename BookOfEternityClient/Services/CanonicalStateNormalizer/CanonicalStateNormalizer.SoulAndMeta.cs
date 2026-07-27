@@ -338,7 +338,7 @@ public partial class CanonicalStateNormalizer
         JsonObject? preTurnSoulStateRoot,
         JsonObject? currentSoulStateRoot)
     {
-        var lifeTransitionsJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
+        var lifeTransitionsJson = await ReadCanonicalFileAsync("game_state/control/life_transitions.json");
         return HasLifecycleAuthorizedTriggerLifeEnd(lifeTransitionsJson, preTurnSoulStateRoot, currentSoulStateRoot);
     }
 
@@ -727,7 +727,7 @@ public partial class CanonicalStateNormalizer
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                relativePath => ReadRelativeFileFromWorkspace(fs, relativePath),
+                relativePath => ReadRelativeFileBytesFromWorkspace(fs, relativePath),
                 out _,
                 out _))
         {
@@ -797,8 +797,8 @@ public partial class CanonicalStateNormalizer
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                relativePath => ReadRelativeFileFromWorkspace(fs, relativePath),
-                out _,
+                relativePath => ReadRelativeFileBytesFromWorkspace(fs, relativePath),
+                out var authorityPayload,
                 out _) ||
             !await IsCurrentPendingTurnSnapshotAsync(fs, manifest))
         {
@@ -819,19 +819,29 @@ public partial class CanonicalStateNormalizer
             return null;
         }
 
-        var snapshotContent = await fs.ReadFileAsync(snapshotPath);
-        if (string.IsNullOrWhiteSpace(snapshotContent))
+        var snapshotContent = await fs.ReadFileBytesAsync(snapshotPath);
+        if (snapshotContent == null || authorityPayload == null)
             return null;
 
         return string.Equals(
-            ComputeSha256(snapshotContent),
+            PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(authorityPayload, snapshotContent),
             expectedSnapshotHash,
             StringComparison.OrdinalIgnoreCase)
-            ? snapshotContent
+            ? DecodePendingSnapshotText(snapshotContent)
             : null;
     }
 
-    private static string? ReadRelativeFileFromWorkspace(FileSystemManager fs, string relativePath)
+    private static string DecodePendingSnapshotText(byte[] content)
+    {
+        using var stream = new MemoryStream(content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
+    }
+
+    private static byte[]? ReadRelativeFileBytesFromWorkspace(FileSystemManager fs, string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -840,7 +850,7 @@ public partial class CanonicalStateNormalizer
         if (!File.Exists(fullPath))
             return null;
 
-        return File.ReadAllText(fullPath, Encoding.UTF8);
+        return File.ReadAllBytes(fullPath);
     }
 
     private static async Task<bool> IsCurrentPendingTurnSnapshotAsync(

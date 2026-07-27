@@ -184,10 +184,20 @@ internal static class AfterlifeArchiveActionState
         (await ReadProjectFuelStateAsync(fs)).Request;
 
     internal static Task<PendingArchiveRequestReadResult<PendingArchiveConsultationRequest>> ReadConsultationStateAsync(FileSystemManager fs) =>
-        ReadPendingRequestStateAsync<PendingArchiveConsultationRequest>(fs, ConsultationRequestPath, BuildConsultationRequestIdentity);
+        ReadPendingRequestStateAsync<PendingArchiveConsultationRequest>(fs, writeLease: null, ConsultationRequestPath, BuildConsultationRequestIdentity);
+
+    internal static Task<PendingArchiveRequestReadResult<PendingArchiveConsultationRequest>> ReadConsultationStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadPendingRequestStateAsync<PendingArchiveConsultationRequest>(fs, writeLease, ConsultationRequestPath, BuildConsultationRequestIdentity);
 
     internal static Task<PendingArchiveRequestReadResult<PendingArchiveProjectFuelRequest>> ReadProjectFuelStateAsync(FileSystemManager fs) =>
-        ReadPendingRequestStateAsync<PendingArchiveProjectFuelRequest>(fs, ProjectFuelRequestPath, BuildProjectFuelRequestIdentity);
+        ReadPendingRequestStateAsync<PendingArchiveProjectFuelRequest>(fs, writeLease: null, ProjectFuelRequestPath, BuildProjectFuelRequestIdentity);
+
+    internal static Task<PendingArchiveRequestReadResult<PendingArchiveProjectFuelRequest>> ReadProjectFuelStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadPendingRequestStateAsync<PendingArchiveProjectFuelRequest>(fs, writeLease, ProjectFuelRequestPath, BuildProjectFuelRequestIdentity);
 
     internal static PendingArchiveRequestReadResult<PendingArchiveConsultationRequest> ParseConsultationState(string? requestJson) =>
         ParsePendingRequestState<PendingArchiveConsultationRequest>(requestJson, BuildConsultationRequestIdentity);
@@ -333,14 +343,20 @@ internal static class AfterlifeArchiveActionState
 
     private static async Task<PendingArchiveRequestReadResult<TRequest>> ReadPendingRequestStateAsync<TRequest>(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string requestPath,
         Func<string?, PendingArchiveRequestIdentity> buildIdentity)
         where TRequest : class
     {
-        if (!fs.FileExists(requestPath))
+        var fileExists = writeLease == null
+            ? fs.FileExists(requestPath)
+            : fs.FileExists(writeLease, requestPath);
+        if (!fileExists)
             return new PendingArchiveRequestReadResult<TRequest>(PendingArchiveRequestReadStatus.Missing, null, null);
 
-        var json = await fs.ReadFileAsync(requestPath);
+        var json = writeLease == null
+            ? await fs.ReadFileAsync(requestPath)
+            : await fs.ReadFileAsync(writeLease, requestPath);
         return ParsePendingRequestState<TRequest>(json, buildIdentity);
     }
 

@@ -11,12 +11,38 @@ internal static class AfterlifeLocalActionGuard
     public static string? TryDescribeActiveGmTurnLifecycleBlocker(
         FileSystemManager fs,
         string operationLabel,
+        string affectedSurfaces) =>
+        TryDescribeActiveGmTurnLifecycleBlockerCore(
+            fs,
+            writeLease: null,
+            operationLabel,
+            affectedSurfaces);
+
+    internal static string? TryDescribeActiveGmTurnLifecycleBlocker(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string operationLabel,
+        string affectedSurfaces) =>
+        TryDescribeActiveGmTurnLifecycleBlockerCore(
+            fs,
+            writeLease,
+            operationLabel,
+            affectedSurfaces);
+
+    private static string? TryDescribeActiveGmTurnLifecycleBlockerCore(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string operationLabel,
         string affectedSurfaces)
     {
         var artifacts = new List<string>();
-        if (fs.FileExists(TurnRequestPath))
+        if (writeLease == null
+                ? fs.FileExists(TurnRequestPath)
+                : fs.FileExists(writeLease, TurnRequestPath))
             artifacts.Add(TurnRequestPath);
-        if (fs.FileExists(PendingTurnSnapshotManifestPath))
+        if (writeLease == null
+                ? fs.FileExists(PendingTurnSnapshotManifestPath)
+                : fs.FileExists(writeLease, PendingTurnSnapshotManifestPath))
             artifacts.Add(PendingTurnSnapshotManifestPath);
         if (HasAnyPendingTurnSnapshotFile(fs))
             artifacts.Add(PendingTurnSnapshotDirectory);

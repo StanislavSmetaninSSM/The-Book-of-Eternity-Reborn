@@ -100,6 +100,7 @@ public partial class CanonicalStateNormalizer
 
     private readonly FileSystemManager _fs;
     private readonly ILogger<CanonicalStateNormalizer> _logger;
+    private readonly FileSystemManager.CanonicalWriteLease? _writeLease;
 
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -143,9 +144,25 @@ public partial class CanonicalStateNormalizer
         string? CurrentRealm);
 
     public CanonicalStateNormalizer(FileSystemManager fs, ILogger<CanonicalStateNormalizer> logger)
+        : this(fs, logger, writeLease: null)
+    {
+    }
+
+    private CanonicalStateNormalizer(
+        FileSystemManager fs,
+        ILogger<CanonicalStateNormalizer> logger,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
         _fs = fs;
         _logger = logger;
+        _writeLease = writeLease;
+    }
+
+    internal CanonicalStateNormalizer BindTo(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        return new CanonicalStateNormalizer(_fs, _logger, writeLease);
     }
 
     public async Task NormalizeAccumulatedStateAsync(IReadOnlyDictionary<string, string>? backups = null)

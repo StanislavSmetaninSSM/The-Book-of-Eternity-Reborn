@@ -4144,7 +4144,7 @@ public partial class ValidationService
         var hasDeletedCurrentRequestRecoveryBridgeCandidate =
             !hasCurrentFile &&
             _fs.FileExists("ready/turn_complete.json") &&
-            _fs.FileExists(_fs.ResolvePath($"game_state/control/pending_turn_snapshot/{relativePath}"));
+            _fs.FileExists($"game_state/control/pending_turn_snapshot/{relativePath}");
         var hasPreTurnContractEvidence = hasCurrentFile ||
                                          hasManifestRegistrationEvidence ||
                                          hasDeletedCurrentRequestRecoveryBridgeCandidate;

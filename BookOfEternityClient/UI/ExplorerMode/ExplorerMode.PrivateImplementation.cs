@@ -730,12 +730,12 @@ public partial class ExplorerMode
             if (!_fs.FileExists(writeLease, trackedFile))
                 continue;
 
-            var backupContent = await _fs.ReadFileAsync(writeLease, trackedFile);
+            var backupContent = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
             if (backupContent == null)
                 continue;
 
             var backupPath = CreateExplorerRollbackBackupPath(trackedFile);
-            await _fs.WriteFileAtomicAsync(writeLease, backupPath, backupContent);
+            await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, backupContent);
             _pendingLocalTurnRollbackSnapshot.BaselineFiles.Add(trackedFile);
             _pendingLocalTurnRollbackSnapshot.BackupFiles[trackedFile] = backupPath;
             _pendingLocalTurnRollbackSnapshot.BackupHashes[trackedFile] = ComputeExplorerRollbackHash(backupContent);
@@ -773,7 +773,7 @@ public partial class ExplorerMode
 
             foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
             {
-                var backupContent = await _fs.ReadFileAsync(writeLease, backupPath);
+                var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath);
                 if (backupContent == null)
                     continue;
 
@@ -783,7 +783,7 @@ public partial class ExplorerMode
                     continue;
                 }
 
-                await _fs.WriteFileAtomicAsync(writeLease, originalPath, backupContent);
+                await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);
             }
 
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
@@ -834,10 +834,9 @@ public partial class ExplorerMode
             Directory.Delete(rollbackRoot);
     }
 
-    private static string ComputeExplorerRollbackHash(string content)
+    private static string ComputeExplorerRollbackHash(byte[] content)
     {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(content));
-        return Convert.ToHexString(bytes);
+        return Convert.ToHexString(SHA256.HashData(content));
     }
 
     private async Task ShowScenarioCoreReviewAsync()

@@ -80,7 +80,7 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
         foreach (var (logicalPath, snapshotPath) in manifest.Files)
         {
-            var content = await _fs.ReadFileAsync(snapshotPath);
+            var content = await _fs.ReadFileBytesAsync(snapshotPath);
             Assert.NotNull(content);
             Assert.True(manifest.SnapshotFileHashes.TryGetValue(logicalPath, out var expectedHash));
             Assert.Equal(expectedHash, PendingTurnSnapshotAuthority.ComputeSha256(content!));
@@ -419,18 +419,18 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile,
+            ReadRelativeFileBytes,
             out _,
             out failureCode);
 
-    private string? ReadRelativeFile(string relativePath)
+    private byte[]? ReadRelativeFileBytes(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
         var fullPath = _fs.ResolvePath(relativePath);
         return File.Exists(fullPath)
-            ? File.ReadAllText(fullPath, Encoding.UTF8)
+            ? File.ReadAllBytes(fullPath)
             : null;
     }
 

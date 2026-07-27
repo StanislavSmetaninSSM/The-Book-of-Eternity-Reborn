@@ -56,7 +56,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
         var envelope = JsonNode.Parse(authorityJson)?.AsObject();
 
         Assert.NotNull(envelope);
-        Assert.Equal(2, envelope["formatVersion"]?.GetValue<int>());
+        Assert.Equal(4, envelope["formatVersion"]?.GetValue<int>());
         Assert.Equal("SHA256-PAYLOAD-JSON", envelope["integrityAlgorithm"]?.GetValue<string>());
         Assert.False(envelope.ContainsKey("payloadSignature"));
         Assert.False(string.IsNullOrWhiteSpace(envelope["payloadJsonBase64"]?.GetValue<string>()));
@@ -290,6 +290,15 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
         return File.ReadAllText(fullPath, Encoding.UTF8);
     }
 
+    private byte[]? ReadRelativeFileBytes(string relativePath)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        var fullPath = _fs.ResolvePath(relativePath);
+        return File.Exists(fullPath) ? File.ReadAllBytes(fullPath) : null;
+    }
+
     private static string ComputeManifestPayloadHash(TestManifest manifest)
     {
         return PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
@@ -317,6 +326,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
 
         await _fs.WriteFileAtomicAsync(snapshotPath, json);
         await _fs.WriteFileAtomicAsync(rollbackPath, json);
+        var snapshotBytes = (await _fs.ReadFileBytesAsync(snapshotPath))!;
 
         var manifest = new TestManifest
         {
@@ -331,7 +341,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
             },
             SnapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                [logicalPath] = ComputeSha256(json)
+                [logicalPath] = PendingTurnSnapshotAuthority.ComputeSha256(snapshotBytes)
             },
             RollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -359,7 +369,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile);
+            ReadRelativeFileBytes);
 
     private bool TryValidateReaderAuthority(
         TestManifest manifest,
@@ -381,7 +391,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile,
+            ReadRelativeFileBytes,
             out payload,
             out failureCode);
 
@@ -405,7 +415,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile,
+            ReadRelativeFileBytes,
             out payload,
             out failureCode);
 

@@ -42,7 +42,12 @@ public sealed class BrowserQteMiniGameContractTests : IDisposable
             null!,
             null!,
             NullLogger<QteSceneService>.Instance);
-        _web = new QteWebInteractionService(_fs, _qte);
+        _web = new QteWebInteractionService(
+            _fs,
+            _qte,
+            new BrowserLocalWriteCoordinator(
+                _fs,
+                new LocalUiSessionLockService(_fs)));
     }
 
     [Fact]

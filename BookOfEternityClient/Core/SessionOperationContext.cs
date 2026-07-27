@@ -41,6 +41,33 @@ internal static class SessionOperationContext
         string expectedGeneration,
         Func<Task<T>> operation)
     {
+        return await RunBoundCoreAsync(
+            fileSystem,
+            expectedGeneration,
+            operation,
+            writeLease: null);
+    }
+
+    internal static async Task<T> RunBoundAsync<T>(
+        FileSystemManager fileSystem,
+        string expectedGeneration,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        Func<Task<T>> operation)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        return await RunBoundCoreAsync(
+            fileSystem,
+            expectedGeneration,
+            operation,
+            writeLease);
+    }
+
+    private static async Task<T> RunBoundCoreAsync<T>(
+        FileSystemManager fileSystem,
+        string expectedGeneration,
+        Func<Task<T>> operation,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(operation);
         var normalizedRoot = NormalizeRoot(fileSystem.BasePath);
@@ -60,7 +87,11 @@ internal static class SessionOperationContext
                     "A nested session operation attempted to adopt a different generation.");
             }
 
-            return await RunWithinBindingAsync(existing, fileSystem, operation);
+            return await RunWithinBindingAsync(
+                existing,
+                fileSystem,
+                operation,
+                writeLease);
         }
 
         var state = new BindingState(normalizedRoot, expectedGeneration);
@@ -68,7 +99,11 @@ internal static class SessionOperationContext
         CurrentFrame.Value = new Frame(state, previous);
         try
         {
-            return await RunWithinBindingAsync(state, fileSystem, operation);
+            return await RunWithinBindingAsync(
+                state,
+                fileSystem,
+                operation,
+                writeLease);
         }
         finally
         {
@@ -113,13 +148,17 @@ internal static class SessionOperationContext
     private static async Task<T> RunWithinBindingAsync<T>(
         BindingState state,
         FileSystemManager fileSystem,
-        Func<Task<T>> operation)
+        Func<Task<T>> operation,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         state.ThrowIfInvalid();
         try
         {
             var result = await operation();
-            await fileSystem.VerifyCurrentSessionOperationAsync();
+            if (writeLease == null)
+                await fileSystem.VerifyCurrentSessionOperationAsync();
+            else
+                fileSystem.VerifyCurrentSessionOperation(writeLease);
             state.ThrowIfInvalid();
             return result;
         }

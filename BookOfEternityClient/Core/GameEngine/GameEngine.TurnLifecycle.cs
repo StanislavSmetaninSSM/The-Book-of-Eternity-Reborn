@@ -332,7 +332,7 @@ public partial class GameEngine
             return null;
         }
 
-        return ReadRelativeFileFromWorkspace(snapshotPath);
+        return ReadRelativeTextFromWorkspace(snapshotPath);
     }
 
     private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()

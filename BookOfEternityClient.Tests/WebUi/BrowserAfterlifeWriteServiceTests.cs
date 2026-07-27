@@ -170,6 +170,392 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task TryApplyAsync_GachaDirectPull_QueueFailureRestoresCanonicalProfileAndRuntimeState()
+    {
+        await SeedSoulStateAsync(
+            stored: Array.Empty<(string, string)>(),
+            equipped: Array.Empty<(string, string, string)>(),
+            inkFeathers: 18);
+        await SeedPendingGachaBaseAsync("Rare", 72, [18, 18, 18, 18]);
+        await SeedStalePlayerSoulProfileAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var beforeSoul = await _fs.ReadFileBytesAsync("game_state/meta/soul_state.json");
+        var beforeProfile = await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath);
+        var beforeDice = await _fs.ReadFileBytesAsync(PendingTurnStateService.PendingDiceStatePath);
+        Assert.Equal(18, _stateManager.CurrentState.InkFeathers);
+
+        Directory.CreateDirectory(_fs.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath));
+
+        var result = await _service.TryApplyAsync(
+            "/gacha",
+            Answers(("gacha_banner", "direct_chaos_sea"), ("feather_cost", 7), ("confirm_gacha_pull", true)),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Equal(beforeSoul, await _fs.ReadFileBytesAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeProfile, await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath));
+        Assert.Equal(beforeDice, await _fs.ReadFileBytesAsync(PendingTurnStateService.PendingDiceStatePath));
+        Assert.Equal(18, _stateManager.CurrentState.InkFeathers);
+        Assert.False(_fs.FileExists(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
+        Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+        Assert.False(Directory.Exists(_fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)));
+    }
+
+    [Fact]
+    public async Task TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts()
+    {
+        var concurrentRoot = Path.Combine(_rootPath, "concurrent-new-game");
+        Directory.CreateDirectory(concurrentRoot);
+        var profileInputsRead = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var allowProfileRefresh = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var replacementContended = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var fs = new FileSystemManager(
+            concurrentRoot,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                }
+            });
+        fs.EnsureDirectoryStructure();
+        var stateManager = new StateManager(
+            fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance,
+            new StateManagerHooks
+            {
+                AfterPlayerSoulProfileInputsReadAsync = async () =>
+                {
+                    profileInputsRead.TrySetResult();
+                    await allowProfileRefresh.Task;
+                }
+            });
+        var coordinator = new BrowserLocalWriteCoordinator(
+            fs,
+            new LocalUiSessionLockService(fs),
+            TimeProvider.System);
+        var service = new BrowserAfterlifeWriteService(fs, stateManager, coordinator);
+
+        await fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            new JsonObject
+            {
+                ["soulName"] = "Тестовая душа",
+                ["currentRealm"] = "Chaos Sea",
+                ["currentIncarnation"] = 4,
+                ["inkFeathers"] = new JsonObject
+                {
+                    ["current"] = 18,
+                    ["total"] = 18
+                },
+                ["soulRelics"] = new JsonObject
+                {
+                    ["stored"] = new JsonArray(),
+                    ["equipped"] = new JsonArray()
+                }
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await fs.WriteFileAtomicAsync(
+            PendingTurnStateService.PendingDiceStatePath,
+            new JsonObject
+            {
+                ["preGeneratedDices1d20"] = new JsonArray(1, 2, 3, 4),
+                ["gachaBaseResult"] = new JsonObject
+                {
+                    ["diceUsed"] = new JsonArray(18, 18, 18, 18),
+                    ["baseScore"] = 72,
+                    ["baseRarity"] = "Rare",
+                    ["formula"] = "client-computed gacha base (range 4-80)"
+                },
+                ["isFateLocked"] = false
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая душа",
+                        ["realm"] = "Chaos Sea",
+                        ["currencies"] = new JsonObject
+                        {
+                            ["inkFeathers"] = 0,
+                            ["lightSparks"] = 0
+                        },
+                        ["progression"] = new JsonObject(),
+                        ["standardArts"] = new JsonObject(),
+                        ["specialArts"] = new JsonArray(),
+                        ["customStates"] = new JsonArray(),
+                        ["soulDissipationTier"] = 0,
+                        ["ledger"] = new JsonArray()
+                    }
+                }
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var gacha = service.TryApplyAsync(
+            "/gacha",
+            Answers(
+                ("gacha_banner", "direct_chaos_sea"),
+                ("feather_cost", 7),
+                ("confirm_gacha_pull", true)),
+            Owner("browser-concurrent-gacha"));
+
+        await profileInputsRead.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var replacement = fs.ClearGameStateAsync();
+        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.False(replacement.IsCompleted);
+
+        allowProfileRefresh.TrySetResult();
+        var result = await gacha.WaitAsync(TimeSpan.FromSeconds(5));
+        await replacement.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.True(result.Success, result.Message);
+        Assert.False(fs.FileExists("game_state/meta/soul_state.json"));
+        Assert.False(fs.FileExists(AfterlifeEntityProfileState.StatePath));
+        Assert.False(fs.FileExists(BrowserPendingTurnInspector.TurnRequestPath));
+        Assert.False(fs.FileExists(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
+        Assert.False(fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        var rollbackRoot = fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
+        Assert.Empty(
+            Directory.Exists(rollbackRoot)
+                ? Directory.GetFiles(rollbackRoot, "*", SearchOption.AllDirectories)
+                : Array.Empty<string>());
+    }
+
+    [Fact]
+    public async Task TryApplyAsync_GuardianSocial_RevalidatesAuthorityAfterCanonicalContention()
+    {
+        var concurrentRoot = Path.Combine(_rootPath, "guardian-social-contention");
+        Directory.CreateDirectory(concurrentRoot);
+        var writeContended = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var fs = new FileSystemManager(
+            concurrentRoot,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    writeContended.TrySetResult();
+                    return Task.CompletedTask;
+                }
+            });
+        fs.EnsureDirectoryStructure();
+        var stateManager = new StateManager(
+            fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        var coordinator = new BrowserLocalWriteCoordinator(
+            fs,
+            new LocalUiSessionLockService(fs),
+            TimeProvider.System);
+        var service = new BrowserAfterlifeWriteService(fs, stateManager, coordinator);
+
+        await fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """
+            {
+              "soulName": "Тестовая душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 3
+            }
+            """);
+        await fs.WriteFileAtomicAsync(
+            "game_state/meta/guardians.json",
+            """
+            {
+              "guardians": [
+                {
+                  "guardianId": "guardian_old",
+                  "canonicalName": "Старый Хранитель",
+                  "abode": {
+                    "abodeId": "abode_old",
+                    "name": "Старая обитель"
+                  }
+                }
+              ],
+              "activeGuardian": {
+                "guardianId": "guardian_old",
+                "canonicalName": "Старый Хранитель",
+                "abode": {
+                  "abodeId": "abode_old",
+                  "name": "Старая обитель"
+                }
+              },
+              "chaosSeaNavigation": {
+                "currentAbodeId": "abode_old",
+                "currentGuardianId": "guardian_old"
+              }
+            }
+            """);
+
+        string generation;
+        await using (var setupLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            generation = fs.GetOrCreateSessionGeneration(setupLease);
+
+        var blockingLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        try
+        {
+            var write = SessionOperationContext.RunBoundAsync(
+                fs,
+                generation,
+                () => service.TryApplyAsync(
+                    "/guardian_social guardian_old",
+                    Answers(
+                        ("guardian_id", "guardian_old"),
+                        ("guardian_interaction_type", ActorSocialInteractionRequestState.GuardianInteractionTypeTalk)),
+                    Owner("browser-guardian-contention")));
+
+            await writeContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await fs.WriteFileAtomicAsync(
+                blockingLease,
+                "game_state/meta/guardians.json",
+                """
+                {
+                  "guardians": [
+                    {
+                      "guardianId": "guardian_new",
+                      "canonicalName": "Новый Хранитель",
+                      "abode": {
+                        "abodeId": "abode_new",
+                        "name": "Новая обитель"
+                      }
+                    }
+                  ],
+                  "activeGuardian": {
+                    "guardianId": "guardian_new",
+                    "canonicalName": "Новый Хранитель",
+                    "abode": {
+                      "abodeId": "abode_new",
+                      "name": "Новая обитель"
+                    }
+                  },
+                  "chaosSeaNavigation": {
+                    "currentAbodeId": "abode_new",
+                    "currentGuardianId": "guardian_new"
+                  }
+                }
+                """);
+            await blockingLease.DisposeAsync();
+
+            var result = await write.WaitAsync(TimeSpan.FromSeconds(5));
+
+            Assert.False(result.Success);
+            Assert.Contains("Хранител", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+        }
+        finally
+        {
+            await blockingLease.DisposeAsync();
+        }
+    }
+
+    [Fact]
+    public async Task TryApplyAsync_ShiningFactionFounding_InvalidFormDoesNotRefreshCanonicalProfile()
+    {
+        await SeedSoulStateAsync(
+            stored: Array.Empty<(string, string)>(),
+            equipped: Array.Empty<(string, string, string)>(),
+            currentRealm: "Shining Abode");
+        await SeedStalePlayerSoulProfileAsync();
+        var beforeProfile = await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath);
+
+        var result = await _service.TryApplyAsync(
+            "/shining_faction_founding",
+            Answers(("confirm_shining_politics_write", true)),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("Заполните", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeProfile, await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath));
+    }
+
+    [Fact]
+    public async Task TryApplyAsync_ShiningRelicForge_UnavailableStateDoesNotRefreshCanonicalProfile()
+    {
+        await SeedSoulStateAsync(
+            stored: Array.Empty<(string, string)>(),
+            equipped: Array.Empty<(string, string, string)>(),
+            currentRealm: "Shining Abode");
+        await SeedStalePlayerSoulProfileAsync();
+        var beforeProfile = await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath);
+
+        var result = await _service.TryApplyAsync(
+            "/shining_relic_forge",
+            Answers(
+                ("confirm_shining_relic_forge_write", true),
+                ("faction_id", "test-faction"),
+                ("forge_action_type", ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity),
+                ("relic_id", "test-relic")),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("Сияющей Обители", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeProfile, await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath));
+    }
+
+    [Theory]
+    [InlineData(
+        "/guardian_trade guardian_lock_target",
+        "guardian_trade_choice",
+        "request:guardian_lock_target",
+        "Chaos Sea")]
+    [InlineData(
+        "/shining_trade faction_lock_target",
+        "shining_trade_choice",
+        "request:faction_lock_target",
+        "Shining Abode")]
+    public async Task TryApplyAsync_BlockedAfterlifeTrade_DoesNotRefreshCanonicalProfile(
+        string command,
+        string choiceAnswerId,
+        string choice,
+        string currentRealm)
+    {
+        await SeedSoulStateAsync(
+            stored: Array.Empty<(string, string)>(),
+            equipped: Array.Empty<(string, string, string)>(),
+            currentRealm: currentRealm);
+        await SeedStalePlayerSoulProfileAsync();
+        var beforeProfile = await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath);
+        var lockService = new LocalUiSessionLockService(_fs);
+        var blockingOwner = Owner("blocking-browser-owner");
+        var lockResult = await lockService.AcquireOrRefreshAsync(blockingOwner, "Другая локальная операция");
+        Assert.True(lockResult.Acquired, lockResult.BlockerMessage);
+
+        try
+        {
+            var result = await _service.TryApplyAsync(
+                command,
+                Answers((choiceAnswerId, choice), ("confirm_trade_write", true)),
+                Owner("blocked-browser-owner"));
+
+            Assert.False(result.Success);
+            Assert.Equal(CommandExecutionState.Blocked, result.State);
+            Assert.Equal(
+                beforeProfile,
+                await _fs.ReadFileBytesAsync(AfterlifeEntityProfileState.StatePath));
+        }
+        finally
+        {
+            await lockService.ReleaseAsync(blockingOwner);
+        }
+    }
+
+    [Fact]
     public async Task TryApplyAsync_SoulRelicEquip_MovesRelicFromStoredToEquipped()
     {
         await SeedSoulStateAsync(stored: new[] { ("r1", "Кулон Тишины") }, equipped: Array.Empty<(string, string, string)>());
@@ -484,6 +870,35 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
                 ["lastUpdatedUtc"] = "2026-06-02T00:00:00Z"
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
+
+    private Task SeedStalePlayerSoulProfileAsync() =>
+        _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["profiles"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["actorType"] = "player_soul",
+                        ["actorId"] = "player_soul",
+                        ["displayName"] = "Тестовая душа",
+                        ["realm"] = "Chaos Sea",
+                        ["currencies"] = new JsonObject
+                        {
+                            ["inkFeathers"] = 0,
+                            ["lightSparks"] = 0
+                        },
+                        ["progression"] = new JsonObject(),
+                        ["standardArts"] = new JsonObject(),
+                        ["specialArts"] = new JsonArray(),
+                        ["customStates"] = new JsonArray(),
+                        ["soulDissipationTier"] = 0,
+                        ["ledger"] = new JsonArray()
+                    }
+                }
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
     private async Task<JsonObject> ReadSoulAsync() =>
         JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();

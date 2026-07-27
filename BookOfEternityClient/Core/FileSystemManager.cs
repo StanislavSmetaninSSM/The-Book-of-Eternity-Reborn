@@ -1,6 +1,10 @@
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Text.Json;
+using BookOfEternityClient.Services;
+using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
@@ -8,6 +12,8 @@ internal sealed class FileSystemManagerHooks
 {
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
+    internal Func<string, Task>? BeforeCanonicalMutationAsync { get; init; }
+    internal Func<string, Task>? BeforeCanonicalReadOpenAsync { get; init; }
 }
 
 public enum CanonicalFileMutationResult
@@ -158,7 +164,10 @@ public class FileSystemManager
         ILoadTransactionOperations loadTransactionOperations,
         FileSystemManagerHooks? hooks)
     {
-        _basePath = basePath;
+        if (string.IsNullOrWhiteSpace(basePath))
+            throw new ArgumentException("Canonical base path is required.", nameof(basePath));
+
+        _basePath = ResolvePhysicalIdentityPath(basePath);
         _logger = logger;
         _loadTransactionOperations = loadTransactionOperations ??
             throw new ArgumentNullException(nameof(loadTransactionOperations));
@@ -200,7 +209,20 @@ public class FileSystemManager
 
     public string ResolvePath(string relativePath)
     {
-        return Path.Combine(_basePath, "game_session", relativePath);
+        if (relativePath == null)
+            throw new ArgumentNullException(nameof(relativePath));
+        if (Path.IsPathRooted(relativePath))
+            throw new InvalidDataException("Canonical game-session path must be relative.");
+
+        var sessionRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var fullPath = Path.GetFullPath(Path.Combine(sessionRoot, relativePath));
+        if (!IsSameOrDescendant(fullPath, sessionRoot))
+            throw new InvalidDataException("Canonical game-session path escapes game_session.");
+
+        EnsureNoExistingReparsePoint(sessionRoot, fullPath);
+        return fullPath;
     }
 
     /// <summary>
@@ -247,22 +269,10 @@ public class FileSystemManager
         string content)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        var fullPath = ResolvePath(relativePath);
-        byte[] currentContent;
-        try
-        {
-            currentContent = await File.ReadAllBytesAsync(fullPath);
-        }
-        catch (FileNotFoundException)
-        {
-            currentContent = System.Text.Encoding.UTF8.GetPreamble();
-        }
-        catch (DirectoryNotFoundException)
-        {
-            currentContent = System.Text.Encoding.UTF8.GetPreamble();
-        }
+        var currentContent = await ReadFileBytesCoreAsync(relativePath) ??
+                             Encoding.UTF8.GetPreamble();
 
-        var appendedContent = System.Text.Encoding.UTF8.GetBytes(content);
+        var appendedContent = Encoding.UTF8.GetBytes(content);
         var nextContent = new byte[currentContent.Length + appendedContent.Length];
         Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
         Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
@@ -298,20 +308,7 @@ public class FileSystemManager
         byte[]? desiredContent)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        var fullPath = ResolvePath(relativePath);
-        byte[]? currentContent = null;
-        try
-        {
-            currentContent = await File.ReadAllBytesAsync(fullPath);
-        }
-        catch (FileNotFoundException)
-        {
-            // A missing file is a valid expected state for an add operation.
-        }
-        catch (DirectoryNotFoundException)
-        {
-            // A missing parent is also a valid expected state for an add operation.
-        }
+        var currentContent = await ReadFileBytesCoreAsync(relativePath);
 
         if (!ExactBytesEqual(currentContent, expectedContent))
             return CanonicalFileMutationResult.Conflict;
@@ -330,6 +327,7 @@ public class FileSystemManager
         var dir = Path.GetDirectoryName(fullPath);
         if (dir != null && !Directory.Exists(dir))
             Directory.CreateDirectory(dir);
+        EnsureCanonicalPathStillSafe(relativePath, fullPath);
 
         var tempPath = fullPath + ".tmp." + Guid.NewGuid().ToString("N")[..8];
         try
@@ -349,6 +347,8 @@ public class FileSystemManager
             {
                 try
                 {
+                    await InvokeBeforeCanonicalMutationAsync(relativePath);
+                    EnsureCanonicalPathStillSafe(relativePath, fullPath);
                     File.Move(tempPath, fullPath, overwrite: true);
                     return;
                 }
@@ -360,8 +360,7 @@ public class FileSystemManager
         }
         catch
         {
-            if (File.Exists(tempPath))
-                File.Delete(tempPath);
+            TryDeleteTrustedTemporaryFile(relativePath, fullPath, tempPath);
             throw;
         }
     }
@@ -381,14 +380,23 @@ public class FileSystemManager
 
     private async Task<string?> ReadFileCoreAsync(string relativePath)
     {
-        var fullPath = ResolvePath(relativePath);
         for (var attempt = 0; ; attempt++)
         {
             try
             {
-                if (!File.Exists(fullPath))
+                var stream = await OpenCanonicalReadStreamAsync(relativePath);
+                if (stream == null)
                     return null;
-                return await File.ReadAllTextAsync(fullPath, System.Text.Encoding.UTF8);
+
+                await using (stream)
+                using (var reader = new StreamReader(
+                           stream,
+                           Encoding.UTF8,
+                           detectEncodingFromByteOrderMarks: true,
+                           leaveOpen: false))
+                {
+                    return await reader.ReadToEndAsync();
+                }
             }
             catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
             {
@@ -412,14 +420,22 @@ public class FileSystemManager
 
     private async Task<byte[]?> ReadFileBytesCoreAsync(string relativePath)
     {
-        var fullPath = ResolvePath(relativePath);
         for (var attempt = 0; ; attempt++)
         {
             try
             {
-                if (!File.Exists(fullPath))
+                var stream = await OpenCanonicalReadStreamAsync(relativePath);
+                if (stream == null)
                     return null;
-                return await File.ReadAllBytesAsync(fullPath);
+
+                await using (stream)
+                {
+                    using var buffer = stream.Length is > 0 and <= int.MaxValue
+                        ? new MemoryStream((int)stream.Length)
+                        : new MemoryStream();
+                    await stream.CopyToAsync(buffer);
+                    return buffer.ToArray();
+                }
             }
             catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
             {
@@ -461,7 +477,10 @@ public class FileSystemManager
     {
         EnsureValidCanonicalWriteLease(writeLease);
         EnsureSafeCanonicalRelativePath(relativePath);
-        DeleteDirectoryTreeWithoutFollowingReparsePoints(ResolvePath(relativePath));
+        var fullPath = ResolvePath(relativePath);
+        InvokeBeforeCanonicalMutationAsync(relativePath).GetAwaiter().GetResult();
+        EnsureCanonicalPathStillSafe(relativePath, fullPath);
+        DeleteDirectoryTreeWithoutFollowingReparsePoints(fullPath);
     }
 
     public void DeleteFile(string relativePath)
@@ -488,6 +507,8 @@ public class FileSystemManager
         {
             try
             {
+                InvokeBeforeCanonicalMutationAsync(relativePath).GetAwaiter().GetResult();
+                EnsureCanonicalPathStillSafe(relativePath, fullPath);
                 if (File.Exists(fullPath))
                     File.Delete(fullPath);
                 return;
@@ -503,6 +524,7 @@ public class FileSystemManager
         CanonicalWritePurpose purpose = CanonicalWritePurpose.SessionMutation,
         CancellationToken cancellationToken = default)
     {
+        EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = CanonicalWriteLockPath;
         Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
         for (var attempt = 0; attempt < CanonicalWriteLockRetryCount; attempt++)
@@ -532,6 +554,12 @@ public class FileSystemManager
             {
                 RecoverInterruptedLoadTransaction(writeLease);
                 await RecoverInterruptedWorkerApplyTransactionAsync(writeLease);
+                if (purpose == CanonicalWritePurpose.SessionMutation)
+                {
+                    await ExplorerLocalTurnRollbackArtifacts
+                        .RecoverInterruptedBrowserWriteTransactionsAsync(this, writeLease);
+                }
+
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);
                 return writeLease;
@@ -573,8 +601,15 @@ public class FileSystemManager
         await using var writeLease = await AcquireCanonicalWriteLeaseAsync();
     }
 
+    internal void VerifyCurrentSessionOperation(CanonicalWriteLease writeLease)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        EnsureBoundSessionOperationCanWrite(writeLease);
+    }
+
     internal async Task<SessionLifecycleLease> AcquireSessionLifecycleLeaseAsync()
     {
+        EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = SessionLifecycleLockPath;
         Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
         for (var attempt = 0; attempt < SessionLifecycleLockRetryCount; attempt++)
@@ -629,6 +664,9 @@ public class FileSystemManager
         if (!ReferenceEquals(writeLease.Owner, this) || !writeLease.IsActive)
             throw new InvalidOperationException("Canonical write lease is not active for this game session.");
     }
+
+    internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease) =>
+        EnsureValidCanonicalWriteLease(writeLease);
 
     private void EnsureValidSessionLifecycleLease(SessionLifecycleLease lifecycleLease)
     {
@@ -1007,7 +1045,7 @@ public class FileSystemManager
         if (!beforePath.StartsWith(expectedRoot, StringComparison.OrdinalIgnoreCase) || !File.Exists(beforePath))
             throw new InvalidDataException("Worker apply before-image is missing or escapes its transaction.");
 
-        var bytes = File.ReadAllBytes(beforePath);
+        var bytes = ReadExactBytesFromStablePath(beforePath);
         if (!string.Equals(ComputeSha256OrMissing(bytes), entry.BeforeSha256, StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Worker apply before-image hash is invalid.");
         return bytes;
@@ -1076,14 +1114,194 @@ public class FileSystemManager
 
     private void EnsureSafeCanonicalRelativePath(string relativePath)
     {
-        if (string.IsNullOrWhiteSpace(relativePath) || Path.IsPathRooted(relativePath))
+        if (string.IsNullOrWhiteSpace(relativePath))
             throw new InvalidDataException("Worker apply transaction path is invalid.");
-        var fullPath = Path.GetFullPath(ResolvePath(relativePath));
-        var sessionRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
-                              Path.DirectorySeparatorChar,
-                              Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
-        if (!fullPath.StartsWith(sessionRoot, StringComparison.OrdinalIgnoreCase))
-            throw new InvalidDataException("Worker apply transaction path escapes game_session.");
+
+        _ = ResolvePath(relativePath);
+    }
+
+    private void EnsureCanonicalSessionRootIsNotReparsePoint()
+    {
+        var sessionRoot = Path.GetFullPath(GameSessionPath);
+        if (!Directory.Exists(sessionRoot) && !File.Exists(sessionRoot))
+            return;
+
+        if ((File.GetAttributes(sessionRoot) & FileAttributes.ReparsePoint) != 0)
+        {
+            throw new InvalidDataException(
+                "Canonical game_session root must not be a reparse-point alias.");
+        }
+    }
+
+    private async Task<FileStream?> OpenCanonicalReadStreamAsync(string relativePath)
+    {
+        var expectedFullPath = ResolvePath(relativePath);
+        if (!File.Exists(expectedFullPath))
+            return null;
+
+        await InvokeBeforeCanonicalReadOpenAsync(relativePath);
+
+        FileStream stream;
+        try
+        {
+            stream = new FileStream(
+                expectedFullPath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 4096,
+                FileOptions.Asynchronous | FileOptions.SequentialScan);
+        }
+        catch (FileNotFoundException)
+        {
+            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+            return null;
+        }
+        catch (DirectoryNotFoundException)
+        {
+            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+            return null;
+        }
+
+        try
+        {
+            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+            if (OperatingSystem.IsWindows())
+            {
+                var openedPath = GetFinalPath(stream.SafeFileHandle);
+                if (!string.Equals(
+                        NormalizeWindowsHandlePath(openedPath),
+                        Path.GetFullPath(expectedFullPath),
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidDataException(
+                        "Canonical game-session file identity changed before read.");
+                }
+            }
+
+            return stream;
+        }
+        catch
+        {
+            await stream.DisposeAsync();
+            throw;
+        }
+    }
+
+    private Task InvokeBeforeCanonicalMutationAsync(string relativePath) =>
+        _hooks?.BeforeCanonicalMutationAsync?.Invoke(relativePath) ?? Task.CompletedTask;
+
+    private Task InvokeBeforeCanonicalReadOpenAsync(string relativePath) =>
+        _hooks?.BeforeCanonicalReadOpenAsync?.Invoke(relativePath) ?? Task.CompletedTask;
+
+    private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath)
+    {
+        var currentFullPath = ResolvePath(relativePath);
+        if (!string.Equals(currentFullPath, expectedFullPath, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Canonical game-session path identity changed before mutation.");
+    }
+
+    private void TryDeleteTrustedTemporaryFile(
+        string relativePath,
+        string expectedFullPath,
+        string tempPath)
+    {
+        try
+        {
+            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+            if (File.Exists(tempPath))
+                File.Delete(tempPath);
+        }
+        catch
+        {
+            // A path that changed identity is no longer safe to traverse for cleanup.
+        }
+    }
+
+    private static void EnsureNoExistingReparsePoint(
+        string sessionRoot,
+        string fullPath)
+    {
+        if (Directory.Exists(sessionRoot) || File.Exists(sessionRoot))
+            ThrowIfReparsePoint(sessionRoot);
+
+        var relative = Path.GetRelativePath(sessionRoot, fullPath);
+        if (string.Equals(relative, ".", StringComparison.Ordinal))
+            return;
+
+        var current = sessionRoot;
+        foreach (var segment in relative.Split(
+                     [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                     StringSplitOptions.RemoveEmptyEntries))
+        {
+            current = Path.Combine(current, segment);
+            if (!Directory.Exists(current) && !File.Exists(current))
+                continue;
+
+            ThrowIfReparsePoint(current);
+        }
+    }
+
+    private static void ThrowIfReparsePoint(string path)
+    {
+        if ((File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
+        {
+            throw new InvalidDataException(
+                $"Canonical game-session path contains a reparse point: {path}.");
+        }
+    }
+
+    private static bool IsSameOrDescendant(string candidatePath, string rootPath)
+    {
+        var comparison = OperatingSystem.IsWindows()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
+        if (string.Equals(candidatePath, rootPath, comparison))
+            return true;
+
+        var rootWithSeparator = rootPath.EndsWith(Path.DirectorySeparatorChar) ||
+                                rootPath.EndsWith(Path.AltDirectorySeparatorChar)
+            ? rootPath
+            : rootPath + Path.DirectorySeparatorChar;
+        return candidatePath.StartsWith(rootWithSeparator, comparison);
+    }
+
+    private static string ResolvePhysicalIdentityPath(string path)
+    {
+        var fullPath = Path.GetFullPath(path);
+        var root = Path.GetPathRoot(fullPath);
+        if (string.IsNullOrWhiteSpace(root))
+            return fullPath;
+
+        var current = root;
+        var relative = Path.GetRelativePath(root, fullPath);
+        if (string.Equals(relative, ".", StringComparison.Ordinal))
+            return Path.TrimEndingDirectorySeparator(current);
+
+        foreach (var segment in relative.Split(
+                     [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                     StringSplitOptions.RemoveEmptyEntries))
+        {
+            var candidate = Path.Combine(current, segment);
+            FileSystemInfo? entry = Directory.Exists(candidate)
+                ? new DirectoryInfo(candidate)
+                : File.Exists(candidate)
+                    ? new FileInfo(candidate)
+                    : null;
+            if (entry != null &&
+                (entry.Attributes & FileAttributes.ReparsePoint) != 0)
+            {
+                var resolved = entry.ResolveLinkTarget(returnFinalTarget: true);
+                current = resolved == null
+                    ? candidate
+                    : Path.GetFullPath(resolved.FullName);
+                continue;
+            }
+
+            current = candidate;
+        }
+
+        return Path.TrimEndingDirectorySeparator(Path.GetFullPath(current));
     }
 
     private static string ComputeSha256OrMissing(byte[]? content) =>
@@ -1282,13 +1500,15 @@ public class FileSystemManager
 
     private string? CreateBackupCore(string relativePath)
     {
-        var fullPath = ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
+        var content = ReadFileBytesCoreAsync(relativePath).GetAwaiter().GetResult();
+        if (content == null)
             return null;
 
-        var backupPath = fullPath + $".backup.{DateTime.UtcNow.Ticks}";
-        File.Copy(fullPath, backupPath, overwrite: true);
-        return backupPath;
+        var normalizedRelativePath = GetCanonicalRelativePath(ResolvePath(relativePath));
+        var backupRelativePath =
+            normalizedRelativePath + $".backup.{DateTime.UtcNow.Ticks}";
+        WriteFileAtomicBytesCoreAsync(backupRelativePath, content).GetAwaiter().GetResult();
+        return ResolvePath(backupRelativePath);
     }
 
     public void RestoreBackup(string backupFullPath, string originalRelativePath)
@@ -1313,12 +1533,13 @@ public class FileSystemManager
 
     private void RestoreBackupCore(string backupFullPath, string originalRelativePath)
     {
-        var originalFullPath = ResolvePath(originalRelativePath);
-        if (File.Exists(backupFullPath))
-        {
-            File.Copy(backupFullPath, originalFullPath, overwrite: true);
-            File.Delete(backupFullPath);
-        }
+        var backupRelativePath = GetCanonicalRelativePath(backupFullPath);
+        var content = ReadFileBytesCoreAsync(backupRelativePath).GetAwaiter().GetResult();
+        if (content == null)
+            return;
+
+        WriteFileAtomicBytesCoreAsync(originalRelativePath, content).GetAwaiter().GetResult();
+        DeleteFileCore(backupRelativePath);
     }
 
     public void CleanupBackup(string backupFullPath)
@@ -1338,10 +1559,41 @@ public class FileSystemManager
         CleanupBackupCore(backupFullPath);
     }
 
-    private static void CleanupBackupCore(string backupFullPath)
+    private void CleanupBackupCore(string backupFullPath)
     {
-        if (File.Exists(backupFullPath))
-            File.Delete(backupFullPath);
+        var backupRelativePath = GetCanonicalRelativePath(backupFullPath);
+        DeleteFileCore(backupRelativePath);
+    }
+
+    private string GetCanonicalRelativePath(string fullPath)
+    {
+        if (string.IsNullOrWhiteSpace(fullPath))
+            throw new InvalidDataException("Canonical backup path is required.");
+
+        var canonicalRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var normalizedFullPath = Path.GetFullPath(fullPath);
+        if (!IsSameOrDescendant(normalizedFullPath, canonicalRoot) ||
+            string.Equals(normalizedFullPath, canonicalRoot, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Canonical backup path must stay inside game_session.");
+        }
+
+        var relativePath = Path.GetRelativePath(canonicalRoot, normalizedFullPath)
+            .Replace('\\', '/');
+        var resolvedPath = ResolvePath(relativePath);
+        if (!string.Equals(
+                resolvedPath,
+                normalizedFullPath,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Canonical backup path identity is invalid.");
+        }
+
+        return relativePath;
     }
 
     /// <summary>
@@ -1381,10 +1633,17 @@ public class FileSystemManager
 
     private void ClearGameStateCore()
     {
+        var inputPath = Path.Combine(_basePath, "game_session", "input");
+        if (Directory.Exists(inputPath))
+        {
+            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(inputPath, "*.json"))
+                File.Delete(file);
+        }
+
         var gameStatePath = Path.Combine(_basePath, "game_session", "game_state");
         if (Directory.Exists(gameStatePath))
         {
-            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(gameStatePath, "*.json"))
+            foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(gameStatePath, "*"))
             {
                 if (ShouldPreserveAcrossGameStateClear(gameStatePath, file))
                     continue;
@@ -1497,4 +1756,69 @@ public class FileSystemManager
 
     internal static bool IsReparsePoint(string path) =>
         (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0;
+
+    private static string GetFinalPath(SafeFileHandle handle)
+    {
+        var capacity = 512;
+        while (true)
+        {
+            var buffer = new StringBuilder(capacity);
+            var length = GetFinalPathNameByHandle(
+                handle,
+                buffer,
+                (uint)buffer.Capacity,
+                0);
+            if (length == 0)
+                throw new IOException(
+                    "Could not resolve the opened canonical file handle.",
+                    new Win32Exception(Marshal.GetLastWin32Error()));
+            if (length < buffer.Capacity)
+                return buffer.ToString();
+
+            capacity = checked((int)length + 1);
+        }
+    }
+
+    private static string NormalizeWindowsHandlePath(string path)
+    {
+        if (path.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase))
+            return Path.GetFullPath(@"\\" + path[8..]);
+        if (path.StartsWith(@"\\?\", StringComparison.OrdinalIgnoreCase))
+            return Path.GetFullPath(path[4..]);
+        return Path.GetFullPath(path);
+    }
+
+    private static byte[] ReadExactBytesFromStablePath(string expectedFullPath)
+    {
+        var normalizedExpectedPath = Path.GetFullPath(expectedFullPath);
+        using var stream = new FileStream(
+            normalizedExpectedPath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: 4096,
+            FileOptions.SequentialScan);
+        if (OperatingSystem.IsWindows() &&
+            !string.Equals(
+                NormalizeWindowsHandlePath(GetFinalPath(stream.SafeFileHandle)),
+                normalizedExpectedPath,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Recovery evidence file identity changed before read.");
+        }
+
+        using var buffer = stream.Length is > 0 and <= int.MaxValue
+            ? new MemoryStream((int)stream.Length)
+            : new MemoryStream();
+        stream.CopyTo(buffer);
+        return buffer.ToArray();
+    }
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern uint GetFinalPathNameByHandle(
+        SafeFileHandle hFile,
+        StringBuilder lpszFilePath,
+        uint cchFilePath,
+        uint dwFlags);
 }

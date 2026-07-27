@@ -18,7 +18,7 @@ public partial class CanonicalStateNormalizer
             return;
 
         var result = CloneObject(currentRoot);
-        var authority = await NpcCoreChangesContract.ReadAuthorityAsync(_fs);
+        var authority = await ReadNpcCoreAuthorityAsync();
         var evaluation = NpcCoreChangesContract.Evaluate(
             result,
             preTurnRoot,
@@ -30,6 +30,103 @@ public partial class CanonicalStateNormalizer
 
         NpcCoreChangesContract.Apply(result, evaluation);
         await WriteIfChangedAsync(NpcCoreChangesContract.NpcCorePath, currentNode, result);
+    }
+
+    private async Task<NpcCoreChangesContract.Authority> ReadNpcCoreAuthorityAsync()
+    {
+        var permanentLocationIds = new HashSet<string>(StringComparer.Ordinal);
+        var sameTurnLocationIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var path in new[]
+                 {
+                     "game_state/world/current_location.json",
+                     "game_state/world/world_map.json"
+                 })
+        {
+            CollectNpcLocationAuthority(
+                await ReadNodeAsync(path),
+                permanentLocationIds,
+                sameTurnLocationIds);
+        }
+
+        var factionNamesById = new Dictionary<string, string>(StringComparer.Ordinal);
+        CollectNpcFactionAuthority(
+            await ReadNodeAsync("game_state/factions/faction_core.json"),
+            factionNamesById);
+
+        var characteristicKeys = new HashSet<string>(StringComparer.Ordinal);
+        if (await ReadNodeAsync("game_state/misc/characteristics.json") is JsonObject characteristics)
+        {
+            foreach (var property in characteristics)
+            {
+                if (!property.Key.StartsWith("_", StringComparison.Ordinal) &&
+                    property.Value is JsonValue)
+                {
+                    characteristicKeys.Add(property.Key);
+                }
+            }
+        }
+
+        return new NpcCoreChangesContract.Authority(
+            permanentLocationIds,
+            sameTurnLocationIds,
+            factionNamesById,
+            characteristicKeys);
+    }
+
+    private static void CollectNpcLocationAuthority(
+        JsonNode? node,
+        HashSet<string> permanentIds,
+        HashSet<string> sameTurnIds)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+            {
+                var locationId = GetNodeString(obj["locationId"]);
+                var initialId = GetNodeString(obj["initialId"]);
+                if (!string.IsNullOrWhiteSpace(locationId))
+                    permanentIds.Add(locationId);
+                else if (!string.IsNullOrWhiteSpace(initialId))
+                    sameTurnIds.Add(initialId);
+
+                foreach (var property in obj)
+                    CollectNpcLocationAuthority(property.Value, permanentIds, sameTurnIds);
+                break;
+            }
+            case JsonArray array:
+                foreach (var item in array)
+                    CollectNpcLocationAuthority(item, permanentIds, sameTurnIds);
+                break;
+        }
+    }
+
+    private static void CollectNpcFactionAuthority(
+        JsonNode? node,
+        Dictionary<string, string> factionNamesById)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+            {
+                var factionId = GetNodeString(obj["factionId"]);
+                var factionName = FirstNonEmptyString(
+                    GetNodeString(obj["name"]),
+                    GetNodeString(obj["factionName"]));
+                if (!string.IsNullOrWhiteSpace(factionId) &&
+                    !string.IsNullOrWhiteSpace(factionName))
+                {
+                    factionNamesById.TryAdd(factionId, factionName);
+                }
+
+                foreach (var property in obj)
+                    CollectNpcFactionAuthority(property.Value, factionNamesById);
+                break;
+            }
+            case JsonArray array:
+                foreach (var item in array)
+                    CollectNpcFactionAuthority(item, factionNamesById);
+                break;
+        }
     }
 
     private async Task NormalizeNpcJournalsAsync(IReadOnlyDictionary<string, string>? backups)

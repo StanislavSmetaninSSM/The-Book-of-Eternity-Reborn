@@ -44,6 +44,7 @@ public partial class GameEngine
     {
         public Dictionary<string, string> BackupFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public bool BackupHashesAreExactBytes { get; set; } = true;
         public HashSet<string> BaselineFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> ValidationSnapshotFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     }

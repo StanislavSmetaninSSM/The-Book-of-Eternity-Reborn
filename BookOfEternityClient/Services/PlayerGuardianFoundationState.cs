@@ -155,9 +155,23 @@ internal static class PlayerGuardianFoundationState
     public static async Task<PendingPlayerGuardianFoundationRequest?> ReadAsync(FileSystemManager fs)
         => (await ReadStateAsync(fs)).Request;
 
-    public static async Task WriteAsync(FileSystemManager fs, PendingPlayerGuardianFoundationRequest request)
+    public static Task WriteAsync(
+        FileSystemManager fs,
+        PendingPlayerGuardianFoundationRequest request) =>
+        WriteCoreAsync(fs, writeLease: null, request);
+
+    internal static Task WriteAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingPlayerGuardianFoundationRequest request) =>
+        WriteCoreAsync(fs, writeLease, request);
+
+    private static async Task WriteCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        PendingPlayerGuardianFoundationRequest request)
     {
-        var existingState = await ReadStateAsync(fs);
+        var existingState = await ReadStateCoreAsync(fs, writeLease);
         if (existingState.IsMalformed)
             throw new InvalidOperationException("pending_player_guardian_foundation.json повреждён и должен быть исправлен или очищен до записи нового foundation request.");
         if (existingState.Request != null &&
@@ -166,13 +180,32 @@ internal static class PlayerGuardianFoundationState
             throw new InvalidOperationException("pending_player_guardian_foundation.json already contains a live player guardian foundation contract and cannot be overwritten without explicit canonical closure.");
         }
 
-        await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+        var json = JsonSerializer.Serialize(request, JsonOpts);
+        if (writeLease == null)
+            await fs.WriteFileAtomicAsync(PendingRequestPath, json);
+        else
+            await fs.WriteFileAtomicAsync(writeLease, PendingRequestPath, json);
     }
 
     internal static async Task<PendingFoundationRequestReadResult> ReadStateAsync(FileSystemManager fs)
+        => await ReadStateCoreAsync(fs, writeLease: null);
+
+    internal static async Task<PendingFoundationRequestReadResult> ReadStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+        => await ReadStateCoreAsync(fs, writeLease);
+
+    private static async Task<PendingFoundationRequestReadResult> ReadStateCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var json = await fs.ReadFileAsync(PendingRequestPath);
-        return ParseState(json, fs.FileExists(PendingRequestPath));
+        var json = writeLease == null
+            ? await fs.ReadFileAsync(PendingRequestPath)
+            : await fs.ReadFileAsync(writeLease, PendingRequestPath);
+        var fileExists = writeLease == null
+            ? fs.FileExists(PendingRequestPath)
+            : fs.FileExists(writeLease, PendingRequestPath);
+        return ParseState(json, fileExists);
     }
 
     internal static PendingFoundationRequestReadResult ParseState(string? json, bool fileExists)
@@ -199,12 +232,22 @@ internal static class PlayerGuardianFoundationState
 
     public static void Clear(FileSystemManager fs) => fs.DeleteFile(PendingRequestPath);
 
-    public static async Task<FoundationContext> ReadContextAsync(FileSystemManager fs)
+    public static Task<FoundationContext> ReadContextAsync(FileSystemManager fs) =>
+        ReadContextCoreAsync(fs, writeLease: null);
+
+    internal static Task<FoundationContext> ReadContextAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadContextCoreAsync(fs, writeLease);
+
+    private static async Task<FoundationContext> ReadContextCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var pendingRequestState = await ReadStateAsync(fs);
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var pendingRequestState = await ReadStateCoreAsync(fs, writeLease);
         var pendingRequest = pendingRequestState.Request;
 
         var currentRealm = GetNodeString(soulRoot?["currentRealm"]) ?? "";
@@ -253,7 +296,9 @@ internal static class PlayerGuardianFoundationState
         if (string.IsNullOrWhiteSpace(existingFoundedGuardianName))
             existingFoundedGuardianName = GetNodeString(latestHistoryEntry?["guardianDisplayName"]) ?? existingFoundedGuardianId;
 
-        var returnGuardRaw = await fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+        var returnGuardRaw = writeLease == null
+            ? await fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath)
+            : await fs.ReadFileAsync(writeLease, AfterlifeReturnGuardService.GuardPath);
         var returnGuardState = AfterlifeReturnGuardService.Classify(returnGuardRaw, out _);
         var currentActiveGuardianIsFounded = !string.IsNullOrWhiteSpace(existingFoundedGuardianId) &&
                                              string.Equals(previousGuardianId, existingFoundedGuardianId, StringComparison.OrdinalIgnoreCase);
@@ -299,11 +344,23 @@ internal static class PlayerGuardianFoundationState
         };
     }
 
-    public static async Task<string?> ValidateRequestAgainstCurrentStateAsync(
+    public static Task<string?> ValidateRequestAgainstCurrentStateAsync(
         FileSystemManager fs,
+        PendingPlayerGuardianFoundationRequest request) =>
+        ValidateRequestAgainstCurrentStateCoreAsync(fs, writeLease: null, request);
+
+    internal static Task<string?> ValidateRequestAgainstCurrentStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingPlayerGuardianFoundationRequest request) =>
+        ValidateRequestAgainstCurrentStateCoreAsync(fs, writeLease, request);
+
+    private static async Task<string?> ValidateRequestAgainstCurrentStateCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         PendingPlayerGuardianFoundationRequest request)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (!string.IsNullOrWhiteSpace(context.BlockingReason))
             return context.BlockingReason;
 
@@ -776,9 +833,19 @@ internal static class PlayerGuardianFoundationState
         return true;
     }
 
-    private static async Task<JsonObject?> ReadJsonObjectAsync(FileSystemManager fs, string relativePath)
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        string relativePath) =>
+        await ReadJsonObjectAsync(fs, writeLease: null, relativePath);
+
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string relativePath)
     {
-        var json = await fs.ReadFileAsync(relativePath);
+        var json = writeLease == null
+            ? await fs.ReadFileAsync(relativePath)
+            : await fs.ReadFileAsync(writeLease, relativePath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 

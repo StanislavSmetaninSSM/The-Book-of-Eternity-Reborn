@@ -127,6 +127,49 @@ internal static class GuardianAbodeOfferingState
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
     }
 
+    internal static async Task WriteAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingAbodeOfferingRequest request)
+    {
+        var existingJson = await fs.ReadFileAsync(writeLease, PendingRequestPath);
+        if (fs.FileExists(writeLease, PendingRequestPath))
+        {
+            if (string.IsNullOrWhiteSpace(existingJson))
+            {
+                throw new InvalidOperationException(
+                    "pending_abode_offering.json повреждён или пуст. Исправьте или очистите pending contract перед созданием нового подношения.");
+            }
+
+            try
+            {
+                var existing = JsonSerializer.Deserialize<PendingAbodeOfferingRequest>(existingJson, JsonOpts);
+                if (existing == null)
+                {
+                    throw new InvalidOperationException(
+                        "pending_abode_offering.json повреждён и не может быть перезаписан новым подношением.");
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch
+            {
+                throw new InvalidOperationException(
+                    "pending_abode_offering.json повреждён и не может быть перезаписан новым подношением.");
+            }
+
+            throw new InvalidOperationException(
+                "Уже существует ожидающее подношение Обители. Дождитесь его закрытия или явно очистите pending contract перед новым подношением.");
+        }
+
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingRequestPath,
+            JsonSerializer.Serialize(request, JsonOpts));
+    }
+
     public static async Task<PendingAbodeOfferingRequest?> ReadAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingRequestPath);

@@ -100,6 +100,26 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void PendingTurnBackupAndSnapshot_MustEachHoldOneLeaseAcrossMultiFileCapture()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
+        var backupEntry = ExtractMethodSource(
+            source,
+            "private async Task<RollbackSnapshot> CreatePreTurnBackup(string backupId)");
+        var snapshotEntry = ExtractMethodSource(
+            source,
+            "private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,");
+
+        Assert.Contains("await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync()", backupEntry, StringComparison.Ordinal);
+        Assert.Contains("CreatePreTurnBackup(writeLease, backupId)", backupEntry, StringComparison.Ordinal);
+        Assert.Contains("await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync()", snapshotEntry, StringComparison.Ordinal);
+        Assert.Contains(
+            "CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel)",
+            snapshotEntry,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NewGameBootstrap_MustCreateGuardianProjectRollbackBaselineBeforeInitialDispatch()
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");

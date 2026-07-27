@@ -36,50 +36,72 @@ public sealed class BrowserAfterlifeWriteService
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
+        try
+        {
+            return await _coordinator.RunBoundTransactionAsync(
+                writeLease => TryApplyBoundAsync(writeLease, command, answers, owner));
+        }
+        catch (SessionReplacedException)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Сессия заменена",
+                "Игровая сессия изменилась во время действия. Повторите действие в текущей сессии.");
+        }
+    }
+
+    private async Task<BrowserPromptWriteResult> TryApplyBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
         var parsed = ParseCommand(command);
         return parsed.Token switch
         {
-            "/shining_trade" or "/сияющая_торговля" => await ApplyShiningTradeAsync(parsed.Arguments, answers, owner),
-            "/shining_faction_founding" or "/основание_сияющей_фракции" => await ApplyShiningFactionFoundingAsync(answers, owner),
-            "/shining_faction_realignment" or "/перестройка_сияющей_фракции" => await ApplyShiningFactionRealignmentAsync(answers, owner),
-            "/shining_faction_leadership" or "/смена_главы_сияющей_фракции" => await ApplyShiningFactionLeadershipAsync(answers, owner),
-            "/shining_native_faction_discovery" or "/открытие_нативной_фракции" => await ApplyShiningNativeFactionDiscoveryAsync(answers, owner),
-            "/shining_faction_investment" or "/инвестиция_в_сияющую_фракцию" => await ApplyShiningFactionInvestmentAsync(parsed.Arguments, answers, owner),
-            "/shining_project_support" or "/поддержать_сияющий_проект" => await ApplyShiningProjectSupportMutationAsync(answers, owner, support: true),
-            "/shining_project_unsupport" or "/снять_поддержку_сияющего_проекта" => await ApplyShiningProjectSupportMutationAsync(answers, owner, support: false),
-            "/shining_project_retirement" or "/отправить_сияющий_проект_в_историю" => await ApplyShiningProjectRetirementAsync(answers, owner),
-            "/shining_gates_open" or "/открыть_врата_инкарнации" => await ApplyShiningGatesOpenAsync(answers, owner),
-            "/shining_gates_select" or "/выбрать_благословение" => await ApplyShiningGatesBlessingSelectionAsync(parsed.Arguments, answers, owner, select: true),
-            "/shining_gates_deselect" or "/снять_благословение" => await ApplyShiningGatesBlessingSelectionAsync(parsed.Arguments, answers, owner, select: false),
-            "/shining_gates_reroll" or "/обновить_врата" => await ApplyShiningGatesRerollAsync(answers, owner),
-            "/shining_incarnation_prepare" or "/подготовить_новую_жизнь" => await ApplyShiningIncarnationPrepareAsync(answers, owner),
-            "/shining_relic_forge" or "/сияющая_ковка" => await ApplyShiningRelicForgeAsync(answers, owner),
-            "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
-            "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
-            "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
-            "/spiritual_arts" or "/духовные_искусства" => await ApplySpiritualArtsAsync(answers, owner),
-            "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionPayloadAsync(answers),
-            "/reveal_fate" or "/открыть_судьбу" => await ApplyInkFeatherRevealFateAsync(answers, owner),
-            "/rewrite_fate" or "/переписать_судьбу" => await ApplyInkFeatherRewriteFateAsync(answers, owner),
+            "/shining_trade" or "/сияющая_торговля" => await ApplyShiningTradeAsync(writeLease, parsed.Arguments, answers, owner),
+            "/shining_faction_founding" or "/основание_сияющей_фракции" => await ApplyShiningFactionFoundingAsync(writeLease, answers, owner),
+            "/shining_faction_realignment" or "/перестройка_сияющей_фракции" => await ApplyShiningFactionRealignmentAsync(writeLease, answers, owner),
+            "/shining_faction_leadership" or "/смена_главы_сияющей_фракции" => await ApplyShiningFactionLeadershipAsync(writeLease, answers, owner),
+            "/shining_native_faction_discovery" or "/открытие_нативной_фракции" => await ApplyShiningNativeFactionDiscoveryAsync(writeLease, answers, owner),
+            "/shining_faction_investment" or "/инвестиция_в_сияющую_фракцию" => await ApplyShiningFactionInvestmentAsync(writeLease, parsed.Arguments, answers, owner),
+            "/shining_project_support" or "/поддержать_сияющий_проект" => await ApplyShiningProjectSupportMutationAsync(writeLease, answers, owner, support: true),
+            "/shining_project_unsupport" or "/снять_поддержку_сияющего_проекта" => await ApplyShiningProjectSupportMutationAsync(writeLease, answers, owner, support: false),
+            "/shining_project_retirement" or "/отправить_сияющий_проект_в_историю" => await ApplyShiningProjectRetirementAsync(writeLease, answers, owner),
+            "/shining_gates_open" or "/открыть_врата_инкарнации" => await ApplyShiningGatesOpenAsync(writeLease, answers, owner),
+            "/shining_gates_select" or "/выбрать_благословение" => await ApplyShiningGatesBlessingSelectionAsync(writeLease, parsed.Arguments, answers, owner, select: true),
+            "/shining_gates_deselect" or "/снять_благословение" => await ApplyShiningGatesBlessingSelectionAsync(writeLease, parsed.Arguments, answers, owner, select: false),
+            "/shining_gates_reroll" or "/обновить_врата" => await ApplyShiningGatesRerollAsync(writeLease, answers, owner),
+            "/shining_incarnation_prepare" or "/подготовить_новую_жизнь" => await ApplyShiningIncarnationPrepareAsync(writeLease, answers, owner),
+            "/shining_relic_forge" or "/сияющая_ковка" => await ApplyShiningRelicForgeAsync(writeLease, answers, owner),
+            "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(writeLease, answers, owner),
+            "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(writeLease, answers, owner),
+            "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(writeLease, answers, owner),
+            "/spiritual_arts" or "/духовные_искусства" => await ApplySpiritualArtsAsync(writeLease, answers, owner),
+            "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionPayloadAsync(writeLease, answers),
+            "/reveal_fate" or "/открыть_судьбу" => await ApplyInkFeatherRevealFateAsync(writeLease, answers, owner),
+            "/rewrite_fate" or "/переписать_судьбу" => await ApplyInkFeatherRewriteFateAsync(writeLease, answers, owner),
             "/gacha" or "/гача" => string.IsNullOrWhiteSpace(parsed.Arguments)
-                ? await ApplyGachaPullAsync(answers, owner)
+                ? await ApplyGachaPullAsync(writeLease, answers, owner)
                 : BrowserPromptWriteResult.ValidationError("Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму."),
-            "/archive_consultation" or "/архивная_консультация" => await ApplyArchiveConsultationAsync(answers, owner),
-            "/archive_project_fuel" or "/архивная_подпитка_проекта" => await ApplyArchiveProjectFuelAsync(answers, owner),
-            "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
-            "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
-            "/guardian_trade" or "/торговля_хранителя" => await ApplyGuardianTradeAsync(parsed.Arguments, answers, owner),
-            "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" => await ApplyGuardianSocialAsync(parsed.Arguments, answers, owner),
-            "/abode_residents" or "/обитатели_обители" => await ApplyAbodeResidentsAsync(parsed.Arguments, answers, owner),
-            "/resident_interaction" or "/общение_резидента" or "/поговорить_с_резидентом" or "/история_резидента" => await ApplyResidentInteractionAsync(parsed.Arguments, answers, owner),
-            "/resident_transfer" or "/переход_резидента" => await ApplyResidentTransferAsync(parsed.Arguments, answers, owner),
-            "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
-            "/soul_relic_unequip" or "/снять_реликвию" => await ApplySoulRelicUnequipAsync(answers, owner),
+            "/archive_consultation" or "/архивная_консультация" => await ApplyArchiveConsultationAsync(writeLease, answers, owner),
+            "/archive_project_fuel" or "/архивная_подпитка_проекта" => await ApplyArchiveProjectFuelAsync(writeLease, answers, owner),
+            "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(writeLease, answers, owner),
+            "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(writeLease, answers, owner),
+            "/guardian_trade" or "/торговля_хранителя" => await ApplyGuardianTradeAsync(writeLease, parsed.Arguments, answers, owner),
+            "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" => await ApplyGuardianSocialAsync(writeLease, parsed.Arguments, answers, owner),
+            "/abode_residents" or "/обитатели_обители" => await ApplyAbodeResidentsAsync(writeLease, parsed.Arguments, answers, owner),
+            "/resident_interaction" or "/общение_резидента" or "/поговорить_с_резидентом" or "/история_резидента" => await ApplyResidentInteractionAsync(writeLease, parsed.Arguments, answers, owner),
+            "/resident_transfer" or "/переход_резидента" => await ApplyResidentTransferAsync(writeLease, parsed.Arguments, answers, owner),
+            "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(writeLease, answers, owner),
+            "/soul_relic_unequip" or "/снять_реликвию" => await ApplySoulRelicUnequipAsync(writeLease, answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningTradeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -103,28 +125,38 @@ public sealed class BrowserAfterlifeWriteService
         if (operation is not ("request" or "buy"))
             return BrowserPromptWriteResult.ValidationError("Сияющая торговля поддерживает запрос витрины и покупку из готовой витрины.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var currentTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber);
         var rollbackPaths = operation == "buy"
             ? new[] { SoulStatePath, ShiningAbodeState.StatePath, ShiningTradeRequestState.PendingRequestsPath }
             : new[] { ShiningTradeRequestState.PendingRequestsPath, ShiningAbodeState.StatePath };
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Сияющая торговля",
             rollbackPaths,
-            async () =>
+            async transactionLease =>
             {
+                await _stateManager.RefreshGameStateAsync(transactionLease);
+                var currentTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber);
                 var result = operation switch
                 {
-                    "request" => await ShiningTradeService.RequestInventoryAsync(_fs, targetId, currentTurn),
-                    "buy" => await ShiningTradeService.BuyAsync(_fs, factionId, targetId, currentTurn),
+                    "request" => await ShiningTradeService.RequestInventoryAsync(
+                        _fs,
+                        transactionLease,
+                        targetId,
+                        currentTurn),
+                    "buy" => await ShiningTradeService.BuyAsync(
+                        _fs,
+                        transactionLease,
+                        factionId,
+                        targetId,
+                        currentTurn),
                     _ => new ShiningTradeService.ShiningTradeOperationResult(false, false, "Выберите поддерживаемое действие.")
                 };
 
                 if (!result.Success)
                     throw new InvalidOperationException(result.Message);
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             operation == "request" ? "Витрина запрошена" : "Покупка завершена",
             operation == "request"
@@ -134,6 +166,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyGuardianTradeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -153,9 +186,6 @@ public sealed class BrowserAfterlifeWriteService
         if (operation == "request" && string.Equals(targetId, "__selected__", StringComparison.OrdinalIgnoreCase))
             targetId = guardianId;
 
-        await _stateManager.RefreshGameStateAsync();
-        var currentTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber);
-        var currentIncarnation = Math.Max(1, _stateManager.CurrentState.Incarnation);
         var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
         var rollbackPaths = operation switch
         {
@@ -165,23 +195,32 @@ public sealed class BrowserAfterlifeWriteService
         };
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Торговля хранителя",
             rollbackPaths,
-            async () =>
+            async transactionLease =>
             {
+                await _stateManager.RefreshGameStateAsync(transactionLease);
+                var currentTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber);
+                var currentIncarnation = Math.Max(1, _stateManager.CurrentState.Incarnation);
                 var result = operation switch
                 {
-                    "request" => await BuildGuardianTradeRequestResultAsync(service, targetId, currentIncarnation, currentTurn),
-                    "buy" => await service.BuyAsync(guardianId, targetId, currentIncarnation, currentTurn),
-                    "sell" => await service.SellAsync(guardianId, targetId, currentTurn),
-                    "buyback" => await service.BuyBackAsync(guardianId, targetId, currentTurn),
+                    "request" => await BuildGuardianTradeRequestResultAsync(
+                        service,
+                        transactionLease,
+                        targetId,
+                        currentIncarnation,
+                        currentTurn),
+                    "buy" => await service.BuyAsync(transactionLease, guardianId, targetId, currentIncarnation, currentTurn),
+                    "sell" => await service.SellAsync(transactionLease, guardianId, targetId, currentTurn),
+                    "buyback" => await service.BuyBackAsync(transactionLease, guardianId, targetId, currentTurn),
                     _ => new GuardianTradeService.GuardianTradeOperationResult(false, false, "Выберите поддерживаемую сделку.")
                 };
 
                 if (!result.Success)
                     throw new InvalidOperationException(result.Message);
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             operation == "request" ? "Витрина запрошена" : "Торговля завершена",
             operation switch
@@ -196,12 +235,13 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyGuardianSocialAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
-        await _stateManager.RefreshGameStateAsync();
-        var soulRoot = await ReadObjectAsync(SoulStatePath);
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var soulRoot = await ReadObjectAsync(writeLease, SoulStatePath);
         var currentRealm = FirstNonEmpty(GetNodeString(soulRoot?["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
         if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
         {
@@ -222,7 +262,7 @@ public sealed class BrowserAfterlifeWriteService
         if (!ActorSocialInteractionRequestState.IsSupportedGuardianInteractionType(interactionType))
             return BrowserPromptWriteResult.ValidationError("Выберите тип обращения: разговор или знания.");
 
-        var guardiansRoot = await ReadObjectAsync("game_state/meta/guardians.json");
+        var guardiansRoot = await ReadObjectAsync(writeLease, "game_state/meta/guardians.json");
         if (guardiansRoot == null)
             return BrowserPromptWriteResult.ValidationError("Список Хранителей сейчас недоступен.");
 
@@ -240,7 +280,7 @@ public sealed class BrowserAfterlifeWriteService
             GetNodeString(guardian["displayName"]),
             stableGuardianId);
 
-        var pendingState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
+        var pendingState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs, writeLease);
         if (pendingState.IsMalformed)
         {
             return BrowserPromptWriteResult.Failed(
@@ -264,18 +304,16 @@ public sealed class BrowserAfterlifeWriteService
 
         var duplicateDuringWrite = false;
         var writeResult = await ExecuteAsync(
+            writeLease,
             owner,
             "Общение с Хранителем",
             [ActorSocialInteractionRequestState.PendingGuardianRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                var state = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
-                if (state.IsMalformed)
-                    throw new InvalidOperationException("Запрос общения временно ждёт проверки состояния.");
-
-                duplicateDuringWrite = HasPendingGuardianSocialRequest(state.Requests, stableGuardianId, interactionType);
-                if (!duplicateDuringWrite)
-                    await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
+                duplicateDuringWrite = !await ActorSocialInteractionRequestState.TryWriteGuardianRequestIfAbsentAsync(
+                    _fs,
+                    transactionLease,
+                    request);
             },
             interactionType == ActorSocialInteractionRequestState.GuardianInteractionTypeLore
                 ? "Просьба о знаниях отправлена ГМ"
@@ -311,12 +349,13 @@ public sealed class BrowserAfterlifeWriteService
             string.Equals(request.InteractionType, interactionType, StringComparison.OrdinalIgnoreCase));
 
     private async Task<BrowserPromptWriteResult> ApplyAbodeResidentsAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildResidentRealmBlockerAsync("Обитатели Обители недоступны");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildResidentRealmBlockerAsync(writeLease, "Обитатели Обители недоступны");
         if (realmBlocker != null)
             return realmBlocker;
 
@@ -326,7 +365,7 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(selection))
             return BrowserPromptWriteResult.ValidationError("Выберите Обитель.");
 
-        var guardiansRoot = await TryReadObjectSafeAsync("game_state/meta/guardians.json");
+        var guardiansRoot = await TryReadObjectSafeAsync(writeLease, "game_state/meta/guardians.json");
         if (guardiansRoot == null)
             return BrowserPromptWriteResult.ValidationError("Список Хранителей сейчас недоступен.");
 
@@ -334,10 +373,10 @@ public sealed class BrowserAfterlifeWriteService
         if (abode == null)
             return BrowserPromptWriteResult.ValidationError("Такой Обители сейчас нет среди известных.");
 
-        if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs))
+        if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs, writeLease))
             return BuildMalformedResidentPendingResult("Запрос состава не отправлен");
 
-        var existingRequests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
+        var existingRequests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs, writeLease);
         if (HasPendingResidentsRequest(existingRequests, abode.GuardianId, abode.AbodeId))
             return BuildDuplicateResidentsRequestResult(abode);
 
@@ -359,18 +398,16 @@ public sealed class BrowserAfterlifeWriteService
 
         var duplicateDuringWrite = false;
         var writeResult = await ExecuteAsync(
+            writeLease,
             owner,
             "Обитатели Обители",
             [GuardianAbodeResidentRequestState.PendingResidentsRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs))
-                    throw new InvalidOperationException("Запрос состава временно ждёт проверки состояния.");
-
-                var currentRequests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
-                duplicateDuringWrite = HasPendingResidentsRequest(currentRequests, abode.GuardianId, abode.AbodeId);
-                if (!duplicateDuringWrite)
-                    await GuardianAbodeResidentRequestState.WriteResidentsRequestAsync(_fs, request);
+                duplicateDuringWrite = !await GuardianAbodeResidentRequestState.TryWriteResidentsRequestIfAbsentAsync(
+                    _fs,
+                    transactionLease,
+                    request);
             },
             "Запрос состава отправлен ГМ",
             $"ГМ получит просьбу подготовить состав Обители {abode.AbodeName} Хранителя {abode.GuardianName}.",
@@ -380,12 +417,13 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyResidentInteractionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildResidentRealmBlockerAsync("Общение с обитателем недоступно");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildResidentRealmBlockerAsync(writeLease, "Общение с обитателем недоступно");
         if (realmBlocker != null)
             return realmBlocker;
 
@@ -399,7 +437,7 @@ public sealed class BrowserAfterlifeWriteService
         if (interactionType is not (GuardianAbodeResidentState.InteractionTypeTalk or GuardianAbodeResidentState.InteractionTypeHistory))
             return BrowserPromptWriteResult.ValidationError("Выберите разговор или раскрытие истории.");
 
-        var context = await ReadResidentWriteContextAsync();
+        var context = await ReadResidentWriteContextAsync(writeLease);
         if (!string.IsNullOrWhiteSpace(context.ErrorMessage))
             return BrowserPromptWriteResult.ValidationError(context.ErrorMessage);
 
@@ -411,10 +449,10 @@ public sealed class BrowserAfterlifeWriteService
         if (!ResidentInteractionAllowed(resident.Entry, interactionType))
             return BrowserPromptWriteResult.ValidationError("Этот тип обращения сейчас недоступен для выбранного обитателя.");
 
-        if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
+        if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs, writeLease))
             return BuildMalformedResidentPendingResult("Обращение не отправлено");
 
-        var existingRequests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
+        var existingRequests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs, writeLease);
         if (HasPendingInteractionRequest(existingRequests, resident.Entry.ResidentId, interactionType))
             return BuildDuplicateInteractionRequestResult(resident, interactionType);
 
@@ -432,18 +470,16 @@ public sealed class BrowserAfterlifeWriteService
 
         var duplicateDuringWrite = false;
         var writeResult = await ExecuteAsync(
+            writeLease,
             owner,
             "Общение с обитателем",
             [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
-                    throw new InvalidOperationException("Обращение временно ждёт проверки состояния.");
-
-                var currentRequests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
-                duplicateDuringWrite = HasPendingInteractionRequest(currentRequests, resident.Entry.ResidentId, interactionType);
-                if (!duplicateDuringWrite)
-                    await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
+                duplicateDuringWrite = !await GuardianAbodeResidentRequestState.TryWriteInteractionRequestIfAbsentAsync(
+                    _fs,
+                    transactionLease,
+                    request);
             },
             string.Equals(interactionType, GuardianAbodeResidentState.InteractionTypeHistory, StringComparison.OrdinalIgnoreCase)
                 ? "Просьба об истории отправлена ГМ"
@@ -457,12 +493,13 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyResidentTransferAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildResidentRealmBlockerAsync("Переход обитателя недоступен");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildResidentRealmBlockerAsync(writeLease, "Переход обитателя недоступен");
         if (realmBlocker != null)
             return realmBlocker;
 
@@ -476,7 +513,7 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(transferChoice))
             return BrowserPromptWriteResult.ValidationError("Выберите направление перехода.");
 
-        var context = await ReadResidentWriteContextAsync();
+        var context = await ReadResidentWriteContextAsync(writeLease);
         if (!string.IsNullOrWhiteSpace(context.ErrorMessage))
             return BrowserPromptWriteResult.ValidationError(context.ErrorMessage);
 
@@ -494,10 +531,13 @@ public sealed class BrowserAfterlifeWriteService
                 $"Обитатель {resident.Entry.DisplayName} ещё не готов к переходу. Дождитесь явного состояния готовности.");
         }
 
-        if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs))
+        if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs, writeLease))
             return BuildMalformedResidentPendingResult("Переход не отправлен");
 
-        var existingTransfer = await GuardianAbodeResidentRequestState.FindPendingTransferAsync(_fs, resident.Entry.ResidentId);
+        var existingTransfer = await GuardianAbodeResidentRequestState.FindPendingTransferAsync(
+            _fs,
+            writeLease,
+            resident.Entry.ResidentId);
         if (existingTransfer != null)
             return BuildDuplicateTransferRequestResult(resident);
 
@@ -507,18 +547,16 @@ public sealed class BrowserAfterlifeWriteService
 
         var duplicateDuringWrite = false;
         var writeResult = await ExecuteAsync(
+            writeLease,
             owner,
             "Переход обитателя",
             [GuardianAbodeResidentRequestState.PendingTransfersRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs))
-                    throw new InvalidOperationException("Переход временно ждёт проверки состояния.");
-
-                var currentTransfer = await GuardianAbodeResidentRequestState.FindPendingTransferAsync(_fs, resident.Entry.ResidentId);
-                duplicateDuringWrite = currentTransfer != null;
-                if (!duplicateDuringWrite)
-                    await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, transferRequest);
+                duplicateDuringWrite = !await GuardianAbodeResidentRequestState.TryWriteTransferRequestIfAbsentAsync(
+                    _fs,
+                    transactionLease,
+                    transferRequest);
             },
             "Переход отправлен ГМ",
             string.Equals(transferRequest.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase)
@@ -529,12 +567,14 @@ public sealed class BrowserAfterlifeWriteService
         return duplicateDuringWrite ? BuildDuplicateTransferRequestResult(resident) : writeResult;
     }
 
-    private async Task<BrowserPromptWriteResult?> TryBuildResidentRealmBlockerAsync(string title)
+    private async Task<BrowserPromptWriteResult?> TryBuildResidentRealmBlockerAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string title)
     {
         JsonObject? soulRoot = null;
         try
         {
-            soulRoot = await ReadObjectAsync(SoulStatePath);
+            soulRoot = await ReadObjectAsync(writeLease, SoulStatePath);
         }
         catch
         {
@@ -602,16 +642,12 @@ public sealed class BrowserAfterlifeWriteService
             string.Equals(request.InteractionType, interactionType, StringComparison.OrdinalIgnoreCase));
 
     private async Task<BrowserPromptWriteResult> ApplyShiningFactionFoundingAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_shining_politics_write"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите основание сияющей фракции.");
-
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync("Основание сияющей фракции недоступно");
-        if (realmBlocker != null)
-            return realmBlocker;
 
         var factionName = ReadAnswer(answers, "faction_name");
         var hallName = ReadAnswer(answers, "hall_name");
@@ -637,15 +673,38 @@ public sealed class BrowserAfterlifeWriteService
         if (supporterIds.Count < 3)
             return BrowserPromptWriteResult.ValidationError("Для основания нужны минимум три уникальных сторонника.");
 
-        return await ExecuteAsync(
+        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync(
+            "Основание сияющей фракции недоступно",
+            boundLease);
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Основание сияющей фракции",
             [SoulStatePath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, ShiningFactionRequestState.PendingFoundingsRequestPath],
-            async () =>
+            async writeLease =>
             {
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
-                var residentsRoot = await ReadRequiredObjectAsync(GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
+                await _stateManager.RefreshGameStateAsync(writeLease);
+                var currentRealmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync(
+                    "Основание сияющей фракции недоступно",
+                    writeLease);
+                if (currentRealmBlocker != null)
+                    throw new InvalidOperationException(currentRealmBlocker.Message);
+
+                var soulRoot = await ReadRequiredObjectAsync(
+                    writeLease,
+                    SoulStatePath,
+                    "Состояние души сейчас недоступно.");
+                var shiningRoot = await ReadRequiredObjectAsync(
+                    writeLease,
+                    ShiningAbodeState.StatePath,
+                    "Состояние Сияющей Обители сейчас недоступно.");
+                var residentsRoot = await ReadRequiredObjectAsync(
+                    writeLease,
+                    GuardianAbodeResidentState.StatePath,
+                    "Состав обитателей сейчас недоступен.");
                 if (supporterIds.Any(supporterId => !IsVisibleAscendedResidentForPolitics(shiningRoot, residentsRoot, supporterId, allowFactionless: true)))
                     throw new InvalidOperationException("Выберите видимых вознесённых сторонников, доступных в политике Сияющей Обители.");
 
@@ -679,20 +738,20 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(_fs, writeLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(validation));
 
-                await ShiningFactionRequestState.WriteFoundingRequestAsync(_fs, request);
+                await ShiningFactionRequestState.WriteFoundingRequestAsync(_fs, writeLease, request);
                 SetSoulInkFeathers(soulRoot, feathersBefore - ShiningFactionRequestState.FactionFoundingCostFeathers);
                 shiningRoot["lightSparks"] = sparksBefore - ShiningFactionRequestState.FactionFoundingCostLightSparks;
-                await WriteObjectAsync(SoulStatePath, soulRoot);
-                await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
+                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
+                await WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot);
 
-                var postValidation = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(_fs, request);
+                var postValidation = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(_fs, writeLease, request);
                 if (!string.IsNullOrWhiteSpace(postValidation))
                     throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(postValidation));
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(writeLease);
             },
             "Основание отправлено ГМ",
             $"Запрос основания фракции {factionName.Trim()} отправлен. Ресурсы зарезервированы до ответа ГМ.",
@@ -700,14 +759,17 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningFactionRealignmentAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_shining_politics_write"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите запрос перестройки.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync("Перестройка сияющей фракции недоступна");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync(
+            "Перестройка сияющей фракции недоступна",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
@@ -725,13 +787,14 @@ public sealed class BrowserAfterlifeWriteService
         }
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Перестройка сияющей фракции",
             [ShiningFactionRequestState.PendingRealignmentsRequestPath, GuardianAbodeResidentState.StatePath, ShiningAbodeState.StatePath],
-            async () =>
+            async transactionLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
-                var residentsRoot = await ReadRequiredObjectAsync(GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var residentsRoot = await ReadRequiredObjectAsync(transactionLease, GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
                 var resident = FindResident(residentsRoot, residentId);
                 if (resident == null)
                     throw new InvalidOperationException("Такого обитателя сейчас нет среди состава Сияющей Обители.");
@@ -764,12 +827,12 @@ public sealed class BrowserAfterlifeWriteService
                     request.TargetFactionName = ResolveFactionName(targetFaction, targetFactionId.Trim());
                 }
 
-                var validation = await ShiningFactionRequestState.ValidateRealignmentRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningFactionRequestState.ValidateRealignmentRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(validation));
 
-                await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Перестройка отправлена ГМ",
             "Запрос фракционной перестройки отправлен. ГМ разрешит переход или нейтральный уход.",
@@ -777,14 +840,17 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningFactionLeadershipAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_shining_politics_write"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите запрос смены главы.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync("Смена главы сияющей фракции недоступна");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync(
+            "Смена главы сияющей фракции недоступна",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
@@ -804,14 +870,15 @@ public sealed class BrowserAfterlifeWriteService
         }
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Смена главы сияющей фракции",
             [ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, GuardianAbodeResidentState.StatePath, ShiningAbodeState.StatePath, GuardiansPath],
-            async () =>
+            async transactionLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
-                var residentsRoot = await ReadRequiredObjectAsync(GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
-                var guardiansRoot = await TryReadObjectSafeAsync(GuardiansPath);
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var residentsRoot = await ReadRequiredObjectAsync(transactionLease, GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
+                var guardiansRoot = await TryReadObjectSafeAsync(transactionLease, GuardiansPath);
                 var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
                 if (faction == null)
                     throw new InvalidOperationException("Выберите видимую действующую фракцию Сияющей Обители.");
@@ -847,12 +914,12 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(validation));
 
-                await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Смена главы отправлена ГМ",
             "Запрос смены главы сияющей фракции отправлен. ГМ разрешит политический исход.",
@@ -860,24 +927,28 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningNativeFactionDiscoveryAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите открытие нативной фракции.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Открытие нативной фракции недоступно");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            "Открытие нативной фракции недоступно",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Открытие нативной фракции",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, SoulStatePath],
-            async () =>
+            async transactionLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
                 var cost = ShiningAbodeState.GetNativeDiscoveryCost();
                 var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
                 {
@@ -888,12 +959,12 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
 
-                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Открытие отправлено ГМ",
             "Запрос открытия нативной фракции отправлен. ГМ разрешит появление новой сияющей фракции.",
@@ -901,6 +972,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningFactionInvestmentAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -914,18 +986,21 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(factionId))
             return BrowserPromptWriteResult.ValidationError("Выберите сияющую фракцию.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Инвестиция в сияющую фракцию недоступна");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            "Инвестиция в сияющую фракцию недоступна",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Инвестиция в сияющую фракцию",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, SoulStatePath],
-            async () =>
+            async transactionLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
                 var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
                 if (faction == null)
                     throw new InvalidOperationException("Выберите видимую действующую фракцию Сияющей Обители.");
@@ -941,12 +1016,12 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
 
-                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Инвестиция отправлена ГМ",
             "Запрос инвестиции в сияющую фракцию отправлен. ГМ разрешит итог вложения.",
@@ -954,6 +1029,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningProjectSupportMutationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner,
         bool support)
@@ -965,18 +1041,21 @@ public sealed class BrowserAfterlifeWriteService
         if (!TryParseProjectChoice(projectChoice, out var factionId, out var projectId))
             return BrowserPromptWriteResult.ValidationError("Выберите сияющий проект.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(support ? "Поддержка сияющего проекта недоступна" : "Снятие поддержки сияющего проекта недоступно");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            support ? "Поддержка сияющего проекта недоступна" : "Снятие поддержки сияющего проекта недоступно",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             support ? "Поддержка сияющего проекта" : "Снятие поддержки сияющего проекта",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
-            async () =>
+            async transactionLease =>
             {
-                var (faction, project) = await ResolveVisibleShiningProjectAsync(factionId, projectId);
+                var (faction, project) = await ResolveVisibleShiningProjectAsync(transactionLease, factionId, projectId);
                 if (!support && !IsCompletedProject(project))
                     throw new InvalidOperationException("Снимать поддержку можно только с завершённого проекта.");
 
@@ -992,12 +1071,12 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
 
-                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             support ? "Поддержка отправлена ГМ" : "Снятие поддержки отправлено ГМ",
             support
@@ -1007,6 +1086,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningProjectRetirementAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1017,18 +1097,21 @@ public sealed class BrowserAfterlifeWriteService
         if (!TryParseProjectChoice(projectChoice, out var factionId, out var projectId))
             return BrowserPromptWriteResult.ValidationError("Выберите сияющий проект.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Отправка сияющего проекта в историю недоступна");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            "Отправка сияющего проекта в историю недоступна",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Отправка сияющего проекта в историю",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath],
-            async () =>
+            async transactionLease =>
             {
-                var (faction, project) = await ResolveVisibleShiningProjectAsync(factionId, projectId);
+                var (faction, project) = await ResolveVisibleShiningProjectAsync(transactionLease, factionId, projectId);
                 var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
                 {
                     ActionType = ShiningCoreActionRequestState.ActionTypeRetireProject,
@@ -1039,12 +1122,12 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
 
-                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Проект отправлен ГМ",
             "Запрос отправки сияющего проекта в историю передан ГМ.",
@@ -1052,22 +1135,26 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningGatesOpenAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите открытие Врат.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Открытие Врат недоступно");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            "Открытие Врат недоступно",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Открытие Врат инкарнации",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath],
-            async () =>
+            async transactionLease =>
             {
                 var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
                 {
@@ -1075,12 +1162,12 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(validation));
 
-                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Врата отправлены ГМ",
             "Запрос открытия Врат отправлен. ГМ подготовит набор благословений для будущей жизни.",
@@ -1088,6 +1175,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningGatesBlessingSelectionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string commandArguments,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner,
@@ -1102,19 +1190,22 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(cardId))
             return BrowserPromptWriteResult.ValidationError("Выберите благословение Врат.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(select ? "Выбор благословения недоступен" : "Снятие благословения недоступно");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            select ? "Выбор благословения недоступен" : "Снятие благословения недоступно",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             select ? "Выбор благословения Врат" : "Снятие благословения Врат",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
-            async () =>
+            async transactionLease =>
             {
-                await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync();
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync(transactionLease);
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
                 string? error = null;
                 var success = select
                     ? ShiningAbodeState.TrySelectBlessingCard(shiningRoot, cardId, out error)
@@ -1122,8 +1213,8 @@ public sealed class BrowserAfterlifeWriteService
                 if (!success)
                     throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(error));
 
-                await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
-                await _stateManager.RefreshGameStateAsync();
+                await WriteObjectAsync(transactionLease, ShiningAbodeState.StatePath, shiningRoot);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             select ? "Благословение выбрано" : "Благословение снято",
             select
@@ -1133,30 +1224,34 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningGatesRerollAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_shining_gates_local_write"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите обновление Врат.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Обновление Врат недоступно");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            "Обновление Врат недоступно",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Обновление Врат инкарнации",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
-            async () =>
+            async transactionLease =>
             {
-                await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync();
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync(transactionLease);
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
                 if (!ShiningAbodeState.TryRerollGatesDraft(shiningRoot, out var error))
                     throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(error));
 
-                await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
-                await _stateManager.RefreshGameStateAsync();
+                await WriteObjectAsync(transactionLease, ShiningAbodeState.StatePath, shiningRoot);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Врата обновлены",
             "Доступные благословения Врат обновлены. Уже выбранные благословения сохранены.",
@@ -1164,24 +1259,28 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningIncarnationPrepareAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите подготовку новой жизни.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Подготовка новой жизни недоступна");
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            "Подготовка новой жизни недоступна",
+            writeLease);
         if (realmBlocker != null)
             return realmBlocker;
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Подготовка новой жизни",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
-            async () =>
+            async transactionLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
                 var gates = shiningRoot["gates"] as JsonObject ?? new JsonObject();
                 var selectedIds = ReadGatesStringArray(gates, "selectedBlessingCardIds");
                 var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
@@ -1193,12 +1292,12 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(validation));
 
-                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                await _stateManager.RefreshGameStateAsync();
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, transactionLease, request);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Новая жизнь подготовлена к решению ГМ",
             "Запрос подготовки новой жизни отправлен. ГМ закрепит выбранные благословения.",
@@ -1206,6 +1305,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningRelicForgeAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1265,8 +1365,9 @@ public sealed class BrowserAfterlifeWriteService
                 break;
         }
 
-        await _stateManager.RefreshGameStateAsync();
-        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Ковка реликвий недоступна");
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+            "Ковка реликвий недоступна",
+            boundLease);
         if (realmBlocker != null)
             return realmBlocker;
 
@@ -1283,16 +1384,24 @@ public sealed class BrowserAfterlifeWriteService
             }
         }
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Ковка реликвий",
             [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, SoulStatePath],
-            async () =>
+            async writeLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
-                var residentRoot = await TryReadObjectSafeAsync(GuardianAbodeResidentState.StatePath);
-                var guardiansRoot = await TryReadObjectSafeAsync(GuardiansPath);
+                await _stateManager.RefreshGameStateAsync(writeLease);
+                var currentRealmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(
+                    "Ковка реликвий недоступна",
+                    writeLease);
+                if (currentRealmBlocker != null)
+                    throw new InvalidOperationException(currentRealmBlocker.Message);
+
+                var shiningRoot = await ReadRequiredObjectAsync(writeLease, ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "Состояние души сейчас недоступно.");
+                var residentRoot = await TryReadObjectSafeAsync(writeLease, GuardianAbodeResidentState.StatePath);
+                var guardiansRoot = await TryReadObjectSafeAsync(writeLease, GuardiansPath);
                 ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
 
                 var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
@@ -1342,7 +1451,7 @@ public sealed class BrowserAfterlifeWriteService
                     CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
                 };
 
-                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, writeLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(SanitizeShiningForgeValidationMessage(validation));
 
@@ -1350,6 +1459,7 @@ public sealed class BrowserAfterlifeWriteService
                 {
                     await ShiningCoreActionRequestState.WriteForgeRequestWithRelicRerollCommitAsync(
                         _fs,
+                        writeLease,
                         request,
                         Math.Max(1, _stateManager.CurrentState.TurnNumber),
                         relicRerollsToCommit);
@@ -1359,30 +1469,33 @@ public sealed class BrowserAfterlifeWriteService
                     throw new InvalidOperationException(SanitizeShiningForgeValidationMessage(ex.Message), ex);
                 }
 
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(writeLease);
             },
             "Ковка отправлена ГМ",
             "Запрос ковки реликвии отправлен. ГМ разрешит изменение реликвии через Сияющую Обитель.",
             payload: null);
     }
 
-    private async Task EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync()
+    private async Task EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var pendingState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(_fs);
+        var pendingState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(_fs, writeLease);
         if (pendingState.IsMalformed)
             throw new InvalidOperationException("Ожидающее действие Сияющей Обители требует восстановления перед изменением Врат.");
         if (pendingState.Requests.Count > 0)
             throw new InvalidOperationException("Другое действие Сияющей Обители уже ожидает решения ГМ. Дождитесь результата перед изменением Врат.");
     }
 
-    private async Task<BrowserPromptWriteResult?> TryBuildShiningPoliticsRealmBlockerAsync(string title)
+    private async Task<BrowserPromptWriteResult?> TryBuildShiningPoliticsRealmBlockerAsync(
+        string title,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         JsonObject? soulRoot = null;
         JsonObject? shiningRoot = null;
         try
         {
-            soulRoot = await ReadObjectAsync(SoulStatePath);
-            shiningRoot = await ReadObjectAsync(ShiningAbodeState.StatePath);
+            soulRoot = await ReadObjectAsync(writeLease, SoulStatePath);
+            shiningRoot = await ReadObjectAsync(writeLease, ShiningAbodeState.StatePath);
         }
         catch
         {
@@ -1427,14 +1540,16 @@ public sealed class BrowserAfterlifeWriteService
         return null;
     }
 
-    private async Task<BrowserPromptWriteResult?> TryBuildShiningCoreActionRealmBlockerAsync(string title)
+    private async Task<BrowserPromptWriteResult?> TryBuildShiningCoreActionRealmBlockerAsync(
+        string title,
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         JsonObject? soulRoot = null;
         JsonObject? shiningRoot = null;
         try
         {
-            soulRoot = await ReadObjectAsync(SoulStatePath);
-            shiningRoot = await ReadObjectAsync(ShiningAbodeState.StatePath);
+            soulRoot = await ReadObjectAsync(writeLease, SoulStatePath);
+            shiningRoot = await ReadObjectAsync(writeLease, ShiningAbodeState.StatePath);
         }
         catch
         {
@@ -1480,10 +1595,14 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<(JsonObject Faction, JsonObject Project)> ResolveVisibleShiningProjectAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string factionId,
         string projectId)
     {
-        var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+        var shiningRoot = await ReadRequiredObjectAsync(
+            writeLease,
+            ShiningAbodeState.StatePath,
+            "Состояние Сияющей Обители сейчас недоступно.");
         var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
         if (faction == null)
             throw new InvalidOperationException("Выберите видимую действующую фракцию Сияющей Обители.");
@@ -1497,11 +1616,17 @@ public sealed class BrowserAfterlifeWriteService
 
     private static async Task<GuardianTradeService.GuardianTradeOperationResult> BuildGuardianTradeRequestResultAsync(
         GuardianTradeService service,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string guardianId,
         int currentIncarnation,
         int currentTurn)
     {
-        var view = await service.EnsureTradeInventoryAsync(guardianId, currentIncarnation, currentTurn, createPendingRequests: true);
+        var view = await service.EnsureTradeInventoryAsync(
+            writeLease,
+            guardianId,
+            currentIncarnation,
+            currentTurn,
+            createPendingRequests: true);
         if (view == null)
             return new GuardianTradeService.GuardianTradeOperationResult(false, false, "Хранитель не найден.");
         if (view.TradeBlocked)
@@ -1514,6 +1639,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningTreasuryAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1524,14 +1650,15 @@ public sealed class BrowserAfterlifeWriteService
         if (operation != "claim_interest" && amount <= 0)
             return BrowserPromptWriteResult.ValidationError("Для операции нужна положительная целая сумма.");
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Browser Shining Treasury",
             [ShiningAbodeState.StatePath, SoulStatePath],
-            async () =>
+            async writeLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "shining_abode_state.json недоступен.");
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
+                var shiningRoot = await ReadRequiredObjectAsync(writeLease, ShiningAbodeState.StatePath, "shining_abode_state.json недоступен.");
+                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "soul_state.json недоступен.");
                 var blocker = await TryDescribeTreasuryCostBlockerAsync(shiningRoot);
                 if (blocker != null)
                     throw new InvalidOperationException(blocker);
@@ -1551,9 +1678,9 @@ public sealed class BrowserAfterlifeWriteService
                     throw new InvalidOperationException(result.Message);
 
                 ShiningAbodeState.NormalizeStateRoot(shiningRoot, null, null);
-                await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
-                await WriteObjectAsync(SoulStatePath, soulRoot);
-                await _stateManager.RefreshGameStateAsync();
+                await WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot);
+                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
+                await _stateManager.RefreshGameStateAsync(writeLease);
             },
             "Казначейство обновлено",
             "Браузер выполнил локальную операцию казначейства через общий протокол блокировки и отката.",
@@ -1567,6 +1694,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplySourceOfLightAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1576,14 +1704,15 @@ public sealed class BrowserAfterlifeWriteService
 
         JsonObject? payload = null;
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Browser Source of Light request",
             [SourceOfLightCapstoneState.PendingRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "shining_abode_state.json недоступен.");
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
-                var pending = await SourceOfLightCapstoneState.ReadRequestStateAsync(_fs);
+                var shiningRoot = await ReadRequiredObjectAsync(transactionLease, ShiningAbodeState.StatePath, "shining_abode_state.json недоступен.");
+                var soulRoot = await ReadRequiredObjectAsync(transactionLease, SoulStatePath, "soul_state.json недоступен.");
+                var pending = await SourceOfLightCapstoneState.ReadRequestStateAsync(_fs, transactionLease);
                 if (pending.IsMalformed)
                     throw new InvalidOperationException($"{SourceOfLightCapstoneState.PendingRequestPath} повреждён: {pending.Error}.");
                 if (pending.Request != null)
@@ -1597,7 +1726,7 @@ public sealed class BrowserAfterlifeWriteService
                 if (!SourceOfLightCapstoneState.IsUnlockSatisfied(soulRoot, shiningRoot, out var blocker))
                     throw new InvalidOperationException(blocker);
 
-                var pendingBlocker = await SourceOfLightCapstoneState.TryDescribeBlockingPendingContractAsync(_fs, shiningRoot);
+                var pendingBlocker = await SourceOfLightCapstoneState.TryDescribeBlockingPendingContractAsync(_fs, transactionLease, shiningRoot);
                 if (pendingBlocker != null)
                     throw new InvalidOperationException($"Источник Света заблокирован: есть {pendingBlocker}.");
 
@@ -1605,7 +1734,7 @@ public sealed class BrowserAfterlifeWriteService
                     Math.Max(1, _stateManager.CurrentState.TurnNumber + 1),
                     SourceOfLightCapstoneState.GetNodeInt(shiningRoot["radiance"]?["experience"]),
                     SourceOfLightCapstoneState.GetNodeInt(shiningRoot["radiance"]?["tier"]));
-                await SourceOfLightCapstoneState.WriteRequestAsync(_fs, request);
+                await SourceOfLightCapstoneState.WriteRequestAsync(_fs, transactionLease, request);
                 payload = JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!.AsObject();
             },
             "Источник Света открыт",
@@ -1614,6 +1743,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyAfterlifeInboxAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1625,15 +1755,16 @@ public sealed class BrowserAfterlifeWriteService
             return BrowserPromptWriteResult.ValidationError("Для mark_read нужен notification_id.");
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Browser afterlife inbox",
             [AfterlifeNotificationState.NotificationsPath],
-            async () =>
+            async transactionLease =>
             {
                 if (action == "mark_all_read")
-                    await AfterlifeNotificationState.MarkAllReadAsync(_fs);
+                    await AfterlifeNotificationState.MarkAllReadAsync(_fs, transactionLease);
                 else
-                    await AfterlifeNotificationState.MarkReadAsync(_fs, notificationId);
+                    await AfterlifeNotificationState.MarkReadAsync(_fs, transactionLease, notificationId);
             },
             "Уведомления обновлены",
             action == "mark_all_read"
@@ -1648,6 +1779,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplySpiritualArtsAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1662,19 +1794,20 @@ public sealed class BrowserAfterlifeWriteService
             string.Equals(item.ArtId, target, StringComparison.OrdinalIgnoreCase));
         var targetIsSpecialArt = !targetIsSpiritFocus && !targetIsStandardArt;
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Browser spiritual art upgrade",
             [SoulStatePath, ShiningAbodeState.StatePath, AfterlifeEntityProfileState.StatePath],
-            async () =>
+            async writeLease =>
             {
-                var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync();
+                var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync(writeLease);
                 if (blocker != null)
                     throw new InvalidOperationException(blocker);
 
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
-                var shiningRoot = await ReadObjectAsync(ShiningAbodeState.StatePath);
-                var entityProfilesRoot = await ReadObjectAsync(AfterlifeEntityProfileState.StatePath);
+                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "soul_state.json недоступен.");
+                var shiningRoot = await ReadObjectAsync(writeLease, ShiningAbodeState.StatePath);
+                var entityProfilesRoot = await ReadObjectAsync(writeLease, AfterlifeEntityProfileState.StatePath);
                 var profile = BuildSyncedAfterlifeCombatProfile(soulRoot, shiningRoot);
                 var isShining = RealmSemantics.IsShiningRealm(GetNodeString(soulRoot["currentRealm"]));
                 var result = targetIsSpiritFocus
@@ -1685,12 +1818,12 @@ public sealed class BrowserAfterlifeWriteService
                 if (!result.Success)
                     throw new InvalidOperationException(result.Message);
 
-                await WriteObjectAsync(SoulStatePath, soulRoot);
+                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
                 if (currency == "light_sparks" && shiningRoot != null)
-                    await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
+                    await WriteObjectAsync(writeLease, ShiningAbodeState.StatePath, shiningRoot);
                 if (targetIsSpecialArt && entityProfilesRoot != null)
-                    await WriteObjectAsync(AfterlifeEntityProfileState.StatePath, entityProfilesRoot);
-                await _stateManager.RefreshGameStateAsync();
+                    await WriteObjectAsync(writeLease, AfterlifeEntityProfileState.StatePath, entityProfilesRoot);
+                await _stateManager.RefreshGameStateAsync(writeLease);
             },
             "Духовное искусство прокачано",
             $"Браузерная форма прокачала {target} за {DescribeCurrency(currency)}.",
@@ -1704,6 +1837,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> BuildSpiritualActionPayloadAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers)
     {
         var operation = ReadAnswer(answers, "operation_type");
@@ -1713,7 +1847,7 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(text))
             return BrowserPromptWriteResult.ValidationError("Опишите действие.");
 
-        var root = await ReadObjectAsync(AfterlifeSpiritualConflictState.StatePath);
+        var root = await ReadObjectAsync(writeLease, AfterlifeSpiritualConflictState.StatePath);
         var active = root?["activeConflict"] as JsonObject;
         var conflictId = GetNodeString(active?["conflictId"]) ?? string.Empty;
         if (string.IsNullOrWhiteSpace(conflictId))
@@ -1741,6 +1875,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInkFeatherRevealFateAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1750,7 +1885,7 @@ public sealed class BrowserAfterlifeWriteService
         InkFeatherFateSoulValidationState validation;
         try
         {
-            validation = await ReadInkFeatherFateSoulValidationStateAsync();
+            validation = await ReadInkFeatherFateSoulValidationStateAsync(boundLease);
         }
         catch
         {
@@ -1771,13 +1906,14 @@ public sealed class BrowserAfterlifeWriteService
         };
         var completionMessage = "Судьба открыта: Чернильные Перья списаны, кубики и Гача-база зафиксированы для следующего хода.";
 
-        var result = await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Раскрытие судьбы",
             [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],
-            async () =>
+            async writeLease =>
             {
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "Состояние души сейчас недоступно.");
                 var currentRealm = FirstNonEmpty(GetNodeString(soulRoot["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
                 if (!RealmSemantics.IsMortalRealm(currentRealm))
                     throw new InvalidOperationException("Раскрытие судьбы доступно только во время смертной жизни.");
@@ -1790,14 +1926,14 @@ public sealed class BrowserAfterlifeWriteService
                 var pendingTurnState = new PendingTurnStateService(
                     _fs,
                     NullLogger<PendingTurnStateService>.Instance);
-                await pendingTurnState.GetOrCreateAsync();
+                await pendingTurnState.GetOrCreateAsync(writeLease);
 
                 var remainingFeathers = currentFeathers - cost;
                 SetSoulInkFeathers(soulRoot, remainingFeathers);
-                await WriteObjectAsync(SoulStatePath, soulRoot);
+                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
 
-                var revealed = await pendingTurnState.RevealAsync();
-                await _stateManager.RefreshGameStateAsync();
+                var revealed = await pendingTurnState.RevealAsync(writeLease);
+                await _stateManager.RefreshGameStateAsync(writeLease);
 
                 payload["spentInkFeathers"] = cost;
                 payload["remainingInkFeathers"] = remainingFeathers;
@@ -1807,12 +1943,12 @@ public sealed class BrowserAfterlifeWriteService
                 completionMessage = $"Судьба открыта. Списано: {cost}. Осталось: {remainingFeathers}. Кости судьбы: {FormatDiceUsed(revealed.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(revealed.GachaBaseResult)}.";
             },
             "Судьба открыта",
-            completionMessage,
+            () => completionMessage,
             payload);
-        return result.Success ? result with { Message = completionMessage } : result;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInkFeatherRewriteFateAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1822,7 +1958,7 @@ public sealed class BrowserAfterlifeWriteService
         InkFeatherFateSoulValidationState validation;
         try
         {
-            validation = await ReadInkFeatherFateSoulValidationStateAsync();
+            validation = await ReadInkFeatherFateSoulValidationStateAsync(boundLease);
         }
         catch
         {
@@ -1839,7 +1975,7 @@ public sealed class BrowserAfterlifeWriteService
         var pendingTurnState = new PendingTurnStateService(
             _fs,
             NullLogger<PendingTurnStateService>.Instance);
-        var initialPending = await pendingTurnState.TryReadExistingAsync();
+        var initialPending = await pendingTurnState.TryReadExistingAsync(boundLease);
         if (initialPending == null || !initialPending.IsFateLocked)
             return BrowserPromptWriteResult.ValidationError("Сначала нужно открыть судьбу. Переписывание доступно только для уже раскрытых кубиков и Гача-базы.");
 
@@ -1850,18 +1986,19 @@ public sealed class BrowserAfterlifeWriteService
         };
         var completionMessage = "Судьба переписана: Чернильные Перья списаны, старые кубики заменены новым открытым набором.";
 
-        var result = await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Переписывание судьбы",
             [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],
-            async () =>
+            async writeLease =>
             {
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "Состояние души сейчас недоступно.");
                 var currentRealm = FirstNonEmpty(GetNodeString(soulRoot["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
                 if (!RealmSemantics.IsMortalRealm(currentRealm))
                     throw new InvalidOperationException("Переписывание судьбы доступно только во время смертной жизни.");
 
-                var currentPending = await pendingTurnState.TryReadExistingAsync();
+                var currentPending = await pendingTurnState.TryReadExistingAsync(writeLease);
                 if (currentPending == null || !currentPending.IsFateLocked)
                     throw new InvalidOperationException("Сначала нужно открыть судьбу. Переписывание доступно только для уже раскрытых кубиков и Гача-базы.");
 
@@ -1872,10 +2009,10 @@ public sealed class BrowserAfterlifeWriteService
 
                 var remainingFeathers = currentFeathers - cost;
                 SetSoulInkFeathers(soulRoot, remainingFeathers);
-                await WriteObjectAsync(SoulStatePath, soulRoot);
+                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
 
-                var rewritten = await pendingTurnState.RewriteAsync();
-                await _stateManager.RefreshGameStateAsync();
+                var rewritten = await pendingTurnState.RewriteAsync(writeLease);
+                await _stateManager.RefreshGameStateAsync(writeLease);
 
                 payload["spentInkFeathers"] = cost;
                 payload["remainingInkFeathers"] = remainingFeathers;
@@ -1887,12 +2024,12 @@ public sealed class BrowserAfterlifeWriteService
                 completionMessage = $"Судьба переписана. Списано: {cost}. Осталось: {remainingFeathers}. Старые кости: {FormatDiceUsed(currentPending.PreGeneratedDices1d20)}. Новые кости: {FormatDiceUsed(rewritten.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(rewritten.GachaBaseResult)}.";
             },
             "Судьба переписана",
-            completionMessage,
+            () => completionMessage,
             payload);
-        return result.Success ? result with { Message = completionMessage } : result;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyGachaPullAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -1908,7 +2045,7 @@ public sealed class BrowserAfterlifeWriteService
         GachaSoulValidationState validation;
         try
         {
-            validation = await ReadGachaSoulValidationStateAsync();
+            validation = await ReadGachaSoulValidationStateAsync(boundLease);
         }
         catch (Exception ex)
         {
@@ -1927,13 +2064,23 @@ public sealed class BrowserAfterlifeWriteService
             ["spentInkFeathers"] = cost
         };
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Browser direct Chaos Sea gacha",
-            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],
-            async () =>
+            [
+                SoulStatePath,
+                PendingTurnStateService.PendingDiceStatePath,
+                BrowserPendingTurnInspector.TurnRequestPath,
+                BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,
+                PendingTurnSnapshotAuthority.AuthorityPath
+            ],
+            async writeLease =>
             {
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
+                var soulRoot = await ReadRequiredObjectAsync(
+                    writeLease,
+                    SoulStatePath,
+                    "soul_state.json недоступен.");
                 var currentRealm = GetNodeString(soulRoot["currentRealm"]);
                 if (!RealmSemantics.IsChaosSea(currentRealm))
                     throw new InvalidOperationException(DescribeDirectGachaRealmBlocker(currentRealm));
@@ -1947,21 +2094,23 @@ public sealed class BrowserAfterlifeWriteService
                 {
                     stagedRollbackPath = await ExplorerLocalTurnRollbackArtifacts.StageFileAsync(
                         _fs,
+                        writeLease,
                         SoulStatePath,
                         "browser_direct_gacha");
 
                     var pendingTurnState = new PendingTurnStateService(
                         _fs,
                         NullLogger<PendingTurnStateService>.Instance);
-                    var pending = await pendingTurnState.GetOrCreateAsync();
+                    var pending = await pendingTurnState.GetOrCreateAsync(writeLease);
                     var remainingFeathers = currentFeathers - cost;
                     SetSoulInkFeathers(soulRoot, remainingFeathers);
-                    await WriteObjectAsync(SoulStatePath, soulRoot);
-                    await _stateManager.RefreshGameStateAsync();
+                    await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
+                    await _stateManager.RefreshGameStateAsync(writeLease);
 
                     var gachaBase = BuildGachaBaseResultPayload(pending.GachaBaseResult);
                     var gmAction = BuildDirectGachaGmAction(cost);
                     var queuedTurn = await _turnRequestQueue.QueueDirectChaosSeaGachaAsync(
+                        writeLease,
                         owner,
                         gmAction,
                         pending,
@@ -1990,7 +2139,17 @@ public sealed class BrowserAfterlifeWriteService
                 }
                 catch
                 {
-                    ExplorerLocalTurnRollbackArtifacts.DeleteBackup(_fs, stagedRollbackPath);
+                    try
+                    {
+                        CleanupDirectGachaTurnArtifacts(writeLease);
+                    }
+                    finally
+                    {
+                        ExplorerLocalTurnRollbackArtifacts.DeleteBackup(
+                            _fs,
+                            writeLease,
+                            stagedRollbackPath);
+                    }
                     throw;
                 }
             },
@@ -1999,7 +2158,19 @@ public sealed class BrowserAfterlifeWriteService
             payload);
     }
 
+    private void CleanupDirectGachaTurnArtifacts(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        _fs.DeleteFile(writeLease, BrowserPendingTurnInspector.TurnRequestPath);
+        _fs.DeleteFile(writeLease, BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath);
+        _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
+        _fs.DeleteDirectoryTree(
+            writeLease,
+            BrowserPendingTurnInspector.PendingTurnSnapshotDirectory);
+    }
+
     private async Task<BrowserPromptWriteResult> ApplyArchiveConsultationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -2013,8 +2184,8 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(guardianId))
             return BrowserPromptWriteResult.ValidationError("Выберите Хранителя.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var context = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(_fs, _stateManager);
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var context = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(_fs, _stateManager, writeLease);
         if (context.IsBlocked)
             return BrowserPromptWriteResult.ValidationError(context.BlockerMessage);
 
@@ -2039,13 +2210,14 @@ public sealed class BrowserAfterlifeWriteService
         var completionMessage = $"Архивная консультация создана: {selectedGuardian.GuardianName} изучит «{selectedEntry.Title}» после ответа ГМ.";
 
         var result = await ExecuteAsync(
+            writeLease,
             owner,
             "Архивная консультация",
             [SoulStatePath, AfterlifeArchiveActionState.ConsultationRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                await _stateManager.RefreshGameStateAsync();
-                var freshContext = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(_fs, _stateManager);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
+                var freshContext = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(_fs, _stateManager, transactionLease);
                 if (freshContext.IsBlocked)
                     throw new InvalidOperationException(freshContext.BlockerMessage);
 
@@ -2058,6 +2230,7 @@ public sealed class BrowserAfterlifeWriteService
                     _fs,
                     NullLogger<AfterlifeArchiveConsultationService>.Instance);
                 var prepared = await service.CreateRequestAsync(
+                    transactionLease,
                     freshGuardian.GuardianId,
                     freshGuardian.GuardianName,
                     freshEntry.ArchiveId,
@@ -2068,10 +2241,10 @@ public sealed class BrowserAfterlifeWriteService
                 if (prepared == null)
                     throw new InvalidOperationException("Архивная консультация сейчас не может быть создана. Откройте форму заново и проверьте выбор.");
 
-                if (!await service.CommitPreparedRequestAsync(prepared))
+                if (!await service.CommitPreparedRequestAsync(transactionLease, prepared))
                     throw new InvalidOperationException("Архивная консультация не записана: состояние изменилось перед подтверждением. Откройте форму заново.");
 
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(transactionLease);
                 payload["requestId"] = prepared.RequestId;
                 payload["summary"] = prepared.Summary;
                 payload["gmAction"] = prepared.PendingGmAction;
@@ -2084,6 +2257,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyArchiveProjectFuelAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -2097,8 +2271,8 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(guardianId))
             return BrowserPromptWriteResult.ValidationError("Выберите Хранителя с активным проектом.");
 
-        await _stateManager.RefreshGameStateAsync();
-        var context = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(_fs, _stateManager);
+        await _stateManager.RefreshGameStateAsync(writeLease);
+        var context = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(_fs, _stateManager, writeLease);
         if (context.IsBlocked)
             return BrowserPromptWriteResult.ValidationError(context.BlockerMessage);
 
@@ -2125,13 +2299,14 @@ public sealed class BrowserAfterlifeWriteService
         var completionMessage = $"Подпитка проекта создана: «{selectedEntry.Title}» направлена в проект «{selectedGuardian.TargetProjectName}».";
 
         var result = await ExecuteAsync(
+            writeLease,
             owner,
             "Подпитка проекта Архивом",
             [SoulStatePath, AfterlifeArchiveActionState.ProjectFuelRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                await _stateManager.RefreshGameStateAsync();
-                var freshContext = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(_fs, _stateManager);
+                await _stateManager.RefreshGameStateAsync(transactionLease);
+                var freshContext = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(_fs, _stateManager, transactionLease);
                 if (freshContext.IsBlocked)
                     throw new InvalidOperationException(freshContext.BlockerMessage);
 
@@ -2145,6 +2320,7 @@ public sealed class BrowserAfterlifeWriteService
                     _fs,
                     NullLogger<AfterlifeArchiveProjectFuelService>.Instance);
                 var prepared = await service.CreateRequestAsync(
+                    transactionLease,
                     freshGuardian.GuardianId,
                     freshGuardian.GuardianName,
                     freshEntry.ArchiveId,
@@ -2154,10 +2330,10 @@ public sealed class BrowserAfterlifeWriteService
                 if (prepared == null)
                     throw new InvalidOperationException("Подпитка проекта сейчас не может быть создана. Откройте форму заново и проверьте выбор.");
 
-                if (!await service.CommitPreparedRequestAsync(prepared))
+                if (!await service.CommitPreparedRequestAsync(transactionLease, prepared))
                     throw new InvalidOperationException("Подпитка проекта не записана: состояние изменилось перед подтверждением. Откройте форму заново.");
 
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(transactionLease);
                 payload["requestId"] = prepared.RequestId;
                 payload["summary"] = prepared.Summary;
                 payload["gmAction"] = prepared.PendingGmAction;
@@ -2172,6 +2348,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplySoulRelicEquipAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -2182,15 +2359,16 @@ public sealed class BrowserAfterlifeWriteService
         var slotKey = ReadAnswer(answers, "soul_relic_slot");
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Browser soul relic equip",
             [SoulStatePath],
-            async () =>
+            async transactionLease =>
             {
-                var outcome = await SoulRelicEquipmentService.EquipAsync(_fs, relicIdOrName, slotKey);
+                var outcome = await SoulRelicEquipmentService.EquipAsync(_fs, transactionLease, relicIdOrName, slotKey);
                 if (!outcome.Success)
                     throw new InvalidOperationException(outcome.Message);
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Реликвия души экипирована",
             "Браузер переместил реликвию души из хранилища в слот экипировки.",
@@ -2204,6 +2382,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplySoulRelicUnequipAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -2213,15 +2392,16 @@ public sealed class BrowserAfterlifeWriteService
         var slotKey = ReadAnswer(answers, "soul_relic_slot");
 
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Browser soul relic unequip",
             [SoulStatePath],
-            async () =>
+            async transactionLease =>
             {
-                var outcome = await SoulRelicEquipmentService.UnequipAsync(_fs, slotKey);
+                var outcome = await SoulRelicEquipmentService.UnequipAsync(_fs, transactionLease, slotKey);
                 if (!outcome.Success)
                     throw new InvalidOperationException(outcome.Message);
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(transactionLease);
             },
             "Реликвия души снята",
             "Браузер вернул реликвию души из слота в хранилище.",
@@ -2234,6 +2414,7 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyAbodeOfferingAsync(
+        FileSystemManager.CanonicalWriteLease boundLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -2245,14 +2426,15 @@ public sealed class BrowserAfterlifeWriteService
         if (string.IsNullOrWhiteSpace(offeringType))
             return BrowserPromptWriteResult.ValidationError("Выберите тип подношения.");
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            boundLease,
             owner,
             "Browser abode offering",
             [GuardianAbodeOfferingState.PendingRequestPath, SoulStatePath],
-            async () =>
+            async writeLease =>
             {
-                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
-                var guardiansRoot = await ReadRequiredObjectAsync("game_state/meta/guardians.json", "guardians.json недоступен.");
+                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "soul_state.json недоступен.");
+                var guardiansRoot = await ReadRequiredObjectAsync(writeLease, "game_state/meta/guardians.json", "guardians.json недоступен.");
                 var guardian = FindObjectById(guardiansRoot, ["guardianId", "id"], guardianId)
                     ?? throw new InvalidOperationException($"Хранитель {guardianId} не найден.");
                 var guardianName = FirstNonEmpty(
@@ -2286,8 +2468,8 @@ public sealed class BrowserAfterlifeWriteService
                     FillNonCurrencyOfferingRequest(soulRoot, request, offeringValue);
                 }
 
-                await GuardianAbodeOfferingState.WriteAsync(_fs, request);
-                await WriteObjectAsync(SoulStatePath, soulRoot);
+                await GuardianAbodeOfferingState.WriteAsync(_fs, writeLease, request);
+                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);
             },
             "Подношение Обители подготовлено",
             "Браузер создал ожидающий запрос подношения и применил локальное изъятие ресурса.",
@@ -2300,16 +2482,18 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyPlayerGuardianFoundationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         return await ExecuteAsync(
+            writeLease,
             owner,
             "Browser player guardian foundation",
             [PlayerGuardianFoundationState.PendingRequestPath],
-            async () =>
+            async transactionLease =>
             {
-                var context = await PlayerGuardianFoundationState.ReadContextAsync(_fs);
+                var context = await PlayerGuardianFoundationState.ReadContextAsync(_fs, transactionLease);
                 if (!context.CanCreateRequest)
                     throw new InvalidOperationException(context.BlockingReason);
 
@@ -2331,11 +2515,11 @@ public sealed class BrowserAfterlifeWriteService
                     DominantAspect = ReadAnswer(answers, "dominant_aspect"),
                     CreatedAtTurn = Math.Max(0, _stateManager.CurrentState.TurnNumber)
                 };
-                var validation = await PlayerGuardianFoundationState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                var validation = await PlayerGuardianFoundationState.ValidateRequestAgainstCurrentStateAsync(_fs, transactionLease, request);
                 if (!string.IsNullOrWhiteSpace(validation))
                     throw new InvalidOperationException(validation);
 
-                await PlayerGuardianFoundationState.WriteAsync(_fs, request);
+                await PlayerGuardianFoundationState.WriteAsync(_fs, transactionLease, request);
             },
             "Основание Хранителя подготовлено",
             "Браузер создал ожидающий запрос основания собственной мантии.",
@@ -2343,18 +2527,25 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ExecuteAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         LocalUiSessionLockOwner owner,
         string operationLabel,
         IReadOnlyCollection<string> rollbackPaths,
-        Func<Task> writeOperation,
+        Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
         string title,
         string message,
         JsonObject? payload)
     {
-        var result = await _coordinator.ExecuteAsync(
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
             new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
-            rollbackPaths,
-            writeOperation);
+            IncludePlayerSoulProfileRollback(rollbackPaths),
+            writeOperation,
+            prepareAfterRollback: () =>
+            {
+                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
+                return () => _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
+            });
 
         if (result.Success)
             return BrowserPromptWriteResult.Completed(title, message, payload);
@@ -2366,6 +2557,77 @@ public sealed class BrowserAfterlifeWriteService
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
             failureMessage);
     }
+
+    private async Task<BrowserPromptWriteResult> ExecuteAtomicAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockOwner owner,
+        string operationLabel,
+        IReadOnlyCollection<string> rollbackPaths,
+        Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
+        string title,
+        string message,
+        JsonObject? payload)
+    {
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
+            IncludePlayerSoulProfileRollback(rollbackPaths),
+            writeOperation,
+            prepareAfterRollback: () =>
+            {
+                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
+                return () => _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
+            });
+
+        if (result.Success)
+            return BrowserPromptWriteResult.Completed(title, message, payload);
+
+        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        return BrowserPromptWriteResult.Failed(
+            result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
+            result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
+            result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
+            failureMessage);
+    }
+
+    private async Task<BrowserPromptWriteResult> ExecuteAtomicAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockOwner owner,
+        string operationLabel,
+        IReadOnlyCollection<string> rollbackPaths,
+        Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
+        string title,
+        Func<string> messageFactory,
+        JsonObject? payload)
+    {
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
+            IncludePlayerSoulProfileRollback(rollbackPaths),
+            writeOperation,
+            prepareAfterRollback: () =>
+            {
+                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
+                return () => _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
+            });
+
+        if (result.Success)
+            return BrowserPromptWriteResult.Completed(title, messageFactory(), payload);
+
+        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        return BrowserPromptWriteResult.Failed(
+            result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
+            result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
+            result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
+            failureMessage);
+    }
+
+    private static IReadOnlyCollection<string> IncludePlayerSoulProfileRollback(
+        IReadOnlyCollection<string> rollbackPaths) =>
+        rollbackPaths
+            .Append(AfterlifeEntityProfileState.StatePath)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
 
     private static string SanitizeLocalWriteMessage(string message)
     {
@@ -2466,18 +2728,19 @@ public sealed class BrowserAfterlifeWriteService
         return null;
     }
 
-    private async Task<string?> TryDescribeSpiritualArtUpgradeBlockerAsync()
+    private async Task<string?> TryDescribeSpiritualArtUpgradeBlockerAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var conflictRead = await ReadObjectAsync(AfterlifeSpiritualConflictState.StatePath);
+        var conflictRead = await ReadObjectAsync(writeLease, AfterlifeSpiritualConflictState.StatePath);
         if (conflictRead?["activeConflict"] is JsonObject)
             return "Прокачка духовных искусств заблокирована: сейчас активен духовный конфликт посмертия.";
 
-        if (_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath))
+        if (_fs.FileExists(writeLease, GuardianAbodeOfferingState.PendingRequestPath))
             return $"Прокачка духовных искусств заблокирована: найден {GuardianAbodeOfferingState.PendingRequestPath}.";
 
         foreach (var path in new[] { AfterlifeArchiveActionState.ConsultationRequestPath, AfterlifeArchiveActionState.ProjectFuelRequestPath })
         {
-            if (_fs.FileExists(path))
+            if (_fs.FileExists(writeLease, path))
                 return $"Прокачка духовных искусств заблокирована: найден {path}.";
         }
 
@@ -2800,17 +3063,19 @@ public sealed class BrowserAfterlifeWriteService
         }
     }
 
-    private async Task<GachaSoulValidationState> ReadGachaSoulValidationStateAsync()
+    private async Task<GachaSoulValidationState> ReadGachaSoulValidationStateAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
+        var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "soul_state.json недоступен.");
         return new GachaSoulValidationState(
             GetNodeString(soulRoot["currentRealm"]) ?? string.Empty,
             GetSoulInkFeathers(soulRoot));
     }
 
-    private async Task<InkFeatherFateSoulValidationState> ReadInkFeatherFateSoulValidationStateAsync()
+    private async Task<InkFeatherFateSoulValidationState> ReadInkFeatherFateSoulValidationStateAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+        var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "Состояние души сейчас недоступно.");
         return new InkFeatherFateSoulValidationState(
             FirstNonEmpty(GetNodeString(soulRoot["currentRealm"]), _stateManager.CurrentState.CurrentRealm),
             GetSoulInkFeathers(soulRoot));
@@ -3390,6 +3655,16 @@ public sealed class BrowserAfterlifeWriteService
         return JsonNode.Parse(raw) as JsonObject;
     }
 
+    private async Task<JsonObject?> ReadObjectAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path)
+    {
+        var raw = await _fs.ReadFileAsync(writeLease, path);
+        if (string.IsNullOrWhiteSpace(raw))
+            return null;
+        return JsonNode.Parse(raw) as JsonObject;
+    }
+
     private async Task<JsonObject?> TryReadObjectSafeAsync(string path)
     {
         try
@@ -3408,8 +3683,51 @@ public sealed class BrowserAfterlifeWriteService
         return root ?? throw new InvalidOperationException(error);
     }
 
+    private async Task<JsonObject> ReadRequiredObjectAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        string error)
+    {
+        var json = await _fs.ReadFileAsync(writeLease, path);
+        if (string.IsNullOrWhiteSpace(json))
+            throw new InvalidOperationException(error);
+
+        try
+        {
+            return JsonNode.Parse(json)?.AsObject()
+                   ?? throw new InvalidOperationException(error);
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException(error, ex);
+        }
+    }
+
+    private async Task<JsonObject?> TryReadObjectSafeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path)
+    {
+        try
+        {
+            return await ReadObjectAsync(writeLease, path);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private async Task WriteObjectAsync(string path, JsonObject root) =>
         await _fs.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+    private async Task WriteObjectAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        JsonObject root) =>
+        await _fs.WriteFileAtomicAsync(
+            writeLease,
+            path,
+            root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
     private static CommandParts ParseCommand(string command)
     {
@@ -3612,13 +3930,14 @@ public sealed class BrowserAfterlifeWriteService
                    string.Equals(abode.AbodeName, requested, StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task<ResidentWriteContext> ReadResidentWriteContextAsync()
+    private async Task<ResidentWriteContext> ReadResidentWriteContextAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var guardiansRoot = await TryReadObjectSafeAsync("game_state/meta/guardians.json");
+        var guardiansRoot = await TryReadObjectSafeAsync(writeLease, "game_state/meta/guardians.json");
         if (guardiansRoot == null)
             return ResidentWriteContext.Failed("Список Хранителей сейчас недоступен.");
 
-        var residentsRoot = await TryReadObjectSafeAsync(GuardianAbodeResidentState.StatePath);
+        var residentsRoot = await TryReadObjectSafeAsync(writeLease, GuardianAbodeResidentState.StatePath);
         if (residentsRoot == null)
             return new ResidentWriteContext(guardiansRoot, null, []);
 

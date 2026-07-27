@@ -47,16 +47,19 @@ public sealed class BrowserSarefStoryWriteService
             return BrowserPromptWriteResult.ValidationError("Подтвердите начало поиска Крыльев Ангелов.");
 
         JsonObject? payload = null;
-        var result = await _coordinator.ExecuteAsync(
+        var result = await _coordinator.ExecuteAtomicAsync(
             new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, "Browser Saref Wings search"),
             [SarefMainStoryState.PendingWingsInfiltrationPath],
-            async () =>
+            async writeLease =>
             {
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(writeLease);
                 if (!_stateManager.CurrentState.IsInShiningAbode)
                     throw new InvalidOperationException("Поиск Крыльев доступен только в обычной активной Сияющей Обители.");
 
-                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "shining_abode_state.json недоступен.");
+                var shiningRoot = await ReadRequiredObjectAsync(
+                    writeLease,
+                    ShiningAbodeState.StatePath,
+                    "shining_abode_state.json недоступен.");
                 var pending = await SarefMainStoryState.ReadWingsInfiltrationRequestStateAsync(_fs);
                 if (pending.IsMalformed)
                     throw new InvalidOperationException($"{SarefMainStoryState.PendingWingsInfiltrationPath} повреждён: {pending.Error}.");
@@ -67,16 +70,24 @@ public sealed class BrowserSarefStoryWriteService
                 if (blocker != null)
                     throw new InvalidOperationException($"Поиск Крыльев заблокирован: есть {blocker}.");
 
-                var storyRoot = await ReadRequiredObjectAsync(SarefMainStoryState.StatePath, "main_story_saref_state.json недоступен.");
+                var storyRoot = await ReadRequiredObjectAsync(
+                    writeLease,
+                    SarefMainStoryState.StatePath,
+                    "main_story_saref_state.json недоступен.");
                 var request = SarefMainStoryState.BuildWingsInfiltrationRequest(
                     storyRoot,
                     Math.Max(1, _stateManager.CurrentState.TurnNumber + 1));
                 if (request == null)
                     throw new InvalidOperationException("Ты пока не знаешь, что искать.");
 
-                await SarefMainStoryState.WriteWingsInfiltrationRequestAsync(_fs, request);
+                await SarefMainStoryState.WriteWingsInfiltrationRequestAsync(_fs, writeLease, request);
                 payload = BuildWingsInfiltrationPayload(request);
-                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync(writeLease);
+            },
+            prepareAfterRollback: () =>
+            {
+                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
+                return () => _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
             });
 
         if (!result.Success)
@@ -233,9 +244,12 @@ public sealed class BrowserSarefStoryWriteService
         };
     }
 
-    private async Task<JsonObject> ReadRequiredObjectAsync(string path, string error)
+    private async Task<JsonObject> ReadRequiredObjectAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        string error)
     {
-        var raw = await _fs.ReadFileAsync(path);
+        var raw = await _fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(raw))
             throw new InvalidOperationException(error);
         try
