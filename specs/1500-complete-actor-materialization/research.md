@@ -795,6 +795,58 @@ and stripped from replacement state loaded from legacy or crafted archives.
 into a replacement session can roll new canonical bytes back to an unrelated
 old baseline.
 
+## Second post-T156 Sol/max authority decisions
+
+### Decision 77: Every durable runtime sibling is physical authority
+
+**Decision**: Apply the runtime root's no-follow and boundary-revalidation
+contract to load transactions, session generation, and worker-apply
+transactions, including extraction roots, journals, manifests, and before
+images.
+
+**Rationale**: Validating only `.boe_runtime` or selected staging children still
+allows an unvalidated sibling junction to redirect durable authority and
+recovery evidence.
+
+### Decision 78: A lock lease proves opened-handle identity
+
+**Decision**: On Windows, resolve the final physical path from the acquired
+`FileStream.SafeFileHandle` and compare it with the expected canonical or
+lifecycle lock path before constructing the lease.
+
+**Rationale**: Checking the pathname before and after open cannot detect a
+swap-to-junction/open/swap-back race because the already-open handle remains
+bound to the external file.
+
+### Decision 79: Restored browser transactions become cleanup-only
+
+**Decision**: Persist status `restored` after all rollback and dynamic cleanup
+work succeeds, then remove backup evidence and delete the manifest last.
+Recovery of `restored` or `committed` transactions performs cleanup only.
+
+**Rationale**: Deleting the manifest first can leave undiscoverable evidence;
+deleting backups while retaining `staged` can make a retry attempt an impossible
+second restore.
+
+### Decision 80: Console Daren completion enters canonical recovery
+
+**Decision**: The console completion path acquires canonical authority before it
+reads or writes the external reward profile and therefore resolves any staged
+browser rollback first.
+
+**Rationale**: A later browser recovery must not overwrite a better console
+reward written after an interrupted browser action.
+
+### Decision 81: Rollback-root cleanup handles file and directory shapes
+
+**Decision**: Save exclusion, load stripping, and New Game cleanup treat the
+exact rollback-root path as ephemeral whether it is a file or a directory, and
+remove directory trees without following reparse points.
+
+**Rationale**: A crafted exact-path file can block directory creation, while a
+manifestless directory tree is not discoverable by manifest-based recovery but
+still survives replacement unless explicitly removed.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

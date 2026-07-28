@@ -276,18 +276,29 @@ uses a closed client-owned file identifier, an `existed` flag, an optional
 canonical backup path beneath the transaction root, and SHA-256 of the exact
 before-image. The current typed external surface is the Daren reward profile.
 `staged` recovery restores all canonical and external entries before any dynamic
-cleanup; any failure retains the manifest and evidence. `committed` recovery
-preserves accepted bytes and removes only the transaction evidence.
+cleanup; any failure retains the manifest and evidence. After successful restore,
+the manifest durably transitions to `restored`, a cleanup-only state. `committed`
+and `restored` recovery preserve current accepted bytes, remove backup evidence
+first, and remove the manifest last so a failed cleanup remains discoverable and
+retryable without repeating rollback.
 
 `.boe_runtime` is the physical authority root for canonical/lifecycle locks and
-client staging. Proposal and save staging roots are unique children beneath
-their exact area, reject reparse ancestors/targets, and are revalidated before
-publication or cleanup. Save ZIP bytes move from `.boe_runtime/save-staging`
-into `game_session/saves/**` only under the canonical generation-bound lease.
+client staging. Locks, proposal/save staging, load transactions, session
+generation, and worker-apply transactions reject reparse ancestors/targets and
+are revalidated before every durable boundary. A granted canonical or lifecycle
+lease additionally proves the opened handle's final physical path is the expected
+lock file. Save ZIP bytes move from `.boe_runtime/save-staging` into
+`game_session/saves/**` only under the canonical generation-bound lease.
 Autosave candidates become canonical relative paths before a deletion barrier
 and each deletion repeats no-follow validation. Browser rollback roots are
-ephemeral: save capture omits them and replacement cleanup removes any such
-root present in legacy or crafted archives.
+ephemeral: save capture omits both the exact-file form and all descendants, while
+load and New Game remove exact-file and manifestless-directory forms without
+following reparse points.
+
+The Daren reward profile is external to `game_session` but shares canonical
+recovery authority. Browser writes stage its exact before-image; console writes
+must first acquire canonical authority, recover any staged browser transaction,
+and only then compare and publish the best reward.
 
 ## Validation issue families
 

@@ -363,12 +363,45 @@ public static class ExplorerLocalTurnRollbackArtifacts
     {
         try
         {
+            var evidencePaths = transaction.Entries
+                .Where(static entry => !string.IsNullOrWhiteSpace(entry.BackupPath))
+                .Select(static entry => entry.BackupPath!)
+                .Concat(transaction.ExternalEntries
+                    .Where(static entry => !string.IsNullOrWhiteSpace(entry.BackupPath))
+                    .Select(static entry => entry.BackupPath!))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+            foreach (var evidencePath in evidencePaths)
+            {
+                if (fs.FileExists(writeLease, evidencePath))
+                    fs.DeleteFile(writeLease, evidencePath);
+            }
+
+            fs.DeleteEmptyDirectories(writeLease, transaction.TransactionRoot);
+            var transactionRoot = fs.ResolvePath(transaction.TransactionRoot);
+            var manifestFullPath = fs.ResolvePath(transaction.ManifestPath);
+            if (Directory.Exists(transactionRoot))
+            {
+                var unexpectedEvidence = Directory
+                    .EnumerateFileSystemEntries(
+                        transactionRoot,
+                        "*",
+                        SearchOption.TopDirectoryOnly)
+                    .Where(path => !string.Equals(
+                        Path.GetFullPath(path),
+                        Path.GetFullPath(manifestFullPath),
+                        StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+                if (unexpectedEvidence.Length > 0)
+                {
+                    throw new IOException(
+                        "Browser rollback transaction contains unknown evidence; manifest retained.");
+                }
+            }
+
             if (fs.FileExists(writeLease, transaction.ManifestPath))
                 fs.DeleteFile(writeLease, transaction.ManifestPath);
-
-            var transactionRoot = fs.ResolvePath(transaction.TransactionRoot);
-            if (Directory.Exists(transactionRoot))
-                fs.DeleteDirectoryTree(writeLease, transaction.TransactionRoot);
+            fs.DeleteEmptyDirectories(writeLease, transaction.TransactionRoot);
             TryDeleteEmptyBrowserWriteParents(fs, writeLease, transaction.TransactionRoot);
             failure = null;
             return true;
@@ -389,7 +422,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
     {
         if (manifest.SchemaVersion is not (1 or 2 or 3) ||
             !string.Equals(manifest.TransactionKind, "browser_local_write", StringComparison.Ordinal) ||
-            manifest.Status is not ("staged" or "committed") ||
+            manifest.Status is not ("staged" or "committed" or "restored") ||
+            manifest.Status == "restored" && manifest.SchemaVersion < 3 ||
             string.IsNullOrWhiteSpace(manifest.Scope) ||
             !string.Equals(manifest.Scope, SafeSegment(manifest.Scope), StringComparison.Ordinal) ||
             !DateTimeOffset.TryParse(
@@ -623,6 +657,20 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 $"Interrupted browser write '{transaction.ManifestPath}' restored tracked files but could not clean dynamic artifacts. Recovery evidence was retained.",
                 new AggregateException(failures));
         }
+
+        var restoredManifest = new BrowserWriteRollbackManifest(
+            SchemaVersion: 3,
+            TransactionKind: "browser_local_write",
+            Status: "restored",
+            Scope: transaction.Scope,
+            CreatedAtUtc: transaction.CreatedAtUtc,
+            Entries: transaction.Entries,
+            CleanupDirectories: transaction.CleanupDirectories,
+            ExternalEntries: transaction.ExternalEntries);
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            transaction.ManifestPath,
+            JsonSerializer.Serialize(restoredManifest, ManifestJsonOptions));
     }
 
     private static string NormalizeRelativePath(FileSystemManager fs, string path)
@@ -752,7 +800,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         }
         catch
         {
-            // Parent cleanup is cosmetic once the transaction manifest is gone.
+            // Parent cleanup is cosmetic after transaction evidence is gone.
         }
     }
 

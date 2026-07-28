@@ -1,4 +1,5 @@
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
 using System.Security.Cryptography;
@@ -1193,6 +1194,21 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task ClearGameStateAsync_RemovesManifestlessBrowserRollbackRoot()
+    {
+        var orphanPath =
+            $"{ExplorerLocalTurnRollbackArtifacts.Root}/orphan/evidence.bin";
+        await _fs.WriteFileAtomicBytesAsync(orphanPath, [1, 2, 3, 4]);
+
+        await _fs.ClearGameStateAsync();
+
+        var rollbackRoot = _fs.ResolvePath(
+            ExplorerLocalTurnRollbackArtifacts.Root);
+        Assert.False(File.Exists(rollbackRoot));
+        Assert.False(Directory.Exists(rollbackRoot));
+    }
+
+    [Fact]
     public async Task RuntimeDirectoryMove_RechecksReparseConfinementAtMutationBoundary()
     {
         const string relativeDestination = "worker_proposals/proposal-race";
@@ -1319,6 +1335,121 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task SessionGeneration_RejectsRuntimeSiblingReparsePoint()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var generationRoot = Path.Combine(_fs.RuntimeRootPath, "session-generation");
+        var outsideRoot = Path.Combine(_rootPath, "session-generation-outside");
+        Directory.CreateDirectory(outsideRoot);
+        if (Directory.Exists(generationRoot))
+            Directory.Delete(generationRoot, recursive: true);
+        if (!TryCreateDirectoryLink(generationRoot, outsideRoot))
+            return;
+
+        try
+        {
+            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Assert.Throws<InvalidDataException>(
+                () => _fs.GetOrCreateSessionGeneration(writeLease));
+            Assert.False(File.Exists(Path.Combine(outsideRoot, "current.json")));
+        }
+        finally
+        {
+            if (Directory.Exists(generationRoot) &&
+                FileSystemManager.IsReparsePoint(generationRoot))
+            {
+                Directory.Delete(generationRoot);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task LoadTransactionStaging_RejectsRuntimeSiblingReparsePoint()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var loadRoot = Path.Combine(_fs.RuntimeRootPath, "load-transactions");
+        var outsideRoot = Path.Combine(_rootPath, "load-transactions-outside");
+        Directory.CreateDirectory(outsideRoot);
+        if (Directory.Exists(loadRoot))
+            Directory.Delete(loadRoot, recursive: true);
+        if (!TryCreateDirectoryLink(loadRoot, outsideRoot))
+            return;
+
+        try
+        {
+            var paths = _fs.GetLoadTransactionPaths(Guid.NewGuid().ToString("N"));
+            Assert.Throws<InvalidDataException>(
+                () => _fs.CreateLoadDirectory(paths.StagingSessionPath));
+            Assert.Empty(Directory.EnumerateFileSystemEntries(outsideRoot));
+        }
+        finally
+        {
+            if (Directory.Exists(loadRoot) && FileSystemManager.IsReparsePoint(loadRoot))
+                Directory.Delete(loadRoot);
+        }
+    }
+
+    [Fact]
+    public async Task WorkerApplyTransaction_RejectsRuntimeSiblingReparsePoint()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var workerRoot = Path.Combine(_fs.RuntimeRootPath, "worker-apply-transactions");
+        var outsideRoot = Path.Combine(_rootPath, "worker-apply-transactions-outside");
+        Directory.CreateDirectory(outsideRoot);
+        if (Directory.Exists(workerRoot))
+            Directory.Delete(workerRoot, recursive: true);
+        if (!TryCreateDirectoryLink(workerRoot, outsideRoot))
+            return;
+
+        try
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(
+                async () =>
+                {
+                    await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    await _fs.BeginWorkerApplyTransactionAsync(
+                        writeLease,
+                        [
+                            new CanonicalWorkerApplyChange(
+                                "game_state/world/runtime-authority.json",
+                                BaselineBytes: null,
+                                AppliedBytes: System.Text.Encoding.UTF8.GetBytes("{}"))
+                        ]);
+                });
+            Assert.Empty(Directory.EnumerateFileSystemEntries(outsideRoot));
+        }
+        finally
+        {
+            if (Directory.Exists(workerRoot) && FileSystemManager.IsReparsePoint(workerRoot))
+                Directory.Delete(workerRoot);
+        }
+    }
+
+    [Fact]
+    public async Task AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await AssertOpenedExternalLockHandleRejectedAsync(isLifecycleLease: false);
+    }
+
+    [Fact]
+    public async Task AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await AssertOpenedExternalLockHandleRejectedAsync(isLifecycleLease: true);
+    }
+
+    [Fact]
     public async Task RestoreBackup_RejectsBackupOutsideCanonicalSession()
     {
         const string originalPath = "game_state/world/restore-target.json";
@@ -1390,6 +1521,80 @@ public sealed class FileSystemManagerTests : IDisposable
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or PlatformNotSupportedException)
         {
             return false;
+        }
+    }
+
+    private async Task AssertOpenedExternalLockHandleRejectedAsync(bool isLifecycleLease)
+    {
+        var lockRoot = Path.Combine(_fs.RuntimeRootPath, "locks");
+        var displacedLockRoot = Path.Combine(_fs.RuntimeRootPath, "locks-safe");
+        var outsideRoot = Path.Combine(_rootPath, "opened-lock-outside");
+        var probeLink = Path.Combine(_rootPath, "opened-lock-probe");
+        Directory.CreateDirectory(outsideRoot);
+        if (!TryCreateDirectoryLink(probeLink, outsideRoot))
+            return;
+        Directory.Delete(probeLink);
+
+        var swappedToOutside = false;
+        var restoredSafePath = false;
+        Task BeforeOpen()
+        {
+            Directory.Move(lockRoot, displacedLockRoot);
+            Directory.CreateSymbolicLink(lockRoot, outsideRoot);
+            swappedToOutside = true;
+            return Task.CompletedTask;
+        }
+
+        Task AfterOpen()
+        {
+            Directory.Delete(lockRoot);
+            Directory.Move(displacedLockRoot, lockRoot);
+            restoredSafePath = true;
+            return Task.CompletedTask;
+        }
+
+        var hooks = isLifecycleLease
+            ? new FileSystemManagerHooks
+            {
+                BeforeSessionLifecycleLockOpenAsync = BeforeOpen,
+                AfterSessionLifecycleLockOpenedAsync = AfterOpen
+            }
+            : new FileSystemManagerHooks
+            {
+                BeforeCanonicalWriteLockOpenAsync = BeforeOpen,
+                AfterCanonicalWriteLockOpenedAsync = AfterOpen
+            };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        try
+        {
+            if (isLifecycleLease)
+            {
+                await Assert.ThrowsAsync<InvalidDataException>(
+                    async () => await raceFs.AcquireSessionLifecycleLeaseAsync());
+            }
+            else
+            {
+                await Assert.ThrowsAsync<InvalidDataException>(
+                    async () => await raceFs.AcquireCanonicalWriteLeaseAsync());
+            }
+
+            Assert.True(swappedToOutside);
+            Assert.True(restoredSafePath);
+            Assert.True(File.Exists(Path.Combine(
+                outsideRoot,
+                isLifecycleLease ? "session-lifecycle.lock" : "canonical-write.lock")));
+        }
+        finally
+        {
+            if (Directory.Exists(lockRoot) && FileSystemManager.IsReparsePoint(lockRoot))
+                Directory.Delete(lockRoot);
+            if (Directory.Exists(displacedLockRoot))
+                Directory.Move(displacedLockRoot, lockRoot);
         }
     }
 

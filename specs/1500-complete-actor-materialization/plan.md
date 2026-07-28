@@ -219,6 +219,29 @@ or Windows junctions. The final gate repeats focused suites, the complete test
 project, Release build, static parsing, Spec Kit analysis, and a fresh
 `gpt-5.6-sol`/max exact-diff review.
 
+## Phase 32 implementation strategy
+
+The second post-T156 exact-diff review found five remaining authority gaps. They
+are remediated in dependency order:
+
+1. extend physical no-follow validation to durable load, generation, and worker
+   transaction siblings;
+2. validate the physical final path of each opened canonical/lifecycle lock
+   handle before granting its lease;
+3. add a durable cleanup-only browser rollback phase and delete the manifest
+   last;
+4. route console Daren completion through canonical recovery before reading or
+   writing the shared external profile;
+5. strip both exact-file and manifestless-directory rollback roots during load
+   and New Game.
+
+Each item starts with a deterministic RED regression: junctions for durable
+runtime siblings, an injected lock-directory swap for opened-handle identity, a
+locked backup for retryable cleanup, an interrupted-browser/console-completion
+sequence for Daren, and crafted archives plus manifestless trees for replacement
+cleanup. The final gate repeats focused and complete verification and requires a
+fresh `gpt-5.6-sol`/max exact-diff review with no Critical or Important finding.
+
 ## Complexity Tracking
 
 No constitution violations require an exception.

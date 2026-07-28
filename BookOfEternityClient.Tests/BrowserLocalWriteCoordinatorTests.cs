@@ -283,6 +283,67 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     }
 
     [Fact]
+    public async Task InterruptedStagedBrowserWrite_CleanupFailureRetainsRestoredManifestForRetry()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string trackedPath = "game_state/meta/cleanup-retry.json";
+        const string triggerPath = "game_state/meta/cleanup-retry-trigger.json";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                [trackedPath],
+                "cleanup_retry");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"interrupted\"}");
+        }
+
+        var backupPath = _fs.ResolvePath(
+            Assert.Single(transaction.Entries).BackupPath!);
+        var manifestPath = _fs.ResolvePath(transaction.ManifestPath);
+        var transactionRoot = _fs.ResolvePath(transaction.TransactionRoot);
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+
+        await using (var blocker = new FileStream(
+                         backupPath,
+                         FileMode.Open,
+                         FileAccess.Read,
+                         FileShare.Read))
+        {
+            await Assert.ThrowsAsync<IOException>(
+                () => restartedFs.WriteFileAtomicAsync(
+                    triggerPath,
+                    "{\"ok\":true}"));
+
+            Assert.Equal(
+                "{\"value\":\"before\"}",
+                await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+            Assert.True(File.Exists(manifestPath));
+            Assert.Contains(
+                "\"status\": \"restored\"",
+                await File.ReadAllTextAsync(manifestPath),
+                StringComparison.Ordinal);
+            Assert.False(restartedFs.FileExists(triggerPath));
+        }
+
+        await restartedFs.WriteFileAtomicAsync(triggerPath, "{\"ok\":true}");
+
+        Assert.True(restartedFs.FileExists(triggerPath));
+        Assert.False(File.Exists(manifestPath));
+        Assert.False(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
     public async Task SessionReplacementLease_RecoversInterruptedExternalProfileBeforeReplacingSession()
     {
         var profilePath = Path.Combine(
@@ -462,6 +523,49 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
             transaction.Entries.Where(static entry => entry.Existed),
             entry => Assert.True(restartedFs.FileExists(entry.BackupPath!)));
         Assert.False(restartedFs.FileExists("game_state/meta/malformed_recovery_trigger.json"));
+    }
+
+    [Fact]
+    public async Task LegacyBrowserManifest_RejectsRestoredStatusAndRetainsEvidence()
+    {
+        const string trackedPath = "game_state/meta/legacy_restored_manifest.json";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                [trackedPath],
+                "browser_write");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"interrupted\"}");
+
+            var manifest = (await _fs.ReadFileAsync(writeLease, transaction.ManifestPath))!
+                .Replace("\"schemaVersion\": 3", "\"schemaVersion\": 2", StringComparison.Ordinal)
+                .Replace("\"status\": \"staged\"", "\"status\": \"restored\"", StringComparison.Ordinal);
+            await _fs.WriteFileAtomicAsync(writeLease, transaction.ManifestPath, manifest);
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/legacy_restored_trigger.json",
+                "{\"ok\":true}"));
+
+        Assert.Equal(
+            "{\"value\":\"interrupted\"}",
+            await restartedFs.ReadFileAsync(trackedPath));
+        Assert.True(restartedFs.FileExists(transaction.ManifestPath));
+        Assert.All(
+            transaction.Entries.Where(static entry => entry.Existed),
+            entry => Assert.True(restartedFs.FileExists(entry.BackupPath!)));
+        Assert.False(restartedFs.FileExists("game_state/meta/legacy_restored_trigger.json"));
     }
 
     [Fact]

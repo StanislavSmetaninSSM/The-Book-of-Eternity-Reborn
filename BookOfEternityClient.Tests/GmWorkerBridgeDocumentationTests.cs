@@ -748,11 +748,11 @@ public sealed class GmWorkerBridgeDocumentationTests
             StringComparison.Ordinal);
         Assert.True(cleanupMethod >= 0, "Expected worker apply cleanup implementation.");
         var transactionRootDelete = fileSystemManager.IndexOf(
-            "DeleteDirectory(transactionRoot, recursive: true)",
+            "DeleteRuntimeDirectory(transactionRoot)",
             cleanupMethod,
             StringComparison.Ordinal);
         var journalDelete = fileSystemManager.IndexOf(
-            "DeleteFile(ActiveWorkerApplyTransactionJournalPath)",
+            "DeleteRuntimeFile(ActiveWorkerApplyTransactionJournalPath)",
             cleanupMethod,
             StringComparison.Ordinal);
         Assert.True(

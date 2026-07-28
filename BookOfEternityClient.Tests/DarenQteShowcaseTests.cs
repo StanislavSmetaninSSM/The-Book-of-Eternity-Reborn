@@ -4517,6 +4517,70 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public async Task ConsoleDarenCompletion_RecoversInterruptedBrowserProfileBeforeWritingNewReward()
+    {
+        const string trackedPath = "game_state/meta/daren-console-recovery.json";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+        await _profile.RecordCompletionAsync(
+            DarenQteRewardProfileService.ResolveEnding(
+                reachedHideout: true,
+                normalizedScore: 55),
+            new DateTime(2026, 7, 28, 1, 0, 0, DateTimeKind.Utc));
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                [trackedPath],
+                "daren_console_recovery",
+                rollbackExternalFileIds:
+                [
+                    ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId
+                ]);
+        }
+
+        await _profile.RecordCompletionAsync(
+            DarenQteRewardProfileService.ResolveEnding(
+                reachedHideout: true,
+                normalizedScore: 75),
+            new DateTime(2026, 7, 28, 2, 0, 0, DateTimeKind.Utc));
+
+        var attempt = _qte.StartDarenShowcaseAttempt();
+        while (attempt.State == "Active")
+        {
+            var chapter = attempt.ActiveScene.Offer!.Chapters.Single(item =>
+                string.Equals(
+                    item.ChapterId,
+                    attempt.ActiveScene.CurrentChapterId,
+                    StringComparison.OrdinalIgnoreCase));
+            var action = chapter.Actions[0];
+            await _qte.ResolveDarenShowcaseActionAsync(
+                attempt,
+                action.ActionId,
+                "success",
+                completedAtUtc: new DateTime(
+                    2026,
+                    7,
+                    28,
+                    3,
+                    0,
+                    0,
+                    DateTimeKind.Utc));
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/daren-console-recovery-trigger.json",
+            "{\"ok\":true}");
+
+        var profile = await _profile.ReadProfileAsync();
+        Assert.Equal("perfect_shadow", profile.DarenShowcase?.BestTierId);
+        Assert.Equal(100, profile.DarenShowcase?.BestScore);
+        Assert.False(_fs.FileExists(transaction.ManifestPath));
+    }
+
+    [Fact]
     public async Task DarenBrowserState_ExposesSharedBestRewardProfileSummary()
     {
         await _profile.RecordCompletionAsync(

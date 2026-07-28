@@ -36,7 +36,8 @@ public class SaveLoadService
         ProgressionScheduleService.ReportPath,
         "game_state/control/gm_cli_window_binding.json",
         "game_state/control/gm_bridge_status.json",
-        "output/ink_feather_action_result.json"
+        "output/ink_feather_action_result.json",
+        ExplorerLocalTurnRollbackArtifacts.Root
     };
 
     private static readonly string[] EphemeralPathPrefixes =
@@ -263,7 +264,7 @@ public class SaveLoadService
 
             var transactionId = Guid.NewGuid().ToString("N");
             transactionPaths = _fs.GetLoadTransactionPaths(transactionId);
-            Directory.CreateDirectory(transactionPaths.StagingSessionPath);
+            _fs.CreateLoadDirectory(transactionPaths.StagingSessionPath);
 
             using (var archive = ZipFile.OpenRead(fullPath))
             {
@@ -279,10 +280,13 @@ public class SaveLoadService
                     }
 
                     var targetDir = Path.GetDirectoryName(targetPath);
-                    if (targetDir != null && !Directory.Exists(targetDir))
-                        Directory.CreateDirectory(targetDir);
+                    if (targetDir != null)
+                        _fs.CreateLoadDirectory(targetDir);
 
-                    entry.ExtractToFile(targetPath, overwrite: true);
+                    await using var entryStream = entry.Open();
+                    await _fs.WriteLoadTransactionFileAsync(
+                        targetPath,
+                        entryStream);
                 }
             }
 

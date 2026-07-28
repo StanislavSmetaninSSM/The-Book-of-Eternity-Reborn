@@ -12,6 +12,10 @@ internal sealed class FileSystemManagerHooks
 {
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
+    internal Func<Task>? BeforeCanonicalWriteLockOpenAsync { get; init; }
+    internal Func<Task>? AfterCanonicalWriteLockOpenedAsync { get; init; }
+    internal Func<Task>? BeforeSessionLifecycleLockOpenAsync { get; init; }
+    internal Func<Task>? AfterSessionLifecycleLockOpenedAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalMutationAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalReadOpenAsync { get; init; }
     internal Func<Task>? SessionOperationClosingAsync { get; init; }
@@ -834,6 +838,8 @@ public class FileSystemManager
         {
             cancellationToken.ThrowIfCancellationRequested();
             EnsureRuntimePathIsSafe(lockPath);
+            if (_hooks?.BeforeCanonicalWriteLockOpenAsync != null)
+                await _hooks.BeforeCanonicalWriteLockOpenAsync();
             FileStream stream;
             try
             {
@@ -855,7 +861,13 @@ public class FileSystemManager
 
             try
             {
+                if (_hooks?.AfterCanonicalWriteLockOpenedAsync != null)
+                    await _hooks.AfterCanonicalWriteLockOpenedAsync();
                 EnsureRuntimePathIsSafe(lockPath);
+                EnsureOpenedHandleMatchesExpectedPath(
+                    stream.SafeFileHandle,
+                    lockPath,
+                    "Canonical write lock");
             }
             catch
             {
@@ -896,7 +908,7 @@ public class FileSystemManager
         if (!SessionOperationContext.TryGetExpectedGeneration(_basePath, out var expectedGeneration))
             return;
 
-        var actualGeneration = _loadTransactionOperations.FileExists(SessionGenerationPath)
+        var actualGeneration = RuntimeFileExists(SessionGenerationPath)
             ? ReadSessionGeneration()
             : null;
         if (string.Equals(expectedGeneration, actualGeneration, StringComparison.Ordinal))
@@ -933,6 +945,8 @@ public class FileSystemManager
         for (var attempt = 0; attempt < SessionLifecycleLockRetryCount; attempt++)
         {
             EnsureRuntimePathIsSafe(lockPath);
+            if (_hooks?.BeforeSessionLifecycleLockOpenAsync != null)
+                await _hooks.BeforeSessionLifecycleLockOpenAsync();
             FileStream stream;
             try
             {
@@ -954,7 +968,13 @@ public class FileSystemManager
 
             try
             {
+                if (_hooks?.AfterSessionLifecycleLockOpenedAsync != null)
+                    await _hooks.AfterSessionLifecycleLockOpenedAsync();
                 EnsureRuntimePathIsSafe(lockPath);
+                EnsureOpenedHandleMatchesExpectedPath(
+                    stream.SafeFileHandle,
+                    lockPath,
+                    "Session lifecycle lock");
                 return new SessionLifecycleLease(this, stream);
             }
             catch
@@ -1051,7 +1071,7 @@ public class FileSystemManager
     {
         EnsureValidSessionReplacementLease(writeLease);
         RecoverInterruptedLoadTransaction(writeLease);
-        var previousGenerationId = _loadTransactionOperations.FileExists(SessionGenerationPath)
+        var previousGenerationId = RuntimeFileExists(SessionGenerationPath)
             ? ReadSessionGeneration()
             : null;
         var replacementGenerationId = Guid.NewGuid().ToString("N");
@@ -1108,13 +1128,13 @@ public class FileSystemManager
     internal void RecoverInterruptedLoadTransaction(CanonicalWriteLease writeLease)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        if (!_loadTransactionOperations.FileExists(ActiveLoadTransactionJournalPath))
+        if (!RuntimeFileExists(ActiveLoadTransactionJournalPath))
             return;
 
         var journal = ReadLoadTransactionJournal();
         var paths = GetLoadTransactionPaths(journal.TransactionId);
 
-        if (!journal.Committed || !_loadTransactionOperations.DirectoryExists(GameSessionPath))
+        if (!journal.Committed || !LoadDirectoryExists(GameSessionPath))
         {
             RestoreLoadTransactionBackup(paths);
             if (journal.SchemaVersion >= 2)
@@ -1137,53 +1157,99 @@ public class FileSystemManager
         if (ActiveLoadTransactionReferences(paths.TransactionId))
             return;
 
-        if (_loadTransactionOperations.DirectoryExists(paths.TransactionRoot))
-            _loadTransactionOperations.DeleteDirectory(paths.TransactionRoot, recursive: true);
+        if (RuntimeDirectoryExists(paths.TransactionRoot))
+            DeleteRuntimeDirectory(paths.TransactionRoot);
     }
 
-    internal bool LoadDirectoryExists(string path) => _loadTransactionOperations.DirectoryExists(path);
-    internal void CreateLoadDirectory(string path) => _loadTransactionOperations.CreateDirectory(path);
-    internal void MoveLoadDirectory(string sourcePath, string destinationPath) =>
+    internal bool LoadDirectoryExists(string path)
+    {
+        EnsureLoadTransactionOperationPathIsSafe(path);
+        var exists = _loadTransactionOperations.DirectoryExists(path);
+        EnsureLoadTransactionOperationPathIsSafe(path);
+        return exists;
+    }
+
+    internal void CreateLoadDirectory(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        _loadTransactionOperations.CreateDirectory(path);
+        EnsureRuntimePathIsSafe(path);
+    }
+
+    internal async Task WriteLoadTransactionFileAsync(
+        string path,
+        Stream source,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        EnsureRuntimePathIsSafe(path);
+        var parent = Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException("Load transaction file has no parent.");
+        EnsureRuntimeDirectoryExistsAndIsSafe(parent);
+
+        await using var output = new FileStream(
+            path,
+            FileMode.Create,
+            FileAccess.Write,
+            FileShare.None,
+            bufferSize: 81920,
+            FileOptions.Asynchronous | FileOptions.WriteThrough);
+        EnsureRuntimePathIsSafe(path);
+        EnsureOpenedHandleMatchesExpectedPath(
+            output.SafeFileHandle,
+            path,
+            "Load transaction staging file");
+        await source.CopyToAsync(output, cancellationToken);
+        await output.FlushAsync(cancellationToken);
+        output.Flush(flushToDisk: true);
+        EnsureRuntimePathIsSafe(path);
+    }
+
+    internal void MoveLoadDirectory(string sourcePath, string destinationPath)
+    {
+        EnsureLoadTransactionOperationPathIsSafe(sourcePath);
+        EnsureLoadTransactionOperationPathIsSafe(destinationPath);
         _loadTransactionOperations.MoveDirectory(sourcePath, destinationPath);
+        EnsureLoadTransactionOperationPathIsSafe(destinationPath);
+    }
 
     private void RestoreLoadTransactionBackup(CanonicalLoadTransactionPaths paths)
     {
-        if (!_loadTransactionOperations.DirectoryExists(paths.BackupSessionPath))
+        if (!RuntimeDirectoryExists(paths.BackupSessionPath))
             return;
 
-        if (_loadTransactionOperations.DirectoryExists(GameSessionPath))
+        if (LoadDirectoryExists(GameSessionPath))
         {
-            if (_loadTransactionOperations.DirectoryExists(paths.FailedSessionPath))
-                _loadTransactionOperations.DeleteDirectory(paths.FailedSessionPath, recursive: true);
+            if (RuntimeDirectoryExists(paths.FailedSessionPath))
+                DeleteRuntimeDirectory(paths.FailedSessionPath);
 
-            _loadTransactionOperations.CreateDirectory(Path.GetDirectoryName(paths.FailedSessionPath)!);
-            _loadTransactionOperations.MoveDirectory(GameSessionPath, paths.FailedSessionPath);
+            CreateLoadDirectory(Path.GetDirectoryName(paths.FailedSessionPath)!);
+            MoveLoadDirectory(GameSessionPath, paths.FailedSessionPath);
         }
 
-        _loadTransactionOperations.CreateDirectory(Path.GetDirectoryName(GameSessionPath)!);
-        _loadTransactionOperations.MoveDirectory(paths.BackupSessionPath, GameSessionPath);
+        MoveLoadDirectory(paths.BackupSessionPath, GameSessionPath);
     }
 
     private void CleanupCommittedLoadTransaction(CanonicalLoadTransactionPaths paths)
     {
-        if (_loadTransactionOperations.DirectoryExists(paths.TransactionRoot))
-            _loadTransactionOperations.DeleteDirectory(paths.TransactionRoot, recursive: true);
-        if (_loadTransactionOperations.FileExists(ActiveLoadTransactionJournalPath))
-            _loadTransactionOperations.DeleteFile(ActiveLoadTransactionJournalPath);
+        if (RuntimeDirectoryExists(paths.TransactionRoot))
+            DeleteRuntimeDirectory(paths.TransactionRoot);
+        if (RuntimeFileExists(ActiveLoadTransactionJournalPath))
+            DeleteRuntimeFile(ActiveLoadTransactionJournalPath);
     }
 
     private void WriteLoadTransactionJournal(LoadTransactionJournal journal)
     {
         var json = JsonSerializer.Serialize(journal);
-        _loadTransactionOperations.WriteAllTextAtomic(ActiveLoadTransactionJournalPath, json);
+        WriteRuntimeTextAtomic(ActiveLoadTransactionJournalPath, json);
     }
 
     private void RestoreLoadTransactionGeneration(string? previousGenerationId)
     {
         if (string.IsNullOrWhiteSpace(previousGenerationId))
         {
-            if (_loadTransactionOperations.FileExists(SessionGenerationPath))
-                _loadTransactionOperations.DeleteFile(SessionGenerationPath);
+            if (RuntimeFileExists(SessionGenerationPath))
+                DeleteRuntimeFile(SessionGenerationPath);
             return;
         }
 
@@ -1195,7 +1261,7 @@ public class FileSystemManager
         try
         {
             var journal = JsonSerializer.Deserialize<LoadTransactionJournal>(
-                _loadTransactionOperations.ReadAllText(ActiveLoadTransactionJournalPath),
+                ReadRuntimeText(ActiveLoadTransactionJournalPath),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (journal is null ||
                 journal.SchemaVersion is < 1 or > 2 ||
@@ -1217,7 +1283,7 @@ public class FileSystemManager
 
     private bool ActiveLoadTransactionReferences(string transactionId)
     {
-        if (!_loadTransactionOperations.FileExists(ActiveLoadTransactionJournalPath))
+        if (!RuntimeFileExists(ActiveLoadTransactionJournalPath))
             return false;
 
         try
@@ -1253,13 +1319,13 @@ public class FileSystemManager
         EnsureValidCanonicalWriteLease(writeLease);
         if (changes.Count == 0)
             throw new ArgumentException("Worker apply transaction requires at least one changed file.", nameof(changes));
-        if (_loadTransactionOperations.FileExists(ActiveWorkerApplyTransactionJournalPath))
+        if (RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath))
             throw new InvalidOperationException("An active worker apply transaction already exists.");
 
         var transactionId = Guid.NewGuid().ToString("N");
         var transactionRoot = GetWorkerApplyTransactionRoot(transactionId);
         var beforeRoot = Path.Combine(transactionRoot, "before");
-        Directory.CreateDirectory(beforeRoot);
+        CreateLoadDirectory(beforeRoot);
         var entries = new List<WorkerApplyTransactionEntry>(changes.Count);
 
         try
@@ -1273,7 +1339,7 @@ public class FileSystemManager
                     : $"before/{index:D4}.bin";
                 if (beforeImage != null)
                 {
-                    await WriteExternalBytesAtomicAsync(
+                    await WriteRuntimeBytesAtomicAsync(
                         Path.Combine(transactionRoot, beforeImage.Replace('/', Path.DirectorySeparatorChar)),
                         change.BaselineBytes!);
                 }
@@ -1293,7 +1359,7 @@ public class FileSystemManager
                 TransactionId = transactionId,
                 Entries = entries
             };
-            _loadTransactionOperations.WriteAllTextAtomic(
+            WriteRuntimeTextAtomic(
                 Path.Combine(transactionRoot, "manifest.json"),
                 JsonSerializer.Serialize(manifest));
             WriteWorkerApplyJournal(transactionId, committed: false, rolledBack: false);
@@ -1301,10 +1367,10 @@ public class FileSystemManager
         }
         catch
         {
-            if (!_loadTransactionOperations.FileExists(ActiveWorkerApplyTransactionJournalPath) &&
-                Directory.Exists(transactionRoot))
+            if (!RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath) &&
+                RuntimeDirectoryExists(transactionRoot))
             {
-                Directory.Delete(transactionRoot, recursive: true);
+                DeleteRuntimeDirectory(transactionRoot);
             }
 
             throw;
@@ -1352,7 +1418,7 @@ public class FileSystemManager
     private async Task RecoverInterruptedWorkerApplyTransactionAsync(CanonicalWriteLease writeLease)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        if (!_loadTransactionOperations.FileExists(ActiveWorkerApplyTransactionJournalPath))
+        if (!RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath))
             return;
 
         var journal = ReadWorkerApplyJournal();
@@ -1368,7 +1434,7 @@ public class FileSystemManager
         try
         {
             manifest = JsonSerializer.Deserialize<WorkerApplyTransactionManifest>(
-                           _loadTransactionOperations.ReadAllText(manifestPath),
+                           ReadRuntimeText(manifestPath),
                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
                        throw new InvalidDataException("Worker apply transaction manifest is missing.");
         }
@@ -1454,10 +1520,14 @@ public class FileSystemManager
             transactionRoot,
             entry.BeforeImage.Replace('/', Path.DirectorySeparatorChar)));
         var expectedRoot = Path.GetFullPath(transactionRoot) + Path.DirectorySeparatorChar;
-        if (!beforePath.StartsWith(expectedRoot, StringComparison.OrdinalIgnoreCase) || !File.Exists(beforePath))
+        if (!beforePath.StartsWith(expectedRoot, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Worker apply before-image escapes its transaction.");
+        EnsureRuntimePathIsSafe(beforePath);
+        if (!File.Exists(beforePath))
             throw new InvalidDataException("Worker apply before-image is missing or escapes its transaction.");
 
         var bytes = ReadExactBytesFromStablePath(beforePath);
+        EnsureRuntimePathIsSafe(beforePath);
         if (!string.Equals(ComputeSha256OrMissing(bytes), entry.BeforeSha256, StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Worker apply before-image hash is invalid.");
         return bytes;
@@ -1475,7 +1545,7 @@ public class FileSystemManager
         try
         {
             var journal = JsonSerializer.Deserialize<WorkerApplyTransactionJournal>(
-                _loadTransactionOperations.ReadAllText(ActiveWorkerApplyTransactionJournalPath),
+                ReadRuntimeText(ActiveWorkerApplyTransactionJournalPath),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (journal is null || journal.SchemaVersion != 1 ||
                 (journal.Committed && journal.RolledBack) ||
@@ -1503,7 +1573,7 @@ public class FileSystemManager
             Committed = committed,
             RolledBack = rolledBack
         };
-        _loadTransactionOperations.WriteAllTextAtomic(
+        WriteRuntimeTextAtomic(
             ActiveWorkerApplyTransactionJournalPath,
             JsonSerializer.Serialize(journal));
     }
@@ -1511,10 +1581,10 @@ public class FileSystemManager
     private void CleanupWorkerApplyTransaction(string transactionId)
     {
         var transactionRoot = GetWorkerApplyTransactionRoot(transactionId);
-        if (_loadTransactionOperations.DirectoryExists(transactionRoot))
-            _loadTransactionOperations.DeleteDirectory(transactionRoot, recursive: true);
-        if (_loadTransactionOperations.FileExists(ActiveWorkerApplyTransactionJournalPath))
-            _loadTransactionOperations.DeleteFile(ActiveWorkerApplyTransactionJournalPath);
+        if (RuntimeDirectoryExists(transactionRoot))
+            DeleteRuntimeDirectory(transactionRoot);
+        if (RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath))
+            DeleteRuntimeFile(ActiveWorkerApplyTransactionJournalPath);
     }
 
     private string GetWorkerApplyTransactionRoot(string transactionId)
@@ -1547,8 +1617,10 @@ public class FileSystemManager
 
     private void EnsureRuntimeDirectoryExistsAndIsSafe(string directoryPath)
     {
+        EnsureRuntimePathIsSafe(RuntimeRootPath);
         Directory.CreateDirectory(RuntimeRootPath);
         EnsureRuntimePathIsSafe(RuntimeRootPath);
+        EnsureRuntimePathIsSafe(directoryPath);
         Directory.CreateDirectory(directoryPath);
         EnsureRuntimePathIsSafe(directoryPath);
     }
@@ -1597,6 +1669,80 @@ public class FileSystemManager
             runtimeRoot,
             candidate,
             "Client runtime");
+    }
+
+    private void EnsureLoadTransactionOperationPathIsSafe(string path)
+    {
+        var candidate = Path.GetFullPath(path);
+        if (IsSameOrDescendant(candidate, Path.GetFullPath(RuntimeRootPath)))
+        {
+            EnsureRuntimePathIsSafe(candidate);
+            return;
+        }
+
+        if (string.Equals(
+                candidate,
+                Path.GetFullPath(GameSessionPath),
+                StringComparison.OrdinalIgnoreCase))
+        {
+            EnsureCanonicalSessionRootIsNotReparsePoint();
+            return;
+        }
+
+        throw new InvalidDataException(
+            "Load transaction operation path is outside runtime and canonical session authority.");
+    }
+
+    private bool RuntimeFileExists(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        var exists = _loadTransactionOperations.FileExists(path);
+        EnsureRuntimePathIsSafe(path);
+        return exists;
+    }
+
+    private bool RuntimeDirectoryExists(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        var exists = _loadTransactionOperations.DirectoryExists(path);
+        EnsureRuntimePathIsSafe(path);
+        return exists;
+    }
+
+    private string ReadRuntimeText(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        var content = _loadTransactionOperations.ReadAllText(path);
+        EnsureRuntimePathIsSafe(path);
+        return content;
+    }
+
+    private void WriteRuntimeTextAtomic(string path, string content)
+    {
+        EnsureRuntimePathIsSafe(path);
+        EnsureRuntimeDirectoryExistsAndIsSafe(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException("Runtime authority file has no parent."));
+        _loadTransactionOperations.WriteAllTextAtomic(path, content);
+        EnsureRuntimePathIsSafe(path);
+    }
+
+    private void DeleteRuntimeFile(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        _loadTransactionOperations.DeleteFile(path);
+        EnsureRuntimePathIsSafe(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException("Runtime authority file has no parent."));
+    }
+
+    private void DeleteRuntimeDirectory(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        _loadTransactionOperations.DeleteDirectory(path, recursive: true);
+        EnsureRuntimePathIsSafe(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException("Runtime authority directory has no parent."));
     }
 
     private async Task<FileStream?> OpenCanonicalReadStreamAsync(
@@ -1697,10 +1843,14 @@ public class FileSystemManager
             ? "missing"
             : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(content)).ToLowerInvariant();
 
-    private static async Task WriteExternalBytesAtomicAsync(string path, byte[] content)
+    private async Task WriteRuntimeBytesAtomicAsync(string path, byte[] content)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        EnsureRuntimePathIsSafe(path);
+        EnsureRuntimeDirectoryExistsAndIsSafe(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException("Runtime before-image has no parent."));
         var tempPath = path + ".tmp." + Guid.NewGuid().ToString("N")[..8];
+        EnsureRuntimePathIsSafe(tempPath);
         try
         {
             await using (var stream = new FileStream(
@@ -1711,17 +1861,28 @@ public class FileSystemManager
                              bufferSize: 4096,
                              FileOptions.Asynchronous | FileOptions.WriteThrough))
             {
+                EnsureRuntimePathIsSafe(tempPath);
+                EnsureOpenedHandleMatchesExpectedPath(
+                    stream.SafeFileHandle,
+                    tempPath,
+                    "Runtime before-image");
                 await stream.WriteAsync(content);
                 await stream.FlushAsync();
                 stream.Flush(flushToDisk: true);
             }
 
+            EnsureRuntimePathIsSafe(tempPath);
+            EnsureRuntimePathIsSafe(path);
             File.Move(tempPath, path, overwrite: true);
+            EnsureRuntimePathIsSafe(path);
         }
         finally
         {
             if (File.Exists(tempPath))
+            {
+                EnsureRuntimePathIsSafe(tempPath);
                 File.Delete(tempPath);
+            }
         }
     }
 
@@ -1752,7 +1913,7 @@ public class FileSystemManager
     internal string GetOrCreateSessionGeneration(CanonicalWriteLease writeLease)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        if (_loadTransactionOperations.FileExists(SessionGenerationPath))
+        if (RuntimeFileExists(SessionGenerationPath))
             return ReadSessionGeneration();
 
         var generationId = Guid.NewGuid().ToString("N");
@@ -1766,7 +1927,7 @@ public class FileSystemManager
     {
         EnsureValidCanonicalWriteLease(writeLease);
         if (string.IsNullOrWhiteSpace(expectedGenerationId) ||
-            !_loadTransactionOperations.FileExists(SessionGenerationPath))
+            !RuntimeFileExists(SessionGenerationPath))
         {
             return false;
         }
@@ -1791,7 +1952,7 @@ public class FileSystemManager
         try
         {
             var document = JsonSerializer.Deserialize<SessionGenerationDocument>(
-                _loadTransactionOperations.ReadAllText(SessionGenerationPath),
+                ReadRuntimeText(SessionGenerationPath),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (document is null || document.SchemaVersion != 1 ||
                 !Guid.TryParseExact(document.GenerationId, "N", out var parsedGeneration) ||
@@ -1814,7 +1975,7 @@ public class FileSystemManager
     private void WriteSessionGeneration(string generationId)
     {
         var json = JsonSerializer.Serialize(new SessionGenerationDocument(1, generationId));
-        _loadTransactionOperations.WriteAllTextAtomic(SessionGenerationPath, json);
+        WriteRuntimeTextAtomic(SessionGenerationPath, json);
     }
 
     private void DeleteWorkerSessionArtifactsCore()
@@ -2054,6 +2215,13 @@ public class FileSystemManager
         }
 
         var gameStatePath = Path.Combine(_basePath, "game_session", "game_state");
+        var browserRollbackRoot = ResolvePath(
+            ExplorerLocalTurnRollbackArtifacts.Root);
+        if (File.Exists(browserRollbackRoot))
+            File.Delete(browserRollbackRoot);
+        else if (Directory.Exists(browserRollbackRoot))
+            DeleteDirectoryTreeWithoutFollowingReparsePoints(browserRollbackRoot);
+
         if (Directory.Exists(gameStatePath))
         {
             foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(gameStatePath, "*"))
@@ -2189,6 +2357,26 @@ public class FileSystemManager
                 return buffer.ToString();
 
             capacity = checked((int)length + 1);
+        }
+    }
+
+    private static void EnsureOpenedHandleMatchesExpectedPath(
+        SafeFileHandle handle,
+        string expectedPath,
+        string authorityName)
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var openedPath = NormalizeWindowsHandlePath(GetFinalPath(handle));
+        var normalizedExpectedPath = Path.GetFullPath(expectedPath);
+        if (!string.Equals(
+                openedPath,
+                normalizedExpectedPath,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} handle resolved outside its physical authority path.");
         }
     }
 

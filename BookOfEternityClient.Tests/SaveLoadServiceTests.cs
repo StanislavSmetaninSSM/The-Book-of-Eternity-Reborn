@@ -262,6 +262,35 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task LoadGameAsync_StripsExactBrowserRollbackRootFileFromCraftedArchive()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{\"currentRealm\":\"Chaos Sea\"}");
+        Assert.True(await _service.SaveGameAsync(
+            "exact_browser_rollback_file",
+            "exact browser rollback root load regression"));
+
+        var savePath = Directory
+            .GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip")
+            .Single();
+        using (var archive = ZipFile.Open(savePath, ZipArchiveMode.Update))
+        {
+            var entry = archive.CreateEntry(
+                ExplorerLocalTurnRollbackArtifacts.Root);
+            await using var stream = entry.Open();
+            await stream.WriteAsync(
+                System.Text.Encoding.UTF8.GetBytes("{\"stale\":true}"));
+        }
+
+        Assert.True(await _service.LoadGameAsync(savePath));
+        var rollbackRoot = _fs.ResolvePath(
+            ExplorerLocalTurnRollbackArtifacts.Root);
+        Assert.False(File.Exists(rollbackRoot));
+        Assert.False(Directory.Exists(rollbackRoot));
+    }
+
+    [Fact]
     public async Task GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

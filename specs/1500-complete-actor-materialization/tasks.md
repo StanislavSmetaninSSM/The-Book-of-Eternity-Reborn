@@ -327,3 +327,14 @@
 - [x] T163 Update final remediation evidence and run focused rollback/runtime/Daren/save suites plus mandatory documentation tests.
   - Evidence: filesystem/browser/QTE/save/proposal focused classes pass 118/118; mandatory afterlife documentation tests pass 118/118; `git diff --check` reports no whitespace errors.
 - [ ] T164 Run the complete verification matrix and a fresh independent Sol/max exact-diff review; resolve every Critical/Important finding before closing T157 and integrating issue #1500.
+
+## Phase 32 - Second post-T156 Sol/max authority remediation
+
+- [x] T165 Record the five confirmed durable-runtime, opened-lock, rollback-cleanup, Daren, and replacement-cleanup findings as FR-066 through FR-070, SC-024, Decisions 77 through 81, and corresponding plan/data-model changes before production edits.
+- [x] T166 Extend no-follow physical authority to load transactions, session generation, and worker-apply transaction journals, manifests, before-images, extraction roots, moves, and cleanup; prove sibling junctions cannot redirect durable bytes.
+- [x] T167 Validate the final physical path of opened canonical and lifecycle lock handles and prove a deterministic swap-to-junction/open/swap-back race cannot grant a lease on an external lock file.
+- [x] T168 Add durable browser rollback status `restored`, make committed/restored recovery cleanup-only, delete transaction evidence before the manifest, and prove a locked-backup cleanup failure remains discoverable and succeeds on retry.
+- [x] T169 Route console Daren reward completion through canonical recovery and prove an interrupted browser transaction cannot later overwrite a newer valid console reward.
+- [x] T170 Strip the exact rollback-root file and manifestless rollback-root directories on load and New Game without following reparse points; add crafted archive and replacement regressions.
+  - Evidence: all Phase 32 regressions and the four affected test classes pass `190/190`, including runtime sibling junctions, opened-lock handle swaps, retryable restored cleanup, cross-client Daren recovery, exact rollback-root archive stripping, manifestless New Game cleanup, and rejection of legacy manifests that claim the schema-3-only `restored` status.
+- [ ] T171 Synchronize review evidence, run focused RED/GREEN suites, mandatory afterlife documentation, broad/full verification, Release build, static parsing, `git diff --check`, Spec Kit analysis, and obtain a fresh independent Sol/max exact-diff review with no Critical or Important finding before closing T164/T157 and integrating issue #1500.
