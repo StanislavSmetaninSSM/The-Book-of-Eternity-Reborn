@@ -539,7 +539,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.DoesNotContain("TryReserveProposalIdAsync", bridgePool, StringComparison.Ordinal);
         Assert.DoesNotContain("ProposalClaimRoot", bridgePool, StringComparison.Ordinal);
         Assert.Contains("PublishBundleAsync", proposalStore, StringComparison.Ordinal);
-        Assert.Contains("Directory.Move(stagingBundleRoot, finalBundleRoot)", proposalStore, StringComparison.Ordinal);
+        Assert.Contains("MoveRuntimeDirectoryIntoCanonicalSessionAsync", proposalStore, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.Move(stagingBundleRoot, finalBundleRoot)", proposalStore, StringComparison.Ordinal);
         Assert.Contains("current game session generation", proposalStore, StringComparison.Ordinal);
         Assert.DoesNotContain("gm_worker_apply.lock", applyGate, StringComparison.Ordinal);
         Assert.Contains("CanonicalPathComparer", contractValidator, StringComparison.Ordinal);

@@ -189,9 +189,7 @@ barriers or fault injection, never delays. Production code and tests added in
 earlier phases are tracked before the first Phase 30 verification checkpoint.
 No task may close from an agent report alone; the controller inspects the diff
 and reruns the named focused suite.
-The final independent exact-diff review uses `gpt-5.6-sol` with high reasoning
-under the active user constraint; max reasoning is not permitted until the user
-explicitly re-enables it.
+The final independent exact-diff review uses `gpt-5.6-sol` with max reasoning.
 
 ## Complexity Tracking
 

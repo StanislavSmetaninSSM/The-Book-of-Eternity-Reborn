@@ -230,7 +230,7 @@
   - Evidence: RED showed the prior managed Unix process-group abstraction could not prove complete descendant ownership and cleanup errors could replace cancellation or timeout. GREEN supports Windows Job Objects as the complete-tree boundary, fails closed before release elsewhere, removes the false Unix contract, preserves authoritative timeout/cancellation, and quarantines unconfirmed cleanup. The combined host/lifecycle/process-tree suite passes 42/42.
 - [x] T113 Bound unattached-host and complete-tree cleanup, replace lifecycle timing assertions with explicit synchronization, and prove timeout/cancellation never releases a slot while owned processes remain or changes into a cleanup exception.
   - Evidence: RED reproduced unbounded unattached-host cleanup and a timing-only pre-release assertion. GREEN adds a bounded termination deadline, an explicit pre-release test barrier after Job attachment, and deterministic timeout/cancellation cleanup tests. The combined host/lifecycle/process-tree suite passes 42/42.
-- [ ] T114 Synchronize Spec Kit decisions, Mortal/afterlife worker guidance, GM prompts, worked examples, manifests, and source guards; record every Phase 24 RED/GREEN cycle, run focused/documentation/broad/full verification, and obtain a clean twelfth independent Sol/high exact-diff review under the active user constraint before closing T107 and the inherited integration tasks.
+- [ ] T114 Synchronize Spec Kit decisions, Mortal/afterlife worker guidance, GM prompts, worked examples, manifests, and source guards; record every Phase 24 RED/GREEN cycle, run focused/documentation/broad/full verification, and obtain a clean twelfth independent Sol/max exact-diff review before closing T107 and the inherited integration tasks.
 
 ## Phase 25 - Twelfth review durable authority and stale-session remediation
 
@@ -243,7 +243,7 @@
 - [x] T118 Exclude the latest validation-repair task from save archives and require session generation authority to use exact lowercase canonical GUID text in `N` format.
   - Evidence: RED archived the latest task control file and accepted uppercase `N` text. GREEN classifies the task as ephemeral and compares persisted text to canonical lowercase `Guid.ToString("N")`; the focused run passed 2/2.
 - [ ] T119 Synchronize all Mortal/afterlife guides, prompts, examples, manifests, Spec Kit decisions, and source guards with private named-pipe transport, durable apply authority, typed replacement, trajectory, cleanup, save, and generation contracts; run documentation-sensitive, broad worker, and full verification.
-- [ ] T120 Obtain a clean independent Sol/high exact-diff review under the active user constraint, resolve every Critical/Important finding, update evidence with fresh command output, and close T119/T114/T107 plus inherited integration tasks only after inspection.
+- [ ] T120 Obtain a clean independent Sol/max exact-diff review, resolve every Critical/Important finding, update evidence with fresh command output, and close T119/T114/T107 plus inherited integration tasks only after inspection.
 
 ## Phase 26 - Twelfth review follow-up: exact retry fencing, host identity, fixtures, and documentation
 
@@ -255,7 +255,7 @@
   - Evidence: RED included excluded `world_profiles`, omitted a runtime-only probe, allowed stale copied snapshots to override explicit backups, and let unrelated Guardian authority errors satisfy tests. GREEN snapshots current `game_state` plus `lore`, excludes world profiles, honors explicit backup bytes, reads camelCase manifests, and asserts exact trade/resident-transfer diagnostics. The Guardian class passed 58/58 before the final helper rename.
 - [x] T124 Require canonical `sessionGeneration` in every worked worker task packet and synchronize Mortal/afterlife guides, launcher prompts, formal bridge contract, manifest, Spec Kit artifacts, and source guards with the exact authenticated host protocol.
   - Evidence: the JSON-parsing source guard failed on the first of six incomplete worked examples, then passed after all task packets received lowercase GUID `N` values. The authenticated-handshake documentation test failed against the prior prose and the complete bridge documentation class now passes 19/19 after synchronization.
-- [ ] T125 Rerun Guardian and process-host suites after final refactors, run mandatory afterlife documentation tests, broad worker/harness tests, the complete test project, `git diff --check`, and Spec Kit analysis; then obtain a fresh independent Sol/high exact-diff review under the active user constraint and resolve every Critical/Important finding before closing T119/T120/T114/T107 and inherited integration tasks.
+- [ ] T125 Rerun Guardian and process-host suites after final refactors, run mandatory afterlife documentation tests, broad worker/harness tests, the complete test project, `git diff --check`, and Spec Kit analysis; then obtain a fresh independent Sol/max exact-diff review and resolve every Critical/Important finding before closing T119/T120/T114/T107 and inherited integration tasks.
 
 ## Phase 27 - Twelfth review follow-up: runtime budgets and full-flow session fencing
 
@@ -267,7 +267,7 @@
   - Evidence: seven session-context tests plus deterministic terminal, ordinary-turn, raw life-evaluation, load, clear, and New Game races reject stale finalization without touching replacement files; the complete turn-lifecycle class passes 169/169.
 - [x] T129 Synchronize the worker guide/formal contract and all Spec Kit artifacts with external runtime budgets and full-flow session fencing; record that this client-owned harness remediation changes no Mortal or afterlife GM-authored state/pending/control schema.
   - Evidence: documentation source guards first failed for the absent runtime/fence language and pass after synchronization. `OtherGuides/Afterlife_Contract_Matrix.md`, afterlife worked examples, and manifest require no additional schema entry because no afterlife action, response, receipt, report, scheduler, or authority surface changed.
-- [ ] T130 Run mandatory afterlife documentation, broad harness/actor/full verification, `git diff --check`, Release build, Spec Kit analysis, and a fresh independent Sol/high exact-diff review under the active user constraint; resolve every Critical/Important finding before closing T125/T119/T120/T114/T107 and inherited integration tasks.
+- [ ] T130 Run mandatory afterlife documentation, broad harness/actor/full verification, `git diff --check`, Release build, Spec Kit analysis, and a fresh independent Sol/max exact-diff review; resolve every Critical/Important finding before closing T125/T119/T120/T114/T107 and inherited integration tasks.
 
 ## Phase 28 - Final Sol/max review remediation
 
@@ -287,7 +287,7 @@
   - Evidence: focused terminal snapshot tests pass 2/2 and the complete lifecycle/source-guard run passes 284/284.
 - [x] T138 Decouple actor/NPC contract fixtures from production Mortal bootstrap so tests cannot silently depend on forbidden generated mechanics.
   - Evidence: explicit setting-neutral actor fixtures restore the complete actor/NPC contract run to 298/298.
-- [ ] T139 Synchronize final Spec Kit decisions and review evidence, run mandatory afterlife documentation, broad harness/actor/full verification, `git diff --check`, Release build, Spec Kit analysis, and a fresh independent Sol/high exact-diff review under the active user constraint before closing T130 and inherited integration tasks.
+- [ ] T139 Synchronize final Spec Kit decisions and review evidence, run mandatory afterlife documentation, broad harness/actor/full verification, `git diff --check`, Release build, Spec Kit analysis, and a fresh independent Sol/max exact-diff review before closing T130 and inherited integration tasks.
 
 ## Phase 29 - Final Sol/max follow-up authority remediation
 
@@ -297,7 +297,7 @@
 - [x] T142 Add one atomic cancellation/publication transition for successful worker handoff; make staging and lease waiting cancellable and prove caller cancellation plus timeout cannot produce a later applyable bundle.
 - [x] T143 Remove every public fail-open `GmWorkerApplyGate` construction path, require production `ValidationService`, and prove a scope-valid proposal that leaves invalid canonical state rolls back.
 - [x] T144 Remove client-invented Mortal bootstrap progression, carrying, faction-resource, influence/control, and universal power-profile values while retaining only neutral first-turn scaffolding; update validators, prompts, and tests to require structured GM authority for those mechanics.
-- [ ] T145 Synchronize Mortal and shared worker prompts, docs, examples, manifests, source guards, and final review evidence; run mandatory afterlife documentation, focused/broad/full verification, Release build, `git diff --check`, Spec Kit analysis, and a fresh independent Sol/high exact-diff review under the active user constraint before closing T139/T130 and inherited integration tasks.
+- [ ] T145 Synchronize Mortal and shared worker prompts, docs, examples, manifests, source guards, and final review evidence; run mandatory afterlife documentation, focused/broad/full verification, Release build, `git diff --check`, Spec Kit analysis, and a fresh independent Sol/max exact-diff review before closing T139/T130 and inherited integration tasks.
 
 ## Phase 30 - Four-review integration remediation
 
@@ -315,4 +315,4 @@
 - [x] T155 Reconcile afterlife actor lifecycle and projections: permit only proven `departure_only` binding removal, require positive mentor lessons, share hidden-profile visibility across console/browser, and document every accepted actor type.
 - [x] T156 Synchronize every active Mortal/afterlife rule, final audit, daemon entrypoint, worked example, manifest, launcher guide, contract matrix, and source guard; remove stale bootstrap-NPC guidance; add every intended source file to version control and verify a clean-checkout build.
   - Evidence: Mortal and afterlife prompts, guides, worked examples, manifests, launcher entrypoints, contract matrix, and source guards are synchronized and pass the 118/118 documentation-sensitive suite. `git ls-files --others --exclude-standard` is empty in the feature worktree. A detached clean checkout at merge commit `4e8ad75f` restored dependencies and built `BookOfEternityClient.sln` in Release with 0 warnings and 0 errors.
-- [ ] T157 Run focused RED/GREEN suites per task, mandatory afterlife documentation tests, broad harness/actor/browser tests, the complete test project, Release build, PowerShell/JSON parsing, `git diff --check`, Spec Kit analysis, and a fresh independent Sol/high exact-diff review under the active user constraint; resolve every Critical/Important finding before closing T145/T139/T130 and inherited integration tasks.
+- [ ] T157 Run focused RED/GREEN suites per task, mandatory afterlife documentation tests, broad harness/actor/browser tests, the complete test project, Release build, PowerShell/JSON parsing, `git diff --check`, Spec Kit analysis, and a fresh independent Sol/max exact-diff review; resolve every Critical/Important finding before closing T145/T139/T130 and inherited integration tasks.

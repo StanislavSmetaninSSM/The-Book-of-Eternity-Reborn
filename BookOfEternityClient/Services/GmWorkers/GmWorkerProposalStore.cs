@@ -46,7 +46,8 @@ public sealed class GmWorkerProposalStore
             "proposal-staging",
             Guid.NewGuid().ToString("N"));
         var stagingBundleRoot = Path.Combine(stagingRoot, proposal.ProposalId);
-        var finalBundleRoot = _fs.ResolvePath($"{ProposalRoot}/{proposal.ProposalId}");
+        var finalBundleRelativePath = $"{ProposalRoot}/{proposal.ProposalId}";
+        var finalBundleRoot = _fs.ResolvePath(finalBundleRelativePath);
         var contentRefPrefix = $"{ProposalRoot}/{proposal.ProposalId}/";
 
         using var publicationAuthority = new WorkerProposalPublicationAuthority(cancellationToken);
@@ -94,10 +95,12 @@ public sealed class GmWorkerProposalStore
             if (!publicationAuthority.TryBeginPublication())
                 throw new OperationCanceledException(cancellationToken);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(finalBundleRoot)!);
             try
             {
-                Directory.Move(stagingBundleRoot, finalBundleRoot);
+                await _fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                    writeLease,
+                    stagingBundleRoot,
+                    finalBundleRelativePath);
             }
             catch (IOException) when (Directory.Exists(finalBundleRoot))
             {

@@ -1193,6 +1193,69 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task RuntimeDirectoryMove_RechecksReparseConfinementAtMutationBoundary()
+    {
+        const string relativeDestination = "worker_proposals/proposal-race";
+        var proposalRoot = _fs.ResolvePath("worker_proposals");
+        var displacedProposalRoot = _fs.ResolvePath("worker-proposals-original");
+        var outsideDirectory = Path.Combine(_rootPath, "proposal-move-outside");
+        var stagingRoot = Path.Combine(
+            _fs.BasePath,
+            ".boe_runtime",
+            "proposal-staging",
+            Guid.NewGuid().ToString("N"),
+            "proposal-race");
+        Directory.CreateDirectory(proposalRoot);
+        Directory.CreateDirectory(outsideDirectory);
+        Directory.CreateDirectory(stagingRoot);
+        await File.WriteAllTextAsync(Path.Combine(stagingRoot, "proposal.json"), "{}");
+        var probeLink = Path.Combine(_rootPath, "proposal-move-link-probe");
+        if (!TryCreateDirectoryLink(probeLink, outsideDirectory))
+            return;
+        Directory.Delete(probeLink);
+
+        var swapped = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = path =>
+                {
+                    if (swapped || !path.Equals(relativeDestination, StringComparison.OrdinalIgnoreCase))
+                        return Task.CompletedTask;
+
+                    swapped = true;
+                    Directory.Move(proposalRoot, displacedProposalRoot);
+                    Directory.CreateSymbolicLink(proposalRoot, outsideDirectory);
+                    return Task.CompletedTask;
+                }
+            });
+
+        try
+        {
+            await using var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                    writeLease,
+                    stagingRoot,
+                    relativeDestination));
+
+            Assert.True(swapped);
+            Assert.False(Directory.Exists(Path.Combine(outsideDirectory, "proposal-race")));
+            Assert.True(File.Exists(Path.Combine(stagingRoot, "proposal.json")));
+        }
+        finally
+        {
+            if (Directory.Exists(proposalRoot) && FileSystemManager.IsReparsePoint(proposalRoot))
+                Directory.Delete(proposalRoot);
+            if (Directory.Exists(displacedProposalRoot))
+                Directory.Move(displacedProposalRoot, proposalRoot);
+        }
+    }
+
+    [Fact]
     public async Task RestoreBackup_RejectsBackupOutsideCanonicalSession()
     {
         const string originalPath = "game_state/world/restore-target.json";
@@ -1208,6 +1271,23 @@ public sealed class FileSystemManagerTests : IDisposable
             await _fs.ReadFileAsync(originalPath),
             StringComparison.Ordinal);
         Assert.True(File.Exists(outsideBackupPath));
+    }
+
+    [Fact]
+    public async Task RestoreBackup_MissingBeforeImageFailsClosed()
+    {
+        const string originalPath = "game_state/world/missing-before-image.json";
+        await _fs.WriteFileAtomicAsync(originalPath, "{\"value\":\"before\"}");
+        var backupPath = Assert.IsType<string>(_fs.CreateBackup(originalPath));
+        await _fs.WriteFileAtomicAsync(originalPath, "{\"value\":\"rejected\"}");
+        File.Delete(backupPath);
+
+        Assert.Throws<FileNotFoundException>(
+            () => _fs.RestoreBackup(backupPath, originalPath));
+
+        Assert.Equal(
+            "{\"value\":\"rejected\"}",
+            await _fs.ReadFileAsync(originalPath));
     }
 
     [Fact]

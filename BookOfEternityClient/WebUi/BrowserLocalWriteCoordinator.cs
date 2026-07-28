@@ -82,7 +82,8 @@ public sealed class BrowserLocalWriteCoordinator
         BrowserLocalWriteRequest request,
         IReadOnlyCollection<string> rollbackPaths,
         Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
-        Func<Action?>? prepareAfterRollback = null)
+        Func<Action?>? prepareAfterRollback = null,
+        IReadOnlyCollection<string>? rollbackCleanupDirectories = null)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(rollbackPaths);
@@ -96,7 +97,8 @@ public sealed class BrowserLocalWriteCoordinator
                     request,
                     rollbackPaths,
                     writeOperation,
-                    prepareAfterRollback));
+                    prepareAfterRollback,
+                    rollbackCleanupDirectories));
         }
         catch (SessionReplacedException)
         {
@@ -110,7 +112,8 @@ public sealed class BrowserLocalWriteCoordinator
         BrowserLocalWriteRequest request,
         IReadOnlyCollection<string> rollbackPaths,
         Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
-        Func<Action?>? prepareAfterRollback = null)
+        Func<Action?>? prepareAfterRollback = null,
+        IReadOnlyCollection<string>? rollbackCleanupDirectories = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(request);
@@ -124,7 +127,8 @@ public sealed class BrowserLocalWriteCoordinator
                 request,
                 rollbackPaths,
                 writeOperation,
-                prepareAfterRollback);
+                prepareAfterRollback,
+                rollbackCleanupDirectories);
         }
         catch (SessionReplacedException)
         {
@@ -227,7 +231,8 @@ public sealed class BrowserLocalWriteCoordinator
         BrowserLocalWriteRequest request,
         IReadOnlyCollection<string> rollbackPaths,
         Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
-        Func<Action?>? prepareAfterRollback)
+        Func<Action?>? prepareAfterRollback,
+        IReadOnlyCollection<string>? rollbackCleanupDirectories)
     {
         var pending = BrowserPendingTurnInspector.Build(_fs);
         if (pending.HasActiveGmTurn)
@@ -249,7 +254,10 @@ public sealed class BrowserLocalWriteCoordinator
         try
         {
             afterRollback = prepareAfterRollback?.Invoke();
-            backups = await CaptureRollbackAsync(writeLease, rollbackPaths);
+            backups = await CaptureRollbackAsync(
+                writeLease,
+                rollbackPaths,
+                rollbackCleanupDirectories);
             await writeOperation(writeLease);
             await ExplorerLocalTurnRollbackArtifacts.MarkBrowserWriteTransactionCommittedAsync(
                 _fs,
@@ -381,37 +389,22 @@ public sealed class BrowserLocalWriteCoordinator
 
     private async Task<ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction> CaptureRollbackAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        IEnumerable<string> rollbackPaths) =>
+        IEnumerable<string> rollbackPaths,
+        IEnumerable<string>? rollbackCleanupDirectories) =>
         await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
             _fs,
             writeLease,
             rollbackPaths,
-            "browser_write");
+            "browser_write",
+            rollbackCleanupDirectories);
 
     private async Task RestoreRollbackAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction)
-    {
-        var failures = new List<Exception>();
-        foreach (var backup in transaction.Entries)
-        {
-            try
-            {
-                await ExplorerLocalTurnRollbackArtifacts.RestoreBrowserWriteEntryAsync(
-                    _fs,
-                    writeLease,
-                    backup);
-            }
-            catch (Exception ex)
-            {
-                failures.Add(new IOException(
-                    $"Не удалось восстановить '{backup.TrackedFile}'.",
-                    ex));
-            }
-        }
-
-        ThrowIfRollbackRestoreFailed(failures);
-    }
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction) =>
+        await ExplorerLocalTurnRollbackArtifacts.RestoreBrowserWriteTransactionAsync(
+            _fs,
+            writeLease,
+            transaction);
 
     private static void ThrowIfRollbackRestoreFailed(IReadOnlyCollection<Exception> failures)
     {

@@ -8,6 +8,7 @@ namespace BookOfEternityClient.Services;
 public static class ExplorerLocalTurnRollbackArtifacts
 {
     public const string Root = "game_state/control/explorer_local_turn_rollback";
+    private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string BrowserWriteManifestFileName = "browser_write_manifest.json";
     private static readonly JsonSerializerOptions ManifestJsonOptions = new()
     {
@@ -30,14 +31,16 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string Status,
         string Scope,
         string CreatedAtUtc,
-        IReadOnlyList<BrowserWriteRollbackEntry> Entries);
+        IReadOnlyList<BrowserWriteRollbackEntry> Entries,
+        IReadOnlyList<string>? CleanupDirectories = null);
 
     internal sealed record BrowserWriteRollbackTransaction(
         string TransactionRoot,
         string ManifestPath,
         string Scope,
         string CreatedAtUtc,
-        IReadOnlyList<BrowserWriteRollbackEntry> Entries);
+        IReadOnlyList<BrowserWriteRollbackEntry> Entries,
+        IReadOnlyList<string> CleanupDirectories);
 
     public static async Task<string?> StageFileAsync(
         FileSystemManager fs,
@@ -84,7 +87,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         IEnumerable<string> trackedFiles,
-        string scope)
+        string scope,
+        IEnumerable<string>? rollbackCleanupDirectories = null)
     {
         var normalizedPaths = trackedFiles
             .Where(static path => !string.IsNullOrWhiteSpace(path))
@@ -94,6 +98,19 @@ public static class ExplorerLocalTurnRollbackArtifacts
         var transactionRoot =
             $"{Root}/{SafeSegment(scope)}/{DateTime.UtcNow.Ticks}_{Guid.NewGuid():N}";
         var manifestPath = $"{transactionRoot}/{BrowserWriteManifestFileName}";
+        var cleanupDirectories = (rollbackCleanupDirectories ?? [])
+            .Where(static path => !string.IsNullOrWhiteSpace(path))
+            .Select(path => NormalizeRelativePath(fs, path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        if (cleanupDirectories.Any(path =>
+                !IsAllowedRollbackCleanupDirectory(path) ||
+                transactionRoot.StartsWith(path + "/", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidDataException(
+                "Browser rollback cleanup directory cannot contain its transaction evidence.");
+        }
+
         var safeScope = SafeSegment(scope);
         var createdAtUtc = DateTime.UtcNow.ToString("O");
         var entries = new List<BrowserWriteRollbackEntry>(normalizedPaths.Length);
@@ -127,12 +144,13 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
 
             var manifest = new BrowserWriteRollbackManifest(
-                SchemaVersion: 1,
+                SchemaVersion: 2,
                 TransactionKind: "browser_local_write",
                 Status: "staged",
                 Scope: safeScope,
                 CreatedAtUtc: createdAtUtc,
-                Entries: entries);
+                Entries: entries,
+                CleanupDirectories: cleanupDirectories);
             await fs.WriteFileAtomicAsync(
                 writeLease,
                 manifestPath,
@@ -143,7 +161,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 manifestPath,
                 safeScope,
                 createdAtUtc,
-                entries);
+                entries,
+                cleanupDirectories);
         }
         catch
         {
@@ -171,12 +190,13 @@ public static class ExplorerLocalTurnRollbackArtifacts
         BrowserWriteRollbackTransaction transaction)
     {
         var manifest = new BrowserWriteRollbackManifest(
-            SchemaVersion: 1,
+            SchemaVersion: 2,
             TransactionKind: "browser_local_write",
             Status: "committed",
             Scope: transaction.Scope,
             CreatedAtUtc: transaction.CreatedAtUtc,
-            Entries: transaction.Entries);
+            Entries: transaction.Entries,
+            CleanupDirectories: transaction.CleanupDirectories);
         await fs.WriteFileAtomicAsync(
             writeLease,
             transaction.ManifestPath,
@@ -225,7 +245,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         foreach (var (transaction, status) in transactions)
         {
             if (string.Equals(status, "staged", StringComparison.Ordinal))
-                await RestoreInterruptedBrowserWriteTransactionAsync(fs, writeLease, transaction);
+                await RestoreBrowserWriteTransactionAsync(fs, writeLease, transaction);
 
             if (!TryDeleteBrowserWriteTransaction(
                     fs,
@@ -313,7 +333,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string manifestPath,
         BrowserWriteRollbackManifest manifest)
     {
-        if (manifest.SchemaVersion != 1 ||
+        if (manifest.SchemaVersion is not (1 or 2) ||
             !string.Equals(manifest.TransactionKind, "browser_local_write", StringComparison.Ordinal) ||
             manifest.Status is not ("staged" or "committed") ||
             string.IsNullOrWhiteSpace(manifest.Scope) ||
@@ -340,6 +360,24 @@ public static class ExplorerLocalTurnRollbackArtifacts
         {
             throw new InvalidDataException(
                 $"Browser rollback manifest '{manifestPath}' is outside its declared transaction root.");
+        }
+
+        var cleanupDirectories = (manifest.CleanupDirectories ?? [])
+            .Select(path => NormalizeRelativePath(fs, path))
+            .ToArray();
+        if (manifest.SchemaVersion == 1 && cleanupDirectories.Length > 0)
+        {
+            throw new InvalidDataException(
+                $"Browser rollback manifest '{manifestPath}' declares cleanup directories under legacy schema.");
+        }
+        if (cleanupDirectories.Distinct(StringComparer.OrdinalIgnoreCase).Count() !=
+            cleanupDirectories.Length ||
+            cleanupDirectories.Any(path =>
+                !IsAllowedRollbackCleanupDirectory(path) ||
+                transactionRoot.StartsWith(path + "/", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidDataException(
+                $"Browser rollback manifest '{manifestPath}' contains an unsafe or duplicate cleanup directory.");
         }
 
         var trackedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -401,11 +439,12 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 normalizedManifestPath,
                 manifest.Scope,
                 manifest.CreatedAtUtc,
-                entries),
+                entries,
+                cleanupDirectories),
             manifest.Status);
     }
 
-    private static async Task RestoreInterruptedBrowserWriteTransactionAsync(
+    internal static async Task RestoreBrowserWriteTransactionAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction)
@@ -421,6 +460,21 @@ public static class ExplorerLocalTurnRollbackArtifacts
             {
                 failures.Add(new IOException(
                     $"Could not restore interrupted browser write '{entry.TrackedFile}'.",
+                    ex));
+            }
+        }
+
+        foreach (var cleanupDirectory in transaction.CleanupDirectories)
+        {
+            try
+            {
+                if (Directory.Exists(fs.ResolvePath(cleanupDirectory)))
+                    fs.DeleteDirectoryTree(writeLease, cleanupDirectory);
+            }
+            catch (Exception ex)
+            {
+                failures.Add(new IOException(
+                    $"Could not remove interrupted browser-write artifacts '{cleanupDirectory}'.",
                     ex));
             }
         }
@@ -452,6 +506,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
                ticks > 0 &&
                Guid.TryParseExact(value[(separator + 1)..], "N", out _);
     }
+
+    private static bool IsAllowedRollbackCleanupDirectory(string path) =>
+        string.Equals(path, PendingTurnSnapshotDirectory, StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith(Root + "/", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsSha256(string? value) =>
         value is { Length: 64 } &&

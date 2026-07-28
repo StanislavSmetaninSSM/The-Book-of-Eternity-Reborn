@@ -199,6 +199,67 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     }
 
     [Fact]
+    public async Task InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories()
+    {
+        const string trackedPath = "game_state/meta/interrupted_dynamic_artifacts.json";
+        const string snapshotRoot = "game_state/control/pending_turn_snapshot";
+        var dynamicRollbackRoot =
+            $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_direct_gacha";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                [trackedPath],
+                "browser_write",
+                [snapshotRoot, dynamicRollbackRoot]);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"interrupted\"}");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                $"{snapshotRoot}/game_state/meta/soul_state.json",
+                "{\"snapshot\":true}");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                $"{dynamicRollbackRoot}/123_evidence/soul_state.rollback.1",
+                "{\"rollback\":true}");
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await restartedFs.WriteFileAtomicAsync(
+            "game_state/meta/dynamic_cleanup_recovery_trigger.json",
+            "{\"ok\":true}");
+
+        Assert.Equal(
+            "{\"value\":\"before\"}",
+            await restartedFs.ReadFileAsync(trackedPath));
+        Assert.False(Directory.Exists(restartedFs.ResolvePath(snapshotRoot)));
+        Assert.False(Directory.Exists(restartedFs.ResolvePath(dynamicRollbackRoot)));
+        Assert.False(restartedFs.FileExists(transaction.ManifestPath));
+    }
+
+    [Fact]
+    public async Task BrowserWriteRollbackCleanup_RejectsBroadCanonicalDirectory()
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                ["game_state/meta/soul_state.json"],
+                "browser_write",
+                ["lore"]));
+    }
+
+    [Fact]
     public async Task InterruptedCommittedBrowserWrite_PreservesCommittedBytesAndCleansEvidence()
     {
         const string trackedPath = "game_state/meta/committed_browser_write.json";

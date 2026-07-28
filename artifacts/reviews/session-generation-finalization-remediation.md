@@ -1,7 +1,7 @@
 # Architectural review: session-generation finalization remediation
 
-Issue: `#1500`  
-Review mode: research only; no production or test changes  
+Issue: `#1500`
+Review mode: research only; no production or test changes
 Snapshot: `79b236e75ee0e643a2e98f09680094ac27d31834`, dirty worktree, 2026-07-26 10:53 +10:00
 
 ## Verdict
@@ -678,4 +678,3 @@ The finding can be closed only when all of the following are demonstrated:
 - New Game owns the generation returned by Clear through bootstrap and wait.
 - Lock-order tests complete without deadlock, and no long wait owns lifecycle
   or canonical lease.
-

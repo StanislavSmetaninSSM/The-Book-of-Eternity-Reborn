@@ -98,4 +98,3 @@ Required remediation:
   generation immediately after completion and before any terminal artifact
   read;
 - add a deterministic Load barrier in the exact verify/read window.
-

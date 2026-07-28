@@ -246,6 +246,159 @@ public sealed class GmWorkerProposalStoreTests
     }
 
     [Fact]
+    public async Task PublishBundleAsync_CancellationAtMoveBoundaryPreservesPublishedOutcome()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var setupFs = CreateFileSystem(root);
+            var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+            {
+                ProposalId = "worker_proposal_cancel_at_move_boundary"
+            };
+            var taskPath = GmWorkerBridgePool.GetTaskPacketPath(proposal.TaskId);
+            var taskBytes = System.Text.Encoding.UTF8.GetBytes("task-generation");
+            string sessionGeneration;
+            await using (var setupLease = await setupFs.AcquireCanonicalWriteLeaseAsync())
+            {
+                sessionGeneration = setupFs.GetOrCreateSessionGeneration(setupLease);
+                await setupFs.WriteFileAtomicBytesAsync(setupLease, taskPath, taskBytes);
+            }
+
+            using var cancellation = new CancellationTokenSource();
+            var canceledAtMoveBoundary = false;
+            var raceFs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = path =>
+                    {
+                        var expectedPath =
+                            $"{GmWorkerProposalStore.ProposalRoot}/{proposal.ProposalId}";
+                        if (canceledAtMoveBoundary ||
+                            !path.Equals(expectedPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return Task.CompletedTask;
+                        }
+
+                        canceledAtMoveBoundary = true;
+                        cancellation.Cancel();
+                        return Task.CompletedTask;
+                    }
+                });
+
+            var result = await new GmWorkerProposalStore(raceFs).PublishBundleAsync(
+                proposal,
+                System.Text.Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(proposal)),
+                new Dictionary<string, byte[]>(),
+                taskPath,
+                taskBytes,
+                sessionGeneration,
+                GmWorkerBridgePool.GetProposalInboxPath(proposal.TaskId),
+                cancellationToken: cancellation.Token);
+
+            Assert.True(canceledAtMoveBoundary);
+            Assert.True(result.Published);
+            Assert.NotNull(await new GmWorkerProposalStore(raceFs)
+                .ReadProposalAsync(proposal.ProposalId));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task PublishBundleAsync_ParentReplacedAtMoveBoundaryRejectsWithoutEscape()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var outsideRoot = CreateTempRoot();
+        var proposalRoot = string.Empty;
+        var displacedProposalRoot = string.Empty;
+        try
+        {
+            var setupFs = CreateFileSystem(root);
+            var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+            {
+                ProposalId = "worker_proposal_move_boundary"
+            };
+            var taskPath = GmWorkerBridgePool.GetTaskPacketPath(proposal.TaskId);
+            var taskBytes = System.Text.Encoding.UTF8.GetBytes("task-generation");
+            string sessionGeneration;
+            await using (var setupLease = await setupFs.AcquireCanonicalWriteLeaseAsync())
+            {
+                sessionGeneration = setupFs.GetOrCreateSessionGeneration(setupLease);
+                await setupFs.WriteFileAtomicBytesAsync(setupLease, taskPath, taskBytes);
+            }
+
+            proposalRoot = setupFs.ResolvePath(GmWorkerProposalStore.ProposalRoot);
+            displacedProposalRoot = setupFs.ResolvePath("worker-proposals-before-race");
+            var swapped = false;
+            var raceFs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = path =>
+                    {
+                        var expectedPath =
+                            $"{GmWorkerProposalStore.ProposalRoot}/{proposal.ProposalId}";
+                        if (swapped || !path.Equals(expectedPath, StringComparison.OrdinalIgnoreCase))
+                            return Task.CompletedTask;
+
+                        swapped = true;
+                        Directory.Move(proposalRoot, displacedProposalRoot);
+                        CreateDirectoryJunction(proposalRoot, outsideRoot);
+                        return Task.CompletedTask;
+                    }
+                });
+
+            var result = await new GmWorkerProposalStore(raceFs).PublishBundleAsync(
+                proposal,
+                System.Text.Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(proposal)),
+                new Dictionary<string, byte[]>(),
+                taskPath,
+                taskBytes,
+                sessionGeneration,
+                GmWorkerBridgePool.GetProposalInboxPath(proposal.TaskId));
+
+            Assert.True(swapped);
+            Assert.False(result.Published);
+            Assert.False(Directory.Exists(Path.Combine(outsideRoot, proposal.ProposalId)));
+        }
+        finally
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(proposalRoot) &&
+                    Directory.Exists(proposalRoot) &&
+                    FileSystemManager.IsReparsePoint(proposalRoot))
+                {
+                    Directory.Delete(proposalRoot, recursive: false);
+                }
+                if (!string.IsNullOrWhiteSpace(displacedProposalRoot) &&
+                    Directory.Exists(displacedProposalRoot))
+                {
+                    Directory.Move(displacedProposalRoot, proposalRoot);
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            CleanupTempRoot(root);
+            CleanupTempRoot(outsideRoot);
+        }
+    }
+
+    [Fact]
     public async Task PublishBundleAsync_DerivedAuditFailureAfterDurableTransitionPreservesPublishedOutcome()
     {
         var root = CreateTempRoot();
@@ -298,6 +451,21 @@ public sealed class GmWorkerProposalStoreTests
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-worker-store-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
         return root;
+    }
+
+    private static void CreateDirectoryJunction(string junctionPath, string targetPath)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(junctionPath)!);
+        using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = $"/d /c mklink /J \"{junctionPath}\" \"{targetPath}\"",
+            UseShellExecute = false,
+            CreateNoWindow = true
+        }) ?? throw new InvalidOperationException("Failed to start junction helper.");
+        process.WaitForExit();
+        if (process.ExitCode != 0)
+            throw new InvalidOperationException($"Failed to create test junction: exit code {process.ExitCode}.");
     }
 
     private static void CleanupTempRoot(string root)

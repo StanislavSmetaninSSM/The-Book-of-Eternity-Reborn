@@ -185,6 +185,73 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/world/save-race/state.json";
+        var parentPath = _fs.ResolvePath("game_state/world/save-race");
+        var displacedParentPath = _fs.ResolvePath("game_state/world/save-race-original");
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-save-load-race-outside-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(outsideRoot);
+        await _fs.WriteFileAtomicAsync(relativePath, "{\"canonical\":true}");
+        await File.WriteAllTextAsync(
+            Path.Combine(outsideRoot, "state.json"),
+            "{\"externalSecret\":true}");
+
+        var swapped = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    if (swapped || !path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
+                        return Task.CompletedTask;
+
+                    swapped = true;
+                    Directory.Move(parentPath, displacedParentPath);
+                    CreateDirectoryJunction(parentPath, outsideRoot);
+                    return Task.CompletedTask;
+                }
+            });
+        var raceStateManager = new StateManager(
+            raceFs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        var raceService = new SaveLoadService(
+            raceFs,
+            raceStateManager,
+            NullLogger<SaveLoadService>.Instance);
+
+        try
+        {
+            Assert.False(await raceService.SaveGameAsync(
+                "save_read_race",
+                "canonical read race regression"));
+            Assert.True(swapped);
+            var saveDirectory = raceFs.ResolvePath("saves/manual_saves");
+            Assert.True(
+                !Directory.Exists(saveDirectory) ||
+                Directory.GetFiles(saveDirectory, "*.zip").Length == 0);
+        }
+        finally
+        {
+            if (Directory.Exists(parentPath) && FileSystemManager.IsReparsePoint(parentPath))
+                Directory.Delete(parentPath, recursive: false);
+            if (Directory.Exists(displacedParentPath))
+                Directory.Move(displacedParentPath, parentPath);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication()
     {
         var cleanupReached = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

@@ -79,6 +79,71 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         Assert.Equal(18, rollbackSoul["inkFeathers"]!["current"]!.GetValue<int>());
     }
 
+    [Fact]
+    public async Task TryApplyAsync_GachaDirectPull_DeclaresDynamicRollbackCleanupBeforeMutation()
+    {
+        await SeedSoulStateAsync(
+            stored: Array.Empty<(string, string)>(),
+            equipped: Array.Empty<(string, string, string)>(),
+            inkFeathers: 18);
+        await SeedPendingGachaBaseAsync("Rare", 72, [18, 18, 18, 18]);
+
+        var manifestBoundaryCount = 0;
+        var observedCleanupContract = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = async path =>
+                {
+                    if (!path.EndsWith(
+                            "browser_write_manifest.json",
+                            StringComparison.OrdinalIgnoreCase) ||
+                        Interlocked.Increment(ref manifestBoundaryCount) != 2)
+                    {
+                        return;
+                    }
+
+                    var manifestPath = Path.Combine(
+                        _rootPath,
+                        "game_session",
+                        path.Replace('/', Path.DirectorySeparatorChar));
+                    var stagedManifest = await File.ReadAllTextAsync(manifestPath);
+                    observedCleanupContract =
+                        stagedManifest.Contains(
+                            BrowserPendingTurnInspector.PendingTurnSnapshotDirectory,
+                            StringComparison.Ordinal) &&
+                        stagedManifest.Contains(
+                            $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_direct_gacha",
+                            StringComparison.Ordinal);
+                }
+            });
+        var raceStateManager = new StateManager(
+            raceFs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        var raceService = new BrowserAfterlifeWriteService(
+            raceFs,
+            raceStateManager,
+            new BrowserLocalWriteCoordinator(
+                raceFs,
+                new LocalUiSessionLockService(raceFs),
+                TimeProvider.System));
+
+        var result = await raceService.TryApplyAsync(
+            "/gacha",
+            Answers(
+                ("gacha_banner", "direct_chaos_sea"),
+                ("feather_cost", 7),
+                ("confirm_gacha_pull", true)),
+            Owner("browser-test"));
+
+        Assert.True(result.Success, result.Message);
+        Assert.True(observedCleanupContract);
+    }
+
     [Theory]
     [InlineData("Shining Abode")]
     [InlineData("Mortal World")]

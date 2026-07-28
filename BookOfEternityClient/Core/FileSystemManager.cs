@@ -657,6 +657,44 @@ public class FileSystemManager
         DeleteDirectoryTreeWithoutFollowingReparsePoints(fullPath);
     }
 
+    internal async Task MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+        CanonicalWriteLease writeLease,
+        string sourceDirectoryPath,
+        string destinationRelativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sourceDirectoryPath);
+        EnsureSafeCanonicalRelativePath(destinationRelativePath);
+
+        var stagingRoot = Path.GetFullPath(Path.Combine(
+            _basePath,
+            ".boe_runtime",
+            "proposal-staging"));
+        var sourcePath = Path.GetFullPath(sourceDirectoryPath);
+        if (!IsSameOrDescendant(sourcePath, stagingRoot) ||
+            string.Equals(sourcePath, stagingRoot, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Runtime directory move source must be inside proposal staging.");
+        }
+
+        EnsureNoExistingReparsePoint(stagingRoot, sourcePath);
+        if (!Directory.Exists(sourcePath))
+            throw new DirectoryNotFoundException(
+                $"Runtime staging directory does not exist: {sourcePath}");
+
+        var destinationPath = ResolvePath(destinationRelativePath);
+        var destinationParent = Path.GetDirectoryName(destinationPath)
+            ?? throw new InvalidDataException("Canonical destination has no parent directory.");
+        Directory.CreateDirectory(destinationParent);
+        EnsureCanonicalPathStillSafe(destinationRelativePath, destinationPath);
+
+        await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
+        EnsureNoExistingReparsePoint(stagingRoot, sourcePath);
+        EnsureCanonicalMutationBoundary(destinationRelativePath, destinationPath);
+        Directory.Move(sourcePath, destinationPath);
+    }
+
     internal void DeleteEmptyDirectories(
         CanonicalWriteLease writeLease,
         string relativeRoot)
@@ -1772,7 +1810,11 @@ public class FileSystemManager
         var backupRelativePath = GetCanonicalRelativePath(backupFullPath);
         var content = ReadFileBytesCoreAsync(backupRelativePath).GetAwaiter().GetResult();
         if (content == null)
-            return;
+        {
+            throw new FileNotFoundException(
+                "Canonical rollback before-image is missing.",
+                backupFullPath);
+        }
 
         WriteFileAtomicBytesCoreAsync(originalRelativePath, content).GetAwaiter().GetResult();
         DeleteFileCore(backupRelativePath);

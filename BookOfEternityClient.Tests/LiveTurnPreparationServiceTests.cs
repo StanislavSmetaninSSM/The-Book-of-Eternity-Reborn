@@ -249,7 +249,11 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             .WaitAsync(TimeSpan.FromSeconds(10));
         releasePreparation.TrySetResult();
 
-        await preparationTask.WaitAsync(TimeSpan.FromSeconds(10));
+        var preparationFailure = await Record.ExceptionAsync(
+            () => preparationTask.WaitAsync(TimeSpan.FromSeconds(10)));
+        Assert.True(
+            preparationFailure is null or SessionReplacedException,
+            preparationFailure?.ToString());
         await replacementTask.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.True(_fs.FileExists("game_state/core/replacement_marker.json"));

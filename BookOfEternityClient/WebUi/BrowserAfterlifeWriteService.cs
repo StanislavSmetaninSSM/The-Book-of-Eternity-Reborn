@@ -2155,7 +2155,11 @@ public sealed class BrowserAfterlifeWriteService
             },
             "Прямой призыв подготовлен",
             "Браузер списал Чернильные Перья и поставил ход ГМ в очередь: результатом должна стать ровно одна материализованная Реликвия Души без локального выбора имени.",
-            payload);
+            payload,
+            [
+                BrowserPendingTurnInspector.PendingTurnSnapshotDirectory,
+                $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_direct_gacha"
+            ]);
     }
 
     private void CleanupDirectGachaTurnArtifacts(
@@ -2566,7 +2570,8 @@ public sealed class BrowserAfterlifeWriteService
         Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
         string title,
         string message,
-        JsonObject? payload)
+        JsonObject? payload,
+        IReadOnlyCollection<string>? rollbackCleanupDirectories = null)
     {
         var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
             writeLease,
@@ -2577,7 +2582,8 @@ public sealed class BrowserAfterlifeWriteService
             {
                 var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
                 return () => _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
-            });
+            },
+            rollbackCleanupDirectories: rollbackCleanupDirectories);
 
         if (result.Success)
             return BrowserPromptWriteResult.Completed(title, message, payload);

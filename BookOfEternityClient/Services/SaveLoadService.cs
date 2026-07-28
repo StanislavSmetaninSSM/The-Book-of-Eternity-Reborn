@@ -110,17 +110,37 @@ public class SaveLoadService
             using (var archive = ZipFile.Open(temporaryPath, ZipArchiveMode.Create))
             {
                 // Add game_state directory
-                await AddDirectoryToArchive(archive, _fs.ResolvePath("game_state"), "game_state");
+                await AddDirectoryToArchive(
+                    canonicalSnapshotLease,
+                    archive,
+                    _fs.ResolvePath("game_state"),
+                    "game_state");
 
                 // Add lore directory
-                await AddDirectoryToArchive(archive, _fs.ResolvePath("lore"), "lore");
+                await AddDirectoryToArchive(
+                    canonicalSnapshotLease,
+                    archive,
+                    _fs.ResolvePath("lore"),
+                    "lore");
 
                 // Add player-authored source layers that affect rules/world setup
-                await AddDirectoryToArchive(archive, _fs.ResolvePath("mods"), "mods");
-                await AddDirectoryToArchive(archive, _fs.ResolvePath("world_profiles"), "world_profiles");
+                await AddDirectoryToArchive(
+                    canonicalSnapshotLease,
+                    archive,
+                    _fs.ResolvePath("mods"),
+                    "mods");
+                await AddDirectoryToArchive(
+                    canonicalSnapshotLease,
+                    archive,
+                    _fs.ResolvePath("world_profiles"),
+                    "world_profiles");
 
                 // Add stories (persistent conversation history)
-                await AddDirectoryToArchive(archive, _fs.ResolvePath("stories"), "stories");
+                await AddDirectoryToArchive(
+                    canonicalSnapshotLease,
+                    archive,
+                    _fs.ResolvePath("stories"),
+                    "stories");
 
                 // Add entity images (NPCs, items, locations, player — NOT scenes)
                 var imagesPath = _fs.ResolvePath("images");
@@ -130,17 +150,27 @@ public class SaveLoadService
                     {
                         var dirName = Path.GetFileName(subDir);
                         if (dirName == "scenes") continue; // Scene images are ephemeral, skip
-                        await AddDirectoryToArchive(archive, subDir, $"images/{dirName}");
+                        await AddDirectoryToArchive(
+                            canonicalSnapshotLease,
+                            archive,
+                            subDir,
+                            $"images/{dirName}");
                     }
                 }
 
                 // Add output
-                await AddDirectoryToArchive(archive, _fs.ResolvePath("output"), "output");
+                await AddDirectoryToArchive(
+                    canonicalSnapshotLease,
+                    archive,
+                    _fs.ResolvePath("output"),
+                    "output");
 
                 // Add config
-                var configPath = _fs.ResolvePath("config.json");
-                if (File.Exists(configPath) && !FileSystemManager.IsReparsePoint(configPath))
-                    archive.CreateEntryFromFile(configPath, "config.json");
+                var configBytes = await _fs.ReadFileBytesAsync(
+                    canonicalSnapshotLease,
+                    "config.json");
+                if (configBytes != null)
+                    await AddBytesToArchiveAsync(archive, "config.json", configBytes);
 
                 // Add metadata
                 var metadata = new SaveMetadata
@@ -391,10 +421,14 @@ public class SaveLoadService
     private static bool IsTransientSaveMetadataReadException(Exception ex) =>
         ex is IOException or UnauthorizedAccessException;
 
-    private Task AddDirectoryToArchive(ZipArchive archive, string sourceDir, string entryPrefix)
+    private async Task AddDirectoryToArchive(
+        FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
+        ZipArchive archive,
+        string sourceDir,
+        string entryPrefix)
     {
         if (!Directory.Exists(sourceDir) || FileSystemManager.IsReparsePoint(sourceDir))
-            return Task.CompletedTask;
+            return;
 
         foreach (var file in FileSystemManager.EnumerateFilesWithoutFollowingReparsePoints(sourceDir, "*"))
         {
@@ -403,9 +437,31 @@ public class SaveLoadService
             if (EphemeralControlFiles.Contains(entryPath) ||
                 EphemeralPathPrefixes.Any(prefix => entryPath.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
                 continue;
-            archive.CreateEntryFromFile(file, entryPath);
+
+            var canonicalRelativePath = Path.GetRelativePath(_fs.GameSessionPath, file)
+                .Replace('\\', '/');
+            var content = await _fs.ReadFileBytesAsync(
+                canonicalSnapshotLease,
+                canonicalRelativePath);
+            if (content == null)
+            {
+                throw new FileNotFoundException(
+                    "Canonical save-snapshot file disappeared before verified read.",
+                    file);
+            }
+
+            await AddBytesToArchiveAsync(archive, entryPath, content);
         }
-        return Task.CompletedTask;
+    }
+
+    private static async Task AddBytesToArchiveAsync(
+        ZipArchive archive,
+        string entryPath,
+        byte[] content)
+    {
+        var entry = archive.CreateEntry(entryPath);
+        await using var stream = entry.Open();
+        await stream.WriteAsync(content);
     }
 
     private static bool TryResolveArchiveEntryTargetPath(string sessionRoot, string archiveEntryPath, out string targetPath)
