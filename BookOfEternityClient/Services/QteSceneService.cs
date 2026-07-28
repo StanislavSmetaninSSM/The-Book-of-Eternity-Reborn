@@ -756,7 +756,7 @@ public sealed partial class QteSceneService
         FileSystemManager.CanonicalWriteLease writeLease)
     {
         EnsureCanonicalWriteLease(writeLease);
-        var path = ResolveDarenProfilePath();
+        var path = ResolveDarenProfilePath(_fs);
         if (!File.Exists(path))
             return new DarenRewardProfileState();
 
@@ -769,27 +769,6 @@ public sealed partial class QteSceneService
         {
             return new DarenRewardProfileState();
         }
-    }
-
-    internal Action? PrepareDarenProfileRollback(
-        FileSystemManager.CanonicalWriteLease writeLease)
-    {
-        EnsureCanonicalWriteLease(writeLease);
-        var path = ResolveDarenProfilePath();
-        var existed = File.Exists(path);
-        var before = existed ? File.ReadAllBytes(path) : null;
-        return () =>
-        {
-            EnsureCanonicalWriteLease(writeLease);
-            if (!existed)
-            {
-                if (File.Exists(path))
-                    File.Delete(path);
-                return;
-            }
-
-            WriteExternalFileAtomic(path, before!);
-        };
     }
 
     internal Action PrepareStateManagerRollback()
@@ -866,7 +845,7 @@ public sealed partial class QteSceneService
         DarenRewardProfileState profile)
     {
         EnsureCanonicalWriteLease(writeLease);
-        var path = ResolveDarenProfilePath();
+        var path = ResolveDarenProfilePath(_fs);
         var content = Encoding.UTF8.GetBytes(
             JsonSerializer.Serialize(profile, JsonOpts));
         await Task.Run(() => WriteExternalFileAtomic(path, content));
@@ -968,12 +947,33 @@ public sealed partial class QteSceneService
         return -1;
     }
 
-    private string ResolveDarenProfilePath() =>
+    internal static string ResolveDarenProfilePath(FileSystemManager fs) =>
         Path.Combine(
-            _fs.BasePath,
+            fs.BasePath,
             DarenQteRewardProfileService.ProfileRelativePath.Replace(
                 '/',
                 Path.DirectorySeparatorChar));
+
+    internal static byte[]? ReadDarenProfileRollbackBytes(FileSystemManager fs)
+    {
+        var path = ResolveDarenProfilePath(fs);
+        return File.Exists(path) ? File.ReadAllBytes(path) : null;
+    }
+
+    internal static void RestoreDarenProfileRollbackBytes(
+        FileSystemManager fs,
+        byte[]? content)
+    {
+        var path = ResolveDarenProfilePath(fs);
+        if (content == null)
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+            return;
+        }
+
+        WriteExternalFileAtomic(path, content);
+    }
 
     private static void WriteExternalFileAtomic(string path, byte[] content)
     {

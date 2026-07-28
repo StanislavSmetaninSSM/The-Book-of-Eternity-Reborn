@@ -57,6 +57,124 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var saveDirectory = _fs.ResolvePath("saves/manual_saves");
+        var displacedSaveDirectory = _fs.ResolvePath("saves/manual_saves-original");
+        var outsideDirectory = Path.Combine(
+            Path.GetTempPath(),
+            "boe-save-publish-outside-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(outsideDirectory);
+        var swapped = false;
+        var service = new SaveLoadService(
+            _fs,
+            new StateManager(
+                _fs,
+                new GameSettings(),
+                NullLogger<StateManager>.Instance),
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeSaveCommitAsync = () =>
+                {
+                    Directory.Move(saveDirectory, displacedSaveDirectory);
+                    CreateDirectoryJunction(saveDirectory, outsideDirectory);
+                    swapped = true;
+                    var stagedSave = Directory
+                        .GetFiles(displacedSaveDirectory, "*.tmp.*")
+                        .SingleOrDefault();
+                    if (stagedSave != null)
+                    {
+                        File.Copy(
+                            stagedSave,
+                            Path.Combine(outsideDirectory, Path.GetFileName(stagedSave)));
+                    }
+                    return Task.CompletedTask;
+                }
+            });
+
+        try
+        {
+            Assert.False(await service.SaveGameAsync(
+                "save_destination_race",
+                "save destination race regression"));
+            Assert.True(swapped);
+            Assert.Empty(Directory.GetFiles(outsideDirectory, "*.zip"));
+        }
+        finally
+        {
+            if (Directory.Exists(saveDirectory) && FileSystemManager.IsReparsePoint(saveDirectory))
+                Directory.Delete(saveDirectory, recursive: false);
+            if (Directory.Exists(displacedSaveDirectory))
+                Directory.Move(displacedSaveDirectory, saveDirectory);
+            if (Directory.Exists(outsideDirectory))
+                Directory.Delete(outsideDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string oldAutosaveRelativePath = "saves/autosaves/old.zip";
+        await _fs.WriteFileAtomicBytesAsync(oldAutosaveRelativePath, [1, 2, 3]);
+        var oldAutosavePath = _fs.ResolvePath(oldAutosaveRelativePath);
+        File.SetCreationTimeUtc(oldAutosavePath, DateTime.UtcNow.AddDays(-2));
+
+        var autosaveDirectory = _fs.ResolvePath("saves/autosaves");
+        var displacedAutosaveDirectory = _fs.ResolvePath("saves/autosaves-original");
+        var outsideDirectory = Path.Combine(
+            Path.GetTempPath(),
+            "boe-autosave-delete-outside-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(outsideDirectory);
+        var outsideOldAutosave = Path.Combine(outsideDirectory, "old.zip");
+        await File.WriteAllBytesAsync(outsideOldAutosave, [9, 8, 7]);
+        var swapped = false;
+        var service = new SaveLoadService(
+            _fs,
+            new StateManager(
+                _fs,
+                new GameSettings { MaxAutosaves = 1 },
+                NullLogger<StateManager>.Instance),
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeAutosaveDeletionAsync = () =>
+                {
+                    Directory.Move(autosaveDirectory, displacedAutosaveDirectory);
+                    CreateDirectoryJunction(autosaveDirectory, outsideDirectory);
+                    swapped = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        try
+        {
+            Assert.True(await service.AutosaveAsync(12));
+            Assert.True(swapped);
+            Assert.True(File.Exists(outsideOldAutosave));
+            Assert.Equal(new byte[] { 9, 8, 7 }, await File.ReadAllBytesAsync(outsideOldAutosave));
+        }
+        finally
+        {
+            if (Directory.Exists(autosaveDirectory) &&
+                FileSystemManager.IsReparsePoint(autosaveDirectory))
+            {
+                Directory.Delete(autosaveDirectory, recursive: false);
+            }
+            if (Directory.Exists(displacedAutosaveDirectory))
+                Directory.Move(displacedAutosaveDirectory, autosaveDirectory);
+            if (Directory.Exists(outsideDirectory))
+                Directory.Delete(outsideDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task SaveAndLoad_TreatsProgressionReportAsEphemeralControlFile()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -102,6 +220,45 @@ public sealed class SaveLoadServiceTests : IDisposable
 
         Assert.True(await _service.LoadGameAsync(savePath));
         Assert.False(_fs.FileExists(path));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_ExcludesBrowserRollbackTransactions()
+    {
+        var stalePath =
+            $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_write/stale_evidence/marker.json";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Chaos Sea\"}");
+        await _fs.WriteFileAtomicAsync(stalePath, "{\"stale\":true}");
+
+        Assert.True(await _service.SaveGameAsync(
+            "ephemeral_browser_rollback",
+            "browser rollback save regression"));
+
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        using var archive = ZipFile.OpenRead(savePath);
+        Assert.Null(archive.GetEntry(stalePath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_StripsBrowserRollbackTransactionsFromLegacyArchive()
+    {
+        var stalePath =
+            $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_write/legacy_evidence/marker.json";
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Chaos Sea\"}");
+        Assert.True(await _service.SaveGameAsync(
+            "legacy_browser_rollback",
+            "legacy browser rollback load regression"));
+
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        using (var archive = ZipFile.Open(savePath, ZipArchiveMode.Update))
+        {
+            var entry = archive.CreateEntry(stalePath);
+            await using var stream = entry.Open();
+            await stream.WriteAsync(System.Text.Encoding.UTF8.GetBytes("{\"stale\":true}"));
+        }
+
+        Assert.True(await _service.LoadGameAsync(savePath));
+        Assert.False(Directory.Exists(_fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)));
     }
 
     [Fact]

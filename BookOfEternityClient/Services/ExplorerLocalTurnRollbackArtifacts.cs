@@ -8,6 +8,7 @@ namespace BookOfEternityClient.Services;
 public static class ExplorerLocalTurnRollbackArtifacts
 {
     public const string Root = "game_state/control/explorer_local_turn_rollback";
+    internal const string DarenRewardProfileExternalFileId = "daren_reward_profile";
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string BrowserWriteManifestFileName = "browser_write_manifest.json";
     private static readonly JsonSerializerOptions ManifestJsonOptions = new()
@@ -25,6 +26,12 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string? BackupPath,
         string? Sha256);
 
+    internal sealed record BrowserWriteExternalRollbackEntry(
+        string FileId,
+        bool Existed,
+        string? BackupPath,
+        string? Sha256);
+
     internal sealed record BrowserWriteRollbackManifest(
         int SchemaVersion,
         string TransactionKind,
@@ -32,7 +39,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string Scope,
         string CreatedAtUtc,
         IReadOnlyList<BrowserWriteRollbackEntry> Entries,
-        IReadOnlyList<string>? CleanupDirectories = null);
+        IReadOnlyList<string>? CleanupDirectories = null,
+        IReadOnlyList<BrowserWriteExternalRollbackEntry>? ExternalEntries = null);
 
     internal sealed record BrowserWriteRollbackTransaction(
         string TransactionRoot,
@@ -40,7 +48,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string Scope,
         string CreatedAtUtc,
         IReadOnlyList<BrowserWriteRollbackEntry> Entries,
-        IReadOnlyList<string> CleanupDirectories);
+        IReadOnlyList<string> CleanupDirectories,
+        IReadOnlyList<BrowserWriteExternalRollbackEntry> ExternalEntries);
 
     public static async Task<string?> StageFileAsync(
         FileSystemManager fs,
@@ -88,7 +97,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         IEnumerable<string> trackedFiles,
         string scope,
-        IEnumerable<string>? rollbackCleanupDirectories = null)
+        IEnumerable<string>? rollbackCleanupDirectories = null,
+        IEnumerable<string>? rollbackExternalFileIds = null)
     {
         var normalizedPaths = trackedFiles
             .Where(static path => !string.IsNullOrWhiteSpace(path))
@@ -110,10 +120,26 @@ public static class ExplorerLocalTurnRollbackArtifacts
             throw new InvalidDataException(
                 "Browser rollback cleanup directory cannot contain its transaction evidence.");
         }
+        var externalFileIds = (rollbackExternalFileIds ?? [])
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => value.Trim())
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (externalFileIds.Any(static value =>
+                !string.Equals(
+                    value,
+                    DarenRewardProfileExternalFileId,
+                    StringComparison.Ordinal)))
+        {
+            throw new InvalidDataException(
+                "Browser rollback external file identifier is unsupported.");
+        }
 
         var safeScope = SafeSegment(scope);
         var createdAtUtc = DateTime.UtcNow.ToString("O");
         var entries = new List<BrowserWriteRollbackEntry>(normalizedPaths.Length);
+        var externalEntries =
+            new List<BrowserWriteExternalRollbackEntry>(externalFileIds.Length);
         var createdPaths = new List<string>();
 
         try
@@ -143,14 +169,40 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     Sha256: ComputeSha256(content)));
             }
 
+            for (var index = 0; index < externalFileIds.Length; index++)
+            {
+                var fileId = externalFileIds[index];
+                var content = ReadExternalRollbackBytes(fs, fileId);
+                if (content == null)
+                {
+                    externalEntries.Add(new BrowserWriteExternalRollbackEntry(
+                        fileId,
+                        Existed: false,
+                        BackupPath: null,
+                        Sha256: null));
+                    continue;
+                }
+
+                var backupPath =
+                    $"{transactionRoot}/external_{index:D4}_{Guid.NewGuid():N}.rollback";
+                await fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
+                createdPaths.Add(backupPath);
+                externalEntries.Add(new BrowserWriteExternalRollbackEntry(
+                    fileId,
+                    Existed: true,
+                    BackupPath: backupPath,
+                    Sha256: ComputeSha256(content)));
+            }
+
             var manifest = new BrowserWriteRollbackManifest(
-                SchemaVersion: 2,
+                SchemaVersion: 3,
                 TransactionKind: "browser_local_write",
                 Status: "staged",
                 Scope: safeScope,
                 CreatedAtUtc: createdAtUtc,
                 Entries: entries,
-                CleanupDirectories: cleanupDirectories);
+                CleanupDirectories: cleanupDirectories,
+                ExternalEntries: externalEntries);
             await fs.WriteFileAtomicAsync(
                 writeLease,
                 manifestPath,
@@ -162,7 +214,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 safeScope,
                 createdAtUtc,
                 entries,
-                cleanupDirectories);
+                cleanupDirectories,
+                externalEntries);
         }
         catch
         {
@@ -190,13 +243,14 @@ public static class ExplorerLocalTurnRollbackArtifacts
         BrowserWriteRollbackTransaction transaction)
     {
         var manifest = new BrowserWriteRollbackManifest(
-            SchemaVersion: 2,
+            SchemaVersion: 3,
             TransactionKind: "browser_local_write",
             Status: "committed",
             Scope: transaction.Scope,
             CreatedAtUtc: transaction.CreatedAtUtc,
             Entries: transaction.Entries,
-            CleanupDirectories: transaction.CleanupDirectories);
+            CleanupDirectories: transaction.CleanupDirectories,
+            ExternalEntries: transaction.ExternalEntries);
         await fs.WriteFileAtomicAsync(
             writeLease,
             transaction.ManifestPath,
@@ -333,7 +387,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string manifestPath,
         BrowserWriteRollbackManifest manifest)
     {
-        if (manifest.SchemaVersion is not (1 or 2) ||
+        if (manifest.SchemaVersion is not (1 or 2 or 3) ||
             !string.Equals(manifest.TransactionKind, "browser_local_write", StringComparison.Ordinal) ||
             manifest.Status is not ("staged" or "committed") ||
             string.IsNullOrWhiteSpace(manifest.Scope) ||
@@ -433,6 +487,64 @@ public static class ExplorerLocalTurnRollbackArtifacts
             });
         }
 
+        var sourceExternalEntries = manifest.ExternalEntries ?? [];
+        if (manifest.SchemaVersion < 3 && sourceExternalEntries.Count > 0)
+        {
+            throw new InvalidDataException(
+                $"Browser rollback manifest '{manifestPath}' declares external evidence under a legacy schema.");
+        }
+
+        var externalFileIds = new HashSet<string>(StringComparer.Ordinal);
+        var externalEntries =
+            new List<BrowserWriteExternalRollbackEntry>(sourceExternalEntries.Count);
+        foreach (var entry in sourceExternalEntries)
+        {
+            if (entry == null ||
+                !string.Equals(
+                    entry.FileId,
+                    DarenRewardProfileExternalFileId,
+                    StringComparison.Ordinal) ||
+                !externalFileIds.Add(entry.FileId))
+            {
+                throw new InvalidDataException(
+                    $"Browser rollback manifest '{manifestPath}' contains an unsupported or duplicate external file.");
+            }
+
+            if (!entry.Existed)
+            {
+                if (!string.IsNullOrWhiteSpace(entry.BackupPath) ||
+                    !string.IsNullOrWhiteSpace(entry.Sha256))
+                {
+                    throw new InvalidDataException(
+                        $"Browser rollback manifest '{manifestPath}' has evidence for a missing external baseline.");
+                }
+
+                externalEntries.Add(entry);
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(entry.BackupPath) ||
+                !IsSha256(entry.Sha256))
+            {
+                throw new InvalidDataException(
+                    $"Browser rollback manifest '{manifestPath}' has incomplete external exact-byte evidence.");
+            }
+
+            var backupPath = NormalizeRelativePath(fs, entry.BackupPath);
+            if (!backupPath.StartsWith($"{transactionRoot}/", StringComparison.OrdinalIgnoreCase) ||
+                !backupPaths.Add(backupPath))
+            {
+                throw new InvalidDataException(
+                    $"Browser rollback manifest '{manifestPath}' contains an unsafe or duplicate external backup path.");
+            }
+
+            externalEntries.Add(entry with
+            {
+                BackupPath = backupPath,
+                Sha256 = entry.Sha256!.ToLowerInvariant()
+            });
+        }
+
         return (
             new BrowserWriteRollbackTransaction(
                 transactionRoot,
@@ -440,7 +552,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 manifest.Scope,
                 manifest.CreatedAtUtc,
                 entries,
-                cleanupDirectories),
+                cleanupDirectories,
+                externalEntries),
             manifest.Status);
     }
 
@@ -464,6 +577,31 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
         }
 
+        foreach (var entry in transaction.ExternalEntries)
+        {
+            try
+            {
+                var content = await ReadExternalBeforeImageAsync(
+                    fs,
+                    writeLease,
+                    entry);
+                RestoreExternalRollbackBytes(fs, entry.FileId, content);
+            }
+            catch (Exception ex)
+            {
+                failures.Add(new IOException(
+                    $"Could not restore interrupted browser external file '{entry.FileId}'.",
+                    ex));
+            }
+        }
+
+        if (failures.Count > 0)
+        {
+            throw new InvalidDataException(
+                $"Interrupted browser write '{transaction.ManifestPath}' could not be fully restored. Recovery evidence was retained.",
+                new AggregateException(failures));
+        }
+
         foreach (var cleanupDirectory in transaction.CleanupDirectories)
         {
             try
@@ -482,7 +620,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         if (failures.Count > 0)
         {
             throw new InvalidDataException(
-                $"Interrupted browser write '{transaction.ManifestPath}' could not be fully restored. Recovery evidence was retained.",
+                $"Interrupted browser write '{transaction.ManifestPath}' restored tracked files but could not clean dynamic artifacts. Recovery evidence was retained.",
                 new AggregateException(failures));
         }
     }
@@ -509,7 +647,71 @@ public static class ExplorerLocalTurnRollbackArtifacts
 
     private static bool IsAllowedRollbackCleanupDirectory(string path) =>
         string.Equals(path, PendingTurnSnapshotDirectory, StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith(Root + "/", StringComparison.OrdinalIgnoreCase);
+        string.Equals(
+            path,
+            $"{Root}/browser_direct_gacha",
+            StringComparison.OrdinalIgnoreCase);
+
+    private static byte[]? ReadExternalRollbackBytes(
+        FileSystemManager fs,
+        string fileId) =>
+        fileId switch
+        {
+            DarenRewardProfileExternalFileId =>
+                QteSceneService.ReadDarenProfileRollbackBytes(fs),
+            _ => throw new InvalidDataException(
+                $"Unsupported browser rollback external file '{fileId}'.")
+        };
+
+    private static async Task<byte[]?> ReadExternalBeforeImageAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserWriteExternalRollbackEntry entry)
+    {
+        if (!entry.Existed)
+            return null;
+        if (string.IsNullOrWhiteSpace(entry.BackupPath) ||
+            string.IsNullOrWhiteSpace(entry.Sha256))
+        {
+            throw new InvalidDataException(
+                $"Rollback evidence for external file '{entry.FileId}' is incomplete.");
+        }
+
+        var content = await fs.ReadFileBytesAsync(writeLease, entry.BackupPath);
+        if (content == null)
+        {
+            throw new FileNotFoundException(
+                $"Rollback evidence for external file '{entry.FileId}' is missing.",
+                entry.BackupPath);
+        }
+        if (!string.Equals(
+                ComputeSha256(content),
+                entry.Sha256,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                $"Rollback evidence for external file '{entry.FileId}' failed its exact-byte hash check.");
+        }
+
+        return content;
+    }
+
+    private static void RestoreExternalRollbackBytes(
+        FileSystemManager fs,
+        string fileId,
+        byte[]? content)
+    {
+        if (!string.Equals(
+                fileId,
+                DarenRewardProfileExternalFileId,
+                StringComparison.Ordinal))
+        {
+            throw new InvalidDataException(
+                $"Unsupported browser rollback external file '{fileId}'.");
+        }
+
+        QteSceneService.RestoreDarenProfileRollbackBytes(fs, content);
+    }
 
     private static bool IsSha256(string? value) =>
         value is { Length: 64 } &&

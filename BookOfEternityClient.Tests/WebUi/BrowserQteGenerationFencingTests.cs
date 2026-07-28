@@ -479,6 +479,43 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenCompletion_StagesExternalProfileRollbackBeforeProfileWriteCompletes()
+    {
+        var observedDurableExternalRollback = false;
+        var fs = CreateFileSystem();
+        var web = CreateWebService(
+            fs,
+            new QteSceneServiceHooks
+            {
+                AfterDarenProfileWrittenAsync = async () =>
+                {
+                    var rollbackRoot = fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
+                    var manifestPath = Directory
+                        .GetFiles(
+                            rollbackRoot,
+                            "browser_write_manifest.json",
+                            SearchOption.AllDirectories)
+                        .Single();
+                    var manifest = await File.ReadAllTextAsync(manifestPath);
+                    observedDurableExternalRollback = manifest.Contains(
+                        ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId,
+                        StringComparison.Ordinal);
+                }
+            });
+        var state = await web.StartDarenShowcaseAsync();
+
+        while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
+        {
+            var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
+            state = await web.ResolveDarenShowcaseActionAsync(
+                new DarenShowcaseActionRequest(action.ActionId, "success"));
+        }
+
+        Assert.Equal("Completed", state.State);
+        Assert.True(observedDurableExternalRollback);
+    }
+
+    [Fact]
     public async Task DarenCompletion_LateProfileFailureRollsBackProfileAndAttempt()
     {
         var failProfileWrite = true;

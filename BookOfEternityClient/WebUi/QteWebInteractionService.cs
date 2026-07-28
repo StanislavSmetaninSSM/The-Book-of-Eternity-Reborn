@@ -522,8 +522,10 @@ public sealed class QteWebInteractionService
                         : "Вылазка завершена.",
                     error: null);
             },
-            prepareAfterRollback: () =>
-                _qteSceneService.PrepareDarenProfileRollback(writeLease));
+            rollbackExternalFileIds:
+            [
+                ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId
+            ]);
 
         if (!result.Success)
         {

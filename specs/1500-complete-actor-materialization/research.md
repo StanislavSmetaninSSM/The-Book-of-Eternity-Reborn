@@ -744,6 +744,57 @@ daemon entrypoints rather than a selected subset.
 **Rationale**: SDK globs can hide missing files locally, while stale active
 instructions can make the GM generate state the validator correctly rejects.
 
+## Post-T156 Sol/max filesystem decisions
+
+### Decision 72: Rollback evidence outlives every fallible restore step
+
+**Decision**: Browser recovery restores every canonical and typed external
+before-image before deleting dynamic artifacts. Restore or cleanup failure keeps
+the manifest and remaining evidence. Cleanup directories use an exact
+client-owned allowlist rather than rollback-root ancestry.
+
+**Rationale**: A partial restore is not a successful transaction resolution.
+Deleting snapshots or arbitrary rollback descendants after one failed restore
+destroys both repair authority and forensic evidence.
+
+### Decision 73: `.boe_runtime` is physical authority, not a lexical namespace
+
+**Decision**: Runtime locks and proposal/save staging reject reparse roots,
+ancestors, and targets and repeat confinement checks around lock acquisition,
+publication, and cleanup.
+
+**Rationale**: A canonical session lock is ineffective when a runtime alias lets
+two processes acquire physically different locks for the same logical session.
+
+### Decision 74: The Daren reward profile joins durable browser atomicity
+
+**Decision**: The browser transaction records a typed exact-byte before-image of
+the external Daren reward profile before the profile write. Staged recovery
+restores it before mutation or replacement; committed recovery preserves it.
+
+**Rationale**: An in-memory rollback closure disappears on process termination
+and can leave a permanent reward without the canonical completion that granted
+it.
+
+### Decision 75: Save publication and retirement use canonical mutation gates
+
+**Decision**: Save archives are assembled under no-follow runtime staging and
+published through one generation-bound canonical move. Autosave enumeration
+does not grant deletion authority; each relative target is revalidated under
+the lease at deletion.
+
+**Rationale**: Validation before ZIP publication or directory enumeration leaves
+a reparse swap window that can publish or delete outside the active session.
+
+### Decision 76: A save never transports rollback authority
+
+**Decision**: Browser rollback transaction roots are omitted from new archives
+and stripped from replacement state loaded from legacy or crafted archives.
+
+**Rationale**: Recovery evidence belongs to one exact generation. Importing it
+into a replacement session can roll new canonical bytes back to an unrelated
+old baseline.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

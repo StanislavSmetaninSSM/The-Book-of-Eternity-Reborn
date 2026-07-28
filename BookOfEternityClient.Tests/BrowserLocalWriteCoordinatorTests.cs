@@ -246,6 +246,81 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     }
 
     [Fact]
+    public async Task InterruptedStagedBrowserWrite_RestoresExternalDarenRewardProfile()
+    {
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        await File.WriteAllTextAsync(profilePath, "{\"tier\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                ["game_state/meta/soul_state.json"],
+                "browser_write",
+                rollbackExternalFileIds:
+                [
+                    ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId
+                ]);
+            await File.WriteAllTextAsync(profilePath, "{\"tier\":\"interrupted\"}");
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await restartedFs.WriteFileAtomicAsync(
+            "game_state/meta/external_profile_recovery_trigger.json",
+            "{\"ok\":true}");
+
+        Assert.Equal("{\"tier\":\"before\"}", await File.ReadAllTextAsync(profilePath));
+        Assert.False(restartedFs.FileExists(transaction.ManifestPath));
+    }
+
+    [Fact]
+    public async Task SessionReplacementLease_RecoversInterruptedExternalProfileBeforeReplacingSession()
+    {
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        await File.WriteAllTextAsync(profilePath, "{\"tier\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                ["game_state/meta/soul_state.json"],
+                "browser_write",
+                rollbackExternalFileIds:
+                [
+                    ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId
+                ]);
+            await File.WriteAllTextAsync(profilePath, "{\"tier\":\"interrupted\"}");
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await using var lifecycleLease =
+            await restartedFs.AcquireSessionLifecycleLeaseAsync();
+        await using var replacementLease =
+            await restartedFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
+
+        Assert.Equal("{\"tier\":\"before\"}", await File.ReadAllTextAsync(profilePath));
+        Assert.False(restartedFs.FileExists(replacementLease, transaction.ManifestPath));
+    }
+
+    [Fact]
     public async Task BrowserWriteRollbackCleanup_RejectsBroadCanonicalDirectory()
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
@@ -257,6 +332,20 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 ["game_state/meta/soul_state.json"],
                 "browser_write",
                 ["lore"]));
+    }
+
+    [Fact]
+    public async Task BrowserWriteRollbackCleanup_RejectsUnownedRollbackSubtree()
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                ["game_state/meta/soul_state.json"],
+                "browser_write",
+                [$"{ExplorerLocalTurnRollbackArtifacts.Root}/another_transaction"]));
     }
 
     [Fact]
@@ -380,6 +469,9 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     {
         const string blockedPath = "game_state/meta/interrupted_blocked.json";
         const string restorablePath = "game_state/meta/interrupted_restorable.json";
+        const string snapshotRoot = "game_state/control/pending_turn_snapshot";
+        var dynamicRollbackRoot =
+            $"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_direct_gacha";
         await _fs.WriteFileAtomicAsync(blockedPath, "{\"value\":\"before\"}");
         await _fs.WriteFileAtomicAsync(restorablePath, "{\"value\":\"before\"}");
 
@@ -390,7 +482,8 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 _fs,
                 writeLease,
                 [blockedPath, restorablePath],
-                "browser_write");
+                "browser_write",
+                [snapshotRoot, dynamicRollbackRoot]);
             await _fs.WriteFileAtomicAsync(
                 writeLease,
                 blockedPath,
@@ -399,6 +492,14 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 writeLease,
                 restorablePath,
                 "{\"value\":\"interrupted\"}");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                $"{snapshotRoot}/game_state/meta/soul_state.json",
+                "{\"snapshot\":true}");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                $"{dynamicRollbackRoot}/123_evidence/soul_state.rollback.1",
+                "{\"rollback\":true}");
         }
 
         var restartedFs = new FileSystemManager(
@@ -422,6 +523,8 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
             Assert.All(
                 transaction.Entries.Where(static entry => entry.Existed),
                 entry => Assert.True(restartedFs.FileExists(entry.BackupPath!)));
+            Assert.True(Directory.Exists(restartedFs.ResolvePath(snapshotRoot)));
+            Assert.True(Directory.Exists(restartedFs.ResolvePath(dynamicRollbackRoot)));
             Assert.False(restartedFs.FileExists("game_state/meta/blocked_recovery_trigger.json"));
         }
 

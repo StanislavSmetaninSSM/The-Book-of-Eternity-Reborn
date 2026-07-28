@@ -1256,6 +1256,69 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task AcquireCanonicalWriteLease_RejectsRuntimeRootReparsePoint()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var runtimeRoot = Path.Combine(_fs.BasePath, ".boe_runtime");
+        var displacedRuntimeRoot = Path.Combine(_fs.BasePath, ".boe_runtime-original");
+        var outsideDirectory = Path.Combine(_rootPath, "runtime-root-outside");
+        Directory.CreateDirectory(outsideDirectory);
+        Directory.Move(runtimeRoot, displacedRuntimeRoot);
+        if (!TryCreateDirectoryLink(runtimeRoot, outsideDirectory))
+        {
+            Directory.Move(displacedRuntimeRoot, runtimeRoot);
+            return;
+        }
+
+        try
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(
+                async () => await _fs.AcquireCanonicalWriteLeaseAsync());
+        }
+        finally
+        {
+            if (Directory.Exists(runtimeRoot) && FileSystemManager.IsReparsePoint(runtimeRoot))
+                Directory.Delete(runtimeRoot);
+            if (Directory.Exists(displacedRuntimeRoot))
+                Directory.Move(displacedRuntimeRoot, runtimeRoot);
+        }
+    }
+
+    [Fact]
+    public async Task AcquireCanonicalWriteLease_RejectsRuntimeLockDirectoryReparsePoint()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var runtimeRoot = Path.Combine(_fs.BasePath, ".boe_runtime");
+        var lockRoot = Path.Combine(runtimeRoot, "locks");
+        var displacedLockRoot = Path.Combine(runtimeRoot, "locks-original");
+        var outsideDirectory = Path.Combine(_rootPath, "runtime-lock-outside");
+        Directory.CreateDirectory(outsideDirectory);
+        Directory.Move(lockRoot, displacedLockRoot);
+        if (!TryCreateDirectoryLink(lockRoot, outsideDirectory))
+        {
+            Directory.Move(displacedLockRoot, lockRoot);
+            return;
+        }
+
+        try
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(
+                async () => await _fs.AcquireCanonicalWriteLeaseAsync());
+        }
+        finally
+        {
+            if (Directory.Exists(lockRoot) && FileSystemManager.IsReparsePoint(lockRoot))
+                Directory.Delete(lockRoot);
+            if (Directory.Exists(displacedLockRoot))
+                Directory.Move(displacedLockRoot, lockRoot);
+        }
+    }
+
+    [Fact]
     public async Task RestoreBackup_RejectsBackupOutsideCanonicalSession()
     {
         const string originalPath = "game_state/world/restore-target.json";

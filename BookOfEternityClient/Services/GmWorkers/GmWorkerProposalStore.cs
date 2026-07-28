@@ -40,11 +40,7 @@ public sealed class GmWorkerProposalStore
             return WorkerProposalPublicationResult.Rejected(
                 "Worker proposal id is reserved for the derived proposal inbox namespace.");
 
-        var stagingRoot = Path.Combine(
-            _fs.BasePath,
-            ".boe_runtime",
-            "proposal-staging",
-            Guid.NewGuid().ToString("N"));
+        var stagingRoot = _fs.CreateRuntimeProposalStagingRoot();
         var stagingBundleRoot = Path.Combine(stagingRoot, proposal.ProposalId);
         var finalBundleRelativePath = $"{ProposalRoot}/{proposal.ProposalId}";
         var finalBundleRoot = _fs.ResolvePath(finalBundleRelativePath);
@@ -143,8 +139,7 @@ public sealed class GmWorkerProposalStore
         {
             try
             {
-                if (Directory.Exists(stagingRoot))
-                    Directory.Delete(stagingRoot, recursive: true);
+                _fs.DeleteRuntimeProposalStagingRoot(stagingRoot);
             }
             catch (Exception)
             {

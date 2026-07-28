@@ -270,6 +270,25 @@ Spend, snapshot, authority, and request files form one canonical transaction.
 Media generation downloads to an external staging file and commits the final
 bytes atomically only after generation verification under canonical authority.
 
+Durable browser rollback manifest schema 3 contains canonical `entries`, exact
+allowlisted `cleanupDirectories`, and typed `externalEntries`. An external entry
+uses a closed client-owned file identifier, an `existed` flag, an optional
+canonical backup path beneath the transaction root, and SHA-256 of the exact
+before-image. The current typed external surface is the Daren reward profile.
+`staged` recovery restores all canonical and external entries before any dynamic
+cleanup; any failure retains the manifest and evidence. `committed` recovery
+preserves accepted bytes and removes only the transaction evidence.
+
+`.boe_runtime` is the physical authority root for canonical/lifecycle locks and
+client staging. Proposal and save staging roots are unique children beneath
+their exact area, reject reparse ancestors/targets, and are revalidated before
+publication or cleanup. Save ZIP bytes move from `.boe_runtime/save-staging`
+into `game_session/saves/**` only under the canonical generation-bound lease.
+Autosave candidates become canonical relative paths before a deletion barrier
+and each deletion repeats no-follow validation. Browser rollback roots are
+ephemeral: save capture omits them and replacement cleanup removes any such
+root present in legacy or crafted archives.
+
 ## Validation issue families
 
 - `actor_materialization_missing`

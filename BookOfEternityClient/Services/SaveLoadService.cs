@@ -13,6 +13,7 @@ internal sealed class SaveLoadServiceHooks
 {
     internal Func<Task>? BeforeLoadLeaseAcquisitionAsync { get; init; }
     internal Func<Task>? BeforeAutosaveCleanupLeaseAcquisitionAsync { get; init; }
+    internal Func<Task>? BeforeAutosaveDeletionAsync { get; init; }
     internal Func<Task>? BeforeSaveCommitAsync { get; init; }
 }
 
@@ -41,6 +42,7 @@ public class SaveLoadService
     private static readonly string[] EphemeralPathPrefixes =
     {
         "game_state/control/pending_turn_snapshot/",
+        ExplorerLocalTurnRollbackArtifacts.Root + "/",
         QteSceneService.QteNormalizerBackupDirectory + "/",
         "worker_tasks/",
         "worker_proposals/"
@@ -93,6 +95,7 @@ public class SaveLoadService
         string saveDir = "saves/manual_saves",
         int turnNumber = 0)
     {
+        string? stagingRoot = null;
         string? temporaryPath = null;
         try
         {
@@ -100,12 +103,11 @@ public class SaveLoadService
             var state = _stateManager.CurrentState;
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var fileName = SanitizeFileName($"{saveName}_{timestamp}.zip");
-            var fullPath = _fs.ResolvePath(Path.Combine(saveDir, fileName));
-
-            var dir = Path.GetDirectoryName(fullPath);
-            if (dir != null && !Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-            temporaryPath = fullPath + ".tmp." + Guid.NewGuid().ToString("N");
+            var destinationRelativePath = Path.Combine(saveDir, fileName)
+                .Replace('\\', '/');
+            _ = _fs.ResolvePath(destinationRelativePath);
+            stagingRoot = _fs.CreateRuntimeSaveStagingRoot();
+            temporaryPath = Path.Combine(stagingRoot, "save.zip");
 
             using (var archive = ZipFile.Open(temporaryPath, ZipArchiveMode.Create))
             {
@@ -194,7 +196,10 @@ public class SaveLoadService
             }
             if (_hooks?.BeforeSaveCommitAsync != null)
                 await _hooks.BeforeSaveCommitAsync();
-            File.Move(temporaryPath, fullPath);
+            await _fs.MoveRuntimeFileIntoCanonicalSessionAsync(
+                canonicalSnapshotLease,
+                temporaryPath,
+                destinationRelativePath);
             temporaryPath = null;
 
             _logger.LogInformation("Игра сохранена: {Name}", saveName);
@@ -202,22 +207,25 @@ public class SaveLoadService
         }
         catch (Exception ex)
         {
-            if (!string.IsNullOrWhiteSpace(temporaryPath) && File.Exists(temporaryPath))
+            _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
+            return false;
+        }
+        finally
+        {
+            if (!string.IsNullOrWhiteSpace(stagingRoot))
             {
                 try
                 {
-                    File.Delete(temporaryPath);
+                    _fs.DeleteRuntimeSaveStagingRoot(stagingRoot);
                 }
                 catch (Exception cleanupEx)
                 {
                     _logger.LogWarning(
                         cleanupEx,
-                        "Не удалось удалить временный файл сохранения: {Path}",
-                        temporaryPath);
+                        "Не удалось удалить staging-директорию сохранения: {Path}",
+                        stagingRoot);
                 }
             }
-            _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
-            return false;
         }
     }
 
@@ -517,11 +525,16 @@ public class SaveLoadService
         var files = Directory.GetFiles(fullDir, "*.zip")
             .OrderByDescending(f => File.GetCreationTime(f))
             .Skip(Math.Max(maxSaves, 0))
+            .Select(file => Path.GetRelativePath(_fs.GameSessionPath, file)
+                .Replace('\\', '/'))
             .ToArray();
+
+        if (_hooks?.BeforeAutosaveDeletionAsync != null)
+            await _hooks.BeforeAutosaveDeletionAsync();
 
         foreach (var file in files)
         {
-            try { File.Delete(file); }
+            try { _fs.DeleteFile(writeLease, file); }
             catch { /* ignore cleanup errors */ }
         }
     }

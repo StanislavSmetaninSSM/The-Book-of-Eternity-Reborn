@@ -52,13 +52,24 @@ faction resources/control, and faction power/progression mechanics unassigned;
 any first-turn values require matching structured GM authority rather than
 client defaults.
 
+Phase 31 closes the post-T156 Sol/max filesystem review. Browser rollback
+recovery retains evidence until every canonical and typed external before-image
+has restored and permits cleanup only for exact client-owned roots.
+`.boe_runtime` becomes an explicitly no-follow physical authority for locks,
+proposal staging, and save staging. The external Daren reward profile receives
+a durable typed exact-byte before-image whose staged/committed state survives
+process interruption and session replacement. Saves are built outside the
+canonical session and published through one generation-bound no-follow move;
+autosave deletion revalidates each canonical relative target. Browser rollback
+roots are omitted from saves and stripped from replacement archives.
+
 ## Technical Context
 
 **Language/Version**: C# 12 / .NET 8; PowerShell GM launcher and documentation entrypoints; JSON state contracts
 
 **Primary Dependencies**: `System.Text.Json`, existing file-system abstraction, validation/normalization services, Spectre.Console client stack; no new package
 
-**Storage**: Local file-backed JSON (`game_state/npcs/npc_core.json`, `game_state/meta/afterlife_entity_profiles.json`, Guardian/resident/Shining files, validated pre-turn snapshots) plus client-owned external runtime authority under `.boe_runtime/load-transactions`, `.boe_runtime/worker-apply-transactions`, and `.boe_runtime/session-generation/current.json`; detached workers use a separate external runtime base selected by `BOE_WORKER_RUNTIME_BASE_PATH` or the platform default
+**Storage**: Local file-backed JSON (`game_state/npcs/npc_core.json`, `game_state/meta/afterlife_entity_profiles.json`, Guardian/resident/Shining files, validated pre-turn snapshots) plus client-owned external runtime authority under `.boe_runtime/load-transactions`, `.boe_runtime/worker-apply-transactions`, `.boe_runtime/session-generation/current.json`, `.boe_runtime/proposal-staging`, and `.boe_runtime/save-staging`; detached workers use a separate external runtime base selected by `BOE_WORKER_RUNTIME_BASE_PATH` or the platform default
 
 **Testing**: xUnit through `dotnet test`; documentation/source-guard tests; fixture-driven canonical-state validation
 
@@ -70,7 +81,7 @@ client defaults.
 
 **Constraints**: Preserve legacy saves; duplicate/malformed current and continuity authority fails closed without escaping validation; all historical actor-owned fields remain command-owned; Fate Card reduction reuses full production validation; canonical skills do not require synthetic IDs; no client-authored narrative data; no genre keyword inference or universal characteristic/carrying/class-stat formula; no new cloud dependency; dedicated delta commands and bounded `NPCCoreChanges` retain separate authority; worker repair remains exact-actor/exact-field bounded with explicit operations, detached pinned-context execution, pre-publication content digest verification, globally unique repair dispatch IDs, create-only immutable task reservation, one complete proposal-bundle directory rename guarded by exact current-session task bytes, runtime `MaxConcurrentTasks` with idle gate retirement and process-tree-safe cancellation, private nonce-bound host frames with no worker-visible marker files, Windows Job Object containment with fail-closed unsupported platforms, case-insensitive canonical path identity, explicit Mortal ownership for current-world lore/core player status, afterlife validation-repair surfaces confined to exact paths under `game_state/meta/` while typed content tasks retain exact task-provided control/report surfaces, no-follow cleanup, exact-byte realm/setting authority, and one external canonical write lease shared by apply, bundle publication, built-in backup/restore/clear/save/load operations, lease-aware refresh, and mirror repair; load and worker apply each use durable recoverable external journals; output freshness retains its original target chain and uses strict ordering; metadata stays out of player projections
 
-**Lifecycle constraints**: Post-lease recovery fails every canonical writer closed while a load or worker-apply journal remains unresolved; session-generation authority is external to the swappable save and invalidates stale workers across load/New Game; complete GM flows use an immutable session operation whose generation is checked inside every canonical write and at terminal/final return boundaries; the short lifecycle lease is never held across GM waits and always precedes the canonical lease; public refresh cannot split mirror read and repair across authority moments; configured worker code cannot run before Windows Job attachment or after handshake timeout/cancellation; private host frames require the exact nonce and complete schema; process-tree and unattached-host termination confirmation are bounded; timeout/cancellation remain authoritative; and unconfirmed cleanup quarantines rather than reuses capacity.
+**Lifecycle constraints**: Post-lease recovery fails every canonical writer closed while a load, worker-apply, or staged browser-write transaction remains unresolved; browser recovery runs before ordinary mutation and before replacement, retains evidence on partial restore, and never imports rollback authority from a save; session-generation authority is external to the swappable save and invalidates stale workers across load/New Game; complete GM flows use an immutable session operation whose generation is checked inside every canonical write and at terminal/final return boundaries; the short lifecycle lease is never held across GM waits and always precedes the canonical lease; public refresh cannot split mirror read and repair across authority moments; configured worker code cannot run before Windows Job attachment or after handshake timeout/cancellation; private host frames require the exact nonce and complete schema; process-tree and unattached-host termination confirmation are bounded; timeout/cancellation remain authoritative; and unconfirmed cleanup quarantines rather than reuses capacity.
 
 **Scale/Scope**: Mortal NPC core validation and bounded reduction, afterlife common profiles and cross-file actors, repair harness, System Guardian seed generation, prompts/docs/examples/source guards, focused tests. R3-I-2/R3-I-3/R3-M-1 are Mortal-only and do not alter afterlife pending/control, response, receipt, scheduler, lifecycle, or authority contracts.
 
@@ -190,6 +201,23 @@ earlier phases are tracked before the first Phase 30 verification checkpoint.
 No task may close from an agent report alone; the controller inspects the diff
 and reruns the named focused suite.
 The final independent exact-diff review uses `gpt-5.6-sol` with max reasoning.
+
+## Phase 31 implementation strategy
+
+The five post-T156 findings are remediated as one auxiliary-authority chain:
+
+1. retain browser evidence until complete restore and constrain cleanup to exact
+   owned roots;
+2. make `.boe_runtime` locks and staging paths physical no-follow authority;
+3. persist and recover the Daren external profile before-image;
+4. stage save archives externally and revalidate save publication/autosave
+   deletion at the canonical mutation boundary;
+5. exclude browser rollback roots from every save and replacement import.
+
+Each boundary has a deterministic RED test using injected barriers, exact bytes,
+or Windows junctions. The final gate repeats focused suites, the complete test
+project, Release build, static parsing, Spec Kit analysis, and a fresh
+`gpt-5.6-sol`/max exact-diff review.
 
 ## Complexity Tracking
 

@@ -80,7 +80,95 @@ RED/GREEN regression:
 
 - `SaveLoadServiceTests.SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed`
 
-## Fresh Verification
+## Sol/max Follow-up Findings
+
+### Partial browser restore deleted cleanup authority and accepted broad roots
+
+Recovery previously continued into dynamic cleanup after an earlier tracked
+restore failed, and any descendant of the browser rollback root could be
+declared as cleanup authority. Recovery now stops before cleanup whenever any
+canonical or typed external restore fails, retains the manifest and remaining
+evidence, and accepts only the pending-turn snapshot plus the exact direct-gacha
+rollback root.
+
+RED/GREEN regressions:
+
+- `BrowserLocalWriteCoordinatorTests.InterruptedBrowserRestoreFailure_RetainsEvidenceAndRestoresRemainingFiles`
+- `BrowserLocalWriteCoordinatorTests.BrowserWriteRollbackCleanup_RejectsUnownedRollbackSubtree`
+
+### Runtime locks and staging trusted lexical `.boe_runtime` paths
+
+The canonical and lifecycle locks plus proposal/save staging now share one
+physical runtime authority root. Existing reparse roots, ancestors, and targets
+reject; lock acquisition validates before and after opening; staging
+publication and cleanup repeat runtime confinement at their mutation boundary.
+
+RED/GREEN regressions:
+
+- `FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeRootReparsePoint`
+- `FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeLockDirectoryReparsePoint`
+- existing proposal publication boundary tests remain green.
+
+### The browser Daren reward profile had only in-process rollback
+
+Browser rollback schema 3 carries a closed typed external entry for the Daren
+reward profile with exact-byte SHA-256 evidence. A staged profile write restores
+after restart and before either ordinary mutation or session replacement; the
+completion path proves the durable manifest exists before the profile write can
+finish. Committed transactions preserve the accepted profile.
+
+RED/GREEN regressions:
+
+- `BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RestoresExternalDarenRewardProfile`
+- `BrowserLocalWriteCoordinatorTests.SessionReplacementLease_RecoversInterruptedExternalProfileBeforeReplacingSession`
+- `BrowserQteGenerationFencingTests.DarenCompletion_StagesExternalProfileRollbackBeforeProfileWriteCompletes`
+- existing late-failure and concurrent-replacement Daren tests remain green.
+
+### Save publication and autosave deletion retained destination TOCTOU windows
+
+Save ZIP bytes are now assembled under no-follow `.boe_runtime/save-staging`
+and moved into the canonical session through one generation-bound mutation
+gate. Autosave enumeration produces canonical relative targets; every deletion
+re-enters the no-follow canonical mutation boundary after the deterministic
+race hook.
+
+RED/GREEN regressions:
+
+- `SaveLoadServiceTests.SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession`
+- `SaveLoadServiceTests.AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile`
+
+### Save/load transported browser rollback evidence into another generation
+
+Browser rollback roots are now an ephemeral archive prefix. New saves omit
+them, while load removes the same prefix from legacy or crafted staged sessions
+before replacement.
+
+RED/GREEN regressions:
+
+- `SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions`
+- `SaveLoadServiceTests.LoadGameAsync_StripsBrowserRollbackTransactionsFromLegacyArchive`
+
+## Phase 31 Focused Verification
+
+- Filesystem/browser/QTE/save/proposal focused classes: `118/118` passed.
+- Mandatory afterlife documentation tests: `118/118` passed.
+- Whole-source guard tests: `229/229` passed.
+- `git diff --check`: passed; only configured LF-to-CRLF notices were emitted.
+
+## Phase 31 Full Verification Before Re-review
+
+- Complete test project: `6590/6590` passed.
+- Release solution build: `0` warnings and `0` errors.
+- PowerShell parsing: `4/4` changed scripts passed.
+- JSON parsing: `4/4` changed files passed.
+- No untracked files remain in the worktree.
+- `git diff --check`: passed.
+- Spec Kit consistency: `72` explicitly identified functional requirements,
+  `23` success criteria, and a continuous `T001` through `T164` task sequence
+  with no duplicate IDs, missing task numbers, unresolved placeholders, or
+  missing #1500 traceability.
+
+## Pre-Follow-up Verification
 
 - Focused review regressions: `7/7` passed.
 - Complete proposal-publication store suite: `9/9` passed.
@@ -105,6 +193,13 @@ Therefore Mortal World and afterlife prompts, prose documentation, and worked
 examples require no content update. The worker source guard was updated because
 it directly verifies the changed harness boundary, and the mandatory
 documentation suite remains green.
+
+The Sol/max follow-up remains within the same client-owned boundary. Runtime
+locks/staging, browser rollback evidence, the persistent Daren client profile,
+and save archive hygiene are not GM-authored output contracts. No Mortal or
+afterlife prompt/example prose change is required; Spec Kit and this harness
+evidence record the behavior, and the mandatory documentation suite remains
+green.
 
 ## Remaining Gate
 

@@ -83,7 +83,8 @@ public sealed class BrowserLocalWriteCoordinator
         IReadOnlyCollection<string> rollbackPaths,
         Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
         Func<Action?>? prepareAfterRollback = null,
-        IReadOnlyCollection<string>? rollbackCleanupDirectories = null)
+        IReadOnlyCollection<string>? rollbackCleanupDirectories = null,
+        IReadOnlyCollection<string>? rollbackExternalFileIds = null)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(rollbackPaths);
@@ -98,7 +99,8 @@ public sealed class BrowserLocalWriteCoordinator
                     rollbackPaths,
                     writeOperation,
                     prepareAfterRollback,
-                    rollbackCleanupDirectories));
+                    rollbackCleanupDirectories,
+                    rollbackExternalFileIds));
         }
         catch (SessionReplacedException)
         {
@@ -113,7 +115,8 @@ public sealed class BrowserLocalWriteCoordinator
         IReadOnlyCollection<string> rollbackPaths,
         Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
         Func<Action?>? prepareAfterRollback = null,
-        IReadOnlyCollection<string>? rollbackCleanupDirectories = null)
+        IReadOnlyCollection<string>? rollbackCleanupDirectories = null,
+        IReadOnlyCollection<string>? rollbackExternalFileIds = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(request);
@@ -128,7 +131,8 @@ public sealed class BrowserLocalWriteCoordinator
                 rollbackPaths,
                 writeOperation,
                 prepareAfterRollback,
-                rollbackCleanupDirectories);
+                rollbackCleanupDirectories,
+                rollbackExternalFileIds);
         }
         catch (SessionReplacedException)
         {
@@ -232,7 +236,8 @@ public sealed class BrowserLocalWriteCoordinator
         IReadOnlyCollection<string> rollbackPaths,
         Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
         Func<Action?>? prepareAfterRollback,
-        IReadOnlyCollection<string>? rollbackCleanupDirectories)
+        IReadOnlyCollection<string>? rollbackCleanupDirectories,
+        IReadOnlyCollection<string>? rollbackExternalFileIds)
     {
         var pending = BrowserPendingTurnInspector.Build(_fs);
         if (pending.HasActiveGmTurn)
@@ -257,7 +262,8 @@ public sealed class BrowserLocalWriteCoordinator
             backups = await CaptureRollbackAsync(
                 writeLease,
                 rollbackPaths,
-                rollbackCleanupDirectories);
+                rollbackCleanupDirectories,
+                rollbackExternalFileIds);
             await writeOperation(writeLease);
             await ExplorerLocalTurnRollbackArtifacts.MarkBrowserWriteTransactionCommittedAsync(
                 _fs,
@@ -390,13 +396,15 @@ public sealed class BrowserLocalWriteCoordinator
     private async Task<ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction> CaptureRollbackAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         IEnumerable<string> rollbackPaths,
-        IEnumerable<string>? rollbackCleanupDirectories) =>
+        IEnumerable<string>? rollbackCleanupDirectories,
+        IEnumerable<string>? rollbackExternalFileIds) =>
         await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
             _fs,
             writeLease,
             rollbackPaths,
             "browser_write",
-            rollbackCleanupDirectories);
+            rollbackCleanupDirectories,
+            rollbackExternalFileIds);
 
     private async Task RestoreRollbackAsync(
         FileSystemManager.CanonicalWriteLease writeLease,

@@ -142,16 +142,17 @@ public class FileSystemManager
 
     public string BasePath => _basePath;
     public string GameSessionPath => Path.Combine(_basePath, "game_session");
+    internal string RuntimeRootPath => Path.Combine(_basePath, ".boe_runtime");
     internal string CanonicalWriteLockPath =>
-        Path.Combine(_basePath, ".boe_runtime", "locks", "canonical-write.lock");
+        Path.Combine(RuntimeRootPath, "locks", "canonical-write.lock");
     internal string SessionLifecycleLockPath =>
-        Path.Combine(_basePath, ".boe_runtime", "locks", "session-lifecycle.lock");
+        Path.Combine(RuntimeRootPath, "locks", "session-lifecycle.lock");
     internal string ActiveLoadTransactionJournalPath =>
-        Path.Combine(_basePath, ".boe_runtime", "load-transactions", "active.json");
+        Path.Combine(RuntimeRootPath, "load-transactions", "active.json");
     internal string SessionGenerationPath =>
-        Path.Combine(_basePath, ".boe_runtime", "session-generation", "current.json");
+        Path.Combine(RuntimeRootPath, "session-generation", "current.json");
     internal string ActiveWorkerApplyTransactionJournalPath =>
-        Path.Combine(_basePath, ".boe_runtime", "worker-apply-transactions", "active.json");
+        Path.Combine(RuntimeRootPath, "worker-apply-transactions", "active.json");
 
     public FileSystemManager(string basePath, ILogger<FileSystemManager> logger)
         : this(basePath, logger, PhysicalLoadTransactionOperations.Instance, hooks: null)
@@ -246,7 +247,10 @@ public class FileSystemManager
             throw new InvalidDataException("Canonical game-session path escapes game_session.");
         }
 
-        EnsureNoExistingReparsePoint(sessionRoot, fullPath);
+        EnsureNoExistingReparsePoint(
+            sessionRoot,
+            fullPath,
+            "Canonical game-session");
         return fullPath;
     }
 
@@ -283,13 +287,16 @@ public class FileSystemManager
             Path.AltDirectorySeparatorChar);
     }
 
-    private static void EnsureNoExistingReparsePoint(string sessionRoot, string fullPath)
+    private static void EnsureNoExistingReparsePoint(
+        string authorityRoot,
+        string fullPath,
+        string authorityName)
     {
-        var current = sessionRoot;
+        var current = authorityRoot;
         if (Directory.Exists(current) && IsReparsePoint(current))
-            throw new InvalidDataException("Canonical game_session root cannot be a reparse point.");
+            throw new InvalidDataException($"{authorityName} root cannot be a reparse point.");
 
-        var relative = Path.GetRelativePath(sessionRoot, fullPath);
+        var relative = Path.GetRelativePath(authorityRoot, fullPath);
         if (relative == ".")
             return;
 
@@ -303,7 +310,7 @@ public class FileSystemManager
             if (IsReparsePoint(current))
             {
                 throw new InvalidDataException(
-                    $"Canonical game-session path traverses reparse point '{current}'.");
+                    $"{authorityName} path traverses reparse point '{current}'.");
             }
         }
     }
@@ -667,8 +674,7 @@ public class FileSystemManager
         EnsureSafeCanonicalRelativePath(destinationRelativePath);
 
         var stagingRoot = Path.GetFullPath(Path.Combine(
-            _basePath,
-            ".boe_runtime",
+            RuntimeRootPath,
             "proposal-staging"));
         var sourcePath = Path.GetFullPath(sourceDirectoryPath);
         if (!IsSameOrDescendant(sourcePath, stagingRoot) ||
@@ -678,7 +684,7 @@ public class FileSystemManager
                 "Runtime directory move source must be inside proposal staging.");
         }
 
-        EnsureNoExistingReparsePoint(stagingRoot, sourcePath);
+        EnsureRuntimePathIsSafe(sourcePath);
         if (!Directory.Exists(sourcePath))
             throw new DirectoryNotFoundException(
                 $"Runtime staging directory does not exist: {sourcePath}");
@@ -690,9 +696,60 @@ public class FileSystemManager
         EnsureCanonicalPathStillSafe(destinationRelativePath, destinationPath);
 
         await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
-        EnsureNoExistingReparsePoint(stagingRoot, sourcePath);
+        EnsureRuntimePathIsSafe(sourcePath);
         EnsureCanonicalMutationBoundary(destinationRelativePath, destinationPath);
         Directory.Move(sourcePath, destinationPath);
+    }
+
+    internal string CreateRuntimeProposalStagingRoot()
+        => CreateRuntimeStagingRoot("proposal-staging");
+
+    internal void DeleteRuntimeProposalStagingRoot(string stagingRoot)
+        => DeleteRuntimeStagingRoot("proposal-staging", stagingRoot);
+
+    internal string CreateRuntimeSaveStagingRoot()
+        => CreateRuntimeStagingRoot("save-staging");
+
+    internal void DeleteRuntimeSaveStagingRoot(string stagingRoot)
+        => DeleteRuntimeStagingRoot("save-staging", stagingRoot);
+
+    internal async Task MoveRuntimeFileIntoCanonicalSessionAsync(
+        CanonicalWriteLease writeLease,
+        string sourceFilePath,
+        string destinationRelativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sourceFilePath);
+        EnsureSafeCanonicalRelativePath(destinationRelativePath);
+
+        var saveStagingRoot = Path.GetFullPath(Path.Combine(
+            RuntimeRootPath,
+            "save-staging"));
+        var sourcePath = Path.GetFullPath(sourceFilePath);
+        if (!IsSameOrDescendant(sourcePath, saveStagingRoot) ||
+            string.Equals(
+                sourcePath,
+                saveStagingRoot,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Runtime save source must be inside save staging.");
+        }
+
+        EnsureRuntimePathIsSafe(sourcePath);
+        if (!File.Exists(sourcePath))
+            throw new FileNotFoundException("Runtime staged save does not exist.", sourcePath);
+
+        var destinationPath = ResolvePath(destinationRelativePath);
+        var destinationParent = Path.GetDirectoryName(destinationPath)
+            ?? throw new InvalidDataException("Canonical save destination has no parent directory.");
+        Directory.CreateDirectory(destinationParent);
+        EnsureCanonicalPathStillSafe(destinationRelativePath, destinationPath);
+
+        await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
+        EnsureRuntimePathIsSafe(sourcePath);
+        EnsureCanonicalMutationBoundary(destinationRelativePath, destinationPath);
+        File.Move(sourcePath, destinationPath);
     }
 
     internal void DeleteEmptyDirectories(
@@ -772,10 +829,11 @@ public class FileSystemManager
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = CanonicalWriteLockPath;
-        Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
+        EnsureRuntimeDirectoryExistsAndIsSafe(Path.GetDirectoryName(lockPath)!);
         for (var attempt = 0; attempt < CanonicalWriteLockRetryCount; attempt++)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            EnsureRuntimePathIsSafe(lockPath);
             FileStream stream;
             try
             {
@@ -795,12 +853,23 @@ public class FileSystemManager
                 continue;
             }
 
+            try
+            {
+                EnsureRuntimePathIsSafe(lockPath);
+            }
+            catch
+            {
+                await stream.DisposeAsync();
+                throw;
+            }
+
             var writeLease = new CanonicalWriteLease(this, stream, purpose);
             try
             {
                 RecoverInterruptedLoadTransaction(writeLease);
                 await RecoverInterruptedWorkerApplyTransactionAsync(writeLease);
-                if (purpose == CanonicalWritePurpose.SessionMutation)
+                if (purpose is CanonicalWritePurpose.SessionMutation or
+                    CanonicalWritePurpose.SessionReplacement)
                 {
                     await ExplorerLocalTurnRollbackArtifacts
                         .RecoverInterruptedBrowserWriteTransactionsAsync(this, writeLease);
@@ -860,25 +929,38 @@ public class FileSystemManager
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = SessionLifecycleLockPath;
-        Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
+        EnsureRuntimeDirectoryExistsAndIsSafe(Path.GetDirectoryName(lockPath)!);
         for (var attempt = 0; attempt < SessionLifecycleLockRetryCount; attempt++)
         {
+            EnsureRuntimePathIsSafe(lockPath);
+            FileStream stream;
             try
             {
-                var stream = new FileStream(
+                stream = new FileStream(
                     lockPath,
                     FileMode.OpenOrCreate,
                     FileAccess.ReadWrite,
                     FileShare.None,
                     bufferSize: 1,
                     FileOptions.Asynchronous);
-                return new SessionLifecycleLease(this, stream);
             }
             catch (IOException) when (attempt < SessionLifecycleLockRetryCount - 1)
             {
                 if (_hooks?.SessionLifecycleLockContendedAsync != null)
                     await _hooks.SessionLifecycleLockContendedAsync();
                 await Task.Delay(TransientFileAccessRetryDelay);
+                continue;
+            }
+
+            try
+            {
+                EnsureRuntimePathIsSafe(lockPath);
+                return new SessionLifecycleLease(this, stream);
+            }
+            catch
+            {
+                await stream.DisposeAsync();
+                throw;
             }
         }
 
@@ -1461,6 +1543,60 @@ public class FileSystemManager
             throw new InvalidDataException(
                 "Canonical game_session root must not be a reparse-point alias.");
         }
+    }
+
+    private void EnsureRuntimeDirectoryExistsAndIsSafe(string directoryPath)
+    {
+        Directory.CreateDirectory(RuntimeRootPath);
+        EnsureRuntimePathIsSafe(RuntimeRootPath);
+        Directory.CreateDirectory(directoryPath);
+        EnsureRuntimePathIsSafe(directoryPath);
+    }
+
+    private string CreateRuntimeStagingRoot(string area)
+    {
+        var areaRoot = Path.Combine(RuntimeRootPath, area);
+        EnsureRuntimeDirectoryExistsAndIsSafe(areaRoot);
+
+        var stagingRoot = Path.Combine(areaRoot, Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(stagingRoot);
+        EnsureRuntimePathIsSafe(stagingRoot);
+        return stagingRoot;
+    }
+
+    private void DeleteRuntimeStagingRoot(string area, string stagingRoot)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(stagingRoot);
+        var areaRoot = Path.GetFullPath(Path.Combine(RuntimeRootPath, area));
+        var fullStagingRoot = Path.GetFullPath(stagingRoot);
+        if (!IsSameOrDescendant(fullStagingRoot, areaRoot) ||
+            string.Equals(fullStagingRoot, areaRoot, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Runtime staging cleanup path is outside its authority root.");
+        }
+
+        EnsureRuntimePathIsSafe(fullStagingRoot);
+        if (Directory.Exists(fullStagingRoot))
+            DeleteDirectoryTreeWithoutFollowingReparsePoints(fullStagingRoot);
+    }
+
+    private void EnsureRuntimePathIsSafe(string fullPath)
+    {
+        var runtimeRoot = Path.GetFullPath(RuntimeRootPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var candidate = Path.GetFullPath(fullPath);
+        if (!IsSameOrDescendant(candidate, runtimeRoot))
+        {
+            throw new InvalidDataException(
+                "Client runtime path is outside the physical runtime authority root.");
+        }
+
+        EnsureNoExistingReparsePoint(
+            runtimeRoot,
+            candidate,
+            "Client runtime");
     }
 
     private async Task<FileStream?> OpenCanonicalReadStreamAsync(

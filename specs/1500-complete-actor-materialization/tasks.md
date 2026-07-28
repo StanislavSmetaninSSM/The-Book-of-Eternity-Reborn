@@ -316,3 +316,14 @@
 - [x] T156 Synchronize every active Mortal/afterlife rule, final audit, daemon entrypoint, worked example, manifest, launcher guide, contract matrix, and source guard; remove stale bootstrap-NPC guidance; add every intended source file to version control and verify a clean-checkout build.
   - Evidence: Mortal and afterlife prompts, guides, worked examples, manifests, launcher entrypoints, contract matrix, and source guards are synchronized and pass the 118/118 documentation-sensitive suite. `git ls-files --others --exclude-standard` is empty in the feature worktree. A detached clean checkout at merge commit `4e8ad75f` restored dependencies and built `BookOfEternityClient.sln` in Release with 0 warnings and 0 errors.
 - [ ] T157 Run focused RED/GREEN suites per task, mandatory afterlife documentation tests, broad harness/actor/browser tests, the complete test project, Release build, PowerShell/JSON parsing, `git diff --check`, Spec Kit analysis, and a fresh independent Sol/max exact-diff review; resolve every Critical/Important finding before closing T145/T139/T130 and inherited integration tasks.
+
+## Phase 31 - Post-T156 Sol/max filesystem remediation
+
+- [x] T158 Record the five confirmed rollback/runtime/Daren/save findings as FR-061 through FR-065, SC-023, Decisions 72 through 76, and corresponding plan/data-model changes before final integration.
+- [x] T159 Retain browser rollback evidence until every restore and cleanup step succeeds; reject arbitrary rollback-root descendants as cleanup authority.
+- [x] T160 Make `.boe_runtime` lock, proposal-staging, and save-staging paths no-follow physical authority with boundary revalidation.
+- [x] T161 Persist the Daren external reward-profile before-image in browser rollback schema 3 and recover staged writes before mutation or session replacement.
+- [x] T162 Build saves in runtime staging, publish through a generation-bound canonical move, revalidate autosave deletion after enumeration, and omit/strip browser rollback roots across save/load.
+- [x] T163 Update final remediation evidence and run focused rollback/runtime/Daren/save suites plus mandatory documentation tests.
+  - Evidence: filesystem/browser/QTE/save/proposal focused classes pass 118/118; mandatory afterlife documentation tests pass 118/118; `git diff --check` reports no whitespace errors.
+- [ ] T164 Run the complete verification matrix and a fresh independent Sol/max exact-diff review; resolve every Critical/Important finding before closing T157 and integrating issue #1500.
