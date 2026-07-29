@@ -70,6 +70,12 @@ internal sealed class DarenRewardProfileRollbackTransaction : IDisposable
     {
         fs.EnsureCanonicalWriteLeaseActive(writeLease);
         fs.VerifyCurrentSessionOperation(writeLease);
+        if (!fs.SupportsReversibleOpenedHandlePublication)
+        {
+            throw new PlatformNotSupportedException(
+                "Daren profile rollback capture requires a reversible opened-handle backend.");
+        }
+
         var profilePath = Path.Combine(
             fs.BasePath,
             DarenQteRewardProfileService.ProfileRelativePath.Replace(
@@ -89,64 +95,57 @@ internal sealed class DarenRewardProfileRollbackTransaction : IDisposable
             PhysicalFileAuthority.FileIdentity? baselineIdentity = null;
             string? baselineSha256 = null;
             byte[]? baselineBytes = null;
-            if (OperatingSystem.IsWindows())
+            parentIdentity = PhysicalFileAuthority.CaptureFileIdentity(
+                parentAuthority.Handle!,
+                AuthorityName + " parent");
+            if (!parentIdentity.IsDirectory)
             {
-                parentIdentity = PhysicalFileAuthority.CaptureFileIdentity(
-                    parentAuthority.Handle!,
-                    AuthorityName + " parent");
-                if (!parentIdentity.IsDirectory)
-                {
-                    throw new InvalidDataException(
-                        "Daren reward profile parent is not a directory.");
-                }
-
-                if (File.Exists(profilePath) ||
-                    Directory.Exists(profilePath))
-                {
-                    baselineHandle = PhysicalFileAuthority.OpenForRename(
-                        parentAuthority,
-                        profilePath,
-                        isDirectory: false,
-                        AuthorityName + " baseline");
-                    baselineIdentity =
-                        PhysicalFileAuthority.CaptureFileIdentity(
-                            baselineHandle,
-                            AuthorityName + " baseline");
-                    if (baselineIdentity.IsDirectory ||
-                        baselineIdentity.NumberOfLinks != 1)
-                    {
-                        throw new InvalidDataException(
-                            "Daren reward profile baseline must be one single-link regular file.");
-                    }
-
-                    baselineBytes =
-                        PhysicalFileAuthority.ReadOpenedFileBytes(
-                            baselineHandle,
-                            AuthorityName + " baseline");
-                    baselineSha256 =
-                        PhysicalFileAuthority.ComputeOpenedFileSha256(
-                            baselineHandle,
-                            AuthorityName + " baseline");
-                    PhysicalFileAuthority.EnsureExactFileIdentity(
-                        baselineHandle,
-                        profilePath,
-                        baselineIdentity,
-                        AuthorityName + " baseline completion");
-                }
+                throw new InvalidDataException(
+                    "Daren reward profile parent is not a directory.");
             }
-            else
+
+            var profileEntry = PhysicalFileAuthority.ProbeNamespaceEntry(
+                parentAuthority,
+                profilePath,
+                AuthorityName + " baseline");
+            if (profileEntry ==
+                PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
             {
-                using var stream = PhysicalFileAuthority.OpenReadFile(
+                baselineHandle = PhysicalFileAuthority.OpenForRename(
                     parentAuthority,
                     profilePath,
-                    AuthorityName + " baseline",
-                    asynchronous: false);
-                if (stream != null)
+                    isDirectory: false,
+                    AuthorityName + " baseline");
+                baselineIdentity =
+                    PhysicalFileAuthority.CaptureFileIdentity(
+                        baselineHandle,
+                        AuthorityName + " baseline");
+                if (baselineIdentity.IsDirectory ||
+                    baselineIdentity.NumberOfLinks != 1)
                 {
-                    using var output = new MemoryStream();
-                    stream.CopyTo(output);
-                    baselineBytes = output.ToArray();
+                    throw new InvalidDataException(
+                        "Daren reward profile baseline must be one single-link regular file.");
                 }
+
+                baselineBytes =
+                    PhysicalFileAuthority.ReadOpenedFileBytes(
+                        baselineHandle,
+                        AuthorityName + " baseline");
+                baselineSha256 =
+                    PhysicalFileAuthority.ComputeOpenedFileSha256(
+                        baselineHandle,
+                        AuthorityName + " baseline");
+                PhysicalFileAuthority.EnsureExactFileIdentity(
+                    baselineHandle,
+                    profilePath,
+                    baselineIdentity,
+                    AuthorityName + " baseline completion");
+            }
+            else if (profileEntry !=
+                     PhysicalFileAuthority.NamespaceEntryKind.Missing)
+            {
+                throw new InvalidDataException(
+                    "Daren reward profile baseline is not a physical regular file.");
             }
 
             return new DarenRewardProfileRollbackTransaction(
@@ -409,8 +408,11 @@ internal sealed class DarenRewardProfileRollbackTransaction : IDisposable
             authorityName + " parent");
         if (!expectExistence)
         {
-            if (File.Exists(profilePath) ||
-                Directory.Exists(profilePath))
+            if (PhysicalFileAuthority.ProbeNamespaceEntry(
+                    parentAuthority,
+                    profilePath,
+                    authorityName + " absence") !=
+                PhysicalFileAuthority.NamespaceEntryKind.Missing)
             {
                 throw new InvalidDataException(
                     $"{authorityName} expected exact profile absence.");
@@ -559,8 +561,11 @@ internal sealed class DarenRewardProfileRollbackTransaction : IDisposable
         if (BaselineIdentity == null)
         {
             if ((_pendingPublication == null || _rolledBack) &&
-                (File.Exists(_profilePath) ||
-                 Directory.Exists(_profilePath)))
+                PhysicalFileAuthority.ProbeNamespaceEntry(
+                    _parentAuthority,
+                    _profilePath,
+                    AuthorityName + " baseline absence") !=
+                PhysicalFileAuthority.NamespaceEntryKind.Missing)
             {
                 throw new InvalidDataException(
                     "Daren reward profile baseline absence changed.");

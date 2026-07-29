@@ -90,11 +90,15 @@ internal static class ReversibleFilePublication
             stream.Flush(flushToDisk: true);
         }
 
-        internal bool TryCleanup(PublicationResolution resolution)
+        internal bool TryCleanup(
+            PublicationResolution resolution,
+            Action<string>? beforeCleanupAuthorityRebind = null)
         {
             try
             {
-                MoveToCleanupDebt(resolution);
+                MoveToCleanupDebt(
+                    resolution,
+                    beforeCleanupAuthorityRebind);
                 foreach (var fileName in new[]
                          {
                              DestinationQuarantinedMarker,
@@ -144,7 +148,9 @@ internal static class ReversibleFilePublication
             }
         }
 
-        private void MoveToCleanupDebt(PublicationResolution resolution)
+        private void MoveToCleanupDebt(
+            PublicationResolution resolution,
+            Action<string>? beforeCleanupAuthorityRebind)
         {
             var expectedPrefix = resolution == PublicationResolution.Committed
                 ? CommittedCleanupPrefix
@@ -183,12 +189,10 @@ internal static class ReversibleFilePublication
                 replaceExisting: false,
                 "File publication cleanup debt",
                 requireSingleLink: false);
-            transactionAuthority.Dispose();
-            _transactionAuthority =
-                PhysicalFileAuthority.OpenStableDirectory(
-                    cleanupRoot,
-                    "File publication cleanup debt",
-                    allowRename: true);
+            beforeCleanupAuthorityRebind?.Invoke(cleanupRoot);
+            transactionAuthority.RebindFullPathAfterRename(
+                cleanupRoot,
+                "File publication cleanup debt");
             TransactionRoot = cleanupRoot;
         }
 
@@ -336,7 +340,8 @@ internal static class ReversibleFilePublication
             }
         }
 
-        internal bool TryAcknowledgeCommittedJournal()
+        internal bool TryAcknowledgeCommittedJournal(
+            Action<string>? beforeCleanupAuthorityRebind = null)
         {
             if (!IsCommitted)
                 return false;
@@ -355,7 +360,8 @@ internal static class ReversibleFilePublication
             }
 
             return _journal?.TryCleanup(
-                PublicationResolution.Committed) ?? false;
+                PublicationResolution.Committed,
+                beforeCleanupAuthorityRebind) ?? false;
         }
 
         public void Dispose()
@@ -1286,24 +1292,25 @@ internal static class ReversibleFilePublication
         string destinationPath,
         string authorityName)
     {
-        if (!File.Exists(destinationPath) &&
-            !Directory.Exists(destinationPath))
+        var entry = PhysicalFileAuthority.ProbeNamespaceEntry(
+            destinationParent,
+            destinationPath,
+            authorityName);
+        if (entry == PhysicalFileAuthority.NamespaceEntryKind.Missing)
         {
             return null;
+        }
+        if (entry != PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} destination is not a physical regular file.");
         }
 
-        try
-        {
-            return PhysicalFileAuthority.OpenForRename(
-                destinationParent,
-                destinationPath,
-                isDirectory: false,
-                authorityName);
-        }
-        catch (FileNotFoundException)
-        {
-            return null;
-        }
+        return PhysicalFileAuthority.OpenForRename(
+            destinationParent,
+            destinationPath,
+            isDirectory: false,
+            authorityName);
     }
 
     private static async Task<SafeFileHandle?>

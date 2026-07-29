@@ -370,6 +370,9 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         Assert.Equal(CommandExecutionState.RequiresInput, staleStorage.State);
         Assert.Contains("хранилищ", CollectResultAndPromptText(staleStorage), StringComparison.OrdinalIgnoreCase);
         Assert.Equal(originalInventory, await _fs.ReadFileAsync("game_state/inventory/items.json"));
+        Assert.Equal(
+            CommandExecutionState.Completed,
+            (await CancelAsync(staleStorage)).State);
 
         await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", originalLocation!);
         prompt = await ExecuteAsync("/storage_move");
@@ -420,6 +423,9 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         Assert.Equal(CommandExecutionState.RequiresInput, staleVehicle.State);
         Assert.Contains("транспорт", CollectResultAndPromptText(staleVehicle), StringComparison.OrdinalIgnoreCase);
         Assert.Equal(originalInventory, await _fs.ReadFileAsync("game_state/inventory/items.json"));
+        Assert.Equal(
+            CommandExecutionState.Completed,
+            (await CancelAsync(staleVehicle)).State);
 
         await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", originalVehicles!);
         prompt = await ExecuteAsync("/vehicle_move");
@@ -512,6 +518,11 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         await _commandService.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
             AssertPromptSession(prompt).SessionId,
             Answers(values),
+            OwnerId: "browser-storage-transport-test"));
+
+    private async Task<ExplorerCommandResult> CancelAsync(ExplorerCommandResult prompt) =>
+        await _commandService.CancelPromptSessionAsync(new ExplorerPromptSessionCancelRequest(
+            AssertPromptSession(prompt).SessionId,
             OwnerId: "browser-storage-transport-test"));
 
     private static UiPromptSession AssertPromptSession(ExplorerCommandResult result) =>

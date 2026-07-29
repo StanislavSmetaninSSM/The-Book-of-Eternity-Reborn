@@ -497,6 +497,90 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenCapture_MissingReversibleBackendFailsBeforeRollbackEvidence()
+    {
+        var hooks = FileSystemManagerHookTestHelper.WithBooleanOverride(
+            "SupportsReversibleFileReplacementOverride",
+            false);
+        var fs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        fs.EnsureDirectoryStructure();
+        await using var writeLease =
+            await fs.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<PlatformNotSupportedException>(
+            () => ExplorerLocalTurnRollbackArtifacts
+                .StageBrowserWriteTransactionAsync(
+                    fs,
+                    writeLease,
+                    [],
+                    "browser_write",
+                    rollbackExternalFileIds:
+                    [
+                        ExplorerLocalTurnRollbackArtifacts
+                            .DarenRewardProfileExternalFileId
+                    ]));
+
+        Assert.False(Directory.Exists(
+            fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)));
+    }
+
+    [Fact]
+    public async Task DarenAbsentBaseline_DanglingProfileLinkFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await using var writeLease =
+            await _fs.AcquireCanonicalWriteLeaseAsync();
+        var transaction =
+            await ExplorerLocalTurnRollbackArtifacts
+                .StageBrowserWriteTransactionAsync(
+                    _fs,
+                    writeLease,
+                    [],
+                    "browser_write",
+                    rollbackExternalFileIds:
+                    [
+                        ExplorerLocalTurnRollbackArtifacts
+                            .DarenRewardProfileExternalFileId
+                    ]);
+
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        var missingTarget = Path.Combine(
+            _rootPath,
+            "missing-daren-profile-target.json");
+        if (!TryCreateFileLink(profilePath, missingTarget))
+            return;
+
+        try
+        {
+            Assert.Throws<InvalidDataException>(
+                () => transaction.DarenTransaction!.ReadCurrentBytes());
+            Assert.True(
+                File.GetAttributes(profilePath)
+                    .HasFlag(FileAttributes.ReparsePoint));
+        }
+        finally
+        {
+            try
+            {
+                File.Delete(profilePath);
+            }
+            catch (FileNotFoundException)
+            {
+            }
+        }
+    }
+
+    [Fact]
     public async Task ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock()
     {
         var lockService = new LocalUiSessionLockService(_fs, _timeProvider);
@@ -1280,6 +1364,23 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
 
     private static LocalUiSessionLockOwner Owner(string id, string label) =>
         new(id, "console", label, TimeSpan.FromMinutes(2));
+
+    private static bool TryCreateFileLink(
+        string linkPath,
+        string targetPath)
+    {
+        try
+        {
+            File.CreateSymbolicLink(linkPath, targetPath);
+            return true;
+        }
+        catch (Exception ex) when (
+            ex is IOException or UnauthorizedAccessException or
+                PlatformNotSupportedException)
+        {
+            return false;
+        }
+    }
 
     private sealed class ManualTimeProvider(DateTimeOffset utcNow) : TimeProvider
     {

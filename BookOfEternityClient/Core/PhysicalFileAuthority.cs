@@ -44,8 +44,26 @@ internal static class PhysicalFileAuthority
             _handle = handle;
         }
 
-        internal string FullPath { get; }
+        internal string FullPath { get; private set; }
         internal SafeFileHandle? Handle => _handle;
+
+        internal void RebindFullPathAfterRename(
+            string expectedPath,
+            string authorityName)
+        {
+            var normalizedPath = Path.GetFullPath(expectedPath);
+            if (OperatingSystem.IsWindows())
+            {
+                var handle = _handle ??
+                    throw new ObjectDisposedException(nameof(StableDirectory));
+                EnsureHandlePathMatchesExpectedPath(
+                    handle,
+                    normalizedPath,
+                    authorityName);
+            }
+
+            FullPath = normalizedPath;
+        }
 
         public void Dispose()
         {
@@ -61,6 +79,77 @@ internal static class PhysicalFileAuthority
         ulong FileIdHigh,
         bool IsDirectory,
         uint NumberOfLinks);
+
+    internal enum NamespaceEntryKind
+    {
+        Missing,
+        RegularFile,
+        Directory,
+        ReparsePoint
+    }
+
+    internal static NamespaceEntryKind ProbeNamespaceEntry(
+        StableDirectory parent,
+        string expectedPath,
+        string authorityName)
+    {
+        EnsureDirectChild(parent, expectedPath, authorityName);
+        var normalizedPath = Path.GetFullPath(expectedPath);
+        if (!OperatingSystem.IsWindows())
+        {
+            try
+            {
+                var attributes = File.GetAttributes(normalizedPath);
+                if ((attributes & FileAttributes.ReparsePoint) != 0)
+                    return NamespaceEntryKind.ReparsePoint;
+                return (attributes & FileAttributes.Directory) != 0
+                    ? NamespaceEntryKind.Directory
+                    : NamespaceEntryKind.RegularFile;
+            }
+            catch (FileNotFoundException)
+            {
+                return NamespaceEntryKind.Missing;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return NamespaceEntryKind.Missing;
+            }
+        }
+
+        var handle = CreateFile(
+            ToWindowsExtendedPath(normalizedPath),
+            FileReadAttributes | SynchronizeAccess,
+            FileShareRead | FileShareWrite,
+            IntPtr.Zero,
+            OpenExisting,
+            FileFlagOpenReparsePoint | FileFlagBackupSemantics,
+            IntPtr.Zero);
+        if (handle.IsInvalid)
+        {
+            var error = Marshal.GetLastWin32Error();
+            handle.Dispose();
+            if (error is ErrorFileNotFound or ErrorPathNotFound)
+                return NamespaceEntryKind.Missing;
+            throw CreateIoException(
+                $"Could not inspect {authorityName} namespace entry.",
+                error);
+        }
+
+        using (handle)
+        {
+            EnsureHandleMatchesExpectedPath(
+                handle,
+                normalizedPath,
+                authorityName,
+                FileNameOpened);
+            var attributeTag = GetAttributeTag(handle, authorityName);
+            if ((attributeTag.FileAttributes & FileAttributes.ReparsePoint) != 0)
+                return NamespaceEntryKind.ReparsePoint;
+            return (attributeTag.FileAttributes & FileAttributes.Directory) != 0
+                ? NamespaceEntryKind.Directory
+                : NamespaceEntryKind.RegularFile;
+        }
+    }
 
     internal static StableDirectory EnsureStableDirectory(
         string rootPath,

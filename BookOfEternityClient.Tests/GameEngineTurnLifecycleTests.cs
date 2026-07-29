@@ -7902,7 +7902,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var logPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
         Assert.True(File.Exists(logPath), "Lifecycle dispatch exceptions must be visible in error_log.txt.");
         var log = await File.ReadAllTextAsync(logPath, Encoding.UTF8);
-        Assert.Contains("UnauthorizedAccessException", log, StringComparison.Ordinal);
+        Assert.Contains("InvalidDataException", log, StringComparison.Ordinal);
     }
 
     [Fact]

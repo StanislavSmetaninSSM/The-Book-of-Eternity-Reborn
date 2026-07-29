@@ -4113,11 +4113,9 @@ public partial class ValidationService
             var requestId = GetFirstNonEmptyString(doc.RootElement, "requestId") ?? string.Empty;
             return new PendingTurnRequestValidationContext(sessionId, requestId, turnNumber);
         }
-        catch (JsonException ex)
+        catch (JsonException)
         {
-            throw new InvalidDataException(
-                $"Pending-turn request authority '{requestPath}' is malformed.",
-                ex);
+            return null;
         }
     }
 

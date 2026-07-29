@@ -65,6 +65,13 @@ public sealed class ExplorerWebCommandServiceTestsShiningAdvancedDiagnostics : I
         Assert.Equal(CommandExecutionState.RequiresInput, advanced.State);
         Assert.Contains(advanced.Blocks, static block => block is UiRawJsonBlock);
         Assert.Contains(expectedRawMarker, SerializeResult(advanced), StringComparison.OrdinalIgnoreCase);
+        var advancedSession = Assert.IsType<UiPromptSession>(
+            advanced.InteractiveSession);
+        var cancelled = await _service.CancelPromptSessionAsync(
+            new ExplorerPromptSessionCancelRequest(
+                advancedSession.SessionId,
+                advancedSession.OwnerId));
+        Assert.Equal(CommandExecutionState.Completed, cancelled.State);
 
         _stateManager.Settings.ShowGmThoughts = true;
         var gmThoughts = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));

@@ -1073,6 +1073,60 @@ otherwise fail closed before touching destination state.
 **Rationale**: Pathname `overwrite` cannot satisfy the same security contract
 and must not silently weaken authority on another platform.
 
+### Decision 104: Absence is an exact namespace fact
+
+**Decision**: Classify the exact no-follow child node under retained parent
+authority. Only `Missing` is absence; directories, reparse points, and malformed
+shapes fail closed.
+
+**Rationale**: Pathname `Exists` APIs intentionally collapse errors and wrong
+object kinds into false, which is unsuitable for security or canonical-state
+decisions.
+
+### Decision 105: Negative existence waits for publication quiescence
+
+**Decision**: Repeat an absent result while holding the in-process publication
+read lease whenever publication may still be between staging and durable
+journal visibility.
+
+**Rationale**: A journal-only retry condition leaves a race before the writer
+has published its first journal entry.
+
+### Decision 106: Create-only publication has its own capability
+
+**Decision**: Gate every authority-bearing create-only move on a proven
+descriptor-bound relative-rename backend, independently of reversible
+replacement support. Unsupported platforms fail before staging.
+
+**Rationale**: Create-only publication does not need rollback of an existing
+destination, but it still cannot safely use a pathname move after validating a
+different object.
+
+### Decision 107: Cleanup debt retains transaction identity
+
+**Decision**: Rename the already-open transaction directory relative to retained
+parents and rebind that same stable authority to its verified new path.
+
+**Rationale**: Reopening the cleanup-debt pathname discards the identity that
+proved which failed transaction is being retained.
+
+### Decision 108: Daren capture never degrades to byte authority
+
+**Decision**: Require reversible opened-handle publication before capture
+creates evidence and use exact namespace classification for every baseline.
+
+**Rationale**: A byte-only baseline cannot prove identity or safely distinguish
+missing data from a dangling link or malformed node.
+
+### Decision 109: Recovery bytes require completion proof
+
+**Decision**: Worker before-images repeat physical path, kind, and single-link
+validation after byte consumption and before restoration.
+
+**Rationale**: An attacker or concurrent writer can add a hard link after the
+initial open; those bytes must not become rollback authority and the evidence
+must remain available.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

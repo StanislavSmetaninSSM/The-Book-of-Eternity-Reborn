@@ -773,7 +773,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             "BookOfEternityClient/Services/SaveLoadService.cs");
 
         Assert.Contains(
-            "PhysicalFileAuthority.RenameOpenedObject(",
+            "PhysicalFileAuthority.RenameOpenedObjectRelative(",
             fileSystemManager,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -804,6 +804,14 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.DoesNotContain(
             "File.Move(",
             loadOperations,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Move(",
+            fileSystemManager,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Move(",
+            fileSystemManager,
             StringComparison.Ordinal);
         Assert.DoesNotContain(
             "ZipFile.OpenRead(",

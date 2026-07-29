@@ -244,7 +244,17 @@ public sealed class BrowserLocalWriteCoordinator
         IReadOnlyCollection<string>? rollbackCleanupDirectories,
         IReadOnlyCollection<string>? rollbackExternalFileIds)
     {
-        var pending = BrowserPendingTurnInspector.Build(_fs);
+        BrowserPendingTurnStatus pending;
+        try
+        {
+            pending = BrowserPendingTurnInspector.Build(_fs);
+        }
+        catch (InvalidDataException ex)
+        {
+            return BrowserLocalWriteResult.Blocked(
+                $"Browser-write заблокирован: повреждена служебная разметка активного хода ({ex.Message}).");
+        }
+
         if (pending.HasActiveGmTurn)
         {
             return BrowserLocalWriteResult.Blocked(

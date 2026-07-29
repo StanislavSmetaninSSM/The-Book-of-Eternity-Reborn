@@ -4095,6 +4095,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("8 Чернильных Перьев", revealText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("72", revealText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(reveal.Prompts, static prompt => prompt.Id == "confirm_ink_feather_fate_reveal");
+        var revealSession = Assert.IsType<UiPromptSession>(reveal.InteractiveSession);
+        var cancelled = await _service.CancelPromptSessionAsync(
+            new ExplorerPromptSessionCancelRequest(
+                revealSession.SessionId,
+                revealSession.OwnerId));
+        Assert.Equal(CommandExecutionState.Completed, cancelled.State);
 
         await _fs.WriteFileAtomicAsync(PendingTurnStateService.PendingDiceStatePath, """
         {

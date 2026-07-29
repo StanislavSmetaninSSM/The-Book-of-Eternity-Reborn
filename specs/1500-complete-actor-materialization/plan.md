@@ -377,6 +377,43 @@ tests, frontend verification when DTOs change, Release build, static parsing,
 clean-checkout verification, Spec Kit analysis, and a fresh independent
 `gpt-5.6-sol`/max exact-diff review with no Critical or Important finding.
 
+## Phase 37 implementation strategy
+
+The Phase 36 exact-diff review found five remaining filesystem-authority gaps.
+Optional existence checks could confuse malformed namespace entries with
+absence and could miss a publication before its journal became visible;
+cleanup-debt recovery reopened a renamed directory by pathname; create-only
+publication still had pathname move fallbacks and shared the reversible-
+replacement capability switch; Daren capture retained an unsafe byte-only
+fallback; and worker recovery consumed before-images without completion-time
+physical validation.
+
+The remediation keeps these decisions inside the filesystem harness:
+
+1. add one exact no-follow namespace probe that distinguishes missing,
+   regular-file, directory, and reparse shapes, and repeat negative existence
+   checks under publication quiescence;
+2. retain the original opened cleanup transaction directory across its
+   descriptor-bound relative rename and rebind its verified name without
+   reopening authority;
+3. expose descriptor-bound create-only publication as its own capability,
+   reject unsupported platforms before staging, and remove every authority
+   `File.Move` or `Directory.Move` fallback;
+4. require reversible opened-handle authority before Daren capture can create
+   evidence and classify every baseline through the exact namespace probe;
+5. route worker before-image recovery through the stable-read completion gate
+   so a post-open link or identity change cannot authorize restoration.
+
+The retained Windows ancestor handles are also covered by a deterministic
+rename attempt: the operating system blocks replacement of every retained
+ancestor while authority is live. This evidence rejects a broader reopen-based
+redesign while all actual publication is nevertheless relative and
+descriptor-bound. Final integration repeats focused filesystem, Daren,
+browser, worker-recovery, save/load, and actor suites; mandatory afterlife
+documentation; complete C# and frontend verification; Release build; static
+parsing; clean-checkout verification; Spec Kit analysis; and a fresh
+independent `gpt-5.6-sol`/max exact-diff review.
+
 ## Complexity Tracking
 
 No constitution violations require an exception.

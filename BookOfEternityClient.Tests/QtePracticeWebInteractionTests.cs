@@ -61,7 +61,12 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
     [Fact]
     public async Task PracticeBrowserAttempt_ProjectsMiniGameAndCompletesWithLocalFeedbackOnly()
     {
-        var started = await _web.StartPracticeAttemptAsync(new QtePracticeStartRequest("MashInput", "normal"));
+        var catalog = await _web.BuildPracticeStateAsync();
+        var started = await _web.StartPracticeAttemptAsync(
+            new QtePracticeStartRequest(
+                "MashInput",
+                "normal",
+                catalog.InteractionToken));
         Assert.NotNull(started.ActiveScene);
         var action = Assert.Single(started.ActiveScene!.CurrentChapter!.Actions);
         var config = Assert.IsAssignableFrom<JsonObject>(action.CheckConfig);
@@ -72,7 +77,11 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
         Assert.Equal("MashInput", config["kind"]!.GetValue<string>());
         Assert.Contains("submitAction", started.AvailableOperations);
 
-        var completed = await _web.ResolvePracticeActionAsync(new QtePracticeActionRequest(action.ActionId, "success"));
+        var completed = await _web.ResolvePracticeActionAsync(
+            new QtePracticeActionRequest(
+                action.ActionId,
+                "success",
+                started.InteractionToken));
 
         Assert.Equal("Completed", completed.State);
         Assert.Null(completed.ActiveScene);

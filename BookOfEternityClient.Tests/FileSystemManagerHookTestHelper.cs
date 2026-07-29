@@ -32,11 +32,19 @@ internal static class FileSystemManagerHookTestHelper
         bool value)
     {
         var hooks = new FileSystemManagerHooks();
+        SetBooleanOverride(hooks, propertyName, value);
+        return hooks;
+    }
+
+    internal static void SetBooleanOverride(
+        FileSystemManagerHooks hooks,
+        string propertyName,
+        bool value)
+    {
         var property = typeof(FileSystemManagerHooks).GetProperty(
             propertyName,
             BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(property);
         property!.SetValue(hooks, value);
-        return hooks;
     }
 }

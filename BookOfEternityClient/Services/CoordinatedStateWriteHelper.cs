@@ -41,7 +41,11 @@ internal static class CoordinatedStateWriteHelper
         await CommitGate.WaitAsync();
         try
         {
-            return await TryCommitCoreAsync(fs, writeLease: null, writes);
+            return await TryCommitCoreAsync(
+                fs,
+                writeLease: null,
+                afterWriteApplied: null,
+                writes);
         }
         finally
         {
@@ -53,11 +57,37 @@ internal static class CoordinatedStateWriteHelper
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         params PlannedWrite[] writes) =>
-        await TryCommitCoreAsync(fs, writeLease, writes);
+        await TryCommitCoreAsync(
+            fs,
+            writeLease,
+            afterWriteApplied: null,
+            writes);
+
+    internal static async Task<bool> TryCommitWithHookAsync(
+        FileSystemManager fs,
+        Func<PlannedWrite, Task> afterWriteApplied,
+        params PlannedWrite[] writes)
+    {
+        ArgumentNullException.ThrowIfNull(afterWriteApplied);
+        await CommitGate.WaitAsync();
+        try
+        {
+            return await TryCommitCoreAsync(
+                fs,
+                writeLease: null,
+                afterWriteApplied,
+                writes);
+        }
+        finally
+        {
+            CommitGate.Release();
+        }
+    }
 
     private static async Task<bool> TryCommitCoreAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease? writeLease,
+        Func<PlannedWrite, Task>? afterWriteApplied,
         PlannedWrite[] writes)
     {
         var completedWrites = new List<PlannedWrite>();
@@ -79,6 +109,8 @@ internal static class CoordinatedStateWriteHelper
 
                 await ApplyWriteAsync(fs, writeLease, write.Path, write.NextJson);
                 completedWrites.Add(write);
+                if (afterWriteApplied != null)
+                    await afterWriteApplied(write);
             }
 
             return true;

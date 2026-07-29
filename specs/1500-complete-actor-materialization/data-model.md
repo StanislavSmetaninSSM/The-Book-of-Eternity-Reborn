@@ -607,3 +607,35 @@ The Daren rollback manifest records baseline identity/bytes, transaction parent
 identity, and the exact published post-image identity/hash. Recovery restores or
 deletes only when the current profile is the transaction-owned post-image;
 otherwise it preserves evidence and fails closed.
+
+## Phase 37 authority additions
+
+### Exact namespace-entry classification
+
+An authority namespace probe returns exactly one of `Missing`, `RegularFile`,
+`Directory`, or `ReparsePoint` for a retained stable parent plus one expected
+child name. It opens the exact node without following reparse points and
+validates that the opened path still belongs to the retained parent. Callers
+may interpret only `Missing` as absence.
+
+### Descriptor-bound create-only publication capability
+
+Create-only publication has a capability independent from reversible
+replacement. The supported implementation owns an opened source and retained
+destination parent and publishes through a relative rename. Unsupported
+platforms reject before temporary files, staging directories, evidence, or
+canonical mutation can be created.
+
+### Rebound cleanup-debt authority
+
+A failed-cleanup transaction keeps its existing opened directory handle while
+the directory is renamed into cleanup debt. The stable authority updates its
+expected full path after the relative rename; no pathname reopen may replace
+the transaction identity.
+
+### Completion-validated recovery before-image
+
+A worker recovery before-image is an ordinary stable read with mandatory
+completion. Its bytes are not restoration authority until post-consumption
+path, kind, and single-link validation succeeds. Failure leaves the active
+journal and transaction evidence available for a later safe retry.

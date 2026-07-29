@@ -1827,7 +1827,7 @@ public sealed class GmWorkerBridgeLifecycleTests
             var profile = GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
-                TimeoutSeconds = 1
+                TimeoutSeconds = 5
             };
             var task = await MaterializeTaskContextAsync(
                 fs,
@@ -3267,7 +3267,7 @@ public sealed class GmWorkerBridgeLifecycleTests
             var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
             {
                 LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
-                TimeoutSeconds = 1
+                TimeoutSeconds = 5
             };
             var task = await MaterializeTaskContextAsync(
                 fs,

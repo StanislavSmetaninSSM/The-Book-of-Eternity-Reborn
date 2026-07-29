@@ -1203,6 +1203,7 @@ public sealed class BrowserApiContractTests
             LastResolvedReminder = null,
             LastDeclinedQteId = null,
             AvailableOperations = ["submitAction"],
+            InteractionToken = "fixture-qte-interaction-token",
             Notification = null,
             Error = null
         };
@@ -1261,6 +1262,7 @@ public sealed class BrowserApiContractTests
             Feedback = "Выберите тип QTE. Тренировка не меняет сюжет и не выдаёт награды.",
             LocalScoreNotice = "Тренировочный счёт остаётся только на этой тренировке: без наград, опыта, предметов и прогресса.",
             AvailableOperations = ["startAttempt", "exit"],
+            InteractionToken = "fixture-practice-interaction-token",
             Notification = null,
             Error = null
         };
@@ -1287,6 +1289,7 @@ public sealed class BrowserApiContractTests
             Completion = null,
             Ending = null,
             AvailableOperations = ["start", "exit"],
+            InteractionToken = "fixture-daren-interaction-token",
             Notification = null,
             Error = null
         };
