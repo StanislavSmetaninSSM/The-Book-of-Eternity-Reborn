@@ -399,6 +399,118 @@ public sealed class GmWorkerProposalStoreTests
     }
 
     [Fact]
+    public async Task PublishBundleAsync_StagingParentSwapCannotWriteExternalProposal()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var outsideRoot = CreateTempRoot();
+        var stagingBundleRoot = string.Empty;
+        var displacedBundleRoot = string.Empty;
+        var outsideProposal = Path.Combine(outsideRoot, "proposal.json");
+        var outsideSentinel = new byte[] { 0x45, 0x56, 0x67 };
+        await File.WriteAllBytesAsync(outsideProposal, outsideSentinel);
+        try
+        {
+            var setupFs = CreateFileSystem(root);
+            var proposal = GmWorkerBridgeTestFixtures.NarrativeDraftProposal() with
+            {
+                ProposalId = "worker_proposal_staging_authority"
+            };
+            var taskPath = GmWorkerBridgePool.GetTaskPacketPath(proposal.TaskId);
+            var taskBytes = System.Text.Encoding.UTF8.GetBytes("task-generation");
+            string sessionGeneration;
+            await using (var setupLease = await setupFs.AcquireCanonicalWriteLeaseAsync())
+            {
+                sessionGeneration = setupFs.GetOrCreateSessionGeneration(setupLease);
+                await setupFs.WriteFileAtomicBytesAsync(setupLease, taskPath, taskBytes);
+            }
+
+            var swapAttempted = false;
+            var swapBlocked = false;
+            var swapped = false;
+            var raceFs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                new FileSystemManagerHooks
+                {
+                    BeforeRuntimeFileCreateAsync = path =>
+                    {
+                        if (swapAttempted ||
+                            !path.EndsWith(
+                                $"{Path.DirectorySeparatorChar}proposal.json",
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            return Task.CompletedTask;
+                        }
+
+                        swapAttempted = true;
+                        stagingBundleRoot = Path.GetDirectoryName(path)!;
+                        displacedBundleRoot = stagingBundleRoot + "-displaced";
+                        try
+                        {
+                            Directory.Move(stagingBundleRoot, displacedBundleRoot);
+                            CreateDirectoryJunction(stagingBundleRoot, outsideRoot);
+                            swapped = true;
+                        }
+                        catch (Exception ex) when (
+                            ex is IOException or UnauthorizedAccessException)
+                        {
+                            swapBlocked = true;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                });
+
+            var result = await new GmWorkerProposalStore(raceFs).PublishBundleAsync(
+                proposal,
+                System.Text.Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(proposal)),
+                new Dictionary<string, byte[]>(),
+                taskPath,
+                taskBytes,
+                sessionGeneration,
+                GmWorkerBridgePool.GetProposalInboxPath(proposal.TaskId));
+
+            Assert.True(result.Published);
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.Equal(
+                outsideSentinel,
+                await File.ReadAllBytesAsync(outsideProposal));
+        }
+        finally
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(stagingBundleRoot) &&
+                    Directory.Exists(stagingBundleRoot) &&
+                    FileSystemManager.IsReparsePoint(stagingBundleRoot))
+                {
+                    Directory.Delete(stagingBundleRoot, recursive: false);
+                }
+
+                if (!string.IsNullOrWhiteSpace(displacedBundleRoot) &&
+                    Directory.Exists(displacedBundleRoot) &&
+                    !Directory.Exists(stagingBundleRoot))
+                {
+                    Directory.Move(displacedBundleRoot, stagingBundleRoot);
+                }
+            }
+            catch
+            {
+                // Best effort cleanup for the intentionally raced staging tree.
+            }
+
+            CleanupTempRoot(root);
+            CleanupTempRoot(outsideRoot);
+        }
+    }
+
+    [Fact]
     public async Task PublishBundleAsync_DerivedAuditFailureAfterDurableTransitionPreservesPublishedOutcome()
     {
         var root = CreateTempRoot();

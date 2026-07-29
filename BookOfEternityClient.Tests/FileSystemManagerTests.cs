@@ -1,7 +1,9 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Xunit;
@@ -1449,6 +1451,174 @@ public sealed class FileSystemManagerTests : IDisposable
         await AssertOpenedExternalLockHandleRejectedAsync(isLifecycleLease: true);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task LeaseAcquisition_RejectsHardLinkedLockFile(bool isLifecycleLease)
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var lockPath = isLifecycleLease
+            ? _fs.SessionLifecycleLockPath
+            : _fs.CanonicalWriteLockPath;
+        var externalLockPath = Path.Combine(
+            _rootPath,
+            isLifecycleLease
+                ? "external-session-lifecycle.lock"
+                : "external-canonical-write.lock");
+        await File.WriteAllTextAsync(externalLockPath, "external-lock");
+        if (File.Exists(lockPath))
+            File.Delete(lockPath);
+        CreateHardLink(lockPath, externalLockPath);
+
+        if (isLifecycleLease)
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(
+                async () => await _fs.AcquireSessionLifecycleLeaseAsync());
+        }
+        else
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(
+                async () => await _fs.AcquireCanonicalWriteLeaseAsync());
+        }
+
+        Assert.Equal("external-lock", await File.ReadAllTextAsync(externalLockPath));
+    }
+
+    [Fact]
+    public async Task SessionGeneration_RejectsHardLinkedAuthorityFile()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await using (var setupLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _ = _fs.GetOrCreateSessionGeneration(setupLease);
+
+        var externalGeneration = Guid.NewGuid().ToString("N");
+        var externalPath = Path.Combine(_rootPath, "external-session-generation.json");
+        var externalBytes = JsonSerializer.SerializeToUtf8Bytes(new
+        {
+            schemaVersion = 1,
+            generationId = externalGeneration
+        });
+        await File.WriteAllBytesAsync(externalPath, externalBytes);
+        File.Delete(_fs.SessionGenerationPath);
+        CreateHardLink(_fs.SessionGenerationPath, externalPath);
+
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Assert.Throws<InvalidDataException>(
+            () => _fs.IsCurrentSessionGeneration(writeLease, externalGeneration));
+        Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CanonicalWriter_RejectsHardLinkedTransactionJournal(
+        bool isWorkerJournal)
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var journalPath = isWorkerJournal
+            ? _fs.ActiveWorkerApplyTransactionJournalPath
+            : _fs.ActiveLoadTransactionJournalPath;
+        var externalPath = Path.Combine(
+            _rootPath,
+            isWorkerJournal
+                ? "external-worker-journal.json"
+                : "external-load-journal.json");
+        var journalBytes = isWorkerJournal
+            ? JsonSerializer.SerializeToUtf8Bytes(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = true,
+                rolledBack = false
+            })
+            : JsonSerializer.SerializeToUtf8Bytes(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = true
+            });
+        await File.WriteAllBytesAsync(externalPath, journalBytes);
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(journalPath)
+            ?? throw new InvalidDataException(
+                "Transaction journal has no parent directory."));
+        if (File.Exists(journalPath))
+            File.Delete(journalPath);
+        CreateHardLink(journalPath, externalPath);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () => await _fs.AcquireCanonicalWriteLeaseAsync());
+
+        Assert.Equal(journalBytes, await File.ReadAllBytesAsync(externalPath));
+        Assert.True(File.Exists(journalPath));
+    }
+
+    [Fact]
+    public async Task ReadFileAsync_RejectsHardLinkedCanonicalState()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/world/hard-linked-state.json";
+        var canonicalPath = _fs.ResolvePath(relativePath);
+        var externalPath = Path.Combine(_rootPath, "external-state.json");
+        byte[] externalBytes = [0x7B, 0x22, 0x76, 0x22, 0x3A, 0x31, 0x7D];
+        await File.WriteAllBytesAsync(externalPath, externalBytes);
+        CreateHardLink(canonicalPath, externalPath);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.ReadFileAsync(relativePath));
+
+        Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
+    }
+
+    [Fact]
+    public void OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var externalPath = Path.Combine(_rootPath, "external-save.zip");
+        var savePath = _fs.ResolvePath("saves/manual_saves/hard-linked-save.zip");
+        File.WriteAllBytes(externalPath, [0x50, 0x4B, 0x05, 0x06]);
+        CreateHardLink(savePath, externalPath);
+
+        Assert.Throws<InvalidDataException>(
+            () => _fs.OpenExactPhysicalReadFile(
+                savePath,
+                "Selected save archive"));
+
+        Assert.Equal(
+            [0x50, 0x4B, 0x05, 0x06],
+            File.ReadAllBytes(externalPath));
+    }
+
+    [Fact]
+    public async Task DeleteFile_RejectsHardLinkedCanonicalState()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/world/hard-linked-delete.json";
+        var canonicalPath = _fs.ResolvePath(relativePath);
+        var externalPath = Path.Combine(_rootPath, "external-delete.json");
+        byte[] externalBytes = [0x10, 0x20, 0x30];
+        await File.WriteAllBytesAsync(externalPath, externalBytes);
+        CreateHardLink(canonicalPath, externalPath);
+
+        Assert.Throws<InvalidDataException>(() => _fs.DeleteFile(relativePath));
+
+        Assert.True(File.Exists(canonicalPath));
+        Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
+    }
+
     [Fact]
     public async Task RestoreBackup_RejectsBackupOutsideCanonicalSession()
     {
@@ -1482,6 +1652,728 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal(
             "{\"value\":\"rejected\"}",
             await _fs.ReadFileAsync(originalPath));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_ParentSwapAfterFinalValidationIsBlocked()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/meta/post-validation-write.bin";
+        var raceRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-post-validation-write-" + Guid.NewGuid().ToString("N"));
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-post-validation-write-outside-" + Guid.NewGuid().ToString("N"));
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedMeta = canonicalMeta + "-displaced";
+        var outsideTarget = Path.Combine(outsideRoot, "post-validation-write.bin");
+        var armed = false;
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalMutationBoundaryValidatedAsync = path =>
+            {
+                if (!armed ||
+                    swapAttempted ||
+                    !path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                swapAttempted = true;
+                try
+                {
+                    Directory.Move(canonicalMeta, displacedMeta);
+                    CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                    swapped = true;
+
+                    var displacedTemp = Assert.Single(
+                        Directory.EnumerateFiles(
+                            displacedMeta,
+                            "post-validation-write.bin.tmp.*"));
+                    File.WriteAllBytes(
+                        Path.Combine(outsideRoot, Path.GetFileName(displacedTemp)),
+                        [0xEE]);
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    swapBlocked = true;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllBytesAsync(outsideTarget, [0xA1, 0xB2]);
+
+        try
+        {
+            var fs = new FileSystemManager(
+                raceRoot,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicBytesAsync(relativePath, [0x11]);
+            armed = true;
+
+            await fs.WriteFileAtomicBytesAsync(relativePath, [0x22, 0x33]);
+
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.Equal(
+                new byte[] { 0xA1, 0xB2 },
+                await File.ReadAllBytesAsync(outsideTarget));
+            Assert.Equal(
+                new byte[] { 0x22, 0x33 },
+                await File.ReadAllBytesAsync(Path.Combine(
+                    canonicalMeta,
+                    "post-validation-write.bin")));
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) &&
+                (File.GetAttributes(canonicalMeta) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(canonicalMeta, recursive: false);
+            }
+
+            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
+                Directory.Move(displacedMeta, canonicalMeta);
+            if (Directory.Exists(raceRoot))
+                Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task DeleteFile_ParentSwapAfterFinalValidationIsBlocked()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath = "game_state/meta/post-validation-delete.bin";
+        var raceRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-post-validation-delete-" + Guid.NewGuid().ToString("N"));
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-post-validation-delete-outside-" + Guid.NewGuid().ToString("N"));
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedMeta = canonicalMeta + "-displaced";
+        var outsideTarget = Path.Combine(outsideRoot, "post-validation-delete.bin");
+        var armed = false;
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalMutationBoundaryValidatedAsync = path =>
+            {
+                if (!armed ||
+                    swapAttempted ||
+                    !path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                swapAttempted = true;
+                try
+                {
+                    Directory.Move(canonicalMeta, displacedMeta);
+                    CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                    swapped = true;
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    swapBlocked = true;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllBytesAsync(outsideTarget, [0xC3, 0xD4]);
+
+        try
+        {
+            var fs = new FileSystemManager(
+                raceRoot,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            await fs.WriteFileAtomicBytesAsync(relativePath, [0x55]);
+            armed = true;
+
+            fs.DeleteFile(relativePath);
+
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.Equal(
+                new byte[] { 0xC3, 0xD4 },
+                await File.ReadAllBytesAsync(outsideTarget));
+            Assert.False(File.Exists(Path.Combine(
+                canonicalMeta,
+                "post-validation-delete.bin")));
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) &&
+                (File.GetAttributes(canonicalMeta) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(canonicalMeta, recursive: false);
+            }
+
+            if (Directory.Exists(displacedMeta) && !Directory.Exists(canonicalMeta))
+                Directory.Move(displacedMeta, canonicalMeta);
+            if (Directory.Exists(raceRoot))
+                Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task RuntimeDirectoryMove_ParentSwapAfterFinalValidationIsBlocked()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string destination = "worker_proposals/post-validation-proposal";
+        var proposalRoot = _fs.ResolvePath("worker_proposals");
+        var displacedProposalRoot = _fs.ResolvePath("worker-proposals-displaced");
+        var outsideRoot = Path.Combine(
+            _rootPath,
+            "post-validation-proposal-outside");
+        Directory.CreateDirectory(proposalRoot);
+        Directory.CreateDirectory(outsideRoot);
+        var stagingRoot = _fs.CreateRuntimeProposalStagingRoot();
+        await File.WriteAllTextAsync(
+            Path.Combine(stagingRoot, "proposal.json"),
+            """{"status":"completed"}""");
+
+        var armed = false;
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalMutationBoundaryValidatedAsync = path =>
+            {
+                if (!armed ||
+                    swapAttempted ||
+                    !path.Equals(destination, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                swapAttempted = true;
+                try
+                {
+                    Directory.Move(proposalRoot, displacedProposalRoot);
+                    CreateDirectoryJunction(proposalRoot, outsideRoot);
+                    swapped = true;
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    swapBlocked = true;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        try
+        {
+            await using var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+            armed = true;
+            await raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                writeLease,
+                stagingRoot,
+                destination);
+
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.False(Directory.Exists(Path.Combine(
+                outsideRoot,
+                "post-validation-proposal")));
+            Assert.True(File.Exists(raceFs.ResolvePath(
+                destination + "/proposal.json")));
+        }
+        finally
+        {
+            if (Directory.Exists(proposalRoot) &&
+                (File.GetAttributes(proposalRoot) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(proposalRoot, recursive: false);
+            }
+
+            if (Directory.Exists(displacedProposalRoot) &&
+                !Directory.Exists(proposalRoot))
+            {
+                Directory.Move(displacedProposalRoot, proposalRoot);
+            }
+
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task SessionGeneration_SwapBackReadCannotAuthorizeExternalGeneration()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        string canonicalGeneration;
+        await using (var setupLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            canonicalGeneration = _fs.GetOrCreateSessionGeneration(setupLease);
+
+        var externalGeneration = Guid.NewGuid().ToString("N");
+        var generationRoot = Path.GetDirectoryName(_fs.SessionGenerationPath)!;
+        var displacedGenerationPath = _fs.SessionGenerationPath + ".displaced";
+        var outsideRoot = Path.Combine(_rootPath, "generation-swap-back-outside");
+        var externalGenerationPath = Path.Combine(outsideRoot, "current.json");
+        var probeLink = Path.Combine(outsideRoot, "file-link-probe.json");
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllTextAsync(
+            externalGenerationPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                generationId = externalGeneration
+            }));
+        if (!TryCreateFileLink(probeLink, externalGenerationPath))
+            return;
+        File.Delete(probeLink);
+
+        var armed = false;
+        var swapped = false;
+        var restored = false;
+        var openedHandleHeldDuringHook = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeRuntimeFileReadOpenAsync = path =>
+            {
+                if (!armed ||
+                    swapped ||
+                    !path.Equals(
+                        _fs.SessionGenerationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                File.Move(_fs.SessionGenerationPath, displacedGenerationPath);
+                File.CreateSymbolicLink(
+                    _fs.SessionGenerationPath,
+                    externalGenerationPath);
+                swapped = true;
+                return Task.CompletedTask;
+            },
+            AfterRuntimeFileReadOpenedAsync = path =>
+            {
+                if (!swapped ||
+                    restored ||
+                    !path.Equals(
+                        _fs.SessionGenerationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                try
+                {
+                    File.Delete(externalGenerationPath);
+                }
+                catch (IOException)
+                {
+                    openedHandleHeldDuringHook = true;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    openedHandleHeldDuringHook = true;
+                }
+
+                File.Delete(_fs.SessionGenerationPath);
+                File.Move(displacedGenerationPath, _fs.SessionGenerationPath);
+                restored = true;
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        try
+        {
+            await using var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+            armed = true;
+
+            Assert.Throws<InvalidDataException>(
+                () => raceFs.IsCurrentSessionGeneration(
+                    writeLease,
+                    externalGeneration));
+
+            Assert.True(swapped);
+            Assert.True(restored);
+            Assert.True(openedHandleHeldDuringHook);
+            Assert.True(raceFs.IsCurrentSessionGeneration(
+                writeLease,
+                canonicalGeneration));
+        }
+        finally
+        {
+            if (File.GetAttributes(generationRoot)
+                    .HasFlag(FileAttributes.ReparsePoint))
+            {
+                Directory.Delete(generationRoot, recursive: false);
+            }
+
+            if (File.Exists(_fs.SessionGenerationPath) &&
+                File.GetAttributes(_fs.SessionGenerationPath)
+                    .HasFlag(FileAttributes.ReparsePoint))
+            {
+                File.Delete(_fs.SessionGenerationPath);
+            }
+
+            if (File.Exists(displacedGenerationPath) &&
+                !File.Exists(_fs.SessionGenerationPath))
+            {
+                File.Move(displacedGenerationPath, _fs.SessionGenerationPath);
+            }
+
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task LoadTransactionCreate_ParentSwapCannotTruncateExternalFile()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        var stagingRoot = transactionPaths.StagingSessionPath;
+        var displacedStagingRoot = stagingRoot + "-displaced";
+        var stagedFile = Path.Combine(stagingRoot, "payload.bin");
+        var outsideRoot = Path.Combine(
+            _rootPath,
+            "load-create-swap-outside");
+        var outsideFile = Path.Combine(outsideRoot, "payload.bin");
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllBytesAsync(outsideFile, [0x91, 0x82, 0x73]);
+
+        var armed = false;
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeRuntimeFileCreateAsync = path =>
+            {
+                if (!armed ||
+                    swapAttempted ||
+                    !path.Equals(stagedFile, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                swapAttempted = true;
+                try
+                {
+                    Directory.Move(stagingRoot, displacedStagingRoot);
+                    CreateDirectoryJunction(stagingRoot, outsideRoot);
+                    swapped = true;
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    swapBlocked = true;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        try
+        {
+            raceFs.CreateLoadDirectory(stagingRoot);
+            armed = true;
+            await using var source = new MemoryStream([0x10, 0x20, 0x30]);
+
+            await raceFs.WriteLoadTransactionFileAsync(stagedFile, source);
+
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.Equal(
+                new byte[] { 0x91, 0x82, 0x73 },
+                await File.ReadAllBytesAsync(outsideFile));
+            Assert.Equal(
+                new byte[] { 0x10, 0x20, 0x30 },
+                await File.ReadAllBytesAsync(stagedFile));
+        }
+        finally
+        {
+            if (Directory.Exists(stagingRoot) &&
+                (File.GetAttributes(stagingRoot) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(stagingRoot, recursive: false);
+            }
+
+            if (Directory.Exists(displacedStagingRoot) &&
+                !Directory.Exists(stagingRoot))
+            {
+                Directory.Move(displacedStagingRoot, stagingRoot);
+            }
+
+            if (Directory.Exists(transactionPaths.TransactionRoot))
+                Directory.Delete(transactionPaths.TransactionRoot, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task SessionGenerationWrite_ParentSwapAfterAuthorityValidationIsBlocked()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await using (var setupLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.GetOrCreateSessionGeneration(setupLease);
+
+        var generationRoot = Path.GetDirectoryName(_fs.SessionGenerationPath)!;
+        var displacedGenerationRoot = generationRoot + "-write-displaced";
+        var outsideRoot = Path.Combine(_rootPath, "generation-write-outside");
+        var outsideFile = Path.Combine(outsideRoot, "current.json");
+        Directory.CreateDirectory(outsideRoot);
+        var outsideSentinel = new byte[] { 0x61, 0x72, 0x83, 0x94 };
+        await File.WriteAllBytesAsync(outsideFile, outsideSentinel);
+
+        var armed = false;
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterRuntimeMutationBoundaryValidatedAsync = path =>
+            {
+                if (!armed ||
+                    swapAttempted ||
+                    !path.Equals(
+                        _fs.SessionGenerationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                swapAttempted = true;
+                try
+                {
+                    Directory.Move(generationRoot, displacedGenerationRoot);
+                    CreateDirectoryJunction(generationRoot, outsideRoot);
+                    swapped = true;
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    swapBlocked = true;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        try
+        {
+            await using var lifecycleLease =
+                await raceFs.AcquireSessionLifecycleLeaseAsync();
+            await using var replacementLease =
+                await raceFs.AcquireSessionReplacementWriteLeaseAsync(
+                    lifecycleLease);
+            armed = true;
+            var generation = raceFs.RotateSessionGeneration(replacementLease);
+
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.Equal(
+                outsideSentinel,
+                await File.ReadAllBytesAsync(outsideFile));
+            Assert.True(raceFs.IsCurrentSessionGeneration(
+                replacementLease,
+                generation));
+        }
+        finally
+        {
+            if (Directory.Exists(generationRoot) &&
+                (File.GetAttributes(generationRoot) & FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(generationRoot, recursive: false);
+            }
+
+            if (Directory.Exists(displacedGenerationRoot) &&
+                !Directory.Exists(generationRoot))
+            {
+                Directory.Move(displacedGenerationRoot, generationRoot);
+            }
+
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void LoadDirectoryMove_SourceParentSwapAtOperationBoundaryIsBlocked()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        var sourcePath = transactionPaths.StagingSessionPath;
+        var sourceParent = Path.GetDirectoryName(sourcePath)!;
+        var displacedSourceParent = sourceParent + "-displaced";
+        var destinationPath = transactionPaths.FailedSessionPath;
+        var outsideParent = Path.Combine(
+            _rootPath,
+            "load-move-swap-outside");
+        var outsideSource = Path.Combine(
+            outsideParent,
+            Path.GetFileName(sourcePath));
+        var outsideSentinel = Path.Combine(outsideSource, "sentinel.json");
+        var canonicalMarker = Path.Combine(sourcePath, "canonical.json");
+        Directory.CreateDirectory(sourcePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+        Directory.CreateDirectory(outsideSource);
+        File.WriteAllText(canonicalMarker, "{\"source\":\"canonical\"}");
+        File.WriteAllText(outsideSentinel, "{\"source\":\"external\"}");
+        var expectedOutsideBytes = File.ReadAllBytes(outsideSentinel);
+
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeLoadDirectoryMoveAsync = (actualSource, actualDestination) =>
+            {
+                if (swapAttempted ||
+                    !actualSource.Equals(
+                        sourcePath,
+                        StringComparison.OrdinalIgnoreCase) ||
+                    !actualDestination.Equals(
+                        destinationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Task.CompletedTask;
+                }
+
+                swapAttempted = true;
+                try
+                {
+                    Directory.Move(sourceParent, displacedSourceParent);
+                    CreateDirectoryJunction(sourceParent, outsideParent);
+                    swapped = true;
+                }
+                catch (IOException)
+                {
+                    swapBlocked = true;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        try
+        {
+            raceFs.MoveLoadDirectory(sourcePath, destinationPath);
+
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.Equal(
+                "{\"source\":\"canonical\"}",
+                File.ReadAllText(Path.Combine(destinationPath, "canonical.json")));
+            Assert.Equal(
+                expectedOutsideBytes,
+                File.ReadAllBytes(outsideSentinel));
+        }
+        finally
+        {
+            if (Directory.Exists(sourceParent) &&
+                (File.GetAttributes(sourceParent) &
+                 FileAttributes.ReparsePoint) != 0)
+            {
+                Directory.Delete(sourceParent, recursive: false);
+            }
+
+            if (Directory.Exists(displacedSourceParent) &&
+                !Directory.Exists(sourceParent))
+            {
+                Directory.Move(displacedSourceParent, sourceParent);
+            }
+
+            if (Directory.Exists(transactionPaths.TransactionRoot))
+                Directory.Delete(transactionPaths.TransactionRoot, recursive: true);
+            if (Directory.Exists(outsideParent))
+                Directory.Delete(outsideParent, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task AtomicWrite_HandleAuthoritySupportsLongCanonicalPaths()
+    {
+        var nested = string.Join(
+            '/',
+            Enumerable.Range(0, 6)
+                .Select(index => $"{index:D2}-{new string('x', 40)}"));
+        var relativePath = $"game_state/misc/{nested}/state.json";
+        var expectedPath = _fs.ResolvePath(relativePath);
+        Assert.True(expectedPath.Length > 260);
+
+        await _fs.WriteFileAtomicAsync(
+            relativePath,
+            "{\"longPath\":true}");
+
+        Assert.Equal(
+            "{\"longPath\":true}",
+            await _fs.ReadFileAsync(relativePath));
     }
 
     [Fact]
@@ -1524,6 +2416,32 @@ public sealed class FileSystemManagerTests : IDisposable
         }
     }
 
+    private static bool TryCreateFileLink(string linkPath, string targetPath)
+    {
+        try
+        {
+            File.CreateSymbolicLink(linkPath, targetPath);
+            return true;
+        }
+        catch (Exception ex) when (
+            ex is IOException or
+            UnauthorizedAccessException or
+            PlatformNotSupportedException)
+        {
+            return false;
+        }
+    }
+
+    private static void CreateHardLink(string linkPath, string targetPath)
+    {
+        if (CreateHardLinkNative(linkPath, targetPath, IntPtr.Zero))
+            return;
+
+        throw new Win32Exception(
+            Marshal.GetLastWin32Error(),
+            $"Could not create hard link '{linkPath}'.");
+    }
+
     private async Task AssertOpenedExternalLockHandleRejectedAsync(bool isLifecycleLease)
     {
         var lockRoot = Path.Combine(_fs.RuntimeRootPath, "locks");
@@ -1536,7 +2454,6 @@ public sealed class FileSystemManagerTests : IDisposable
         Directory.Delete(probeLink);
 
         var swappedToOutside = false;
-        var restoredSafePath = false;
         Task BeforeOpen()
         {
             Directory.Move(lockRoot, displacedLockRoot);
@@ -1545,24 +2462,14 @@ public sealed class FileSystemManagerTests : IDisposable
             return Task.CompletedTask;
         }
 
-        Task AfterOpen()
-        {
-            Directory.Delete(lockRoot);
-            Directory.Move(displacedLockRoot, lockRoot);
-            restoredSafePath = true;
-            return Task.CompletedTask;
-        }
-
         var hooks = isLifecycleLease
             ? new FileSystemManagerHooks
             {
-                BeforeSessionLifecycleLockOpenAsync = BeforeOpen,
-                AfterSessionLifecycleLockOpenedAsync = AfterOpen
+                BeforeSessionLifecycleLockOpenAsync = BeforeOpen
             }
             : new FileSystemManagerHooks
             {
-                BeforeCanonicalWriteLockOpenAsync = BeforeOpen,
-                AfterCanonicalWriteLockOpenedAsync = AfterOpen
+                BeforeCanonicalWriteLockOpenAsync = BeforeOpen
             };
         var raceFs = new FileSystemManager(
             _rootPath,
@@ -1584,10 +2491,7 @@ public sealed class FileSystemManagerTests : IDisposable
             }
 
             Assert.True(swappedToOutside);
-            Assert.True(restoredSafePath);
-            Assert.True(File.Exists(Path.Combine(
-                outsideRoot,
-                isLifecycleLease ? "session-lifecycle.lock" : "canonical-write.lock")));
+            Assert.Empty(Directory.EnumerateFileSystemEntries(outsideRoot));
         }
         finally
         {
@@ -1598,6 +2502,17 @@ public sealed class FileSystemManagerTests : IDisposable
         }
     }
 
+    [DllImport(
+        "kernel32.dll",
+        EntryPoint = "CreateHardLinkW",
+        CharSet = CharSet.Unicode,
+        SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CreateHardLinkNative(
+        string lpFileName,
+        string lpExistingFileName,
+        IntPtr lpSecurityAttributes);
+
     private static string Sha256(byte[] content) =>
         Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
 
@@ -1607,10 +2522,9 @@ public sealed class FileSystemManagerTests : IDisposable
         internal bool FailWorkerTransactionJournalDelete { get; set; }
 
         public bool DirectoryExists(string path) => Directory.Exists(path);
-        public void CreateDirectory(string path) => Directory.CreateDirectory(path);
-        public void MoveDirectory(string sourcePath, string destinationPath) =>
-            Directory.Move(sourcePath, destinationPath);
-        public void DeleteDirectory(string path, bool recursive)
+        public bool FileExists(string path) => File.Exists(path);
+
+        public void BeforeDeleteDirectory(string path)
         {
             if (FailWorkerTransactionDelete &&
                 path.Contains(
@@ -1619,15 +2533,9 @@ public sealed class FileSystemManagerTests : IDisposable
             {
                 throw new IOException("Injected worker apply transaction cleanup failure.");
             }
-
-            Directory.Delete(path, recursive);
         }
 
-        public bool FileExists(string path) => File.Exists(path);
-        public string ReadAllText(string path) => File.ReadAllText(path);
-        public void WriteAllTextAtomic(string path, string content) =>
-            PhysicalLoadTransactionOperations.Instance.WriteAllTextAtomic(path, content);
-        public void DeleteFile(string path)
+        public void BeforeDeleteFile(string path)
         {
             if (FailWorkerTransactionJournalDelete &&
                 path.EndsWith(
@@ -1636,8 +2544,6 @@ public sealed class FileSystemManagerTests : IDisposable
             {
                 throw new IOException("Injected worker apply active journal cleanup failure.");
             }
-
-            File.Delete(path);
         }
     }
 

@@ -761,6 +761,65 @@ public sealed class GmWorkerBridgeDocumentationTests
     }
 
     [Fact]
+    public void DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations()
+    {
+        var fileSystemManager = ReadRepoFile(
+            "BookOfEternityClient/Core/FileSystemManager.cs");
+        var physicalAuthority = ReadRepoFile(
+            "BookOfEternityClient/Core/PhysicalFileAuthority.cs");
+        var loadOperations = ReadRepoFile(
+            "BookOfEternityClient/Core/LoadTransactionOperations.cs");
+        var saveLoadService = ReadRepoFile(
+            "BookOfEternityClient/Services/SaveLoadService.cs");
+
+        Assert.Contains(
+            "PhysicalFileAuthority.RenameOpenedObject(",
+            fileSystemManager,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "PhysicalFileAuthority.TryDeleteTree(",
+            fileSystemManager,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "PhysicalFileAuthority.OpenReadFile(",
+            fileSystemManager,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "SetFileInformationByHandle(",
+            physicalAuthority,
+            StringComparison.Ordinal);
+
+        Assert.DoesNotContain(
+            "Directory.Move(",
+            loadOperations,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Delete(",
+            loadOperations,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Delete(",
+            loadOperations,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Move(",
+            loadOperations,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ZipFile.OpenRead(",
+            saveLoadService,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Delete(",
+            saveLoadService,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Delete(",
+            saveLoadService,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void GmWorkerBridgeDocs_DocumentExternalRuntimeAndArtifactBudgets()
     {
         var guide = ReadRepoFile("OtherGuides/GM_Worker_Bridges.md");

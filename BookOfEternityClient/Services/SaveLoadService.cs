@@ -98,6 +98,7 @@ public class SaveLoadService
     {
         string? stagingRoot = null;
         string? temporaryPath = null;
+        FileSystemManager.RuntimeStagedFile? stagedFile = null;
         try
         {
             _fs.EnsureCanonicalWriteLeaseActive(canonicalSnapshotLease);
@@ -109,8 +110,12 @@ public class SaveLoadService
             _ = _fs.ResolvePath(destinationRelativePath);
             stagingRoot = _fs.CreateRuntimeSaveStagingRoot();
             temporaryPath = Path.Combine(stagingRoot, "save.zip");
+            stagedFile = await _fs.CreateRuntimeStagedFileAsync(temporaryPath);
 
-            using (var archive = ZipFile.Open(temporaryPath, ZipArchiveMode.Create))
+            using (var archive = new ZipArchive(
+                       stagedFile.Stream,
+                       ZipArchiveMode.Create,
+                       leaveOpen: true))
             {
                 // Add game_state directory
                 await AddDirectoryToArchive(
@@ -199,8 +204,9 @@ public class SaveLoadService
                 await _hooks.BeforeSaveCommitAsync();
             await _fs.MoveRuntimeFileIntoCanonicalSessionAsync(
                 canonicalSnapshotLease,
-                temporaryPath,
+                stagedFile,
                 destinationRelativePath);
+            stagedFile = null;
             temporaryPath = null;
 
             _logger.LogInformation("Игра сохранена: {Name}", saveName);
@@ -213,6 +219,8 @@ public class SaveLoadService
         }
         finally
         {
+            if (stagedFile != null)
+                await stagedFile.DisposeAsync();
             if (!string.IsNullOrWhiteSpace(stagingRoot))
             {
                 try
@@ -256,7 +264,10 @@ public class SaveLoadService
             if (!Path.IsPathRooted(fullPath))
                 fullPath = _fs.ResolvePath(saveFilePath);
 
-            if (!File.Exists(fullPath))
+            var openedArchive = _fs.OpenExactPhysicalReadFile(
+                fullPath,
+                "Selected save archive");
+            if (openedArchive == null)
             {
                 _logger.LogWarning("Файл сохранения не найден: {Path}", fullPath);
                 return false;
@@ -266,8 +277,12 @@ public class SaveLoadService
             transactionPaths = _fs.GetLoadTransactionPaths(transactionId);
             _fs.CreateLoadDirectory(transactionPaths.StagingSessionPath);
 
-            using (var archive = ZipFile.OpenRead(fullPath))
+            await using (openedArchive)
             {
+                using var archive = new ZipArchive(
+                    openedArchive.Stream,
+                    ZipArchiveMode.Read,
+                    leaveOpen: true);
                 foreach (var entry in archive.Entries)
                 {
                     if (string.IsNullOrEmpty(entry.Name))
@@ -399,7 +414,7 @@ public class SaveLoadService
         return saves.OrderByDescending(s => s.Metadata?.Timestamp).ToList();
     }
 
-    private static async Task<SaveMetadata?> ReadSaveMetadataWithRetryAsync(string saveFile)
+    private async Task<SaveMetadata?> ReadSaveMetadataWithRetryAsync(string saveFile)
     {
         for (var attempt = 1; ; attempt++)
         {
@@ -414,20 +429,34 @@ public class SaveLoadService
         }
     }
 
-    private static async Task<SaveMetadata?> ReadSaveMetadataAsync(string saveFile)
+    private async Task<SaveMetadata?> ReadSaveMetadataAsync(string saveFile)
     {
-        using var archive = ZipFile.OpenRead(saveFile);
-        var metadataEntry = archive.GetEntry("save_metadata.json");
-        if (metadataEntry == null)
+        var openedFile = _fs.OpenExactPhysicalReadFile(
+            saveFile,
+            "Save metadata archive");
+        if (openedFile == null)
             return null;
 
-        using var stream = metadataEntry.Open();
-        using var reader = new StreamReader(stream);
-        var json = await reader.ReadToEndAsync();
-        return JsonSerializer.Deserialize<SaveMetadata>(json, new JsonSerializerOptions
+        await using (openedFile)
         {
-            PropertyNameCaseInsensitive = true
-        });
+            using var archive = new ZipArchive(
+                openedFile.Stream,
+                ZipArchiveMode.Read,
+                leaveOpen: true);
+            var metadataEntry = archive.GetEntry("save_metadata.json");
+            if (metadataEntry == null)
+                return null;
+
+            using var stream = metadataEntry.Open();
+            using var reader = new StreamReader(stream);
+            var json = await reader.ReadToEndAsync();
+            return JsonSerializer.Deserialize<SaveMetadata>(
+                json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+        }
     }
 
     private static bool IsTransientSaveMetadataReadException(Exception ex) =>
@@ -502,20 +531,20 @@ public class SaveLoadService
         return true;
     }
 
-    private static void DeleteEphemeralArtifacts(string sessionRoot)
+    private void DeleteEphemeralArtifacts(string sessionRoot)
     {
         foreach (var relativePath in EphemeralControlFiles)
         {
             var fullPath = Path.Combine(sessionRoot, relativePath.Replace('/', Path.DirectorySeparatorChar));
             if (File.Exists(fullPath))
-                File.Delete(fullPath);
+                _fs.DeleteLoadTransactionFile(fullPath);
         }
 
         foreach (var relativePrefix in EphemeralPathPrefixes)
         {
             var cleanupPath = Path.Combine(sessionRoot, relativePrefix.TrimEnd('/', '\\').Replace('/', Path.DirectorySeparatorChar));
             if (Directory.Exists(cleanupPath))
-                Directory.Delete(cleanupPath, recursive: true);
+                _fs.DeleteLoadTransactionDirectory(cleanupPath);
         }
     }
 

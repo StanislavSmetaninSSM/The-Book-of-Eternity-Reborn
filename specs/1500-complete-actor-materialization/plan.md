@@ -63,6 +63,16 @@ canonical session and published through one generation-bound no-follow move;
 autosave deletion revalidates each canonical relative target. Browser rollback
 roots are omitted from saves and stripped from replacement archives.
 
+Phase 33 closes the remaining check/use gap found by the second post-T156
+review. Path validation becomes admission only; the operation itself owns
+validated physical handles. Windows canonical and runtime mutations hold a
+non-delete-shared directory handle across the complete boundary, create staging
+files with create-only semantics, validate the opened object before writing,
+and rename or delete that same opened object. Runtime generation, journal,
+manifest, before-image, load-extraction, proposal, and save bytes are read or
+written through validated handles so a swap-to-external/open/swap-back sequence
+cannot authorize stale state or damage an external file.
+
 ## Technical Context
 
 **Language/Version**: C# 12 / .NET 8; PowerShell GM launcher and documentation entrypoints; JSON state contracts
@@ -241,6 +251,58 @@ locked backup for retryable cleanup, an interrupted-browser/console-completion
 sequence for Daren, and crafted archives plus manifestless trees for replacement
 cleanup. The final gate repeats focused and complete verification and requires a
 fresh `gpt-5.6-sol`/max exact-diff review with no Critical or Important finding.
+
+## Phase 33 implementation strategy
+
+The fresh Phase 32 exact-diff review found one remaining authority class in two
+forms: a validated pathname could still change before a canonical operation,
+and durable runtime bytes were not always consumed from the validated opened
+object. The remediation is one shared physical-operation layer:
+
+1. open and validate the relevant parent directory with delete sharing denied,
+   then retain that handle through the complete operation;
+2. create temporary and staging files with create-only semantics and validate
+   the opened handle before writing caller bytes;
+3. perform atomic replacement/publication and deletion against the validated
+   opened source or target, then verify its post-operation identity;
+4. read generation, journal, manifest, and before-image bytes from the same
+   validated handle rather than reopening an accepted pathname;
+5. route load extraction, worker proposal staging, and save archive staging
+   through this layer so no destructive path open precedes physical proof.
+
+Each item starts with a deterministic RED test. Barriers execute after the old
+final validation point or during open/swap-back, and every test carries an
+external sentinel whose exact bytes must remain unchanged. The final gate repeats
+focused and complete verification and requires a fresh `gpt-5.6-sol`/max
+exact-diff review with no Critical or Important finding.
+
+## Phase 34 implementation strategy
+
+The preliminary Phase 33 `gpt-5.6-sol`/max review found three remaining proof
+gaps in physical authority: hard links preserve the expected pathname while
+aliasing another file object, lock acquisition can create an external file
+before rejecting its handle, and the runtime read regression restores the path
+after rejection rather than between OS open and handle validation.
+
+The remediation extends the shared physical-operation layer rather than adding
+path-string checks:
+
+1. inspect accepted file handles with `FILE_STANDARD_INFO` and require exactly
+   one hard link for every canonical/runtime authority file;
+2. open and retain the stable runtime `locks` directory before `OpenOrCreate`,
+   carry that authority inside the canonical/lifecycle lease, and prove a
+   parent swap creates no external entry;
+3. move the runtime-read test hook to the exact post-open/pre-validation
+   boundary and prove the external handle remains open while the pathname is
+   restored;
+4. serialize the process-heavy GameEngine lifecycle test collection so full
+   verification does not turn wall-clock helper deadlines into load-dependent
+   false failures.
+
+The hard-link and lock tests must fail against the pre-remediation behavior.
+Final integration repeats the focused authority suites, the complete test
+project, Release build, static parsing, documentation guards, Spec Kit analysis,
+and a fresh post-commit exact-diff review.
 
 ## Complexity Tracking
 

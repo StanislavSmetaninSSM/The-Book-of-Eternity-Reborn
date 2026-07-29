@@ -1,10 +1,7 @@
-using System.ComponentModel;
-using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Services;
-using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
@@ -20,6 +17,12 @@ internal sealed class FileSystemManagerHooks
     internal Func<string, Task>? BeforeCanonicalReadOpenAsync { get; init; }
     internal Func<Task>? SessionOperationClosingAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalMutationBoundaryAsync { get; init; }
+    internal Func<string, Task>? AfterCanonicalMutationBoundaryValidatedAsync { get; init; }
+    internal Func<string, Task>? BeforeRuntimeFileReadOpenAsync { get; init; }
+    internal Func<string, Task>? AfterRuntimeFileReadOpenedAsync { get; init; }
+    internal Func<string, Task>? BeforeRuntimeFileCreateAsync { get; init; }
+    internal Func<string, Task>? AfterRuntimeMutationBoundaryValidatedAsync { get; init; }
+    internal Func<string, string, Task>? BeforeLoadDirectoryMoveAsync { get; init; }
 }
 
 public enum CanonicalFileMutationResult
@@ -60,49 +63,79 @@ public class FileSystemManager
     internal sealed class SessionLifecycleLease : IAsyncDisposable
     {
         private FileStream? _stream;
+        private PhysicalFileAuthority.StableDirectory? _parentAuthority;
 
-        internal SessionLifecycleLease(FileSystemManager owner, FileStream stream)
+        internal SessionLifecycleLease(
+            FileSystemManager owner,
+            FileStream stream,
+            PhysicalFileAuthority.StableDirectory parentAuthority)
         {
             Owner = owner;
             _stream = stream;
+            _parentAuthority = parentAuthority;
         }
 
         internal FileSystemManager Owner { get; }
-        internal bool IsActive => _stream != null;
+        internal bool IsActive =>
+            _stream != null &&
+            _parentAuthority != null;
 
         public async ValueTask DisposeAsync()
         {
             var stream = _stream;
+            var parentAuthority = _parentAuthority;
             _stream = null;
-            if (stream != null)
-                await stream.DisposeAsync();
+            _parentAuthority = null;
+            try
+            {
+                if (stream != null)
+                    await stream.DisposeAsync();
+            }
+            finally
+            {
+                parentAuthority?.Dispose();
+            }
         }
     }
 
     internal sealed class CanonicalWriteLease : IAsyncDisposable
     {
         private FileStream? _stream;
+        private PhysicalFileAuthority.StableDirectory? _parentAuthority;
 
         internal CanonicalWriteLease(
             FileSystemManager owner,
             FileStream stream,
+            PhysicalFileAuthority.StableDirectory parentAuthority,
             CanonicalWritePurpose purpose)
         {
             Owner = owner;
             Purpose = purpose;
             _stream = stream;
+            _parentAuthority = parentAuthority;
         }
 
         internal FileSystemManager Owner { get; }
         internal CanonicalWritePurpose Purpose { get; }
-        internal bool IsActive => _stream != null;
+        internal bool IsActive =>
+            _stream != null &&
+            _parentAuthority != null;
 
         public async ValueTask DisposeAsync()
         {
             var stream = _stream;
+            var parentAuthority = _parentAuthority;
             _stream = null;
-            if (stream != null)
-                await stream.DisposeAsync();
+            _parentAuthority = null;
+            try
+            {
+                if (stream != null)
+                    await stream.DisposeAsync();
+            }
+            finally
+            {
+                parentAuthority?.Dispose();
+            }
         }
     }
 
@@ -212,10 +245,16 @@ public class FileSystemManager
                 ? string.Empty
                 : dir["game_session/".Length..];
             var fullPath = ResolvePath(relativePath);
-            if (!Directory.Exists(fullPath))
+            var existed = Directory.Exists(fullPath);
+            using (PhysicalFileAuthority.EnsureStableDirectory(
+                       _basePath,
+                       fullPath,
+                       "Canonical directory structure"))
             {
-                Directory.CreateDirectory(fullPath);
-                _logger.LogDebug("Создана директория: {Path}", dir);
+                if (!existed)
+                {
+                    _logger.LogDebug("Создана директория: {Path}", dir);
+                }
             }
         }
     }
@@ -457,28 +496,24 @@ public class FileSystemManager
     {
         cancellationToken.ThrowIfCancellationRequested();
         var fullPath = ResolvePath(relativePath);
-        var dir = Path.GetDirectoryName(fullPath);
-        if (dir != null && !Directory.Exists(dir))
-            Directory.CreateDirectory(dir);
-        EnsureCanonicalPathStillSafe(relativePath, fullPath);
-
+        await InvokeBeforeCanonicalMutationBoundaryAsync(relativePath);
+        cancellationToken.ThrowIfCancellationRequested();
+        using var parentAuthority = EnsureStableCanonicalParent(
+            relativePath,
+            fullPath);
         var tempRelativePath = relativePath + ".tmp." + Guid.NewGuid().ToString("N")[..8];
         var tempPath = ResolvePath(tempRelativePath);
+        FileStream? stream = null;
         try
         {
-            await using (var stream = new FileStream(
-                             tempPath,
-                             FileMode.CreateNew,
-                             FileAccess.Write,
-                             FileShare.None,
-                             bufferSize: 4096,
-                             FileOptions.Asynchronous | FileOptions.WriteThrough))
-            {
-                await stream.WriteAsync(content, cancellationToken);
-                stream.Flush(flushToDisk: true);
-            }
-            await InvokeBeforeCanonicalMutationBoundaryAsync(relativePath);
-            cancellationToken.ThrowIfCancellationRequested();
+            stream = PhysicalFileAuthority.CreateNewWritableFile(
+                parentAuthority,
+                tempPath,
+                "Canonical atomic temporary",
+                asynchronous: true);
+            await stream.WriteAsync(content, cancellationToken);
+            await stream.FlushAsync(cancellationToken);
+            stream.Flush(flushToDisk: true);
 
             for (var attempt = 0; ; attempt++)
             {
@@ -486,7 +521,20 @@ public class FileSystemManager
                 try
                 {
                     EnsureCanonicalMutationBoundary(relativePath, fullPath);
-                    File.Move(tempPath, fullPath, overwrite: true);
+                    await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath);
+                    if (OperatingSystem.IsWindows())
+                    {
+                        PhysicalFileAuthority.RenameOpenedObject(
+                            stream.SafeFileHandle,
+                            fullPath,
+                            replaceExisting: true,
+                            "Canonical atomic write");
+                    }
+                    else
+                    {
+                        File.Move(tempPath, fullPath, overwrite: true);
+                    }
+
                     return;
                 }
                 catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
@@ -497,8 +545,22 @@ public class FileSystemManager
         }
         catch
         {
-            TryDeleteAtomicTempFileWithoutFollowingReparsePoints(tempRelativePath, tempPath);
+            if (stream != null)
+            {
+                await stream.DisposeAsync();
+                stream = null;
+            }
+
+            TryDeleteAtomicTempFileWithoutFollowingReparsePoints(
+                parentAuthority,
+                tempRelativePath,
+                tempPath);
             throw;
+        }
+        finally
+        {
+            if (stream != null)
+                await stream.DisposeAsync();
         }
     }
 
@@ -516,6 +578,7 @@ public class FileSystemManager
     }
 
     private void TryDeleteAtomicTempFileWithoutFollowingReparsePoints(
+        PhysicalFileAuthority.StableDirectory parentAuthority,
         string tempRelativePath,
         string expectedTempPath)
     {
@@ -525,10 +588,12 @@ public class FileSystemManager
             if (string.Equals(
                     revalidatedTempPath,
                     expectedTempPath,
-                    StringComparison.OrdinalIgnoreCase) &&
-                File.Exists(revalidatedTempPath))
+                    StringComparison.OrdinalIgnoreCase))
             {
-                File.Delete(revalidatedTempPath);
+                PhysicalFileAuthority.TryDeleteFile(
+                    parentAuthority,
+                    revalidatedTempPath,
+                    "Canonical atomic temporary cleanup");
             }
         }
         catch
@@ -556,16 +621,16 @@ public class FileSystemManager
         {
             try
             {
-                var stream = await OpenCanonicalReadStreamAsync(relativePath);
-                if (stream == null)
+                var openedFile = await OpenCanonicalReadStreamAsync(relativePath);
+                if (openedFile == null)
                     return null;
 
-                await using (stream)
+                await using (openedFile)
                 using (var reader = new StreamReader(
-                           stream,
+                           openedFile.Stream,
                            Encoding.UTF8,
                            detectEncodingFromByteOrderMarks: true,
-                           leaveOpen: false))
+                           leaveOpen: true))
                 {
                     return await reader.ReadToEndAsync();
                 }
@@ -609,12 +674,15 @@ public class FileSystemManager
             cancellationToken.ThrowIfCancellationRequested();
             try
             {
-                var stream = await OpenCanonicalReadStreamAsync(relativePath, cancellationToken);
-                if (stream == null)
+                var openedFile = await OpenCanonicalReadStreamAsync(
+                    relativePath,
+                    cancellationToken);
+                if (openedFile == null)
                     return null;
 
-                await using (stream)
+                await using (openedFile)
                 {
+                    var stream = openedFile.Stream;
                     using var buffer = stream.Length is > 0 and <= int.MaxValue
                         ? new MemoryStream((int)stream.Length)
                         : new MemoryStream();
@@ -664,8 +732,17 @@ public class FileSystemManager
         EnsureSafeCanonicalRelativePath(relativePath);
         var fullPath = ResolvePath(relativePath);
         InvokeBeforeCanonicalMutationBoundaryAsync(relativePath).GetAwaiter().GetResult();
+        using var parentAuthority = EnsureStableCanonicalParent(
+            relativePath,
+            fullPath);
         EnsureCanonicalMutationBoundary(relativePath, fullPath);
-        DeleteDirectoryTreeWithoutFollowingReparsePoints(fullPath);
+        InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath)
+            .GetAwaiter()
+            .GetResult();
+        PhysicalFileAuthority.TryDeleteTree(
+            parentAuthority,
+            fullPath,
+            "Canonical directory-tree deletion");
     }
 
     internal async Task MoveRuntimeDirectoryIntoCanonicalSessionAsync(
@@ -696,13 +773,101 @@ public class FileSystemManager
         var destinationPath = ResolvePath(destinationRelativePath);
         var destinationParent = Path.GetDirectoryName(destinationPath)
             ?? throw new InvalidDataException("Canonical destination has no parent directory.");
-        Directory.CreateDirectory(destinationParent);
-        EnsureCanonicalPathStillSafe(destinationRelativePath, destinationPath);
-
         await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
         EnsureRuntimePathIsSafe(sourcePath);
+        using var sourceParentAuthority = EnsureStableRuntimeDirectory(
+            Path.GetDirectoryName(sourcePath)
+            ?? throw new InvalidDataException(
+                "Runtime staging directory source has no parent."));
+        using var destinationParentAuthority = EnsureStableCanonicalParent(
+            destinationRelativePath,
+            destinationPath);
+        using var sourceHandle = OperatingSystem.IsWindows()
+            ? PhysicalFileAuthority.OpenForRename(
+                sourceParentAuthority,
+                sourcePath,
+                isDirectory: true,
+                "Runtime proposal publication")
+            : null;
         EnsureCanonicalMutationBoundary(destinationRelativePath, destinationPath);
-        Directory.Move(sourcePath, destinationPath);
+        await InvokeAfterCanonicalMutationBoundaryValidatedAsync(destinationRelativePath);
+        if (OperatingSystem.IsWindows())
+        {
+            PhysicalFileAuthority.RenameOpenedObject(
+                sourceHandle!,
+                destinationPath,
+                replaceExisting: false,
+                "Runtime proposal publication");
+        }
+        else
+        {
+            Directory.Move(sourcePath, destinationPath);
+        }
+    }
+
+    internal sealed class StableReadFile : IAsyncDisposable
+    {
+        private FileStream? _stream;
+        private PhysicalFileAuthority.StableDirectory? _parentAuthority;
+
+        internal StableReadFile(
+            FileStream stream,
+            PhysicalFileAuthority.StableDirectory parentAuthority)
+        {
+            _stream = stream;
+            _parentAuthority = parentAuthority;
+        }
+
+        internal FileStream Stream => _stream ??
+            throw new ObjectDisposedException(nameof(StableReadFile));
+
+        public async ValueTask DisposeAsync()
+        {
+            var stream = _stream;
+            var parentAuthority = _parentAuthority;
+            _stream = null;
+            _parentAuthority = null;
+            if (stream != null)
+                await stream.DisposeAsync();
+            parentAuthority?.Dispose();
+        }
+    }
+
+    internal sealed class RuntimeStagedFile : IAsyncDisposable
+    {
+        private FileStream? _stream;
+        private PhysicalFileAuthority.StableDirectory? _parentAuthority;
+
+        internal RuntimeStagedFile(
+            FileSystemManager owner,
+            string path,
+            FileStream stream,
+            PhysicalFileAuthority.StableDirectory parentAuthority)
+        {
+            Owner = owner;
+            Path = System.IO.Path.GetFullPath(path);
+            _stream = stream;
+            _parentAuthority = parentAuthority;
+        }
+
+        internal FileSystemManager Owner { get; }
+        internal string Path { get; }
+        internal FileStream Stream => _stream ??
+            throw new ObjectDisposedException(nameof(RuntimeStagedFile));
+        internal PhysicalFileAuthority.StableDirectory ParentAuthority =>
+            _parentAuthority ??
+            throw new ObjectDisposedException(nameof(RuntimeStagedFile));
+
+        public async ValueTask DisposeAsync()
+        {
+            var stream = _stream;
+            var parentAuthority = _parentAuthority;
+            _stream = null;
+            _parentAuthority = null;
+            if (stream != null)
+                await stream.DisposeAsync();
+            parentAuthority?.Dispose();
+        }
     }
 
     internal string CreateRuntimeProposalStagingRoot()
@@ -716,6 +881,126 @@ public class FileSystemManager
 
     internal void DeleteRuntimeSaveStagingRoot(string stagingRoot)
         => DeleteRuntimeStagingRoot("save-staging", stagingRoot);
+
+    internal async Task WriteRuntimeStagedFileAsync(
+        string path,
+        byte[] content,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        cancellationToken.ThrowIfCancellationRequested();
+        EnsureRuntimePathIsSafe(path);
+        var parent = Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException(
+                "Runtime staging file has no parent directory.");
+        EnsureRuntimeDirectoryExistsAndIsSafe(parent);
+        using var parentAuthority = EnsureStableRuntimeDirectory(parent);
+        if (_hooks?.BeforeRuntimeFileCreateAsync != null)
+            await _hooks.BeforeRuntimeFileCreateAsync(path);
+
+        await using var stream = PhysicalFileAuthority.CreateNewWritableFile(
+            parentAuthority,
+            path,
+            "Runtime staging",
+            asynchronous: true);
+        await stream.WriteAsync(content, cancellationToken);
+        await stream.FlushAsync(cancellationToken);
+        stream.Flush(flushToDisk: true);
+        EnsureRuntimePathIsSafe(path);
+    }
+
+    internal async Task<RuntimeStagedFile> CreateRuntimeStagedFileAsync(
+        string path,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        EnsureRuntimePathIsSafe(path);
+        var parent = Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException(
+                "Runtime staged file has no parent directory.");
+        EnsureRuntimeDirectoryExistsAndIsSafe(parent);
+        var parentAuthority = EnsureStableRuntimeDirectory(parent);
+        FileStream? stream = null;
+        try
+        {
+            if (_hooks?.BeforeRuntimeFileCreateAsync != null)
+                await _hooks.BeforeRuntimeFileCreateAsync(path);
+            stream = PhysicalFileAuthority.CreateNewWritableFile(
+                parentAuthority,
+                path,
+                "Runtime staged file",
+                asynchronous: true);
+            return new RuntimeStagedFile(
+                this,
+                path,
+                stream,
+                parentAuthority);
+        }
+        catch
+        {
+            if (stream != null)
+                await stream.DisposeAsync();
+            parentAuthority.Dispose();
+            throw;
+        }
+    }
+
+    internal async Task MoveRuntimeFileIntoCanonicalSessionAsync(
+        CanonicalWriteLease writeLease,
+        RuntimeStagedFile stagedFile,
+        string destinationRelativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        ArgumentNullException.ThrowIfNull(stagedFile);
+        if (!ReferenceEquals(stagedFile.Owner, this))
+        {
+            throw new InvalidOperationException(
+                "Runtime staged file belongs to another file-system authority.");
+        }
+
+        EnsureSafeCanonicalRelativePath(destinationRelativePath);
+        EnsureRuntimePathIsSafe(stagedFile.Path);
+        var saveStagingRoot = Path.GetFullPath(Path.Combine(
+            RuntimeRootPath,
+            "save-staging"));
+        if (!IsSameOrDescendant(stagedFile.Path, saveStagingRoot) ||
+            string.Equals(
+                stagedFile.Path,
+                saveStagingRoot,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Runtime save source must be inside save staging.");
+        }
+
+        var destinationPath = ResolvePath(destinationRelativePath);
+        await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
+        using var destinationParentAuthority = EnsureStableCanonicalParent(
+            destinationRelativePath,
+            destinationPath);
+        PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
+            stagedFile.Stream.SafeFileHandle,
+            stagedFile.Path,
+            "Runtime staged save");
+        EnsureCanonicalMutationBoundary(destinationRelativePath, destinationPath);
+        await InvokeAfterCanonicalMutationBoundaryValidatedAsync(destinationRelativePath);
+        await stagedFile.Stream.FlushAsync();
+        stagedFile.Stream.Flush(flushToDisk: true);
+        if (OperatingSystem.IsWindows())
+        {
+            PhysicalFileAuthority.RenameOpenedObject(
+                stagedFile.Stream.SafeFileHandle,
+                destinationPath,
+                replaceExisting: false,
+                "Runtime save publication");
+        }
+        else
+        {
+            File.Move(stagedFile.Path, destinationPath);
+        }
+
+        await stagedFile.DisposeAsync();
+    }
 
     internal async Task MoveRuntimeFileIntoCanonicalSessionAsync(
         CanonicalWriteLease writeLease,
@@ -747,13 +1032,36 @@ public class FileSystemManager
         var destinationPath = ResolvePath(destinationRelativePath);
         var destinationParent = Path.GetDirectoryName(destinationPath)
             ?? throw new InvalidDataException("Canonical save destination has no parent directory.");
-        Directory.CreateDirectory(destinationParent);
-        EnsureCanonicalPathStillSafe(destinationRelativePath, destinationPath);
-
         await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
         EnsureRuntimePathIsSafe(sourcePath);
+        using var sourceParentAuthority = EnsureStableRuntimeDirectory(
+            Path.GetDirectoryName(sourcePath)
+            ?? throw new InvalidDataException(
+                "Runtime staged save source has no parent."));
+        using var destinationParentAuthority = EnsureStableCanonicalParent(
+            destinationRelativePath,
+            destinationPath);
+        using var sourceHandle = OperatingSystem.IsWindows()
+            ? PhysicalFileAuthority.OpenForRename(
+                sourceParentAuthority,
+                sourcePath,
+                isDirectory: false,
+                "Runtime save publication")
+            : null;
         EnsureCanonicalMutationBoundary(destinationRelativePath, destinationPath);
-        File.Move(sourcePath, destinationPath);
+        await InvokeAfterCanonicalMutationBoundaryValidatedAsync(destinationRelativePath);
+        if (OperatingSystem.IsWindows())
+        {
+            PhysicalFileAuthority.RenameOpenedObject(
+                sourceHandle!,
+                destinationPath,
+                replaceExisting: false,
+                "Runtime save publication");
+        }
+        else
+        {
+            File.Move(sourcePath, destinationPath);
+        }
     }
 
     internal void DeleteEmptyDirectories(
@@ -792,9 +1100,17 @@ public class FileSystemManager
                 InvokeBeforeCanonicalMutationBoundaryAsync(relativePath)
                     .GetAwaiter()
                     .GetResult();
+                using var parentAuthority = EnsureStableCanonicalParent(
+                    relativePath,
+                    fullPath);
                 EnsureCanonicalMutationBoundary(relativePath, fullPath);
-                if (File.Exists(fullPath))
-                    File.Delete(fullPath);
+                InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath)
+                    .GetAwaiter()
+                    .GetResult();
+                PhysicalFileAuthority.TryDeleteFile(
+                    parentAuthority,
+                    fullPath,
+                    "Canonical file deletion");
                 return;
             }
             catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
@@ -833,13 +1149,17 @@ public class FileSystemManager
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = CanonicalWriteLockPath;
-        EnsureRuntimeDirectoryExistsAndIsSafe(Path.GetDirectoryName(lockPath)!);
+        var lockParentPath = Path.GetDirectoryName(lockPath)
+            ?? throw new InvalidDataException(
+                "Canonical write lock has no parent directory.");
+        EnsureRuntimeDirectoryExistsAndIsSafe(lockParentPath);
         for (var attempt = 0; attempt < CanonicalWriteLockRetryCount; attempt++)
         {
             cancellationToken.ThrowIfCancellationRequested();
             EnsureRuntimePathIsSafe(lockPath);
             if (_hooks?.BeforeCanonicalWriteLockOpenAsync != null)
                 await _hooks.BeforeCanonicalWriteLockOpenAsync();
+            var parentAuthority = EnsureStableRuntimeDirectory(lockParentPath);
             FileStream stream;
             try
             {
@@ -853,10 +1173,16 @@ public class FileSystemManager
             }
             catch (IOException) when (attempt < CanonicalWriteLockRetryCount - 1)
             {
+                parentAuthority.Dispose();
                 if (_hooks?.CanonicalWriteLockContendedAsync != null)
                     await _hooks.CanonicalWriteLockContendedAsync();
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 continue;
+            }
+            catch
+            {
+                parentAuthority.Dispose();
+                throw;
             }
 
             try
@@ -864,7 +1190,7 @@ public class FileSystemManager
                 if (_hooks?.AfterCanonicalWriteLockOpenedAsync != null)
                     await _hooks.AfterCanonicalWriteLockOpenedAsync();
                 EnsureRuntimePathIsSafe(lockPath);
-                EnsureOpenedHandleMatchesExpectedPath(
+                PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
                     stream.SafeFileHandle,
                     lockPath,
                     "Canonical write lock");
@@ -872,10 +1198,15 @@ public class FileSystemManager
             catch
             {
                 await stream.DisposeAsync();
+                parentAuthority.Dispose();
                 throw;
             }
 
-            var writeLease = new CanonicalWriteLease(this, stream, purpose);
+            var writeLease = new CanonicalWriteLease(
+                this,
+                stream,
+                parentAuthority,
+                purpose);
             try
             {
                 RecoverInterruptedLoadTransaction(writeLease);
@@ -941,12 +1272,16 @@ public class FileSystemManager
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = SessionLifecycleLockPath;
-        EnsureRuntimeDirectoryExistsAndIsSafe(Path.GetDirectoryName(lockPath)!);
+        var lockParentPath = Path.GetDirectoryName(lockPath)
+            ?? throw new InvalidDataException(
+                "Session lifecycle lock has no parent directory.");
+        EnsureRuntimeDirectoryExistsAndIsSafe(lockParentPath);
         for (var attempt = 0; attempt < SessionLifecycleLockRetryCount; attempt++)
         {
             EnsureRuntimePathIsSafe(lockPath);
             if (_hooks?.BeforeSessionLifecycleLockOpenAsync != null)
                 await _hooks.BeforeSessionLifecycleLockOpenAsync();
+            var parentAuthority = EnsureStableRuntimeDirectory(lockParentPath);
             FileStream stream;
             try
             {
@@ -960,10 +1295,16 @@ public class FileSystemManager
             }
             catch (IOException) when (attempt < SessionLifecycleLockRetryCount - 1)
             {
+                parentAuthority.Dispose();
                 if (_hooks?.SessionLifecycleLockContendedAsync != null)
                     await _hooks.SessionLifecycleLockContendedAsync();
                 await Task.Delay(TransientFileAccessRetryDelay);
                 continue;
+            }
+            catch
+            {
+                parentAuthority.Dispose();
+                throw;
             }
 
             try
@@ -971,15 +1312,19 @@ public class FileSystemManager
                 if (_hooks?.AfterSessionLifecycleLockOpenedAsync != null)
                     await _hooks.AfterSessionLifecycleLockOpenedAsync();
                 EnsureRuntimePathIsSafe(lockPath);
-                EnsureOpenedHandleMatchesExpectedPath(
+                PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
                     stream.SafeFileHandle,
                     lockPath,
                     "Session lifecycle lock");
-                return new SessionLifecycleLease(this, stream);
+                return new SessionLifecycleLease(
+                    this,
+                    stream,
+                    parentAuthority);
             }
             catch
             {
                 await stream.DisposeAsync();
+                parentAuthority.Dispose();
                 throw;
             }
         }
@@ -1171,9 +1516,31 @@ public class FileSystemManager
 
     internal void CreateLoadDirectory(string path)
     {
-        EnsureRuntimePathIsSafe(path);
-        _loadTransactionOperations.CreateDirectory(path);
-        EnsureRuntimePathIsSafe(path);
+        EnsureLoadTransactionOperationPathIsSafe(path);
+        _loadTransactionOperations.BeforeCreateDirectory(path);
+        var fullPath = Path.GetFullPath(path);
+        var runtimeRoot = Path.GetFullPath(RuntimeRootPath);
+        if (IsSameOrDescendant(fullPath, runtimeRoot))
+        {
+            using var authority = EnsureStableRuntimeDirectory(fullPath);
+            return;
+        }
+
+        if (string.Equals(
+                fullPath,
+                Path.GetFullPath(GameSessionPath),
+                StringComparison.OrdinalIgnoreCase))
+        {
+            using var authority = PhysicalFileAuthority.EnsureStableDirectory(
+                _basePath,
+                fullPath,
+                "Canonical load session");
+            EnsureCanonicalSessionRootIsNotReparsePoint();
+            return;
+        }
+
+        throw new InvalidDataException(
+            "Load directory creation is outside runtime and canonical session authority.");
     }
 
     internal async Task WriteLoadTransactionFileAsync(
@@ -1186,30 +1553,69 @@ public class FileSystemManager
         var parent = Path.GetDirectoryName(path)
             ?? throw new InvalidDataException("Load transaction file has no parent.");
         EnsureRuntimeDirectoryExistsAndIsSafe(parent);
+        using var parentAuthority = EnsureStableRuntimeDirectory(parent);
+        if (_hooks?.BeforeRuntimeFileCreateAsync != null)
+            await _hooks.BeforeRuntimeFileCreateAsync(path);
 
-        await using var output = new FileStream(
+        await using var output = PhysicalFileAuthority.CreateNewWritableFile(
+            parentAuthority,
             path,
-            FileMode.Create,
-            FileAccess.Write,
-            FileShare.None,
-            bufferSize: 81920,
-            FileOptions.Asynchronous | FileOptions.WriteThrough);
-        EnsureRuntimePathIsSafe(path);
-        EnsureOpenedHandleMatchesExpectedPath(
-            output.SafeFileHandle,
-            path,
-            "Load transaction staging file");
+            "Load transaction staging",
+            asynchronous: true);
         await source.CopyToAsync(output, cancellationToken);
         await output.FlushAsync(cancellationToken);
         output.Flush(flushToDisk: true);
         EnsureRuntimePathIsSafe(path);
     }
 
+    internal void DeleteLoadTransactionFile(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        DeleteRuntimeFile(path);
+    }
+
+    internal void DeleteLoadTransactionDirectory(string path)
+    {
+        EnsureRuntimePathIsSafe(path);
+        DeleteRuntimeDirectory(path);
+    }
+
     internal void MoveLoadDirectory(string sourcePath, string destinationPath)
     {
         EnsureLoadTransactionOperationPathIsSafe(sourcePath);
         EnsureLoadTransactionOperationPathIsSafe(destinationPath);
-        _loadTransactionOperations.MoveDirectory(sourcePath, destinationPath);
+        using var sourceParentAuthority = EnsureStableLoadOperationParent(
+            sourcePath,
+            "Load transaction source");
+        using var destinationParentAuthority = EnsureStableLoadOperationParent(
+            destinationPath,
+            "Load transaction destination");
+        using var sourceHandle = OperatingSystem.IsWindows()
+            ? PhysicalFileAuthority.OpenForRename(
+                sourceParentAuthority,
+                sourcePath,
+                isDirectory: true,
+                "Load transaction directory move")
+            : null;
+        _hooks?.BeforeLoadDirectoryMoveAsync?.Invoke(sourcePath, destinationPath)
+            .GetAwaiter()
+            .GetResult();
+        _loadTransactionOperations.BeforeMoveDirectory(
+            sourcePath,
+            destinationPath);
+        if (OperatingSystem.IsWindows())
+        {
+            PhysicalFileAuthority.RenameOpenedObject(
+                sourceHandle!,
+                destinationPath,
+                replaceExisting: false,
+                "Load transaction directory move");
+        }
+        else
+        {
+            Directory.Move(sourcePath, destinationPath);
+        }
+
         EnsureLoadTransactionOperationPathIsSafe(destinationPath);
     }
 
@@ -1615,14 +2021,81 @@ public class FileSystemManager
         }
     }
 
+    private PhysicalFileAuthority.StableDirectory EnsureStableCanonicalParent(
+        string relativePath,
+        string expectedFullPath)
+    {
+        EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+        var parent = Path.GetDirectoryName(expectedFullPath)
+            ?? throw new InvalidDataException(
+                "Canonical authority path has no parent directory.");
+        var authority = PhysicalFileAuthority.EnsureStableDirectory(
+            _basePath,
+            parent,
+            "Canonical game-session");
+        try
+        {
+            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+            return authority;
+        }
+        catch
+        {
+            authority.Dispose();
+            throw;
+        }
+    }
+
+    private PhysicalFileAuthority.StableDirectory EnsureStableRuntimeDirectory(
+        string directoryPath)
+    {
+        EnsureRuntimePathIsSafe(directoryPath);
+        var authority = PhysicalFileAuthority.EnsureStableDirectory(
+            _basePath,
+            directoryPath,
+            "Client runtime");
+        try
+        {
+            EnsureRuntimePathIsSafe(directoryPath);
+            return authority;
+        }
+        catch
+        {
+            authority.Dispose();
+            throw;
+        }
+    }
+
     private void EnsureRuntimeDirectoryExistsAndIsSafe(string directoryPath)
     {
-        EnsureRuntimePathIsSafe(RuntimeRootPath);
-        Directory.CreateDirectory(RuntimeRootPath);
-        EnsureRuntimePathIsSafe(RuntimeRootPath);
-        EnsureRuntimePathIsSafe(directoryPath);
-        Directory.CreateDirectory(directoryPath);
-        EnsureRuntimePathIsSafe(directoryPath);
+        using var authority = EnsureStableRuntimeDirectory(directoryPath);
+    }
+
+    private PhysicalFileAuthority.StableDirectory EnsureStableLoadOperationParent(
+        string path,
+        string authorityName)
+    {
+        EnsureLoadTransactionOperationPathIsSafe(path);
+        var fullPath = Path.GetFullPath(path);
+        var parentPath = Path.GetDirectoryName(fullPath)
+            ?? throw new InvalidDataException(
+                $"{authorityName} has no parent directory.");
+        var runtimeRoot = Path.GetFullPath(RuntimeRootPath);
+        if (IsSameOrDescendant(fullPath, runtimeRoot))
+            return EnsureStableRuntimeDirectory(parentPath);
+
+        if (string.Equals(
+                fullPath,
+                Path.GetFullPath(GameSessionPath),
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return PhysicalFileAuthority.EnsureStableDirectory(
+                _basePath,
+                parentPath,
+                authorityName);
+        }
+
+        throw new InvalidDataException(
+            $"{authorityName} is outside runtime and canonical session authority.");
     }
 
     private string CreateRuntimeStagingRoot(string area)
@@ -1631,7 +2104,7 @@ public class FileSystemManager
         EnsureRuntimeDirectoryExistsAndIsSafe(areaRoot);
 
         var stagingRoot = Path.Combine(areaRoot, Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(stagingRoot);
+        using var authority = EnsureStableRuntimeDirectory(stagingRoot);
         EnsureRuntimePathIsSafe(stagingRoot);
         return stagingRoot;
     }
@@ -1650,7 +2123,7 @@ public class FileSystemManager
 
         EnsureRuntimePathIsSafe(fullStagingRoot);
         if (Directory.Exists(fullStagingRoot))
-            DeleteDirectoryTreeWithoutFollowingReparsePoints(fullStagingRoot);
+            DeleteRuntimeDirectory(fullStagingRoot);
     }
 
     private void EnsureRuntimePathIsSafe(string fullPath)
@@ -1712,25 +2185,58 @@ public class FileSystemManager
     private string ReadRuntimeText(string path)
     {
         EnsureRuntimePathIsSafe(path);
-        var content = _loadTransactionOperations.ReadAllText(path);
-        EnsureRuntimePathIsSafe(path);
-        return content;
+        _hooks?.BeforeRuntimeFileReadOpenAsync?.Invoke(path)
+            .GetAwaiter()
+            .GetResult();
+        using var parentAuthority = EnsureStableRuntimeDirectory(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException(
+                "Runtime authority file has no parent."));
+        using var stream = PhysicalFileAuthority.OpenReadFile(
+            parentAuthority,
+            path,
+            "Runtime authority read",
+            asynchronous: false,
+            afterOpenedBeforeValidation: () =>
+                _hooks?.AfterRuntimeFileReadOpenedAsync?.Invoke(path)
+                    .GetAwaiter()
+                    .GetResult())
+            ?? throw new FileNotFoundException(
+                "Runtime authority file does not exist.",
+                path);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
     }
 
     private void WriteRuntimeTextAtomic(string path, string content)
     {
         EnsureRuntimePathIsSafe(path);
-        EnsureRuntimeDirectoryExistsAndIsSafe(
-            Path.GetDirectoryName(path)
-            ?? throw new InvalidDataException("Runtime authority file has no parent."));
-        _loadTransactionOperations.WriteAllTextAtomic(path, content);
+        _loadTransactionOperations.BeforeWriteAllTextAtomic(path, content);
+        WriteRuntimeBytesAtomicCoreAsync(
+                path,
+                Encoding.UTF8.GetBytes(content),
+                CancellationToken.None,
+                "Runtime authority")
+            .GetAwaiter()
+            .GetResult();
         EnsureRuntimePathIsSafe(path);
     }
 
     private void DeleteRuntimeFile(string path)
     {
         EnsureRuntimePathIsSafe(path);
-        _loadTransactionOperations.DeleteFile(path);
+        using var parentAuthority = EnsureStableRuntimeDirectory(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException(
+                "Runtime authority file has no parent."));
+        _loadTransactionOperations.BeforeDeleteFile(path);
+        PhysicalFileAuthority.TryDeleteFile(
+            parentAuthority,
+            path,
+            "Runtime authority file cleanup");
         EnsureRuntimePathIsSafe(
             Path.GetDirectoryName(path)
             ?? throw new InvalidDataException("Runtime authority file has no parent."));
@@ -1739,13 +2245,56 @@ public class FileSystemManager
     private void DeleteRuntimeDirectory(string path)
     {
         EnsureRuntimePathIsSafe(path);
-        _loadTransactionOperations.DeleteDirectory(path, recursive: true);
+        using var parentAuthority = EnsureStableRuntimeDirectory(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException(
+                "Runtime authority directory has no parent."));
+        _loadTransactionOperations.BeforeDeleteDirectory(path);
+        PhysicalFileAuthority.TryDeleteTree(
+            parentAuthority,
+            path,
+            "Runtime authority directory cleanup");
         EnsureRuntimePathIsSafe(
             Path.GetDirectoryName(path)
             ?? throw new InvalidDataException("Runtime authority directory has no parent."));
     }
 
-    private async Task<FileStream?> OpenCanonicalReadStreamAsync(
+    internal StableReadFile? OpenExactPhysicalReadFile(
+        string fullPath,
+        string authorityName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(fullPath);
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorityName);
+        var expectedPath = Path.GetFullPath(fullPath);
+        var parentPath = Path.GetDirectoryName(expectedPath)
+            ?? throw new InvalidDataException(
+                $"{authorityName} file has no parent directory.");
+        var parentAuthority = PhysicalFileAuthority.OpenStableDirectory(
+            parentPath,
+            authorityName);
+        try
+        {
+            var stream = PhysicalFileAuthority.OpenReadFile(
+                parentAuthority,
+                expectedPath,
+                authorityName,
+                asynchronous: true);
+            if (stream == null)
+            {
+                parentAuthority.Dispose();
+                return null;
+            }
+
+            return new StableReadFile(stream, parentAuthority);
+        }
+        catch
+        {
+            parentAuthority.Dispose();
+            throw;
+        }
+    }
+
+    private async Task<StableReadFile?> OpenCanonicalReadStreamAsync(
         string relativePath,
         CancellationToken cancellationToken = default)
     {
@@ -1757,49 +2306,29 @@ public class FileSystemManager
         await InvokeBeforeCanonicalReadOpenAsync(relativePath);
         cancellationToken.ThrowIfCancellationRequested();
 
-        FileStream stream;
+        PhysicalFileAuthority.StableDirectory? parentAuthority = null;
         try
         {
-            stream = new FileStream(
+            parentAuthority = EnsureStableCanonicalParent(
+                relativePath,
+                expectedFullPath);
+            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+            var stream = PhysicalFileAuthority.OpenReadFile(
+                parentAuthority,
                 expectedFullPath,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.Read,
-                bufferSize: 4096,
-                FileOptions.Asynchronous | FileOptions.SequentialScan);
-        }
-        catch (FileNotFoundException)
-        {
-            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
-            return null;
-        }
-        catch (DirectoryNotFoundException)
-        {
-            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
-            return null;
-        }
-
-        try
-        {
-            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
-            if (OperatingSystem.IsWindows())
+                "Canonical game-session read",
+                asynchronous: true);
+            if (stream == null)
             {
-                var openedPath = GetFinalPath(stream.SafeFileHandle);
-                if (!string.Equals(
-                        NormalizeWindowsHandlePath(openedPath),
-                        Path.GetFullPath(expectedFullPath),
-                        StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new InvalidDataException(
-                        "Canonical game-session file identity changed before read.");
-                }
+                parentAuthority.Dispose();
+                return null;
             }
 
-            return stream;
+            return new StableReadFile(stream, parentAuthority);
         }
         catch
         {
-            await stream.DisposeAsync();
+            parentAuthority?.Dispose();
             throw;
         }
     }
@@ -1814,6 +2343,10 @@ public class FileSystemManager
 
     private Task InvokeBeforeCanonicalReadOpenAsync(string relativePath) =>
         _hooks?.BeforeCanonicalReadOpenAsync?.Invoke(relativePath) ?? Task.CompletedTask;
+
+    private Task InvokeAfterCanonicalMutationBoundaryValidatedAsync(string relativePath) =>
+        _hooks?.AfterCanonicalMutationBoundaryValidatedAsync?.Invoke(relativePath) ??
+        Task.CompletedTask;
 
     private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath)
     {
@@ -1845,43 +2378,75 @@ public class FileSystemManager
 
     private async Task WriteRuntimeBytesAtomicAsync(string path, byte[] content)
     {
+        await WriteRuntimeBytesAtomicCoreAsync(
+            path,
+            content,
+            CancellationToken.None,
+            "Runtime before-image");
+    }
+
+    private async Task WriteRuntimeBytesAtomicCoreAsync(
+        string path,
+        byte[] content,
+        CancellationToken cancellationToken,
+        string authorityName)
+    {
         EnsureRuntimePathIsSafe(path);
-        EnsureRuntimeDirectoryExistsAndIsSafe(
-            Path.GetDirectoryName(path)
-            ?? throw new InvalidDataException("Runtime before-image has no parent."));
+        var parentPath = Path.GetDirectoryName(path)
+            ?? throw new InvalidDataException(
+                $"{authorityName} has no parent directory.");
+        EnsureRuntimeDirectoryExistsAndIsSafe(parentPath);
+        using var parentAuthority = EnsureStableRuntimeDirectory(parentPath);
         var tempPath = path + ".tmp." + Guid.NewGuid().ToString("N")[..8];
         EnsureRuntimePathIsSafe(tempPath);
+        FileStream? stream = null;
         try
         {
-            await using (var stream = new FileStream(
-                             tempPath,
-                             FileMode.CreateNew,
-                             FileAccess.Write,
-                             FileShare.None,
-                             bufferSize: 4096,
-                             FileOptions.Asynchronous | FileOptions.WriteThrough))
+            stream = PhysicalFileAuthority.CreateNewWritableFile(
+                parentAuthority,
+                tempPath,
+                authorityName + " temporary",
+                asynchronous: true);
+            await stream.WriteAsync(content, cancellationToken);
+            await stream.FlushAsync(cancellationToken);
+            stream.Flush(flushToDisk: true);
+
+            if (_hooks?.AfterRuntimeMutationBoundaryValidatedAsync != null)
             {
-                EnsureRuntimePathIsSafe(tempPath);
-                EnsureOpenedHandleMatchesExpectedPath(
-                    stream.SafeFileHandle,
-                    tempPath,
-                    "Runtime before-image");
-                await stream.WriteAsync(content);
-                await stream.FlushAsync();
-                stream.Flush(flushToDisk: true);
+                await _hooks.AfterRuntimeMutationBoundaryValidatedAsync(path);
             }
 
             EnsureRuntimePathIsSafe(tempPath);
             EnsureRuntimePathIsSafe(path);
-            File.Move(tempPath, path, overwrite: true);
+            if (OperatingSystem.IsWindows())
+            {
+                PhysicalFileAuthority.RenameOpenedObject(
+                    stream.SafeFileHandle,
+                    path,
+                    replaceExisting: true,
+                    authorityName);
+            }
+            else
+            {
+                File.Move(tempPath, path, overwrite: true);
+            }
+
             EnsureRuntimePathIsSafe(path);
         }
         finally
         {
-            if (File.Exists(tempPath))
+            if (stream != null)
+                await stream.DisposeAsync();
+            try
             {
-                EnsureRuntimePathIsSafe(tempPath);
-                File.Delete(tempPath);
+                PhysicalFileAuthority.TryDeleteFile(
+                    parentAuthority,
+                    tempPath,
+                    authorityName + " temporary cleanup");
+            }
+            catch
+            {
+                // Retaining an unreachable runtime temp is safer than following a replaced path.
             }
         }
     }
@@ -1988,41 +2553,9 @@ public class FileSystemManager
 
     private static void DeleteDirectoryTreeWithoutFollowingReparsePoints(string path)
     {
-        if (!Directory.Exists(path))
-            return;
-
-        var attributes = File.GetAttributes(path);
-        if ((attributes & FileAttributes.ReparsePoint) != 0)
-        {
-            Directory.Delete(path, recursive: false);
-            return;
-        }
-
-        foreach (var child in Directory.EnumerateFileSystemEntries(path, "*", SearchOption.TopDirectoryOnly))
-        {
-            var childAttributes = File.GetAttributes(child);
-            if ((childAttributes & FileAttributes.ReparsePoint) != 0)
-            {
-                if ((childAttributes & FileAttributes.Directory) != 0)
-                    Directory.Delete(child, recursive: false);
-                else
-                    File.Delete(child);
-            }
-            else if ((childAttributes & FileAttributes.Directory) != 0)
-            {
-                DeleteDirectoryTreeWithoutFollowingReparsePoints(child);
-            }
-            else
-            {
-                if ((childAttributes & FileAttributes.ReadOnly) != 0)
-                    File.SetAttributes(child, childAttributes & ~FileAttributes.ReadOnly);
-                File.Delete(child);
-            }
-        }
-
-        if ((attributes & FileAttributes.ReadOnly) != 0)
-            File.SetAttributes(path, attributes & ~FileAttributes.ReadOnly);
-        Directory.Delete(path, recursive: false);
+        PhysicalFileAuthority.TryDeleteTree(
+            path,
+            "No-follow directory cleanup");
     }
 
     private static void DeleteEmptyDirectoriesWithoutFollowingReparsePoints(string path)
@@ -2044,7 +2577,17 @@ public class FileSystemManager
         }
 
         if (!Directory.EnumerateFileSystemEntries(path, "*", SearchOption.TopDirectoryOnly).Any())
-            Directory.Delete(path, recursive: false);
+        {
+            using var parentAuthority = PhysicalFileAuthority.OpenStableDirectory(
+                Path.GetDirectoryName(path)
+                ?? throw new InvalidDataException(
+                    "Empty-directory cleanup target has no parent."),
+                "Empty-directory cleanup");
+            PhysicalFileAuthority.TryDeleteEmptyDirectory(
+                parentAuthority,
+                path,
+                "Empty-directory cleanup");
+        }
     }
 
     private sealed record SessionGenerationDocument(int SchemaVersion, string GenerationId);
@@ -2211,16 +2754,16 @@ public class FileSystemManager
         if (Directory.Exists(inputPath))
         {
             foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(inputPath, "*.json"))
-                File.Delete(file);
+                DeleteCanonicalFileByFullPath(file);
         }
 
         var gameStatePath = Path.Combine(_basePath, "game_session", "game_state");
         var browserRollbackRoot = ResolvePath(
             ExplorerLocalTurnRollbackArtifacts.Root);
         if (File.Exists(browserRollbackRoot))
-            File.Delete(browserRollbackRoot);
+            DeleteCanonicalFileByFullPath(browserRollbackRoot);
         else if (Directory.Exists(browserRollbackRoot))
-            DeleteDirectoryTreeWithoutFollowingReparsePoints(browserRollbackRoot);
+            DeleteCanonicalDirectoryTreeByFullPath(browserRollbackRoot);
 
         if (Directory.Exists(gameStatePath))
         {
@@ -2229,7 +2772,7 @@ public class FileSystemManager
                 if (ShouldPreserveAcrossGameStateClear(gameStatePath, file))
                     continue;
 
-                File.Delete(file);
+                DeleteCanonicalFileByFullPath(file);
             }
         }
 
@@ -2238,28 +2781,28 @@ public class FileSystemManager
         if (Directory.Exists(outputPath))
         {
             foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(outputPath, "*.json"))
-                File.Delete(file);
+                DeleteCanonicalFileByFullPath(file);
         }
 
         var readyPath = Path.Combine(_basePath, "game_session", "ready");
         if (Directory.Exists(readyPath))
         {
             foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(readyPath, "*.json"))
-                File.Delete(file);
+                DeleteCanonicalFileByFullPath(file);
         }
 
         var lorePath = Path.Combine(_basePath, "game_session", "lore");
         if (Directory.Exists(lorePath))
         {
             foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(lorePath, "*"))
-                File.Delete(file);
+                DeleteCanonicalFileByFullPath(file);
         }
 
         var storiesPath = Path.Combine(_basePath, "game_session", "stories");
         if (Directory.Exists(storiesPath))
         {
             foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(storiesPath, "*"))
-                File.Delete(file);
+                DeleteCanonicalFileByFullPath(file);
         }
 
         // Re-create structure
@@ -2299,8 +2842,31 @@ public class FileSystemManager
             if (file.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            File.Delete(file);
+            DeleteCanonicalFileByFullPath(file);
         }
+    }
+
+    private void DeleteCanonicalFileByFullPath(string fullPath)
+    {
+        var relativePath = Path.GetRelativePath(GameSessionPath, fullPath)
+            .Replace(Path.DirectorySeparatorChar, '/')
+            .Replace(Path.AltDirectorySeparatorChar, '/');
+        DeleteFileCore(relativePath);
+    }
+
+    private void DeleteCanonicalDirectoryTreeByFullPath(string fullPath)
+    {
+        var relativePath = Path.GetRelativePath(GameSessionPath, fullPath)
+            .Replace(Path.DirectorySeparatorChar, '/')
+            .Replace(Path.AltDirectorySeparatorChar, '/');
+        var expectedFullPath = ResolvePath(relativePath);
+        using var parentAuthority = EnsureStableCanonicalParent(
+            relativePath,
+            expectedFullPath);
+        PhysicalFileAuthority.TryDeleteTree(
+            parentAuthority,
+            expectedFullPath,
+            "Canonical directory-tree cleanup");
     }
 
     internal static IEnumerable<string> EnumerateFilesWithoutFollowingReparsePoints(
@@ -2338,76 +2904,22 @@ public class FileSystemManager
     internal static bool IsReparsePoint(string path) =>
         (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0;
 
-    private static string GetFinalPath(SafeFileHandle handle)
-    {
-        var capacity = 512;
-        while (true)
-        {
-            var buffer = new StringBuilder(capacity);
-            var length = GetFinalPathNameByHandle(
-                handle,
-                buffer,
-                (uint)buffer.Capacity,
-                0);
-            if (length == 0)
-                throw new IOException(
-                    "Could not resolve the opened canonical file handle.",
-                    new Win32Exception(Marshal.GetLastWin32Error()));
-            if (length < buffer.Capacity)
-                return buffer.ToString();
-
-            capacity = checked((int)length + 1);
-        }
-    }
-
-    private static void EnsureOpenedHandleMatchesExpectedPath(
-        SafeFileHandle handle,
-        string expectedPath,
-        string authorityName)
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
-
-        var openedPath = NormalizeWindowsHandlePath(GetFinalPath(handle));
-        var normalizedExpectedPath = Path.GetFullPath(expectedPath);
-        if (!string.Equals(
-                openedPath,
-                normalizedExpectedPath,
-                StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidDataException(
-                $"{authorityName} handle resolved outside its physical authority path.");
-        }
-    }
-
-    private static string NormalizeWindowsHandlePath(string path)
-    {
-        if (path.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase))
-            return Path.GetFullPath(@"\\" + path[8..]);
-        if (path.StartsWith(@"\\?\", StringComparison.OrdinalIgnoreCase))
-            return Path.GetFullPath(path[4..]);
-        return Path.GetFullPath(path);
-    }
-
     private static byte[] ReadExactBytesFromStablePath(string expectedFullPath)
     {
         var normalizedExpectedPath = Path.GetFullPath(expectedFullPath);
-        using var stream = new FileStream(
+        using var parentAuthority = PhysicalFileAuthority.OpenStableDirectory(
+            Path.GetDirectoryName(normalizedExpectedPath)
+            ?? throw new InvalidDataException(
+                "Recovery evidence file has no parent directory."),
+            "Recovery evidence");
+        using var stream = PhysicalFileAuthority.OpenReadFile(
+            parentAuthority,
             normalizedExpectedPath,
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.Read,
-            bufferSize: 4096,
-            FileOptions.SequentialScan);
-        if (OperatingSystem.IsWindows() &&
-            !string.Equals(
-                NormalizeWindowsHandlePath(GetFinalPath(stream.SafeFileHandle)),
-                normalizedExpectedPath,
-                StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidDataException(
-                "Recovery evidence file identity changed before read.");
-        }
+            "Recovery evidence",
+            asynchronous: false)
+            ?? throw new FileNotFoundException(
+                "Recovery evidence file does not exist.",
+                normalizedExpectedPath);
 
         using var buffer = stream.Length is > 0 and <= int.MaxValue
             ? new MemoryStream((int)stream.Length)
@@ -2415,11 +2927,4 @@ public class FileSystemManager
         stream.CopyTo(buffer);
         return buffer.ToArray();
     }
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern uint GetFinalPathNameByHandle(
-        SafeFileHandle hFile,
-        StringBuilder lpszFilePath,
-        uint cchFilePath,
-        uint dwFlags);
 }

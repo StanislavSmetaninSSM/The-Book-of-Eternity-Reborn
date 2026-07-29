@@ -295,6 +295,32 @@ ephemeral: save capture omits both the exact-file form and all descendants, whil
 load and New Game remove exact-file and manifestless-directory forms without
 following reparse points.
 
+Path validation is only the admission step for physical file authority. On
+Windows, a canonical or runtime operation retains a validated directory handle
+with delete sharing denied for its physical parent until the operation
+completes. Atomic and staged files are created with create-only semantics,
+validated before caller bytes are written, and remain represented by the same
+opened handle through rename and post-rename identity verification. Existing
+runtime authority files are read from their validated opened handle. Canonical
+file deletion marks the validated opened object for deletion rather than
+reopening a previously checked pathname. These handle-bound rules cover session
+generation, load and worker-apply journals/manifests/before-images, load
+extraction, proposal staging, save staging, and runtime-to-canonical
+publication.
+
+Every regular file accepted by this physical layer additionally carries
+single-link identity: `FILE_STANDARD_INFO.NumberOfLinks` must equal one before
+its bytes or mutation authority are used. Hard-linked canonical state, session
+generation, transaction evidence, save files, and lock files are invalid
+authority even when the opened pathname is lexically and physically expected.
+
+Canonical and lifecycle leases own two handles as one lifetime-bound authority:
+the exclusive lock-file stream and the validated non-delete-shared
+`.boe_runtime/locks` parent directory. The parent is acquired before any
+lock-file `OpenOrCreate`; both handles are released only when the lease is
+disposed. A runtime-read test barrier belongs between OS open and final
+path/single-link validation, never after stream disposal.
+
 The Daren reward profile is external to `game_session` but shares canonical
 recovery authority. Browser writes stage its exact before-image; console writes
 must first acquire canonical authority, recover any staged browser transaction,

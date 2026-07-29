@@ -116,6 +116,107 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_RuntimeStagingParentSwapCannotCreateExternalArchive()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var outsideDirectory = Path.Combine(
+            Path.GetTempPath(),
+            "boe-save-staging-outside-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(outsideDirectory);
+        var outsideArchive = Path.Combine(outsideDirectory, "save.zip");
+        var outsideSentinel = new byte[] { 0x31, 0x42, 0x53, 0x64 };
+        await File.WriteAllBytesAsync(outsideArchive, outsideSentinel);
+
+        var stagingRoot = string.Empty;
+        var displacedStagingRoot = string.Empty;
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var swapped = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeRuntimeFileCreateAsync = path =>
+                {
+                    if (swapAttempted ||
+                        !path.EndsWith(
+                            $"{Path.DirectorySeparatorChar}save.zip",
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    swapAttempted = true;
+                    stagingRoot = Path.GetDirectoryName(path)!;
+                    displacedStagingRoot = stagingRoot + "-displaced";
+                    try
+                    {
+                        Directory.Move(stagingRoot, displacedStagingRoot);
+                        CreateDirectoryJunction(stagingRoot, outsideDirectory);
+                        swapped = true;
+                    }
+                    catch (Exception ex) when (
+                        ex is IOException or UnauthorizedAccessException)
+                    {
+                        swapBlocked = true;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            });
+        var service = new SaveLoadService(
+            raceFs,
+            new StateManager(
+                raceFs,
+                new GameSettings(),
+                NullLogger<StateManager>.Instance),
+            NullLogger<SaveLoadService>.Instance);
+
+        try
+        {
+            Assert.True(await service.SaveGameAsync(
+                "runtime_staging_authority",
+                "runtime staging authority regression"));
+            Assert.True(swapAttempted);
+            Assert.True(swapBlocked);
+            Assert.False(swapped);
+            Assert.Equal(
+                outsideSentinel,
+                await File.ReadAllBytesAsync(outsideArchive));
+        }
+        finally
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(stagingRoot) &&
+                    Directory.Exists(stagingRoot) &&
+                    FileSystemManager.IsReparsePoint(stagingRoot))
+                {
+                    Directory.Delete(stagingRoot, recursive: false);
+                }
+
+                if (!string.IsNullOrWhiteSpace(displacedStagingRoot) &&
+                    Directory.Exists(displacedStagingRoot) &&
+                    !Directory.Exists(stagingRoot))
+                {
+                    Directory.Move(displacedStagingRoot, stagingRoot);
+                }
+            }
+            catch
+            {
+                // Best effort cleanup for the intentionally raced staging tree.
+            }
+
+            if (Directory.Exists(outsideDirectory))
+                Directory.Delete(outsideDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile()
     {
         if (!OperatingSystem.IsWindows())
@@ -1025,13 +1126,11 @@ public sealed class SaveLoadServiceTests : IDisposable
         public bool FailBackupRestoreMove { get; set; }
 
         public bool DirectoryExists(string path) => Directory.Exists(path);
-        public void CreateDirectory(string path) => Directory.CreateDirectory(path);
-        public void DeleteDirectory(string path, bool recursive) => Directory.Delete(path, recursive);
         public bool FileExists(string path) => File.Exists(path);
-        public string ReadAllText(string path) => File.ReadAllText(path);
-        public void DeleteFile(string path) => File.Delete(path);
 
-        public void MoveDirectory(string sourcePath, string destinationPath)
+        public void BeforeMoveDirectory(
+            string sourcePath,
+            string destinationPath)
         {
             if (FailStagedActivationMove &&
                 sourcePath.Contains($"{Path.DirectorySeparatorChar}stage{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
@@ -1044,16 +1143,15 @@ public sealed class SaveLoadServiceTests : IDisposable
             {
                 throw new IOException("Injected backup restore failure.");
             }
-
-            Directory.Move(sourcePath, destinationPath);
         }
 
-        public void WriteAllTextAtomic(string path, string content)
+        public void BeforeWriteAllTextAtomic(string path, string content)
         {
-            if (FailCommittedJournalWrites && content.Contains("\"Committed\":true", StringComparison.Ordinal))
+            if (FailCommittedJournalWrites &&
+                content.Contains("\"Committed\":true", StringComparison.Ordinal))
+            {
                 throw new IOException("Injected committed-journal write failure.");
-
-            PhysicalLoadTransactionOperations.Instance.WriteAllTextAtomic(path, content);
+            }
         }
     }
 }

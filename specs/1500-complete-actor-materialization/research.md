@@ -847,6 +847,74 @@ remove directory trees without following reparse points.
 manifestless directory tree is not discoverable by manifest-based recovery but
 still survives replacement unless explicitly removed.
 
+## Third post-T156 Sol/max authority decisions
+
+### Decision 82: Physical handles own canonical mutations
+
+**Decision**: Treat pathname validation as admission, not mutation authority.
+On Windows, retain a validated parent-directory handle opened with directory
+list access and without delete sharing across each canonical atomic replace,
+runtime-to-canonical publication, and deletion. Keep the validated source or
+target handle open and perform rename or disposition against that same object.
+
+**Rationale**: A second pathname check still leaves a check/use interval.
+Windows directory handles opened with list access and without
+`FILE_SHARE_DELETE` block replacement of that directory and its ancestors,
+while handle-based rename/disposition removes the source/target pathname race.
+
+### Decision 83: Runtime bytes are never trusted before opened-handle proof
+
+**Decision**: Read durable runtime authority from validated opened handles.
+Create runtime temporary, load-extraction, proposal-staging, and save-staging
+files with create-only semantics, validate the opened object before writing
+caller bytes, and publish that opened object while its physical parent remains
+held. Never use `FileMode.Create` or an equivalent truncating open for an
+unproven runtime path.
+
+**Rationale**: Pre/post pathname checks cannot detect
+swap-to-external/open/swap-back, and a truncating open damages external state
+before the post-open rejection. Create-only plus opened-handle validation makes
+the bad target harmless and handle-bound reads prevent external generation or
+journal bytes from becoming session authority.
+
+## Fourth post-T156 Sol/max authority decisions
+
+### Decision 84: Authority files are single-link objects
+
+**Decision**: Inspect every accepted regular-file handle with
+`FILE_STANDARD_INFO` and require `NumberOfLinks == 1` before using the file as
+canonical or durable-runtime authority. Repeat the check at publication and
+deletion boundaries where the same handle remains authoritative.
+
+**Rationale**: A hard link is not a reparse point and
+`GetFinalPathNameByHandle` may report the expected opened name while another
+name reaches the same bytes. Rejecting multi-link files prevents an external
+alias from supplying session generation, journal, save, or canonical state
+authority and prevents client mutation from propagating through that alias.
+
+### Decision 85: Lock leases own their physical parent
+
+**Decision**: Open and validate the physical `.boe_runtime/locks` directory
+before opening or creating a lock file. Retain that non-delete-shared directory
+handle together with the lock stream for the complete canonical or lifecycle
+lease.
+
+**Rationale**: Post-open lock-file validation prevents a false lease but does
+not undo an external file created by `OpenOrCreate`. Parent-first authority
+makes the external create impossible and also prevents the lock namespace from
+moving while the lease remains active.
+
+### Decision 86: Swap-back evidence is post-open
+
+**Decision**: The runtime-read fault hook executes after the operating system
+returns the file handle and before final-path/single-link validation. The
+regression restores the expected pathname from this hook and proves the opened
+external target is still locked by that handle.
+
+**Rationale**: Restoring the path after read failure or stream disposal tests
+only pre-open rejection. The authority claim requires evidence that validation
+is applied to the exact still-open object after a swap-back.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

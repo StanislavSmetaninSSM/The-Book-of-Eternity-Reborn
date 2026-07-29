@@ -49,7 +49,7 @@ public sealed class GmWorkerProposalStore
         using var publicationAuthority = new WorkerProposalPublicationAuthority(cancellationToken);
         try
         {
-            await WriteStagedFileAsync(
+            await _fs.WriteRuntimeStagedFileAsync(
                 ResolveStagedPath(stagingBundleRoot, "proposal.json"),
                 proposalBytes,
                 cancellationToken);
@@ -61,7 +61,7 @@ public sealed class GmWorkerProposalStore
                         $"Worker proposal contentRef is outside its bundle: {contentRef}.");
 
                 var relativePath = contentRef[contentRefPrefix.Length..];
-                await WriteStagedFileAsync(
+                await _fs.WriteRuntimeStagedFileAsync(
                     ResolveStagedPath(stagingBundleRoot, relativePath),
                     content,
                     cancellationToken);
@@ -188,24 +188,6 @@ public sealed class GmWorkerProposalStore
             throw new InvalidDataException("Proposal bundle path escapes staging root.");
 
         return candidate;
-    }
-
-    private static async Task WriteStagedFileAsync(
-        string path,
-        byte[] content,
-        CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        await using var stream = new FileStream(
-            path,
-            FileMode.CreateNew,
-            FileAccess.Write,
-            FileShare.None,
-            bufferSize: 4096,
-            FileOptions.Asynchronous | FileOptions.WriteThrough);
-        await stream.WriteAsync(content, cancellationToken);
-        stream.Flush(flushToDisk: true);
     }
 
     private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>
