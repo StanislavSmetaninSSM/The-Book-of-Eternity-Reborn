@@ -324,6 +324,50 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveAndLoad_TreatsLocalUiSessionLockAsEphemeralControlFile()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{\"currentRealm\":\"Chaos Sea\"}");
+        await _fs.WriteFileAtomicAsync(
+            LocalUiSessionLockService.LockPath,
+            """
+            {
+              "schemaVersion": 1,
+              "ownerId": "stale-browser-owner",
+              "ownerKind": "browser",
+              "ownerLabel": "Stale browser",
+              "acquiredAtUtc": "2026-07-29T00:00:00.0000000Z",
+              "heartbeatAtUtc": "2026-07-29T00:00:00.0000000Z",
+              "leaseSeconds": 120,
+              "lastOperation": "stale form"
+            }
+            """);
+
+        Assert.True(await _service.SaveGameAsync(
+            "ephemeral_local_ui_lock",
+            "local UI lock save/load regression"));
+
+        var savePath = Directory
+            .GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip")
+            .Single();
+        using (var archive = ZipFile.OpenRead(savePath))
+            Assert.Null(archive.GetEntry(LocalUiSessionLockService.LockPath));
+
+        using (var archive = ZipFile.Open(savePath, ZipArchiveMode.Update))
+        {
+            var entry = archive.CreateEntry(LocalUiSessionLockService.LockPath);
+            await using var stream = entry.Open();
+            await stream.WriteAsync(
+                System.Text.Encoding.UTF8.GetBytes(
+                    """{ "ownerId": "crafted-restored-owner" }"""));
+        }
+
+        Assert.True(await _service.LoadGameAsync(savePath));
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
     public async Task SaveGameAsync_ExcludesBrowserRollbackTransactions()
     {
         var stalePath =

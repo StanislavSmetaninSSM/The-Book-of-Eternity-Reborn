@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -562,6 +563,184 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         Assert.True(File.Exists(profilePath));
     }
 
+    [Fact]
+    public async Task DarenCompletion_ProfileParentReplacedWithJunction_DoesNotWriteOutsideAuthority()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var profileDirectory = Path.Combine(_rootPath, "client_profile");
+        var displacedProfileDirectory = Path.Combine(
+            Path.GetTempPath(),
+            "boe-daren-profile-original-" + Guid.NewGuid().ToString("N"));
+        var profilePath = Path.Combine(
+            profileDirectory,
+            "qte_showcase_rewards.json");
+        var displacedProfilePath = Path.Combine(
+            displacedProfileDirectory,
+            "qte_showcase_rewards.json");
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-daren-profile-outside-" + Guid.NewGuid().ToString("N"));
+        var outsideSentinel = Path.Combine(outsideRoot, "sentinel.txt");
+        var originalProfile = """{ "schemaVersion": 1, "darenShowcase": null }""";
+        Directory.CreateDirectory(profileDirectory);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllTextAsync(profilePath, originalProfile);
+        await File.WriteAllTextAsync(outsideSentinel, "outside-must-remain-unchanged");
+
+        var fs = CreateFileSystem();
+        var hookInvoked = false;
+        var web = CreateWebService(
+            fs,
+            new QteSceneServiceHooks
+            {
+                BeforeDarenProfileWriteAsync = () =>
+                {
+                    hookInvoked = true;
+                    Directory.Move(profileDirectory, displacedProfileDirectory);
+                    CreateDirectoryJunction(profileDirectory, outsideRoot);
+                    return Task.CompletedTask;
+                }
+            });
+
+        try
+        {
+            var state = await web.StartDarenShowcaseAsync();
+            while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
+            {
+                var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
+                state = await web.ResolveDarenShowcaseActionAsync(
+                    new DarenShowcaseActionRequest(action.ActionId, "success"));
+            }
+
+            Assert.Equal("Failed", state.State);
+            Assert.True(hookInvoked, state.Error);
+            Assert.False(File.Exists(Path.Combine(
+                outsideRoot,
+                "qte_showcase_rewards.json")));
+            Assert.Equal(
+                "outside-must-remain-unchanged",
+                await File.ReadAllTextAsync(outsideSentinel));
+            Assert.Equal(
+                originalProfile,
+                await File.ReadAllTextAsync(displacedProfilePath));
+        }
+        finally
+        {
+            PhysicalFileAuthority.TryDeleteTree(
+                profileDirectory,
+                "Daren profile junction test cleanup");
+            if (Directory.Exists(displacedProfileDirectory))
+                Directory.Delete(displacedProfileDirectory, recursive: true);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task RestoreDarenProfileRollbackBytes_ProfileParentIsJunction_RejectsOutsideWrite()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var profileDirectory = Path.Combine(_rootPath, "client_profile");
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-daren-rollback-outside-" + Guid.NewGuid().ToString("N"));
+        var outsideSentinel = Path.Combine(outsideRoot, "sentinel.txt");
+        Directory.CreateDirectory(outsideRoot);
+        File.WriteAllText(outsideSentinel, "rollback-must-not-touch-outside");
+        CreateDirectoryJunction(profileDirectory, outsideRoot);
+        var fs = CreateFileSystem();
+
+        try
+        {
+            await using var writeLease =
+                await fs.AcquireCanonicalWriteLeaseAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(() =>
+                QteSceneService.RestoreDarenProfileRollbackBytesAsync(
+                    fs,
+                    writeLease,
+                    """{ "schemaVersion": 1 }"""u8.ToArray()));
+            Assert.False(File.Exists(Path.Combine(
+                outsideRoot,
+                "qte_showcase_rewards.json")));
+            Assert.Equal(
+                "rollback-must-not-touch-outside",
+                File.ReadAllText(outsideSentinel));
+        }
+        finally
+        {
+            PhysicalFileAuthority.TryDeleteTree(
+                profileDirectory,
+                "Daren rollback junction test cleanup");
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task DarenProfileRollback_HardLinkedProfileIsRejectedWithoutChangingExternalBytes()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var profileDirectory = Path.Combine(_rootPath, "client_profile");
+        var profilePath = Path.Combine(
+            profileDirectory,
+            "qte_showcase_rewards.json");
+        var externalPath = Path.Combine(
+            _rootPath,
+            "external-daren-profile.json");
+        var expected = """{ "outside": "must-remain-exact" }"""u8.ToArray();
+        Directory.CreateDirectory(profileDirectory);
+        await File.WriteAllBytesAsync(externalPath, expected);
+        CreateHardLink(profilePath, externalPath);
+        var fs = CreateFileSystem();
+
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            QteSceneService.ReadDarenProfileRollbackBytesAsync(
+                fs,
+                writeLease));
+        Assert.Equal(expected, await File.ReadAllBytesAsync(externalPath));
+    }
+
+    [Fact]
+    public async Task DarenProfileRollback_RestoresAndReadsExactBytesThenDeletes()
+    {
+        byte[] expected =
+        [
+            0xEF, 0xBB, 0xBF,
+            (byte)'{', (byte)'\r', (byte)'\n',
+            (byte)' ', (byte)' ', (byte)'"', (byte)'x', (byte)'"',
+            (byte)':', (byte)' ', (byte)'1',
+            (byte)'\r', (byte)'\n', (byte)'}'
+        ];
+        var fs = CreateFileSystem();
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+
+        await QteSceneService.RestoreDarenProfileRollbackBytesAsync(
+            fs,
+            writeLease,
+            expected);
+
+        Assert.Equal(
+            expected,
+            await QteSceneService.ReadDarenProfileRollbackBytesAsync(
+                fs,
+                writeLease));
+
+        await QteSceneService.RestoreDarenProfileRollbackBytesAsync(
+            fs,
+            writeLease,
+            content: null);
+        Assert.Null(await QteSceneService.ReadDarenProfileRollbackBytesAsync(
+            fs,
+            writeLease));
+    }
+
     private FileSystemManager CreateFileSystem(Func<Task>? onCanonicalWriteContention = null)
     {
         var fs = new FileSystemManager(
@@ -706,6 +885,37 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             JsonSerializer.Serialize(
                 state,
                 SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static void CreateDirectoryJunction(string junctionPath, string targetPath)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(junctionPath)!);
+        using var process = Process.Start(new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = $"/d /c mklink /J \"{junctionPath}\" \"{targetPath}\"",
+            CreateNoWindow = true,
+            UseShellExecute = false
+        }) ?? throw new InvalidOperationException("Failed to start junction helper.");
+        process.WaitForExit();
+        if (process.ExitCode != 0)
+            throw new InvalidOperationException(
+                $"Failed to create test junction: exit code {process.ExitCode}.");
+    }
+
+    private static void CreateHardLink(string linkPath, string targetPath)
+    {
+        using var process = Process.Start(new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = $"/d /c mklink /H \"{linkPath}\" \"{targetPath}\"",
+            CreateNoWindow = true,
+            UseShellExecute = false
+        }) ?? throw new InvalidOperationException("Failed to start hard-link helper.");
+        process.WaitForExit();
+        if (process.ExitCode != 0)
+            throw new InvalidOperationException(
+                $"Failed to create test hard link: exit code {process.ExitCode}.");
     }
 
     public void Dispose()

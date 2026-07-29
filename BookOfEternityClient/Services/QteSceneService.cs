@@ -104,6 +104,7 @@ public sealed partial class QteSceneService
     private readonly ValidationService _validator;
     private readonly CanonicalStateNormalizer _normalizer;
     private readonly StateManager _stateManager;
+    private readonly DarenRewardProfileFileStore _darenProfileStore;
     private readonly IConsoleInputSource _inputSource;
     private readonly ILogger<QteSceneService> _logger;
     private readonly QteSceneServiceHooks? _hooks;
@@ -190,6 +191,7 @@ public sealed partial class QteSceneService
         _validator = validator;
         _normalizer = normalizer;
         _stateManager = stateManager;
+        _darenProfileStore = new DarenRewardProfileFileStore(fs);
         _inputSource = inputSource ?? SystemConsoleInputSource.Instance;
         _logger = logger;
         _hooks = hooks;
@@ -756,13 +758,12 @@ public sealed partial class QteSceneService
         FileSystemManager.CanonicalWriteLease writeLease)
     {
         EnsureCanonicalWriteLease(writeLease);
-        var path = ResolveDarenProfilePath(_fs);
-        if (!File.Exists(path))
+        var raw = await _darenProfileStore.ReadTextAsync(writeLease);
+        if (raw == null)
             return new DarenRewardProfileState();
 
         try
         {
-            var raw = await File.ReadAllTextAsync(path);
             return NormalizeDarenProfile(raw);
         }
         catch
@@ -845,10 +846,11 @@ public sealed partial class QteSceneService
         DarenRewardProfileState profile)
     {
         EnsureCanonicalWriteLease(writeLease);
-        var path = ResolveDarenProfilePath(_fs);
         var content = Encoding.UTF8.GetBytes(
             JsonSerializer.Serialize(profile, JsonOpts));
-        await Task.Run(() => WriteExternalFileAtomic(path, content));
+        await _darenProfileStore.WriteExactBytesAtomicAsync(
+            writeLease,
+            content);
     }
 
     private DarenRewardProfileState NormalizeDarenProfile(string raw)
@@ -947,50 +949,18 @@ public sealed partial class QteSceneService
         return -1;
     }
 
-    internal static string ResolveDarenProfilePath(FileSystemManager fs) =>
-        Path.Combine(
-            fs.BasePath,
-            DarenQteRewardProfileService.ProfileRelativePath.Replace(
-                '/',
-                Path.DirectorySeparatorChar));
-
-    internal static byte[]? ReadDarenProfileRollbackBytes(FileSystemManager fs)
-    {
-        var path = ResolveDarenProfilePath(fs);
-        return File.Exists(path) ? File.ReadAllBytes(path) : null;
-    }
-
-    internal static void RestoreDarenProfileRollbackBytes(
+    internal static Task<byte[]?> ReadDarenProfileRollbackBytesAsync(
         FileSystemManager fs,
-        byte[]? content)
-    {
-        var path = ResolveDarenProfilePath(fs);
-        if (content == null)
-        {
-            if (File.Exists(path))
-                File.Delete(path);
-            return;
-        }
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        new DarenRewardProfileFileStore(fs)
+            .ReadExactBytesAsync(writeLease);
 
-        WriteExternalFileAtomic(path, content);
-    }
-
-    private static void WriteExternalFileAtomic(string path, byte[] content)
-    {
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        var tempPath = path + ".tmp." + Guid.NewGuid().ToString("N")[..8];
-        try
-        {
-            File.WriteAllBytes(tempPath, content);
-            File.Move(tempPath, path, overwrite: true);
-        }
-        catch
-        {
-            if (File.Exists(tempPath))
-                File.Delete(tempPath);
-            throw;
-        }
-    }
+    internal static Task RestoreDarenProfileRollbackBytesAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        byte[]? content) =>
+        new DarenRewardProfileFileStore(fs)
+            .RestoreExactBytesAsync(writeLease, content);
 
     private void EnsureCanonicalWriteLease(
         FileSystemManager.CanonicalWriteLease writeLease)

@@ -172,7 +172,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
             for (var index = 0; index < externalFileIds.Length; index++)
             {
                 var fileId = externalFileIds[index];
-                var content = ReadExternalRollbackBytes(fs, fileId);
+                var content = await ReadExternalRollbackBytesAsync(
+                    fs,
+                    writeLease,
+                    fileId);
                 if (content == null)
                 {
                     externalEntries.Add(new BrowserWriteExternalRollbackEntry(
@@ -619,7 +622,11 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     fs,
                     writeLease,
                     entry);
-                RestoreExternalRollbackBytes(fs, entry.FileId, content);
+                await RestoreExternalRollbackBytesAsync(
+                    fs,
+                    writeLease,
+                    entry.FileId,
+                    content);
             }
             catch (Exception ex)
             {
@@ -700,13 +707,16 @@ public static class ExplorerLocalTurnRollbackArtifacts
             $"{Root}/browser_direct_gacha",
             StringComparison.OrdinalIgnoreCase);
 
-    private static byte[]? ReadExternalRollbackBytes(
+    private static Task<byte[]?> ReadExternalRollbackBytesAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string fileId) =>
         fileId switch
         {
             DarenRewardProfileExternalFileId =>
-                QteSceneService.ReadDarenProfileRollbackBytes(fs),
+                QteSceneService.ReadDarenProfileRollbackBytesAsync(
+                    fs,
+                    writeLease),
             _ => throw new InvalidDataException(
                 $"Unsupported browser rollback external file '{fileId}'.")
         };
@@ -744,8 +754,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
         return content;
     }
 
-    private static void RestoreExternalRollbackBytes(
+    private static Task RestoreExternalRollbackBytesAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string fileId,
         byte[]? content)
     {
@@ -758,7 +769,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 $"Unsupported browser rollback external file '{fileId}'.");
         }
 
-        QteSceneService.RestoreDarenProfileRollbackBytes(fs, content);
+        return QteSceneService.RestoreDarenProfileRollbackBytesAsync(
+            fs,
+            writeLease,
+            content);
     }
 
     private static bool IsSha256(string? value) =>

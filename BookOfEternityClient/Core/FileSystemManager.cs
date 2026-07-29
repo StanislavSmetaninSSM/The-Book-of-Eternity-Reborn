@@ -524,6 +524,10 @@ public class FileSystemManager
                     await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath);
                     if (OperatingSystem.IsWindows())
                     {
+                        PhysicalFileAuthority.ValidateExistingReplacementTarget(
+                            parentAuthority,
+                            fullPath,
+                            "Canonical atomic write");
                         PhysicalFileAuthority.RenameOpenedObject(
                             stream.SafeFileHandle,
                             fullPath,
@@ -617,29 +621,18 @@ public class FileSystemManager
 
     private async Task<string?> ReadFileCoreAsync(string relativePath)
     {
-        for (var attempt = 0; ; attempt++)
-        {
-            try
-            {
-                var openedFile = await OpenCanonicalReadStreamAsync(relativePath);
-                if (openedFile == null)
-                    return null;
+        var snapshot = await ReadFileSnapshotCoreAsync(
+            relativePath,
+            CancellationToken.None);
+        if (snapshot == null)
+            return null;
 
-                await using (openedFile)
-                using (var reader = new StreamReader(
-                           openedFile.Stream,
-                           Encoding.UTF8,
-                           detectEncodingFromByteOrderMarks: true,
-                           leaveOpen: true))
-                {
-                    return await reader.ReadToEndAsync();
-                }
-            }
-            catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
-            {
-                await Task.Delay(TransientFileAccessRetryDelay);
-            }
-        }
+        using var stream = new MemoryStream(snapshot.Content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return await reader.ReadToEndAsync();
     }
 
     public async Task<byte[]?> ReadFileBytesAsync(string relativePath)
@@ -662,10 +655,47 @@ public class FileSystemManager
         return await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
     }
 
+    internal async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        return await ReadFileSnapshotCoreAsync(
+            relativePath,
+            CancellationToken.None);
+    }
+
+    internal string? ReadFileSync(string relativePath)
+    {
+        var snapshot = ReadFileSnapshotCore(relativePath);
+        if (snapshot == null)
+            return null;
+
+        using var stream = new MemoryStream(snapshot.Content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
+    }
+
+    internal byte[]? ReadFileBytesSync(string relativePath) =>
+        ReadFileSnapshotCore(relativePath)?.Content;
+
     private Task<byte[]?> ReadFileBytesCoreAsync(string relativePath) =>
         ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
 
     private async Task<byte[]?> ReadFileBytesCoreAsync(
+        string relativePath,
+        CancellationToken cancellationToken)
+    {
+        var snapshot = await ReadFileSnapshotCoreAsync(
+            relativePath,
+            cancellationToken);
+        return snapshot?.Content;
+    }
+
+    private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotCoreAsync(
         string relativePath,
         CancellationToken cancellationToken)
     {
@@ -683,11 +713,19 @@ public class FileSystemManager
                 await using (openedFile)
                 {
                     var stream = openedFile.Stream;
+                    var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
+                        stream.SafeFileHandle);
                     using var buffer = stream.Length is > 0 and <= int.MaxValue
                         ? new MemoryStream((int)stream.Length)
                         : new MemoryStream();
                     await stream.CopyToAsync(buffer, cancellationToken);
-                    return buffer.ToArray();
+                    PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
+                        stream.SafeFileHandle,
+                        ResolvePath(relativePath),
+                        "Canonical game-session read completion");
+                    return new CanonicalFileReadSnapshot(
+                        buffer.ToArray(),
+                        lastWriteTimeUtc);
                 }
             }
             catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
@@ -804,6 +842,56 @@ public class FileSystemManager
             Directory.Move(sourcePath, destinationPath);
         }
     }
+
+    private CanonicalFileReadSnapshot? ReadFileSnapshotCore(
+        string relativePath)
+    {
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                var expectedFullPath = ResolvePath(relativePath);
+                if (!File.Exists(expectedFullPath))
+                    return null;
+
+                using var parentAuthority = EnsureStableCanonicalParent(
+                    relativePath,
+                    expectedFullPath);
+                EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+                using var stream = PhysicalFileAuthority.OpenReadFile(
+                    parentAuthority,
+                    expectedFullPath,
+                    "Canonical synchronous game-session read",
+                    asynchronous: false);
+                if (stream == null)
+                    return null;
+
+                var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
+                    stream.SafeFileHandle);
+                using var buffer = stream.Length is > 0 and <= int.MaxValue
+                    ? new MemoryStream((int)stream.Length)
+                    : new MemoryStream();
+                stream.CopyTo(buffer);
+                PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
+                    stream.SafeFileHandle,
+                    expectedFullPath,
+                    "Canonical synchronous game-session read completion");
+                return new CanonicalFileReadSnapshot(
+                    buffer.ToArray(),
+                    lastWriteTimeUtc);
+            }
+            catch (Exception ex) when (
+                IsTransientFileAccessException(ex) &&
+                attempt < TransientFileAccessRetryCount)
+            {
+                Thread.Sleep(TransientFileAccessRetryDelay);
+            }
+        }
+    }
+
+    internal sealed record CanonicalFileReadSnapshot(
+        byte[] Content,
+        DateTime LastWriteTimeUtc);
 
     internal sealed class StableReadFile : IAsyncDisposable
     {
@@ -2420,6 +2508,10 @@ public class FileSystemManager
             EnsureRuntimePathIsSafe(path);
             if (OperatingSystem.IsWindows())
             {
+                PhysicalFileAuthority.ValidateExistingReplacementTarget(
+                    parentAuthority,
+                    path,
+                    authorityName);
                 PhysicalFileAuthority.RenameOpenedObject(
                     stream.SafeFileHandle,
                     path,

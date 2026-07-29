@@ -846,11 +846,15 @@ public partial class CanonicalStateNormalizer
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        var fullPath = fs.ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
+        try
+        {
+            return fs.ReadFileBytesSync(relativePath);
+        }
+        catch (Exception ex) when (
+            ex is IOException or UnauthorizedAccessException or InvalidDataException)
+        {
             return null;
-
-        return File.ReadAllBytes(fullPath);
+        }
     }
 
     private static async Task<bool> IsCurrentPendingTurnSnapshotAsync(

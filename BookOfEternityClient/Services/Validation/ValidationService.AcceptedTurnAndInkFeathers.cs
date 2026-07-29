@@ -3387,11 +3387,12 @@ public partial class ValidationService
     {
         try
         {
-            var path = _fs.ResolvePath("game_state/player/skills_active.json");
-            if (!File.Exists(path))
+            var json = _fs.ReadFileSync(
+                "game_state/player/skills_active.json");
+            if (string.IsNullOrWhiteSpace(json))
                 return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            return ParsePlayerSkillNames(File.ReadAllText(path), "activeSkillChanges");
+            return ParsePlayerSkillNames(json, "activeSkillChanges");
         }
         catch
         {
@@ -3492,16 +3493,16 @@ public partial class ValidationService
         return null;
     }
 
-    private ValidationPendingTurnSnapshotManifest? LoadValidationPendingTurnSnapshotManifestSync()
+    private static ValidationPendingTurnSnapshotManifest?
+        ParseValidationPendingTurnSnapshotManifest(string? json)
     {
-        var manifestPath = _fs.ResolvePath("game_state/control/pending_turn_snapshot.json");
-        if (!File.Exists(manifestPath))
+        if (string.IsNullOrWhiteSpace(json))
             return null;
 
         try
         {
             return JsonSerializer.Deserialize<ValidationPendingTurnSnapshotManifest>(
-                File.ReadAllText(manifestPath),
+                json,
                 ManifestJsonOpts);
         }
         catch
@@ -3523,8 +3524,11 @@ public partial class ValidationService
         if (_prevalidatedPendingTurnSnapshotOverride != null)
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
 
-        var manifestExists = File.Exists(_fs.ResolvePath(PendingTurnSnapshotManifestPath));
-        var manifest = LoadValidationPendingTurnSnapshotManifestSync();
+        var manifestJson = ReadCanonicalFileSync(
+            PendingTurnSnapshotManifestPath);
+        var manifestExists = manifestJson != null;
+        var manifest = ParseValidationPendingTurnSnapshotManifest(
+            manifestJson);
         var authorityJson = ReadPendingTurnSnapshotAuthoritySync();
         if (manifest == null)
         {
@@ -3542,18 +3546,8 @@ public partial class ValidationService
 
     private string? ReadPendingTurnSnapshotAuthoritySync()
     {
-        var authorityPath = _fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath);
-        if (!File.Exists(authorityPath))
-            return null;
-
-        try
-        {
-            return File.ReadAllText(authorityPath);
-        }
-        catch
-        {
-            return null;
-        }
+        return ReadCanonicalFileSync(
+            PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
     private byte[]? ReadRelativeFileBytesFromWorkspace(string relativePath)
@@ -3561,15 +3555,12 @@ public partial class ValidationService
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        var fullPath = _fs.ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
-            return null;
-
         try
         {
-            return File.ReadAllBytes(fullPath);
+            return _fs.ReadFileBytesSync(relativePath);
         }
-        catch
+        catch (Exception ex) when (
+            ex is IOException or UnauthorizedAccessException or InvalidDataException)
         {
             return null;
         }
@@ -3713,18 +3704,7 @@ public partial class ValidationService
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        var fullPath = _fs.ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
-            return null;
-
-        try
-        {
-            return File.ReadAllText(fullPath);
-        }
-        catch
-        {
-            return null;
-        }
+        return ReadCanonicalFileSync(relativePath);
     }
 
     private async Task<ValidatedCurrentPreTurnRealmResolution> ResolveValidatedCurrentPreTurnRealmAsync()
@@ -4128,12 +4108,13 @@ public partial class ValidationService
 
     private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(string requestPath)
     {
-        if (!File.Exists(requestPath))
-            return null;
-
         try
         {
-            using var doc = JsonDocument.Parse(File.ReadAllText(requestPath));
+            var json = ReadCanonicalFileSync(requestPath);
+            if (string.IsNullOrWhiteSpace(json))
+                return null;
+
+            using var doc = JsonDocument.Parse(json);
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return null;
 
@@ -5255,15 +5236,18 @@ public partial class ValidationService
     private bool IsValidatedPendingTurnSnapshotManifestCurrent(ValidationPendingTurnSnapshotManifest manifest)
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
-        var repairContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath(repairRequestPath));
+        var repairContext = LoadPendingTurnRequestValidationContextSync(
+            repairRequestPath);
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, repairContext))
             return true;
 
-        var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
+        var turnContext = LoadPendingTurnRequestValidationContextSync(
+            "input/turn_request.json");
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext))
             return true;
 
-        var completionContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("ready/turn_complete.json"));
+        var completionContext = LoadPendingTurnRequestValidationContextSync(
+            "ready/turn_complete.json");
         return DoesPendingTurnRequestValidationContextMatchManifest(manifest, completionContext);
     }
 
@@ -5271,15 +5255,18 @@ public partial class ValidationService
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload)
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
-        var repairContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath(repairRequestPath));
+        var repairContext = LoadPendingTurnRequestValidationContextSync(
+            repairRequestPath);
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, repairContext))
             return true;
 
-        var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
+        var turnContext = LoadPendingTurnRequestValidationContextSync(
+            "input/turn_request.json");
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, turnContext))
             return true;
 
-        var completionContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("ready/turn_complete.json"));
+        var completionContext = LoadPendingTurnRequestValidationContextSync(
+            "ready/turn_complete.json");
         return DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, completionContext);
     }
 
@@ -5316,15 +5303,17 @@ public partial class ValidationService
 
     private string? ReadCurrentTrackedFileSync(string relativePath)
     {
-        var resolvedPath = _fs.ResolvePath(relativePath);
-        if (!File.Exists(resolvedPath))
-            return null;
+        return ReadCanonicalFileSync(relativePath);
+    }
 
+    private string? ReadCanonicalFileSync(string relativePath)
+    {
         try
         {
-            return File.ReadAllText(resolvedPath);
+            return _fs.ReadFileSync(relativePath);
         }
-        catch
+        catch (Exception ex) when (
+            ex is IOException or UnauthorizedAccessException or InvalidDataException)
         {
             return null;
         }

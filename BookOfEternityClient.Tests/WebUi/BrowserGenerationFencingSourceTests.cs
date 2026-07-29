@@ -234,6 +234,72 @@ public sealed class BrowserGenerationFencingSourceTests
     }
 
     [Fact]
+    public void BrowserPromptSessionsAndLocalUiLocks_UseGenerationBoundCanonicalAuthority()
+    {
+        var promptSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "WebUi",
+            "ExplorerWebPromptSessionService.cs"));
+        var lockSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "LocalUiSessionLockService.cs"));
+
+        Assert.Contains(
+            "ExpectedSessionGeneration",
+            promptSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "SessionOperationContext.RunBoundAsync",
+            promptSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("_fs.ResolvePath(", lockSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Exists(", lockSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.GetLastWriteTimeUtc(", lockSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("new FileStream(", lockSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.CreateDirectory(", lockSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DarenRewardProfile_UsesOnePhysicalAuthorityStoreWithoutRawPathIo()
+    {
+        var rewardSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "DarenQteRewardProfileService.cs"));
+        var qteSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "QteSceneService.cs"));
+
+        Assert.Contains("DarenRewardProfileFileStore", rewardSource, StringComparison.Ordinal);
+        Assert.Contains("DarenRewardProfileFileStore", qteSource, StringComparison.Ordinal);
+        foreach (var prohibited in new[]
+                 {
+                     "File.Exists(",
+                     "File.ReadAllTextAsync(",
+                     "File.ReadAllBytes(",
+                     "File.WriteAllTextAsync(",
+                     "File.WriteAllBytes(",
+                     "File.Move(",
+                     "File.Delete("
+                 })
+        {
+            Assert.DoesNotContain(prohibited, rewardSource, StringComparison.Ordinal);
+        }
+
+        var profileRead = ExtractMethod(
+            qteSource,
+            "ReadDarenRewardProfileAsync",
+            "internal async Task<DarenRewardProfileState>");
+        Assert.DoesNotContain("File.", profileRead, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "WriteExternalFileAtomic",
+            qteSource,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BrowserQteCanonicalMutations_RunInsideGenerationBoundTransactions()
     {
         var source = File.ReadAllText(SourcePath(

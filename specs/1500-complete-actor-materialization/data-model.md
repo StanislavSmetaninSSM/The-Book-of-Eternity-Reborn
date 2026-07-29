@@ -495,3 +495,41 @@ Repair handoff has one owner state. Before dispatch, request/ready/stall artifac
 `WorkerFileChangeKind` is a closed operation authority: `Unspecified=0` is invalid, and only explicit `Add`, `Replace`, or `Delete` reaches apply semantics. Omitted or undefined numeric values reject during proposal contract validation.
 
 Every `game_state/meta/` validation-repair target is afterlife-scoped, including non-actor metadata. `game_state/meta/soul_state.json` is an exact-byte, hash-pinned, read-only realm-authority context file. Strict parsing requires one supported `currentRealm` without duplicate members. The authority file is never an allowed proposal path; mixed Mortal/meta batches and missing, malformed, unsupported, changed, or contract-mismatched authority fail task construction or apply closed. `game_state/misc/characteristics.json` follows the same read-only rule in every empty-characteristics task, including mixed Mortal batches.
+
+## Phase 35 authority additions
+
+### Generation-bound prompt snapshot
+
+A mutable browser prompt snapshot adds one immutable
+`ExpectedSessionGeneration`. The generation is captured under the same
+canonical authority that acquires the local-UI lock. Submit and cancel may
+complete only inside that binding. Replacement removes the stale in-memory
+snapshot but does not release or inspect the replacement session's lock.
+
+### Ephemeral local-UI lock
+
+`game_state/control/local_ui_session_lock.json` remains a client-owned
+single-link canonical file containing owner, lease, heartbeat, and operation
+metadata. It is never save data. Public operations are wrappers around one
+generation-bound canonical lease and the lease-aware lock methods.
+
+### Typed opened publication object
+
+An opened publication source carries an expected object kind
+(`RegularFile` or `Directory`). Physical `Directory` metadata must match before
+rename. An existing replacement destination is separately opened under the
+same stable parent and must be a single-link regular file.
+
+### External Daren profile authority
+
+The Daren reward profile has a stable external parent authority and exact-byte
+operations: optional read, create-only temporary write plus opened-handle
+replace, optional exact before-image, exact restore, and opened-object delete.
+No operation follows reparse points or accepts a multi-link regular file.
+
+### Legacy characteristics classification
+
+`RequiresCompleteCurrentMortalPersonality` remains the operation classifier for
+current first materialization and true legacy promotion. Empty
+`characteristics` is an error only when that classifier is true. Numeric value
+shape validation still applies whenever characteristics are present.

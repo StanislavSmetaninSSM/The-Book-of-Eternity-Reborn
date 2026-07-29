@@ -2756,6 +2756,26 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_UntouchedLegacyEmptyCharacteristics_RemainsCompatible()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var legacyRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "legacy_empty_characteristics_actor",
+            sectionName: "NPCsInScene",
+            canTeach: false,
+            includeEnvelope: false))!.AsObject();
+        legacyRoot["NPCsInScene"]![0]!["characteristics"] = new JsonObject();
+        var legacyJson = legacyRoot.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "npc_characteristics_empty" &&
+            issue.Actor == "mortal_npc:legacy_empty_characteristics_actor");
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_UntouchedHistoricalEnvelopeWithLegacyPersonality_RemainsCompatible()
     {
         const string path = "game_state/npcs/npc_core.json";

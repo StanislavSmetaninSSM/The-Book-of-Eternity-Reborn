@@ -915,6 +915,83 @@ external target is still locked by that handle.
 only pre-open rejection. The authority claim requires evidence that validation
 is applied to the exact still-open object after a swap-back.
 
+## Fifth post-T156 Sol/max authority decisions
+
+### Decision 87: Mutable prompt sessions own a generation
+
+**Decision**: Capture the current generation under canonical authority before
+publishing a mutable browser form. Persist it in the in-memory prompt snapshot
+and bind submit, cancel, and lock cleanup to that exact generation.
+
+**Rationale**: Owner and entity IDs are not session identity. Reusing the
+current generation at submit time lets a form from session A mutate session B.
+
+### Decision 88: Opened handles prove object type
+
+**Decision**: Query `FILE_STANDARD_INFO.Directory` for every opened
+publication source and require it to match the requested file/directory kind
+before rename.
+
+**Rationale**: Backup semantics allow opening a regular file through a
+directory-intended path. Path syntax and flags are not proof of object type.
+
+### Decision 89: Local UI locking is one canonical transaction
+
+**Decision**: Public inspect/acquire/refresh/release operations acquire one
+canonical lease and use only lease-aware handle-bound reads and mutations.
+Generation-bound callers retain their earlier generation instead of adopting
+the current one.
+
+**Rationale**: Separate pathname reads, creates, and deletes permit parent
+replacement and can delete a lock that belongs to a replacement session.
+
+### Decision 90: External rewards use typed physical authority
+
+**Decision**: Treat `client_profile/daren_qte_reward.json` as a typed external
+authority file. Retain its validated parent while exact bytes are read,
+atomically replaced, restored, or deleted, and reject reparse or multi-link
+identities.
+
+**Rationale**: Canonical rollback correctness is incomplete when its external
+side effect can be redirected or restored through a different path object.
+
+### Decision 91: Pending-turn authority has no raw compatibility reader
+
+**Decision**: Async and sync pending-turn consumers use the same canonical
+opened-handle byte reader. Compatibility with synchronous validation is
+provided by a synchronous handle-bound API, not by `File.ReadAllBytes/Text`.
+
+**Rationale**: Hash validation authenticates whichever bytes were read; it
+cannot repair a path race or hard-link alias in the byte acquisition itself.
+
+### Decision 92: Existing replacement targets are authority objects
+
+**Decision**: Before replacing an existing canonical destination, open it
+through the retained parent authority and reject it unless its regular-file
+identity is single-link.
+
+**Rationale**: Validating only the temporary source still lets replacement
+unlink one name of a multi-link destination and silently mutate authority
+semantics reachable through another name.
+
+### Decision 93: UI locks never survive session persistence
+
+**Decision**: Add the local-UI lock to the exact ephemeral save/load exclusion
+set.
+
+**Rationale**: A restored owner lease is neither live process authority nor
+part of player state and can block a different owner for its full duration.
+
+### Decision 94: Legacy emptiness is not first materialization
+
+**Decision**: Enforce non-empty setting-defined characteristics only when the
+current actor operation requires complete materialization. Preserve an
+unchanged envelope-free legacy empty object.
+
+**Rationale**: The harness must improve future materialization without forcing
+unrelated legacy resends or retroactively invalidating untouched canonical
+actors.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

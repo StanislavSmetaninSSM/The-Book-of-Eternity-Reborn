@@ -304,6 +304,38 @@ Final integration repeats the focused authority suites, the complete test
 project, Release build, static parsing, documentation guards, Spec Kit analysis,
 and a fresh post-commit exact-diff review.
 
+## Phase 35 implementation strategy
+
+The Phase 34 post-commit `gpt-5.6-sol`/max exact-diff review found eight
+remaining cross-boundary authority gaps. Browser prompt sessions remember an
+owner but not the session generation; public local-UI lock operations and the
+Daren profile still contain pathname-based read/decision/write sequences;
+save/load persists the UI lock; pending-turn compatibility readers reopen
+accepted paths; publication does not prove the opened object type; replacement
+does not reject a multi-link existing destination; and the new empty
+characteristics rule also rejects untouched legacy actors.
+
+The remediation keeps these concerns inside the harness:
+
+1. capture one immutable generation while attaching a mutable browser prompt
+   and bind every later submit/cancel/lock operation to it;
+2. route public local-UI lock operations through one canonical lease and omit
+   or strip the lock from saves;
+3. extend opened-handle authority with physical object-type proof and
+   destination hard-link validation before publication/replacement;
+4. replace every pending-turn raw byte/text read with the shared handle-bound
+   canonical reader, including synchronous validation paths;
+5. give the external Daren profile a stable no-follow parent and exact-byte
+   read/write/rollback operations;
+6. scope empty setting-defined characteristics enforcement to current first
+   materialization or authorized promotion, preserving unchanged legacy state.
+
+Each behavior begins with a focused RED regression. Final integration repeats
+focused browser/save/filesystem/pending/QTE/actor suites, mandatory afterlife
+documentation tests, broad and complete tests, Release build, static parsing,
+Spec Kit analysis, clean-checkout verification, and a fresh post-commit
+`gpt-5.6-sol`/max exact-diff review with no Critical or Important finding.
+
 ## Complexity Tracking
 
 No constitution violations require an exception.

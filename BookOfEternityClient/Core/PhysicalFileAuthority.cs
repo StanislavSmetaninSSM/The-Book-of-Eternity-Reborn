@@ -302,6 +302,10 @@ internal static class PhysicalFileAuthority
                 handle,
                 normalizedPath,
                 authorityName);
+            EnsureOpenedObjectKind(
+                handle,
+                isDirectory,
+                authorityName);
             return handle;
         }
         catch
@@ -368,6 +372,49 @@ internal static class PhysicalFileAuthority
             sourceHandle,
             normalizedDestination,
             authorityName);
+    }
+
+    internal static void ValidateExistingReplacementTarget(
+        StableDirectory parent,
+        string expectedPath,
+        string authorityName)
+    {
+        EnsureDirectChild(parent, expectedPath, authorityName);
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var normalizedPath = Path.GetFullPath(expectedPath);
+        var handle = CreateFile(
+            ToWindowsExtendedPath(normalizedPath),
+            FileReadAttributes | SynchronizeAccess,
+            FileShareRead | FileShareWrite,
+            IntPtr.Zero,
+            OpenExisting,
+            FileAttributeNormal,
+            IntPtr.Zero);
+        if (handle.IsInvalid)
+        {
+            var error = Marshal.GetLastWin32Error();
+            handle.Dispose();
+            if (error is ErrorFileNotFound or ErrorPathNotFound)
+                return;
+
+            throw CreateIoException(
+                $"Could not inspect {authorityName} replacement target.",
+                error);
+        }
+
+        using (handle)
+        {
+            EnsureHandleMatchesExpectedPath(
+                handle,
+                normalizedPath,
+                authorityName);
+            EnsureOpenedObjectKind(
+                handle,
+                expectedDirectory: false,
+                authorityName);
+        }
     }
 
     internal static bool TryDeleteFile(
@@ -711,6 +758,34 @@ internal static class PhysicalFileAuthority
         SafeFileHandle handle,
         string authorityName)
     {
+        var standardInfo = GetStandardInfo(handle, authorityName);
+
+        if (!standardInfo.Directory && standardInfo.NumberOfLinks != 1)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} regular file must have exactly one physical link.");
+        }
+    }
+
+    private static void EnsureOpenedObjectKind(
+        SafeFileHandle handle,
+        bool expectedDirectory,
+        string authorityName)
+    {
+        var standardInfo = GetStandardInfo(handle, authorityName);
+        if (standardInfo.Directory != expectedDirectory)
+        {
+            throw new InvalidDataException(
+                expectedDirectory
+                    ? $"{authorityName} source is not a physical directory."
+                    : $"{authorityName} source is not a regular file.");
+        }
+    }
+
+    private static FileStandardInfo GetStandardInfo(
+        SafeFileHandle handle,
+        string authorityName)
+    {
         if (!GetFileInformationByHandleEx(
                 handle,
                 FileStandardInfoClass,
@@ -718,15 +793,11 @@ internal static class PhysicalFileAuthority
                 (uint)Marshal.SizeOf<FileStandardInfo>()))
         {
             throw CreateIoException(
-                $"Could not inspect {authorityName} link authority.",
+                $"Could not inspect {authorityName} file authority.",
                 Marshal.GetLastWin32Error());
         }
 
-        if (!standardInfo.Directory && standardInfo.NumberOfLinks != 1)
-        {
-            throw new InvalidDataException(
-                $"{authorityName} regular file must have exactly one physical link.");
-        }
+        return standardInfo;
     }
 
     private static void DeleteTreeFallback(string path)

@@ -23,12 +23,10 @@ public sealed class BrowserLocalWriteCoordinator
 
     public async Task<BrowserLocalWriteStatus> BuildStatusAsync()
     {
-        await using (var recoveryLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-        {
-            // Lease acquisition performs fail-closed recovery of interrupted browser writes.
-        }
-
-        return await BuildStatusCoreAsync();
+        await using var recoveryLease =
+            await _fs.AcquireCanonicalWriteLeaseAsync();
+        // Lease acquisition performs fail-closed recovery of interrupted browser writes.
+        return await BuildStatusCoreAsync(recoveryLease);
     }
 
     internal async Task<BrowserLocalWriteStatus> BuildStatusAsync(
@@ -36,13 +34,16 @@ public sealed class BrowserLocalWriteCoordinator
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.VerifyCurrentSessionOperation(writeLease);
-        return await BuildStatusCoreAsync();
+        return await BuildStatusCoreAsync(writeLease);
     }
 
-    private async Task<BrowserLocalWriteStatus> BuildStatusCoreAsync()
+    private async Task<BrowserLocalWriteStatus> BuildStatusCoreAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var pending = BrowserPendingTurnInspector.Build(_fs);
-        var lockSnapshot = await _lockService.InspectAsync(LockLease);
+        var lockSnapshot = await _lockService.InspectAsync(
+            writeLease,
+            LockLease);
         var lockStatus = BrowserLocalUiLockStatus.FromSnapshot(lockSnapshot);
         var canStart = !pending.HasActiveGmTurn &&
                        (!lockStatus.Exists || lockStatus.IsStale);

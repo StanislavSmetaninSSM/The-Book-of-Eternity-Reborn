@@ -866,4 +866,47 @@ public sealed class ValidationSourceGuardTests
         Assert.Contains("Сияющая Обитель", source, StringComparison.Ordinal);
         Assert.DoesNotContain("if (!string.Equals(currentRealm, \"Shining Abode\", StringComparison.OrdinalIgnoreCase) ||", source, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void PendingTurnAuthorityConsumers_MustUseHandleBoundFileSystemReads()
+    {
+        var normalizerSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "CanonicalStateNormalizer",
+            "CanonicalStateNormalizer.SoulAndMeta.cs"));
+        var guardianSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "GuardianPowerEventState.cs"));
+        var acceptedTurnSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.AcceptedTurnAndInkFeathers.cs"));
+
+        Assert.DoesNotContain(
+            "return File.ReadAllBytes(fullPath);",
+            normalizerSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "return File.ReadAllBytes(fullPath);",
+            guardianSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "return File.ReadAllBytes(fullPath);",
+            acceptedTurnSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.ReadAllText(manifestPath)",
+            acceptedTurnSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.ReadAllText(authorityPath)",
+            acceptedTurnSource,
+            StringComparison.Ordinal);
+    }
 }

@@ -647,7 +647,22 @@ public sealed class QteWebInteractionService
         var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
             ? await BuildActiveSceneAsync(attempt.ActiveScene, writeLease)
             : null;
-        var profile = await _qteSceneService.ReadDarenRewardProfileAsync(writeLease);
+        DarenRewardRecord? bestReward = null;
+        try
+        {
+            bestReward = (await _qteSceneService.ReadDarenRewardProfileAsync(writeLease))
+                .DarenShowcase;
+        }
+        catch (Exception ex) when (
+            ex is InvalidDataException or IOException or UnauthorizedAccessException)
+        {
+            state = "Failed";
+            const string profileError =
+                "Профиль постоянной награды Дарена недоступен: физическая целостность хранилища нарушена.";
+            error = string.IsNullOrWhiteSpace(error)
+                ? profileError
+                : $"{error} {profileError}";
+        }
 
         return new DarenShowcaseWebStateDto
         {
@@ -656,7 +671,7 @@ public sealed class QteWebInteractionService
             IntroText = "Хитрый вор Дарен проникает в запертое поместье, крадёт магический посох, уходит от погони и возвращается в убежище.",
             BoundaryNotice = attempt?.BoundaryNotice ?? DarenShowcaseWebStateDto.DefaultBoundaryNotice,
             RewardNotice = attempt?.RewardNotice ?? DarenShowcaseWebStateDto.DefaultRewardNotice,
-            BestReward = profile.DarenShowcase == null ? null : BuildDarenBestReward(profile.DarenShowcase),
+            BestReward = bestReward == null ? null : BuildDarenBestReward(bestReward),
             ActiveScene = activeScene,
             Resolution = attempt?.LastResolution == null ? null : BuildResolution(attempt.LastResolution),
             Completion = attempt?.LastCompletion == null ? null : BuildCompletion(attempt.LastCompletion),

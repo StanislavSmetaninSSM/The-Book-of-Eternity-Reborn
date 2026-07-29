@@ -77,10 +77,12 @@ public sealed class DarenQteRewardProfileService
     ];
 
     private readonly FileSystemManager _fs;
+    private readonly DarenRewardProfileFileStore _profileStore;
 
     public DarenQteRewardProfileService(FileSystemManager fs)
     {
         _fs = fs;
+        _profileStore = new DarenRewardProfileFileStore(fs);
     }
 
     public static IReadOnlyList<DarenEndingTier> EndingTiers => TierDefinitions;
@@ -128,16 +130,19 @@ public sealed class DarenQteRewardProfileService
             RewardExplanation: tier.RewardExplanation);
     }
 
-    public async Task<DarenRewardProfileState> ReadProfileAsync()
+    public Task<DarenRewardProfileState> ReadProfileAsync() =>
+        RunCanonicalAsync(ReadProfileBoundAsync);
+
+    private async Task<DarenRewardProfileState> ReadProfileBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var path = ResolveProfilePath();
-        if (!File.Exists(path))
+        var raw = await _profileStore.ReadTextAsync(writeLease);
+        if (raw == null)
             return new DarenRewardProfileState { SchemaVersion = SchemaVersion };
 
         DarenRewardProfileState normalized;
         try
         {
-            var raw = await File.ReadAllTextAsync(path);
             normalized = NormalizeProfile(raw);
         }
         catch
@@ -145,22 +150,39 @@ public sealed class DarenQteRewardProfileService
             normalized = new DarenRewardProfileState { SchemaVersion = SchemaVersion };
         }
 
-        await WriteProfileAsync(normalized);
+        await WriteProfileAsync(writeLease, normalized);
         return normalized;
     }
 
-    public async Task<DarenRewardProfileWriteResult> RecordCompletionAsync(DarenEndingResult ending, DateTime completedAtUtc)
+    public Task<DarenRewardProfileWriteResult> RecordCompletionAsync(
+        DarenEndingResult ending,
+        DateTime completedAtUtc) =>
+        RunCanonicalAsync(writeLease =>
+            RecordCompletionBoundAsync(writeLease, ending, completedAtUtc));
+
+    private async Task<DarenRewardProfileWriteResult> RecordCompletionBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        DarenEndingResult ending,
+        DateTime completedAtUtc)
     {
         if (!ending.GrantsReward || string.IsNullOrWhiteSpace(ending.TierId))
         {
-            return new DarenRewardProfileWriteResult(false, await ReadProfileAsync(), ending.RewardExplanation);
+            return new DarenRewardProfileWriteResult(
+                false,
+                await ReadProfileBoundAsync(writeLease),
+                ending.RewardExplanation);
         }
 
         var tier = FindTier(ending.TierId);
         if (tier == null)
-            return new DarenRewardProfileWriteResult(false, await ReadProfileAsync(), "Постоянная награда Дарена не записана: итог не распознан и будущая новая игра не получает Чернильных Перьев.");
+        {
+            return new DarenRewardProfileWriteResult(
+                false,
+                await ReadProfileBoundAsync(writeLease),
+                "Постоянная награда Дарена не записана: итог не распознан и будущая новая игра не получает Чернильных Перьев.");
+        }
 
-        var profile = await ReadProfileAsync();
+        var profile = await ReadProfileBoundAsync(writeLease);
         var existing = profile.DarenShowcase;
         if (existing != null && CompareTierRank(existing.BestTierId, tier.TierId) >= 0)
         {
@@ -186,7 +208,7 @@ public sealed class DarenQteRewardProfileService
             }
         };
 
-        await WriteProfileAsync(profile);
+        await WriteProfileAsync(writeLease, profile);
         return new DarenRewardProfileWriteResult(
             true,
             profile,
@@ -216,9 +238,16 @@ public sealed class DarenQteRewardProfileService
                $"Будущая новая игра получит {inkFeathers} один раз при создании новой игры; повторные вылазки не складывают перья и не заменяют лучший итог более слабым.";
     }
 
-    public async Task<DarenRewardGrantResult> ApplyBestRewardToNewSoulStateAsync(JsonObject soulRoot)
+    public Task<DarenRewardGrantResult> ApplyBestRewardToNewSoulStateAsync(
+        JsonObject soulRoot) =>
+        RunCanonicalAsync(writeLease =>
+            ApplyBestRewardToNewSoulStateBoundAsync(writeLease, soulRoot));
+
+    private async Task<DarenRewardGrantResult> ApplyBestRewardToNewSoulStateBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        JsonObject soulRoot)
     {
-        var profile = await ReadProfileAsync();
+        var profile = await ReadProfileBoundAsync(writeLease);
         var reward = profile.DarenShowcase;
         if (reward == null)
             return DarenRewardGrantResult.NotGranted("Награда Дарена ещё не открыта.");
@@ -253,25 +282,29 @@ public sealed class DarenQteRewardProfileService
         return new DarenRewardGrantResult(true, tier.TierId, tier.DisplayName, tier.InkFeatherBonus, message);
     }
 
-    private string ResolveProfilePath() =>
-        Path.Combine(_fs.BasePath, ProfileRelativePath.Replace('/', Path.DirectorySeparatorChar));
+    private Task WriteProfileAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        DarenRewardProfileState profile) =>
+        _profileStore.WriteTextAtomicAsync(
+            writeLease,
+            JsonSerializer.Serialize(profile, JsonOpts));
 
-    private async Task WriteProfileAsync(DarenRewardProfileState profile)
+    private async Task<T> RunCanonicalAsync<T>(
+        Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
     {
-        var path = ResolveProfilePath();
-        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        var tempPath = path + ".tmp." + Guid.NewGuid().ToString("N")[..8];
-        try
-        {
-            await File.WriteAllTextAsync(tempPath, JsonSerializer.Serialize(profile, JsonOpts));
-            File.Move(tempPath, path, overwrite: true);
-        }
-        catch
-        {
-            if (File.Exists(tempPath))
-                File.Delete(tempPath);
-            throw;
-        }
+        ArgumentNullException.ThrowIfNull(operation);
+        var hasExpectedGeneration = SessionOperationContext.TryGetExpectedGeneration(
+            _fs.BasePath,
+            out var expectedGeneration);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!hasExpectedGeneration)
+            expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+
+        return await SessionOperationContext.RunBoundAsync(
+            _fs,
+            expectedGeneration,
+            writeLease,
+            () => operation(writeLease));
     }
 
     private static DarenRewardProfileState NormalizeProfile(string raw)

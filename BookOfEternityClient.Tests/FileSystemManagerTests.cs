@@ -1274,6 +1274,68 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task RuntimeDirectoryMove_RejectsRegularFileRacedIntoDirectorySource()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string destination = "worker_proposals/type-confused-publication";
+        var sourcePath = _fs.CreateRuntimeProposalStagingRoot();
+        var displacedSourcePath = sourcePath + "-original";
+        await File.WriteAllTextAsync(
+            Path.Combine(sourcePath, "proposal.json"),
+            """{ "status": "completed" }""");
+        var swapped = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = path =>
+                {
+                    if (swapped ||
+                        !path.Equals(destination, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    swapped = true;
+                    Directory.Move(sourcePath, displacedSourcePath);
+                    File.WriteAllBytes(sourcePath, [0x41, 0x42, 0x43]);
+                    return Task.CompletedTask;
+                }
+            });
+
+        try
+        {
+            await using var writeLease =
+                await raceFs.AcquireCanonicalWriteLeaseAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                    writeLease,
+                    sourcePath,
+                    destination));
+
+            Assert.True(swapped);
+            Assert.True(File.Exists(sourcePath));
+            Assert.Equal([0x41, 0x42, 0x43], File.ReadAllBytes(sourcePath));
+            Assert.False(File.Exists(raceFs.ResolvePath(destination)));
+            Assert.False(Directory.Exists(raceFs.ResolvePath(destination)));
+            Assert.True(File.Exists(Path.Combine(
+                displacedSourcePath,
+                "proposal.json")));
+        }
+        finally
+        {
+            if (File.Exists(sourcePath))
+                File.Delete(sourcePath);
+            if (Directory.Exists(displacedSourcePath))
+                Directory.Delete(displacedSourcePath, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task AcquireCanonicalWriteLease_RejectsRuntimeRootReparsePoint()
     {
         if (!OperatingSystem.IsWindows())
@@ -1577,6 +1639,31 @@ public sealed class FileSystemManagerTests : IDisposable
             () => _fs.ReadFileAsync(relativePath));
 
         Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_RejectsHardLinkedExistingDestination()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/hard-linked-replacement-target.json";
+        var canonicalPath = _fs.ResolvePath(relativePath);
+        var externalPath = Path.Combine(
+            _rootPath,
+            "external-replacement-target.json");
+        byte[] originalBytes = [0x7B, 0x22, 0x76, 0x22, 0x3A, 0x31, 0x7D];
+        await File.WriteAllBytesAsync(externalPath, originalBytes);
+        CreateHardLink(canonicalPath, externalPath);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0x7B, 0x22, 0x76, 0x22, 0x3A, 0x32, 0x7D]));
+
+        Assert.Equal(originalBytes, await File.ReadAllBytesAsync(externalPath));
+        Assert.Equal(originalBytes, await File.ReadAllBytesAsync(canonicalPath));
     }
 
     [Fact]

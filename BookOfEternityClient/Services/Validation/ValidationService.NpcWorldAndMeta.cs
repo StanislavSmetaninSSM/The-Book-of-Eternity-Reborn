@@ -5518,7 +5518,8 @@ public partial class ValidationService
         if (item.TryGetProperty("characteristics", out var characteristics) &&
             RequireObject(characteristics, $"{itemContext}.characteristics", issues))
         {
-            if (!characteristics.EnumerateObject().Any())
+            if (requiresCompletePersonality &&
+                !characteristics.EnumerateObject().Any())
             {
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.characteristics",

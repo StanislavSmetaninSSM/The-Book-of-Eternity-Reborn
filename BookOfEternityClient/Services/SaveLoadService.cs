@@ -36,6 +36,7 @@ public class SaveLoadService
         ProgressionScheduleService.ReportPath,
         "game_state/control/gm_cli_window_binding.json",
         "game_state/control/gm_bridge_status.json",
+        LocalUiSessionLockService.LockPath,
         "output/ink_feather_action_result.json",
         ExplorerLocalTurnRollbackArtifacts.Root
     };
