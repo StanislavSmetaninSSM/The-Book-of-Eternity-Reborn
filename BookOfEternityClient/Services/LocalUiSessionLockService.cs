@@ -39,19 +39,9 @@ public sealed class LocalUiSessionLockService
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(owner);
 
+        var sessionGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
         var now = _timeProvider.GetUtcNow().UtcDateTime;
         var snapshot = await TryReadSnapshotAsync(writeLease, now, owner.LeaseDuration);
-        if (snapshot is { IsReadable: true } &&
-            string.Equals(snapshot.OwnerId, owner.OwnerId, StringComparison.Ordinal))
-        {
-            await WriteLockAsync(writeLease, owner, operationLabel, now);
-            return LocalUiSessionLockResult.AcquiredFor(snapshot with
-            {
-                HeartbeatAtUtc = now,
-                LastOperation = operationLabel
-            });
-        }
-
         if (snapshot is { IsReadable: true, IsStale: false })
         {
             return LocalUiSessionLockResult.BlockedBy(
@@ -70,42 +60,90 @@ public sealed class LocalUiSessionLockService
         if (snapshot != null)
             _fs.DeleteFile(writeLease, LockPath);
 
-        await WriteLockAsync(writeLease, owner, operationLabel, now);
-        return LocalUiSessionLockResult.AcquiredFor(new LocalUiSessionLockSnapshot(
+        var acquired = new LocalUiSessionLockSnapshot(
+            sessionGeneration,
             owner.OwnerId,
             owner.OwnerKind,
             owner.OwnerLabel,
+            Guid.NewGuid().ToString("N"),
             now,
             now,
             owner.LeaseDuration,
             operationLabel,
             IsReadable: true,
-            IsStale: false));
+            IsStale: false);
+        await WriteLockAsync(writeLease, acquired);
+        return LocalUiSessionLockResult.AcquiredFor(acquired);
     }
 
-    public async Task ReleaseAsync(LocalUiSessionLockOwner owner)
+    public async Task<LocalUiSessionLockResult> RefreshAsync(
+        LocalUiSessionLockLease lease,
+        string operationLabel)
     {
-        ArgumentNullException.ThrowIfNull(owner);
-        await RunCanonicalAsync(
-            writeLease => ReleaseAsync(writeLease, owner));
+        ArgumentNullException.ThrowIfNull(lease);
+        return await RunCanonicalAsync(
+            writeLease => RefreshAsync(
+                writeLease,
+                lease,
+                operationLabel));
     }
 
-    internal async Task ReleaseAsync(
+    internal async Task<LocalUiSessionLockResult> RefreshAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        LocalUiSessionLockOwner owner)
+        LocalUiSessionLockLease lease,
+        string operationLabel)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
-        ArgumentNullException.ThrowIfNull(owner);
+        ArgumentNullException.ThrowIfNull(lease);
+
+        var now = _timeProvider.GetUtcNow().UtcDateTime;
+        var snapshot = await TryReadSnapshotAsync(
+            writeLease,
+            now,
+            TimeSpan.FromSeconds(120));
+        if (!MatchesLease(snapshot, lease) ||
+            !_fs.IsCurrentSessionGeneration(writeLease, lease.SessionGeneration))
+        {
+            return LocalUiSessionLockResult.BlockedBy(
+                snapshot,
+                $"{operationLabel} заблокировано: lease локальной UI-блокировки больше не является текущим.");
+        }
+
+        var refreshed = snapshot! with
+        {
+            HeartbeatAtUtc = now,
+            LastOperation = operationLabel
+        };
+        await WriteLockAsync(writeLease, refreshed);
+        return LocalUiSessionLockResult.AcquiredFor(refreshed);
+    }
+
+    public async Task<bool> ReleaseAsync(LocalUiSessionLockLease lease)
+    {
+        ArgumentNullException.ThrowIfNull(lease);
+        return await RunCanonicalAsync(
+            writeLease => ReleaseAsync(writeLease, lease));
+    }
+
+    internal async Task<bool> ReleaseAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockLease lease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(lease);
 
         var snapshot = await TryReadSnapshotAsync(
             writeLease,
             _timeProvider.GetUtcNow().UtcDateTime,
-            owner.LeaseDuration);
-        if (snapshot is { IsReadable: true } &&
-            string.Equals(snapshot.OwnerId, owner.OwnerId, StringComparison.Ordinal))
+            TimeSpan.FromSeconds(120));
+        if (!MatchesLease(snapshot, lease) ||
+            !_fs.IsCurrentSessionGeneration(writeLease, lease.SessionGeneration))
         {
-            _fs.DeleteFile(writeLease, LockPath);
+            return false;
         }
+
+        _fs.DeleteFile(writeLease, LockPath);
+        return true;
     }
 
     public async Task<LocalUiSessionLockSnapshot?> InspectAsync(
@@ -129,13 +167,18 @@ public sealed class LocalUiSessionLockService
         TimeSpan fallbackLease)
     {
         var file = await _fs.ReadFileSnapshotAsync(writeLease, LockPath);
-        return ParseSnapshot(file, nowUtc, fallbackLease);
+        return ParseSnapshot(
+            file,
+            nowUtc,
+            fallbackLease,
+            _fs.GetOrCreateSessionGeneration(writeLease));
     }
 
     private LocalUiSessionLockSnapshot? ParseSnapshot(
         FileSystemManager.CanonicalFileReadSnapshot? file,
         DateTime nowUtc,
-        TimeSpan fallbackLease)
+        TimeSpan fallbackLease,
+        string currentGeneration)
     {
         if (file == null)
             return null;
@@ -157,13 +200,19 @@ public sealed class LocalUiSessionLockService
             var ownerId = ReadString(root, "ownerId");
             var ownerKind = ReadString(root, "ownerKind");
             var ownerLabel = ReadString(root, "ownerLabel");
+            var sessionGeneration = ReadString(root, "sessionGeneration");
+            var leaseToken = ReadString(root, "leaseToken");
             var heartbeatText = ReadString(root, "heartbeatAtUtc");
             var acquiredText = ReadString(root, "acquiredAtUtc");
             var lastOperation = ReadString(root, "lastOperation");
             var leaseSeconds = ReadDouble(root, "leaseSeconds");
-            if (string.IsNullOrWhiteSpace(ownerId) ||
+            if (!ReadInt(root, "schemaVersion", out var schemaVersion) ||
+                schemaVersion != 2 ||
+                string.IsNullOrWhiteSpace(sessionGeneration) ||
+                string.IsNullOrWhiteSpace(ownerId) ||
                 string.IsNullOrWhiteSpace(ownerKind) ||
                 string.IsNullOrWhiteSpace(ownerLabel) ||
+                string.IsNullOrWhiteSpace(leaseToken) ||
                 string.IsNullOrWhiteSpace(heartbeatText) ||
                 leaseSeconds <= 0 ||
                 !DateTime.TryParse(heartbeatText, null, System.Globalization.DateTimeStyles.RoundtripKind, out var heartbeatAt) ||
@@ -178,11 +227,18 @@ public sealed class LocalUiSessionLockService
             heartbeatAt = heartbeatAt.ToUniversalTime();
             acquiredAt = acquiredAt.ToUniversalTime();
             var lease = TimeSpan.FromSeconds(leaseSeconds);
-            var isStale = heartbeatAt.Add(lease) <= nowUtc;
+            var isStale =
+                heartbeatAt.Add(lease) <= nowUtc ||
+                !string.Equals(
+                    sessionGeneration,
+                    currentGeneration,
+                    StringComparison.Ordinal);
             return new LocalUiSessionLockSnapshot(
+                sessionGeneration,
                 ownerId,
                 ownerKind,
                 ownerLabel,
+                leaseToken,
                 acquiredAt,
                 heartbeatAt,
                 lease,
@@ -205,9 +261,11 @@ public sealed class LocalUiSessionLockService
         TimeSpan fallbackLease)
     {
         return new LocalUiSessionLockSnapshot(
+            SessionGeneration: string.Empty,
             OwnerId: string.Empty,
             OwnerKind: "unknown",
             OwnerLabel: "повреждённый lock-файл",
+            LeaseToken: string.Empty,
             AcquiredAtUtc: lastWriteUtc,
             HeartbeatAtUtc: lastWriteUtc,
             LeaseDuration: fallbackLease,
@@ -226,6 +284,11 @@ public sealed class LocalUiSessionLockService
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         if (!hasExpectedGeneration)
             expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+        else if (!_fs.IsCurrentSessionGeneration(writeLease, expectedGeneration))
+            throw new SessionReplacedException(
+                "The local UI lock operation belongs to a replaced session.",
+                expectedGeneration,
+                actualGeneration: null);
 
         return await SessionOperationContext.RunBoundAsync(
             _fs,
@@ -247,26 +310,26 @@ public sealed class LocalUiSessionLockService
 
     private Task WriteLockAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        LocalUiSessionLockOwner owner,
-        string operationLabel,
-        DateTime nowUtc) =>
+        LocalUiSessionLockSnapshot snapshot) =>
         _fs.WriteFileAtomicAsync(
             writeLease,
             LockPath,
-            BuildLockJson(owner, operationLabel, nowUtc));
+            BuildLockJson(snapshot));
 
-    private static string BuildLockJson(LocalUiSessionLockOwner owner, string operationLabel, DateTime nowUtc)
+    private static string BuildLockJson(LocalUiSessionLockSnapshot snapshot)
     {
         var root = new JsonObject
         {
-            ["schemaVersion"] = 1,
-            ["ownerId"] = owner.OwnerId,
-            ["ownerKind"] = owner.OwnerKind,
-            ["ownerLabel"] = owner.OwnerLabel,
-            ["acquiredAtUtc"] = nowUtc.ToString("O"),
-            ["heartbeatAtUtc"] = nowUtc.ToString("O"),
-            ["leaseSeconds"] = owner.LeaseDuration.TotalSeconds,
-            ["lastOperation"] = operationLabel
+            ["schemaVersion"] = 2,
+            ["sessionGeneration"] = snapshot.SessionGeneration,
+            ["ownerId"] = snapshot.OwnerId,
+            ["ownerKind"] = snapshot.OwnerKind,
+            ["ownerLabel"] = snapshot.OwnerLabel,
+            ["leaseToken"] = snapshot.LeaseToken,
+            ["acquiredAtUtc"] = snapshot.AcquiredAtUtc.ToString("O"),
+            ["heartbeatAtUtc"] = snapshot.HeartbeatAtUtc.ToString("O"),
+            ["leaseSeconds"] = snapshot.LeaseDuration.TotalSeconds,
+            ["lastOperation"] = snapshot.LastOperation
         };
 
         return root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
@@ -291,18 +354,52 @@ public sealed class LocalUiSessionLockService
         root.TryGetPropertyValue(propertyName, out var node) && node is JsonValue value
             ? value.TryGetValue<double>(out var number) ? number : 0
             : 0;
+
+    private static bool ReadInt(
+        JsonObject root,
+        string propertyName,
+        out int number)
+    {
+        number = 0;
+        return root.TryGetPropertyValue(propertyName, out var node) &&
+               node is JsonValue value &&
+               value.TryGetValue(out number);
+    }
+
+    private static bool MatchesLease(
+        LocalUiSessionLockSnapshot? snapshot,
+        LocalUiSessionLockLease lease) =>
+        snapshot is { IsReadable: true, IsStale: false } &&
+        string.Equals(
+            snapshot.SessionGeneration,
+            lease.SessionGeneration,
+            StringComparison.Ordinal) &&
+        string.Equals(snapshot.OwnerId, lease.OwnerId, StringComparison.Ordinal) &&
+        string.Equals(
+            snapshot.LeaseToken,
+            lease.LeaseToken,
+            StringComparison.Ordinal);
+
 }
 
 public sealed record LocalUiSessionLockOwner(
     string OwnerId,
     string OwnerKind,
     string OwnerLabel,
-    TimeSpan LeaseDuration);
+    TimeSpan LeaseDuration,
+    LocalUiSessionLockLease? Lease = null);
+
+public sealed record LocalUiSessionLockLease(
+    string SessionGeneration,
+    string OwnerId,
+    string LeaseToken);
 
 public sealed record LocalUiSessionLockSnapshot(
+    string SessionGeneration,
     string OwnerId,
     string OwnerKind,
     string OwnerLabel,
+    string LeaseToken,
     DateTime AcquiredAtUtc,
     DateTime HeartbeatAtUtc,
     TimeSpan LeaseDuration,
@@ -313,11 +410,19 @@ public sealed record LocalUiSessionLockSnapshot(
 public sealed record LocalUiSessionLockResult(
     bool Acquired,
     string BlockerMessage,
-    LocalUiSessionLockSnapshot? ActiveLock)
+    LocalUiSessionLockSnapshot? ActiveLock,
+    LocalUiSessionLockLease? Lease)
 {
     public static LocalUiSessionLockResult AcquiredFor(LocalUiSessionLockSnapshot snapshot) =>
-        new(true, string.Empty, snapshot);
+        new(
+            true,
+            string.Empty,
+            snapshot,
+            new LocalUiSessionLockLease(
+                snapshot.SessionGeneration,
+                snapshot.OwnerId,
+                snapshot.LeaseToken));
 
     public static LocalUiSessionLockResult BlockedBy(LocalUiSessionLockSnapshot? snapshot, string message) =>
-        new(false, message, snapshot);
+        new(false, message, snapshot, null);
 }

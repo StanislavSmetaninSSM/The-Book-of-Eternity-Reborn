@@ -268,8 +268,8 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 [
                     ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId
                 ]);
-            await File.WriteAllTextAsync(profilePath, "{\"tier\":\"interrupted\"}");
         }
+        await File.WriteAllTextAsync(profilePath, "{\"tier\":\"interrupted\"}");
 
         var restartedFs = new FileSystemManager(
             _rootPath,
@@ -366,8 +366,8 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 [
                     ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId
                 ]);
-            await File.WriteAllTextAsync(profilePath, "{\"tier\":\"interrupted\"}");
         }
+        await File.WriteAllTextAsync(profilePath, "{\"tier\":\"interrupted\"}");
 
         var restartedFs = new FileSystemManager(
             _rootPath,
@@ -379,6 +379,158 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
 
         Assert.Equal("{\"tier\":\"before\"}", await File.ReadAllTextAsync(profilePath));
         Assert.False(restartedFs.FileExists(replacementLease, transaction.ManifestPath));
+    }
+
+    [Fact]
+    public async Task InterruptedDeferredDarenPublication_RestoresExactBaselineIdentity()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        byte[] baseline = """{"tier":"before"}"""u8.ToArray();
+        byte[] published = """{"tier":"published"}"""u8.ToArray();
+        await File.WriteAllBytesAsync(profilePath, baseline);
+        var baselineIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath);
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [],
+                        "browser_write",
+                        rollbackExternalFileIds:
+                        [
+                            ExplorerLocalTurnRollbackArtifacts
+                                .DarenRewardProfileExternalFileId
+                        ]);
+            await transaction.DarenTransaction!.PublishAsync(
+                published,
+                CancellationToken.None);
+            Assert.Equal(
+                published,
+                transaction.DarenTransaction.ReadCurrentBytes());
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await restartedFs.WriteFileAtomicAsync(
+            "game_state/meta/deferred_daren_rollback_trigger.json",
+            "{\"ok\":true}");
+
+        Assert.Equal(baseline, await File.ReadAllBytesAsync(profilePath));
+        Assert.Equal(
+            baselineIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath));
+        Assert.False(restartedFs.FileExists(transaction.ManifestPath));
+        Assert.Empty(Directory.GetDirectories(
+            restartedFs.PhysicalPublicationTransactionsRootPath));
+    }
+
+    [Fact]
+    public async Task InterruptedCommittedDarenPublication_PreservesPublishedIdentity()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        await File.WriteAllTextAsync(profilePath, "{\"tier\":\"before\"}");
+        byte[] published = """{"tier":"published"}"""u8.ToArray();
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [],
+                        "browser_write",
+                        rollbackExternalFileIds:
+                        [
+                            ExplorerLocalTurnRollbackArtifacts
+                                .DarenRewardProfileExternalFileId
+                        ]);
+            await transaction.DarenTransaction!.PublishAsync(
+                published,
+                CancellationToken.None);
+            transaction.DarenTransaction.Commit();
+        }
+        var publishedIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath);
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await restartedFs.WriteFileAtomicAsync(
+            "game_state/meta/deferred_daren_commit_trigger.json",
+            "{\"ok\":true}");
+
+        Assert.Equal(published, await File.ReadAllBytesAsync(profilePath));
+        Assert.Equal(
+            publishedIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath));
+        Assert.False(restartedFs.FileExists(transaction.ManifestPath));
+        Assert.Empty(Directory.GetDirectories(
+            restartedFs.PhysicalPublicationTransactionsRootPath));
+    }
+
+    [Fact]
+    public async Task ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock()
+    {
+        var lockService = new LocalUiSessionLockService(_fs, _timeProvider);
+        var coordinator = CreateCoordinator(lockService);
+        var replacementOwner = Owner(
+            "browser-main-menu-load",
+            "Browser main menu");
+        byte[]? replacementLockBytes = null;
+
+        var result = await coordinator.ExecuteSessionReplacementAsync(
+            new BrowserLocalWriteRequest(
+                replacementOwner.OwnerId,
+                replacementOwner.OwnerLabel,
+                "browser save load"),
+            async () =>
+            {
+                await SessionReplacementTestHarness.RotateGenerationAsync(_fs);
+                var replacementLock = await lockService.AcquireOrRefreshAsync(
+                    replacementOwner,
+                    "replacement browser write");
+                Assert.True(
+                    replacementLock.Acquired,
+                    replacementLock.BlockerMessage);
+                replacementLockBytes = await _fs.ReadFileBytesAsync(
+                    LocalUiSessionLockService.LockPath);
+                throw new InvalidOperationException(
+                    "deterministic replacement failure");
+            });
+
+        Assert.False(result.Success);
+        Assert.NotNull(replacementLockBytes);
+        Assert.Equal(
+            replacementLockBytes,
+            await _fs.ReadFileBytesAsync(LocalUiSessionLockService.LockPath));
     }
 
     [Fact]
@@ -445,6 +597,155 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
             await restartedFs.ReadFileAsync(trackedPath));
         Assert.False(restartedFs.FileExists(transaction.ManifestPath));
         Assert.False(Directory.Exists(restartedFs.ResolvePath(transaction.TransactionRoot)));
+    }
+
+    [Fact]
+    public async Task CommittedBrowserWrite_ManifestCleanupFailureNeverReentersRollback()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string trackedPath =
+            "game_state/meta/committed_manifest_cleanup_failure.json";
+        const string triggerPath =
+            "game_state/meta/committed_manifest_cleanup_trigger.json";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts
+                .StageBrowserWriteTransactionAsync(
+                    _fs,
+                    writeLease,
+                    [trackedPath],
+                    "committed_manifest_cleanup");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"committed\"}");
+            await ExplorerLocalTurnRollbackArtifacts
+                .MarkBrowserWriteTransactionCommittedAsync(
+                    _fs,
+                    writeLease,
+                    transaction);
+
+            await using var manifestBlocker = new FileStream(
+                _fs.ResolvePath(transaction.ManifestPath),
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite);
+            Assert.False(
+                ExplorerLocalTurnRollbackArtifacts
+                    .TryDeleteBrowserWriteTransaction(
+                        _fs,
+                        writeLease,
+                        transaction,
+                        ExplorerLocalTurnRollbackArtifacts
+                            .BrowserWriteCleanupOutcome.Committed,
+                        out var cleanupFailure));
+            Assert.NotNull(cleanupFailure);
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await restartedFs.WriteFileAtomicAsync(triggerPath, "{\"ok\":true}");
+
+        Assert.Equal(
+            "{\"value\":\"committed\"}",
+            await restartedFs.ReadFileAsync(trackedPath));
+        Assert.True(restartedFs.FileExists(triggerPath));
+        Assert.False(Directory.Exists(
+            restartedFs.ResolvePath(transaction.TransactionRoot)));
+    }
+
+    [Fact]
+    public async Task CommittedBrowserWrite_CleanupIntentLastRecoversAfterManifestDeletion()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string trackedPath =
+            "game_state/meta/committed_cleanup_intent_failure.json";
+        const string triggerPath =
+            "game_state/meta/committed_cleanup_intent_trigger.json";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts
+                .StageBrowserWriteTransactionAsync(
+                    _fs,
+                    writeLease,
+                    [trackedPath],
+                    "committed_cleanup_intent");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"committed\"}");
+            await ExplorerLocalTurnRollbackArtifacts
+                .MarkBrowserWriteTransactionCommittedAsync(
+                    _fs,
+                    writeLease,
+                    transaction);
+
+            await using (var manifestBlocker = new FileStream(
+                             _fs.ResolvePath(transaction.ManifestPath),
+                             FileMode.Open,
+                             FileAccess.Read,
+                             FileShare.ReadWrite))
+            {
+                Assert.False(
+                    ExplorerLocalTurnRollbackArtifacts
+                        .TryDeleteBrowserWriteTransaction(
+                            _fs,
+                            writeLease,
+                            transaction,
+                            ExplorerLocalTurnRollbackArtifacts
+                                .BrowserWriteCleanupOutcome.Committed,
+                            out _));
+            }
+
+            var transactionRoot = _fs.ResolvePath(transaction.TransactionRoot);
+            var cleanupIntentPath = Assert.Single(
+                Directory.GetFiles(
+                    transactionRoot,
+                    "browser_write_cleanup_*.intent",
+                    SearchOption.TopDirectoryOnly));
+            await using var intentBlocker = new FileStream(
+                cleanupIntentPath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite);
+            Assert.False(
+                ExplorerLocalTurnRollbackArtifacts
+                    .TryDeleteBrowserWriteTransaction(
+                        _fs,
+                        writeLease,
+                        transaction,
+                        ExplorerLocalTurnRollbackArtifacts
+                            .BrowserWriteCleanupOutcome.Committed,
+                        out _));
+            Assert.False(File.Exists(
+                _fs.ResolvePath(transaction.ManifestPath)));
+            Assert.True(File.Exists(cleanupIntentPath));
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await restartedFs.WriteFileAtomicAsync(triggerPath, "{\"ok\":true}");
+
+        Assert.Equal(
+            "{\"value\":\"committed\"}",
+            await restartedFs.ReadFileAsync(trackedPath));
+        Assert.True(restartedFs.FileExists(triggerPath));
+        Assert.False(Directory.Exists(
+            restartedFs.ResolvePath(transaction.TransactionRoot)));
     }
 
     [Fact]
@@ -545,7 +846,7 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 "{\"value\":\"interrupted\"}");
 
             var manifest = (await _fs.ReadFileAsync(writeLease, transaction.ManifestPath))!
-                .Replace("\"schemaVersion\": 3", "\"schemaVersion\": 2", StringComparison.Ordinal)
+                .Replace("\"schemaVersion\": 4", "\"schemaVersion\": 2", StringComparison.Ordinal)
                 .Replace("\"status\": \"staged\"", "\"status\": \"restored\"", StringComparison.Ordinal);
             await _fs.WriteFileAtomicAsync(writeLease, transaction.ManifestPath, manifest);
         }

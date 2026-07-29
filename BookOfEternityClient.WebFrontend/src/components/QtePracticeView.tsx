@@ -81,12 +81,20 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
       setNotice(toPlayerFacingText(entry.unavailableReason, 'Эта тренировка пока недоступна.'));
       return;
     }
+    if (!state.interactionToken) {
+      setNotice('Тренировка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
 
     setBusyKey(`${entry.typeId}:${difficultyId}`);
     setNotice('Готовим тренировку…');
     try {
       await applyResponse(
-        await browserApi.startQtePractice({ typeId: entry.typeId, difficultyId }),
+        await browserApi.startQtePractice({
+          typeId: entry.typeId,
+          difficultyId,
+          interactionToken: state.interactionToken
+        }),
         'Тренировка началась.'
       );
     } catch {
@@ -97,11 +105,20 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
   }
 
   async function resolvePracticeAction(action: QteAction, grade: QteGrade | null) {
+    if (!state.interactionToken) {
+      setNotice('Тренировка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setBusyKey(action.actionId);
     setNotice('Записываем тренировочный результат…');
     try {
       await applyResponse(
-        await browserApi.resolveQtePracticeAction({ actionId: action.actionId, grade }),
+        await browserApi.resolveQtePracticeAction({
+          actionId: action.actionId,
+          grade,
+          interactionToken: state.interactionToken
+        }),
         'Попытка завершена.'
       );
     } catch {
@@ -112,10 +129,20 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
   }
 
   async function retryAttempt() {
+    if (!state.interactionToken) {
+      setNotice('Тренировка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setBusyKey('retry');
     setNotice('Повторяем тренировку…');
     try {
-      await applyResponse(await browserApi.retryQtePractice(), 'Тренировка повторена.');
+      await applyResponse(
+        await browserApi.retryQtePractice({
+          interactionToken: state.interactionToken
+        }),
+        'Тренировка повторена.'
+      );
     } catch {
       setNotice('Не удалось повторить тренировку.');
     } finally {
@@ -124,10 +151,20 @@ export function QtePracticeView({ initialState }: QtePracticeViewProps) {
   }
 
   async function exitPractice() {
+    if (!state.interactionToken) {
+      setNotice('Тренировка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setBusyKey('exit');
     setNotice('Закрываем тренировку…');
     try {
-      await applyResponse(await browserApi.exitQtePractice(), 'Тренировка закрыта.');
+      await applyResponse(
+        await browserApi.exitQtePractice({
+          interactionToken: state.interactionToken
+        }),
+        'Тренировка закрыта.'
+      );
     } catch {
       setNotice('Не удалось закрыть тренировку.');
     } finally {
@@ -298,7 +335,9 @@ function emptyPracticeState(): QtePracticeWebStateDto {
     feedback: 'Выберите тип QTE. Тренировка не меняет сюжет и не выдаёт награды.',
     localScoreNotice: 'Тренировочный счёт не меняет прохождение.',
     availableOperations: ['startAttempt', 'exit'],
+    interactionToken: null,
     notification: null,
+    errorCode: null,
     error: null
   };
 }

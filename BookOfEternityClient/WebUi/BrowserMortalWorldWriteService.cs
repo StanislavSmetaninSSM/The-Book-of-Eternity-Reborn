@@ -861,7 +861,11 @@ public sealed class BrowserMortalWorldWriteService
     {
         var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
             writeLease,
-            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
+            new BrowserLocalWriteRequest(
+                owner.OwnerId,
+                owner.OwnerLabel,
+                operationLabel,
+                owner.Lease),
             rollbackPaths,
             writeOperation);
 

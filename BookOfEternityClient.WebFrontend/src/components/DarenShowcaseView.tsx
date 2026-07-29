@@ -80,10 +80,20 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
   }
 
   async function startShowcase() {
+    if (!state.interactionToken) {
+      setNotice('Вылазка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setBusyKey('start');
     setNotice('Дарен выходит к поместью…');
     try {
-      await applyResponse(await browserApi.startDarenShowcase(), 'Вылазка Дарена началась.');
+      await applyResponse(
+        await browserApi.startDarenShowcase({
+          interactionToken: state.interactionToken
+        }),
+        'Вылазка Дарена началась.'
+      );
     } catch {
       setNotice('Не удалось начать вылазку. Попробуйте ещё раз.');
     } finally {
@@ -92,11 +102,20 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
   }
 
   async function resolveDarenAction(action: QteWebActionDto, grade: string | null) {
+    if (!state.interactionToken) {
+      setNotice('Вылазка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setBusyKey(action.actionId);
     setNotice('Фиксируем ход Дарена…');
     try {
       await applyResponse(
-        await browserApi.resolveDarenShowcaseAction({ actionId: action.actionId, grade }),
+        await browserApi.resolveDarenShowcaseAction({
+          actionId: action.actionId,
+          grade,
+          interactionToken: state.interactionToken
+        }),
         'Вылазка продолжается.'
       );
     } catch {
@@ -107,10 +126,20 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
   }
 
   async function retryShowcase() {
+    if (!state.interactionToken) {
+      setNotice('Вылазка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setBusyKey('retry');
     setNotice('Дарен начинает вылазку заново…');
     try {
-      await applyResponse(await browserApi.retryDarenShowcase(), 'Вылазка началась заново.');
+      await applyResponse(
+        await browserApi.retryDarenShowcase({
+          interactionToken: state.interactionToken
+        }),
+        'Вылазка началась заново.'
+      );
     } catch {
       setNotice('Не удалось повторить вылазку.');
     } finally {
@@ -119,10 +148,20 @@ export function DarenShowcaseView({ initialState }: DarenShowcaseViewProps) {
   }
 
   async function exitShowcase() {
+    if (!state.interactionToken) {
+      setNotice('Вылазка уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setBusyKey('exit');
     setNotice('Закрываем вылазку Дарена…');
     try {
-      await applyResponse(await browserApi.exitDarenShowcase(), 'Вылазка Дарена закрыта.');
+      await applyResponse(
+        await browserApi.exitDarenShowcase({
+          interactionToken: state.interactionToken
+        }),
+        'Вылазка Дарена закрыта.'
+      );
     } catch {
       setNotice('Не удалось закрыть вылазку.');
     } finally {
@@ -263,7 +302,9 @@ function emptyDarenShowcaseState(): DarenShowcaseWebStateDto {
     completion: null,
     ending: null,
     availableOperations: ['start', 'exit'],
+    interactionToken: null,
     notification: null,
+    errorCode: null,
     error: null
   };
 }

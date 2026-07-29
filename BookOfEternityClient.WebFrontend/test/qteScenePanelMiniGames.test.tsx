@@ -256,7 +256,9 @@ function activeQte(actions: QteWebActionDto[]): BrowserGameScreenDto['qte'] {
     lastResolvedReminder: null,
     lastDeclinedQteId: null,
     availableOperations: ['submitAction'],
+    interactionToken: 'test-qte-interaction-token',
     notification: null,
+    errorCode: null,
     error: null
   } satisfies QteWebStateDto;
 }
@@ -334,7 +336,9 @@ function completedScoredQte(): BrowserGameScreenDto['qte'] {
     lastResolvedReminder: null,
     lastDeclinedQteId: null,
     availableOperations: [],
+    interactionToken: null,
     notification: null,
+    errorCode: null,
     error: null
   } as ScoreAwareCompletedQte;
 }
@@ -382,7 +386,9 @@ function practiceCatalogState(): QtePracticeWebStateDto {
     feedback: 'Выберите QTE. Тренировка не меняет сюжет.',
     localScoreNotice: 'Тренировочный счёт остаётся только на этой попытке: без наград.',
     availableOperations: ['startAttempt', 'exit'],
+    interactionToken: 'test-practice-interaction-token',
     notification: null,
+    errorCode: null,
     error: null
   };
 }

@@ -25,11 +25,19 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
   }, [qte]);
 
   async function resolveOffer(decision: 'accept' | 'decline') {
+    if (!qteState.interactionToken) {
+      setNotice('Сцена уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setSubmitting(`offer-${decision}`);
     setNotice(decision === 'accept' ? 'Принимаем быструю сцену…' : 'Отклоняем быструю сцену…');
 
     try {
-      const response = await browserApi.resolveQteOffer({ decision });
+      const response = await browserApi.resolveQteOffer({
+        decision,
+        interactionToken: qteState.interactionToken
+      });
       setResult(response);
       if (isSuccess(response)) {
         setQteState(response.data);
@@ -45,11 +53,20 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
   }
 
   async function resolveAction(action: QteAction, grade: QteGrade | null) {
+    if (!qteState.interactionToken) {
+      setNotice('Сцена уже изменилась. Обновите экран и повторите выбор.');
+      return;
+    }
+
     setSubmitting(`action-${action.actionId}`);
     setNotice('Записываем выбор быстрой сцены…');
 
     try {
-      const response = await browserApi.resolveQteAction({ actionId: action.actionId, grade });
+      const response = await browserApi.resolveQteAction({
+        actionId: action.actionId,
+        grade,
+        interactionToken: qteState.interactionToken
+      });
       setResult(response);
       if (isSuccess(response)) {
         setQteState(response.data);
@@ -87,10 +104,10 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
           {qteState.offer.sceneImagePrompt && <p className="muted">Образ сцены: {toPlayerFacingText(qteState.offer.sceneImagePrompt, 'образ уточняется')}</p>}
           {qteState.offer.declineHint && <p className="muted">{toPlayerFacingText(qteState.offer.declineHint, 'Можно отказаться и продолжить обычный ход.')}</p>}
           <div className="phase-chip-grid">
-            <button type="button" onClick={() => void resolveOffer('accept')} disabled={Boolean(submitting)}>
+            <button type="button" onClick={() => void resolveOffer('accept')} disabled={Boolean(submitting) || !qteState.interactionToken}>
               Принять сцену
             </button>
-            <button type="button" onClick={() => void resolveOffer('decline')} disabled={Boolean(submitting)}>
+            <button type="button" onClick={() => void resolveOffer('decline')} disabled={Boolean(submitting) || !qteState.interactionToken}>
               Отказаться
             </button>
           </div>
@@ -117,7 +134,7 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
                         </header>
                         <QteMiniGame
                           action={action}
-                          disabled={Boolean(submitting)}
+                          disabled={Boolean(submitting) || !qteState.interactionToken}
                           onSubmit={(grade) => void resolveAction(action, grade)}
                         />
                       </article>

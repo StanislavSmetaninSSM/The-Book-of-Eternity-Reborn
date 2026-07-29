@@ -616,7 +616,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         }
         finally
         {
-            await lockService.ReleaseAsync(blockingOwner);
+            await lockService.ReleaseAsync(lockResult.Lease!);
         }
     }
 

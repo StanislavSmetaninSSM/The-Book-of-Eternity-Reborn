@@ -2618,11 +2618,13 @@ public partial class ValidationService
 
     private int ReadCurrentTurnNumberForProjectAuthority()
     {
-        var repairContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("game_state/control/validation_repair_request.json"));
+        var repairContext = LoadPendingTurnRequestValidationContextSync(
+            "game_state/control/validation_repair_request.json");
         if (repairContext?.TurnNumber > 0)
             return repairContext.TurnNumber;
 
-        var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
+        var turnContext = LoadPendingTurnRequestValidationContextSync(
+            "input/turn_request.json");
         return turnContext?.TurnNumber ?? 0;
     }
 

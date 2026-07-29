@@ -306,8 +306,7 @@ public sealed class RealmSegregationAutoRollbackService
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        var fullPath = _fs.ResolvePath(relativePath);
-        return File.Exists(fullPath) ? File.ReadAllBytes(fullPath) : null;
+        return _fs.ReadFileBytesSync(relativePath);
     }
 
     private static string DecodeSnapshotText(byte[] content)

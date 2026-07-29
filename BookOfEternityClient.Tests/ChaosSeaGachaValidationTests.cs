@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -19,6 +20,54 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
         _validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+    }
+
+    [Fact]
+    public async Task TryReadCurrentTurnGachaBaseRaritySync_HardLinkedRequestFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await WriteNodeAsync(
+            "input/turn_request.json",
+            CreateDirectGachaTurnRequest(baseRarity: "Rare"));
+        WindowsHardLinkTestHelper.Create(
+            Path.Combine(_rootPath, "linked-live-gacha-request.json"),
+            _fs.ResolvePath("input/turn_request.json"));
+
+        var method = typeof(ValidationService).GetMethod(
+            "TryReadCurrentTurnGachaBaseRaritySync",
+            BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException(
+                "Live gacha authority reader was not found.");
+
+        var exception = Assert.Throws<TargetInvocationException>(
+            () => method.Invoke(_validator, null));
+        Assert.IsType<InvalidDataException>(exception.InnerException);
+    }
+
+    [Fact]
+    public async Task TryReadValidatedTurnGachaBaseRaritySync_HardLinkedManifestFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await WritePendingTurnSnapshotAsync(
+            CreateSoulRoot(),
+            gachaBaseRarity: "Rare");
+        WindowsHardLinkTestHelper.Create(
+            Path.Combine(_rootPath, "linked-gacha-manifest.json"),
+            _fs.ResolvePath("game_state/control/pending_turn_snapshot.json"));
+
+        var method = typeof(ValidationService).GetMethod(
+            "TryReadValidatedTurnGachaBaseRaritySync",
+            BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException(
+                "Snapshot gacha authority reader was not found.");
+
+        var exception = Assert.Throws<TargetInvocationException>(
+            () => method.Invoke(_validator, null));
+        Assert.IsType<InvalidDataException>(exception.InnerException);
     }
 
     [Fact]

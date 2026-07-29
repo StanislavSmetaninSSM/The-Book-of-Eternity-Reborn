@@ -47,6 +47,7 @@ public partial class ExplorerMode
     private readonly Services.IClipboardService? _clipboardService;
     private readonly Services.LocalUiSessionLockService _localUiSessionLockService;
     private readonly Services.LocalUiSessionLockOwner _localUiSessionLockOwner;
+    private Services.LocalUiSessionLockLease? _localUiSessionLockLease;
 
     // Set by interactive commands (equip/unequip) to signal an action to send to the GM
     private string? _pendingGmAction;
@@ -313,9 +314,26 @@ public partial class ExplorerMode
             return true;
 
         var operationLabel = $"Команда {commandName}";
-        var result = await _localUiSessionLockService.AcquireOrRefreshAsync(_localUiSessionLockOwner, operationLabel);
+        var result = _localUiSessionLockLease == null
+            ? await _localUiSessionLockService.AcquireOrRefreshAsync(
+                _localUiSessionLockOwner,
+                operationLabel)
+            : await _localUiSessionLockService.RefreshAsync(
+                _localUiSessionLockLease,
+                operationLabel);
+        if (!result.Acquired && _localUiSessionLockLease != null)
+        {
+            _localUiSessionLockLease = null;
+            result = await _localUiSessionLockService.AcquireOrRefreshAsync(
+                _localUiSessionLockOwner,
+                operationLabel);
+        }
+
         if (result.Acquired)
+        {
+            _localUiSessionLockLease = result.Lease;
             return true;
+        }
 
         MarkupLine($"[yellow]⚠️ {Markup.Escape(result.BlockerMessage)}[/]");
         MarkupLine($"[dim]Lock-файл: {Markup.Escape(LocalUiSessionLockService.LockPath)}[/]");

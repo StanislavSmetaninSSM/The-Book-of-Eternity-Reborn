@@ -76,7 +76,47 @@ public sealed class BrowserLocalWriteCoordinator
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(replacementOperation);
-        return await ExecuteCoreAsync(request, Array.Empty<string>(), replacementOperation);
+
+        LocalUiSessionLockLease replacementGuard;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var generation = _fs.GetOrCreateSessionGeneration(writeLease);
+            var acquisition = await SessionOperationContext.RunBoundAsync(
+                _fs,
+                generation,
+                writeLease,
+                async () =>
+                {
+                    var pending = BrowserPendingTurnInspector.Build(_fs);
+                    if (pending.HasActiveGmTurn)
+                    {
+                        return LocalUiSessionLockResult.BlockedBy(
+                            snapshot: null,
+                            "Browser-write заблокирован: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
+                    }
+
+                    return await _lockService.AcquireOrRefreshAsync(
+                        writeLease,
+                        BuildOwner(request),
+                        request.OperationLabel);
+                });
+            if (!acquisition.Acquired || acquisition.Lease == null)
+                return BrowserLocalWriteResult.Blocked(acquisition.BlockerMessage);
+
+            replacementGuard = acquisition.Lease;
+        }
+
+        try
+        {
+            await replacementOperation();
+            return BrowserLocalWriteResult.Completed("Browser-write завершён.");
+        }
+        catch (Exception ex)
+        {
+            await TryReleaseAsync(replacementGuard);
+            return BrowserLocalWriteResult.Failed(
+                $"Browser-write отменён до завершения замены сессии: {ex.Message}");
+        }
     }
 
     internal async Task<BrowserLocalWriteResult> ExecuteAtomicAsync(
@@ -195,42 +235,6 @@ public sealed class BrowserLocalWriteCoordinator
             });
     }
 
-    private async Task<BrowserLocalWriteResult> ExecuteCoreAsync(
-        BrowserLocalWriteRequest request,
-        IReadOnlyCollection<string> rollbackPaths,
-        Func<Task> writeOperation)
-    {
-        var pending = BrowserPendingTurnInspector.Build(_fs);
-        if (pending.HasActiveGmTurn)
-        {
-            return BrowserLocalWriteResult.Blocked(
-                "Browser-write заблокирован: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
-        }
-
-        var owner = BuildOwner(request);
-        var lockResult = await _lockService.AcquireOrRefreshAsync(owner, request.OperationLabel);
-        if (!lockResult.Acquired)
-            return BrowserLocalWriteResult.Blocked(lockResult.BlockerMessage);
-
-        var backups = await CaptureRollbackAsync(rollbackPaths);
-        try
-        {
-            await writeOperation();
-            await _lockService.ReleaseAsync(owner);
-            return BrowserLocalWriteResult.Completed("Browser-write завершён.");
-        }
-        catch (SessionReplacedException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            await RestoreRollbackAsync(backups);
-            await _lockService.ReleaseAsync(owner);
-            return BrowserLocalWriteResult.Failed($"Browser-write отменён, rollback восстановлен: {ex.Message}");
-        }
-    }
-
     private async Task<BrowserLocalWriteResult> ExecuteAtomicCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserLocalWriteRequest request,
@@ -248,12 +252,18 @@ public sealed class BrowserLocalWriteCoordinator
         }
 
         var owner = BuildOwner(request);
-        var lockResult = await _lockService.AcquireOrRefreshAsync(
-            writeLease,
-            owner,
-            request.OperationLabel);
-        if (!lockResult.Acquired)
+        var lockResult = request.ExistingLease == null
+            ? await _lockService.AcquireOrRefreshAsync(
+                writeLease,
+                owner,
+                request.OperationLabel)
+            : await _lockService.RefreshAsync(
+                writeLease,
+                request.ExistingLease,
+                request.OperationLabel);
+        if (!lockResult.Acquired || lockResult.Lease == null)
             return BrowserLocalWriteResult.Blocked(lockResult.BlockerMessage);
+        var lockLease = lockResult.Lease;
 
         Action? afterRollback = null;
         ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction? backups = null;
@@ -265,6 +275,8 @@ public sealed class BrowserLocalWriteCoordinator
                 rollbackPaths,
                 rollbackCleanupDirectories,
                 rollbackExternalFileIds);
+            writeLease.ExternalPublicationContext =
+                backups.DarenTransaction;
             await writeOperation(writeLease);
             await ExplorerLocalTurnRollbackArtifacts.MarkBrowserWriteTransactionCommittedAsync(
                 _fs,
@@ -273,7 +285,9 @@ public sealed class BrowserLocalWriteCoordinator
         }
         catch (SessionReplacedException)
         {
-            await TryReleaseAsync(writeLease, owner);
+            writeLease.ExternalPublicationContext = null;
+            backups?.DarenTransaction?.Dispose();
+            await TryReleaseAsync(writeLease, lockLease);
             throw;
         }
         catch (Exception ex)
@@ -290,6 +304,8 @@ public sealed class BrowserLocalWriteCoordinator
                                 _fs,
                                 writeLease,
                                 backups,
+                                ExplorerLocalTurnRollbackArtifacts
+                                    .BrowserWriteCleanupOutcome.Restored,
                                 out var cleanupFailure))
                         {
                             throw new IOException(
@@ -316,7 +332,9 @@ public sealed class BrowserLocalWriteCoordinator
             }
             finally
             {
-                await TryReleaseAsync(writeLease, owner);
+                writeLease.ExternalPublicationContext = null;
+                backups?.DarenTransaction?.Dispose();
+                await TryReleaseAsync(writeLease, lockLease);
             }
 
             return backups == null
@@ -334,8 +352,12 @@ public sealed class BrowserLocalWriteCoordinator
                                           _fs,
                                           writeLease,
                                           backups,
+                                          ExplorerLocalTurnRollbackArtifacts
+                                              .BrowserWriteCleanupOutcome.Committed,
                                           out _);
-        var released = await TryReleaseAsync(writeLease, owner);
+        writeLease.ExternalPublicationContext = null;
+        backups?.DarenTransaction?.Dispose();
+        var released = await TryReleaseAsync(writeLease, lockLease);
         return BrowserLocalWriteResult.Completed(
             released && rollbackEvidenceCleaned
                 ? "Browser-write завершён."
@@ -344,12 +366,11 @@ public sealed class BrowserLocalWriteCoordinator
 
     private async Task<bool> TryReleaseAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        LocalUiSessionLockOwner owner)
+        LocalUiSessionLockLease lease)
     {
         try
         {
-            await _lockService.ReleaseAsync(writeLease, owner);
-            return true;
+            return await _lockService.ReleaseAsync(writeLease, lease);
         }
         catch
         {
@@ -357,41 +378,16 @@ public sealed class BrowserLocalWriteCoordinator
         }
     }
 
-    private async Task<List<BrowserRollbackBackup>> CaptureRollbackAsync(IEnumerable<string> rollbackPaths)
+    private async Task<bool> TryReleaseAsync(LocalUiSessionLockLease lease)
     {
-        var backups = new List<BrowserRollbackBackup>();
-        foreach (var path in rollbackPaths.Where(static path => !string.IsNullOrWhiteSpace(path)).Distinct(StringComparer.OrdinalIgnoreCase))
+        try
         {
-            var normalized = path.Replace('\\', '/');
-            var exists = _fs.FileExists(normalized);
-            var content = exists ? await _fs.ReadFileAsync(normalized) : null;
-            backups.Add(new BrowserRollbackBackup(normalized, exists, content));
+            return await _lockService.ReleaseAsync(lease);
         }
-
-        return backups;
-    }
-
-    private async Task RestoreRollbackAsync(IEnumerable<BrowserRollbackBackup> backups)
-    {
-        var failures = new List<Exception>();
-        foreach (var backup in backups)
+        catch
         {
-            try
-            {
-                if (backup.Existed)
-                    await _fs.WriteFileAtomicAsync(backup.Path, backup.Content ?? string.Empty);
-                else if (_fs.FileExists(backup.Path))
-                    _fs.DeleteFile(backup.Path);
-            }
-            catch (Exception ex)
-            {
-                failures.Add(new IOException(
-                    $"Не удалось восстановить '{backup.Path}'.",
-                    ex));
-            }
+            return false;
         }
-
-        ThrowIfRollbackRestoreFailed(failures);
     }
 
     private async Task<ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction> CaptureRollbackAsync(
@@ -436,14 +432,13 @@ public sealed class BrowserLocalWriteCoordinator
         return new LocalUiSessionLockOwner(ownerId, "browser", label, LockLease);
     }
 
-    private sealed record BrowserRollbackBackup(string Path, bool Existed, string? Content);
-
 }
 
 public sealed record BrowserLocalWriteRequest(
     string? OwnerId,
     string? OwnerLabel,
-    string OperationLabel);
+    string OperationLabel,
+    LocalUiSessionLockLease? ExistingLease = null);
 
 public sealed record BrowserLocalWriteResult(
     bool Success,

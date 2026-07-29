@@ -83,6 +83,135 @@ public sealed class BrowserPromptSessionGenerationFencingTests : IDisposable
             await fs.ReadFileBytesAsync(LocalUiSessionLockService.LockPath));
     }
 
+    [Fact]
+    public async Task AttachSession_ResultBuiltForReplacedGenerationDoesNotAdoptCurrentGeneration()
+    {
+        var fs = CreateFileSystem();
+        var service = CreatePromptService(fs);
+        await SeedStatStateAsync(fs, strength: 1, unspent: 1, session: "A");
+        var capturedGeneration = await CaptureGenerationAsync(fs);
+        var result = BuildStatPromptResult();
+
+        await fs.ClearGameStateAsync();
+        await SeedStatStateAsync(fs, strength: 9, unspent: 7, session: "B");
+
+        var attached = await AttachWithCapturedGenerationAsync(
+            service,
+            result,
+            new ExplorerWebCommandRequest(
+                "/distribute",
+                OwnerId: "same-browser-owner",
+                OwnerLabel: "Browser prompt construction test"),
+            capturedGeneration);
+
+        Assert.Equal(CommandExecutionState.Failed, attached.State);
+        Assert.Null(attached.InteractiveSession);
+        Assert.Contains(
+            "Сессия заменена",
+            UiTestTextCollector.CollectResultAndPromptText(attached),
+            StringComparison.OrdinalIgnoreCase);
+        Assert.False(fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task GetSession_StaleSnapshotIsRemovedBeforeReturningReplacement()
+    {
+        var fs = CreateFileSystem();
+        var service = CreatePromptService(fs);
+        await SeedStatStateAsync(fs, strength: 1, unspent: 1, session: "A");
+        var attached = await AttachStatPromptAsync(
+            service,
+            ownerId: "same-browser-owner");
+        var sessionId = attached.InteractiveSession!.SessionId;
+
+        await fs.ClearGameStateAsync();
+        await SeedStatStateAsync(fs, strength: 9, unspent: 7, session: "B");
+
+        var stale = await GetSessionAsync(service, sessionId);
+        var removed = await GetSessionAsync(service, sessionId);
+
+        Assert.Equal(CommandExecutionState.Failed, stale.State);
+        Assert.Contains(
+            "Сессия заменена",
+            UiTestTextCollector.CollectResultAndPromptText(stale),
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "не найдена",
+            UiTestTextCollector.CollectResultAndPromptText(removed),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SubmitAsync_InvalidStaleAnswersRemoveSnapshotBeforeValidation()
+    {
+        var fs = CreateFileSystem();
+        var service = CreatePromptService(fs);
+        await SeedStatStateAsync(fs, strength: 1, unspent: 1, session: "A");
+        var attached = await AttachStatPromptAsync(
+            service,
+            ownerId: "same-browser-owner");
+        var sessionId = attached.InteractiveSession!.SessionId;
+
+        await fs.ClearGameStateAsync();
+        await SeedStatStateAsync(fs, strength: 9, unspent: 7, session: "B");
+
+        var stale = await service.SubmitAsync(
+            new ExplorerPromptSessionSubmitRequest(
+                sessionId,
+                new Dictionary<string, JsonNode?>(),
+                OwnerId: "same-browser-owner"));
+        var removed = await GetSessionAsync(service, sessionId);
+
+        Assert.Equal(CommandExecutionState.Failed, stale.State);
+        Assert.Contains(
+            "Сессия заменена",
+            UiTestTextCollector.CollectResultAndPromptText(stale),
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "не найдена",
+            UiTestTextCollector.CollectResultAndPromptText(removed),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SubmitAsync_StaleOwnerMismatchRemovesSnapshotBeforeOwnerValidation()
+    {
+        var fs = CreateFileSystem();
+        var service = CreatePromptService(fs);
+        await SeedStatStateAsync(fs, strength: 1, unspent: 1, session: "A");
+        var attached = await AttachStatPromptAsync(
+            service,
+            ownerId: "same-browser-owner");
+        var sessionId = attached.InteractiveSession!.SessionId;
+
+        await fs.ClearGameStateAsync();
+        await SeedStatStateAsync(fs, strength: 9, unspent: 7, session: "B");
+
+        var stale = await service.SubmitAsync(
+            new ExplorerPromptSessionSubmitRequest(
+                sessionId,
+                new Dictionary<string, JsonNode?>
+                {
+                    ["stat_strength"] = JsonValue.Create("1")
+                },
+                OwnerId: "different-browser-owner"));
+        var removed = await GetSessionAsync(service, sessionId);
+
+        Assert.Equal(CommandExecutionState.Failed, stale.State);
+        Assert.Contains(
+            "Сессия заменена",
+            UiTestTextCollector.CollectResultAndPromptText(stale),
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "другой вкладке",
+            UiTestTextCollector.CollectResultAndPromptText(stale),
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "не найдена",
+            UiTestTextCollector.CollectResultAndPromptText(removed),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
     private FileSystemManager CreateFileSystem()
     {
         Directory.CreateDirectory(_rootPath);
@@ -127,7 +256,20 @@ public sealed class BrowserPromptSessionGenerationFencingTests : IDisposable
         ExplorerWebPromptSessionService service,
         string ownerId)
     {
-        var result = new ExplorerCommandResult
+        var result = BuildStatPromptResult();
+
+        var attached = await service.AttachSessionIfNeededAsync(
+            result,
+            new ExplorerWebCommandRequest(
+                "/distribute",
+                OwnerId: ownerId,
+                OwnerLabel: "Browser prompt generation test"));
+        Assert.NotNull(attached.InteractiveSession);
+        return attached;
+    }
+
+    private static ExplorerCommandResult BuildStatPromptResult() =>
+        new()
         {
             Command = "/distribute",
             State = CommandExecutionState.RequiresInput,
@@ -142,14 +284,50 @@ public sealed class BrowserPromptSessionGenerationFencingTests : IDisposable
             ]
         };
 
-        var attached = await service.AttachSessionIfNeededAsync(
-            result,
-            new ExplorerWebCommandRequest(
-                "/distribute",
-                OwnerId: ownerId,
-                OwnerLabel: "Browser prompt generation test"));
-        Assert.NotNull(attached.InteractiveSession);
-        return attached;
+    private static async Task<string> CaptureGenerationAsync(
+        FileSystemManager fs)
+    {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return fs.GetOrCreateSessionGeneration(writeLease);
+    }
+
+    private static async Task<ExplorerCommandResult> AttachWithCapturedGenerationAsync(
+        ExplorerWebPromptSessionService service,
+        ExplorerCommandResult result,
+        ExplorerWebCommandRequest request,
+        string expectedGeneration)
+    {
+        var method = typeof(ExplorerWebPromptSessionService)
+            .GetMethods()
+            .Where(candidate =>
+                string.Equals(
+                    candidate.Name,
+                    nameof(ExplorerWebPromptSessionService.AttachSessionIfNeededAsync),
+                    StringComparison.Ordinal))
+            .OrderByDescending(candidate => candidate.GetParameters().Length)
+            .First();
+        var arguments = method.GetParameters().Length == 3
+            ? new object?[] { result, request, expectedGeneration }
+            : [result, request];
+        return await ((Task<ExplorerCommandResult>)method.Invoke(
+            service,
+            arguments)!).WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
+    private static async Task<ExplorerCommandResult> GetSessionAsync(
+        ExplorerWebPromptSessionService service,
+        string sessionId)
+    {
+        var asyncMethod = typeof(ExplorerWebPromptSessionService)
+            .GetMethod("GetSessionAsync");
+        if (asyncMethod != null)
+        {
+            return await ((Task<ExplorerCommandResult>)asyncMethod.Invoke(
+                service,
+                [sessionId])!).WaitAsync(TimeSpan.FromSeconds(5));
+        }
+
+        return service.GetSession(sessionId);
     }
 
     private static async Task SeedStatStateAsync(

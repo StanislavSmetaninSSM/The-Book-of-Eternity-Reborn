@@ -98,6 +98,55 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task ClearGameStateAsync_RemovesLocalUiLockNamespaceDirectory()
+    {
+        var lockNode = _fs.ResolvePath(LocalUiSessionLockService.LockPath);
+        Directory.CreateDirectory(Path.Combine(lockNode, "nested"));
+        await File.WriteAllTextAsync(
+            Path.Combine(lockNode, "nested", "lock.json"),
+            "{\"crafted\":true}");
+
+        await _fs.ClearGameStateAsync();
+
+        Assert.False(File.Exists(lockNode));
+        Assert.False(Directory.Exists(lockNode));
+    }
+
+    [Fact]
+    public async Task ClearGameStateAsync_RemovesLocalUiLockJunctionWithoutTraversingTarget()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-local-ui-lock-outside-" + Guid.NewGuid().ToString("N"));
+        var outsideFile = Path.Combine(outsideRoot, "sentinel.json");
+        var lockNode = _fs.ResolvePath(LocalUiSessionLockService.LockPath);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllTextAsync(outsideFile, "{\"mustRemain\":true}");
+        try
+        {
+            CreateDirectoryJunction(lockNode, outsideRoot);
+
+            await _fs.ClearGameStateAsync();
+
+            Assert.False(Directory.Exists(lockNode));
+            Assert.True(File.Exists(outsideFile));
+            Assert.Equal(
+                "{\"mustRemain\":true}",
+                await File.ReadAllTextAsync(outsideFile));
+        }
+        finally
+        {
+            if (Directory.Exists(lockNode))
+                Directory.Delete(lockNode, recursive: false);
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task WriteFileAtomicBytesAsync_PreservesExactBytes()
     {
         byte[] expected = [0xEF, 0xBB, 0xBF, 0x00, 0xFF, 0x41];
@@ -1574,6 +1623,93 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
     }
 
+    [Fact]
+    public async Task SessionGeneration_LinkAddedAfterInitialValidationFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        string generation;
+        await using (var setupLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            generation = _fs.GetOrCreateSessionGeneration(setupLease);
+
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "runtime-generation-completion-alias.json");
+        var armed = false;
+        var linked = false;
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterRuntimeFileReadInitialValidationAsync",
+            path =>
+            {
+                if (armed &&
+                    !linked &&
+                    path.Equals(
+                        _fs.SessionGenerationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    WindowsHardLinkTestHelper.Create(aliasPath, path);
+                    linked = true;
+                }
+
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await using var writeLease =
+            await raceFs.AcquireCanonicalWriteLeaseAsync();
+        armed = true;
+
+        Assert.Throws<InvalidDataException>(
+            () => raceFs.IsCurrentSessionGeneration(writeLease, generation));
+        Assert.True(linked);
+    }
+
+    [Fact]
+    public async Task OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var archivePath = Path.Combine(_rootPath, "completion-gated-save.zip");
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "completion-gated-save-alias.zip");
+        await File.WriteAllBytesAsync(
+            archivePath,
+            [0x50, 0x4B, 0x05, 0x06]);
+        var openedFile = Assert.IsType<FileSystemManager.StableReadFile>(
+            _fs.OpenExactPhysicalReadFile(
+                archivePath,
+                "Completion-gated save archive"));
+
+        await using (openedFile)
+        {
+            await openedFile.Stream.CopyToAsync(Stream.Null);
+            WindowsHardLinkTestHelper.Create(aliasPath, archivePath);
+            var completeMethod = openedFile.GetType().GetMethod(
+                "Complete",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic);
+            Assert.NotNull(completeMethod);
+
+            var exception = Assert.Throws<System.Reflection.TargetInvocationException>(
+                () => completeMethod!.Invoke(openedFile, null));
+            Assert.IsType<InvalidDataException>(exception.InnerException);
+
+            var abandonMethod = openedFile.GetType().GetMethod(
+                "Abandon",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic);
+            Assert.NotNull(abandonMethod);
+            abandonMethod!.Invoke(openedFile, null);
+        }
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -1664,6 +1800,844 @@ public sealed class FileSystemManagerTests : IDisposable
 
         Assert.Equal(originalBytes, await File.ReadAllBytesAsync(externalPath));
         Assert.Equal(originalBytes, await File.ReadAllBytesAsync(canonicalPath));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/post-publication-source-link.json";
+        byte[] priorBytes = [0x10, 0x21, 0x32, 0x43];
+        byte[] replacementBytes = [0x54, 0x65, 0x76, 0x87];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "post-publication-source-alias.json");
+        var hookCount = 0;
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterPhysicalFilePublishedAsync",
+            path =>
+            {
+                if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    hookCount++;
+                    WindowsHardLinkTestHelper.Create(aliasPath, path);
+                }
+
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                replacementBytes));
+
+        Assert.Equal(1, hookCount);
+        Assert.Equal(priorBytes, await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(
+            priorIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+        Assert.Equal(
+            replacementBytes,
+            await File.ReadAllBytesAsync(aliasPath));
+        Assert.NotEmpty(Directory.GetDirectories(
+            Path.Combine(
+                raceFs.RuntimeRootPath,
+                "file-publication-transactions")));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/post-publication-source-link-absent.json";
+        byte[] replacementBytes = [0x98, 0x89, 0x7A, 0x6B];
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "post-publication-absence-alias.json");
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterPhysicalFilePublishedAsync",
+            path =>
+            {
+                if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                    WindowsHardLinkTestHelper.Create(aliasPath, path);
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                replacementBytes));
+
+        Assert.False(File.Exists(destinationPath));
+        Assert.Equal(
+            replacementBytes,
+            await File.ReadAllBytesAsync(aliasPath));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/destination-link-race.json";
+        byte[] priorBytes = [0xA1, 0xB2, 0xC3];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "destination-link-race-alias.json");
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterPhysicalFileAuthorityValidatedAsync",
+            path =>
+            {
+                if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                    WindowsHardLinkTestHelper.Create(aliasPath, path);
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0xD4, 0xE5, 0xF6]));
+
+        Assert.Equal(priorBytes, await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(
+            priorIdentity with { NumberOfLinks = 2 },
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+        Assert.Equal(priorBytes, await File.ReadAllBytesAsync(aliasPath));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/post-publication-failure.json";
+        byte[] priorBytes = [0x01, 0x12, 0x23];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterPhysicalFilePublishedAsync",
+            path => path.Equals(
+                    destinationPath,
+                    StringComparison.OrdinalIgnoreCase)
+                ? Task.FromException(
+                    new IOException("Injected post-publication failure."))
+                : Task.CompletedTask);
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<IOException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0x34, 0x45, 0x56]));
+
+        Assert.Equal(priorBytes, await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(
+            priorIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+        var journalRoot = Path.Combine(
+            raceFs.RuntimeRootPath,
+            "file-publication-transactions");
+        Assert.True(
+            !Directory.Exists(journalRoot) ||
+            Directory.GetDirectories(journalRoot).Length == 0);
+    }
+
+    [Fact]
+    public async Task AtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/committed-cleanup-debt.json";
+        byte[] priorBytes = [0x14, 0x25, 0x36, 0x47];
+        byte[] publishedBytes = [0x58, 0x69, 0x7A, 0x8B];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        string? blockedQuarantinePath = null;
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterPhysicalFilePublishedAsync",
+            path =>
+            {
+                if (path.Equals(
+                        destinationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    var quarantinePath = Assert.Single(
+                        Directory.GetFiles(
+                            Path.GetDirectoryName(destinationPath)!,
+                            ".boe-prior-*.quarantine"));
+                    File.SetAttributes(
+                        quarantinePath,
+                        File.GetAttributes(quarantinePath) |
+                        FileAttributes.ReadOnly);
+                    blockedQuarantinePath = quarantinePath;
+                }
+
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        WindowsHardLinkTestHelper.FileIdentity publishedIdentity;
+
+        try
+        {
+            await raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                publishedBytes);
+
+            Assert.NotNull(blockedQuarantinePath);
+            Assert.Equal(
+                publishedBytes,
+                await File.ReadAllBytesAsync(destinationPath));
+            publishedIdentity =
+                WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+            Assert.NotEmpty(Directory.GetDirectories(
+                raceFs.PhysicalPublicationTransactionsRootPath));
+        }
+        finally
+        {
+            if (blockedQuarantinePath != null &&
+                File.Exists(blockedQuarantinePath))
+            {
+                File.SetAttributes(
+                    blockedQuarantinePath,
+                    File.GetAttributes(blockedQuarantinePath) &
+                    ~FileAttributes.ReadOnly);
+            }
+        }
+
+        var recovered = await raceFs.ReadFileBytesAsync(relativePath);
+
+        Assert.Equal(publishedBytes, recovered);
+        Assert.Equal(
+            publishedIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+        Assert.Empty(Directory.GetFiles(
+            Path.GetDirectoryName(destinationPath)!,
+            ".boe-prior-*.quarantine"));
+        Assert.Empty(Directory.EnumerateFileSystemEntries(
+            raceFs.PhysicalPublicationTransactionsRootPath));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_UnsupportedOverwriteFailsBeforeTempJournalOrHook()
+    {
+        const string relativePath =
+            "game_state/world/unsupported-overwrite.json";
+        byte[] priorBytes = [0x61, 0x72, 0x83];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var hookCount = 0;
+        var hooks = FileSystemManagerHookTestHelper.WithBooleanOverride(
+            "SupportsReversibleFileReplacementOverride",
+            false);
+        var beforeMutationProperty = typeof(FileSystemManagerHooks).GetProperty(
+            "BeforeCanonicalMutationAsync",
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(beforeMutationProperty);
+        beforeMutationProperty!.SetValue(
+            hooks,
+            (Func<string, Task>)(_ =>
+            {
+                hookCount++;
+                return Task.CompletedTask;
+            }));
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<PlatformNotSupportedException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0x94, 0xA5, 0xB6]));
+
+        Assert.Equal(0, hookCount);
+        Assert.Equal(
+            priorBytes,
+            await File.ReadAllBytesAsync(_fs.ResolvePath(relativePath)));
+        Assert.Empty(Directory.GetFiles(
+            Path.GetDirectoryName(_fs.ResolvePath(relativePath))!,
+            "*.tmp.*"));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_UnsupportedBackendStillAllowsCreateOnlyPublication()
+    {
+        const string relativePath =
+            "game_state/world/unsupported-create-only.json";
+        byte[] content = [0xC7, 0xD8, 0xE9];
+        var hooks = FileSystemManagerHookTestHelper.WithBooleanOverride(
+            "SupportsReversibleFileReplacementOverride",
+            false);
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await raceFs.WriteFileAtomicBytesAsync(relativePath, content);
+
+        Assert.Equal(
+            content,
+            await File.ReadAllBytesAsync(_fs.ResolvePath(relativePath)));
+    }
+
+    [Fact]
+    public async Task RuntimeAtomicWrite_UnsupportedOverwriteFailsBeforeTempJournalOrHook()
+    {
+        string originalGeneration;
+        await using (var setupLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            originalGeneration =
+                _fs.GetOrCreateSessionGeneration(setupLease);
+        }
+
+        var hookCount = 0;
+        var hooks = new FileSystemManagerHooks
+        {
+            SupportsReversibleFileReplacementOverride = false,
+            AfterRuntimeMutationBoundaryValidatedAsync = _ =>
+            {
+                hookCount++;
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        await using var lifecycleLease =
+            await raceFs.AcquireSessionLifecycleLeaseAsync();
+        await using var replacementLease =
+            await raceFs.AcquireSessionReplacementWriteLeaseAsync(
+                lifecycleLease);
+
+        Assert.Throws<PlatformNotSupportedException>(
+            () => raceFs.RotateSessionGeneration(replacementLease));
+
+        Assert.Equal(0, hookCount);
+        Assert.Equal(
+            originalGeneration,
+            raceFs.GetOrCreateSessionGeneration(replacementLease));
+        Assert.Empty(Directory.GetFiles(
+            Path.GetDirectoryName(raceFs.SessionGenerationPath)!,
+            "*.tmp.*"));
+    }
+
+    [Fact]
+    public async Task RuntimeAtomicWrite_UnsupportedBackendAllowsCreateOnlyPublication()
+    {
+        var isolatedRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-runtime-create-only-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(isolatedRoot);
+        try
+        {
+            var hooks = new FileSystemManagerHooks
+            {
+                SupportsReversibleFileReplacementOverride = false
+            };
+            var fs = new FileSystemManager(
+                isolatedRoot,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            await using var writeLease =
+                await fs.AcquireCanonicalWriteLeaseAsync();
+
+            var generation = fs.GetOrCreateSessionGeneration(writeLease);
+
+            Assert.Equal(
+                generation,
+                fs.GetOrCreateSessionGeneration(writeLease));
+        }
+        finally
+        {
+            Directory.Delete(isolatedRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/crash-recovery-uncommitted.json";
+        byte[] priorBytes = [0x11, 0x22, 0x33, 0x44];
+        byte[] publishedBytes = [0x55, 0x66, 0x77, 0x88];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var transactionId = Guid.NewGuid().ToString("N");
+        var sourcePath = destinationPath + ".tmp.crash";
+        var quarantinePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-prior-{transactionId}.quarantine");
+        var failedSourcePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-source-{transactionId}.evidence");
+        await File.WriteAllBytesAsync(sourcePath, publishedBytes);
+        var sourceIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(sourcePath);
+        File.Move(destinationPath, quarantinePath);
+        File.Move(sourcePath, destinationPath);
+        WritePublicationCrashJournal(
+            transactionId,
+            sourcePath,
+            destinationPath,
+            quarantinePath,
+            failedSourcePath,
+            sourceIdentity,
+            publishedBytes,
+            priorIdentity,
+            priorBytes,
+            committed: false);
+
+        var recovered = await _fs.ReadFileBytesAsync(relativePath);
+
+        Assert.Equal(priorBytes, recovered);
+        Assert.Equal(
+            priorIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+        Assert.False(File.Exists(quarantinePath));
+        Assert.False(Directory.Exists(Path.Combine(
+            _fs.PhysicalPublicationTransactionsRootPath,
+            transactionId)));
+    }
+
+    [Fact]
+    public async Task ReadFileBytesAsync_FinalizesCommittedPublicationBeforeCanonicalRead()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/crash-recovery-committed.json";
+        byte[] priorBytes = [0x91, 0x82, 0x73];
+        byte[] publishedBytes = [0x64, 0x55, 0x46];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var transactionId = Guid.NewGuid().ToString("N");
+        var sourcePath = destinationPath + ".tmp.crash";
+        var quarantinePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-prior-{transactionId}.quarantine");
+        var failedSourcePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-source-{transactionId}.evidence");
+        await File.WriteAllBytesAsync(sourcePath, publishedBytes);
+        var sourceIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(sourcePath);
+        File.Move(destinationPath, quarantinePath);
+        File.Move(sourcePath, destinationPath);
+        WritePublicationCrashJournal(
+            transactionId,
+            sourcePath,
+            destinationPath,
+            quarantinePath,
+            failedSourcePath,
+            sourceIdentity,
+            publishedBytes,
+            priorIdentity,
+            priorBytes,
+            committed: true);
+
+        var recovered = await _fs.ReadFileBytesAsync(relativePath);
+
+        Assert.Equal(publishedBytes, recovered);
+        Assert.Equal(
+            sourceIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+        Assert.False(File.Exists(quarantinePath));
+        Assert.False(Directory.Exists(Path.Combine(
+            _fs.PhysicalPublicationTransactionsRootPath,
+            transactionId)));
+    }
+
+    [Fact]
+    public async Task ReadFileBytesAsync_UnknownPublicationIdentityFencesAndRetainsEvidence()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/crash-recovery-unknown.json";
+        byte[] priorBytes = [0x09, 0x18, 0x27];
+        byte[] publishedBytes = [0x36, 0x45, 0x54];
+        byte[] unrelatedBytes = [0x63, 0x72, 0x81];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var transactionId = Guid.NewGuid().ToString("N");
+        var sourcePath = destinationPath + ".tmp.crash";
+        var quarantinePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-prior-{transactionId}.quarantine");
+        var failedSourcePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-source-{transactionId}.evidence");
+        await File.WriteAllBytesAsync(sourcePath, publishedBytes);
+        var sourceIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(sourcePath);
+        File.Move(destinationPath, quarantinePath);
+        File.Move(sourcePath, failedSourcePath);
+        await File.WriteAllBytesAsync(destinationPath, unrelatedBytes);
+        WritePublicationCrashJournal(
+            transactionId,
+            sourcePath,
+            destinationPath,
+            quarantinePath,
+            failedSourcePath,
+            sourceIdentity,
+            publishedBytes,
+            priorIdentity,
+            priorBytes,
+            committed: false);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.ReadFileBytesAsync(relativePath));
+
+        Assert.Equal(
+            unrelatedBytes,
+            await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(priorBytes, await File.ReadAllBytesAsync(quarantinePath));
+        Assert.Equal(
+            publishedBytes,
+            await File.ReadAllBytesAsync(failedSourcePath));
+        Assert.True(Directory.Exists(Path.Combine(
+            _fs.PhysicalPublicationTransactionsRootPath,
+            transactionId)));
+    }
+
+    [Theory]
+    [InlineData("committed.marker")]
+    [InlineData("source-published.marker")]
+    [InlineData("destination-quarantined.marker")]
+    [InlineData("intent.json")]
+    public async Task DeferredPublication_CleanupCrashAtEachAuthorityFilePreservesCommit(
+        string blockedFileName)
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/deferred-cleanup-crash.json";
+        byte[] priorBytes = [0x19, 0x2A, 0x3B];
+        byte[] publishedBytes = [0x4C, 0x5D, 0x6E];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var parentPath = Path.GetDirectoryName(destinationPath)!;
+        var sourcePath = Path.Combine(
+            parentPath,
+            ".deferred-cleanup-source.tmp");
+        string transactionId;
+
+        {
+            using var parentAuthority =
+                PhysicalFileAuthority.EnsureStableDirectory(
+                    _rootPath,
+                    parentPath,
+                    "Deferred cleanup crash test");
+            await using var sourceStream =
+                PhysicalFileAuthority.CreateNewWritableFile(
+                    parentAuthority,
+                    sourcePath,
+                    "Deferred cleanup crash source",
+                    asynchronous: true);
+            await sourceStream.WriteAsync(publishedBytes);
+            await sourceStream.FlushAsync();
+            sourceStream.Flush(flushToDisk: true);
+            using var pending =
+                await ReversibleFilePublication.PublishDeferredAsync(
+                    _rootPath,
+                    _fs.PhysicalPublicationTransactionsRootPath,
+                    parentAuthority,
+                    sourcePath,
+                    sourceStream,
+                    parentAuthority,
+                    destinationPath,
+                    "Deferred cleanup crash test",
+                    retainedDestinationHandle: null,
+                    afterAuthorityValidated: null,
+                    beforeSourcePublished: null,
+                    afterPublished: null,
+                    CancellationToken.None);
+            pending.Commit();
+            transactionId = pending.TransactionId;
+            var transactionRoot = Path.Combine(
+                _fs.PhysicalPublicationTransactionsRootPath,
+                transactionId);
+            using (var cleanupBlocker = new FileStream(
+                       Path.Combine(transactionRoot, blockedFileName),
+                       FileMode.Open,
+                       FileAccess.Read,
+                       FileShare.ReadWrite))
+            {
+                Assert.False(pending.TryAcknowledgeCommittedJournal());
+                var retainedTransactionRoot = Assert.Single(
+                    Directory.GetDirectories(
+                        _fs.PhysicalPublicationTransactionsRootPath),
+                    path => Path.GetFileName(path).Contains(
+                        transactionId,
+                        StringComparison.Ordinal));
+                Assert.True(File.Exists(Path.Combine(
+                    retainedTransactionRoot,
+                    "intent.json")));
+            }
+        }
+
+        var recovered = await _fs.ReadFileBytesAsync(relativePath);
+        ReversibleFilePublication.AcknowledgeDeferredCommit(
+            _rootPath,
+            _fs.PhysicalPublicationTransactionsRootPath,
+            transactionId);
+
+        Assert.Equal(publishedBytes, recovered);
+        Assert.Empty(Directory.EnumerateFileSystemEntries(
+            _fs.PhysicalPublicationTransactionsRootPath));
+    }
+
+    [Fact]
+    public async Task ReadFileBytesAsync_AbsentDuringQuarantineWaitsForCommittedPublication()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/quarantine-gap-read.json";
+        byte[] priorBytes = [0x71, 0x62, 0x53];
+        byte[] publishedBytes = [0x44, 0x35, 0x26];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var readerAtOpen = NewBarrier();
+        var allowReaderOpen = NewBarrier();
+        var writerAtQuarantine = NewBarrier();
+        var allowWriterCommit = NewBarrier();
+        var readerObservedAbsence = NewBarrier();
+        var writerCompleted = NewBarrier();
+        var hooks = new FileSystemManagerHooks();
+        FileSystemManagerHookTestHelper.SetPathHook(
+            hooks,
+            "BeforeCanonicalReadOpenAsync",
+            async path =>
+            {
+                if (!path.Equals(
+                        relativePath,
+                        StringComparison.OrdinalIgnoreCase))
+                    return;
+                readerAtOpen.TrySetResult();
+                await allowReaderOpen.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            });
+        FileSystemManagerHookTestHelper.SetPathHook(
+            hooks,
+            "BeforePhysicalSourcePublishedAsync",
+            async path =>
+            {
+                if (!path.Equals(
+                        destinationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                    return;
+                writerAtQuarantine.TrySetResult();
+                await allowWriterCommit.Task.WaitAsync(
+                    TimeSpan.FromSeconds(10));
+            });
+        FileSystemManagerHookTestHelper.SetPathHook(
+            hooks,
+            "AfterCanonicalReadAttemptAsync",
+            async path =>
+            {
+                if (!path.Equals(
+                        relativePath,
+                        StringComparison.OrdinalIgnoreCase))
+                    return;
+                readerObservedAbsence.TrySetResult();
+                await writerCompleted.Task.WaitAsync(
+                    TimeSpan.FromSeconds(10));
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        var readTask = raceFs.ReadFileBytesAsync(relativePath);
+        await readerAtOpen.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        var writeTask = raceFs.WriteFileAtomicBytesAsync(
+            relativePath,
+            publishedBytes);
+        await writerAtQuarantine.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        allowReaderOpen.TrySetResult();
+        await readerObservedAbsence.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        allowWriterCommit.TrySetResult();
+        try
+        {
+            await writeTask;
+            writerCompleted.TrySetResult();
+        }
+        catch (Exception ex)
+        {
+            writerCompleted.TrySetException(ex);
+            throw;
+        }
+
+        var recovered = await readTask;
+
+        Assert.Equal(publishedBytes, recovered);
+        Assert.Empty(Directory.EnumerateFileSystemEntries(
+            raceFs.PhysicalPublicationTransactionsRootPath));
+    }
+
+    [Fact]
+    public async Task FileExists_OwnedLeaseWithPendingPublicationDoesNotReacquire()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string publicationPath =
+            "game_state/world/file-exists-owned-publication.json";
+        const string probePath =
+            "game_state/world/file-exists-owned-probe.json";
+        await _fs.WriteFileAtomicBytesAsync(publicationPath, [0x10]);
+        await _fs.WriteFileAtomicBytesAsync(probePath, [0x20]);
+        var destinationPath = _fs.ResolvePath(publicationPath);
+        var lockOpenCount = 0;
+        FileSystemManager? raceFs = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalWriteLockOpenAsync = () =>
+            {
+                if (Interlocked.Increment(ref lockOpenCount) > 1)
+                {
+                    throw new InvalidOperationException(
+                        "Canonical write lock was reacquired by its owner.");
+                }
+
+                return Task.CompletedTask;
+            },
+            BeforePhysicalSourcePublishedAsync = path =>
+            {
+                if (path.Equals(
+                        destinationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    Assert.NotNull(raceFs);
+                    Assert.True(raceFs.FileExists(probePath));
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await raceFs.WriteFileAtomicBytesAsync(publicationPath, [0x30]);
+
+        Assert.Equal(1, Volatile.Read(ref lockOpenCount));
+        Assert.Equal([0x30], await raceFs.ReadFileBytesAsync(publicationPath));
+    }
+
+    [Fact]
+    public async Task AcquireCanonicalWriteLeaseAsync_DoesNotClaimAmbientOwnershipBeforeLockOpens()
+    {
+        var firstLockAttempted = NewBarrier();
+        var allowFirstLockAttempt = NewBarrier();
+        var lockOpenCount = 0;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalWriteLockOpenAsync = async () =>
+            {
+                if (Interlocked.Increment(ref lockOpenCount) == 1)
+                {
+                    firstLockAttempted.TrySetResult();
+                    await allowFirstLockAttempt.Task.WaitAsync(
+                        TimeSpan.FromSeconds(10));
+                    return;
+                }
+
+                throw new InvalidOperationException(
+                    "Absent read sought canonical quiescence.");
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var pendingLease = raceFs.AcquireCanonicalWriteLeaseAsync();
+        await firstLockAttempted.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        try
+        {
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => raceFs.ReadFileBytesAsync(
+                    "game_state/world/ambient-before-open.json"));
+            Assert.Contains(
+                "sought canonical quiescence",
+                exception.Message,
+                StringComparison.Ordinal);
+        }
+        finally
+        {
+            allowFirstLockAttempt.TrySetResult();
+            await using var lease = await pendingLease;
+        }
     }
 
     [Fact]
@@ -2602,6 +3576,59 @@ public sealed class FileSystemManagerTests : IDisposable
 
     private static string Sha256(byte[] content) =>
         Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
+
+    private static TaskCompletionSource NewBarrier() =>
+        new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private void WritePublicationCrashJournal(
+        string transactionId,
+        string sourcePath,
+        string destinationPath,
+        string quarantinePath,
+        string failedSourcePath,
+        WindowsHardLinkTestHelper.FileIdentity sourceIdentity,
+        byte[] sourceBytes,
+        WindowsHardLinkTestHelper.FileIdentity? destinationIdentity,
+        byte[] destinationBytes,
+        bool committed)
+    {
+        var transactionPath = Path.Combine(
+            _fs.PhysicalPublicationTransactionsRootPath,
+            transactionId);
+        Directory.CreateDirectory(transactionPath);
+        var intent = new
+        {
+            schemaVersion = 1,
+            transactionId,
+            authorityName = "Crash recovery test",
+            sourcePath,
+            destinationPath,
+            destinationQuarantinePath = quarantinePath,
+            failedSourcePath,
+            sourceIdentity,
+            sourceSha256 = Sha256(sourceBytes),
+            destinationExisted = destinationIdentity is not null,
+            destinationIdentity,
+            destinationSha256 = destinationIdentity is null
+                ? null
+                : Sha256(destinationBytes)
+        };
+        File.WriteAllText(
+            Path.Combine(transactionPath, "intent.json"),
+            JsonSerializer.Serialize(intent));
+        File.WriteAllBytes(
+            Path.Combine(transactionPath, "destination-quarantined.marker"),
+            []);
+        File.WriteAllBytes(
+            Path.Combine(transactionPath, "source-published.marker"),
+            []);
+        if (committed)
+        {
+            File.WriteAllBytes(
+                Path.Combine(transactionPath, "committed.marker"),
+                []);
+        }
+    }
 
     private sealed class WorkerCleanupFaultOperations : ILoadTransactionOperations
     {

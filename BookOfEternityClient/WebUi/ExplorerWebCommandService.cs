@@ -60,9 +60,38 @@ public sealed class ExplorerWebCommandService
             !ExplorerCommandMigrationRegistry.IsBrowserExecutable(subcommand.BrowserStatus))
             return BuildBlockedMigrationResult(command, subcommand);
 
-        var result = await BuildMigratedResultAsync(parsed, descriptor, effectiveRequest);
-        var withPromptSession = await _promptSessions.AttachSessionIfNeededAsync(result, effectiveRequest);
-        return ApplyDefaultPlayerSurface(withPromptSession, descriptor, effectiveRequest);
+        string expectedGeneration;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+
+        try
+        {
+            var withPromptSession = await SessionOperationContext.RunBoundAsync(
+                _fs,
+                expectedGeneration,
+                async () =>
+                {
+                    var result = await BuildMigratedResultAsync(
+                        parsed,
+                        descriptor,
+                        effectiveRequest);
+                    return await _promptSessions.AttachSessionIfNeededAsync(
+                        result,
+                        effectiveRequest,
+                        expectedGeneration);
+                });
+            return ApplyDefaultPlayerSurface(
+                withPromptSession,
+                descriptor,
+                effectiveRequest);
+        }
+        catch (SessionReplacedException)
+        {
+            return ApplyDefaultPlayerSurface(
+                ExplorerWebPromptSessionService.SessionReplacedResult(command),
+                descriptor,
+                effectiveRequest);
+        }
     }
 
     public Task<ExplorerCommandResult> SubmitPromptSessionAsync(ExplorerPromptSessionSubmitRequest request) =>
@@ -71,8 +100,8 @@ public sealed class ExplorerWebCommandService
     public Task<ExplorerCommandResult> CancelPromptSessionAsync(ExplorerPromptSessionCancelRequest request) =>
         _promptSessions.CancelAsync(request);
 
-    public ExplorerCommandResult GetPromptSession(string sessionId) =>
-        _promptSessions.GetSession(sessionId);
+    public Task<ExplorerCommandResult> GetPromptSessionAsync(string sessionId) =>
+        _promptSessions.GetSessionAsync(sessionId);
 
     private async Task<ExplorerCommandResult> BuildMigratedResultAsync(
         ExplorerParsedCommand parsed,

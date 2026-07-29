@@ -15,11 +15,19 @@ internal sealed class FileSystemManagerHooks
     internal Func<Task>? AfterSessionLifecycleLockOpenedAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalMutationAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalReadOpenAsync { get; init; }
+    internal Func<string, Task>? AfterCanonicalReadInitialValidationAsync { get; init; }
     internal Func<Task>? SessionOperationClosingAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalMutationBoundaryAsync { get; init; }
     internal Func<string, Task>? AfterCanonicalMutationBoundaryValidatedAsync { get; init; }
     internal Func<string, Task>? BeforeRuntimeFileReadOpenAsync { get; init; }
     internal Func<string, Task>? AfterRuntimeFileReadOpenedAsync { get; init; }
+    internal Func<string, Task>? AfterRuntimeFileReadInitialValidationAsync { get; init; }
+    internal Func<string, Task>? AfterExactPhysicalReadInitialValidationAsync { get; init; }
+    internal Func<string, Task>? AfterPhysicalFileAuthorityValidatedAsync { get; init; }
+    internal Func<string, Task>? BeforePhysicalSourcePublishedAsync { get; init; }
+    internal Func<string, Task>? AfterPhysicalFilePublishedAsync { get; init; }
+    internal Func<string, Task>? AfterCanonicalReadAttemptAsync { get; init; }
+    internal bool? SupportsReversibleFileReplacementOverride { get; init; }
     internal Func<string, Task>? BeforeRuntimeFileCreateAsync { get; init; }
     internal Func<string, Task>? AfterRuntimeMutationBoundaryValidatedAsync { get; init; }
     internal Func<string, string, Task>? BeforeLoadDirectoryMoveAsync { get; init; }
@@ -35,7 +43,8 @@ internal enum CanonicalWritePurpose
 {
     SessionMutation,
     SessionReplacement,
-    SessionFinalization
+    SessionFinalization,
+    PublicationReadQuiescence
 }
 
 internal sealed record CanonicalLoadTransactionPaths(
@@ -60,6 +69,18 @@ internal sealed record CanonicalWorkerApplyTransaction(
 /// </summary>
 public class FileSystemManager
 {
+    internal sealed class AmbientCanonicalLeaseRegistration
+    {
+        internal AmbientCanonicalLeaseRegistration(
+            AmbientCanonicalLeaseRegistration? previous)
+        {
+            Previous = previous;
+        }
+
+        internal AmbientCanonicalLeaseRegistration? Previous { get; }
+        internal bool Active { get; set; }
+    }
+
     internal sealed class SessionLifecycleLease : IAsyncDisposable
     {
         private FileStream? _stream;
@@ -102,6 +123,7 @@ public class FileSystemManager
     {
         private FileStream? _stream;
         private PhysicalFileAuthority.StableDirectory? _parentAuthority;
+        private AmbientCanonicalLeaseRegistration? _ambientRegistration;
 
         internal CanonicalWriteLease(
             FileSystemManager owner,
@@ -117,6 +139,12 @@ public class FileSystemManager
 
         internal FileSystemManager Owner { get; }
         internal CanonicalWritePurpose Purpose { get; }
+        internal object? ExternalPublicationContext { get; set; }
+        internal AmbientCanonicalLeaseRegistration? AmbientRegistration
+        {
+            get => _ambientRegistration;
+            set => _ambientRegistration = value;
+        }
         internal bool IsActive =>
             _stream != null &&
             _parentAuthority != null;
@@ -125,16 +153,23 @@ public class FileSystemManager
         {
             var stream = _stream;
             var parentAuthority = _parentAuthority;
+            var externalPublicationContext =
+                ExternalPublicationContext as IDisposable;
             _stream = null;
             _parentAuthority = null;
+            ExternalPublicationContext = null;
             try
             {
+                externalPublicationContext?.Dispose();
                 if (stream != null)
                     await stream.DisposeAsync();
             }
             finally
             {
                 parentAuthority?.Dispose();
+                Owner.ReleaseAmbientCanonicalLease(
+                    _ambientRegistration);
+                _ambientRegistration = null;
             }
         }
     }
@@ -143,6 +178,8 @@ public class FileSystemManager
     private readonly ILogger<FileSystemManager> _logger;
     private readonly ILoadTransactionOperations _loadTransactionOperations;
     private readonly FileSystemManagerHooks? _hooks;
+    private readonly AsyncLocal<AmbientCanonicalLeaseRegistration?>
+        _ambientCanonicalLease = new();
     private const int TransientFileAccessRetryCount = 20;
     private static readonly TimeSpan TransientFileAccessRetryDelay = TimeSpan.FromMilliseconds(50);
     private const int CanonicalWriteLockRetryCount = 200;
@@ -190,6 +227,8 @@ public class FileSystemManager
         Path.Combine(RuntimeRootPath, "session-generation", "current.json");
     internal string ActiveWorkerApplyTransactionJournalPath =>
         Path.Combine(RuntimeRootPath, "worker-apply-transactions", "active.json");
+    internal string PhysicalPublicationTransactionsRootPath =>
+        Path.Combine(RuntimeRootPath, "file-publication-transactions");
 
     public FileSystemManager(string basePath, ILogger<FileSystemManager> logger)
         : this(basePath, logger, PhysicalLoadTransactionOperations.Instance, hooks: null)
@@ -496,6 +535,15 @@ public class FileSystemManager
     {
         cancellationToken.ThrowIfCancellationRequested();
         var fullPath = ResolvePath(relativePath);
+        var destinationExists =
+            File.Exists(fullPath) || Directory.Exists(fullPath);
+        if (destinationExists &&
+            !SupportsReversibleFileReplacement)
+        {
+            throw new PlatformNotSupportedException(
+                "Atomic overwrite requires a reversible opened-handle replacement backend.");
+        }
+
         await InvokeBeforeCanonicalMutationBoundaryAsync(relativePath);
         cancellationToken.ThrowIfCancellationRequested();
         using var parentAuthority = EnsureStableCanonicalParent(
@@ -515,37 +563,49 @@ public class FileSystemManager
             await stream.FlushAsync(cancellationToken);
             stream.Flush(flushToDisk: true);
 
-            for (var attempt = 0; ; attempt++)
+            cancellationToken.ThrowIfCancellationRequested();
+            EnsureCanonicalMutationBoundary(relativePath, fullPath);
+            await InvokeAfterCanonicalMutationBoundaryValidatedAsync(
+                relativePath);
+            if (SupportsReversibleFileReplacement)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                try
+                EnsureRuntimeDirectoryExistsAndIsSafe(
+                    PhysicalPublicationTransactionsRootPath);
+                await ReversibleFilePublication.PublishAsync(
+                    _basePath,
+                    PhysicalPublicationTransactionsRootPath,
+                    parentAuthority,
+                    tempPath,
+                    stream,
+                    parentAuthority,
+                    fullPath,
+                    "Canonical atomic write",
+                    _hooks?.AfterPhysicalFileAuthorityValidatedAsync,
+                    _hooks?.BeforePhysicalSourcePublishedAsync,
+                    _hooks?.AfterPhysicalFilePublishedAsync,
+                    cancellationToken);
+            }
+            else
+            {
+                if (OperatingSystem.IsWindows())
                 {
-                    EnsureCanonicalMutationBoundary(relativePath, fullPath);
-                    await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath);
-                    if (OperatingSystem.IsWindows())
-                    {
-                        PhysicalFileAuthority.ValidateExistingReplacementTarget(
-                            parentAuthority,
-                            fullPath,
-                            "Canonical atomic write");
-                        PhysicalFileAuthority.RenameOpenedObject(
-                            stream.SafeFileHandle,
-                            fullPath,
-                            replaceExisting: true,
-                            "Canonical atomic write");
-                    }
-                    else
-                    {
-                        File.Move(tempPath, fullPath, overwrite: true);
-                    }
-
-                    return;
+                    PhysicalFileAuthority.RenameOpenedObjectRelative(
+                        stream.SafeFileHandle,
+                        parentAuthority,
+                        fullPath,
+                        replaceExisting: false,
+                        "Canonical create-only publication");
                 }
-                catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
+                else
                 {
-                    await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
+                    File.Move(
+                        tempPath,
+                        fullPath,
+                        overwrite: false);
                 }
             }
+
+            return;
         }
         catch
         {
@@ -608,7 +668,19 @@ public class FileSystemManager
 
     public async Task<string?> ReadFileAsync(string relativePath)
     {
-        return await ReadFileCoreAsync(relativePath);
+        await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
+            CancellationToken.None);
+        var result = await ReadFileCoreAsync(relativePath);
+        await InvokeAfterCanonicalReadAttemptAsync(relativePath);
+        if (!HasAmbientCanonicalLease() &&
+            (result == null || HasPendingFilePublications()))
+        {
+            await using var writeLease =
+                await AcquirePublicationReadQuiescenceLeaseAsync();
+            result = await ReadFileCoreAsync(relativePath);
+        }
+
+        return result;
     }
 
     internal async Task<string?> ReadFileAsync(
@@ -637,14 +709,18 @@ public class FileSystemManager
 
     public async Task<byte[]?> ReadFileBytesAsync(string relativePath)
     {
-        return await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
+        return await ReadFileBytesWithPublicationRecoveryAsync(
+            relativePath,
+            CancellationToken.None);
     }
 
     internal async Task<byte[]?> ReadFileBytesAsync(
         string relativePath,
         CancellationToken cancellationToken)
     {
-        return await ReadFileBytesCoreAsync(relativePath, cancellationToken);
+        return await ReadFileBytesWithPublicationRecoveryAsync(
+            relativePath,
+            cancellationToken);
     }
 
     internal async Task<byte[]?> ReadFileBytesAsync(
@@ -667,7 +743,27 @@ public class FileSystemManager
 
     internal string? ReadFileSync(string relativePath)
     {
+        RecoverPendingFilePublicationsBeforeCanonicalRead();
         var snapshot = ReadFileSnapshotCore(relativePath);
+        InvokeAfterCanonicalReadAttempt(relativePath);
+        if (!HasAmbientCanonicalLease() &&
+            (snapshot == null || HasPendingFilePublications()))
+        {
+            var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
+                .GetAwaiter()
+                .GetResult();
+            try
+            {
+                snapshot = ReadFileSnapshotCore(relativePath);
+            }
+            finally
+            {
+                writeLease.DisposeAsync()
+                    .AsTask()
+                    .GetAwaiter()
+                    .GetResult();
+            }
+        }
         if (snapshot == null)
             return null;
 
@@ -679,11 +775,58 @@ public class FileSystemManager
         return reader.ReadToEnd();
     }
 
-    internal byte[]? ReadFileBytesSync(string relativePath) =>
-        ReadFileSnapshotCore(relativePath)?.Content;
+    internal byte[]? ReadFileBytesSync(string relativePath)
+    {
+        RecoverPendingFilePublicationsBeforeCanonicalRead();
+        var snapshot = ReadFileSnapshotCore(relativePath);
+        InvokeAfterCanonicalReadAttempt(relativePath);
+        if (!HasAmbientCanonicalLease() &&
+            (snapshot == null || HasPendingFilePublications()))
+        {
+            var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
+                .GetAwaiter()
+                .GetResult();
+            try
+            {
+                snapshot = ReadFileSnapshotCore(relativePath);
+            }
+            finally
+            {
+                writeLease.DisposeAsync()
+                    .AsTask()
+                    .GetAwaiter()
+                    .GetResult();
+            }
+        }
+        return snapshot?.Content;
+    }
 
     private Task<byte[]?> ReadFileBytesCoreAsync(string relativePath) =>
         ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
+
+    private async Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsync(
+        string relativePath,
+        CancellationToken cancellationToken)
+    {
+        await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
+            cancellationToken);
+        var result = await ReadFileBytesCoreAsync(
+            relativePath,
+            cancellationToken);
+        await InvokeAfterCanonicalReadAttemptAsync(relativePath);
+        if (!HasAmbientCanonicalLease() &&
+            (result == null || HasPendingFilePublications()))
+        {
+            await using var writeLease =
+                await AcquirePublicationReadQuiescenceLeaseAsync(
+                    cancellationToken);
+            result = await ReadFileBytesCoreAsync(
+                relativePath,
+                cancellationToken);
+        }
+
+        return result;
+    }
 
     private async Task<byte[]?> ReadFileBytesCoreAsync(
         string relativePath,
@@ -699,48 +842,83 @@ public class FileSystemManager
         string relativePath,
         CancellationToken cancellationToken)
     {
+        StableReadFile? openedFile = null;
         for (var attempt = 0; ; attempt++)
         {
             cancellationToken.ThrowIfCancellationRequested();
             try
             {
-                var openedFile = await OpenCanonicalReadStreamAsync(
+                openedFile = await OpenCanonicalReadStreamAsync(
                     relativePath,
                     cancellationToken);
-                if (openedFile == null)
-                    return null;
-
-                await using (openedFile)
-                {
-                    var stream = openedFile.Stream;
-                    var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
-                        stream.SafeFileHandle);
-                    using var buffer = stream.Length is > 0 and <= int.MaxValue
-                        ? new MemoryStream((int)stream.Length)
-                        : new MemoryStream();
-                    await stream.CopyToAsync(buffer, cancellationToken);
-                    PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
-                        stream.SafeFileHandle,
-                        ResolvePath(relativePath),
-                        "Canonical game-session read completion");
-                    return new CanonicalFileReadSnapshot(
-                        buffer.ToArray(),
-                        lastWriteTimeUtc);
-                }
+                break;
             }
-            catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
+            catch (Exception ex) when (
+                IsTransientReadOpenException(ex) &&
+                attempt < TransientFileAccessRetryCount)
             {
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
             }
         }
+
+        if (openedFile == null)
+            return null;
+
+        await using (openedFile)
+        {
+            try
+            {
+                var stream = openedFile.Stream;
+                var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
+                    stream.SafeFileHandle);
+                using var buffer = stream.Length is > 0 and <= int.MaxValue
+                    ? new MemoryStream((int)stream.Length)
+                    : new MemoryStream();
+                await stream.CopyToAsync(buffer, cancellationToken);
+                openedFile.Complete();
+                return new CanonicalFileReadSnapshot(
+                    buffer.ToArray(),
+                    lastWriteTimeUtc);
+            }
+            catch
+            {
+                openedFile.Abandon();
+                throw;
+            }
+        }
     }
+
+    private static bool IsTransientReadOpenException(Exception ex) =>
+        ex is IOException &&
+        (ex.HResult & 0xFFFF) is 32 or 33;
 
     private static bool IsTransientFileAccessException(Exception ex) =>
         ex is IOException or UnauthorizedAccessException;
 
     public bool FileExists(string relativePath)
     {
-        return File.Exists(ResolvePath(relativePath));
+        RecoverPendingFilePublicationsBeforeCanonicalRead();
+        var exists = File.Exists(ResolvePath(relativePath));
+        InvokeAfterCanonicalReadAttempt(relativePath);
+        if (!HasAmbientCanonicalLease() &&
+            HasPendingFilePublications())
+        {
+            var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
+                .GetAwaiter()
+                .GetResult();
+            try
+            {
+                exists = File.Exists(ResolvePath(relativePath));
+            }
+            finally
+            {
+                writeLease.DisposeAsync()
+                    .AsTask()
+                    .GetAwaiter()
+                    .GetResult();
+            }
+        }
+        return exists;
     }
 
     internal bool FileExists(CanonicalWriteLease writeLease, string relativePath)
@@ -848,6 +1026,7 @@ public class FileSystemManager
     {
         for (var attempt = 0; ; attempt++)
         {
+            var initialValidationComplete = false;
             try
             {
                 var expectedFullPath = ResolvePath(relativePath);
@@ -866,13 +1045,18 @@ public class FileSystemManager
                 if (stream == null)
                     return null;
 
+                initialValidationComplete = true;
+                _hooks?.AfterCanonicalReadInitialValidationAsync
+                    ?.Invoke(relativePath)
+                    .GetAwaiter()
+                    .GetResult();
                 var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
                     stream.SafeFileHandle);
                 using var buffer = stream.Length is > 0 and <= int.MaxValue
                     ? new MemoryStream((int)stream.Length)
                     : new MemoryStream();
                 stream.CopyTo(buffer);
-                PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
+                PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
                     stream.SafeFileHandle,
                     expectedFullPath,
                     "Canonical synchronous game-session read completion");
@@ -881,7 +1065,8 @@ public class FileSystemManager
                     lastWriteTimeUtc);
             }
             catch (Exception ex) when (
-                IsTransientFileAccessException(ex) &&
+                !initialValidationComplete &&
+                IsTransientReadOpenException(ex) &&
                 attempt < TransientFileAccessRetryCount)
             {
                 Thread.Sleep(TransientFileAccessRetryDelay);
@@ -897,27 +1082,55 @@ public class FileSystemManager
     {
         private FileStream? _stream;
         private PhysicalFileAuthority.StableDirectory? _parentAuthority;
+        private readonly string _expectedPath;
+        private readonly string _authorityName;
+        private bool _completionResolved;
 
         internal StableReadFile(
             FileStream stream,
-            PhysicalFileAuthority.StableDirectory parentAuthority)
+            PhysicalFileAuthority.StableDirectory parentAuthority,
+            string expectedPath,
+            string authorityName)
         {
             _stream = stream;
             _parentAuthority = parentAuthority;
+            _expectedPath = Path.GetFullPath(expectedPath);
+            _authorityName = authorityName;
         }
 
         internal FileStream Stream => _stream ??
             throw new ObjectDisposedException(nameof(StableReadFile));
 
+        internal void Complete()
+        {
+            PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
+                Stream.SafeFileHandle,
+                _expectedPath,
+                $"{_authorityName} completion");
+            _completionResolved = true;
+        }
+
+        internal void Abandon()
+        {
+            _ = Stream;
+            _completionResolved = true;
+        }
+
         public async ValueTask DisposeAsync()
         {
             var stream = _stream;
             var parentAuthority = _parentAuthority;
+            var completionResolved = _completionResolved;
             _stream = null;
             _parentAuthority = null;
             if (stream != null)
                 await stream.DisposeAsync();
             parentAuthority?.Dispose();
+            if (stream != null && !completionResolved)
+            {
+                throw new InvalidOperationException(
+                    $"{_authorityName} was disposed without completion validation or explicit abandonment.");
+            }
         }
     }
 
@@ -1208,7 +1421,7 @@ public class FileSystemManager
         }
     }
 
-    internal async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseAsync(
+    internal Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseAsync(
         CanonicalWritePurpose purpose = CanonicalWritePurpose.SessionMutation,
         CancellationToken cancellationToken = default)
     {
@@ -1218,17 +1431,62 @@ public class FileSystemManager
                 "Session replacement writes require an active session lifecycle lease.");
         }
 
-        return await AcquireCanonicalWriteLeaseCoreAsync(purpose, cancellationToken);
+        return AcquireCanonicalWriteLeaseWithAmbientAsync(
+            purpose,
+            cancellationToken);
     }
 
-    internal async Task<CanonicalWriteLease> AcquireSessionReplacementWriteLeaseAsync(
+    internal Task<CanonicalWriteLease> AcquireSessionReplacementWriteLeaseAsync(
         SessionLifecycleLease lifecycleLease,
         CancellationToken cancellationToken = default)
     {
         EnsureValidSessionLifecycleLease(lifecycleLease);
-        return await AcquireCanonicalWriteLeaseCoreAsync(
+        return AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose.SessionReplacement,
             cancellationToken);
+    }
+
+    private Task<CanonicalWriteLease>
+        AcquirePublicationReadQuiescenceLeaseAsync(
+            CancellationToken cancellationToken = default) =>
+        AcquireCanonicalWriteLeaseWithAmbientAsync(
+            CanonicalWritePurpose.PublicationReadQuiescence,
+            cancellationToken);
+
+    private Task<CanonicalWriteLease>
+        AcquireCanonicalWriteLeaseWithAmbientAsync(
+            CanonicalWritePurpose purpose,
+            CancellationToken cancellationToken)
+    {
+        var registration = new AmbientCanonicalLeaseRegistration(
+            _ambientCanonicalLease.Value);
+        _ambientCanonicalLease.Value = registration;
+        return CompleteCanonicalWriteLeaseAcquisitionAsync(
+            registration,
+            purpose,
+            cancellationToken);
+    }
+
+    private async Task<CanonicalWriteLease>
+        CompleteCanonicalWriteLeaseAcquisitionAsync(
+            AmbientCanonicalLeaseRegistration registration,
+            CanonicalWritePurpose purpose,
+            CancellationToken cancellationToken)
+    {
+        try
+        {
+            var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
+                purpose,
+                cancellationToken);
+            registration.Active = true;
+            writeLease.AmbientRegistration = registration;
+            return writeLease;
+        }
+        catch
+        {
+            ReleaseAmbientCanonicalLease(registration);
+            throw;
+        }
     }
 
     private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
@@ -1297,17 +1555,25 @@ public class FileSystemManager
                 purpose);
             try
             {
-                RecoverInterruptedLoadTransaction(writeLease);
-                await RecoverInterruptedWorkerApplyTransactionAsync(writeLease);
-                if (purpose is CanonicalWritePurpose.SessionMutation or
-                    CanonicalWritePurpose.SessionReplacement)
+                RecoverInterruptedFilePublications();
+                if (purpose !=
+                    CanonicalWritePurpose.PublicationReadQuiescence)
                 {
-                    await ExplorerLocalTurnRollbackArtifacts
-                        .RecoverInterruptedBrowserWriteTransactionsAsync(this, writeLease);
-                }
+                    RecoverInterruptedLoadTransaction(writeLease);
+                    await RecoverInterruptedWorkerApplyTransactionAsync(
+                        writeLease);
+                    if (purpose is CanonicalWritePurpose.SessionMutation or
+                        CanonicalWritePurpose.SessionReplacement)
+                    {
+                        await ExplorerLocalTurnRollbackArtifacts
+                            .RecoverInterruptedBrowserWriteTransactionsAsync(
+                                this,
+                                writeLease);
+                    }
 
-                if (purpose == CanonicalWritePurpose.SessionMutation)
-                    EnsureBoundSessionOperationCanWrite(writeLease);
+                    if (purpose == CanonicalWritePurpose.SessionMutation)
+                        EnsureBoundSessionOperationCanWrite(writeLease);
+                }
                 return writeLease;
             }
             catch
@@ -1471,6 +1737,83 @@ public class FileSystemManager
 
     private static bool ExactBytesEqual(byte[]? left, byte[]? right) =>
         left == null ? right == null : right != null && left.AsSpan().SequenceEqual(right);
+
+    private bool SupportsReversibleFileReplacement =>
+        _hooks?.SupportsReversibleFileReplacementOverride ??
+        OperatingSystem.IsWindows();
+
+    private void RecoverInterruptedFilePublications() =>
+        ReversibleFilePublication.RecoverPending(
+            _basePath,
+            PhysicalPublicationTransactionsRootPath);
+
+    private bool HasPendingFilePublications()
+    {
+        var journalRoot = PhysicalPublicationTransactionsRootPath;
+        if (!Directory.Exists(journalRoot))
+            return false;
+
+        EnsureRuntimePathIsSafe(journalRoot);
+        return Directory.EnumerateFileSystemEntries(
+            journalRoot,
+            "*",
+            SearchOption.TopDirectoryOnly).Any();
+    }
+
+    private bool HasAmbientCanonicalLease()
+    {
+        for (var registration = _ambientCanonicalLease.Value;
+             registration != null;
+             registration = registration.Previous)
+        {
+            if (registration.Active)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ReleaseAmbientCanonicalLease(
+        AmbientCanonicalLeaseRegistration? registration)
+    {
+        if (registration == null)
+            return;
+
+        registration.Active = false;
+        if (ReferenceEquals(
+                _ambientCanonicalLease.Value,
+                registration))
+        {
+            _ambientCanonicalLease.Value = registration.Previous;
+        }
+    }
+
+    private async Task<bool>
+        RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
+            CancellationToken cancellationToken)
+    {
+        if (HasAmbientCanonicalLease() ||
+            !HasPendingFilePublications())
+            return false;
+
+        await using var writeLease =
+            await AcquirePublicationReadQuiescenceLeaseAsync(
+                cancellationToken);
+        return true;
+    }
+
+    private bool RecoverPendingFilePublicationsBeforeCanonicalRead()
+    {
+        if (HasAmbientCanonicalLease() ||
+            !HasPendingFilePublications())
+            return false;
+
+        var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
+            .GetAwaiter()
+            .GetResult();
+        writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        return true;
+    }
 
     private static byte[] EncodeUtf8WithPreamble(string content)
     {
@@ -2292,11 +2635,19 @@ public class FileSystemManager
             ?? throw new FileNotFoundException(
                 "Runtime authority file does not exist.",
                 path);
+        _hooks?.AfterRuntimeFileReadInitialValidationAsync?.Invoke(path)
+            .GetAwaiter()
+            .GetResult();
         using var reader = new StreamReader(
             stream,
             Encoding.UTF8,
             detectEncodingFromByteOrderMarks: true);
-        return reader.ReadToEnd();
+        var content = reader.ReadToEnd();
+        PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
+            stream.SafeFileHandle,
+            path,
+            "Runtime authority read completion");
+        return content;
     }
 
     private void WriteRuntimeTextAtomic(string path, string content)
@@ -2360,9 +2711,10 @@ public class FileSystemManager
         var parentAuthority = PhysicalFileAuthority.OpenStableDirectory(
             parentPath,
             authorityName);
+        FileStream? stream = null;
         try
         {
-            var stream = PhysicalFileAuthority.OpenReadFile(
+            stream = PhysicalFileAuthority.OpenReadFile(
                 parentAuthority,
                 expectedPath,
                 authorityName,
@@ -2373,10 +2725,19 @@ public class FileSystemManager
                 return null;
             }
 
-            return new StableReadFile(stream, parentAuthority);
+            _hooks?.AfterExactPhysicalReadInitialValidationAsync
+                ?.Invoke(expectedPath)
+                .GetAwaiter()
+                .GetResult();
+            return new StableReadFile(
+                stream,
+                parentAuthority,
+                expectedPath,
+                authorityName);
         }
         catch
         {
+            stream?.Dispose();
             parentAuthority.Dispose();
             throw;
         }
@@ -2395,13 +2756,14 @@ public class FileSystemManager
         cancellationToken.ThrowIfCancellationRequested();
 
         PhysicalFileAuthority.StableDirectory? parentAuthority = null;
+        FileStream? stream = null;
         try
         {
             parentAuthority = EnsureStableCanonicalParent(
                 relativePath,
                 expectedFullPath);
             EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
-            var stream = PhysicalFileAuthority.OpenReadFile(
+            stream = PhysicalFileAuthority.OpenReadFile(
                 parentAuthority,
                 expectedFullPath,
                 "Canonical game-session read",
@@ -2412,10 +2774,20 @@ public class FileSystemManager
                 return null;
             }
 
-            return new StableReadFile(stream, parentAuthority);
+            if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
+            {
+                await _hooks.AfterCanonicalReadInitialValidationAsync(
+                    relativePath);
+            }
+            return new StableReadFile(
+                stream,
+                parentAuthority,
+                expectedFullPath,
+                "Canonical game-session read");
         }
         catch
         {
+            stream?.Dispose();
             parentAuthority?.Dispose();
             throw;
         }
@@ -2431,6 +2803,15 @@ public class FileSystemManager
 
     private Task InvokeBeforeCanonicalReadOpenAsync(string relativePath) =>
         _hooks?.BeforeCanonicalReadOpenAsync?.Invoke(relativePath) ?? Task.CompletedTask;
+
+    private Task InvokeAfterCanonicalReadAttemptAsync(string relativePath) =>
+        _hooks?.AfterCanonicalReadAttemptAsync?.Invoke(relativePath) ??
+        Task.CompletedTask;
+
+    private void InvokeAfterCanonicalReadAttempt(string relativePath) =>
+        InvokeAfterCanonicalReadAttemptAsync(relativePath)
+            .GetAwaiter()
+            .GetResult();
 
     private Task InvokeAfterCanonicalMutationBoundaryValidatedAsync(string relativePath) =>
         _hooks?.AfterCanonicalMutationBoundaryValidatedAsync?.Invoke(relativePath) ??
@@ -2480,6 +2861,16 @@ public class FileSystemManager
         string authorityName)
     {
         EnsureRuntimePathIsSafe(path);
+        var destinationExists =
+            File.Exists(path) ||
+            Directory.Exists(path);
+        if (destinationExists &&
+            !SupportsReversibleFileReplacement)
+        {
+            throw new PlatformNotSupportedException(
+                "Runtime atomic overwrite requires a reversible opened-handle replacement backend.");
+        }
+
         var parentPath = Path.GetDirectoryName(path)
             ?? throw new InvalidDataException(
                 $"{authorityName} has no parent directory.");
@@ -2506,21 +2897,37 @@ public class FileSystemManager
 
             EnsureRuntimePathIsSafe(tempPath);
             EnsureRuntimePathIsSafe(path);
-            if (OperatingSystem.IsWindows())
+            if (SupportsReversibleFileReplacement)
             {
-                PhysicalFileAuthority.ValidateExistingReplacementTarget(
+                await ReversibleFilePublication.PublishAsync(
+                    _basePath,
+                    PhysicalPublicationTransactionsRootPath,
+                    parentAuthority,
+                    tempPath,
+                    stream,
                     parentAuthority,
                     path,
-                    authorityName);
-                PhysicalFileAuthority.RenameOpenedObject(
-                    stream.SafeFileHandle,
-                    path,
-                    replaceExisting: true,
-                    authorityName);
+                    authorityName,
+                    _hooks?.AfterPhysicalFileAuthorityValidatedAsync,
+                    _hooks?.BeforePhysicalSourcePublishedAsync,
+                    _hooks?.AfterPhysicalFilePublishedAsync,
+                    cancellationToken);
             }
             else
             {
-                File.Move(tempPath, path, overwrite: true);
+                if (OperatingSystem.IsWindows())
+                {
+                    PhysicalFileAuthority.RenameOpenedObjectRelative(
+                        stream.SafeFileHandle,
+                        parentAuthority,
+                        path,
+                        replaceExisting: false,
+                        authorityName + " create-only publication");
+                }
+                else
+                {
+                    File.Move(tempPath, path, overwrite: false);
+                }
             }
 
             EnsureRuntimePathIsSafe(path);
@@ -2850,6 +3257,15 @@ public class FileSystemManager
         }
 
         var gameStatePath = Path.Combine(_basePath, "game_session", "game_state");
+        var localUiLockNode = Path.GetFullPath(Path.Combine(
+            GameSessionPath,
+            LocalUiSessionLockService.LockPath.Replace(
+                '/',
+                Path.DirectorySeparatorChar)));
+        DeleteUntrustedCanonicalNamespaceNode(
+            localUiLockNode,
+            "Local UI lock namespace cleanup");
+
         var browserRollbackRoot = ResolvePath(
             ExplorerLocalTurnRollbackArtifacts.Root);
         if (File.Exists(browserRollbackRoot))
@@ -2959,6 +3375,39 @@ public class FileSystemManager
             parentAuthority,
             expectedFullPath,
             "Canonical directory-tree cleanup");
+    }
+
+    private void DeleteUntrustedCanonicalNamespaceNode(
+        string fullPath,
+        string authorityName)
+    {
+        var expectedFullPath = Path.GetFullPath(fullPath);
+        if (!IsSameOrDescendant(expectedFullPath, GameSessionPath) ||
+            string.Equals(
+                expectedFullPath,
+                Path.GetFullPath(GameSessionPath),
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} target is outside the canonical session.");
+        }
+
+        if (!File.Exists(expectedFullPath) &&
+            !Directory.Exists(expectedFullPath))
+        {
+            return;
+        }
+
+        using var parentAuthority = PhysicalFileAuthority.EnsureStableDirectory(
+            GameSessionPath,
+            Path.GetDirectoryName(expectedFullPath)
+            ?? throw new InvalidDataException(
+                $"{authorityName} target has no parent directory."),
+            authorityName);
+        PhysicalFileAuthority.TryDeleteTree(
+            parentAuthority,
+            expectedFullPath,
+            authorityName);
     }
 
     internal static IEnumerable<string> EnumerateFilesWithoutFollowingReparsePoints(

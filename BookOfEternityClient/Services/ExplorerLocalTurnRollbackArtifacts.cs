@@ -11,6 +11,12 @@ public static class ExplorerLocalTurnRollbackArtifacts
     internal const string DarenRewardProfileExternalFileId = "daren_reward_profile";
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string BrowserWriteManifestFileName = "browser_write_manifest.json";
+    private const string BrowserWriteCommittedMarkerFileName =
+        "browser_write_committed.marker";
+    private const string BrowserWriteCommittedCleanupIntentFileName =
+        "browser_write_cleanup_committed.intent";
+    private const string BrowserWriteRestoredCleanupIntentFileName =
+        "browser_write_cleanup_restored.intent";
     private static readonly JsonSerializerOptions ManifestJsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -30,7 +36,12 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string FileId,
         bool Existed,
         string? BackupPath,
-        string? Sha256);
+        string? Sha256,
+        PhysicalFileAuthority.FileIdentity? ParentIdentity = null,
+        PhysicalFileAuthority.FileIdentity? BaselineIdentity = null,
+        PhysicalFileAuthority.FileIdentity? PublishedIdentity = null,
+        string? PublishedSha256 = null,
+        string? PublicationTransactionId = null);
 
     internal sealed record BrowserWriteRollbackManifest(
         int SchemaVersion,
@@ -49,7 +60,20 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string CreatedAtUtc,
         IReadOnlyList<BrowserWriteRollbackEntry> Entries,
         IReadOnlyList<string> CleanupDirectories,
-        IReadOnlyList<BrowserWriteExternalRollbackEntry> ExternalEntries);
+        IReadOnlyList<BrowserWriteExternalRollbackEntry> ExternalEntries)
+    {
+        internal DarenRewardProfileRollbackTransaction? DarenTransaction
+        {
+            get;
+            init;
+        }
+    }
+
+    internal enum BrowserWriteCleanupOutcome
+    {
+        Committed,
+        Restored
+    }
 
     public static async Task<string?> StageFileAsync(
         FileSystemManager fs,
@@ -141,6 +165,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         var externalEntries =
             new List<BrowserWriteExternalRollbackEntry>(externalFileIds.Length);
         var createdPaths = new List<string>();
+        DarenRewardProfileRollbackTransaction? darenTransaction = null;
 
         try
         {
@@ -172,17 +197,34 @@ public static class ExplorerLocalTurnRollbackArtifacts
             for (var index = 0; index < externalFileIds.Length; index++)
             {
                 var fileId = externalFileIds[index];
-                var content = await ReadExternalRollbackBytesAsync(
-                    fs,
-                    writeLease,
-                    fileId);
+                byte[]? content;
+                if (string.Equals(
+                        fileId,
+                        DarenRewardProfileExternalFileId,
+                        StringComparison.Ordinal))
+                {
+                    darenTransaction =
+                        DarenRewardProfileRollbackTransaction.Capture(
+                            fs,
+                            writeLease);
+                    content = darenTransaction.BaselineBytes?.ToArray();
+                }
+                else
+                {
+                    content = await ReadExternalRollbackBytesAsync(
+                        fs,
+                        writeLease,
+                        fileId);
+                }
+
                 if (content == null)
                 {
                     externalEntries.Add(new BrowserWriteExternalRollbackEntry(
                         fileId,
                         Existed: false,
                         BackupPath: null,
-                        Sha256: null));
+                        Sha256: null,
+                        ParentIdentity: darenTransaction?.ParentIdentity));
                     continue;
                 }
 
@@ -194,11 +236,13 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     fileId,
                     Existed: true,
                     BackupPath: backupPath,
-                    Sha256: ComputeSha256(content)));
+                    Sha256: ComputeSha256(content),
+                    ParentIdentity: darenTransaction?.ParentIdentity,
+                    BaselineIdentity: darenTransaction?.BaselineIdentity));
             }
 
             var manifest = new BrowserWriteRollbackManifest(
-                SchemaVersion: 3,
+                SchemaVersion: 4,
                 TransactionKind: "browser_local_write",
                 Status: "staged",
                 Scope: safeScope,
@@ -211,6 +255,54 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 manifestPath,
                 JsonSerializer.Serialize(manifest, ManifestJsonOptions));
             createdPaths.Add(manifestPath);
+            if (darenTransaction != null)
+            {
+                var darenEntryIndex = externalEntries.FindIndex(entry =>
+                    string.Equals(
+                        entry.FileId,
+                        DarenRewardProfileExternalFileId,
+                        StringComparison.Ordinal));
+                darenTransaction.SetPublishedAuthorityRecorder(
+                    async (publishedIdentity, publishedSha256, publicationTransactionId) =>
+                    {
+                        externalEntries[darenEntryIndex] =
+                            externalEntries[darenEntryIndex] with
+                            {
+                                PublishedIdentity = publishedIdentity,
+                                PublishedSha256 = publishedSha256,
+                                PublicationTransactionId =
+                                    publicationTransactionId
+                            };
+                        var updatedManifest =
+                            new BrowserWriteRollbackManifest(
+                                SchemaVersion: 4,
+                                TransactionKind: "browser_local_write",
+                                Status: "staged",
+                                Scope: safeScope,
+                                CreatedAtUtc: createdAtUtc,
+                                Entries: entries,
+                                CleanupDirectories: cleanupDirectories,
+                                ExternalEntries: externalEntries);
+                        await fs.WriteFileAtomicAsync(
+                            writeLease,
+                            manifestPath,
+                            JsonSerializer.Serialize(
+                                updatedManifest,
+                                ManifestJsonOptions));
+                    });
+            }
+
+            if (darenTransaction != null)
+            {
+                if (writeLease.ExternalPublicationContext != null)
+                {
+                    throw new InvalidOperationException(
+                        "Canonical write lease already owns an external publication transaction.");
+                }
+
+                writeLease.ExternalPublicationContext = darenTransaction;
+            }
+
             return new BrowserWriteRollbackTransaction(
                 transactionRoot,
                 manifestPath,
@@ -218,10 +310,14 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 createdAtUtc,
                 entries,
                 cleanupDirectories,
-                externalEntries);
+                externalEntries)
+            {
+                DarenTransaction = darenTransaction
+            };
         }
         catch
         {
+            darenTransaction?.Dispose();
             foreach (var path in createdPaths.AsEnumerable().Reverse())
             {
                 try
@@ -240,24 +336,38 @@ public static class ExplorerLocalTurnRollbackArtifacts
         }
     }
 
-    internal static async Task MarkBrowserWriteTransactionCommittedAsync(
+    internal static Task MarkBrowserWriteTransactionCommittedAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction)
     {
-        var manifest = new BrowserWriteRollbackManifest(
-            SchemaVersion: 3,
-            TransactionKind: "browser_local_write",
-            Status: "committed",
-            Scope: transaction.Scope,
-            CreatedAtUtc: transaction.CreatedAtUtc,
-            Entries: transaction.Entries,
-            CleanupDirectories: transaction.CleanupDirectories,
-            ExternalEntries: transaction.ExternalEntries);
-        await fs.WriteFileAtomicAsync(
-            writeLease,
-            transaction.ManifestPath,
-            JsonSerializer.Serialize(manifest, ManifestJsonOptions));
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        var darenTransaction = transaction.DarenTransaction;
+        try
+        {
+            darenTransaction?.Commit();
+        }
+        catch when (
+            darenTransaction?.PublicationCommitted == true)
+        {
+            // The durable physical marker already committed the transaction.
+        }
+
+        try
+        {
+            CreateBrowserWriteCommittedMarker(
+                fs,
+                writeLease,
+                transaction);
+        }
+        catch when (
+            darenTransaction?.PublicationCommitted == true ||
+            HasBrowserWriteCommittedMarker(fs, transaction))
+        {
+            // A durable commit cannot be revoked by cleanup failure.
+        }
+
+        return Task.CompletedTask;
     }
 
     internal static async Task RecoverInterruptedBrowserWriteTransactionsAsync(
@@ -269,8 +379,6 @@ public static class ExplorerLocalTurnRollbackArtifacts
             .OrderByDescending(GetTransactionTicks)
             .ThenByDescending(static path => path, StringComparer.OrdinalIgnoreCase)
             .ToArray();
-        if (manifestPaths.Length == 0)
-            return;
 
         var transactions = new List<(BrowserWriteRollbackTransaction Transaction, string Status)>(
             manifestPaths.Length);
@@ -296,18 +404,37 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     ex);
             }
 
-            transactions.Add(ValidateBrowserWriteManifest(fs, manifestPath, manifest));
+            var validated = ValidateBrowserWriteManifest(
+                fs,
+                manifestPath,
+                manifest);
+            transactions.Add((
+                validated.Transaction,
+                await ResolveBrowserWriteTransactionStatusAsync(
+                    fs,
+                    writeLease,
+                    validated.Transaction,
+                    validated.Status)));
         }
 
         foreach (var (transaction, status) in transactions)
         {
+            var cleanupOutcome = BrowserWriteCleanupOutcome.Committed;
             if (string.Equals(status, "staged", StringComparison.Ordinal))
+            {
                 await RestoreBrowserWriteTransactionAsync(fs, writeLease, transaction);
+                cleanupOutcome = BrowserWriteCleanupOutcome.Restored;
+            }
+            else if (string.Equals(status, "restored", StringComparison.Ordinal))
+            {
+                cleanupOutcome = BrowserWriteCleanupOutcome.Restored;
+            }
 
             if (!TryDeleteBrowserWriteTransaction(
                     fs,
                     writeLease,
                     transaction,
+                    cleanupOutcome,
                     out var cleanupFailure))
             {
                 throw new IOException(
@@ -315,6 +442,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     cleanupFailure);
             }
         }
+
+        await RecoverOrphanedBrowserWriteCleanupIntentsAsync(
+            fs,
+            writeLease);
     }
 
     internal static async Task<byte[]?> ReadBrowserWriteBeforeImageAsync(
@@ -362,10 +493,20 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction,
+        BrowserWriteCleanupOutcome outcome,
         out Exception? failure)
     {
         try
         {
+            EnsureDarenPublicationResolvedForCleanup(
+                fs,
+                writeLease,
+                transaction);
+            var cleanupIntentPath = CreateBrowserWriteCleanupIntent(
+                fs,
+                writeLease,
+                transaction,
+                outcome);
             var evidencePaths = transaction.Entries
                 .Where(static entry => !string.IsNullOrWhiteSpace(entry.BackupPath))
                 .Select(static entry => entry.BackupPath!)
@@ -380,9 +521,14 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     fs.DeleteFile(writeLease, evidencePath);
             }
 
+            var committedMarkerPath =
+                GetBrowserWriteCommittedMarkerPath(transaction);
+            if (fs.FileExists(writeLease, committedMarkerPath))
+                fs.DeleteFile(writeLease, committedMarkerPath);
             fs.DeleteEmptyDirectories(writeLease, transaction.TransactionRoot);
             var transactionRoot = fs.ResolvePath(transaction.TransactionRoot);
             var manifestFullPath = fs.ResolvePath(transaction.ManifestPath);
+            var cleanupIntentFullPath = fs.ResolvePath(cleanupIntentPath);
             if (Directory.Exists(transactionRoot))
             {
                 var unexpectedEvidence = Directory
@@ -393,7 +539,11 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     .Where(path => !string.Equals(
                         Path.GetFullPath(path),
                         Path.GetFullPath(manifestFullPath),
-                        StringComparison.OrdinalIgnoreCase))
+                        StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(
+                            Path.GetFullPath(path),
+                            Path.GetFullPath(cleanupIntentFullPath),
+                            StringComparison.OrdinalIgnoreCase))
                     .ToArray();
                 if (unexpectedEvidence.Length > 0)
                 {
@@ -404,6 +554,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
 
             if (fs.FileExists(writeLease, transaction.ManifestPath))
                 fs.DeleteFile(writeLease, transaction.ManifestPath);
+            if (fs.FileExists(writeLease, cleanupIntentPath))
+                fs.DeleteFile(writeLease, cleanupIntentPath);
             fs.DeleteEmptyDirectories(writeLease, transaction.TransactionRoot);
             TryDeleteEmptyBrowserWriteParents(fs, writeLease, transaction.TransactionRoot);
             failure = null;
@@ -423,7 +575,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string manifestPath,
         BrowserWriteRollbackManifest manifest)
     {
-        if (manifest.SchemaVersion is not (1 or 2 or 3) ||
+        if (manifest.SchemaVersion is not (1 or 2 or 3 or 4) ||
             !string.Equals(manifest.TransactionKind, "browser_local_write", StringComparison.Ordinal) ||
             manifest.Status is not ("staged" or "committed" or "restored") ||
             manifest.Status == "restored" && manifest.SchemaVersion < 3 ||
@@ -547,6 +699,59 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     $"Browser rollback manifest '{manifestPath}' contains an unsupported or duplicate external file.");
             }
 
+            var hasPublishedAuthority =
+                entry.PublishedIdentity != null ||
+                !string.IsNullOrWhiteSpace(entry.PublishedSha256) ||
+                !string.IsNullOrWhiteSpace(
+                    entry.PublicationTransactionId);
+            if (manifest.SchemaVersion < 4)
+            {
+                if (entry.ParentIdentity != null ||
+                    entry.BaselineIdentity != null ||
+                    hasPublishedAuthority)
+                {
+                    throw new InvalidDataException(
+                        $"Browser rollback manifest '{manifestPath}' declares physical external authority under a legacy schema.");
+                }
+            }
+            else
+            {
+                if (OperatingSystem.IsWindows() &&
+                    entry.ParentIdentity is not
+                    {
+                        IsDirectory: true
+                    } ||
+                    entry.BaselineIdentity is
+                    {
+                        IsDirectory: true
+                    } ||
+                    entry.BaselineIdentity is
+                    {
+                        NumberOfLinks: not 1
+                    } ||
+                    entry.Existed !=
+                        (entry.BaselineIdentity != null) ||
+                    hasPublishedAuthority !=
+                        (entry.PublishedIdentity != null &&
+                         IsSha256(entry.PublishedSha256) &&
+                         Guid.TryParseExact(
+                             entry.PublicationTransactionId,
+                             "N",
+                             out _)) ||
+                    entry.PublishedIdentity is
+                    {
+                        IsDirectory: true
+                    } ||
+                    entry.PublishedIdentity is
+                    {
+                        NumberOfLinks: not 1
+                    })
+                {
+                    throw new InvalidDataException(
+                        $"Browser rollback manifest '{manifestPath}' has incomplete external physical authority.");
+                }
+            }
+
             if (!entry.Existed)
             {
                 if (!string.IsNullOrWhiteSpace(entry.BackupPath) ||
@@ -578,7 +783,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
             externalEntries.Add(entry with
             {
                 BackupPath = backupPath,
-                Sha256 = entry.Sha256!.ToLowerInvariant()
+                Sha256 = entry.Sha256!.ToLowerInvariant(),
+                PublishedSha256 =
+                    entry.PublishedSha256?.ToLowerInvariant()
             });
         }
 
@@ -618,15 +825,42 @@ public static class ExplorerLocalTurnRollbackArtifacts
         {
             try
             {
-                var content = await ReadExternalBeforeImageAsync(
-                    fs,
-                    writeLease,
-                    entry);
-                await RestoreExternalRollbackBytesAsync(
-                    fs,
-                    writeLease,
-                    entry.FileId,
-                    content);
+                if (transaction.DarenTransaction != null &&
+                    string.Equals(
+                        entry.FileId,
+                        DarenRewardProfileExternalFileId,
+                        StringComparison.Ordinal))
+                {
+                    transaction.DarenTransaction.RollBack();
+                }
+                else if (entry.ParentIdentity != null)
+                {
+                    var content = await ReadExternalBeforeImageAsync(
+                        fs,
+                        writeLease,
+                        entry);
+                    DarenRewardProfileRollbackTransaction
+                        .RestoreRecoveredBaseline(
+                            fs,
+                            writeLease,
+                            entry.ParentIdentity,
+                            entry.BaselineIdentity,
+                            entry.Sha256,
+                            content,
+                            entry.Existed);
+                }
+                else
+                {
+                    var content = await ReadExternalBeforeImageAsync(
+                        fs,
+                        writeLease,
+                        entry);
+                    await RestoreExternalRollbackBytesAsync(
+                        fs,
+                        writeLease,
+                        entry.FileId,
+                        content);
+                }
             }
             catch (Exception ex)
             {
@@ -666,7 +900,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
         }
 
         var restoredManifest = new BrowserWriteRollbackManifest(
-            SchemaVersion: 3,
+            SchemaVersion: transaction.ExternalEntries.Any(
+                static entry => entry.ParentIdentity != null)
+                ? 4
+                : 3,
             TransactionKind: "browser_local_write",
             Status: "restored",
             Scope: transaction.Scope,
@@ -679,6 +916,427 @@ public static class ExplorerLocalTurnRollbackArtifacts
             transaction.ManifestPath,
             JsonSerializer.Serialize(restoredManifest, ManifestJsonOptions));
     }
+
+    private static void CreateBrowserWriteCommittedMarker(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserWriteRollbackTransaction transaction)
+    {
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        fs.VerifyCurrentSessionOperation(writeLease);
+        var transactionRoot = fs.ResolvePath(transaction.TransactionRoot);
+        using var transactionAuthority =
+            PhysicalFileAuthority.EnsureStableDirectory(
+                fs.BasePath,
+                transactionRoot,
+                "Browser write commit marker");
+        var markerPath = Path.Combine(
+            transactionRoot,
+            BrowserWriteCommittedMarkerFileName);
+        if (File.Exists(markerPath))
+        {
+            using var existing = PhysicalFileAuthority.OpenReadFile(
+                transactionAuthority,
+                markerPath,
+                "Browser write commit marker",
+                asynchronous: false)
+                ?? throw new FileNotFoundException(
+                    "Browser write commit marker disappeared.",
+                    markerPath);
+            if (existing.Length != 0)
+            {
+                throw new InvalidDataException(
+                    "Browser write commit marker must be empty.");
+            }
+
+            PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
+                existing.SafeFileHandle,
+                markerPath,
+                "Browser write commit marker completion");
+            return;
+        }
+
+        using var marker = PhysicalFileAuthority.CreateNewWritableFile(
+            transactionAuthority,
+            markerPath,
+            "Browser write commit marker",
+            asynchronous: false);
+        marker.Flush(flushToDisk: true);
+        fs.VerifyCurrentSessionOperation(writeLease);
+    }
+
+    private static async Task<string> ResolveBrowserWriteTransactionStatusAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserWriteRollbackTransaction transaction,
+        string manifestStatus)
+    {
+        var committedCleanupIntent = await fs.ReadFileBytesAsync(
+            writeLease,
+            GetBrowserWriteCleanupIntentPath(
+                transaction,
+                BrowserWriteCleanupOutcome.Committed));
+        var restoredCleanupIntent = await fs.ReadFileBytesAsync(
+            writeLease,
+            GetBrowserWriteCleanupIntentPath(
+                transaction,
+                BrowserWriteCleanupOutcome.Restored));
+        if (committedCleanupIntent != null &&
+            restoredCleanupIntent != null)
+        {
+            throw new InvalidDataException(
+                "Browser write transaction declares conflicting cleanup outcomes.");
+        }
+        if (committedCleanupIntent != null)
+        {
+            EnsureEmptyBrowserWriteMarker(
+                committedCleanupIntent,
+                "Browser write committed cleanup intent");
+            return "committed";
+        }
+        if (restoredCleanupIntent != null)
+        {
+            EnsureEmptyBrowserWriteMarker(
+                restoredCleanupIntent,
+                "Browser write restored cleanup intent");
+            return "restored";
+        }
+
+        var marker = await fs.ReadFileBytesAsync(
+            writeLease,
+            GetBrowserWriteCommittedMarkerPath(transaction));
+        if (marker != null)
+        {
+            if (marker.Length != 0)
+            {
+                throw new InvalidDataException(
+                    "Browser write commit marker must be empty.");
+            }
+
+            return "committed";
+        }
+
+        var publicationTransactionId = transaction.ExternalEntries
+            .Select(static entry => entry.PublicationTransactionId)
+            .SingleOrDefault(static value =>
+                !string.IsNullOrWhiteSpace(value));
+        if (publicationTransactionId == null)
+            return manifestStatus;
+
+        var publicationState =
+            ReversibleFilePublication.GetDeferredState(
+                fs.BasePath,
+                fs.PhysicalPublicationTransactionsRootPath,
+                publicationTransactionId);
+        return publicationState ==
+               ReversibleFilePublication.DeferredPublicationState.Committed
+            ? "committed"
+            : manifestStatus;
+    }
+
+    private static string CreateBrowserWriteCleanupIntent(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserWriteRollbackTransaction transaction,
+        BrowserWriteCleanupOutcome outcome)
+    {
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        fs.VerifyCurrentSessionOperation(writeLease);
+        var transactionRoot = fs.ResolvePath(transaction.TransactionRoot);
+        using var transactionAuthority =
+            PhysicalFileAuthority.EnsureStableDirectory(
+                fs.BasePath,
+                transactionRoot,
+                "Browser write cleanup intent");
+        var intentPath = fs.ResolvePath(
+            GetBrowserWriteCleanupIntentPath(transaction, outcome));
+        var conflictingIntentPath = fs.ResolvePath(
+            GetBrowserWriteCleanupIntentPath(
+                transaction,
+                outcome == BrowserWriteCleanupOutcome.Committed
+                    ? BrowserWriteCleanupOutcome.Restored
+                    : BrowserWriteCleanupOutcome.Committed));
+        using (var conflictingIntent = PhysicalFileAuthority.OpenReadFile(
+                   transactionAuthority,
+                   conflictingIntentPath,
+                   "Browser write conflicting cleanup intent",
+                   asynchronous: false))
+        {
+            if (conflictingIntent != null)
+            {
+                throw new InvalidDataException(
+                    "Browser write transaction declares conflicting cleanup outcomes.");
+            }
+        }
+
+        using (var existingIntent = PhysicalFileAuthority.OpenReadFile(
+                   transactionAuthority,
+                   intentPath,
+                   "Browser write cleanup intent",
+                   asynchronous: false))
+        {
+            if (existingIntent != null)
+            {
+                if (existingIntent.Length != 0)
+                {
+                    throw new InvalidDataException(
+                        "Browser write cleanup intent must be empty.");
+                }
+
+                PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
+                    existingIntent.SafeFileHandle,
+                    intentPath,
+                    "Browser write cleanup intent completion");
+                return GetBrowserWriteCleanupIntentPath(transaction, outcome);
+            }
+        }
+
+        using var intent = PhysicalFileAuthority.CreateNewWritableFile(
+            transactionAuthority,
+            intentPath,
+            "Browser write cleanup intent",
+            asynchronous: false);
+        intent.Flush(flushToDisk: true);
+        fs.VerifyCurrentSessionOperation(writeLease);
+        return GetBrowserWriteCleanupIntentPath(transaction, outcome);
+    }
+
+    private static async Task RecoverOrphanedBrowserWriteCleanupIntentsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var intentPaths = fs
+            .EnumerateFiles(
+                writeLease,
+                BrowserWriteCommittedCleanupIntentFileName)
+            .Concat(fs.EnumerateFiles(
+                writeLease,
+                BrowserWriteRestoredCleanupIntentFileName))
+            .Where(path => path.StartsWith(
+                $"{Root}/",
+                StringComparison.OrdinalIgnoreCase))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(static path => path, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        foreach (var intentPath in intentPaths)
+        {
+            var content = await fs.ReadFileBytesAsync(writeLease, intentPath);
+            if (content == null)
+                continue;
+            EnsureEmptyBrowserWriteMarker(
+                content,
+                "Browser write cleanup intent");
+
+            var transactionRoot = ValidateCleanupIntentPath(fs, intentPath);
+            var transactionRootPath = fs.ResolvePath(transactionRoot);
+            var intentFullPath = fs.ResolvePath(intentPath);
+            var unexpectedEvidence = Directory
+                .EnumerateFileSystemEntries(
+                    transactionRootPath,
+                    "*",
+                    SearchOption.TopDirectoryOnly)
+                .Where(path => !string.Equals(
+                    Path.GetFullPath(path),
+                    Path.GetFullPath(intentFullPath),
+                    StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            if (unexpectedEvidence.Length > 0)
+            {
+                throw new IOException(
+                    "Browser cleanup-only transaction contains unknown evidence; intent retained.");
+            }
+
+            fs.DeleteFile(writeLease, intentPath);
+            fs.DeleteEmptyDirectories(writeLease, transactionRoot);
+            TryDeleteEmptyBrowserWriteParents(fs, writeLease, transactionRoot);
+        }
+    }
+
+    private static string ValidateCleanupIntentPath(
+        FileSystemManager fs,
+        string intentPath)
+    {
+        var normalizedIntentPath = NormalizeRelativePath(fs, intentPath);
+        var fileName = Path.GetFileName(normalizedIntentPath);
+        if (fileName is not (
+                BrowserWriteCommittedCleanupIntentFileName or
+                BrowserWriteRestoredCleanupIntentFileName))
+        {
+            throw new InvalidDataException(
+                "Browser write cleanup intent has an invalid filename.");
+        }
+
+        var transactionRoot = normalizedIntentPath[
+            ..normalizedIntentPath.LastIndexOf("/", StringComparison.Ordinal)];
+        if (!transactionRoot.StartsWith(
+                $"{Root}/",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                "Browser write cleanup intent is outside the rollback root.");
+        }
+
+        var transactionSegments = transactionRoot[(Root.Length + 1)..]
+            .Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (transactionSegments.Length != 2 ||
+            !string.Equals(
+                transactionSegments[0],
+                SafeSegment(transactionSegments[0]),
+                StringComparison.Ordinal) ||
+            !IsValidTransactionDirectoryName(transactionSegments[1]))
+        {
+            throw new InvalidDataException(
+                "Browser write cleanup intent is outside a valid transaction root.");
+        }
+
+        return transactionRoot;
+    }
+
+    private static void EnsureEmptyBrowserWriteMarker(
+        byte[] content,
+        string markerName)
+    {
+        if (content.Length != 0)
+        {
+            throw new InvalidDataException(
+                $"{markerName} must be empty.");
+        }
+    }
+
+    private static void EnsureDarenPublicationResolvedForCleanup(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserWriteRollbackTransaction transaction)
+    {
+        var entry = transaction.ExternalEntries.SingleOrDefault(
+            static item => string.Equals(
+                item.FileId,
+                DarenRewardProfileExternalFileId,
+                StringComparison.Ordinal));
+        if (entry == null || entry.ParentIdentity == null)
+            return;
+
+        var publicationState =
+            string.IsNullOrWhiteSpace(entry.PublicationTransactionId)
+                ? ReversibleFilePublication.DeferredPublicationState.Missing
+                : ReversibleFilePublication.GetDeferredState(
+                    fs.BasePath,
+                    fs.PhysicalPublicationTransactionsRootPath,
+                    entry.PublicationTransactionId);
+        var committed =
+            HasBrowserWriteCommittedMarker(fs, transaction) ||
+            publicationState ==
+            ReversibleFilePublication.DeferredPublicationState.Committed ||
+            transaction.DarenTransaction?.PublicationCommitted == true;
+
+        if (transaction.DarenTransaction != null)
+        {
+            if (transaction.DarenTransaction.RetainedEvidence)
+            {
+                throw new InvalidDataException(
+                    "Daren linked post-image evidence remains unresolved.");
+            }
+
+            if (committed &&
+                transaction.DarenTransaction.PublicationCommitted)
+            {
+                transaction.DarenTransaction.ValidateCommittedForCleanup();
+                if (!transaction.DarenTransaction
+                        .TryAcknowledgeCommittedJournal())
+                {
+                    throw new IOException(
+                        "Daren committed publication journal cleanup failed.");
+                }
+
+                return;
+            }
+        }
+
+        if (publicationState ==
+            ReversibleFilePublication.DeferredPublicationState.Pending)
+        {
+            throw new InvalidDataException(
+                "Daren publication evidence remains unresolved.");
+        }
+
+        if (committed &&
+            entry.PublishedIdentity != null)
+        {
+            DarenRewardProfileRollbackTransaction.VerifyRecoveredFileState(
+                fs,
+                writeLease,
+                entry.ParentIdentity,
+                entry.PublishedIdentity,
+                entry.PublishedSha256,
+                expectExistence: true,
+                authorityName: "Daren committed post-image");
+            if (publicationState ==
+                ReversibleFilePublication.DeferredPublicationState.Committed)
+            {
+                ReversibleFilePublication.AcknowledgeDeferredCommit(
+                    fs.BasePath,
+                    fs.PhysicalPublicationTransactionsRootPath,
+                    entry.PublicationTransactionId!);
+            }
+
+            return;
+        }
+
+        DarenRewardProfileRollbackTransaction.VerifyRecoveredFileState(
+            fs,
+            writeLease,
+            entry.ParentIdentity,
+            entry.Existed ? entry.BaselineIdentity : null,
+            entry.Existed ? entry.Sha256 : null,
+            expectExistence: entry.Existed,
+            authorityName: "Daren restored baseline");
+    }
+
+    private static bool HasBrowserWriteCommittedMarker(
+        FileSystemManager fs,
+        BrowserWriteRollbackTransaction transaction)
+    {
+        var transactionRoot = fs.ResolvePath(transaction.TransactionRoot);
+        using var transactionAuthority =
+            PhysicalFileAuthority.EnsureStableDirectory(
+                fs.BasePath,
+                transactionRoot,
+                "Browser write commit marker");
+        var markerPath = Path.Combine(
+            transactionRoot,
+            BrowserWriteCommittedMarkerFileName);
+        using var marker = PhysicalFileAuthority.OpenReadFile(
+            transactionAuthority,
+            markerPath,
+            "Browser write commit marker",
+            asynchronous: false);
+        if (marker == null)
+            return false;
+        if (marker.Length != 0)
+        {
+            throw new InvalidDataException(
+                "Browser write commit marker must be empty.");
+        }
+
+        PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
+            marker.SafeFileHandle,
+            markerPath,
+            "Browser write commit marker completion");
+        return true;
+    }
+
+    private static string GetBrowserWriteCommittedMarkerPath(
+        BrowserWriteRollbackTransaction transaction) =>
+        $"{transaction.TransactionRoot}/{BrowserWriteCommittedMarkerFileName}";
+
+    private static string GetBrowserWriteCleanupIntentPath(
+        BrowserWriteRollbackTransaction transaction,
+        BrowserWriteCleanupOutcome outcome) =>
+        $"{transaction.TransactionRoot}/" +
+        (outcome == BrowserWriteCleanupOutcome.Committed
+            ? BrowserWriteCommittedCleanupIntentFileName
+            : BrowserWriteRestoredCleanupIntentFileName);
 
     private static string NormalizeRelativePath(FileSystemManager fs, string path)
     {

@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -19,6 +20,104 @@ public sealed class AfterlifeRealmAutoRollbackTests : IDisposable
 
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
+    }
+
+    [Fact]
+    public async Task LoadValidatedManifestAsync_HardLinkedSnapshotFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string rollbackPath =
+            "game_state/meta/soul_state.json.explorer.rollback.realm-authority";
+        await WriteAfterlifeSnapshotAsync(
+            ("game_state/meta/soul_state.json",
+                """{ "currentRealm": "Chaos Sea", "soulName": "Пепельная Искра" }"""));
+        await _fs.WriteFileAtomicAsync(
+            rollbackPath,
+            """{ "currentRealm": "Mortal World", "soulName": "Before" }""");
+        var manifest = JsonNode.Parse(
+            await _fs.ReadFileAsync(
+                "game_state/control/pending_turn_snapshot.json")
+            ?? throw new InvalidDataException(
+                "Expected pending-turn manifest."))!.AsObject();
+        manifest["rollbackBackups"] = new JsonObject
+        {
+            ["game_state/meta/soul_state.json"] = rollbackPath
+        };
+        manifest["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+        WindowsHardLinkTestHelper.Create(
+            Path.Combine(_rootPath, "linked-realm-rollback.json"),
+            _fs.ResolvePath(rollbackPath));
+
+        var service = new RealmSegregationAutoRollbackService(
+            _fs,
+            NullLogger<RealmSegregationAutoRollbackService>.Instance);
+        var method = typeof(RealmSegregationAutoRollbackService).GetMethod(
+            "LoadValidatedManifestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException(
+                "Realm pending-turn manifest reader was not found.");
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () =>
+            {
+                var task = Assert.IsAssignableFrom<Task>(
+                    method.Invoke(service, null));
+                await task;
+            });
+    }
+
+    [Fact]
+    public async Task TryRollbackForbiddenRealmMutationsAsync_ManifestLinkAddedAfterInitialValidationFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        await WriteAfterlifeSnapshotAsync(
+            ("game_state/meta/soul_state.json",
+                """{ "currentRealm": "Chaos Sea", "soulName": "Пепельная Искра" }"""));
+        var manifestPath = _fs.ResolvePath(
+            "game_state/control/pending_turn_snapshot.json");
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "linked-realm-manifest-after-open.json");
+        var linked = false;
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterCanonicalReadInitialValidationAsync",
+            path =>
+            {
+                if (!linked &&
+                    path.Equals(
+                        "game_state/control/pending_turn_snapshot.json",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    WindowsHardLinkTestHelper.Create(aliasPath, manifestPath);
+                    linked = true;
+                }
+
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var service = new RealmSegregationAutoRollbackService(
+            raceFs,
+            NullLogger<RealmSegregationAutoRollbackService>.Instance);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => service.TryRollbackForbiddenRealmMutationsAsync(
+                "Chaos Sea",
+                ["game_state/factions/faction_core.json"],
+                "completion validation test"));
+        Assert.True(linked);
     }
 
     [Fact]

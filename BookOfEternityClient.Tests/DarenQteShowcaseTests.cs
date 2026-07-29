@@ -4791,11 +4791,17 @@ public sealed class DarenQteShowcaseTests : IDisposable
             DarenQteRewardProfileService.ResolveEnding(reachedHideout: true, normalizedScore: 90),
             new DateTime(2026, 6, 11, 1, 0, 0, DateTimeKind.Utc));
 
-        var state = await _web.StartDarenShowcaseAsync();
+        var intro = await _web.BuildDarenShowcaseStateAsync();
+        var state = await _web.StartDarenShowcaseAsync(
+            Assert.IsType<string>(intro.InteractionToken));
         while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
         {
             var activeAction = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
-            state = await _web.ResolveDarenShowcaseActionAsync(new DarenShowcaseActionRequest(activeAction.ActionId, "partial"));
+            state = await _web.ResolveDarenShowcaseActionAsync(
+                new DarenShowcaseActionRequest(
+                    activeAction.ActionId,
+                    "partial",
+                    Assert.IsType<string>(state.InteractionToken)));
         }
 
         Assert.Equal("Completed", state.State);
@@ -4822,11 +4828,17 @@ public sealed class DarenQteShowcaseTests : IDisposable
     [Fact]
     public async Task DarenBrowserState_ExposesSharedEndingEpilogueAndRewardExplanation()
     {
-        var state = await _web.StartDarenShowcaseAsync();
+        var intro = await _web.BuildDarenShowcaseStateAsync();
+        var state = await _web.StartDarenShowcaseAsync(
+            Assert.IsType<string>(intro.InteractionToken));
         while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
         {
             var activeAction = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
-            state = await _web.ResolveDarenShowcaseActionAsync(new DarenShowcaseActionRequest(activeAction.ActionId, "success"));
+            state = await _web.ResolveDarenShowcaseActionAsync(
+                new DarenShowcaseActionRequest(
+                    activeAction.ActionId,
+                    "success",
+                    Assert.IsType<string>(state.InteractionToken)));
         }
 
         Assert.Equal("Completed", state.State);
@@ -4894,13 +4906,18 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Contains("отдель", intro.BoundaryNotice, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("start", intro.AvailableOperations);
 
-        var started = await _web.StartDarenShowcaseAsync();
+        var started = await _web.StartDarenShowcaseAsync(
+            Assert.IsType<string>(intro.InteractionToken));
         Assert.Equal("Active", started.State);
         Assert.NotNull(started.ActiveScene);
         var firstAction = Assert.Single(started.ActiveScene!.CurrentChapter!.Actions);
         Assert.Contains(firstAction.CheckType, RequiredQteTypes);
 
-        var resolved = await _web.ResolveDarenShowcaseActionAsync(new DarenShowcaseActionRequest(firstAction.ActionId, "success"));
+        var resolved = await _web.ResolveDarenShowcaseActionAsync(
+            new DarenShowcaseActionRequest(
+                firstAction.ActionId,
+                "success",
+                Assert.IsType<string>(started.InteractionToken)));
         Assert.Equal("Active", resolved.State);
         Assert.NotNull(resolved.Resolution);
         Assert.Contains("submitAction", resolved.AvailableOperations);

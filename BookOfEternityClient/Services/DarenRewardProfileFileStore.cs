@@ -29,6 +29,12 @@ internal sealed class DarenRewardProfileFileStore
         CancellationToken cancellationToken = default)
     {
         EnsureLease(writeLease);
+        if (writeLease.ExternalPublicationContext is
+            DarenRewardProfileRollbackTransaction transaction)
+        {
+            return transaction.ReadCurrentBytes();
+        }
+
         using var parentAuthority = OpenParentAuthority();
         await using var stream = PhysicalFileAuthority.OpenReadFile(
             parentAuthority,
@@ -82,6 +88,22 @@ internal sealed class DarenRewardProfileFileStore
     {
         ArgumentNullException.ThrowIfNull(content);
         EnsureLease(writeLease);
+        if (writeLease.ExternalPublicationContext is
+            DarenRewardProfileRollbackTransaction transaction)
+        {
+            await transaction.PublishAsync(content, cancellationToken);
+            return;
+        }
+
+        var destinationExists =
+            File.Exists(_profilePath) ||
+            Directory.Exists(_profilePath);
+        if (destinationExists && !OperatingSystem.IsWindows())
+        {
+            throw new PlatformNotSupportedException(
+                "Daren profile overwrite requires a reversible opened-handle backend.");
+        }
+
         using var parentAuthority = OpenParentAuthority();
         var tempPath = Path.Combine(
             _profileDirectory,
@@ -101,19 +123,23 @@ internal sealed class DarenRewardProfileFileStore
 
             if (OperatingSystem.IsWindows())
             {
-                PhysicalFileAuthority.ValidateExistingReplacementTarget(
+                await ReversibleFilePublication.PublishAsync(
+                    _fs.BasePath,
+                    _fs.PhysicalPublicationTransactionsRootPath,
+                    parentAuthority,
+                    tempPath,
+                    stream,
                     parentAuthority,
                     _profilePath,
-                    AuthorityName);
-                PhysicalFileAuthority.RenameOpenedObject(
-                    stream.SafeFileHandle,
-                    _profilePath,
-                    replaceExisting: true,
-                    AuthorityName);
+                    AuthorityName,
+                    afterAuthorityValidated: null,
+                    beforeSourcePublished: null,
+                    afterPublished: null,
+                    cancellationToken);
             }
             else
             {
-                File.Move(tempPath, _profilePath, overwrite: true);
+                File.Move(tempPath, _profilePath, overwrite: false);
             }
 
             _fs.VerifyCurrentSessionOperation(writeLease);
@@ -133,6 +159,26 @@ internal sealed class DarenRewardProfileFileStore
             {
                 // A rejected path replacement must not redirect cleanup.
             }
+        }
+    }
+
+    internal void EnsureWriteSupported(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        EnsureLease(writeLease);
+        if (writeLease.ExternalPublicationContext is
+            DarenRewardProfileRollbackTransaction transaction)
+        {
+            transaction.EnsurePublicationSupported();
+            return;
+        }
+
+        if (!OperatingSystem.IsWindows() &&
+            (File.Exists(_profilePath) ||
+             Directory.Exists(_profilePath)))
+        {
+            throw new PlatformNotSupportedException(
+                "Daren profile overwrite requires a reversible opened-handle backend.");
         }
     }
 

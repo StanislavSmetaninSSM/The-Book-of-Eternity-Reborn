@@ -2524,12 +2524,12 @@ public partial class ValidationService
 
     private string? TryReadCurrentTurnGachaBaseRaritySync()
     {
-        var requestPath = _fs.ResolvePath("input/turn_request.json");
-        if (File.Exists(requestPath))
+        var requestJson = _fs.ReadFileSync("input/turn_request.json");
+        if (requestJson != null)
         {
             try
             {
-                using var doc = JsonDocument.Parse(File.ReadAllText(requestPath));
+                using var doc = JsonDocument.Parse(requestJson);
                 if (doc.RootElement.TryGetProperty("gachaBaseResult", out var gachaBaseResult) &&
                     gachaBaseResult.ValueKind == JsonValueKind.Object &&
                     gachaBaseResult.TryGetProperty("baseRarity", out var baseRarity) &&
@@ -2538,9 +2538,11 @@ public partial class ValidationService
                     return baseRarity.GetString();
                 }
             }
-            catch
+            catch (JsonException ex)
             {
-                // ignored
+                throw new InvalidDataException(
+                    "Current-turn gacha authority is malformed.",
+                    ex);
             }
         }
 

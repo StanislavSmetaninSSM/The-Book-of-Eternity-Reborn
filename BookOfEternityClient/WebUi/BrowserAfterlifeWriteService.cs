@@ -2542,7 +2542,11 @@ public sealed class BrowserAfterlifeWriteService
     {
         var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
             writeLease,
-            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
+            new BrowserLocalWriteRequest(
+                owner.OwnerId,
+                owner.OwnerLabel,
+                operationLabel,
+                owner.Lease),
             IncludePlayerSoulProfileRollback(rollbackPaths),
             writeOperation,
             prepareAfterRollback: () =>
@@ -2575,7 +2579,11 @@ public sealed class BrowserAfterlifeWriteService
     {
         var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
             writeLease,
-            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
+            new BrowserLocalWriteRequest(
+                owner.OwnerId,
+                owner.OwnerLabel,
+                operationLabel,
+                owner.Lease),
             IncludePlayerSoulProfileRollback(rollbackPaths),
             writeOperation,
             prepareAfterRollback: () =>
@@ -2608,7 +2616,11 @@ public sealed class BrowserAfterlifeWriteService
     {
         var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
             writeLease,
-            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
+            new BrowserLocalWriteRequest(
+                owner.OwnerId,
+                owner.OwnerLabel,
+                operationLabel,
+                owner.Lease),
             IncludePlayerSoulProfileRollback(rollbackPaths),
             writeOperation,
             prepareAfterRollback: () =>

@@ -3524,7 +3524,7 @@ public partial class ValidationService
         if (_prevalidatedPendingTurnSnapshotOverride != null)
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
 
-        var manifestJson = ReadCanonicalFileSync(
+        var manifestJson = _fs.ReadFileSync(
             PendingTurnSnapshotManifestPath);
         var manifestExists = manifestJson != null;
         var manifest = ParseValidationPendingTurnSnapshotManifest(
@@ -3546,7 +3546,7 @@ public partial class ValidationService
 
     private string? ReadPendingTurnSnapshotAuthoritySync()
     {
-        return ReadCanonicalFileSync(
+        return _fs.ReadFileSync(
             PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
@@ -3555,15 +3555,7 @@ public partial class ValidationService
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        try
-        {
-            return _fs.ReadFileBytesSync(relativePath);
-        }
-        catch (Exception ex) when (
-            ex is IOException or UnauthorizedAccessException or InvalidDataException)
-        {
-            return null;
-        }
+        return _fs.ReadFileBytesSync(relativePath);
     }
 
     private string? ReadPreTurnTrackedFileSync(string relativePath)
@@ -3656,15 +3648,7 @@ public partial class ValidationService
             return null;
         }
 
-        byte[]? snapshotBytes;
-        try
-        {
-            snapshotBytes = _fs.ReadFileBytesAsync(snapshotPath).GetAwaiter().GetResult();
-        }
-        catch
-        {
-            return null;
-        }
+        var snapshotBytes = _fs.ReadFileBytesSync(snapshotPath);
 
         if (snapshotBytes == null)
             return null;
@@ -4108,12 +4092,12 @@ public partial class ValidationService
 
     private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(string requestPath)
     {
+        var json = _fs.ReadFileSync(requestPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
         try
         {
-            var json = ReadCanonicalFileSync(requestPath);
-            if (string.IsNullOrWhiteSpace(json))
-                return null;
-
             using var doc = JsonDocument.Parse(json);
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return null;
@@ -4129,9 +4113,11 @@ public partial class ValidationService
             var requestId = GetFirstNonEmptyString(doc.RootElement, "requestId") ?? string.Empty;
             return new PendingTurnRequestValidationContext(sessionId, requestId, turnNumber);
         }
-        catch
+        catch (JsonException ex)
         {
-            return null;
+            throw new InvalidDataException(
+                $"Pending-turn request authority '{requestPath}' is malformed.",
+                ex);
         }
     }
 

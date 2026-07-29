@@ -48,7 +48,11 @@ public sealed class BrowserSarefStoryWriteService
 
         JsonObject? payload = null;
         var result = await _coordinator.ExecuteAtomicAsync(
-            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, "Browser Saref Wings search"),
+            new BrowserLocalWriteRequest(
+                owner.OwnerId,
+                owner.OwnerLabel,
+                "Browser Saref Wings search",
+                owner.Lease),
             [SarefMainStoryState.PendingWingsInfiltrationPath],
             async writeLease =>
             {

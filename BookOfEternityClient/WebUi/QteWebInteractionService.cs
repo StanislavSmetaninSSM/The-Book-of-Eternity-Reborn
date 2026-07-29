@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -6,15 +7,31 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
-public sealed record QteWebOfferDecisionRequest(string? Decision);
+public sealed record QteWebOfferDecisionRequest(
+    string? Decision,
+    string? InteractionToken = null);
 
-public sealed record QteWebActionRequest(string? ActionId, string? Grade);
+public sealed record QteWebActionRequest(
+    string? ActionId,
+    string? Grade,
+    string? InteractionToken = null);
 
-public sealed record QtePracticeStartRequest(string? TypeId, string? DifficultyId);
+public sealed record QtePracticeStartRequest(
+    string? TypeId,
+    string? DifficultyId,
+    string? InteractionToken = null);
 
-public sealed record QtePracticeActionRequest(string? ActionId, string? Grade);
+public sealed record QtePracticeActionRequest(
+    string? ActionId,
+    string? Grade,
+    string? InteractionToken = null);
 
-public sealed record DarenShowcaseActionRequest(string? ActionId, string? Grade);
+public sealed record DarenShowcaseActionRequest(
+    string? ActionId,
+    string? Grade,
+    string? InteractionToken = null);
+
+public sealed record QteInteractionRequest(string? InteractionToken);
 
 public sealed class QteWebInteractionService
 {
@@ -25,10 +42,13 @@ public sealed class QteWebInteractionService
     private readonly FileSystemManager _fs;
     private readonly QteSceneService _qteSceneService;
     private readonly BrowserLocalWriteCoordinator _coordinator;
+    private readonly QteInteractionTokenAuthority _interactionTokens;
     private QteSceneService.QtePracticeAttemptState? _practiceAttempt;
     private string? _practiceAttemptGeneration;
+    private string? _practiceAttemptIdentity;
     private QteSceneService.DarenShowcaseAttemptState? _darenAttempt;
     private string? _darenAttemptGeneration;
+    private string? _darenAttemptIdentity;
 
     public QteWebInteractionService(
         FileSystemManager fs,
@@ -38,6 +58,7 @@ public sealed class QteWebInteractionService
         _fs = fs;
         _qteSceneService = qteSceneService;
         _coordinator = coordinator;
+        _interactionTokens = new QteInteractionTokenAuthority(fs);
     }
 
     public async Task<QteWebStateDto> BuildStateAsync(
@@ -101,11 +122,17 @@ public sealed class QteWebInteractionService
         var offer = await _qteSceneService.TryReadOfferAsync(writeLease);
         if (offer != null)
         {
+            var offerIdentity = Fingerprint(offer);
             return new QteWebStateDto
             {
                 State = stateOverride ?? "Offer",
                 Offer = BuildOffer(offer),
                 AvailableOperations = ["accept", "decline"],
+                InteractionToken = _interactionTokens.Publish(
+                    writeLease,
+                    "offer",
+                    offerIdentity,
+                    offerIdentity),
                 Notification = notification
             };
         }
@@ -113,6 +140,7 @@ public sealed class QteWebInteractionService
         var runtime = await _qteSceneService.ReadRuntimeStateAsync(writeLease);
         if (runtime.ActiveScene is { Offer: not null } active)
         {
+            var offerIdentity = Fingerprint(active.Offer);
             return new QteWebStateDto
             {
                 State = stateOverride ?? "Active",
@@ -120,6 +148,11 @@ public sealed class QteWebInteractionService
                 Resolution = resolution == null ? null : BuildResolution(resolution),
                 Completion = resolution?.Completion == null ? null : BuildCompletion(resolution.Completion),
                 AvailableOperations = ["submitAction"],
+                InteractionToken = _interactionTokens.Publish(
+                    writeLease,
+                    "offer",
+                    offerIdentity,
+                    Fingerprint(active)),
                 Notification = notification
             };
         }
@@ -153,6 +186,28 @@ public sealed class QteWebInteractionService
         FileSystemManager.CanonicalWriteLease writeLease,
         QteWebOfferDecisionRequest? request)
     {
+        var tokenValidation = _interactionTokens.ValidatePresented(
+            writeLease,
+            "offer",
+            request?.InteractionToken);
+        if (!tokenValidation.IsValid)
+            return Failed(tokenValidation);
+
+        var currentOffer = await _qteSceneService.TryReadOfferAsync(writeLease);
+        if (currentOffer == null)
+        {
+            return Failed(QteInteractionTokenAuthority.Validation.Stale(
+                "Предложение QTE уже недоступно. Обновите страницу."));
+        }
+
+        var offerIdentity = Fingerprint(currentOffer);
+        tokenValidation = QteInteractionTokenAuthority.ValidateCurrentState(
+            tokenValidation,
+            offerIdentity,
+            offerIdentity);
+        if (!tokenValidation.IsValid)
+            return Failed(tokenValidation);
+
         var decision = request?.Decision?.Trim().ToLowerInvariant();
         if (decision is not ("accept" or "decline"))
             return Failed("decision must be accept or decline.");
@@ -223,6 +278,28 @@ public sealed class QteWebInteractionService
         FileSystemManager.CanonicalWriteLease writeLease,
         QteWebActionRequest? request)
     {
+        var tokenValidation = _interactionTokens.ValidatePresented(
+            writeLease,
+            "offer",
+            request?.InteractionToken);
+        if (!tokenValidation.IsValid)
+            return Failed(tokenValidation);
+
+        var currentRuntime =
+            await _qteSceneService.ReadRuntimeStateAsync(writeLease);
+        if (currentRuntime.ActiveScene is not { Offer: not null } activeScene)
+        {
+            return Failed(QteInteractionTokenAuthority.Validation.Stale(
+                "Активная сцена QTE уже недоступна. Обновите страницу."));
+        }
+
+        tokenValidation = QteInteractionTokenAuthority.ValidateCurrentState(
+            tokenValidation,
+            Fingerprint(activeScene.Offer),
+            Fingerprint(activeScene));
+        if (!tokenValidation.IsValid)
+            return Failed(tokenValidation);
+
         var actionId = request?.ActionId?.Trim();
         if (string.IsNullOrWhiteSpace(actionId))
             return Failed("actionId is required.");
@@ -289,17 +366,25 @@ public sealed class QteWebInteractionService
         return await _coordinator.RunBoundTransactionAsync(
             async writeLease =>
             {
+                var tokenValidation = ValidatePracticeInteraction(
+                    writeLease,
+                    request?.InteractionToken);
+                if (!tokenValidation.IsValid)
+                    return FailedPractice(tokenValidation);
+
                 DiscardStalePracticeAttempt(writeLease);
                 var attemptBefore = _practiceAttempt == null
                     ? null
                     : ClonePracticeAttempt(_practiceAttempt);
                 var generationBefore = _practiceAttemptGeneration;
+                var identityBefore = _practiceAttemptIdentity;
                 try
                 {
                     _practiceAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
                     _practiceAttempt = _qteSceneService.StartPracticeAttempt(
                         request?.TypeId,
                         request?.DifficultyId);
+                    _practiceAttemptIdentity = Guid.NewGuid().ToString("N");
                     return await BuildPracticeStateCoreAsync(
                         writeLease,
                         "Тренировка началась.",
@@ -309,6 +394,7 @@ public sealed class QteWebInteractionService
                 {
                     _practiceAttempt = attemptBefore;
                     _practiceAttemptGeneration = generationBefore;
+                    _practiceAttemptIdentity = identityBefore;
                     return await BuildPracticeStateCoreAsync(
                         writeLease,
                         notification: null,
@@ -323,6 +409,12 @@ public sealed class QteWebInteractionService
         return await _coordinator.RunBoundTransactionAsync(
             async writeLease =>
             {
+                var tokenValidation = ValidatePracticeInteraction(
+                    writeLease,
+                    request?.InteractionToken);
+                if (!tokenValidation.IsValid)
+                    return FailedPractice(tokenValidation);
+
                 if (DiscardStalePracticeAttempt(writeLease))
                 {
                     return await BuildPracticeStateCoreAsync(
@@ -379,11 +471,18 @@ public sealed class QteWebInteractionService
             });
     }
 
-    public async Task<QtePracticeWebStateDto> RetryPracticeAttemptAsync()
+    public async Task<QtePracticeWebStateDto> RetryPracticeAttemptAsync(
+        string? interactionToken = null)
     {
         return await _coordinator.RunBoundTransactionAsync(
             async writeLease =>
             {
+                var tokenValidation = ValidatePracticeInteraction(
+                    writeLease,
+                    interactionToken);
+                if (!tokenValidation.IsValid)
+                    return FailedPractice(tokenValidation);
+
                 if (DiscardStalePracticeAttempt(writeLease))
                 {
                     return await BuildPracticeStateCoreAsync(
@@ -404,12 +503,14 @@ public sealed class QteWebInteractionService
 
                 var attemptBefore = ClonePracticeAttempt(_practiceAttempt);
                 var generationBefore = _practiceAttemptGeneration;
+                var identityBefore = _practiceAttemptIdentity;
                 try
                 {
                     _practiceAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
                     _practiceAttempt = _qteSceneService.StartPracticeAttempt(
                         attemptBefore.TypeId,
                         attemptBefore.DifficultyId);
+                    _practiceAttemptIdentity = Guid.NewGuid().ToString("N");
                     return await BuildPracticeStateCoreAsync(
                         writeLease,
                         "Тренировка повторена.",
@@ -419,39 +520,57 @@ public sealed class QteWebInteractionService
                 {
                     _practiceAttempt = attemptBefore;
                     _practiceAttemptGeneration = generationBefore;
+                    _practiceAttemptIdentity = identityBefore;
                     throw;
                 }
             });
     }
 
-    public async Task<QtePracticeWebStateDto> ExitPracticeAttemptAsync()
+    public async Task<QtePracticeWebStateDto> ExitPracticeAttemptAsync(
+        string? interactionToken = null)
     {
         return await _coordinator.RunBoundTransactionAsync(
-            writeLease =>
+            async writeLease =>
             {
+                var tokenValidation = ValidatePracticeInteraction(
+                    writeLease,
+                    interactionToken);
+                if (!tokenValidation.IsValid)
+                    return FailedPractice(tokenValidation);
+
                 _practiceAttempt = null;
                 _practiceAttemptGeneration = null;
-                return BuildPracticeStateCoreAsync(
+                _practiceAttemptIdentity = null;
+                return await BuildPracticeStateCoreAsync(
                     writeLease,
                     "Тренировка закрыта.",
                     error: null);
             });
     }
 
-    public async Task<DarenShowcaseWebStateDto> StartDarenShowcaseAsync()
+    public async Task<DarenShowcaseWebStateDto> StartDarenShowcaseAsync(
+        string? interactionToken = null)
     {
         return await _coordinator.RunBoundTransactionAsync(
             async writeLease =>
             {
+                var tokenValidation = ValidateDarenInteraction(
+                    writeLease,
+                    interactionToken);
+                if (!tokenValidation.IsValid)
+                    return FailedDaren(tokenValidation);
+
                 DiscardStaleDarenAttempt(writeLease);
                 var attemptBefore = _darenAttempt == null
                     ? null
                     : CloneDarenAttempt(_darenAttempt);
                 var generationBefore = _darenAttemptGeneration;
+                var identityBefore = _darenAttemptIdentity;
                 try
                 {
                     _darenAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
                     _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
+                    _darenAttemptIdentity = Guid.NewGuid().ToString("N");
                     return await BuildDarenShowcaseStateCoreAsync(
                         writeLease,
                         "Вылазка Дарена началась.",
@@ -461,6 +580,7 @@ public sealed class QteWebInteractionService
                 {
                     _darenAttempt = attemptBefore;
                     _darenAttemptGeneration = generationBefore;
+                    _darenAttemptIdentity = identityBefore;
                     throw;
                 }
             });
@@ -478,6 +598,12 @@ public sealed class QteWebInteractionService
         FileSystemManager.CanonicalWriteLease writeLease,
         DarenShowcaseActionRequest? request)
     {
+        var tokenValidation = ValidateDarenInteraction(
+            writeLease,
+            request?.InteractionToken);
+        if (!tokenValidation.IsValid)
+            return FailedDaren(tokenValidation);
+
         if (DiscardStaleDarenAttempt(writeLease))
         {
             return await BuildDarenShowcaseStateCoreAsync(
@@ -544,11 +670,18 @@ public sealed class QteWebInteractionService
             stateOverride: "Failed");
     }
 
-    public async Task<DarenShowcaseWebStateDto> RetryDarenShowcaseAsync()
+    public async Task<DarenShowcaseWebStateDto> RetryDarenShowcaseAsync(
+        string? interactionToken = null)
     {
         return await _coordinator.RunBoundTransactionAsync(
             async writeLease =>
             {
+                var tokenValidation = ValidateDarenInteraction(
+                    writeLease,
+                    interactionToken);
+                if (!tokenValidation.IsValid)
+                    return FailedDaren(tokenValidation);
+
                 if (DiscardStaleDarenAttempt(writeLease))
                 {
                     return await BuildDarenShowcaseStateCoreAsync(
@@ -562,10 +695,12 @@ public sealed class QteWebInteractionService
                     ? null
                     : CloneDarenAttempt(_darenAttempt);
                 var generationBefore = _darenAttemptGeneration;
+                var identityBefore = _darenAttemptIdentity;
                 try
                 {
                     _darenAttemptGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
                     _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
+                    _darenAttemptIdentity = Guid.NewGuid().ToString("N");
                     return await BuildDarenShowcaseStateCoreAsync(
                         writeLease,
                         "Вылазка Дарена началась заново.",
@@ -575,19 +710,28 @@ public sealed class QteWebInteractionService
                 {
                     _darenAttempt = attemptBefore;
                     _darenAttemptGeneration = generationBefore;
+                    _darenAttemptIdentity = identityBefore;
                     throw;
                 }
             });
     }
 
-    public async Task<DarenShowcaseWebStateDto> ExitDarenShowcaseAsync()
+    public async Task<DarenShowcaseWebStateDto> ExitDarenShowcaseAsync(
+        string? interactionToken = null)
     {
         return await _coordinator.RunBoundTransactionAsync(
-            writeLease =>
+            async writeLease =>
             {
+                var tokenValidation = ValidateDarenInteraction(
+                    writeLease,
+                    interactionToken);
+                if (!tokenValidation.IsValid)
+                    return FailedDaren(tokenValidation);
+
                 _darenAttempt = null;
                 _darenAttemptGeneration = null;
-                return BuildDarenShowcaseStateCoreAsync(
+                _darenAttemptIdentity = null;
+                return await BuildDarenShowcaseStateCoreAsync(
                     writeLease,
                     "Вылазка Дарена закрыта.",
                     error: null);
@@ -606,6 +750,12 @@ public sealed class QteWebInteractionService
         var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
             ? await BuildActiveSceneAsync(attempt.ActiveScene, writeLease)
             : null;
+        var interactionIdentity = attempt == null
+            ? "practice-catalog"
+            : _practiceAttemptIdentity ??= Guid.NewGuid().ToString("N");
+        var interactionFingerprint = attempt == null
+            ? "practice-catalog"
+            : Fingerprint(attempt);
 
         return new QtePracticeWebStateDto
         {
@@ -620,6 +770,11 @@ public sealed class QteWebInteractionService
             Feedback = attempt?.Feedback ?? "Выберите тип QTE. Тренировка не меняет сюжет и не выдаёт награды.",
             LocalScoreNotice = attempt?.LocalScoreNotice ?? PracticeLocalScoreNotice,
             AvailableOperations = BuildPracticeOperations(state).ToList(),
+            InteractionToken = _interactionTokens.Publish(
+                writeLease,
+                "practice",
+                interactionIdentity,
+                interactionFingerprint),
             Notification = notification,
             Error = error
         };
@@ -647,6 +802,12 @@ public sealed class QteWebInteractionService
         var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
             ? await BuildActiveSceneAsync(attempt.ActiveScene, writeLease)
             : null;
+        var interactionIdentity = attempt == null
+            ? "daren-intro"
+            : _darenAttemptIdentity ??= Guid.NewGuid().ToString("N");
+        var interactionFingerprint = attempt == null
+            ? "daren-intro"
+            : Fingerprint(attempt);
         DarenRewardRecord? bestReward = null;
         try
         {
@@ -677,6 +838,11 @@ public sealed class QteWebInteractionService
             Completion = attempt?.LastCompletion == null ? null : BuildCompletion(attempt.LastCompletion),
             Ending = attempt?.Ending == null ? null : BuildDarenEnding(attempt.Ending),
             AvailableOperations = BuildDarenOperations(state).ToList(),
+            InteractionToken = _interactionTokens.Publish(
+                writeLease,
+                "daren",
+                interactionIdentity,
+                interactionFingerprint),
             Notification = notification,
             Error = error
         };
@@ -1510,12 +1676,59 @@ public sealed class QteWebInteractionService
             _fs.DeleteFile(writeLease, relativePath);
     }
 
+    private QteInteractionTokenAuthority.Validation ValidatePracticeInteraction(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string? interactionToken)
+    {
+        var validation = _interactionTokens.ValidatePresented(
+            writeLease,
+            "practice",
+            interactionToken);
+        if (!validation.IsValid)
+            return validation;
+
+        var identity = _practiceAttempt == null
+            ? "practice-catalog"
+            : _practiceAttemptIdentity ?? string.Empty;
+        var fingerprint = _practiceAttempt == null
+            ? "practice-catalog"
+            : Fingerprint(_practiceAttempt);
+        return QteInteractionTokenAuthority.ValidateCurrentState(
+            validation,
+            identity,
+            fingerprint);
+    }
+
+    private QteInteractionTokenAuthority.Validation ValidateDarenInteraction(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string? interactionToken)
+    {
+        var validation = _interactionTokens.ValidatePresented(
+            writeLease,
+            "daren",
+            interactionToken);
+        if (!validation.IsValid)
+            return validation;
+
+        var identity = _darenAttempt == null
+            ? "daren-intro"
+            : _darenAttemptIdentity ?? string.Empty;
+        var fingerprint = _darenAttempt == null
+            ? "daren-intro"
+            : Fingerprint(_darenAttempt);
+        return QteInteractionTokenAuthority.ValidateCurrentState(
+            validation,
+            identity,
+            fingerprint);
+    }
+
     private bool DiscardStalePracticeAttempt(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
         if (_practiceAttempt == null)
         {
             _practiceAttemptGeneration = null;
+            _practiceAttemptIdentity = null;
             return false;
         }
 
@@ -1524,6 +1737,7 @@ public sealed class QteWebInteractionService
 
         _practiceAttempt = null;
         _practiceAttemptGeneration = null;
+        _practiceAttemptIdentity = null;
         return true;
     }
 
@@ -1533,6 +1747,7 @@ public sealed class QteWebInteractionService
         if (_darenAttempt == null)
         {
             _darenAttemptGeneration = null;
+            _darenAttemptIdentity = null;
             return false;
         }
 
@@ -1541,6 +1756,7 @@ public sealed class QteWebInteractionService
 
         _darenAttempt = null;
         _darenAttemptGeneration = null;
+        _darenAttemptIdentity = null;
         return true;
     }
 
@@ -1568,6 +1784,47 @@ public sealed class QteWebInteractionService
                ?? throw new InvalidOperationException("Не удалось создать rollback snapshot вылазки Дарена.");
     }
 
+    private static string Fingerprint<T>(T value) =>
+        Convert.ToHexString(
+                SHA256.HashData(
+                    JsonSerializer.SerializeToUtf8Bytes(
+                        value,
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)))
+            .ToLowerInvariant();
+
+    private static QteWebStateDto Failed(
+        QteInteractionTokenAuthority.Validation validation) =>
+        new()
+        {
+            State = "Failed",
+            ErrorCode = validation.ErrorCode,
+            Error = validation.Error,
+            AvailableOperations = []
+        };
+
+    private static QtePracticeWebStateDto FailedPractice(
+        QteInteractionTokenAuthority.Validation validation) =>
+        new()
+        {
+            State = "Failed",
+            Catalog = QteSceneService.GetPracticeCatalog()
+                .Select(BuildPracticeCatalogEntry)
+                .ToList(),
+            ErrorCode = validation.ErrorCode,
+            Error = validation.Error,
+            AvailableOperations = []
+        };
+
+    private static DarenShowcaseWebStateDto FailedDaren(
+        QteInteractionTokenAuthority.Validation validation) =>
+        new()
+        {
+            State = "Failed",
+            ErrorCode = validation.ErrorCode,
+            Error = validation.Error,
+            AvailableOperations = []
+        };
+
     private static QteWebStateDto Failed(string message) =>
         new()
         {
@@ -1587,7 +1844,9 @@ public sealed class QteWebStateDto
     public string? LastResolvedReminder { get; init; }
     public string? LastDeclinedQteId { get; init; }
     public List<string> AvailableOperations { get; init; } = [];
+    public string? InteractionToken { get; init; }
     public string? Notification { get; init; }
+    public string? ErrorCode { get; init; }
     public string? Error { get; init; }
 }
 
@@ -1604,7 +1863,9 @@ public sealed class QtePracticeWebStateDto
     public string Feedback { get; init; } = "";
     public string LocalScoreNotice { get; init; } = "";
     public List<string> AvailableOperations { get; init; } = [];
+    public string? InteractionToken { get; init; }
     public string? Notification { get; init; }
+    public string? ErrorCode { get; init; }
     public string? Error { get; init; }
 }
 
@@ -1627,7 +1888,9 @@ public sealed class DarenShowcaseWebStateDto
     public QteWebCompletionDto? Completion { get; init; }
     public DarenShowcaseEndingDto? Ending { get; init; }
     public List<string> AvailableOperations { get; init; } = [];
+    public string? InteractionToken { get; init; }
     public string? Notification { get; init; }
+    public string? ErrorCode { get; init; }
     public string? Error { get; init; }
 }
 

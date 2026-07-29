@@ -44,6 +44,7 @@ public class SaveLoadService
     private static readonly string[] EphemeralPathPrefixes =
     {
         "game_state/control/pending_turn_snapshot/",
+        LocalUiSessionLockService.LockPath + "/",
         ExplorerLocalTurnRollbackArtifacts.Root + "/",
         QteSceneService.QteNormalizerBackupDirectory + "/",
         "worker_tasks/",
@@ -280,29 +281,47 @@ public class SaveLoadService
 
             await using (openedArchive)
             {
-                using var archive = new ZipArchive(
-                    openedArchive.Stream,
-                    ZipArchiveMode.Read,
-                    leaveOpen: true);
-                foreach (var entry in archive.Entries)
+                try
                 {
-                    if (string.IsNullOrEmpty(entry.Name))
-                        continue;
-
-                    if (!TryResolveArchiveEntryTargetPath(transactionPaths.StagingSessionPath, entry.FullName, out var targetPath))
+                    using (var archive = new ZipArchive(
+                               openedArchive.Stream,
+                               ZipArchiveMode.Read,
+                               leaveOpen: true))
                     {
-                        _logger.LogWarning("Загрузка отклонена: zip entry выходит за пределы sandbox: {Entry}", entry.FullName);
-                        return false;
+                        foreach (var entry in archive.Entries)
+                        {
+                            if (string.IsNullOrEmpty(entry.Name))
+                                continue;
+
+                            if (!TryResolveArchiveEntryTargetPath(
+                                    transactionPaths.StagingSessionPath,
+                                    entry.FullName,
+                                    out var targetPath))
+                            {
+                                _logger.LogWarning(
+                                    "Загрузка отклонена: zip entry выходит за пределы sandbox: {Entry}",
+                                    entry.FullName);
+                                openedArchive.Abandon();
+                                return false;
+                            }
+
+                            var targetDir = Path.GetDirectoryName(targetPath);
+                            if (targetDir != null)
+                                _fs.CreateLoadDirectory(targetDir);
+
+                            await using var entryStream = entry.Open();
+                            await _fs.WriteLoadTransactionFileAsync(
+                                targetPath,
+                                entryStream);
+                        }
                     }
 
-                    var targetDir = Path.GetDirectoryName(targetPath);
-                    if (targetDir != null)
-                        _fs.CreateLoadDirectory(targetDir);
-
-                    await using var entryStream = entry.Open();
-                    await _fs.WriteLoadTransactionFileAsync(
-                        targetPath,
-                        entryStream);
+                    openedArchive.Complete();
+                }
+                catch
+                {
+                    openedArchive.Abandon();
+                    throw;
                 }
             }
 
@@ -417,51 +436,71 @@ public class SaveLoadService
 
     private async Task<SaveMetadata?> ReadSaveMetadataWithRetryAsync(string saveFile)
     {
+        FileSystemManager.StableReadFile? openedFile = null;
         for (var attempt = 1; ; attempt++)
         {
             try
             {
-                return await ReadSaveMetadataAsync(saveFile);
+                openedFile = _fs.OpenExactPhysicalReadFile(
+                    saveFile,
+                    "Save metadata archive");
+                break;
             }
-            catch (Exception ex) when (IsTransientSaveMetadataReadException(ex) && attempt < SaveMetadataReadAttempts)
+            catch (Exception ex) when (
+                IsTransientSaveMetadataOpenException(ex) &&
+                attempt < SaveMetadataReadAttempts)
             {
                 await Task.Delay(SaveMetadataReadRetryDelay);
             }
         }
+
+        return openedFile == null
+            ? null
+            : await ReadSaveMetadataAsync(openedFile);
     }
 
-    private async Task<SaveMetadata?> ReadSaveMetadataAsync(string saveFile)
+    private static async Task<SaveMetadata?> ReadSaveMetadataAsync(
+        FileSystemManager.StableReadFile openedFile)
     {
-        var openedFile = _fs.OpenExactPhysicalReadFile(
-            saveFile,
-            "Save metadata archive");
-        if (openedFile == null)
-            return null;
-
         await using (openedFile)
         {
-            using var archive = new ZipArchive(
-                openedFile.Stream,
-                ZipArchiveMode.Read,
-                leaveOpen: true);
-            var metadataEntry = archive.GetEntry("save_metadata.json");
-            if (metadataEntry == null)
-                return null;
-
-            using var stream = metadataEntry.Open();
-            using var reader = new StreamReader(stream);
-            var json = await reader.ReadToEndAsync();
-            return JsonSerializer.Deserialize<SaveMetadata>(
-                json,
-                new JsonSerializerOptions
+            try
+            {
+                SaveMetadata? metadata = null;
+                using (var archive = new ZipArchive(
+                           openedFile.Stream,
+                           ZipArchiveMode.Read,
+                           leaveOpen: true))
                 {
-                    PropertyNameCaseInsensitive = true
-                });
+                    var metadataEntry = archive.GetEntry("save_metadata.json");
+                    if (metadataEntry != null)
+                    {
+                        using var stream = metadataEntry.Open();
+                        using var reader = new StreamReader(stream);
+                        var json = await reader.ReadToEndAsync();
+                        metadata = JsonSerializer.Deserialize<SaveMetadata>(
+                            json,
+                            new JsonSerializerOptions
+                            {
+                                PropertyNameCaseInsensitive = true
+                            });
+                    }
+                }
+
+                openedFile.Complete();
+                return metadata;
+            }
+            catch
+            {
+                openedFile.Abandon();
+                throw;
+            }
         }
     }
 
-    private static bool IsTransientSaveMetadataReadException(Exception ex) =>
-        ex is IOException or UnauthorizedAccessException;
+    private static bool IsTransientSaveMetadataOpenException(Exception ex) =>
+        ex is IOException &&
+        (ex.HResult & 0xFFFF) is 32 or 33;
 
     private async Task AddDirectoryToArchive(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
@@ -539,6 +578,8 @@ public class SaveLoadService
             var fullPath = Path.Combine(sessionRoot, relativePath.Replace('/', Path.DirectorySeparatorChar));
             if (File.Exists(fullPath))
                 _fs.DeleteLoadTransactionFile(fullPath);
+            else if (Directory.Exists(fullPath))
+                _fs.DeleteLoadTransactionDirectory(fullPath);
         }
 
         foreach (var relativePrefix in EphemeralPathPrefixes)

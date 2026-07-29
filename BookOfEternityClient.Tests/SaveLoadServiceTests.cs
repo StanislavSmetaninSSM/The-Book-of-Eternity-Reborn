@@ -368,6 +368,60 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants()
+    {
+        const string craftedDescendant =
+            "game_state/control/local_ui_session_lock.json/nested/lock.json";
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{\"currentRealm\":\"Chaos Sea\"}");
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(_fs.ResolvePath(craftedDescendant))!);
+        await File.WriteAllTextAsync(
+            _fs.ResolvePath(craftedDescendant),
+            "{\"crafted\":true}");
+
+        Assert.True(await _service.SaveGameAsync(
+            "ephemeral_local_ui_lock_descendant",
+            "local UI lock namespace save regression"));
+
+        var savePath = Directory
+            .GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip")
+            .Single();
+        using var archive = ZipFile.OpenRead(savePath);
+        Assert.Null(archive.GetEntry(craftedDescendant));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_StripsCraftedLocalUiLockNamespaceDescendants()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            "{\"currentRealm\":\"Chaos Sea\"}");
+        Assert.True(await _service.SaveGameAsync(
+            "crafted_local_ui_lock_descendant",
+            "local UI lock namespace load regression"));
+        var savePath = Directory
+            .GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip")
+            .Single();
+        const string craftedDescendant =
+            "game_state/control/local_ui_session_lock.json/nested/lock.json";
+        using (var archive = ZipFile.Open(savePath, ZipArchiveMode.Update))
+        {
+            var entry = archive.CreateEntry(craftedDescendant);
+            await using var stream = entry.Open();
+            await stream.WriteAsync(
+                System.Text.Encoding.UTF8.GetBytes("{\"crafted\":true}"));
+        }
+
+        Assert.True(await _service.LoadGameAsync(savePath));
+
+        var lockNode = _fs.ResolvePath(LocalUiSessionLockService.LockPath);
+        Assert.False(File.Exists(lockNode));
+        Assert.False(Directory.Exists(lockNode));
+    }
+
+    [Fact]
     public async Task SaveGameAsync_ExcludesBrowserRollbackTransactions()
     {
         var stalePath =
@@ -858,6 +912,127 @@ public sealed class SaveLoadServiceTests : IDisposable
         var soulState = await _fs.ReadFileAsync(soulStatePath);
         Assert.NotNull(soulState);
         Assert.Contains("Неприкосновенная Душа", soulState);
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_LinkAddedAfterArchiveInitialValidationPreservesLiveSession()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string markerPath = "game_state/world/archive-completion-marker.json";
+        await _fs.WriteFileAtomicAsync(markerPath, """{ "state": "live" }""");
+        var archivePath = Path.Combine(
+            _rootPath,
+            "archive-completion-race.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                markerPath,
+                """{ "state": "replacement" }""");
+        }
+
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "archive-completion-race-alias.zip");
+        var linked = false;
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterExactPhysicalReadInitialValidationAsync",
+            path =>
+            {
+                if (!linked &&
+                    path.Equals(archivePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    WindowsHardLinkTestHelper.Create(aliasPath, archivePath);
+                    linked = true;
+                }
+
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var stateManager = new StateManager(
+            raceFs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            raceFs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance);
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.True(linked);
+        Assert.Equal(
+            """{ "state": "live" }""",
+            await raceFs.ReadFileAsync(markerPath));
+    }
+
+    [Fact]
+    public async Task GetAvailableSavesAsync_LinkAddedAfterMetadataInitialValidationSkipsArchiveWithoutRetry()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var saveDirectory = _fs.ResolvePath("saves/manual_saves");
+        var archivePath = Path.Combine(
+            saveDirectory,
+            "metadata-completion-race.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "save_metadata.json",
+                """
+                {
+                  "saveName": "metadata completion race",
+                  "description": "must not be accepted",
+                  "timestamp": "2026-07-29T00:00:00Z",
+                  "turnNumber": 12
+                }
+                """);
+        }
+
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "metadata-completion-race-alias.zip");
+        var openCount = 0;
+        var hooks = FileSystemManagerHookTestHelper.WithPathHook(
+            "AfterExactPhysicalReadInitialValidationAsync",
+            path =>
+            {
+                if (path.Equals(archivePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    openCount++;
+                    if (openCount == 1)
+                    {
+                        WindowsHardLinkTestHelper.Create(aliasPath, archivePath);
+                    }
+                }
+
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var stateManager = new StateManager(
+            raceFs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            raceFs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance);
+
+        Assert.Empty(await service.GetAvailableSavesAsync());
+        Assert.Equal(1, openCount);
     }
 
     [Fact]

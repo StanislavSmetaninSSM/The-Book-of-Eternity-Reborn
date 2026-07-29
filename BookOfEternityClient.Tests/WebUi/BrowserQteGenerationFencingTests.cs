@@ -48,8 +48,11 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         };
         var web = CreateWebService(fs, hooks);
         await WriteOfferAsync(fs, BuildTerminalOffer());
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
 
-        var accept = web.ResolveOfferDecisionAsync(new QteWebOfferDecisionRequest("accept"));
+        var accept = web.ResolveOfferDecisionAsync(
+            new QteWebOfferDecisionRequest("accept", interactionToken));
         await runtimeWriteStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         var replacement = fs.ClearGameStateAsync();
@@ -91,8 +94,12 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 }
             });
 
+        var catalog = await web.BuildPracticeStateAsync();
         var start = web.StartPracticeAttemptAsync(
-            new QtePracticeStartRequest("MashInput", "normal"));
+            new QtePracticeStartRequest(
+                "MashInput",
+                "normal",
+                RequiredInteractionToken(catalog)));
         await characteristicReadStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         var replacement = fs.ClearGameStateAsync();
@@ -111,13 +118,15 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     {
         var fs = CreateFileSystem();
         var web = CreateWebService(fs, new QteSceneServiceHooks());
-        var started = await web.StartPracticeAttemptAsync(
-            new QtePracticeStartRequest("MashInput", "normal"));
+        var started = await StartPracticeAsync(web, "MashInput", "normal");
         var action = Assert.Single(started.ActiveScene!.CurrentChapter!.Actions);
         await fs.ClearGameStateAsync();
 
         var result = await web.ResolvePracticeActionAsync(
-            new QtePracticeActionRequest(action.ActionId, "success"));
+            new QtePracticeActionRequest(
+                action.ActionId,
+                "success",
+                RequiredInteractionToken(started)));
 
         Assert.Equal("Failed", result.State);
         Assert.Contains("сесс", result.Error, StringComparison.OrdinalIgnoreCase);
@@ -128,13 +137,16 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     {
         var fs = CreateFileSystem();
         var web = CreateWebService(fs, new QteSceneServiceHooks());
-        var started = await web.StartPracticeAttemptAsync(
-            new QtePracticeStartRequest("MashInput", "normal"));
+        var started = await StartPracticeAsync(web, "MashInput", "normal");
         Assert.Equal("Active", started.State);
         await fs.ClearGameStateAsync();
 
+        var replacementCatalog = await web.BuildPracticeStateAsync();
         var result = await web.StartPracticeAttemptAsync(
-            new QtePracticeStartRequest("unknown-qte", "normal"));
+            new QtePracticeStartRequest(
+                "unknown-qte",
+                "normal",
+                RequiredInteractionToken(replacementCatalog)));
 
         Assert.Equal("Failed", result.State);
         Assert.Null(result.ActiveScene);
@@ -146,15 +158,262 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     {
         var fs = CreateFileSystem();
         var web = CreateWebService(fs, new QteSceneServiceHooks());
-        var started = await web.StartDarenShowcaseAsync();
+        var started = await StartDarenAsync(web);
         var action = Assert.Single(started.ActiveScene!.CurrentChapter!.Actions);
         await fs.ClearGameStateAsync();
 
         var result = await web.ResolveDarenShowcaseActionAsync(
-            new DarenShowcaseActionRequest(action.ActionId, "success"));
+            new DarenShowcaseActionRequest(
+                action.ActionId,
+                "success",
+                RequiredInteractionToken(started)));
 
         Assert.Equal("Failed", result.State);
         Assert.Contains("сесс", result.Error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("accept")]
+    [InlineData("decline")]
+    public async Task OfferDecision_StaleInteractionTokenCannotAdoptReplacementOffer(
+        string decision)
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        await WriteOfferAsync(fs, BuildTerminalOffer());
+        var staleToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
+
+        await fs.ClearGameStateAsync();
+        await WriteOfferAsync(fs, BuildTerminalOffer());
+        var replacementState = await web.BuildReadOnlyStateAsync();
+        Assert.NotEqual(staleToken, RequiredInteractionToken(replacementState));
+        var replacementBytes =
+            await fs.ReadFileBytesAsync(QteSceneService.QteOfferPath);
+
+        var result = await web.ResolveOfferDecisionAsync(
+            DeserializeRequest<QteWebOfferDecisionRequest>(
+                new JsonObject
+                {
+                    ["decision"] = decision,
+                    ["interactionToken"] = staleToken
+                }));
+
+        Assert.Equal("Failed", result.State);
+        AssertErrorCode(result, "SessionReplaced");
+        Assert.Equal(
+            replacementBytes,
+            await fs.ReadFileBytesAsync(QteSceneService.QteOfferPath));
+        Assert.False(fs.FileExists(QteSceneService.QteRuntimePath));
+    }
+
+    [Fact]
+    public async Task ActiveAction_StaleInteractionTokenCannotAdoptReplacementAttempt()
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        await WriteActiveRuntimeAsync(fs, BuildTerminalOffer());
+        var staleToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
+
+        await fs.ClearGameStateAsync();
+        await WriteActiveRuntimeAsync(fs, BuildTerminalOffer());
+        var replacementState = await web.BuildReadOnlyStateAsync();
+        Assert.NotEqual(staleToken, RequiredInteractionToken(replacementState));
+        var replacementBytes =
+            await fs.ReadFileBytesAsync(QteSceneService.QteRuntimePath);
+
+        var result = await web.ResolveActionAsync(
+            DeserializeRequest<QteWebActionRequest>(
+                new JsonObject
+                {
+                    ["actionId"] = "finish",
+                    ["grade"] = "success",
+                    ["interactionToken"] = staleToken
+                }));
+
+        Assert.Equal("Failed", result.State);
+        AssertErrorCode(result, "SessionReplaced");
+        Assert.Equal(
+            replacementBytes,
+            await fs.ReadFileBytesAsync(QteSceneService.QteRuntimePath));
+        Assert.False(fs.FileExists(QteSceneService.QteHistoryPath));
+    }
+
+    [Fact]
+    public async Task PracticeMutations_StaleInteractionTokenCannotAdoptReplacementAttempt()
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        var catalogAToken = RequiredInteractionToken(
+            await web.BuildPracticeStateAsync());
+        var sessionA = await web.StartPracticeAttemptAsync(
+            DeserializeRequest<QtePracticeStartRequest>(
+                new JsonObject
+                {
+                    ["typeId"] = "MashInput",
+                    ["difficultyId"] = "normal",
+                    ["interactionToken"] = catalogAToken
+                }));
+        var staleToken = RequiredInteractionToken(sessionA);
+        var staleAction = Assert.Single(
+            sessionA.ActiveScene!.CurrentChapter!.Actions).ActionId;
+
+        await fs.ClearGameStateAsync();
+        var catalogBToken = RequiredInteractionToken(
+            await web.BuildPracticeStateAsync());
+        var sessionB = await web.StartPracticeAttemptAsync(
+            DeserializeRequest<QtePracticeStartRequest>(
+                new JsonObject
+                {
+                    ["typeId"] = "MashInput",
+                    ["difficultyId"] = "normal",
+                    ["interactionToken"] = catalogBToken
+                }));
+        var replacementToken = RequiredInteractionToken(sessionB);
+
+        var actionResult = await web.ResolvePracticeActionAsync(
+            DeserializeRequest<QtePracticeActionRequest>(
+                new JsonObject
+                {
+                    ["actionId"] = staleAction,
+                    ["grade"] = "success",
+                    ["interactionToken"] = staleToken
+                }));
+        Assert.Equal("Failed", actionResult.State);
+        AssertErrorCode(actionResult, "SessionReplaced");
+        Assert.Equal(
+            replacementToken,
+            RequiredInteractionToken(await web.BuildPracticeStateAsync()));
+
+        var retryResult = await InvokeTokenMutationAsync<QtePracticeWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.RetryPracticeAttemptAsync),
+            staleToken);
+        Assert.Equal("Failed", retryResult.State);
+        AssertErrorCode(retryResult, "SessionReplaced");
+        Assert.Equal(
+            replacementToken,
+            RequiredInteractionToken(await web.BuildPracticeStateAsync()));
+
+        var exitResult = await InvokeTokenMutationAsync<QtePracticeWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.ExitPracticeAttemptAsync),
+            staleToken);
+        Assert.Equal("Failed", exitResult.State);
+        AssertErrorCode(exitResult, "SessionReplaced");
+        Assert.Equal(
+            replacementToken,
+            RequiredInteractionToken(await web.BuildPracticeStateAsync()));
+    }
+
+    [Fact]
+    public async Task PracticeMutation_OldRevisionTokenCannotMutateCompletedAttempt()
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        var catalogToken = RequiredInteractionToken(
+            await web.BuildPracticeStateAsync());
+        var active = await web.StartPracticeAttemptAsync(
+            DeserializeRequest<QtePracticeStartRequest>(
+                new JsonObject
+                {
+                    ["typeId"] = "MashInput",
+                    ["difficultyId"] = "normal",
+                    ["interactionToken"] = catalogToken
+                }));
+        var activeToken = RequiredInteractionToken(active);
+        var action = Assert.Single(active.ActiveScene!.CurrentChapter!.Actions);
+        var completed = await web.ResolvePracticeActionAsync(
+            DeserializeRequest<QtePracticeActionRequest>(
+                new JsonObject
+                {
+                    ["actionId"] = action.ActionId,
+                    ["grade"] = "success",
+                    ["interactionToken"] = activeToken
+                }));
+        var completedToken = RequiredInteractionToken(completed);
+        Assert.NotEqual(activeToken, completedToken);
+
+        var result = await InvokeTokenMutationAsync<QtePracticeWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.RetryPracticeAttemptAsync),
+            activeToken);
+
+        Assert.Equal("Failed", result.State);
+        AssertErrorCode(result, "StaleInteraction");
+        Assert.Equal(
+            completedToken,
+            RequiredInteractionToken(await web.BuildPracticeStateAsync()));
+    }
+
+    [Fact]
+    public async Task DarenMutations_StaleInteractionTokenCannotAdoptReplacementAttempt()
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        var introAToken = RequiredInteractionToken(
+            await web.BuildDarenShowcaseStateAsync());
+        var sessionA = await InvokeTokenMutationAsync<DarenShowcaseWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.StartDarenShowcaseAsync),
+            introAToken);
+        var staleToken = RequiredInteractionToken(sessionA);
+        var staleAction = Assert.Single(
+            sessionA.ActiveScene!.CurrentChapter!.Actions).ActionId;
+
+        await fs.ClearGameStateAsync();
+        var introBToken = RequiredInteractionToken(
+            await web.BuildDarenShowcaseStateAsync());
+        var sessionB = await InvokeTokenMutationAsync<DarenShowcaseWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.StartDarenShowcaseAsync),
+            introBToken);
+        var replacementToken = RequiredInteractionToken(sessionB);
+
+        var actionResult = await web.ResolveDarenShowcaseActionAsync(
+            DeserializeRequest<DarenShowcaseActionRequest>(
+                new JsonObject
+                {
+                    ["actionId"] = staleAction,
+                    ["grade"] = "success",
+                    ["interactionToken"] = staleToken
+                }));
+        Assert.Equal("Failed", actionResult.State);
+        AssertErrorCode(actionResult, "SessionReplaced");
+        Assert.Equal(
+            replacementToken,
+            RequiredInteractionToken(await web.BuildDarenShowcaseStateAsync()));
+
+        var retryResult = await InvokeTokenMutationAsync<DarenShowcaseWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.RetryDarenShowcaseAsync),
+            staleToken);
+        Assert.Equal("Failed", retryResult.State);
+        AssertErrorCode(retryResult, "SessionReplaced");
+        Assert.Equal(
+            replacementToken,
+            RequiredInteractionToken(await web.BuildDarenShowcaseStateAsync()));
+
+        var exitResult = await InvokeTokenMutationAsync<DarenShowcaseWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.ExitDarenShowcaseAsync),
+            staleToken);
+        Assert.Equal("Failed", exitResult.State);
+        AssertErrorCode(exitResult, "SessionReplaced");
+        Assert.Equal(
+            replacementToken,
+            RequiredInteractionToken(await web.BuildDarenShowcaseStateAsync()));
+
+        var startResult = await InvokeTokenMutationAsync<DarenShowcaseWebStateDto>(
+            web,
+            nameof(QteWebInteractionService.StartDarenShowcaseAsync),
+            introAToken);
+        Assert.Equal("Failed", startResult.State);
+        AssertErrorCode(startResult, "SessionReplaced");
+        Assert.Equal(
+            replacementToken,
+            RequiredInteractionToken(await web.BuildDarenShowcaseStateAsync()));
     }
 
     [Fact]
@@ -163,6 +422,8 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         var fs = CreateFileSystem();
         var web = CreateWebService(fs, new QteSceneServiceHooks());
         await WriteActiveRuntimeAsync(fs, BuildTerminalOffer());
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
         string originalGeneration;
         await using (var generationLease = await fs.AcquireCanonicalWriteLeaseAsync())
             originalGeneration = fs.GetOrCreateSessionGeneration(generationLease);
@@ -179,7 +440,10 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 operationBound.TrySetResult();
                 await allowOldOperation.Task;
                 return await web.ResolveActionAsync(
-                    new QteWebActionRequest("finish", "success"));
+                    new QteWebActionRequest(
+                        "finish",
+                        "success",
+                        interactionToken));
             });
 
         await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
@@ -220,15 +484,19 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                         new IOException("Injected practice projection failure."));
                 }
             });
-        var started = await web.StartPracticeAttemptAsync(
-            new QtePracticeStartRequest("MashInput", "normal"));
+        var started = await StartPracticeAsync(web, "MashInput", "normal");
         var action = Assert.Single(started.ActiveScene!.CurrentChapter!.Actions);
         var completed = await web.ResolvePracticeActionAsync(
-            new QtePracticeActionRequest(action.ActionId, "success"));
+            new QtePracticeActionRequest(
+                action.ActionId,
+                "success",
+                RequiredInteractionToken(started)));
         Assert.Equal("Completed", completed.State);
         failProjection = true;
 
-        await Assert.ThrowsAsync<IOException>(() => web.RetryPracticeAttemptAsync());
+        await Assert.ThrowsAsync<IOException>(() =>
+            web.RetryPracticeAttemptAsync(
+                RequiredInteractionToken(completed)));
         var restored = await web.BuildPracticeStateAsync();
 
         Assert.Equal("Completed", restored.State);
@@ -259,14 +527,18 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                     throw new IOException("Injected concurrent Daren projection failure.");
                 }
             });
-        var started = await web.StartDarenShowcaseAsync();
+        var started = await StartDarenAsync(web);
         var action = Assert.Single(started.ActiveScene!.CurrentChapter!.Actions);
         failProjection = true;
 
         var resolve = web.ResolveDarenShowcaseActionAsync(
-            new DarenShowcaseActionRequest(action.ActionId, "success"));
+            new DarenShowcaseActionRequest(
+                action.ActionId,
+                "success",
+                RequiredInteractionToken(started)));
         await projectionStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var exit = web.ExitDarenShowcaseAsync();
+        var exit = web.ExitDarenShowcaseAsync(
+            RequiredInteractionToken(started));
         allowProjectionFailure.TrySetResult();
 
         var failedResolve = await resolve.WaitAsync(TimeSpan.FromSeconds(5));
@@ -348,9 +620,13 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 AfterRuntimeWrittenAsync = _ => Task.FromException(failure)
             });
         await WriteOfferAsync(fs, BuildTerminalOffer());
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
 
         var result = await web.ResolveOfferDecisionAsync(
-            new QteWebOfferDecisionRequest(decision));
+            new QteWebOfferDecisionRequest(
+                decision,
+                interactionToken));
 
         Assert.Equal("Failed", result.State);
         Assert.Contains(failure.Message, result.Error, StringComparison.Ordinal);
@@ -390,9 +666,14 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             "game_state/player/experience.json");
         await stateManager.RefreshGameStateAsync();
         var stateBefore = stateManager.CurrentState;
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
 
         var result = await web.ResolveActionAsync(
-            new QteWebActionRequest("finish", "success"));
+            new QteWebActionRequest(
+                "finish",
+                "success",
+                interactionToken));
 
         Assert.Equal("Failed", result.State);
         Assert.Contains(failure.Message, result.Error, StringComparison.Ordinal);
@@ -437,14 +718,17 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                     await allowProfileWrite.Task;
                 }
             });
-        var state = await web.StartDarenShowcaseAsync();
+        var state = await StartDarenAsync(web);
         Task<DarenShowcaseWebStateDto>? terminalAction = null;
 
         while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
         {
             var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
             var actionTask = web.ResolveDarenShowcaseActionAsync(
-                new DarenShowcaseActionRequest(action.ActionId, "success"));
+                new DarenShowcaseActionRequest(
+                    action.ActionId,
+                    "success",
+                    RequiredInteractionToken(state)));
             var completed = await Task.WhenAny(
                 actionTask,
                 profileWriteStarted.Task).WaitAsync(TimeSpan.FromSeconds(5));
@@ -483,6 +767,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     public async Task DarenCompletion_StagesExternalProfileRollbackBeforeProfileWriteCompletes()
     {
         var observedDurableExternalRollback = false;
+        var observedDurablePhysicalAuthority = false;
         var fs = CreateFileSystem();
         var web = CreateWebService(
             fs,
@@ -501,19 +786,28 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                     observedDurableExternalRollback = manifest.Contains(
                         ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId,
                         StringComparison.Ordinal);
+                    observedDurablePhysicalAuthority =
+                        manifest.Contains("\"parentIdentity\"", StringComparison.Ordinal) &&
+                        manifest.Contains("\"publishedIdentity\"", StringComparison.Ordinal) &&
+                        manifest.Contains("\"publishedSha256\"", StringComparison.Ordinal) &&
+                        manifest.Contains("\"publicationTransactionId\"", StringComparison.Ordinal);
                 }
             });
-        var state = await web.StartDarenShowcaseAsync();
+        var state = await StartDarenAsync(web);
 
         while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
         {
             var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
             state = await web.ResolveDarenShowcaseActionAsync(
-                new DarenShowcaseActionRequest(action.ActionId, "success"));
+                new DarenShowcaseActionRequest(
+                    action.ActionId,
+                    "success",
+                    RequiredInteractionToken(state)));
         }
 
         Assert.Equal("Completed", state.State);
         Assert.True(observedDurableExternalRollback);
+        Assert.True(observedDurablePhysicalAuthority);
     }
 
     [Fact]
@@ -535,13 +829,16 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                     return Task.FromException(failure);
                 }
             });
-        var state = await web.StartDarenShowcaseAsync();
+        var state = await StartDarenAsync(web);
 
         while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
         {
             var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
             state = await web.ResolveDarenShowcaseActionAsync(
-                new DarenShowcaseActionRequest(action.ActionId, "success"));
+                new DarenShowcaseActionRequest(
+                    action.ActionId,
+                    "success",
+                    RequiredInteractionToken(state)));
             if (string.Equals(state.State, "Failed", StringComparison.OrdinalIgnoreCase))
                 break;
         }
@@ -557,10 +854,152 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
 
         var retryAction = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
         var completed = await web.ResolveDarenShowcaseActionAsync(
-            new DarenShowcaseActionRequest(retryAction.ActionId, "success"));
+            new DarenShowcaseActionRequest(
+                retryAction.ActionId,
+                "success",
+                RequiredInteractionToken(state)));
 
         Assert.Equal("Completed", completed.State);
         Assert.True(File.Exists(profilePath));
+    }
+
+    [Fact]
+    public async Task DarenCompletion_LateFailureRetainsPostImageAndRestoresExactBaselineIdentity()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        byte[] baseline =
+            """{ "schemaVersion": 1, "darenShowcase": null }"""u8.ToArray();
+        await File.WriteAllBytesAsync(profilePath, baseline);
+        var baselineIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath);
+        var displacedPostImage = Path.Combine(
+            _rootPath,
+            "displaced-daren-post-image.json");
+        var replacementBlocked = false;
+        var failure = new IOException(
+            "Injected Daren post-image ownership failure.");
+        var fs = CreateFileSystem();
+        var web = CreateWebService(
+            fs,
+            new QteSceneServiceHooks
+            {
+                AfterDarenProfileWrittenAsync = () =>
+                {
+                    try
+                    {
+                        File.Move(profilePath, displacedPostImage);
+                        File.WriteAllBytes(
+                            profilePath,
+                            """{ "unrelated": true }"""u8.ToArray());
+                    }
+                    catch (Exception ex) when (
+                        ex is IOException or UnauthorizedAccessException)
+                    {
+                        replacementBlocked = true;
+                    }
+
+                    return Task.FromException(failure);
+                }
+            });
+        var state = await StartDarenAsync(web);
+
+        while (string.Equals(
+                   state.State,
+                   "Active",
+                   StringComparison.OrdinalIgnoreCase))
+        {
+            var action = Assert.Single(
+                state.ActiveScene!.CurrentChapter!.Actions);
+            state = await web.ResolveDarenShowcaseActionAsync(
+                new DarenShowcaseActionRequest(
+                    action.ActionId,
+                    "success",
+                    RequiredInteractionToken(state)));
+        }
+
+        Assert.Equal("Failed", state.State);
+        Assert.True(replacementBlocked);
+        Assert.False(File.Exists(displacedPostImage));
+        Assert.Equal(baseline, await File.ReadAllBytesAsync(profilePath));
+        Assert.Equal(
+            baselineIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath));
+    }
+
+    [Fact]
+    public async Task DarenCompletion_PostImageHardLinkRestoresExactBaselineAndRetainsEvidence()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        byte[] baseline =
+            """{ "schemaVersion": 1, "darenShowcase": null }"""u8.ToArray();
+        await File.WriteAllBytesAsync(profilePath, baseline);
+        var baselineIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath);
+        var linkedPostImage = Path.Combine(
+            _rootPath,
+            "linked-daren-post-image.json");
+        var failure = new IOException(
+            "Injected Daren post-image hard-link failure.");
+        var fs = CreateFileSystem();
+        var web = CreateWebService(
+            fs,
+            new QteSceneServiceHooks
+            {
+                AfterDarenProfileWrittenAsync = () =>
+                {
+                    WindowsHardLinkTestHelper.Create(
+                        linkedPostImage,
+                        profilePath);
+                    return Task.FromException(failure);
+                }
+            });
+        var state = await StartDarenAsync(web);
+
+        while (string.Equals(
+                   state.State,
+                   "Active",
+                   StringComparison.OrdinalIgnoreCase))
+        {
+            var action = Assert.Single(
+                state.ActiveScene!.CurrentChapter!.Actions);
+            state = await web.ResolveDarenShowcaseActionAsync(
+                new DarenShowcaseActionRequest(
+                    action.ActionId,
+                    "success",
+                    RequiredInteractionToken(state)));
+        }
+
+        Assert.Equal("Failed", state.State);
+        Assert.Equal(baseline, await File.ReadAllBytesAsync(profilePath));
+        Assert.Equal(
+            baselineIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(profilePath));
+        Assert.True(File.Exists(linkedPostImage));
+        Assert.NotEqual(
+            baseline,
+            await File.ReadAllBytesAsync(linkedPostImage));
+        Assert.NotEmpty(Directory.GetFiles(
+            fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root),
+            "browser_write_manifest.json",
+            SearchOption.AllDirectories));
+        Assert.NotEmpty(Directory.GetDirectories(
+            fs.PhysicalPublicationTransactionsRootPath));
     }
 
     [Fact]
@@ -591,6 +1030,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
 
         var fs = CreateFileSystem();
         var hookInvoked = false;
+        var replacementBlocked = false;
         var web = CreateWebService(
             fs,
             new QteSceneServiceHooks
@@ -598,24 +1038,45 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 BeforeDarenProfileWriteAsync = () =>
                 {
                     hookInvoked = true;
-                    Directory.Move(profileDirectory, displacedProfileDirectory);
-                    CreateDirectoryJunction(profileDirectory, outsideRoot);
-                    return Task.CompletedTask;
+                    try
+                    {
+                        Directory.Move(
+                            profileDirectory,
+                            displacedProfileDirectory);
+                        CreateDirectoryJunction(
+                            profileDirectory,
+                            outsideRoot);
+                    }
+                    catch (Exception ex) when (
+                        ex is IOException or UnauthorizedAccessException)
+                    {
+                        replacementBlocked = true;
+                    }
+
+                    return replacementBlocked
+                        ? Task.FromException(
+                            new IOException(
+                                "Injected failure after blocked Daren parent replacement."))
+                        : Task.CompletedTask;
                 }
             });
 
         try
         {
-            var state = await web.StartDarenShowcaseAsync();
+            var state = await StartDarenAsync(web);
             while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
             {
                 var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
                 state = await web.ResolveDarenShowcaseActionAsync(
-                    new DarenShowcaseActionRequest(action.ActionId, "success"));
+                    new DarenShowcaseActionRequest(
+                        action.ActionId,
+                        "success",
+                        RequiredInteractionToken(state)));
             }
 
             Assert.Equal("Failed", state.State);
             Assert.True(hookInvoked, state.Error);
+            Assert.True(replacementBlocked, state.Error);
             Assert.False(File.Exists(Path.Combine(
                 outsideRoot,
                 "qte_showcase_rewards.json")));
@@ -624,7 +1085,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 await File.ReadAllTextAsync(outsideSentinel));
             Assert.Equal(
                 originalProfile,
-                await File.ReadAllTextAsync(displacedProfilePath));
+                await File.ReadAllTextAsync(profilePath));
         }
         finally
         {
@@ -885,6 +1346,69 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             JsonSerializer.Serialize(
                 state,
                 SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static async Task<QtePracticeWebStateDto> StartPracticeAsync(
+        QteWebInteractionService service,
+        string typeId,
+        string difficultyId)
+    {
+        var catalog = await service.BuildPracticeStateAsync();
+        return await service.StartPracticeAttemptAsync(
+            new QtePracticeStartRequest(
+                typeId,
+                difficultyId,
+                RequiredInteractionToken(catalog)));
+    }
+
+    private static async Task<DarenShowcaseWebStateDto> StartDarenAsync(
+        QteWebInteractionService service)
+    {
+        var intro = await service.BuildDarenShowcaseStateAsync();
+        return await service.StartDarenShowcaseAsync(
+            RequiredInteractionToken(intro));
+    }
+
+    private static T DeserializeRequest<T>(JsonObject request) =>
+        JsonSerializer.Deserialize<T>(
+            request.ToJsonString(),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+        ?? throw new InvalidOperationException(
+            $"Could not deserialize {typeof(T).Name} test request.");
+
+    private static string RequiredInteractionToken<T>(T state)
+    {
+        var root = JsonSerializer.SerializeToNode(
+            state,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!.AsObject();
+        var token = root["interactionToken"]?.GetValue<string>();
+        Assert.False(
+            string.IsNullOrWhiteSpace(token),
+            $"{typeof(T).Name} must publish a mutable interaction token.");
+        return token!;
+    }
+
+    private static void AssertErrorCode<T>(T state, string expected)
+    {
+        var root = JsonSerializer.SerializeToNode(
+            state,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!.AsObject();
+        Assert.Equal(expected, root["errorCode"]?.GetValue<string>());
+    }
+
+    private static async Task<T> InvokeTokenMutationAsync<T>(
+        QteWebInteractionService service,
+        string methodName,
+        string interactionToken)
+    {
+        var method = typeof(QteWebInteractionService).GetMethod(methodName)
+            ?? throw new InvalidOperationException(
+                $"Could not find {methodName}.");
+        var arguments = method.GetParameters().Length == 0
+            ? Array.Empty<object?>()
+            : [interactionToken];
+        return await ((Task<T>)method.Invoke(service, arguments)!)
+            .WaitAsync(TimeSpan.FromSeconds(5));
     }
 
     private static void CreateDirectoryJunction(string junctionPath, string targetPath)

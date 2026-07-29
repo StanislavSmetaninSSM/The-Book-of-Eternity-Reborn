@@ -110,22 +110,23 @@ public class StateManager
         {
             _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
         }
-        await RefreshGameStateCoreAsync();
+        await RefreshGameStateCoreAsync(writeLease);
     }
 
     internal async Task RefreshGameStateAsync(FileSystemManager.CanonicalWriteLease writeLease)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         await RepairClientOwnedProfileMirrorsAsync(writeLease);
-        await RefreshGameStateCoreAsync();
+        await RefreshGameStateCoreAsync(writeLease);
     }
 
-    private async Task RefreshGameStateCoreAsync()
+    private async Task RefreshGameStateCoreAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var state = new AggregatedGameState();
 
         // Core: Player status
-        await TryLoadJson("game_state/core/player_status.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/core/player_status.json", (doc) =>
         {
             var root = doc.RootElement;
             state.PlayerStatus = new PlayerStatusState
@@ -143,20 +144,20 @@ public class StateManager
         });
 
         // Core: Narrative
-        await TryLoadJson("output/narrative_response.json", (doc) =>
+        await TryLoadJson(writeLease, "output/narrative_response.json", (doc) =>
         {
             state.Narrative = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(
                 GetString(doc.RootElement, "response", "")) ?? "";
         });
 
         // Core: GM Debug
-        await TryLoadJson("output/debug_logs.json", (doc) =>
+        await TryLoadJson(writeLease, "output/debug_logs.json", (doc) =>
         {
             state.GmDebug = GetString(doc.RootElement, "gm_thoughts_markdown", "");
         });
 
         // World: Location
-        await TryLoadJson("game_state/world/current_location.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/world/current_location.json", (doc) =>
         {
             var root = doc.RootElement;
             if (root.TryGetProperty("currentLocationData", out var locationData) &&
@@ -167,13 +168,13 @@ public class StateManager
         });
 
         // World: Time
-        await TryLoadJson("game_state/world/world_time.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/world/world_time.json", (doc) =>
         {
             state.WorldTime = FormatWorldTime(doc.RootElement);
         });
 
         // Player: Transformation (name, class, race)
-        await TryLoadJson("game_state/player/transformation.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/player/transformation.json", (doc) =>
         {
             var root = doc.RootElement;
             state.CharacterName = GetString(root, "playerCharacterNameChange", state.CharacterName);
@@ -182,7 +183,7 @@ public class StateManager
         });
 
         // Meta: Soul state
-        await TryLoadJson("game_state/meta/soul_state.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/meta/soul_state.json", (doc) =>
         {
             var root = doc.RootElement;
             state.SoulName = GetString(root, "soulName", "");
@@ -210,10 +211,12 @@ public class StateManager
                 state.EnlightenmentTier = tier.GetString() ?? "Новичок";
         });
 
-        await TryLoadMortalIncarnationIdentityFallbackAsync(state);
+        await TryLoadMortalIncarnationIdentityFallbackAsync(
+            writeLease,
+            state);
 
         // Meta: Shining Abode lifecycle handoff
-        await TryLoadJson("game_state/meta/shining_abode_state.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/meta/shining_abode_state.json", (doc) =>
         {
             var root = doc.RootElement;
             state.ShiningAbodeAvailability = GetString(root, "availability", "");
@@ -281,14 +284,16 @@ public class StateManager
 
         // Control: Post-life guard for the first ordinary afterlife turn.
         // A malformed or semantically invalid guard still blocks re-entry until runtime normalization clears it.
-        var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+        var rawReturnGuard = await _fs.ReadFileAsync(
+            writeLease,
+            AfterlifeReturnGuardService.GuardPath);
         var guardSemanticState = AfterlifeReturnGuardService.Classify(rawReturnGuard, out _);
         state.HasBlockingAfterlifeReturnGuard =
             guardSemanticState is AfterlifeReturnGuardSemanticState.ActiveValid or
             AfterlifeReturnGuardSemanticState.BlockingInvalid;
 
         // Meta: Guardians (active guardian name)
-        await TryLoadJson("game_state/meta/guardians.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/meta/guardians.json", (doc) =>
         {
             var root = doc.RootElement;
             if (root.ValueKind == JsonValueKind.Object)
@@ -300,7 +305,7 @@ public class StateManager
         });
 
         // History: Chat log for turn number
-        await TryLoadJson("game_state/history/chat_log.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/history/chat_log.json", (doc) =>
         {
             var root = doc.RootElement;
             if (root.TryGetProperty("sessionId", out var sid))
@@ -420,9 +425,12 @@ public class StateManager
         return null;
     }
 
-    private async Task TryLoadJson(string path, Action<JsonDocument> handler)
+    private async Task TryLoadJson(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        Action<JsonDocument> handler)
     {
-        var json = await _fs.ReadFileAsync(path);
+        var json = await _fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -436,12 +444,17 @@ public class StateManager
         }
     }
 
-    private async Task TryLoadMortalIncarnationIdentityFallbackAsync(AggregatedGameState state)
+    private async Task TryLoadMortalIncarnationIdentityFallbackAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AggregatedGameState state)
     {
         if (state.IsInAfterlifeRealm || !string.IsNullOrWhiteSpace(state.CharacterName))
             return;
 
-        await TryLoadJson("game_state/control/next_life_scenario_core.json", doc =>
+        await TryLoadJson(
+            writeLease,
+            "game_state/control/next_life_scenario_core.json",
+            doc =>
         {
             if (!doc.RootElement.TryGetProperty("scenarioCoreAssertions", out var assertions) ||
                 assertions.ValueKind != JsonValueKind.Array)

@@ -65,6 +65,21 @@ public sealed class ExplorerWebPromptSessionService
         ExplorerCommandResult result,
         ExplorerWebCommandRequest request)
     {
+        string expectedGeneration;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+
+        return await AttachSessionIfNeededAsync(
+            result,
+            request,
+            expectedGeneration);
+    }
+
+    public async Task<ExplorerCommandResult> AttachSessionIfNeededAsync(
+        ExplorerCommandResult result,
+        ExplorerWebCommandRequest request,
+        string expectedGeneration)
+    {
         if (result.State != CommandExecutionState.RequiresInput || result.Prompts.Count == 0)
             return result;
 
@@ -73,7 +88,14 @@ public sealed class ExplorerWebPromptSessionService
         try
         {
             await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            var expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+            if (!_fs.IsCurrentSessionGeneration(writeLease, expectedGeneration))
+            {
+                throw new SessionReplacedException(
+                    "The prompt result belongs to a replaced game session.",
+                    expectedGeneration,
+                    actualGeneration: null);
+            }
+
             return await SessionOperationContext.RunBoundAsync(
                 _fs,
                 expectedGeneration,
@@ -158,6 +180,8 @@ public sealed class ExplorerWebPromptSessionService
                     ]
                 };
             }
+
+            owner = owner with { Lease = lockResult.Lease };
         }
 
         var expiresAtUtc = _timeProvider.GetUtcNow().UtcDateTime.Add(SessionLease);
@@ -173,12 +197,31 @@ public sealed class ExplorerWebPromptSessionService
         return WithSession(result, session, result.State, result.Prompts);
     }
 
-    public ExplorerCommandResult GetSession(string sessionId)
+    public ExplorerCommandResult GetSession(string sessionId) =>
+        GetSessionAsync(sessionId).GetAwaiter().GetResult();
+
+    public async Task<ExplorerCommandResult> GetSessionAsync(string sessionId)
     {
         if (!TryGetLiveSnapshot(sessionId, out var snapshot))
             return MissingSessionResult(sessionId);
 
-        return WithSession(snapshot.Result, snapshot.Session, CommandExecutionState.RequiresInput, snapshot.Result.Prompts);
+        try
+        {
+            return await SessionOperationContext.RunBoundAsync(
+                _fs,
+                snapshot.ExpectedSessionGeneration,
+                () => Task.FromResult(
+                    WithSession(
+                        snapshot.Result,
+                        snapshot.Session,
+                        CommandExecutionState.RequiresInput,
+                        snapshot.Result.Prompts)));
+        }
+        catch (SessionReplacedException)
+        {
+            RemoveSnapshot(sessionId, snapshot);
+            return SessionReplacedResult(snapshot.Result.Command);
+        }
     }
 
     public async Task<ExplorerCommandResult> SubmitAsync(ExplorerPromptSessionSubmitRequest request)
@@ -186,41 +229,50 @@ public sealed class ExplorerWebPromptSessionService
         if (!TryGetLiveSnapshot(request.SessionId, out var snapshot))
             return MissingSessionResult(request.SessionId);
 
-        if (!OwnerMatches(snapshot, request.OwnerId))
-            return OwnerMismatchResult(snapshot);
-
-        var answers = request.Answers ?? new Dictionary<string, JsonNode?>();
-        var errors = ValidateAnswers(snapshot.Result.Prompts, answers);
-        if (errors.Count > 0)
-        {
-            return WithSession(
-                snapshot.Result,
-                snapshot.Session,
-                CommandExecutionState.RequiresInput,
-                snapshot.Result.Prompts,
-                errors.Select(error => new UiNotification
-                {
-                    Severity = UiNotificationSeverity.Error,
-                    Title = "Ошибка формы",
-                    Message = error
-                }).ToList());
-        }
-
         try
         {
             return await SessionOperationContext.RunBoundAsync(
                 _fs,
                 snapshot.ExpectedSessionGeneration,
-                () => SubmitBoundAsync(
+                () => SubmitValidatedAsync(
+                    request,
                     request.SessionId,
-                    snapshot,
-                    answers));
+                    snapshot));
         }
         catch (SessionReplacedException)
         {
-            _sessions.TryRemove(request.SessionId, out _);
+            RemoveSnapshot(request.SessionId, snapshot);
             return SessionReplacedResult(snapshot.Result.Command);
         }
+    }
+
+    private Task<ExplorerCommandResult> SubmitValidatedAsync(
+        ExplorerPromptSessionSubmitRequest request,
+        string sessionId,
+        PromptSessionSnapshot snapshot)
+    {
+        if (!OwnerMatches(snapshot, request.OwnerId))
+            return Task.FromResult(OwnerMismatchResult(snapshot));
+
+        var answers = request.Answers ?? new Dictionary<string, JsonNode?>();
+        var errors = ValidateAnswers(snapshot.Result.Prompts, answers);
+        if (errors.Count > 0)
+        {
+            return Task.FromResult(
+                WithSession(
+                    snapshot.Result,
+                    snapshot.Session,
+                    CommandExecutionState.RequiresInput,
+                    snapshot.Result.Prompts,
+                    errors.Select(error => new UiNotification
+                    {
+                        Severity = UiNotificationSeverity.Error,
+                        Title = "Ошибка формы",
+                        Message = error
+                    }).ToList()));
+        }
+
+        return SubmitBoundAsync(sessionId, snapshot, answers);
     }
 
     private async Task<ExplorerCommandResult> SubmitBoundAsync(
@@ -261,7 +313,7 @@ public sealed class ExplorerWebPromptSessionService
         var submittedAnswers = AnswersToJson(answers);
         _sessions.TryRemove(sessionId, out _);
         if (snapshot.RequiresLocalUiLock)
-            await _lockService.ReleaseAsync(snapshot.Owner);
+            await ReleaseSnapshotLockAsync(snapshot);
 
         var blocks = snapshot.Result.Blocks.ToList();
         blocks.Add(new UiMessageBlock
@@ -318,7 +370,7 @@ public sealed class ExplorerWebPromptSessionService
 
         _sessions.TryRemove(sessionId, out _);
         if (!writeResult.Success && snapshot.RequiresLocalUiLock)
-            await _lockService.ReleaseAsync(snapshot.Owner);
+            await ReleaseSnapshotLockAsync(snapshot);
 
         var blocks = snapshot.Result.Blocks.ToList();
         blocks.Add(new UiMessageBlock
@@ -359,9 +411,6 @@ public sealed class ExplorerWebPromptSessionService
         if (!TryGetLiveSnapshot(request.SessionId, out var snapshot))
             return MissingSessionResult(request.SessionId);
 
-        if (!OwnerMatches(snapshot, request.OwnerId))
-            return OwnerMismatchResult(snapshot);
-
         try
         {
             return await SessionOperationContext.RunBoundAsync(
@@ -369,11 +418,14 @@ public sealed class ExplorerWebPromptSessionService
                 snapshot.ExpectedSessionGeneration,
                 async () =>
                 {
+                    if (!OwnerMatches(snapshot, request.OwnerId))
+                        return OwnerMismatchResult(snapshot);
+
                     if (!_sessions.TryRemove(request.SessionId, out _))
                         return MissingSessionResult(request.SessionId);
 
                     if (snapshot.RequiresLocalUiLock)
-                        await _lockService.ReleaseAsync(snapshot.Owner);
+                        await ReleaseSnapshotLockAsync(snapshot);
 
                     return new ExplorerCommandResult
                     {
@@ -402,7 +454,7 @@ public sealed class ExplorerWebPromptSessionService
         }
         catch (SessionReplacedException)
         {
-            _sessions.TryRemove(request.SessionId, out _);
+            RemoveSnapshot(request.SessionId, snapshot);
             return SessionReplacedResult(snapshot.Result.Command);
         }
     }
@@ -421,6 +473,24 @@ public sealed class ExplorerWebPromptSessionService
 
         snapshot = existing;
         return true;
+    }
+
+    private void RemoveSnapshot(
+        string sessionId,
+        PromptSessionSnapshot snapshot)
+    {
+        if (_sessions.TryGetValue(sessionId, out var current) &&
+            ReferenceEquals(current, snapshot))
+        {
+            _sessions.TryRemove(sessionId, out _);
+        }
+    }
+
+    private async Task ReleaseSnapshotLockAsync(
+        PromptSessionSnapshot snapshot)
+    {
+        if (snapshot.Owner.Lease != null)
+            await _lockService.ReleaseAsync(snapshot.Owner.Lease);
     }
 
     private static UiPromptSession BuildSession(LocalUiSessionLockOwner owner, bool requiresLock, DateTime expiresAtUtc)
@@ -626,7 +696,7 @@ public sealed class ExplorerWebPromptSessionService
         return root;
     }
 
-    private static ExplorerCommandResult SessionReplacedResult(string command) =>
+    internal static ExplorerCommandResult SessionReplacedResult(string command) =>
         new()
         {
             Command = command,

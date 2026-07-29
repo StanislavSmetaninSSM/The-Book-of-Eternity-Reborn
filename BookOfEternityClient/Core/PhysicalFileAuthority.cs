@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
@@ -23,8 +24,10 @@ internal static class PhysicalFileAuthority
     private const uint FileFlagOpenReparsePoint = 0x00200000;
     private const uint FileFlagBackupSemantics = 0x02000000;
     private const int FileRenameInfo = 3;
+    private const int NtFileRenameInformation = 10;
     private const int FileDispositionInfo = 4;
     private const int FileStandardInfoClass = 1;
+    private const int FileIdInfoClass = 18;
     private const int FileAttributeTagInfo = 9;
     private const uint FileNameOpened = 0x00000008;
     private const int ErrorFileNotFound = 2;
@@ -51,6 +54,13 @@ internal static class PhysicalFileAuthority
             handle?.Dispose();
         }
     }
+
+    internal sealed record FileIdentity(
+        ulong VolumeSerialNumber,
+        ulong FileIdLow,
+        ulong FileIdHigh,
+        bool IsDirectory,
+        uint NumberOfLinks);
 
     internal static StableDirectory EnsureStableDirectory(
         string rootPath,
@@ -108,7 +118,8 @@ internal static class PhysicalFileAuthority
 
     internal static StableDirectory OpenStableDirectory(
         string expectedPath,
-        string authorityName)
+        string authorityName,
+        bool allowRename = false)
     {
         var normalizedPath = Path.GetFullPath(expectedPath);
         if (!Directory.Exists(normalizedPath))
@@ -120,9 +131,12 @@ internal static class PhysicalFileAuthority
         if (!OperatingSystem.IsWindows())
             return new StableDirectory(normalizedPath, handle: null);
 
+        var access = FileListDirectory | SynchronizeAccess;
+        if (allowRename)
+            access |= DeleteAccess;
         var handle = CreateFile(
             ToWindowsExtendedPath(normalizedPath),
-            FileListDirectory,
+            access,
             FileShareRead | FileShareWrite,
             IntPtr.Zero,
             OpenExisting,
@@ -246,7 +260,7 @@ internal static class PhysicalFileAuthority
         try
         {
             afterOpenedBeforeValidation?.Invoke();
-            EnsureHandleMatchesExpectedPath(
+            EnsureRegularFileHandleMatchesExpectedPath(
                 stream.SafeFileHandle,
                 normalizedPath,
                 authorityName);
@@ -263,7 +277,8 @@ internal static class PhysicalFileAuthority
         StableDirectory parent,
         string expectedPath,
         bool isDirectory,
-        string authorityName)
+        string authorityName,
+        bool writable = false)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         if (!OperatingSystem.IsWindows())
@@ -274,6 +289,10 @@ internal static class PhysicalFileAuthority
 
         var normalizedPath = Path.GetFullPath(expectedPath);
         var access = DeleteAccess | SynchronizeAccess | FileReadAttributes;
+        if (!isDirectory)
+            access |= GenericRead;
+        if (!isDirectory && writable)
+            access |= GenericWrite;
         if (isDirectory)
             access |= FileListDirectory;
         var flags = isDirectory
@@ -372,6 +391,329 @@ internal static class PhysicalFileAuthority
             sourceHandle,
             normalizedDestination,
             authorityName);
+    }
+
+    internal static void RenameOpenedObjectRelative(
+        SafeFileHandle sourceHandle,
+        StableDirectory destinationParent,
+        string destinationPath,
+        bool replaceExisting,
+        string authorityName,
+        bool requireSingleLink = true)
+    {
+        ArgumentNullException.ThrowIfNull(destinationParent);
+        EnsureDirectChild(
+            destinationParent,
+            destinationPath,
+            authorityName);
+        if (!OperatingSystem.IsWindows() ||
+            destinationParent.Handle is not { IsInvalid: false } parentHandle)
+        {
+            throw new PlatformNotSupportedException(
+                "Retained-directory relative rename is available only on Windows.");
+        }
+
+        if (requireSingleLink)
+            EnsureRegularFileHasSingleLink(sourceHandle, authorityName);
+        var normalizedDestination = Path.GetFullPath(destinationPath);
+        var fileNameBytes = Encoding.Unicode.GetBytes(
+            Path.GetFileName(normalizedDestination));
+        var rootDirectoryOffset = IntPtr.Size == 8 ? 8 : 4;
+        var fileNameLengthOffset = rootDirectoryOffset + IntPtr.Size;
+        var fileNameOffset = fileNameLengthOffset + sizeof(int);
+        var unalignedBufferSize = checked(
+            fileNameOffset + fileNameBytes.Length);
+        var bufferSize = checked(
+            (unalignedBufferSize + IntPtr.Size - 1) &
+            ~(IntPtr.Size - 1));
+        var buffer = Marshal.AllocHGlobal(bufferSize);
+        try
+        {
+            for (var index = 0; index < bufferSize; index++)
+                Marshal.WriteByte(buffer, index, 0);
+            Marshal.WriteByte(
+                buffer,
+                0,
+                replaceExisting ? (byte)1 : (byte)0);
+            Marshal.WriteIntPtr(
+                buffer,
+                rootDirectoryOffset,
+                parentHandle.DangerousGetHandle());
+            Marshal.WriteInt32(
+                buffer,
+                fileNameLengthOffset,
+                fileNameBytes.Length);
+            Marshal.Copy(
+                fileNameBytes,
+                0,
+                IntPtr.Add(buffer, fileNameOffset),
+                fileNameBytes.Length);
+
+            var status = NtSetInformationFile(
+                sourceHandle,
+                out _,
+                buffer,
+                (uint)bufferSize,
+                NtFileRenameInformation);
+            if (status != 0)
+            {
+                var error = unchecked((int)RtlNtStatusToDosError(status));
+                throw CreateIoException(
+                    $"Could not publish {authorityName} opened object.",
+                    error);
+            }
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(buffer);
+        }
+
+        if (requireSingleLink)
+        {
+            EnsureHandleMatchesExpectedPath(
+                sourceHandle,
+                normalizedDestination,
+                authorityName);
+        }
+        else
+        {
+            EnsureHandlePathMatchesExpectedPath(
+                sourceHandle,
+                normalizedDestination,
+                authorityName);
+        }
+    }
+
+    internal static FileIdentity CaptureFileIdentity(
+        SafeFileHandle handle,
+        string authorityName)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            throw new PlatformNotSupportedException(
+                "Opened-file identity capture is available only on Windows.");
+        }
+
+        var standardInfo = GetStandardInfo(handle, authorityName);
+        if (!GetFileInformationByHandleEx(
+                handle,
+                FileIdInfoClass,
+                out FileIdInfo fileIdInfo,
+                (uint)Marshal.SizeOf<FileIdInfo>()))
+        {
+            throw CreateIoException(
+                $"Could not inspect {authorityName} file identity.",
+                Marshal.GetLastWin32Error());
+        }
+
+        return new FileIdentity(
+            fileIdInfo.VolumeSerialNumber,
+            fileIdInfo.FileId.Low,
+            fileIdInfo.FileId.High,
+            standardInfo.Directory,
+            standardInfo.NumberOfLinks);
+    }
+
+    internal static FileIdentity EnsureExactFileIdentity(
+        SafeFileHandle handle,
+        string expectedPath,
+        FileIdentity expectedIdentity,
+        string authorityName,
+        bool requireSingleLink = true)
+    {
+        if (requireSingleLink)
+        {
+            EnsureHandleMatchesExpectedPath(
+                handle,
+                expectedPath,
+                authorityName);
+        }
+        else
+        {
+            EnsureHandlePathMatchesExpectedPath(
+                handle,
+                expectedPath,
+                authorityName);
+        }
+        var actual = CaptureFileIdentity(handle, authorityName);
+        if (actual.VolumeSerialNumber != expectedIdentity.VolumeSerialNumber ||
+            actual.FileIdLow != expectedIdentity.FileIdLow ||
+            actual.FileIdHigh != expectedIdentity.FileIdHigh ||
+            actual.IsDirectory != expectedIdentity.IsDirectory)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} physical identity changed.");
+        }
+
+        if (actual.IsDirectory)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} authority is not a regular file.");
+        }
+
+        if (requireSingleLink && actual.NumberOfLinks != 1)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} regular file must have exactly one physical link.");
+        }
+
+        return actual;
+    }
+
+    internal static FileIdentity EnsureExactDirectoryIdentity(
+        StableDirectory directory,
+        FileIdentity expectedIdentity,
+        string authorityName)
+    {
+        if (!OperatingSystem.IsWindows() ||
+            directory.Handle is not { IsInvalid: false } handle)
+        {
+            throw new PlatformNotSupportedException(
+                "Opened-directory identity validation is available only on Windows.");
+        }
+
+        EnsureHandlePathMatchesExpectedPath(
+            handle,
+            directory.FullPath,
+            authorityName);
+        var actual = CaptureFileIdentity(handle, authorityName);
+        if (actual.VolumeSerialNumber != expectedIdentity.VolumeSerialNumber ||
+            actual.FileIdLow != expectedIdentity.FileIdLow ||
+            actual.FileIdHigh != expectedIdentity.FileIdHigh ||
+            !actual.IsDirectory ||
+            !expectedIdentity.IsDirectory ||
+            actual.NumberOfLinks != expectedIdentity.NumberOfLinks)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} physical directory identity changed.");
+        }
+
+        return actual;
+    }
+
+    internal static byte[] ReadOpenedFileBytes(
+        SafeFileHandle handle,
+        string authorityName)
+    {
+        try
+        {
+            var length = RandomAccess.GetLength(handle);
+            if (length > int.MaxValue)
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} exceeds the supported in-memory size.");
+            }
+
+            var content = new byte[(int)length];
+            var offset = 0;
+            while (offset < content.Length)
+            {
+                var read = RandomAccess.Read(
+                    handle,
+                    content.AsSpan(offset),
+                    offset);
+                if (read <= 0)
+                {
+                    throw new EndOfStreamException(
+                        $"Could not read all bytes from {authorityName}.");
+                }
+
+                offset += read;
+            }
+
+            return content;
+        }
+        catch (Exception ex) when (
+            ex is IOException or UnauthorizedAccessException)
+        {
+            throw new InvalidDataException(
+                $"Could not read {authorityName} opened authority.",
+                ex);
+        }
+    }
+
+    internal static void WriteOpenedFileBytes(
+        SafeFileHandle handle,
+        ReadOnlySpan<byte> content,
+        string authorityName)
+    {
+        try
+        {
+            RandomAccess.SetLength(handle, content.Length);
+            var offset = 0;
+            while (offset < content.Length)
+            {
+                RandomAccess.Write(
+                    handle,
+                    content[offset..],
+                    offset);
+                offset = content.Length;
+            }
+
+            RandomAccess.FlushToDisk(handle);
+        }
+        catch (Exception ex) when (
+            ex is IOException or UnauthorizedAccessException)
+        {
+            throw new InvalidDataException(
+                $"Could not restore {authorityName} opened authority.",
+                ex);
+        }
+    }
+
+    internal static string ComputeOpenedFileSha256(
+        SafeFileHandle handle,
+        string authorityName)
+    {
+        try
+        {
+            var length = RandomAccess.GetLength(handle);
+            using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+            var buffer = new byte[64 * 1024];
+            long offset = 0;
+            while (offset < length)
+            {
+                var read = RandomAccess.Read(
+                    handle,
+                    buffer,
+                    offset);
+                if (read <= 0)
+                {
+                    throw new EndOfStreamException(
+                        $"Could not read all bytes from {authorityName}.");
+                }
+
+                hash.AppendData(buffer, 0, read);
+                offset += read;
+            }
+
+            return Convert.ToHexString(hash.GetHashAndReset())
+                .ToLowerInvariant();
+        }
+        catch (Exception ex) when (
+            ex is IOException or UnauthorizedAccessException)
+        {
+            throw new InvalidDataException(
+                $"Could not hash {authorityName} opened authority.",
+                ex);
+        }
+    }
+
+    internal static void DeleteOpenedFile(
+        SafeFileHandle handle,
+        string authorityName)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            throw new PlatformNotSupportedException(
+                "Opened-file deletion is available only on Windows.");
+        }
+
+        EnsureOpenedObjectKind(
+            handle,
+            expectedDirectory: false,
+            authorityName);
+        MarkOpenedObjectForDeletion(handle, authorityName);
     }
 
     internal static void ValidateExistingReplacementTarget(
@@ -567,6 +909,23 @@ internal static class PhysicalFileAuthority
         if (!OperatingSystem.IsWindows())
             return;
 
+        EnsureHandlePathMatchesExpectedPath(
+            handle,
+            expectedPath,
+            authorityName,
+            flags);
+        EnsureRegularFileHasSingleLink(handle, authorityName);
+    }
+
+    internal static void EnsureHandlePathMatchesExpectedPath(
+        SafeFileHandle handle,
+        string expectedPath,
+        string authorityName,
+        uint flags = 0)
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
         var openedPath = NormalizeWindowsHandlePath(GetFinalPath(handle, flags));
         var normalizedExpectedPath = Path.GetFullPath(expectedPath);
         if (!PathsEqual(openedPath, normalizedExpectedPath))
@@ -574,8 +933,26 @@ internal static class PhysicalFileAuthority
             throw new InvalidDataException(
                 $"{authorityName} handle resolved outside its physical authority path.");
         }
+    }
 
-        EnsureRegularFileHasSingleLink(handle, authorityName);
+    internal static void EnsureRegularFileHandleMatchesExpectedPath(
+        SafeFileHandle handle,
+        string expectedPath,
+        string authorityName,
+        uint flags = 0)
+    {
+        EnsureHandleMatchesExpectedPath(
+            handle,
+            expectedPath,
+            authorityName,
+            flags);
+        if (OperatingSystem.IsWindows())
+        {
+            EnsureOpenedObjectKind(
+                handle,
+                expectedDirectory: false,
+                authorityName);
+        }
     }
 
     internal static string GetFinalPath(
@@ -935,6 +1312,20 @@ internal static class PhysicalFileAuthority
         internal bool Directory;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    private struct FileId128
+    {
+        internal ulong Low;
+        internal ulong High;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct FileIdInfo
+    {
+        internal ulong VolumeSerialNumber;
+        internal FileId128 FileId;
+    }
+
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern SafeFileHandle CreateFile(
         string lpFileName,
@@ -951,6 +1342,17 @@ internal static class PhysicalFileAuthority
         int fileInformationClass,
         IntPtr lpFileInformation,
         uint dwBufferSize);
+
+    [DllImport("ntdll.dll")]
+    private static extern int NtSetInformationFile(
+        SafeFileHandle fileHandle,
+        out IoStatusBlock ioStatusBlock,
+        IntPtr fileInformation,
+        uint length,
+        int fileInformationClass);
+
+    [DllImport("ntdll.dll")]
+    private static extern uint RtlNtStatusToDosError(int status);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool SetFileInformationByHandle(
@@ -972,6 +1374,21 @@ internal static class PhysicalFileAuthority
         int fileInformationClass,
         out FileStandardInfo lpFileInformation,
         uint dwBufferSize);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetFileInformationByHandleEx(
+        SafeFileHandle hFile,
+        int fileInformationClass,
+        out FileIdInfo lpFileInformation,
+        uint dwBufferSize);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct IoStatusBlock
+    {
+        internal IntPtr Status;
+        internal nuint Information;
+    }
 
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern uint GetFinalPathNameByHandle(

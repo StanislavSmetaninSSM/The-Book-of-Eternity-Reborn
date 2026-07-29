@@ -827,6 +827,7 @@ public sealed partial class QteSceneService
             }
         };
 
+        _darenProfileStore.EnsureWriteSupported(writeLease);
         if (_hooks?.BeforeDarenProfileWriteAsync != null)
             await _hooks.BeforeDarenProfileWriteAsync();
         await WriteDarenProfileAsync(writeLease, profile);
