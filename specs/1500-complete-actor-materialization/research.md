@@ -992,6 +992,87 @@ unchanged envelope-free legacy empty object.
 unrelated legacy resends or retroactively invalidating untouched canonical
 actors.
 
+### Decision 95: QTE mutations use server-issued interaction tokens
+
+**Decision**: Publish an opaque token for each exact generation-bound QTE offer
+or attempt revision and require it for every mutable QTE request.
+
+**Rationale**: Capturing the current generation when a request arrives proves
+only where the server is now; it does not prove which page, offer, or attempt
+issued the request.
+
+### Decision 96: Prompt generation precedes prompt construction
+
+**Decision**: Capture the immutable generation before building a prompt-bearing
+command result. Check and remove stale snapshots before owner or answer
+validation.
+
+**Rationale**: A form built from session A and attached after load can otherwise
+be labelled as session B, while invalid stale requests can keep the old form
+alive.
+
+### Decision 97: Lock owners are not lease identities
+
+**Decision**: Add a unique acquisition token to every local-UI lock and require
+the exact generation, owner, and token for refresh/release. Successful
+replacement performs no post-rotation release.
+
+**Rationale**: Fixed owner labels describe purpose, not one exclusive lease. A
+late operation with the same label must not delete a newer lock.
+
+### Decision 98: Ephemeral files reserve their namespace
+
+**Decision**: Exclude and strip the local-UI lock exact node and every
+descendant, regardless of whether the node is a file, directory, or reparse
+point.
+
+**Rationale**: ZIP path semantics can materialize a directory below a filename;
+exact-file cleanup alone permits a persistent denial of future locking.
+
+### Decision 99: Pending-turn integrity failures never become fallback data
+
+**Decision**: Guardian, gacha, and realm synchronous readers use canonical
+relative paths and the shared handle-bound API. Only documented absence may
+select a fallback; path-contract and physical-integrity failures propagate.
+
+**Rationale**: A broad catch converts a harness defect or raced authority into
+plausible turn-zero/base-rarity data and lets validation accept the wrong state.
+
+### Decision 100: Authority reads validate after consumption
+
+**Decision**: Repeat physical path, kind, and single-link validation after the
+complete text/byte/archive read and before accepting its result.
+
+**Rationale**: NTFS permits link-count changes while a read handle remains open;
+an initial check does not prove that the consumed authority stayed single-link.
+
+### Decision 101: Daren rollback proves post-image ownership
+
+**Decision**: Retain transaction parent authority and record baseline plus exact
+published post-image identity. Restore/delete only that owned post-image.
+
+**Rationale**: Baseline bytes alone cannot distinguish the transaction's write
+from a later unrelated file placed at the same pathname.
+
+### Decision 102: Atomic replacement is one reversible physical transaction
+
+**Decision**: Retain source and destination object authority through
+publication. If any final or post-publication proof fails, restore exact prior
+destination identity/bytes or absence before returning failure.
+
+**Rationale**: Throwing after rename while leaving changed canonical bytes is
+not fail closed, and closing the destination handle before rename reopens a
+hard-link/identity TOCTOU window.
+
+### Decision 103: Unsafe platform fallbacks fail before mutation
+
+**Decision**: Enable authority-bearing replacement only where an opened-handle
+or descriptor-bound single-link/relative-rename protocol is implemented;
+otherwise fail closed before touching destination state.
+
+**Rationale**: Pathname `overwrite` cannot satisfy the same security contract
+and must not silently weaken authority on another platform.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

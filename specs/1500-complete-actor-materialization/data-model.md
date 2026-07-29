@@ -533,3 +533,77 @@ No operation follows reparse points or accepts a multi-link regular file.
 current first materialization and true legacy promotion. Empty
 `characteristics` is an error only when that classifier is true. Numeric value
 shape validation still applies whenever characteristics are present.
+
+## Phase 36 authority additions
+
+### Browser QTE interaction token
+
+Every QTE state that permits mutation publishes an opaque token with server-side
+meaning:
+
+- immutable session generation;
+- interaction kind (`offer`, `practice`, or `daren`);
+- exact offer/attempt identity;
+- current revision.
+
+Every accept, decline, action, retry, exit, or Daren request presents that token.
+The server compares it with the current interaction before reading action data
+or mutating canonical/QTE state. Starting or retrying an interaction produces a
+new revision and invalidates older tokens.
+
+### Prompt construction binding
+
+A prompt build context contains the generation captured before command-result
+construction. Attachment accepts that generation as input and never substitutes
+the current generation. Stale snapshot lookup performs generation comparison
+and atomic removal before owner, field, or answer validation.
+
+### Local-UI lock lease identity
+
+The lock record and acquisition result add one unique `leaseToken`. Lock
+identity is the tuple `(sessionGeneration, ownerId, leaseToken)`. Refresh and
+release require the complete tuple. A successful session replacement strips the
+old lock as part of replacement and does not perform a release against the new
+generation.
+
+### Ephemeral lock namespace
+
+`game_state/control/local_ui_session_lock.json` denotes a forbidden persistence
+namespace, including the exact node and descendants. Replacement cleanup treats
+the node as an untrusted file-system object and removes its file, directory, or
+reparse shape without traversing a reparse target.
+
+### Completion-validated stable read
+
+A stable read retains:
+
+- opened file handle;
+- retained parent authority;
+- expected full physical path;
+- expected regular-file kind.
+
+The consumer calls a completion gate after consuming all bytes or archive
+entries and before using the result. The gate repeats path, kind, and single-link
+validation. Integrity failure is distinct from optional absence.
+
+### Transactional physical replacement
+
+One replacement operation owns:
+
+- retained source handle and source parent;
+- retained existing-destination handle and destination parent when present;
+- exact baseline destination identity/bytes or exact absence;
+- expected post-publication identity;
+- deterministic rollback state.
+
+The operation validates at the publication boundary, commits one complete
+replacement, and validates again before success. Any raced source/target/link or
+post-publication failure restores the exact baseline or absence before returning
+failure. Unsupported platforms reject before mutation.
+
+### Daren post-image ownership
+
+The Daren rollback manifest records baseline identity/bytes, transaction parent
+identity, and the exact published post-image identity/hash. Recovery restores or
+deletes only when the current profile is the transaction-owned post-image;
+otherwise it preserves evidence and fails closed.

@@ -336,6 +336,47 @@ documentation tests, broad and complete tests, Release build, static parsing,
 Spec Kit analysis, clean-checkout verification, and a fresh post-commit
 `gpt-5.6-sol`/max exact-diff review with no Critical or Important finding.
 
+## Phase 36 implementation strategy
+
+Two independent Phase 35 exact-diff reviews found no Critical issue but exposed
+ten remaining authority gaps. Browser QTE requests still adopt the generation
+that happens to be current when a stale request arrives; prompt generation is
+captured after form construction; local-UI release relies on a reusable owner
+ID; a crafted lock descendant can turn the lock filename into a directory;
+three synchronous pending-turn readers still use the wrong path or raw
+filesystem APIs; stable reads do not revalidate after consuming bytes; Daren
+rollback does not prove that it still owns the published post-image; and atomic
+replacement closes destination authority before rename and has an unsafe
+non-Windows fallback.
+
+The remediation remains harness-owned:
+
+1. publish one opaque QTE interaction token bound to generation, exact
+   offer/attempt identity, and revision, and require it for every mutation;
+2. capture prompt generation before result construction and invalidate stale
+   snapshots before owner or answer validation;
+3. add a unique lease token to local-UI acquisition and perform replacement
+   lock decisions entirely in the old generation;
+4. treat the local-UI lock filename as an excluded namespace node rather than
+   only an excluded regular file;
+5. route Guardian, gacha, realm, runtime, and save reads through relative,
+   handle-bound APIs with completion-time validation and fail-closed integrity
+   errors;
+6. retain Daren parent/post-image identity for the complete rollback
+   transaction;
+7. replace split destination checks with one transactional physical
+   publication primitive that retains source/target authority and restores the
+   exact prior destination or absence before reporting a raced failure;
+8. fail closed on platforms that do not yet provide an equivalent
+   descriptor-bound replacement protocol.
+
+Every production change starts from a deterministic RED regression. The final
+gate repeats focused browser/QTE/prompt/lock/save/pending/Daren/filesystem
+suites, mandatory Mortal/afterlife documentation guards, broad and complete C#
+tests, frontend verification when DTOs change, Release build, static parsing,
+clean-checkout verification, Spec Kit analysis, and a fresh independent
+`gpt-5.6-sol`/max exact-diff review with no Critical or Important finding.
+
 ## Complexity Tracking
 
 No constitution violations require an exception.
