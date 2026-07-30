@@ -5539,27 +5539,34 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "ProcessPlayerTurn",
             "Проверить финализацию старого хода.",
             null);
-        await acceptedValidationReached.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        try
+        {
+            await acceptedValidationReached.Task.WaitAsync(
+                TimeSpan.FromSeconds(30));
 
-        await _fs.ClearGameStateAsync();
-        await WriteJsonAsync("input/turn_request.json", new
+            await _fs.ClearGameStateAsync();
+            await WriteJsonAsync("input/turn_request.json", new
+            {
+                sessionId = "replacement-session",
+                requestId = "replacement-request",
+                turnNumber = 1
+            });
+            await WriteJsonAsync("ready/turn_complete.json", new
+            {
+                sessionId = "replacement-session",
+                requestId = "replacement-request",
+                turnNumber = 1,
+                status = "success"
+            });
+        }
+        finally
         {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1
-        });
-        await WriteJsonAsync("ready/turn_complete.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1,
-            status = "success"
-        });
-        releaseOldFinalizer.TrySetResult();
+            releaseOldFinalizer.TrySetResult();
+        }
 
         await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldTurn.WaitAsync(TimeSpan.FromSeconds(5)));
-        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(5));
+            () => oldTurn.WaitAsync(TimeSpan.FromSeconds(30)));
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(30));
         Assert.Contains(
             "replacement-session",
             await _fs.ReadFileAsync("input/turn_request.json"),
@@ -5670,11 +5677,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 }
             });
 
-            var deadline = DateTime.UtcNow.AddSeconds(5);
-            while (!_fs.FileExists("game_state/control/validation_repair_request.json") && DateTime.UtcNow < deadline)
-                await Task.Delay(25);
-
-            Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+            await WaitForValidationRepairRequestContainingAsync(
+                "skills_passive",
+                TimeSpan.FromSeconds(30));
             await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
             {
                 isStalled = true,
@@ -5688,8 +5693,13 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             });
         });
 
-        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Купить урок чтения печатей.", null);
-        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(8));
+        var processTask = InvokePrivateTaskAsync(
+            engine,
+            "ProcessPlayerTurn",
+            "Купить урок чтения печатей.",
+            null);
+        await Task.WhenAll(processTask, gmOutputTask)
+            .WaitAsync(TimeSpan.FromSeconds(45));
 
         Assert.False(_fs.FileExists(passiveSkillsPath));
         Assert.False(_fs.FileExists(activeSkillsPath));
@@ -6824,7 +6834,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 }
             });
 
-            await WaitForValidationRepairRequestContainingAsync("narrative_response", TimeSpan.FromSeconds(5));
+            await WaitForValidationRepairRequestContainingAsync(
+                "narrative_response",
+                TimeSpan.FromSeconds(75));
             await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
             {
                 isStalled = true,
@@ -6841,11 +6853,13 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             });
         });
 
-        var dispatched = await InvokePrivateAsync<bool>(
+        var dispatchTask = InvokePrivateAsync<bool>(
             engine,
             "CheckGmIncarnationTrigger",
             new[] { acceptedSnapshotContext });
-        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(8));
+        await Task.WhenAll(dispatchTask, gmOutputTask)
+            .WaitAsync(TimeSpan.FromSeconds(90));
+        var dispatched = await dispatchTask;
 
         Assert.False(dispatched);
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();

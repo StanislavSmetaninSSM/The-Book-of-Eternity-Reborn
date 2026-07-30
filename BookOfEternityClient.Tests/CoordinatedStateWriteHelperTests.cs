@@ -26,7 +26,6 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
         const string nextJson = "{\"value\":\"client-next\"}";
         const string concurrentJson = "{\"value\":\"gm-concurrent\"}";
         await _fs.WriteFileAtomicAsync(firstPath, previousJson);
-        Directory.CreateDirectory(_fs.ResolvePath(blockedPath));
 
         var concurrentWriteObserved = false;
         var exception = await Record.ExceptionAsync(
@@ -48,6 +47,7 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
                         concurrentJson,
                         new System.Text.UTF8Encoding(
                             encoderShouldEmitUTF8Identifier: false));
+                    Directory.CreateDirectory(_fs.ResolvePath(blockedPath));
                 },
                 new CoordinatedStateWriteHelper.PlannedWrite(
                     firstPath,

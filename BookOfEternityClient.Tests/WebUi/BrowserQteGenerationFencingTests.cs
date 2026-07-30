@@ -1169,6 +1169,32 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenProfileDirectWrite_MissingPublicationBackendsFailBeforeProfileStaging()
+    {
+        var hooks = new FileSystemManagerHooks
+        {
+            SupportsReversibleFileReplacementOverride = false,
+            SupportsDescriptorBoundCreateOnlyPublicationOverride = false
+        };
+        var fs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        fs.EnsureDirectoryStructure();
+        var profileDirectory = Path.Combine(_rootPath, "client_profile");
+        var profileStore = new DarenRewardProfileFileStore(fs);
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<PlatformNotSupportedException>(
+            () => profileStore.WriteExactBytesAtomicAsync(
+                writeLease,
+                """{ "schemaVersion": 1 }"""u8.ToArray()));
+
+        Assert.False(Directory.Exists(profileDirectory));
+    }
+
+    [Fact]
     public async Task DarenProfileRollback_RestoresAndReadsExactBytesThenDeletes()
     {
         byte[] expected =

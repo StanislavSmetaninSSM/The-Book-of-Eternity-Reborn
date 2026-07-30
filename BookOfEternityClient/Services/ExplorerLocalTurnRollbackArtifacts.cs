@@ -391,9 +391,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
             BrowserWriteRollbackManifest manifest;
             try
             {
-                manifest = JsonSerializer.Deserialize<BrowserWriteRollbackManifest>(
+                manifest = StrictJsonAuthority.Deserialize<BrowserWriteRollbackManifest>(
                                DecodeUtf8(manifestBytes),
-                               ManifestJsonOptions) ??
+                               ManifestJsonOptions,
+                               $"Browser rollback manifest '{manifestPath}'") ??
                            throw new InvalidDataException(
                                $"Browser rollback manifest '{manifestPath}' is empty.");
             }
@@ -677,10 +678,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
         }
 
         var sourceExternalEntries = manifest.ExternalEntries ?? [];
-        if (manifest.SchemaVersion < 3 && sourceExternalEntries.Count > 0)
+        if (manifest.SchemaVersion < 4 && sourceExternalEntries.Count > 0)
         {
             throw new InvalidDataException(
-                $"Browser rollback manifest '{manifestPath}' declares external evidence under a legacy schema.");
+                $"Browser rollback manifest '{manifestPath}' declares non-authoritative external evidence under a legacy schema.");
         }
 
         var externalFileIds = new HashSet<string>(StringComparer.Ordinal);
@@ -881,8 +882,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         {
             try
             {
-                if (Directory.Exists(fs.ResolvePath(cleanupDirectory)))
-                    fs.DeleteDirectoryTree(writeLease, cleanupDirectory);
+                fs.DeleteDirectoryTree(writeLease, cleanupDirectory);
             }
             catch (Exception ex)
             {

@@ -122,7 +122,9 @@ public sealed class ExplorerWebPromptSessionService
     {
         if (requiresLock)
         {
-            var pending = BrowserPendingTurnInspector.Build(_fs);
+            var pending = BrowserPendingTurnInspector.Build(
+                _fs,
+                writeLease);
             if (pending.HasActiveGmTurn)
             {
                 return new ExplorerCommandResult

@@ -270,11 +270,14 @@ Spend, snapshot, authority, and request files form one canonical transaction.
 Media generation downloads to an external staging file and commits the final
 bytes atomically only after generation verification under canonical authority.
 
-Durable browser rollback manifest schema 3 contains canonical `entries`, exact
+Durable browser rollback manifest schema 4 contains canonical `entries`, exact
 allowlisted `cleanupDirectories`, and typed `externalEntries`. An external entry
 uses a closed client-owned file identifier, an `existed` flag, an optional
 canonical backup path beneath the transaction root, and SHA-256 of the exact
 before-image. The current typed external surface is the Daren reward profile.
+Schema-3 external entries lack the required parent, baseline, and
+published-object identities and therefore remain diagnostic evidence without
+rollback mutation authority.
 `staged` recovery restores all canonical and external entries before any dynamic
 cleanup; any failure retains the manifest and evidence. After successful restore,
 the manifest durably transitions to `restored`, a cleanup-only state. `committed`
@@ -616,7 +619,12 @@ An authority namespace probe returns exactly one of `Missing`, `RegularFile`,
 `Directory`, or `ReparsePoint` for a retained stable parent plus one expected
 child name. It opens the exact node without following reparse points and
 validates that the opened path still belongs to the retained parent. Callers
-may interpret only `Missing` as absence.
+may interpret only `Missing` as absence. These four values are normal outcomes,
+not an error bucket: access failures, path-identity failures, malformed
+intermediate parents, and unsupported object kinds remain exceptions and never
+degrade to `Missing`. Root-relative probing walks each existing intermediate
+node as an exact physical directory and does not create missing parents during
+publication preflight.
 
 ### Descriptor-bound create-only publication capability
 
@@ -638,4 +646,137 @@ the transaction identity.
 A worker recovery before-image is an ordinary stable read with mandatory
 completion. Its bytes are not restoration authority until post-consumption
 path, kind, and single-link validation succeeds. Failure leaves the active
-journal and transaction evidence available for a later safe retry.
+journal and transaction evidence available for a later safe retry. The opened
+file and retained parent deny delete sharing while bytes are consumed, so path,
+kind, and identity replacement attempts are blocked; the completion gate still
+detects link-count changes that the operating system permits while the handle is
+open.
+
+## Phase 39 recovery additions
+
+### Legacy external rollback evidence
+
+A schema-3 external entry may contain historical bytes and an `Existed` flag
+but has no physical parent, baseline, or published-object identity. It is
+diagnostic evidence only. Recovery retains the complete transaction and raises
+an integrity error before any tracked or external mutation.
+
+### Exact recovery discovery
+
+Recovery discovery classifies active marker files, journal roots, transaction
+directories, before-images, and canonical destinations as exact namespace
+entries. Expected files additionally require regular-file and single-link
+validation. `Missing` is the sole no-work/no-current-file state; wrong object
+kinds remain integrity failures.
+
+### Publication scope registration
+
+An in-process publication scope begins before namespace preflight and covers
+staging, journal creation, source publication, completion validation, and
+durable commit/cleanup state. Negative existence readers wait for overlapping
+publication scopes even when no exact target mutation has been registered yet.
+
+### Final rollback absence proof
+
+Rollback to a missing baseline retains destination-parent authority and repeats
+the exact child probe immediately before source or transaction evidence may be
+discarded. Any non-missing result or probe failure leaves evidence intact.
+
+### Browser pending-directory authority
+
+Pending snapshot and rollback roots are `Missing` or exact physical
+directories. Enumeration occurs under retained authority without following
+reparse points. Every other shape is a blocking integrity condition.
+
+## Phase 40 liveness additions
+
+### Target-scoped negative existence
+
+An absent canonical file is represented by two exact no-follow probes around
+the active-target publication check. An active publication for that exact path
+forces canonical quiescence and a post-publication probe. Durable publication
+evidence forces recovery. Ordinary absence has no global write-lease state and
+therefore cannot block or starve an unrelated canonical writer.
+
+### Repair signal publication
+
+Validation repair `ready` and artifact-stall files remain ordinary canonical
+files. Their writers use the shared atomic publication contract, while polling
+readers use target-scoped existence. A successfully published stall report is
+promoted to the correlated terminal error and releases the repair wait for
+rollback.
+
+### Repair integration actor
+
+The test-only GM actor and the engine are one bounded concurrent operation.
+Repair-request discovery is condition-based and permits the full validator to
+publish the request. Either actor's exception terminates the test directly;
+neither actor may be awaited in a sequence that hides the other's failure.
+
+## Phase 41 authority additions
+
+### Unique recovery document
+
+A recovery journal or manifest is authoritative only when its complete JSON
+tree contains one property for each serializer-equivalent name at every object
+level. Duplicate authority has no recoverable winner. The original bytes and
+all referenced evidence remain durable for explicit repair.
+
+### Exact target synchronization gate
+
+Each in-process canonical publication target has one synchronization boundary
+covering registration through completion. A negative existence reader enters
+the same target boundary for its final no-follow probe. The boundary is scoped
+to one normalized physical target and does not represent the global canonical
+write lease.
+
+### Exact optional-read state
+
+An optional authority read begins with one of four normal namespace states:
+`Missing`, `RegularFile`, `Directory`, or `ReparsePoint`. Only `Missing`
+produces no value. `RegularFile` proceeds through stable opened-handle
+validation and completion; every other state or probe exception is an
+integrity failure.
+
+### Retained cleanup evidence
+
+Recovery cleanup may remove a manifest only after every expected evidence root
+and candidate has been classified and safely removed through physical
+authority. Wrong-kind or inaccessible nodes leave the manifest and all
+remaining evidence discoverable for retry or explicit repair.
+
+## Phase 42 authority additions
+
+### Atomic mutation-state snapshot
+
+An exact target owns one lock-protected tuple containing participant count,
+active mutation count, and transition version. Registration and completion each
+change active count and version in one critical section. Readers capture both
+fields in one critical section before and after their final namespace probe.
+
+### Root-traversed optional authority
+
+Optional canonical authority is classified segment by segment from the opened
+game-session root. A missing segment yields `Missing`; a file, reparse point, or
+probe failure at an intermediate parent is an integrity failure.
+
+### Kind-bound cleanup deletion
+
+A directory cleanup request opens the target without following reparse points,
+verifies that the opened object is a physical directory, recursively removes
+its children, and only then marks that same opened directory for deletion.
+Missing is a no-op. No regular-file fallback is permitted.
+
+### Unique generation authority
+
+`.boe_runtime/session-generation/current.json` is a strict JSON authority
+document. Its complete object tree must contain one serializer-equivalent
+occurrence of every property before `schemaVersion` and `generationId` are
+interpreted.
+
+### Bounded ambient lease context
+
+Ambient canonical ownership is represented only by active registrations and at
+most one recently failed inactive head awaiting the next observation. Every new
+acquisition and ownership check removes inactive heads while preserving the
+nearest active ancestor.

@@ -1055,6 +1055,111 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task WorkerRecovery_BeforeImageReplacementAfterInitialValidationIsBlocked()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string trackedPath =
+            "game_state/world/worker-before-image-replacement.json";
+        const string triggerPath =
+            "game_state/world/worker-before-image-replacement-trigger.json";
+        byte[] baseline = [0x21, 0x32];
+        byte[] applied = [0x43, 0x54];
+        await _fs.WriteFileAtomicBytesAsync(trackedPath, baseline);
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            transactionId);
+        var beforeRoot = Path.Combine(transactionRoot, "before");
+        var beforePath = Path.Combine(beforeRoot, "0000.bin");
+        var displacedPath = beforePath + ".displaced";
+        Directory.CreateDirectory(beforeRoot);
+        await File.WriteAllBytesAsync(beforePath, baseline);
+        await File.WriteAllTextAsync(
+            Path.Combine(transactionRoot, "manifest.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                entries = new[]
+                {
+                    new
+                    {
+                        path = trackedPath,
+                        baselineExists = true,
+                        beforeImage = "before/0000.bin",
+                        beforeSha256 = Sha256(baseline),
+                        appliedSha256 = Sha256(applied)
+                    }
+                }
+            }));
+        var activeJournalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            "active.json");
+        await File.WriteAllTextAsync(
+            activeJournalPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = false
+            }));
+        await File.WriteAllBytesAsync(
+            _fs.ResolvePath(trackedPath),
+            applied);
+
+        var replacementBlocked = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterExactPhysicalReadInitialValidationAsync = path =>
+            {
+                if (path.Equals(
+                        beforePath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        File.Move(beforePath, displacedPath);
+                    }
+                    catch (Exception ex) when (
+                        ex is IOException or UnauthorizedAccessException)
+                    {
+                        replacementBlocked = true;
+                    }
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await raceFs.WriteFileAtomicBytesAsync(
+            triggerPath,
+            [0x65]);
+
+        Assert.True(replacementBlocked);
+        Assert.False(File.Exists(displacedPath));
+        Assert.Equal(
+            baseline,
+            await raceFs.ReadFileBytesAsync(trackedPath));
+        Assert.Equal(
+            [0x65],
+            await raceFs.ReadFileBytesAsync(triggerPath));
+        Assert.False(File.Exists(activeJournalPath));
+        Assert.False(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
     public async Task CanonicalWriter_CompletesEveryRecoverableRollbackEntryBeforeFailingClosed()
     {
         const string restorablePath = "game_state/world/weather.json";
@@ -1174,6 +1279,38 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal([0x70], await _fs.ReadFileBytesAsync("game_state/world/after_commit.json"));
         Assert.False(File.Exists(activeJournalPath));
         Assert.False(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
+    public async Task WorkerRecovery_DirectoryAtMissingDestinationRetainsEvidence()
+    {
+        const string trackedPath =
+            "game_state/world/malformed-worker-destination.json";
+        const string triggerPath =
+            "game_state/world/malformed-worker-destination-trigger.json";
+        CanonicalWorkerApplyTransaction transaction;
+        await using (var lease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await _fs.BeginWorkerApplyTransactionAsync(
+                lease,
+                [new CanonicalWorkerApplyChange(
+                    trackedPath,
+                    BaselineBytes: null,
+                    AppliedBytes: null)]);
+        }
+
+        var destinationPath = _fs.ResolvePath(trackedPath);
+        Directory.CreateDirectory(destinationPath);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.WriteFileAtomicBytesAsync(triggerPath, [0x51]));
+
+        Assert.True(Directory.Exists(destinationPath));
+        Assert.True(File.Exists(
+            _fs.ActiveWorkerApplyTransactionJournalPath));
+        Assert.True(Directory.Exists(transaction.TransactionRoot));
+        Assert.False(File.Exists(_fs.ResolvePath(triggerPath)));
     }
 
     [Fact]
@@ -1759,6 +1896,33 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task SessionGeneration_DuplicateGenerationPropertyFailsClosed()
+    {
+        var firstGeneration = Guid.NewGuid().ToString("N");
+        var secondGeneration = Guid.NewGuid().ToString("N");
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(_fs.SessionGenerationPath)!);
+        await File.WriteAllTextAsync(
+            _fs.SessionGenerationPath,
+            $$"""
+              {
+                "schemaVersion": 1,
+                "generationId": "{{firstGeneration}}",
+                "GenerationId": "{{secondGeneration}}"
+              }
+              """);
+        await using var writeLease =
+            await _fs.AcquireCanonicalWriteLeaseAsync();
+
+        Assert.Throws<InvalidDataException>(
+            () => _fs.IsCurrentSessionGeneration(
+                writeLease,
+                secondGeneration));
+
+        Assert.True(File.Exists(_fs.SessionGenerationPath));
+    }
+
+    [Fact]
     public async Task SessionGeneration_LinkAddedAfterInitialValidationFailsClosed()
     {
         if (!OperatingSystem.IsWindows())
@@ -1893,6 +2057,210 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.True(File.Exists(journalPath));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CanonicalWriter_DirectoryAtActiveTransactionJournalFailsClosed(
+        bool isWorkerJournal)
+    {
+        var journalPath = isWorkerJournal
+            ? _fs.ActiveWorkerApplyTransactionJournalPath
+            : _fs.ActiveLoadTransactionJournalPath;
+        Directory.CreateDirectory(journalPath);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () =>
+            {
+                await using var lease =
+                    await _fs.AcquireCanonicalWriteLeaseAsync();
+            });
+
+        Assert.True(Directory.Exists(journalPath));
+    }
+
+    [Fact]
+    public async Task LoadRecovery_RegularFileAtBackupDirectoryRetainsEvidence()
+    {
+        var transactionId = Guid.NewGuid().ToString("N");
+        var replacementGenerationId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "load-transactions",
+            transactionId);
+        var malformedBackupPath = Path.Combine(
+            transactionRoot,
+            "backup",
+            "game_session");
+        Directory.CreateDirectory(Path.GetDirectoryName(malformedBackupPath)!);
+        byte[] evidence = [0x31, 0x42, 0x53];
+        await File.WriteAllBytesAsync(malformedBackupPath, evidence);
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(_fs.ActiveLoadTransactionJournalPath)!);
+        await File.WriteAllTextAsync(
+            _fs.ActiveLoadTransactionJournalPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 2,
+                transactionId,
+                committed = false,
+                previousGenerationId = (string?)null,
+                replacementGenerationId
+            }));
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () =>
+            {
+                await using var lease =
+                    await _fs.AcquireCanonicalWriteLeaseAsync();
+            });
+
+        Assert.Equal(
+            evidence,
+            await File.ReadAllBytesAsync(malformedBackupPath));
+        Assert.True(File.Exists(_fs.ActiveLoadTransactionJournalPath));
+        Assert.True(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
+    public async Task LoadRecovery_DuplicateCommittedPropertyRetainsEvidence()
+    {
+        var transactionId = Guid.NewGuid().ToString("N");
+        var replacementGenerationId = Guid.NewGuid().ToString("N");
+        var transactionRoot = _fs.GetLoadTransactionPaths(transactionId).TransactionRoot;
+        Directory.CreateDirectory(transactionRoot);
+        var evidencePath = Path.Combine(transactionRoot, "ambiguous-load-evidence.bin");
+        byte[] evidence = [0x15, 0x26, 0x37];
+        await File.WriteAllBytesAsync(evidencePath, evidence);
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(_fs.ActiveLoadTransactionJournalPath)!);
+        var journal =
+            $$"""
+              {
+                "schemaVersion": 2,
+                "transactionId": "{{transactionId}}",
+                "committed": false,
+                "Committed": true,
+                "previousGenerationId": null,
+                "replacementGenerationId": "{{replacementGenerationId}}"
+              }
+              """;
+        await File.WriteAllTextAsync(
+            _fs.ActiveLoadTransactionJournalPath,
+            journal);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () =>
+            {
+                await using var lease =
+                    await _fs.AcquireCanonicalWriteLeaseAsync();
+            });
+
+        Assert.Equal(evidence, await File.ReadAllBytesAsync(evidencePath));
+        Assert.Equal(
+            journal,
+            await File.ReadAllTextAsync(_fs.ActiveLoadTransactionJournalPath));
+    }
+
+    [Fact]
+    public async Task WorkerRecovery_DuplicateJournalPropertyRetainsEvidence()
+    {
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _fs.RuntimeRootPath,
+            "worker-apply-transactions",
+            transactionId);
+        Directory.CreateDirectory(transactionRoot);
+        var evidencePath = Path.Combine(transactionRoot, "ambiguous-worker-evidence.bin");
+        byte[] evidence = [0x48, 0x59, 0x6A];
+        await File.WriteAllBytesAsync(evidencePath, evidence);
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(_fs.ActiveWorkerApplyTransactionJournalPath)!);
+        var journal =
+            $$"""
+              {
+                "schemaVersion": 1,
+                "transactionId": "{{transactionId}}",
+                "committed": false,
+                "Committed": true,
+                "rolledBack": false
+              }
+              """;
+        await File.WriteAllTextAsync(
+            _fs.ActiveWorkerApplyTransactionJournalPath,
+            journal);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () =>
+            {
+                await using var lease =
+                    await _fs.AcquireCanonicalWriteLeaseAsync();
+            });
+
+        Assert.Equal(evidence, await File.ReadAllBytesAsync(evidencePath));
+        Assert.Equal(
+            journal,
+            await File.ReadAllTextAsync(
+                _fs.ActiveWorkerApplyTransactionJournalPath));
+    }
+
+    [Fact]
+    public async Task WorkerRecovery_DuplicateManifestEntriesRetainsEvidence()
+    {
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _fs.RuntimeRootPath,
+            "worker-apply-transactions",
+            transactionId);
+        Directory.CreateDirectory(transactionRoot);
+        const string trackedPath =
+            "game_state/world/ambiguous-worker-manifest.json";
+        var entry =
+            $$"""
+              {
+                "path": "{{trackedPath}}",
+                "baselineExists": false,
+                "beforeImage": null,
+                "beforeSha256": "missing",
+                "appliedSha256": "missing"
+              }
+              """;
+        var manifest =
+            $$"""
+              {
+                "schemaVersion": 1,
+                "transactionId": "{{transactionId}}",
+                "entries": [{{entry}}],
+                "Entries": [{{entry}}]
+              }
+              """;
+        var manifestPath = Path.Combine(transactionRoot, "manifest.json");
+        await File.WriteAllTextAsync(manifestPath, manifest);
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(_fs.ActiveWorkerApplyTransactionJournalPath)!);
+        await File.WriteAllTextAsync(
+            _fs.ActiveWorkerApplyTransactionJournalPath,
+            $$"""
+              {
+                "schemaVersion": 1,
+                "transactionId": "{{transactionId}}",
+                "committed": false,
+                "rolledBack": false
+              }
+              """);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () =>
+            {
+                await using var lease =
+                    await _fs.AcquireCanonicalWriteLeaseAsync();
+            });
+
+        Assert.Equal(manifest, await File.ReadAllTextAsync(manifestPath));
+        Assert.True(File.Exists(_fs.ActiveWorkerApplyTransactionJournalPath));
+        Assert.True(Directory.Exists(transactionRoot));
+    }
+
     [Fact]
     public async Task ReadFileAsync_RejectsHardLinkedCanonicalState()
     {
@@ -1910,6 +2278,82 @@ public sealed class FileSystemManagerTests : IDisposable
             () => _fs.ReadFileAsync(relativePath));
 
         Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
+    }
+
+    [Fact]
+    public async Task ReadFileAsync_DirectoryAtOptionalFileBoundaryFailsClosed()
+    {
+        const string relativePath =
+            "game_state/world/directory-at-async-read.json";
+        var fullPath = _fs.ResolvePath(relativePath);
+        Directory.CreateDirectory(fullPath);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.ReadFileAsync(relativePath));
+
+        Assert.True(Directory.Exists(fullPath));
+    }
+
+    [Fact]
+    public void ReadFileSync_DirectoryAtOptionalFileBoundaryFailsClosed()
+    {
+        const string relativePath =
+            "game_state/world/directory-at-sync-read.json";
+        var fullPath = _fs.ResolvePath(relativePath);
+        Directory.CreateDirectory(fullPath);
+
+        Assert.Throws<InvalidDataException>(
+            () => _fs.ReadFileSync(relativePath));
+
+        Assert.True(Directory.Exists(fullPath));
+    }
+
+    [Fact]
+    public async Task ReadFileAsync_RegularFileAtIntermediateParentFailsClosed()
+    {
+        const string parentRelativePath =
+            "game_state/world/async-read-parent-file";
+        const string relativePath =
+            parentRelativePath + "/state.json";
+        var parentPath = _fs.ResolvePath(parentRelativePath);
+        await File.WriteAllTextAsync(parentPath, "{}");
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.ReadFileAsync(relativePath));
+
+        Assert.True(File.Exists(parentPath));
+    }
+
+    [Fact]
+    public void ReadFileSync_RegularFileAtIntermediateParentFailsClosed()
+    {
+        const string parentRelativePath =
+            "game_state/world/sync-read-parent-file";
+        const string relativePath =
+            parentRelativePath + "/state.json";
+        var parentPath = _fs.ResolvePath(parentRelativePath);
+        File.WriteAllText(parentPath, "{}");
+
+        Assert.Throws<InvalidDataException>(
+            () => _fs.ReadFileSync(relativePath));
+
+        Assert.True(File.Exists(parentPath));
+    }
+
+    [Fact]
+    public void FileExists_RegularFileAtIntermediateParentFailsClosed()
+    {
+        const string parentRelativePath =
+            "game_state/world/existence-parent-file";
+        const string relativePath =
+            parentRelativePath + "/state.json";
+        var parentPath = _fs.ResolvePath(parentRelativePath);
+        File.WriteAllText(parentPath, "{}");
+
+        Assert.Throws<InvalidDataException>(
+            () => _fs.FileExists(relativePath));
+
+        Assert.True(File.Exists(parentPath));
     }
 
     [Fact]
@@ -1993,6 +2437,24 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task CanonicalWriter_RegularFileAtPublicationJournalRootFailsClosed()
+    {
+        var journalRoot = _fs.PhysicalPublicationTransactionsRootPath;
+        Directory.CreateDirectory(Path.GetDirectoryName(journalRoot)!);
+        byte[] evidence = [0x64, 0x75, 0x86];
+        await File.WriteAllBytesAsync(journalRoot, evidence);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            async () =>
+            {
+                await using var lease =
+                    await _fs.AcquireCanonicalWriteLeaseAsync();
+            });
+
+        Assert.Equal(evidence, await File.ReadAllBytesAsync(journalRoot));
+    }
+
+    [Fact]
     public async Task AtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence()
     {
         if (!OperatingSystem.IsWindows())
@@ -2028,6 +2490,77 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal(
             replacementBytes,
             await File.ReadAllBytesAsync(aliasPath));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/rollback-final-absence-race.json";
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var missingTarget = Path.Combine(
+            _rootPath,
+            "missing-rollback-final-target.json");
+        var hookInvoked = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterPhysicalFilePublishedAsync = path =>
+                path.Equals(
+                    destinationPath,
+                    StringComparison.OrdinalIgnoreCase)
+                    ? Task.FromException(
+                        new IOException(
+                            "Injected post-publication failure."))
+                    : Task.CompletedTask
+        };
+        FileSystemManagerHookTestHelper.SetPathHook(
+            hooks,
+            "BeforePhysicalRollbackAbsenceFinalValidationAsync",
+            path =>
+            {
+                if (path.Equals(
+                        destinationPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    hookInvoked = true;
+                    File.CreateSymbolicLink(path, missingTarget);
+                }
+
+                return Task.CompletedTask;
+            });
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        try
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => raceFs.WriteFileAtomicBytesAsync(
+                    relativePath,
+                    [0x18, 0x29, 0x3A]));
+
+            Assert.True(hookInvoked);
+            Assert.True(
+                File.GetAttributes(destinationPath)
+                    .HasFlag(FileAttributes.ReparsePoint));
+            Assert.NotEmpty(Directory.EnumerateFileSystemEntries(
+                raceFs.PhysicalPublicationTransactionsRootPath));
+        }
+        finally
+        {
+            try
+            {
+                File.Delete(destinationPath);
+            }
+            catch (FileNotFoundException)
+            {
+            }
+        }
     }
 
     [Fact]
@@ -2302,6 +2835,75 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task AtomicWrite_DirectoryDestinationFailsBeforeMutationHookOrStaging()
+    {
+        const string relativePath =
+            "game_state/world/directory-publication-destination.json";
+        var destinationPath = _fs.ResolvePath(relativePath);
+        Directory.CreateDirectory(destinationPath);
+        var hookCount = 0;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = _ =>
+            {
+                hookCount++;
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0xB4, 0xC5, 0xD6]));
+
+        Assert.Equal(0, hookCount);
+        Assert.True(Directory.Exists(destinationPath));
+        Assert.Empty(Directory.GetFiles(
+            Path.GetDirectoryName(destinationPath)!,
+            "*.tmp.*"));
+    }
+
+    [Fact]
+    public async Task AtomicWrite_FileAtIntermediateParentFailsBeforeMutationHook()
+    {
+        const string parentRelativePath =
+            "game_state/world/malformed-publication-parent";
+        const string relativePath =
+            parentRelativePath + "/destination.json";
+        var parentPath = _fs.ResolvePath(parentRelativePath);
+        await File.WriteAllTextAsync(parentPath, "not-a-directory");
+        var hookCount = 0;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = _ =>
+            {
+                hookCount++;
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0xE7, 0xF8]));
+
+        Assert.Equal(0, hookCount);
+        Assert.Equal(
+            "not-a-directory",
+            await File.ReadAllTextAsync(parentPath));
+    }
+
+    [Fact]
     public async Task AtomicWrite_DanglingDestinationLinkFailsClosedWithoutReplacing()
     {
         if (!OperatingSystem.IsWindows())
@@ -2477,6 +3079,38 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook()
+    {
+        var hookCount = 0;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterRuntimeMutationBoundaryValidatedAsync = _ =>
+            {
+                hookCount++;
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var destinationPath = raceFs.SessionGenerationPath;
+        Directory.CreateDirectory(destinationPath);
+        await using var writeLease =
+            await raceFs.AcquireCanonicalWriteLeaseAsync();
+
+        Assert.Throws<InvalidDataException>(
+            () => raceFs.GetOrCreateSessionGeneration(writeLease));
+
+        Assert.Equal(0, hookCount);
+        Assert.True(Directory.Exists(destinationPath));
+        Assert.Empty(Directory.GetFiles(
+            Path.GetDirectoryName(destinationPath)!,
+            "*.tmp.*"));
+    }
+
+    [Fact]
     public async Task ReadFileBytesAsync_RecoversPublishedUncommittedPublicationBeforeCanonicalRead()
     {
         if (!OperatingSystem.IsWindows())
@@ -2632,6 +3266,116 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.True(Directory.Exists(Path.Combine(
             _fs.PhysicalPublicationTransactionsRootPath,
             transactionId)));
+    }
+
+    [Fact]
+    public async Task PublicationRecovery_DuplicateIntentPropertyRetainsEvidence()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/ambiguous-publication-intent.json";
+        byte[] priorBytes = [0x17, 0x28, 0x39];
+        byte[] publishedBytes = [0x4A, 0x5B, 0x6C];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var transactionId = Guid.NewGuid().ToString("N");
+        var sourcePath = destinationPath + ".tmp.ambiguous";
+        var quarantinePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-prior-{transactionId}.quarantine");
+        var failedSourcePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-source-{transactionId}.evidence");
+        await File.WriteAllBytesAsync(sourcePath, publishedBytes);
+        var sourceIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(sourcePath);
+        File.Move(destinationPath, quarantinePath);
+        File.Move(sourcePath, destinationPath);
+        WritePublicationCrashJournal(
+            transactionId,
+            sourcePath,
+            destinationPath,
+            quarantinePath,
+            failedSourcePath,
+            sourceIdentity,
+            publishedBytes,
+            priorIdentity,
+            priorBytes,
+            committed: false);
+        var transactionRoot = Path.Combine(
+            _fs.PhysicalPublicationTransactionsRootPath,
+            transactionId);
+        var intentPath = Path.Combine(transactionRoot, "intent.json");
+        var intent = await File.ReadAllTextAsync(intentPath);
+        intent = intent.Replace(
+            "\"authorityName\":\"Crash recovery test\"",
+            "\"authorityName\":\"Crash recovery test\",\"AuthorityName\":\"Conflicting authority\"",
+            StringComparison.Ordinal);
+        await File.WriteAllTextAsync(intentPath, intent);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.ReadFileBytesAsync(relativePath));
+
+        Assert.Equal(publishedBytes, await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(priorBytes, await File.ReadAllBytesAsync(quarantinePath));
+        Assert.Equal(intent, await File.ReadAllTextAsync(intentPath));
+        Assert.True(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
+    public async Task PublicationRecovery_DirectoryAtSourceCandidateRetainsEvidence()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/wrong-kind-publication-source.json";
+        byte[] priorBytes = [0x1A, 0x2B, 0x3C];
+        byte[] publishedBytes = [0x4D, 0x5E, 0x6F];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        var priorIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var transactionId = Guid.NewGuid().ToString("N");
+        var sourcePath = destinationPath + ".tmp.wrong-kind";
+        var quarantinePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-prior-{transactionId}.quarantine");
+        var failedSourcePath = Path.Combine(
+            Path.GetDirectoryName(destinationPath)!,
+            $".boe-source-{transactionId}.evidence");
+        await File.WriteAllBytesAsync(sourcePath, publishedBytes);
+        var sourceIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(sourcePath);
+        File.Move(destinationPath, quarantinePath);
+        File.Move(sourcePath, destinationPath);
+        Directory.CreateDirectory(sourcePath);
+        WritePublicationCrashJournal(
+            transactionId,
+            sourcePath,
+            destinationPath,
+            quarantinePath,
+            failedSourcePath,
+            sourceIdentity,
+            publishedBytes,
+            priorIdentity,
+            priorBytes,
+            committed: false);
+        var transactionRoot = Path.Combine(
+            _fs.PhysicalPublicationTransactionsRootPath,
+            transactionId);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _fs.ReadFileBytesAsync(relativePath));
+
+        Assert.Equal(publishedBytes, await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(priorBytes, await File.ReadAllBytesAsync(quarantinePath));
+        Assert.True(Directory.Exists(sourcePath));
+        Assert.True(Directory.Exists(transactionRoot));
     }
 
     [Theory]
@@ -2950,6 +3694,152 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence()
+    {
+        const string destinationRelativePath =
+            "saves/manual_saves/pre-journal-save.zip";
+        var writerAtBoundary = NewBarrier();
+        var allowPublication = NewBarrier();
+        var readerContended = NewBarrier();
+        var hooks = new FileSystemManagerHooks
+        {
+            CanonicalWriteLockContendedAsync = () =>
+            {
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
+            AfterCanonicalMutationBoundaryValidatedAsync = async path =>
+            {
+                if (!path.Equals(
+                        destinationRelativePath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                writerAtBoundary.TrySetResult();
+                await allowPublication.Task.WaitAsync(
+                    TimeSpan.FromSeconds(10));
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var stagingRoot = raceFs.CreateRuntimeSaveStagingRoot();
+        await using var staged = await raceFs.CreateRuntimeStagedFileAsync(
+            Path.Combine(stagingRoot, "pre-journal-save.zip"));
+        await staged.Stream.WriteAsync(
+            new byte[] { 0x50, 0x4B, 0x05, 0x06 });
+        Task<bool> readerTask;
+        Task first;
+        await using (var writeLease =
+                     await raceFs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var publicationTask =
+                raceFs.MoveRuntimeFileIntoCanonicalSessionAsync(
+                    writeLease,
+                    staged,
+                    destinationRelativePath);
+            await writerAtBoundary.Task.WaitAsync(
+                TimeSpan.FromSeconds(10));
+
+            using (ExecutionContext.SuppressFlow())
+            {
+                readerTask = Task.Run(
+                    () => raceFs.FileExists(
+                        destinationRelativePath));
+            }
+
+            first = await Task.WhenAny(
+                    readerTask,
+                    readerContended.Task)
+                .WaitAsync(TimeSpan.FromSeconds(10));
+            allowPublication.TrySetResult();
+            await publicationTask;
+        }
+
+        Assert.Same(readerContended.Task, first);
+        Assert.True(await readerTask);
+    }
+
+    [Fact]
+    public async Task FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination()
+    {
+        const string destinationRelativePath =
+            "game_state/control/pre-journal-proposal";
+        var writerAtBoundary = NewBarrier();
+        var allowPublication = NewBarrier();
+        var readerContended = NewBarrier();
+        var hooks = new FileSystemManagerHooks
+        {
+            CanonicalWriteLockContendedAsync = () =>
+            {
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
+            AfterCanonicalMutationBoundaryValidatedAsync = async path =>
+            {
+                if (!path.Equals(
+                        destinationRelativePath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                writerAtBoundary.TrySetResult();
+                await allowPublication.Task.WaitAsync(
+                    TimeSpan.FromSeconds(10));
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var stagingRoot = raceFs.CreateRuntimeProposalStagingRoot();
+        var sourceDirectory = Path.Combine(
+            stagingRoot,
+            "pre-journal-proposal");
+        Directory.CreateDirectory(sourceDirectory);
+        await File.WriteAllTextAsync(
+            Path.Combine(sourceDirectory, "proposal.json"),
+            "{}");
+        Task<Exception?> readerTask;
+        Task first;
+        await using (var writeLease =
+                     await raceFs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var publicationTask =
+                raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                    writeLease,
+                    sourceDirectory,
+                    destinationRelativePath);
+            await writerAtBoundary.Task.WaitAsync(
+                TimeSpan.FromSeconds(10));
+
+            using (ExecutionContext.SuppressFlow())
+            {
+                readerTask = Task.Run<Exception?>(
+                    () => Record.Exception(
+                        () => raceFs.FileExists(
+                            destinationRelativePath)));
+            }
+
+            first = await Task.WhenAny(
+                    readerTask,
+                    readerContended.Task)
+                .WaitAsync(TimeSpan.FromSeconds(10));
+            allowPublication.TrySetResult();
+            await publicationTask;
+        }
+
+        Assert.Same(readerContended.Task, first);
+        Assert.IsType<InvalidDataException>(await readerTask);
+    }
+
+    [Fact]
     public void FileExists_DirectoryAtFileAuthorityFailsClosed()
     {
         const string relativePath = "input/turn_request.json";
@@ -2988,6 +3878,19 @@ public sealed class FileSystemManagerTests : IDisposable
             {
             }
         }
+    }
+
+    [Fact]
+    public void BrowserPendingTurnInspector_RegularFileAtDirectoryArtifactFailsClosed()
+    {
+        var artifactPath = _fs.ResolvePath(
+            BrowserPendingTurnInspector.PendingTurnSnapshotDirectory);
+        File.WriteAllText(artifactPath, "not-a-directory");
+
+        Assert.Throws<InvalidDataException>(
+            () => BrowserPendingTurnInspector.Build(_fs));
+
+        Assert.Equal("not-a-directory", File.ReadAllText(artifactPath));
     }
 
     [Fact]
@@ -3043,6 +3946,94 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public void FileExists_AbsentTargetWithoutPublication_DoesNotAcquireCanonicalWriteLease()
+    {
+        var lockOpenCount = 0;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalWriteLockOpenAsync = () =>
+            {
+                Interlocked.Increment(ref lockOpenCount);
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        Assert.False(raceFs.FileExists(
+            "game_state/control/absent-repair-signal.json"));
+        Assert.Equal(0, Volatile.Read(ref lockOpenCount));
+    }
+
+    [Fact]
+    public async Task FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication()
+    {
+        const string relativePath =
+            "game_state/control/exact-registration-race.json";
+        var readerAtGap = NewBarrier();
+        var allowFollowUpProbe = NewBarrier();
+        var writerRegistered = NewBarrier();
+        var allowPublication = NewBarrier();
+        var readerContended = NewBarrier();
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalExistenceFollowUpProbeAsync = async path =>
+            {
+                if (!path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                readerAtGap.TrySetResult();
+                await allowFollowUpProbe.Task.WaitAsync(
+                    TimeSpan.FromSeconds(10));
+            },
+            BeforeCanonicalMutationBoundaryAsync = async path =>
+            {
+                if (!path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                writerRegistered.TrySetResult();
+                await allowPublication.Task.WaitAsync(
+                    TimeSpan.FromSeconds(10));
+            },
+            CanonicalWriteLockContendedAsync = () =>
+            {
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        Task<bool> readerTask;
+        using (ExecutionContext.SuppressFlow())
+        {
+            readerTask = Task.Run(() => raceFs.FileExists(relativePath));
+        }
+
+        await readerAtGap.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        var writerTask = raceFs.WriteFileAtomicBytesAsync(
+            relativePath,
+            [0x71, 0x82]);
+        await writerRegistered.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        allowFollowUpProbe.TrySetResult();
+
+        var first = await Task.WhenAny(
+                readerTask,
+                readerContended.Task)
+            .WaitAsync(TimeSpan.FromSeconds(10));
+        allowPublication.TrySetResult();
+        await writerTask;
+
+        Assert.Same(readerContended.Task, first);
+        Assert.True(await readerTask);
+    }
+
+    [Fact]
     public async Task AcquireCanonicalWriteLeaseAsync_DoesNotClaimAmbientOwnershipBeforeLockOpens()
     {
         var firstLockAttempted = NewBarrier();
@@ -3087,6 +4078,37 @@ public sealed class FileSystemManagerTests : IDisposable
             allowFirstLockAttempt.TrySetResult();
             await using var lease = await pendingLease;
         }
+    }
+
+    [Fact]
+    public async Task AcquireCanonicalWriteLeaseAsync_CancelledContentionDoesNotAccumulateAmbientRegistrations()
+    {
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        var heldLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+        try
+        {
+            for (var attempt = 0; attempt < 5; attempt++)
+            {
+                using var cancellation = new CancellationTokenSource(
+                    TimeSpan.FromMilliseconds(100));
+                await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                    () => raceFs.AcquireCanonicalWriteLeaseAsync(
+                        cancellationToken: cancellation.Token));
+            }
+
+            Assert.Equal(1, GetAmbientCanonicalLeaseDepth(raceFs));
+            Assert.Equal(1, GetActiveAmbientCanonicalLeaseCount(raceFs));
+        }
+        finally
+        {
+            await heldLease.DisposeAsync();
+        }
+
+        Assert.False(raceFs.FileExists(
+            "game_state/world/ambient-registration-cleanup.json"));
+        Assert.Equal(0, GetAmbientCanonicalLeaseDepth(raceFs));
     }
 
     [Fact]
@@ -3914,7 +4936,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public void PhysicalFileAuthority_StableDirectoryRetainsEveryAncestorAgainstRename()
+    public void PhysicalFileAuthority_RetainedLeafAuthorityBlocksEveryAncestorRename()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -3929,10 +4951,7 @@ public sealed class FileSystemManagerTests : IDisposable
             intermediatePath,
             "level-two",
             "level-three");
-        var displacedPath = intermediatePath + ".displaced";
         Directory.CreateDirectory(leafPath);
-        var swapped = false;
-        var blocked = false;
         try
         {
             using (PhysicalFileAuthority.EnsureStableDirectory(
@@ -3940,34 +4959,37 @@ public sealed class FileSystemManagerTests : IDisposable
                        leafPath,
                        "Stable ancestor retention test"))
             {
-                try
+                foreach (var candidate in new[]
+                         {
+                             authorityRoot,
+                             intermediatePath,
+                             Path.Combine(intermediatePath, "level-two"),
+                             leafPath
+                         })
                 {
-                    Directory.Move(intermediatePath, displacedPath);
-                    swapped = true;
-                }
-                catch (Exception ex) when (
-                    ex is IOException or UnauthorizedAccessException)
-                {
-                    blocked = true;
+                    var displacedPath = candidate + ".displaced";
+                    var blocked = false;
+                    try
+                    {
+                        Directory.Move(candidate, displacedPath);
+                    }
+                    catch (Exception ex) when (
+                        ex is IOException or UnauthorizedAccessException)
+                    {
+                        blocked = true;
+                    }
+
+                    Assert.True(
+                        blocked,
+                        $"Retained leaf authority must deny rename of '{candidate}'.");
                 }
             }
         }
         finally
         {
-            if (swapped &&
-                Directory.Exists(displacedPath) &&
-                !Directory.Exists(intermediatePath))
-            {
-                Directory.Move(displacedPath, intermediatePath);
-            }
-
             if (Directory.Exists(authorityRoot))
                 Directory.Delete(authorityRoot, recursive: true);
         }
-
-        Assert.True(
-            blocked,
-            "Every retained authority ancestor must deny rename sharing.");
     }
 
     [Fact]
@@ -4098,6 +5120,49 @@ public sealed class FileSystemManagerTests : IDisposable
 
     private static TaskCompletionSource NewBarrier() =>
         new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private static int GetAmbientCanonicalLeaseDepth(
+        FileSystemManager fs)
+    {
+        var current = GetAmbientCanonicalLeaseHead(fs);
+        var depth = 0;
+        while (current != null)
+        {
+            depth++;
+            current = current.Previous;
+        }
+
+        return depth;
+    }
+
+    private static int GetActiveAmbientCanonicalLeaseCount(
+        FileSystemManager fs)
+    {
+        var current = GetAmbientCanonicalLeaseHead(fs);
+        var active = 0;
+        while (current != null)
+        {
+            if (current.Active)
+                active++;
+            current = current.Previous;
+        }
+
+        return active;
+    }
+
+    private static FileSystemManager.AmbientCanonicalLeaseRegistration?
+        GetAmbientCanonicalLeaseHead(FileSystemManager fs)
+    {
+        var field = typeof(FileSystemManager).GetField(
+            "_ambientCanonicalLease",
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(field);
+        var ambient = Assert.IsType<
+            AsyncLocal<FileSystemManager.AmbientCanonicalLeaseRegistration?>>(
+            field!.GetValue(fs));
+        return ambient.Value;
+    }
 
     private void WritePublicationCrashJournal(
         string transactionId,

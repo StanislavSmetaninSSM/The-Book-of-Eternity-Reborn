@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
@@ -280,6 +282,125 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
 
         Assert.Equal("{\"tier\":\"before\"}", await File.ReadAllTextAsync(profilePath));
         Assert.False(restartedFs.FileExists(transaction.ManifestPath));
+    }
+
+    [Fact]
+    public async Task LegacyDarenRollback_WithBaseline_DoesNotOverwriteNewerProfileOrTrackedState()
+    {
+        const string trackedPath = "game_state/meta/legacy-daren-existing.json";
+        const string interruptedTracked = """{"value":"interrupted"}""";
+        const string newerProfile = """{"tier":"newer"}""";
+        await _fs.WriteFileAtomicAsync(trackedPath, """{"value":"before"}""");
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        await File.WriteAllTextAsync(profilePath, """{"tier":"before"}""");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "legacy_daren_existing",
+                        rollbackExternalFileIds:
+                        [
+                            ExplorerLocalTurnRollbackArtifacts
+                                .DarenRewardProfileExternalFileId
+                        ]);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                interruptedTracked);
+        }
+
+        await DowngradeDarenExternalManifestToSchema3Async(
+            transaction.ManifestPath);
+        await File.WriteAllTextAsync(profilePath, newerProfile);
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/legacy-daren-existing-trigger.json",
+                """{"ok":true}"""));
+
+        Assert.Equal(
+            interruptedTracked,
+            await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+        Assert.Equal(newerProfile, await File.ReadAllTextAsync(profilePath));
+        Assert.True(File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
+        Assert.True(File.Exists(_fs.ResolvePath(
+            Assert.Single(transaction.ExternalEntries).BackupPath!)));
+        Assert.False(restartedFs.FileExists(
+            "game_state/meta/legacy-daren-existing-trigger.json"));
+    }
+
+    [Fact]
+    public async Task LegacyDarenRollback_WithoutBaseline_DoesNotDeleteNewerProfileOrRestoreTrackedState()
+    {
+        const string trackedPath = "game_state/meta/legacy-daren-missing.json";
+        const string interruptedTracked = """{"value":"interrupted"}""";
+        const string newerProfile = """{"tier":"newer"}""";
+        await _fs.WriteFileAtomicAsync(trackedPath, """{"value":"before"}""");
+        var profilePath = Path.Combine(
+            _rootPath,
+            DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                '/',
+                Path.DirectorySeparatorChar));
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "legacy_daren_missing",
+                        rollbackExternalFileIds:
+                        [
+                            ExplorerLocalTurnRollbackArtifacts
+                                .DarenRewardProfileExternalFileId
+                        ]);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                interruptedTracked);
+        }
+
+        await DowngradeDarenExternalManifestToSchema3Async(
+            transaction.ManifestPath);
+        Directory.CreateDirectory(Path.GetDirectoryName(profilePath)!);
+        await File.WriteAllTextAsync(profilePath, newerProfile);
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/legacy-daren-missing-trigger.json",
+                """{"ok":true}"""));
+
+        Assert.Equal(
+            interruptedTracked,
+            await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+        Assert.Equal(newerProfile, await File.ReadAllTextAsync(profilePath));
+        Assert.True(File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
+        Assert.False(restartedFs.FileExists(
+            "game_state/meta/legacy-daren-missing-trigger.json"));
     }
 
     [Fact]
@@ -911,6 +1032,183 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     }
 
     [Fact]
+    public async Task DuplicateBrowserManifestStatus_BlocksWriterAndRetainsEvidence()
+    {
+        const string trackedPath =
+            "game_state/meta/duplicate_manifest_status.json";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        string ambiguousManifest;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "browser_write");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"interrupted\"}");
+            ambiguousManifest =
+                (await _fs.ReadFileAsync(writeLease, transaction.ManifestPath))!
+                .Replace(
+                    "\"status\": \"staged\",",
+                    "\"status\": \"staged\",\n  \"Status\": \"committed\",",
+                    StringComparison.Ordinal);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                transaction.ManifestPath,
+                ambiguousManifest);
+        }
+
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/duplicate_manifest_trigger.json",
+                "{\"ok\":true}"));
+
+        Assert.Equal(
+            "{\"value\":\"interrupted\"}",
+            await restartedFs.ReadFileAsync(trackedPath));
+        Assert.Equal(
+            ambiguousManifest,
+            await restartedFs.ReadFileAsync(transaction.ManifestPath));
+        Assert.All(
+            transaction.Entries.Where(static entry => entry.Existed),
+            entry => Assert.True(restartedFs.FileExists(entry.BackupPath!)));
+        Assert.False(restartedFs.FileExists(
+            "game_state/meta/duplicate_manifest_trigger.json"));
+    }
+
+    [Fact]
+    public async Task BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence()
+    {
+        const string trackedPath =
+            "game_state/meta/wrong-kind-cleanup-root.json";
+        const string cleanupDirectory =
+            "game_state/control/pending_turn_snapshot";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "browser_write",
+                        [cleanupDirectory]);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"interrupted\"}");
+        }
+
+        var cleanupPath = _fs.ResolvePath(cleanupDirectory);
+        byte[] wrongKindEvidence = [0x72, 0x83, 0x94];
+        await File.WriteAllBytesAsync(cleanupPath, wrongKindEvidence);
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/wrong-kind-cleanup-trigger.json",
+                "{\"ok\":true}"));
+
+        Assert.Equal(
+            "{\"value\":\"before\"}",
+            await restartedFs.ReadFileAsync(trackedPath));
+        Assert.Equal(
+            wrongKindEvidence,
+            await File.ReadAllBytesAsync(cleanupPath));
+        Assert.True(restartedFs.FileExists(transaction.ManifestPath));
+        Assert.All(
+            transaction.Entries.Where(static entry => entry.Existed),
+            entry => Assert.True(restartedFs.FileExists(entry.BackupPath!)));
+        Assert.False(restartedFs.FileExists(
+            "game_state/meta/wrong-kind-cleanup-trigger.json"));
+    }
+
+    [Fact]
+    public async Task BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence()
+    {
+        const string trackedPath =
+            "game_state/meta/raced-cleanup-root.json";
+        const string cleanupDirectory =
+            "game_state/control/pending_turn_snapshot";
+        await _fs.WriteFileAtomicAsync(trackedPath, "{\"value\":\"before\"}");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "browser_write",
+                        [cleanupDirectory]);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                "{\"value\":\"interrupted\"}");
+        }
+
+        var cleanupPath = _fs.ResolvePath(cleanupDirectory);
+        Directory.CreateDirectory(cleanupPath);
+        byte[] replacementEvidence = [0x25, 0x36, 0x47];
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationBoundaryAsync = path =>
+            {
+                if (!swapped &&
+                    path.Equals(
+                        cleanupDirectory,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    Directory.Delete(cleanupPath, recursive: true);
+                    File.WriteAllBytes(cleanupPath, replacementEvidence);
+                    swapped = true;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/raced-cleanup-trigger.json",
+                "{\"ok\":true}"));
+
+        Assert.True(swapped);
+        Assert.Equal(
+            replacementEvidence,
+            await File.ReadAllBytesAsync(cleanupPath));
+        Assert.True(restartedFs.FileExists(transaction.ManifestPath));
+        Assert.All(
+            transaction.Entries.Where(static entry => entry.Existed),
+            entry => Assert.True(restartedFs.FileExists(entry.BackupPath!)));
+        Assert.False(restartedFs.FileExists(
+            "game_state/meta/raced-cleanup-trigger.json"));
+    }
+
+    [Fact]
     public async Task LegacyBrowserManifest_RejectsRestoredStatusAndRetainsEvidence()
     {
         const string trackedPath = "game_state/meta/legacy_restored_manifest.json";
@@ -1364,6 +1662,30 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
 
     private static LocalUiSessionLockOwner Owner(string id, string label) =>
         new(id, "console", label, TimeSpan.FromMinutes(2));
+
+    private async Task DowngradeDarenExternalManifestToSchema3Async(
+        string manifestPath)
+    {
+        var fullPath = _fs.ResolvePath(manifestPath);
+        var manifest = JsonNode.Parse(
+                await File.ReadAllTextAsync(fullPath))!
+            .AsObject();
+        manifest["schemaVersion"] = 3;
+        var externalEntry = Assert.Single(
+                manifest["externalEntries"]!.AsArray())
+            !.AsObject();
+        externalEntry.Remove("parentIdentity");
+        externalEntry.Remove("baselineIdentity");
+        externalEntry.Remove("publishedIdentity");
+        externalEntry.Remove("publishedSha256");
+        externalEntry.Remove("publicationTransactionId");
+        await File.WriteAllTextAsync(
+            fullPath,
+            manifest.ToJsonString(new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
+    }
 
     private static bool TryCreateFileLink(
         string linkPath,

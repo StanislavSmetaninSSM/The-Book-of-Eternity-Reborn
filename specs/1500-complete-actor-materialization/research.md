@@ -1127,6 +1127,213 @@ validation after byte consumption and before restoration.
 initial open; those bytes must not become rollback authority and the evidence
 must remain available.
 
+### Decision 110: One retained leaf authority blocks ancestor replacement
+
+**Decision**: On Windows, keep the validated leaf-directory handle open without
+delete sharing through the authority-bearing operation and prove with
+deterministic attempts that the leaf plus every renameable ancestor cannot be
+renamed while that handle is live. Do not claim that `EnsureStableDirectory`
+retains one handle per ancestor; it retains the final authority whose share mode
+blocks replacement of the containing path chain.
+
+**Rationale**: The security invariant is physical path stability, not a specific
+number of retained handles. Precise wording and a test for every path level
+prevent an implementation detail from being presented as stronger evidence than
+the operating-system guarantee actually used.
+
+### Decision 111: Direct Daren writes share publication preflight
+
+**Decision**: Direct reward-profile reads and writes use the same root-relative
+exact namespace probe and publication capability adjudication as canonical and
+runtime files. Existing profiles require reversible opened-handle replacement;
+missing profiles require descriptor-bound create-only publication; malformed
+nodes fail before temporary evidence or mutation hooks.
+
+**Rationale**: A dedicated store is an authority boundary, not permission to
+reintroduce pathname existence or move fallbacks outside `FileSystemManager`.
+
+### Decision 112: Legacy external evidence has no mutation authority
+
+**Decision**: Reject recovery of a legacy browser rollback manifest that
+contains a Daren external entry without exact schema-4 parent, baseline, and
+published-object identity. Retain the manifest and before-image unchanged.
+
+**Rationale**: The legacy `Existed` flag and backup digest prove historical
+bytes, not ownership of the object currently present at the external path.
+Restoring or deleting from that evidence can destroy a newer console or browser
+profile.
+
+### Decision 113: Recovery discovery classifies exact object kinds
+
+**Decision**: Discover load, worker, and reversible-publication recovery through
+the exact no-follow namespace probe. Expected markers are single-link regular
+files and expected roots are physical directories; every wrong shape fails
+closed.
+
+**Rationale**: Pathname `Exists` APIs collapse directories, dangling links, and
+access failures into absence, allowing ordinary writes to bypass unresolved
+transaction evidence.
+
+### Decision 114: Worker destination shape is independent authority
+
+**Decision**: Classify a worker recovery destination before reading optional
+bytes. Only exact `Missing` may participate in a missing-baseline comparison.
+
+**Rationale**: A byte reader returning `null` cannot distinguish a missing file
+from a directory or malformed namespace node and therefore cannot authorize
+journal deletion.
+
+### Decision 115: Publication registration starts before preflight
+
+**Decision**: Register the publication scope before the first absence decision
+and keep it registered until publication and journal state are durable for
+canonical files, runtime files/directories, and saves.
+
+**Rationale**: Target-only mutation registration begins too late to cover the
+window in which a publisher has authority but has not yet exposed a transaction
+journal.
+
+### Decision 116: Rollback cleanup repeats the exact absence proof
+
+**Decision**: Reversible rollback performs its final absence decision with the
+retained-parent exact probe immediately before evidence disposal and never
+falls back to pathname `Exists`.
+
+**Rationale**: A raced dangling link can appear absent to both pathname APIs,
+causing the source and journal to be deleted while an unowned node occupies the
+destination.
+
+### Decision 117: Browser artifact directories are fail-closed authority
+
+**Decision**: Inspect browser snapshot and rollback directories through a
+canonical write lease and exact physical directory authority. Wrong shapes
+block browser writes.
+
+**Rationale**: Browser generation fencing is ineffective if a regular file or
+dangling link at an artifact directory is silently interpreted as no pending
+work.
+
+### Decision 118: Ordinary absence is target-scoped, not globally leased
+
+**Decision**: A public canonical existence query waits only for an active exact
+target publication or durable publication recovery evidence. If neither exists,
+an initial `Missing` result is confirmed by one exact follow-up probe without
+acquiring the global canonical write lease.
+
+**Rationale**: Repeated control-file polling otherwise competes for the same
+exclusive lease as the signal writer and creates avoidable liveness pressure.
+Exact target registration still covers every authority preflight/publication
+interval; a writer that registers after the follow-up probe starts after the
+reader's valid absence linearization point.
+
+### Decision 119: Concurrent repair-test actors fail and time out as one unit
+
+**Decision**: Integration tests that emulate a GM repair actor must await the
+engine and GM tasks together under a finite whole-test deadline. Condition
+waiting for repair requests or accepted-validation checkpoints must allow the
+full validator to complete, must propagate a helper failure immediately instead
+of awaiting the engine first, and must release injected barriers on every exit
+path.
+
+**Rationale**: Captured timestamps showed the bootstrap validator published its
+repair request 5.34 seconds after the malformed ready signal. The helper's
+five-second deadline therefore expired just before the request appeared. Since
+the test awaited the engine first, that helper exception was hidden while the
+engine correctly waited for a stall report that could no longer be written.
+Joint bounded observation converts the same defect into a direct, finite test
+failure.
+
+### Decision 120: Recovery JSON is unique before it is typed
+
+**Decision**: Parse recovery authority as JSON first, recursively reject
+duplicate property names using the serializer's case comparison, and only then
+perform typed deserialization.
+
+**Rationale**: A permissive deserializer can choose one of two conflicting
+`committed`, `status`, or `entries` values. Recovery and cleanup cannot be
+authorized by an order-dependent interpretation of ambiguous durable evidence.
+
+### Decision 121: Exact-path existence and registration share one gate
+
+**Decision**: Synchronize the final exact absence probe with in-process
+publication registration for that same canonical target. Unrelated targets do
+not share this gate and ordinary absence does not acquire the global canonical
+write lease.
+
+**Rationale**: Sampling the active-registration table before a second probe
+still permits a writer to register between those operations. A target-scoped
+gate supplies a real linearization point without restoring the liveness defect
+fixed in Phase 40.
+
+### Decision 122: Candidate discovery is namespace classification
+
+**Decision**: Reversible-publication recovery candidates are opened only after
+exact root-relative no-follow classification. Only an exact regular file may be
+read as an identity candidate.
+
+**Rationale**: Pathname `File.Exists` maps directories, dangling links, and
+some access failures to `false`, which can incorrectly authorize journal
+retirement.
+
+### Decision 123: Cleanup roots are never inferred from `Directory.Exists`
+
+**Decision**: Browser rollback cleanup classifies each expected directory and
+its descendants through physical authority. Wrong kinds and probe failures keep
+the manifest and transaction evidence.
+
+**Rationale**: A regular file or link at a cleanup-directory boundary is not an
+already-clean state and must not permit manifest deletion.
+
+### Decision 124: Optional reads are optional only on exact absence
+
+**Decision**: Canonical and runtime optional read APIs perform exact namespace
+classification before stable handle-bound reads. Only `Missing` returns null.
+
+**Rationale**: A directory, reparse point, hard link, access error, or malformed
+parent is an integrity condition, not optional missing data.
+
+### Decision 125: Mutation state is one lock-protected tuple
+
+**Decision**: Update version and active count under one target-state lock and
+capture them through one combined snapshot.
+
+**Rationale**: Separate atomic fields still permit a reader to observe a torn
+logical transition and miss a writer that registered before the reader's final
+absence decision.
+
+### Decision 126: Optional canonical paths are traversed from root
+
+**Decision**: Use exact root-relative namespace traversal for optional canonical
+existence instead of opening the immediate parent and converting every
+`DirectoryNotFoundException` to absence.
+
+**Rationale**: A missing parent and a regular file occupying a parent path are
+different authority states.
+
+### Decision 127: Cleanup deletion carries an expected directory kind
+
+**Decision**: Browser rollback cleanup invokes one deletion operation that
+accepts missing but requires the opened target to be a physical directory.
+
+**Rationale**: A separate existence check cannot authorize a later pathname
+deletion after the target has been replaced.
+
+### Decision 128: Session generation uses strict JSON authority
+
+**Decision**: Reject duplicate and case-colliding session-generation properties
+before typed deserialization.
+
+**Rationale**: Generation fencing cannot depend on serializer property order.
+
+### Decision 129: Ambient lease registrations are opportunistically compacted
+
+**Decision**: Before adding a registration or testing ambient ownership, unlink
+inactive heads until the nearest active ancestor or null is reached.
+
+**Rationale**: `AsyncLocal` assignment in an asynchronous failure continuation
+does not rewrite the caller's captured value, but the shared registration can
+still be marked inactive and safely removed at the next caller-side operation.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

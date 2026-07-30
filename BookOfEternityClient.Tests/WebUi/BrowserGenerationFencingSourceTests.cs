@@ -271,6 +271,10 @@ public sealed class BrowserGenerationFencingSourceTests
             "BookOfEternityClient",
             "Services",
             "QteSceneService.cs"));
+        var storeSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "DarenRewardProfileFileStore.cs"));
 
         Assert.Contains("DarenRewardProfileFileStore", rewardSource, StringComparison.Ordinal);
         Assert.Contains("DarenRewardProfileFileStore", qteSource, StringComparison.Ordinal);
@@ -296,6 +300,309 @@ public sealed class BrowserGenerationFencingSourceTests
         Assert.DoesNotContain(
             "WriteExternalFileAtomic",
             qteSource,
+            StringComparison.Ordinal);
+        foreach (var prohibited in new[]
+                 {
+                     "File.Exists(",
+                     "Directory.Exists(",
+                     "File.Move(",
+                     "Directory.Move("
+                 })
+        {
+            Assert.DoesNotContain(
+                prohibited,
+                storeSource,
+                StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback()
+    {
+        var inspectorSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "WebUi",
+            "BrowserPendingTurnInspector.cs"));
+        var publicationSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "ReversibleFilePublication.cs"));
+        var rollbackSource = ExtractMethod(
+            publicationSource,
+            "RollBack",
+            "private static bool");
+        var recoverySource = ExtractMethod(
+            publicationSource,
+            "RecoverPending",
+            "internal static void");
+        var candidateSource = ExtractMethod(
+            publicationSource,
+            "OpenIdentityFromCandidates",
+            "private static SafeFileHandle?");
+        var publicationIntentSource = ExtractMethod(
+            publicationSource,
+            "ReadIntent",
+            "private static PublicationIntent");
+        var rollbackManifestSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "ExplorerLocalTurnRollbackArtifacts.cs"));
+        var browserRestoreSource = ExtractMethod(
+            rollbackManifestSource,
+            "RestoreBrowserWriteTransactionAsync",
+            "internal static async Task");
+        var browserRecoverySource = ExtractMethod(
+            rollbackManifestSource,
+            "RecoverInterruptedBrowserWriteTransactionsAsync",
+            "internal static async Task");
+        var fileSystemSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "FileSystemManager.cs"));
+        var synchronousReadSource = ExtractMethod(
+            fileSystemSource,
+            "ReadFileSnapshotCore",
+            "private CanonicalFileReadSnapshot?");
+        var asynchronousReadSource = ExtractMethod(
+            fileSystemSource,
+            "OpenCanonicalReadStreamAsync",
+            "private async Task<StableReadFile?>");
+        var loadJournalSource = ExtractMethod(
+            fileSystemSource,
+            "ReadLoadTransactionJournal",
+            "private LoadTransactionJournal");
+        var workerJournalSource = ExtractMethod(
+            fileSystemSource,
+            "ReadWorkerApplyJournal",
+            "private WorkerApplyTransactionJournal");
+        var workerRecoverySource = ExtractMethod(
+            fileSystemSource,
+            "RecoverInterruptedWorkerApplyTransactionAsync",
+            "private async Task");
+
+        Assert.Contains(
+            "fs.FileExists(writeLease, path)",
+            inspectorSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "fs.DirectoryHasContent(writeLease, path)",
+            inspectorSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Exists(",
+            inspectorSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Exists(",
+            inspectorSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ProbeNamespaceEntry(",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Exists(",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Exists(",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ProbeNamespaceEntryFromRoot(",
+            recoverySource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Exists(",
+            recoverySource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ProbeNamespaceEntry(",
+            candidateSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Exists(",
+            candidateSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Exists(",
+            browserRestoreSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "fs.DirectoryExists(",
+            browserRestoreSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "fs.DeleteDirectoryTree(writeLease, cleanupDirectory)",
+            browserRestoreSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Exists(",
+            synchronousReadSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "File.Exists(",
+            asynchronousReadSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<PublicationIntent>",
+            publicationIntentSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<BrowserWriteRollbackManifest>",
+            browserRecoverySource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<LoadTransactionJournal>",
+            loadJournalSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<WorkerApplyTransactionJournal>",
+            workerJournalSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<WorkerApplyTransactionManifest>",
+            workerRecoverySource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "manifest.SchemaVersion < 4 && sourceExternalEntries.Count > 0",
+            rollbackManifestSource,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CanonicalMutationObservation_UsesAtomicTransitionsAndSnapshots()
+    {
+        var source = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "FileSystemManager.cs"));
+        var beginMutation = ExtractMethod(
+            source,
+            "BeginMutation",
+            "internal void");
+        var endMutation = ExtractMethod(
+            source,
+            "EndMutation",
+            "internal void");
+        var captureMutationState = ExtractMethod(
+            source,
+            "CaptureSnapshot",
+            "internal InProcessMutationSnapshot");
+        var fileExists = ExtractMethod(
+            source,
+            "FileExists",
+            "public bool");
+
+        Assert.Contains("lock (this)", beginMutation, StringComparison.Ordinal);
+        Assert.Contains("Version", beginMutation, StringComparison.Ordinal);
+        Assert.Contains("ActiveMutationCount", beginMutation, StringComparison.Ordinal);
+        Assert.DoesNotContain("Interlocked.", beginMutation, StringComparison.Ordinal);
+
+        Assert.Contains("lock (this)", endMutation, StringComparison.Ordinal);
+        Assert.Contains("Version", endMutation, StringComparison.Ordinal);
+        Assert.Contains("ActiveMutationCount", endMutation, StringComparison.Ordinal);
+        Assert.DoesNotContain("Interlocked.", endMutation, StringComparison.Ordinal);
+
+        Assert.Contains("lock (this)", captureMutationState, StringComparison.Ordinal);
+        Assert.Contains(
+            "new InProcessMutationSnapshot(",
+            captureMutationState,
+            StringComparison.Ordinal);
+        Assert.Contains("Version", captureMutationState, StringComparison.Ordinal);
+        Assert.Contains("ActiveMutationCount > 0", captureMutationState, StringComparison.Ordinal);
+
+        Assert.Contains("_state.BeginMutation();", source, StringComparison.Ordinal);
+        Assert.Contains("state.EndMutation();", source, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Interlocked.Increment(ref _state.Version)",
+            source,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Interlocked.Increment(ref _state.ActiveMutationCount)",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains("mutationBeforeProbe", fileExists, StringComparison.Ordinal);
+        Assert.Contains("mutationAfterProbe", fileExists, StringComparison.Ordinal);
+        Assert.Equal(
+            2,
+            fileExists.Split(
+                "observation.CaptureMutationState()",
+                StringSplitOptions.None).Length - 1);
+        Assert.DoesNotContain(
+            "observation.Version",
+            fileExists,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "observation.MutationActive",
+            fileExists,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Phase42AuthorityBoundaries_KeepStrictClassificationAndBookkeeping()
+    {
+        var fileSystemSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "FileSystemManager.cs"));
+        var fileExistsCore = ExtractMethod(
+            fileSystemSource,
+            "FileExistsCore",
+            "private bool");
+        var readSessionGeneration = ExtractMethod(
+            fileSystemSource,
+            "ReadSessionGeneration",
+            "private string");
+        var releaseAmbientLease = ExtractMethod(
+            fileSystemSource,
+            "ReleaseAmbientCanonicalLease",
+            "private void");
+        var physicalAuthoritySource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "PhysicalFileAuthority.cs"));
+        var strictDirectoryDelete = ExtractMethod(
+            physicalAuthoritySource,
+            "TryDeleteDirectoryTree",
+            "internal static bool");
+
+        Assert.Contains(
+            "ProbeNamespaceEntryFromRoot(",
+            fileExistsCore,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Exists(", fileExistsCore, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.Exists(", fileExistsCore, StringComparison.Ordinal);
+
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<SessionGenerationDocument>",
+            readSessionGeneration,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "JsonSerializer.Deserialize<SessionGenerationDocument>",
+            readSessionGeneration,
+            StringComparison.Ordinal);
+
+        var ambientRegistrationIndex = fileSystemSource.IndexOf(
+            "new AmbientCanonicalLeaseRegistration(",
+            StringComparison.Ordinal);
+        Assert.True(ambientRegistrationIndex >= 0);
+        var acquisitionCompactionIndex = fileSystemSource.IndexOf(
+            "CompactAmbientCanonicalLeaseHead()",
+            ambientRegistrationIndex,
+            StringComparison.Ordinal);
+        Assert.InRange(
+            acquisitionCompactionIndex - ambientRegistrationIndex,
+            1,
+            200);
+        Assert.Contains(
+            "CompactAmbientCanonicalLeaseHead()",
+            releaseAmbientLease,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "requirePhysicalDirectory: true",
+            strictDirectoryDelete,
             StringComparison.Ordinal);
     }
 

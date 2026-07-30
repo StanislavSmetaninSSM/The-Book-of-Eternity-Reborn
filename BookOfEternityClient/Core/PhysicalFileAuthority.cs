@@ -151,6 +151,107 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    internal static NamespaceEntryKind ProbeNamespaceEntryFromRoot(
+        string rootPath,
+        string expectedPath,
+        string authorityName)
+    {
+        var root = Path.GetFullPath(rootPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var expected = Path.GetFullPath(expectedPath);
+        if (!IsSameOrDescendant(expected, root) ||
+            PathsEqual(expected, root))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} entry is outside its physical root.");
+        }
+
+        var segments = Path.GetRelativePath(root, expected).Split(
+            [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+            StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 0 ||
+            segments.Any(segment => segment is "." or ".."))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} namespace path is invalid.");
+        }
+
+        StableDirectory? current = null;
+        try
+        {
+            var rootParentPath = Path.GetDirectoryName(root);
+            if (rootParentPath == null)
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} physical root has no parent directory.");
+            }
+
+            using (var rootParent = OpenStableDirectory(
+                       rootParentPath,
+                       authorityName + " root parent"))
+            {
+                var rootKind = ProbeNamespaceEntry(
+                    rootParent,
+                    root,
+                    authorityName + " root");
+                if (rootKind == NamespaceEntryKind.Missing)
+                    return NamespaceEntryKind.Missing;
+                if (rootKind != NamespaceEntryKind.Directory)
+                {
+                    throw new InvalidDataException(
+                        $"{authorityName} root is not a physical directory.");
+                }
+
+                try
+                {
+                    current = OpenStableDirectory(root, authorityName);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    rootKind = ProbeNamespaceEntry(
+                        rootParent,
+                        root,
+                        authorityName + " root");
+                    if (rootKind == NamespaceEntryKind.Missing)
+                        return NamespaceEntryKind.Missing;
+                    throw;
+                }
+            }
+
+            for (var index = 0; index < segments.Length - 1; index++)
+            {
+                var childPath = Path.Combine(current.FullPath, segments[index]);
+                var childKind = ProbeNamespaceEntry(
+                    current,
+                    childPath,
+                    authorityName + " parent");
+                if (childKind == NamespaceEntryKind.Missing)
+                    return NamespaceEntryKind.Missing;
+                if (childKind != NamespaceEntryKind.Directory)
+                {
+                    throw new InvalidDataException(
+                        $"{authorityName} parent is not a physical directory.");
+                }
+
+                var child = OpenStableDirectory(
+                    childPath,
+                    authorityName + " parent");
+                current.Dispose();
+                current = child;
+            }
+
+            return ProbeNamespaceEntry(
+                current,
+                expected,
+                authorityName);
+        }
+        finally
+        {
+            current?.Dispose();
+        }
+    }
+
     internal static StableDirectory EnsureStableDirectory(
         string rootPath,
         string targetPath,
@@ -933,6 +1034,61 @@ internal static class PhysicalFileAuthority
             authorityName);
     }
 
+    internal static bool TryDeleteDirectoryTree(
+        string expectedPath,
+        string authorityName)
+    {
+        var normalizedPath = Path.GetFullPath(expectedPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var parentPath = Path.GetDirectoryName(normalizedPath);
+        if (parentPath == null)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} tree has no parent directory.");
+        }
+
+        if (!OperatingSystem.IsWindows())
+        {
+            if (!File.Exists(normalizedPath) &&
+                !Directory.Exists(normalizedPath))
+            {
+                return false;
+            }
+
+            var attributes = File.GetAttributes(normalizedPath);
+            if ((attributes & FileAttributes.Directory) == 0 ||
+                (attributes & FileAttributes.ReparsePoint) != 0)
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} target is not a physical directory.");
+            }
+
+            DeleteTreeFallback(normalizedPath);
+            return true;
+        }
+
+        using var parent = OpenStableDirectory(parentPath, authorityName);
+        return TryDeleteEntry(
+            parent,
+            normalizedPath,
+            authorityName,
+            requirePhysicalDirectory: true);
+    }
+
+    internal static bool TryDeleteDirectoryTree(
+        StableDirectory parent,
+        string expectedPath,
+        string authorityName)
+    {
+        ArgumentNullException.ThrowIfNull(parent);
+        return TryDeleteEntry(
+            parent,
+            Path.GetFullPath(expectedPath),
+            authorityName,
+            requirePhysicalDirectory: true);
+    }
+
     internal static bool TryDeleteEmptyDirectory(
         StableDirectory parent,
         string expectedPath,
@@ -1102,7 +1258,8 @@ internal static class PhysicalFileAuthority
     private static bool TryDeleteEntry(
         StableDirectory parent,
         string expectedPath,
-        string authorityName)
+        string authorityName,
+        bool requirePhysicalDirectory = false)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -1173,6 +1330,13 @@ internal static class PhysicalFileAuthority
                 (attributeTag.FileAttributes & FileAttributes.Directory) != 0;
             var isReparsePoint =
                 (attributeTag.FileAttributes & FileAttributes.ReparsePoint) != 0;
+            if (requirePhysicalDirectory &&
+                (!isDirectory || isReparsePoint))
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} target is not a physical directory.");
+            }
+
             if (isDirectory && !isReparsePoint)
             {
                 using var directory = new StableDirectory(

@@ -144,8 +144,12 @@ specs/1500-complete-actor-materialization/
 
 ```text
 BookOfEternityClient/
+├── Core/
+│   ├── FileSystemManager.cs
+│   └── PhysicalFileAuthority.cs
 ├── Services/
 │   ├── ActorMaterializationContract.cs
+│   ├── DarenRewardProfileFileStore.cs
 │   ├── NpcCoreChangesContract.cs
 │   ├── SystemGuardianLibraryService.cs
 │   ├── Validation/ValidationService.ActorMaterializationContinuity.cs
@@ -165,6 +169,7 @@ BookOfEternityClient/
 BookOfEternityClient.Tests/
 ├── ActorMaterializationContractTests.cs
 ├── ActorMaterializationValidationTests.cs
+├── FileSystemManagerTests.cs
 ├── NpcCoreChangesTests.cs
 ├── SystemGuardianLibraryServiceTests.cs
 ├── GmWorkerBridgeLifecycleTests.cs
@@ -178,7 +183,10 @@ BookOfEternityClient.Tests/
 ├── AfterlifeDocumentationCoverageTests.cs
 ├── ExampleDocumentationValidationTests.cs
 ├── PromptDocumentationCoverageTests.cs
-└── ValidationSourceGuardTests.cs
+├── ValidationSourceGuardTests.cs
+└── WebUi/
+    ├── BrowserGenerationFencingSourceTests.cs
+    └── BrowserQteGenerationFencingTests.cs
 
 OtherGuides/
 ├── Actor_Brain_2_0.md
@@ -404,15 +412,184 @@ The remediation keeps these decisions inside the filesystem harness:
 5. route worker before-image recovery through the stable-read completion gate
    so a post-open link or identity change cannot authorize restoration.
 
-The retained Windows ancestor handles are also covered by a deterministic
-rename attempt: the operating system blocks replacement of every retained
-ancestor while authority is live. This evidence rejects a broader reopen-based
-redesign while all actual publication is nevertheless relative and
-descriptor-bound. Final integration repeats focused filesystem, Daren,
+The retained Windows leaf authority is also covered by deterministic rename
+attempts against the leaf and every containing ancestor: the operating system
+blocks replacement of the entire physical path chain while that no-delete-share
+handle is live. Phase 38 extends the same root-relative exact probe and
+capability adjudication to direct Daren writes and removes the remaining
+pathname fallback from that dedicated store. Final integration repeats focused
+filesystem, Daren,
 browser, worker-recovery, save/load, and actor suites; mandatory afterlife
 documentation; complete C# and frontend verification; Release build; static
 parsing; clean-checkout verification; Spec Kit analysis; and a fresh
 independent `gpt-5.6-sol`/max exact-diff review.
+
+### Phase 38 exact verification
+
+```powershell
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -c Release --filter "FileSystemManagerTests|BrowserQteGenerationFencingTests|BrowserGenerationFencingSourceTests|GmWorkerApplyGateTests|SaveLoadServiceTests|BrowserLocalWriteCoordinatorTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -c Release --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -c Release --logger "trx;LogFileName=phase38-full-final.trx" --results-directory TestResults\phase38-full-final
+Push-Location BookOfEternityClient.WebFrontend; npm run verify; Pop-Location
+dotnet build BookOfEternityClient\BookOfEternityClient.sln -c Release --no-restore
+git diff --check
+```
+
+The durable full-run artifact is
+`TestResults/phase38-full-final/phase38-full-final.trx`. The final independent
+review compares merge base
+`9a1490146b7cecad6101af1f166bde614050a6a3` to the final Phase 38 HEAD.
+
+## Phase 39 implementation strategy
+
+The post-Phase-37/38 exact-diff review found no Critical issue and six remaining
+recovery/publication authority gaps. Legacy schema-3 Daren evidence can mutate
+an unrelated current profile; load, worker, and reversible-publication recovery
+still use pathname existence for journal discovery; worker recovery can confuse
+a malformed destination with a missing baseline; process publication
+registration begins after part of the negative-existence window; rollback
+cleanup repeats its final absence decision with pathname APIs; and browser
+pending-directory inspection treats wrong object kinds as empty.
+
+The remediation remains harness-owned:
+
+1. make legacy external evidence non-authoritative and retain it unchanged;
+2. classify every recovery marker/root/transaction through exact no-follow
+   namespace authority;
+3. classify worker destinations before optional byte reads;
+4. register complete publication scopes before preflight and keep them through
+   durable completion;
+5. replace rollback's final pathname absence check with a retained-parent exact
+   proof;
+6. inspect browser pending directories under the canonical lease and fail
+   closed on every malformed shape.
+
+Every production change starts with a deterministic RED regression. Final
+integration repeats focused recovery/filesystem/browser/Daren/worker/save-load
+suites, mandatory afterlife documentation, complete C# and frontend
+verification, Release build, scoped formatting, static parsing, clean-checkout
+verification, Spec Kit analysis, and a fresh independent
+`gpt-5.6-sol`/max exact-diff review.
+
+### Phase 39 exact verification
+
+```powershell
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -c Release --filter "BrowserLocalWriteCoordinatorTests|FileSystemManagerTests|BrowserGenerationFencingSourceTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -c Release --filter "GmWorkerApplyGateTests|SaveLoadServiceTests|BrowserQteGenerationFencingTests|BrowserLocalWriteCoordinatorTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -c Release --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore -c Release --logger "trx;LogFileName=phase39-full-final.trx" --results-directory TestResults\phase39-full-final
+Push-Location BookOfEternityClient.WebFrontend; npm run verify; Pop-Location
+dotnet build BookOfEternityClient\BookOfEternityClient.sln -c Release --no-restore
+git diff --check
+```
+
+The durable full-run artifact is
+`TestResults/phase39-full-final/phase39-full-final.trx`. The final independent
+review compares merge base
+`9a1490146b7cecad6101af1f166bde614050a6a3` to the final Phase 39 HEAD.
+
+## Phase 40 implementation strategy
+
+The complete-project gate exposed two older repair-loop liveness defects that
+are also reproducible at committed Phase 37 HEAD. Public `FileExists` acquires
+the global canonical write lease for every ordinary absent target, so
+high-frequency ready/stall polling creates avoidable contention with the writer
+that must publish those signals. Separately, the bootstrap integration helper
+allowed only five seconds for the full validation pass to publish its repair
+request, then awaited the engine before observing the helper failure. Captured
+file timestamps proved the request arrived 5.34 seconds after the ready signal:
+the helper had already faulted, no stall report could be published, and the
+test waited indefinitely.
+
+The harness fix keeps exact publication safety without a global absent-target
+lock:
+
+1. exact active-target registration remains the mandatory quiescence barrier;
+2. durable publication evidence still triggers recovery under the canonical
+   lease;
+3. ordinary absence performs an exact follow-up probe without acquiring the
+   global write lease, providing a valid linearization point before any later
+   target registration;
+4. deterministic lock-hook coverage proves ordinary absent polling cannot
+   acquire the writer lock, while existing pre-journal publication barriers
+   prove active target publication still cannot produce a false negative;
+5. the Mortal bootstrap helper uses condition-based waiting with a realistic
+   bound, observes engine/helper failure together, and has a finite whole-test
+   deadline;
+6. lifecycle race tests wait for semantic checkpoints rather than assuming the
+   full accepted-validation phase always completes inside ten seconds, and
+   release every injected barrier even on assertion failure;
+7. the previously hanging Mortal bootstrap repair-stall test must complete and
+   prove rollback.
+
+Phase 40 changes only client-owned filesystem coordination and repair-loop
+liveness. It introduces no Mortal or afterlife GM-authored field, command,
+pending/control contract, gameplay rule, prompt surface, or worked-example
+requirement.
+
+## Phase 41 implementation strategy
+
+The independent Phase 40 exact-diff review found no Critical issue and five
+remaining authority gaps. Recovery JSON is deserialized without first proving
+that every property name is unique; target-scoped negative existence has a
+check/register race; reversible-publication candidate discovery and browser
+rollback cleanup still use pathname existence APIs; and optional canonical or
+runtime reads can collapse a wrong object kind into ordinary absence.
+
+The remediation remains harness-owned:
+
+1. validate unique JSON authority recursively before typed recovery
+   deserialization, using the same case comparison as the serializer;
+2. make exact target registration and negative existence share one
+   target-scoped synchronization boundary without reacquiring the global
+   canonical write lease for unrelated absence;
+3. replace recovery candidate and cleanup pathname checks with exact no-follow
+   namespace classification;
+4. replace optional-read pathname checks with exact classification followed by
+   the existing completion-validated handle-bound read;
+5. retain every recovery artifact on ambiguity, wrong kind, access failure, or
+   identity change;
+6. extend source guards to cover every reviewed recovery and cleanup method.
+
+Every production change starts with a deterministic RED regression. Final
+integration repeats the focused filesystem/browser/worker/save-load suites,
+mandatory afterlife documentation checks, complete C# and frontend verification,
+Release build, scoped formatting, static parsing, clean-checkout verification,
+Spec Kit analysis, and a fresh independent `gpt-5.6-sol`/max exact-diff review.
+
+Phase 41 changes only client-owned filesystem authority, recovery parsing,
+existence coordination, cleanup, tests, and source guards. It introduces no
+Mortal or afterlife GM-authored field, command, pending/control contract,
+gameplay rule, prompt surface, or worked-example requirement.
+
+## Phase 42 implementation strategy
+
+The final Phase 41 exact-diff review found five remaining authority gaps:
+mutation version/count transitions can be observed torn; malformed canonical
+parents can collapse into ordinary absence; cleanup reclassifies a directory
+target at deletion time and can delete a replacement file; session generation
+still permits duplicate JSON authority; and failed asynchronous lease
+acquisitions can retain an unbounded inactive `AsyncLocal` chain.
+
+The remediation remains narrow and harness-owned:
+
+1. publish target registration and completion under the same state lock used by
+   one combined reader snapshot;
+2. classify optional canonical paths from the canonical root so only an exact
+   missing segment returns no value;
+3. make directory-tree deletion require an opened physical directory and remove
+   the separate inspect/delete decision from browser rollback cleanup;
+4. parse session-generation authority through `StrictJsonAuthority`;
+5. compact inactive ambient registrations before acquisition and ownership
+   checks without hiding active ancestors;
+6. reproduce every finding with a deterministic RED regression before changing
+   production behavior.
+
+Phase 42 changes only client-owned filesystem synchronization, namespace
+classification, cleanup authority, runtime generation parsing, ambient lease
+bookkeeping, tests, and Spec Kit evidence. It changes no Mortal or afterlife
+GM-authored state, command, action, response, pending/control schema, receipt,
+scheduler, gameplay rule, prompt, or worked example.
 
 ## Complexity Tracking
 

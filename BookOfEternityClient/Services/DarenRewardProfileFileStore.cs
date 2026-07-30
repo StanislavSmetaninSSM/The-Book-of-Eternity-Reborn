@@ -35,14 +35,22 @@ internal sealed class DarenRewardProfileFileStore
             return transaction.ReadCurrentBytes();
         }
 
-        using var parentAuthority = OpenParentAuthority();
+        var profileEntry = ProbeProfileEntry();
+        if (profileEntry ==
+            PhysicalFileAuthority.NamespaceEntryKind.Missing)
+        {
+            return null;
+        }
+        EnsureRegularProfileEntry(profileEntry);
+
+        using var parentAuthority = OpenExistingParentAuthority();
         await using var stream = PhysicalFileAuthority.OpenReadFile(
             parentAuthority,
             _profilePath,
             AuthorityName,
-            asynchronous: true);
-        if (stream == null)
-            return null;
+            asynchronous: true) ??
+            throw new InvalidDataException(
+                "Daren reward profile changed after exact classification.");
 
         using var output = new MemoryStream();
         await stream.CopyToAsync(output, cancellationToken);
@@ -95,14 +103,10 @@ internal sealed class DarenRewardProfileFileStore
             return;
         }
 
-        var destinationExists =
-            File.Exists(_profilePath) ||
-            Directory.Exists(_profilePath);
-        if (destinationExists && !OperatingSystem.IsWindows())
-        {
-            throw new PlatformNotSupportedException(
-                "Daren profile overwrite requires a reversible opened-handle backend.");
-        }
+        var destinationEntry = ProbeProfileEntry();
+        _fs.EnsureAuthorityFilePublicationSupported(
+            destinationEntry,
+            AuthorityName);
 
         using var parentAuthority = OpenParentAuthority();
         var tempPath = Path.Combine(
@@ -121,7 +125,7 @@ internal sealed class DarenRewardProfileFileStore
             stream.Flush(flushToDisk: true);
             _fs.VerifyCurrentSessionOperation(writeLease);
 
-            if (OperatingSystem.IsWindows())
+            if (_fs.SupportsReversibleOpenedHandlePublication)
             {
                 await ReversibleFilePublication.PublishAsync(
                     _fs.BasePath,
@@ -139,7 +143,12 @@ internal sealed class DarenRewardProfileFileStore
             }
             else
             {
-                File.Move(tempPath, _profilePath, overwrite: false);
+                PhysicalFileAuthority.RenameOpenedObjectRelative(
+                    stream.SafeFileHandle,
+                    parentAuthority,
+                    _profilePath,
+                    replaceExisting: false,
+                    AuthorityName + " create-only publication");
             }
 
             _fs.VerifyCurrentSessionOperation(writeLease);
@@ -173,13 +182,9 @@ internal sealed class DarenRewardProfileFileStore
             return;
         }
 
-        if (!OperatingSystem.IsWindows() &&
-            (File.Exists(_profilePath) ||
-             Directory.Exists(_profilePath)))
-        {
-            throw new PlatformNotSupportedException(
-                "Daren profile overwrite requires a reversible opened-handle backend.");
-        }
+        _fs.EnsureAuthorityFilePublicationSupported(
+            ProbeProfileEntry(),
+            AuthorityName);
     }
 
     internal async Task RestoreExactBytesAsync(
@@ -193,7 +198,15 @@ internal sealed class DarenRewardProfileFileStore
             return;
         }
 
-        using var parentAuthority = OpenParentAuthority();
+        var profileEntry = ProbeProfileEntry();
+        if (profileEntry ==
+            PhysicalFileAuthority.NamespaceEntryKind.Missing)
+        {
+            return;
+        }
+        EnsureRegularProfileEntry(profileEntry);
+
+        using var parentAuthority = OpenExistingParentAuthority();
         PhysicalFileAuthority.TryDeleteFile(
             parentAuthority,
             _profilePath,
@@ -206,6 +219,28 @@ internal sealed class DarenRewardProfileFileStore
             _fs.BasePath,
             _profileDirectory,
             AuthorityName);
+
+    private PhysicalFileAuthority.StableDirectory OpenExistingParentAuthority() =>
+        PhysicalFileAuthority.OpenStableDirectory(
+            _profileDirectory,
+            AuthorityName);
+
+    private PhysicalFileAuthority.NamespaceEntryKind ProbeProfileEntry() =>
+        PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+            _fs.BasePath,
+            _profilePath,
+            AuthorityName);
+
+    private static void EnsureRegularProfileEntry(
+        PhysicalFileAuthority.NamespaceEntryKind profileEntry)
+    {
+        if (profileEntry !=
+            PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
+        {
+            throw new InvalidDataException(
+                "Daren reward profile is not a physical regular file.");
+        }
+    }
 
     private void EnsureLease(
         FileSystemManager.CanonicalWriteLease writeLease)

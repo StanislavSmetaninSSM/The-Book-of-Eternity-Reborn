@@ -27,7 +27,9 @@ internal sealed class FileSystemManagerHooks
     internal Func<string, Task>? AfterPhysicalFileAuthorityValidatedAsync { get; init; }
     internal Func<string, Task>? BeforePhysicalSourcePublishedAsync { get; init; }
     internal Func<string, Task>? AfterPhysicalFilePublishedAsync { get; init; }
+    internal Func<string, Task>? BeforePhysicalRollbackAbsenceFinalValidationAsync { get; init; }
     internal Func<string, Task>? AfterCanonicalReadAttemptAsync { get; init; }
+    internal Func<string, Task>? BeforeCanonicalExistenceFollowUpProbeAsync { get; init; }
     internal bool? SupportsReversibleFileReplacementOverride { get; init; }
     internal bool? SupportsDescriptorBoundCreateOnlyPublicationOverride { get; init; }
     internal Func<string, Task>? BeforeRuntimeFileCreateAsync { get; init; }
@@ -126,7 +128,6 @@ public class FileSystemManager
         private FileStream? _stream;
         private PhysicalFileAuthority.StableDirectory? _parentAuthority;
         private AmbientCanonicalLeaseRegistration? _ambientRegistration;
-        private bool _inProcessLeaseRegistered;
 
         internal CanonicalWriteLease(
             FileSystemManager owner,
@@ -138,8 +139,6 @@ public class FileSystemManager
             Purpose = purpose;
             _stream = stream;
             _parentAuthority = parentAuthority;
-            Owner.RegisterInProcessCanonicalLease();
-            _inProcessLeaseRegistered = true;
         }
 
         internal FileSystemManager Owner { get; }
@@ -175,30 +174,116 @@ public class FileSystemManager
                 Owner.ReleaseAmbientCanonicalLease(
                     _ambientRegistration);
                 _ambientRegistration = null;
-                if (_inProcessLeaseRegistered)
-                {
-                    Owner.ReleaseInProcessCanonicalLease();
-                    _inProcessLeaseRegistered = false;
-                }
             }
         }
     }
 
+    private readonly record struct InProcessMutationSnapshot(
+        long Version,
+        bool MutationActive);
+
     private sealed class InProcessMutationRegistration : IDisposable
     {
         private string? _path;
+        private InProcessMutationState? _state;
 
         internal InProcessMutationRegistration(string path)
         {
-            _path = path;
-            IncrementProcessCount(ActiveCanonicalMutationPaths, path);
+            _path = Path.GetFullPath(path);
+            _state = AcquireInProcessMutationState(_path);
+            _state.BeginMutation();
         }
 
         public void Dispose()
         {
             var path = Interlocked.Exchange(ref _path, null);
-            if (path != null)
-                DecrementProcessCount(ActiveCanonicalMutationPaths, path);
+            var state = Interlocked.Exchange(ref _state, null);
+            if (path == null || state == null)
+                return;
+
+            try
+            {
+                state.EndMutation();
+            }
+            finally
+            {
+                ReleaseInProcessMutationState(path, state);
+            }
+        }
+    }
+
+    private sealed class InProcessMutationObservation : IDisposable
+    {
+        private string? _path;
+        private InProcessMutationState? _state;
+
+        internal InProcessMutationObservation(string path)
+        {
+            _path = Path.GetFullPath(path);
+            _state = AcquireInProcessMutationState(_path);
+        }
+
+        internal InProcessMutationSnapshot CaptureMutationState() =>
+            GetState().CaptureSnapshot();
+
+        public void Dispose()
+        {
+            var path = Interlocked.Exchange(ref _path, null);
+            var state = Interlocked.Exchange(ref _state, null);
+            if (path != null && state != null)
+                ReleaseInProcessMutationState(path, state);
+        }
+
+        private InProcessMutationState GetState() =>
+            _state ?? throw new ObjectDisposedException(
+                nameof(InProcessMutationObservation));
+    }
+
+    private sealed class InProcessMutationState
+    {
+        internal int ParticipantCount;
+        internal int ActiveMutationCount;
+        internal long Version;
+
+        internal void BeginMutation()
+        {
+            lock (this)
+            {
+                ActiveMutationCount =
+                    checked(ActiveMutationCount + 1);
+                unchecked
+                {
+                    Version++;
+                }
+            }
+        }
+
+        internal void EndMutation()
+        {
+            lock (this)
+            {
+                if (ActiveMutationCount <= 0)
+                {
+                    throw new InvalidOperationException(
+                        "Canonical mutation state has no active mutation to end.");
+                }
+
+                ActiveMutationCount--;
+                unchecked
+                {
+                    Version++;
+                }
+            }
+        }
+
+        internal InProcessMutationSnapshot CaptureSnapshot()
+        {
+            lock (this)
+            {
+                return new InProcessMutationSnapshot(
+                    Version,
+                    ActiveMutationCount > 0);
+            }
         }
     }
 
@@ -208,10 +293,12 @@ public class FileSystemManager
     private readonly FileSystemManagerHooks? _hooks;
     private readonly AsyncLocal<AmbientCanonicalLeaseRegistration?>
         _ambientCanonicalLease = new();
-    private static readonly ConcurrentDictionary<string, int>
-        ActiveCanonicalLeasesByRoot = new(StringComparer.OrdinalIgnoreCase);
-    private static readonly ConcurrentDictionary<string, int>
-        ActiveCanonicalMutationPaths = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, InProcessMutationState>
+        CanonicalMutationStates = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly JsonSerializerOptions RecoveryJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
     private const int TransientFileAccessRetryCount = 20;
     private static readonly TimeSpan TransientFileAccessRetryDelay = TimeSpan.FromMilliseconds(50);
     private const int CanonicalWriteLockRetryCount = 200;
@@ -569,19 +656,14 @@ public class FileSystemManager
         var fullPath = ResolvePath(relativePath);
         using var mutationRegistration =
             new InProcessMutationRegistration(fullPath);
-        var destinationExists =
-            File.Exists(fullPath) || Directory.Exists(fullPath);
-        if (destinationExists &&
-            !SupportsReversibleFileReplacement)
-        {
-            throw new PlatformNotSupportedException(
-                "Atomic overwrite requires a reversible opened-handle replacement backend.");
-        }
-        if (!destinationExists)
-        {
-            EnsureDescriptorBoundCreateOnlyPublicationSupported(
-                "Canonical create-only publication");
-        }
+        var destinationEntry =
+            PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                _basePath,
+                fullPath,
+                "Canonical atomic destination");
+        EnsureAuthorityFilePublicationSupported(
+            destinationEntry,
+            "Canonical atomic write");
 
         await InvokeBeforeCanonicalMutationBoundaryAsync(relativePath);
         cancellationToken.ThrowIfCancellationRequested();
@@ -622,7 +704,9 @@ public class FileSystemManager
                     _hooks?.AfterPhysicalFileAuthorityValidatedAsync,
                     _hooks?.BeforePhysicalSourcePublishedAsync,
                     _hooks?.AfterPhysicalFilePublishedAsync,
-                    cancellationToken);
+                    cancellationToken,
+                    _hooks
+                        ?.BeforePhysicalRollbackAbsenceFinalValidationAsync);
             }
             else
             {
@@ -932,13 +1016,7 @@ public class FileSystemManager
         if (!HasAmbientCanonicalLease())
         {
             var expectedFullPath = ResolvePath(relativePath);
-            var targetMutationActive =
-                IsInProcessCanonicalMutationActive(expectedFullPath);
-            var inProcessLeaseActive =
-                IsInProcessCanonicalLeaseActive();
-            if (targetMutationActive ||
-                (!inProcessLeaseActive &&
-                 (!exists || HasPendingFilePublications())))
+            if (HasPendingFilePublications())
             {
                 var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
                     .GetAwaiter()
@@ -951,13 +1029,45 @@ public class FileSystemManager
                 {
                     writeLease.DisposeAsync()
                         .AsTask()
-                        .GetAwaiter()
-                        .GetResult();
+                    .GetAwaiter()
+                    .GetResult();
                 }
             }
-            else if (!exists && inProcessLeaseActive)
+            else if (!exists)
             {
+                using var observation =
+                    new InProcessMutationObservation(expectedFullPath);
+                var mutationBeforeProbe =
+                    observation.CaptureMutationState();
+                _hooks?.BeforeCanonicalExistenceFollowUpProbeAsync
+                    ?.Invoke(relativePath)
+                    .GetAwaiter()
+                    .GetResult();
                 exists = FileExistsCore(relativePath);
+                var mutationAfterProbe =
+                    observation.CaptureMutationState();
+                if (mutationBeforeProbe.MutationActive ||
+                    mutationAfterProbe.MutationActive ||
+                    mutationBeforeProbe.Version !=
+                    mutationAfterProbe.Version ||
+                    HasPendingFilePublications())
+                {
+                    var writeLease =
+                        AcquirePublicationReadQuiescenceLeaseAsync()
+                            .GetAwaiter()
+                            .GetResult();
+                    try
+                    {
+                        exists = FileExistsCore(relativePath);
+                    }
+                    finally
+                    {
+                        writeLease.DisposeAsync()
+                            .AsTask()
+                            .GetAwaiter()
+                            .GetResult();
+                    }
+                }
             }
         }
         return exists;
@@ -972,41 +1082,23 @@ public class FileSystemManager
     private bool FileExistsCore(string relativePath)
     {
         var expectedFullPath = ResolvePath(relativePath);
-        var parentPath = Path.GetDirectoryName(expectedFullPath)
-            ?? throw new InvalidDataException(
-                "Canonical file authority path has no parent directory.");
-        PhysicalFileAuthority.StableDirectory parentAuthority;
-        try
+        EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
+        return PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                GameSessionPath,
+                expectedFullPath,
+                "Canonical file existence") switch
         {
-            parentAuthority = PhysicalFileAuthority.OpenStableDirectory(
-                parentPath,
-                "Canonical file existence");
-        }
-        catch (DirectoryNotFoundException)
-        {
-            return false;
-        }
-
-        using (parentAuthority)
-        {
-            EnsureCanonicalPathStillSafe(relativePath, expectedFullPath);
-            return PhysicalFileAuthority.ProbeNamespaceEntry(
-                    parentAuthority,
-                    expectedFullPath,
-                    "Canonical file existence") switch
-            {
-                PhysicalFileAuthority.NamespaceEntryKind.Missing => false,
-                PhysicalFileAuthority.NamespaceEntryKind.RegularFile => true,
-                PhysicalFileAuthority.NamespaceEntryKind.Directory =>
-                    throw new InvalidDataException(
-                        "Canonical file authority resolved to a directory."),
-                PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint =>
-                    throw new InvalidDataException(
-                        "Canonical file authority resolved to a reparse point."),
-                _ => throw new InvalidDataException(
-                    "Canonical file authority resolved to an unknown namespace entry.")
-            };
-        }
+            PhysicalFileAuthority.NamespaceEntryKind.Missing => false,
+            PhysicalFileAuthority.NamespaceEntryKind.RegularFile => true,
+            PhysicalFileAuthority.NamespaceEntryKind.Directory =>
+                throw new InvalidDataException(
+                    "Canonical file authority resolved to a directory."),
+            PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint =>
+                throw new InvalidDataException(
+                    "Canonical file authority resolved to a reparse point."),
+            _ => throw new InvalidDataException(
+                "Canonical file authority resolved to an unknown namespace entry.")
+        };
     }
 
     internal IReadOnlyList<string> EnumerateFiles(
@@ -1020,6 +1112,49 @@ public class FileSystemManager
         return EnumerateFilesWithoutFollowingReparsePoints(GameSessionPath, searchPattern)
             .Select(path => Path.GetRelativePath(GameSessionPath, path).Replace('\\', '/'))
             .ToArray();
+    }
+
+    internal bool DirectoryHasContent(
+        CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        if (!DirectoryExists(writeLease, relativePath))
+            return false;
+
+        var fullPath = ResolvePath(relativePath);
+        using var authority = PhysicalFileAuthority.OpenStableDirectory(
+            fullPath,
+            "Canonical directory inspection");
+        return Directory.EnumerateFileSystemEntries(
+                fullPath,
+                "*",
+                SearchOption.TopDirectoryOnly)
+            .Any();
+    }
+
+    internal bool DirectoryExists(
+        CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        var fullPath = ResolvePath(relativePath);
+        return PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                GameSessionPath,
+                fullPath,
+                "Canonical directory existence") switch
+        {
+            PhysicalFileAuthority.NamespaceEntryKind.Missing => false,
+            PhysicalFileAuthority.NamespaceEntryKind.Directory => true,
+            PhysicalFileAuthority.NamespaceEntryKind.RegularFile =>
+                throw new InvalidDataException(
+                    "Canonical directory authority resolved to a regular file."),
+            PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint =>
+                throw new InvalidDataException(
+                    "Canonical directory authority resolved to a reparse point."),
+            _ => throw new InvalidDataException(
+                "Canonical directory authority resolved to an unknown namespace entry.")
+        };
     }
 
     internal void DeleteDirectoryTree(
@@ -1037,7 +1172,7 @@ public class FileSystemManager
         InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath)
             .GetAwaiter()
             .GetResult();
-        PhysicalFileAuthority.TryDeleteTree(
+        PhysicalFileAuthority.TryDeleteDirectoryTree(
             parentAuthority,
             fullPath,
             "Canonical directory-tree deletion");
@@ -1071,6 +1206,8 @@ public class FileSystemManager
                 $"Runtime staging directory does not exist: {sourcePath}");
 
         var destinationPath = ResolvePath(destinationRelativePath);
+        using var mutationRegistration =
+            new InProcessMutationRegistration(destinationPath);
         var destinationParent = Path.GetDirectoryName(destinationPath)
             ?? throw new InvalidDataException("Canonical destination has no parent directory.");
         await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
@@ -1107,7 +1244,7 @@ public class FileSystemManager
             try
             {
                 var expectedFullPath = ResolvePath(relativePath);
-                if (!File.Exists(expectedFullPath))
+                if (!FileExistsCore(relativePath))
                     return null;
 
                 using var parentAuthority = EnsureStableCanonicalParent(
@@ -1354,6 +1491,8 @@ public class FileSystemManager
         }
 
         var destinationPath = ResolvePath(destinationRelativePath);
+        using var mutationRegistration =
+            new InProcessMutationRegistration(destinationPath);
         await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
         using var destinationParentAuthority = EnsureStableCanonicalParent(
             destinationRelativePath,
@@ -1406,6 +1545,8 @@ public class FileSystemManager
             throw new FileNotFoundException("Runtime staged save does not exist.", sourcePath);
 
         var destinationPath = ResolvePath(destinationRelativePath);
+        using var mutationRegistration =
+            new InProcessMutationRegistration(destinationPath);
         var destinationParent = Path.GetDirectoryName(destinationPath)
             ?? throw new InvalidDataException("Canonical save destination has no parent directory.");
         await InvokeBeforeCanonicalMutationBoundaryAsync(destinationRelativePath);
@@ -1526,7 +1667,7 @@ public class FileSystemManager
             CancellationToken cancellationToken)
     {
         var registration = new AmbientCanonicalLeaseRegistration(
-            _ambientCanonicalLease.Value);
+            CompactAmbientCanonicalLeaseHead());
         _ambientCanonicalLease.Value = registration;
         return CompleteCanonicalWriteLeaseAcquisitionAsync(
             registration,
@@ -1816,6 +1957,37 @@ public class FileSystemManager
         OperatingSystem.IsWindows() &&
         (_hooks?.SupportsDescriptorBoundCreateOnlyPublicationOverride ?? true);
 
+    internal void EnsureAuthorityFilePublicationSupported(
+        PhysicalFileAuthority.NamespaceEntryKind destinationEntry,
+        string authorityName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorityName);
+        switch (destinationEntry)
+        {
+            case PhysicalFileAuthority.NamespaceEntryKind.Missing:
+                EnsureDescriptorBoundCreateOnlyPublicationSupported(
+                    authorityName + " create-only publication");
+                return;
+            case PhysicalFileAuthority.NamespaceEntryKind.RegularFile:
+                if (!SupportsReversibleFileReplacement)
+                {
+                    throw new PlatformNotSupportedException(
+                        $"{authorityName} overwrite requires a reversible opened-handle replacement backend.");
+                }
+
+                return;
+            case PhysicalFileAuthority.NamespaceEntryKind.Directory:
+                throw new InvalidDataException(
+                    $"{authorityName} destination is a directory.");
+            case PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint:
+                throw new InvalidDataException(
+                    $"{authorityName} destination is a reparse point.");
+            default:
+                throw new InvalidDataException(
+                    $"{authorityName} destination has an unknown namespace kind.");
+        }
+    }
+
     private void EnsureDescriptorBoundCreateOnlyPublicationSupported(
         string authorityName)
     {
@@ -1834,76 +2006,90 @@ public class FileSystemManager
     private bool HasPendingFilePublications()
     {
         var journalRoot = PhysicalPublicationTransactionsRootPath;
-        if (!Directory.Exists(journalRoot))
+        var kind = PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+            _basePath,
+            journalRoot,
+            "Pending file publication root");
+        if (kind == PhysicalFileAuthority.NamespaceEntryKind.Missing)
             return false;
+        if (kind != PhysicalFileAuthority.NamespaceEntryKind.Directory)
+        {
+            throw new InvalidDataException(
+                "Pending file publication root is not a physical directory.");
+        }
 
-        EnsureRuntimePathIsSafe(journalRoot);
+        using var authority = PhysicalFileAuthority.OpenStableDirectory(
+            journalRoot,
+            "Pending file publication root");
         return Directory.EnumerateFileSystemEntries(
             journalRoot,
             "*",
             SearchOption.TopDirectoryOnly).Any();
     }
 
-    private void RegisterInProcessCanonicalLease() =>
-        IncrementProcessCount(
-            ActiveCanonicalLeasesByRoot,
-            Path.GetFullPath(_basePath));
-
-    private void ReleaseInProcessCanonicalLease() =>
-        DecrementProcessCount(
-            ActiveCanonicalLeasesByRoot,
-            Path.GetFullPath(_basePath));
-
-    private bool IsInProcessCanonicalLeaseActive() =>
-        ActiveCanonicalLeasesByRoot.TryGetValue(
-            Path.GetFullPath(_basePath),
-            out var count) &&
-        count > 0;
-
-    private static bool IsInProcessCanonicalMutationActive(string fullPath) =>
-        ActiveCanonicalMutationPaths.TryGetValue(
-            Path.GetFullPath(fullPath),
-            out var count) &&
-        count > 0;
-
-    private static void IncrementProcessCount(
-        ConcurrentDictionary<string, int> counts,
-        string key) =>
-        counts.AddOrUpdate(key, 1, static (_, count) => checked(count + 1));
-
-    private static void DecrementProcessCount(
-        ConcurrentDictionary<string, int> counts,
-        string key)
+    private static InProcessMutationState AcquireInProcessMutationState(
+        string fullPath)
     {
-        while (counts.TryGetValue(key, out var count))
+        var normalizedPath = Path.GetFullPath(fullPath);
+        while (true)
         {
-            if (count <= 1)
+            var state = CanonicalMutationStates.GetOrAdd(
+                normalizedPath,
+                static _ => new InProcessMutationState());
+            lock (state)
             {
-                if (counts.TryRemove(
-                        new KeyValuePair<string, int>(key, count)))
+                if (CanonicalMutationStates.TryGetValue(
+                        normalizedPath,
+                        out var current) &&
+                    ReferenceEquals(current, state))
                 {
-                    return;
+                    state.ParticipantCount =
+                        checked(state.ParticipantCount + 1);
+                    return state;
                 }
             }
-            else if (counts.TryUpdate(key, count - 1, count))
+        }
+    }
+
+    private static void ReleaseInProcessMutationState(
+        string fullPath,
+        InProcessMutationState state)
+    {
+        var normalizedPath = Path.GetFullPath(fullPath);
+        lock (state)
+        {
+            state.ParticipantCount--;
+            if (state.ParticipantCount < 0)
             {
-                return;
+                throw new InvalidOperationException(
+                    "Canonical mutation state participant count became negative.");
+            }
+
+            if (state.ParticipantCount == 0 &&
+                state.ActiveMutationCount == 0)
+            {
+                CanonicalMutationStates.TryRemove(
+                    new KeyValuePair<string, InProcessMutationState>(
+                        normalizedPath,
+                        state));
             }
         }
     }
 
-    private bool HasAmbientCanonicalLease()
+    private AmbientCanonicalLeaseRegistration?
+        CompactAmbientCanonicalLeaseHead()
     {
-        for (var registration = _ambientCanonicalLease.Value;
-             registration != null;
-             registration = registration.Previous)
-        {
-            if (registration.Active)
-                return true;
-        }
+        var current = _ambientCanonicalLease.Value;
+        while (current != null && !current.Active)
+            current = current.Previous;
 
-        return false;
+        if (!ReferenceEquals(current, _ambientCanonicalLease.Value))
+            _ambientCanonicalLease.Value = current;
+        return current;
     }
+
+    private bool HasAmbientCanonicalLease() =>
+        CompactAmbientCanonicalLeaseHead() != null;
 
     private void ReleaseAmbientCanonicalLease(
         AmbientCanonicalLeaseRegistration? registration)
@@ -1917,6 +2103,7 @@ public class FileSystemManager
                 registration))
         {
             _ambientCanonicalLease.Value = registration.Previous;
+            CompactAmbientCanonicalLeaseHead();
         }
     }
 
@@ -2072,9 +2259,37 @@ public class FileSystemManager
     internal bool LoadDirectoryExists(string path)
     {
         EnsureLoadTransactionOperationPathIsSafe(path);
-        var exists = _loadTransactionOperations.DirectoryExists(path);
-        EnsureLoadTransactionOperationPathIsSafe(path);
-        return exists;
+        var fullPath = Path.GetFullPath(path);
+        PhysicalFileAuthority.NamespaceEntryKind kind;
+        if (IsSameOrDescendant(
+                fullPath,
+                Path.GetFullPath(RuntimeRootPath)))
+        {
+            kind = ProbeRuntimeNamespaceEntry(
+                fullPath,
+                "Load runtime directory existence");
+        }
+        else
+        {
+            kind = PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                _basePath,
+                fullPath,
+                "Canonical load directory existence");
+        }
+
+        return kind switch
+        {
+            PhysicalFileAuthority.NamespaceEntryKind.Missing => false,
+            PhysicalFileAuthority.NamespaceEntryKind.Directory => true,
+            PhysicalFileAuthority.NamespaceEntryKind.RegularFile =>
+                throw new InvalidDataException(
+                    "Load directory authority resolved to a regular file."),
+            PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint =>
+                throw new InvalidDataException(
+                    "Load directory authority resolved to a reparse point."),
+            _ => throw new InvalidDataException(
+                "Load directory authority resolved to an unknown namespace entry.")
+        };
     }
 
     internal void CreateLoadDirectory(string path)
@@ -2224,9 +2439,10 @@ public class FileSystemManager
     {
         try
         {
-            var journal = JsonSerializer.Deserialize<LoadTransactionJournal>(
+            var journal = StrictJsonAuthority.Deserialize<LoadTransactionJournal>(
                 ReadRuntimeText(ActiveLoadTransactionJournalPath),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                RecoveryJsonOptions,
+                "Active load transaction journal");
             if (journal is null ||
                 journal.SchemaVersion is < 1 or > 2 ||
                 !Guid.TryParseExact(journal.TransactionId, "N", out _) ||
@@ -2397,9 +2613,10 @@ public class FileSystemManager
         WorkerApplyTransactionManifest manifest;
         try
         {
-            manifest = JsonSerializer.Deserialize<WorkerApplyTransactionManifest>(
+            manifest = StrictJsonAuthority.Deserialize<WorkerApplyTransactionManifest>(
                            ReadRuntimeText(manifestPath),
-                           new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
+                           RecoveryJsonOptions,
+                           "Worker apply transaction manifest") ??
                        throw new InvalidDataException("Worker apply transaction manifest is missing.");
         }
         catch (JsonException ex)
@@ -2424,9 +2641,11 @@ public class FileSystemManager
             {
                 EnsureSafeCanonicalRelativePath(entry.Path);
                 var baseline = ReadWorkerApplyBeforeImage(transactionRoot, entry);
-                var current = await ReadFileBytesCoreAsync(
-                    entry.Path,
-                    CancellationToken.None);
+                var current = FileExistsCore(entry.Path)
+                    ? await ReadFileBytesCoreAsync(
+                        entry.Path,
+                        CancellationToken.None)
+                    : null;
                 var currentHash = ComputeSha256OrMissing(current);
                 if (string.Equals(currentHash, entry.BeforeSha256, StringComparison.OrdinalIgnoreCase))
                     continue;
@@ -2508,9 +2727,10 @@ public class FileSystemManager
     {
         try
         {
-            var journal = JsonSerializer.Deserialize<WorkerApplyTransactionJournal>(
+            var journal = StrictJsonAuthority.Deserialize<WorkerApplyTransactionJournal>(
                 ReadRuntimeText(ActiveWorkerApplyTransactionJournalPath),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                RecoveryJsonOptions,
+                "Active worker apply transaction journal");
             if (journal is null || journal.SchemaVersion != 1 ||
                 (journal.Committed && journal.RolledBack) ||
                 !Guid.TryParseExact(journal.TransactionId, "N", out _))
@@ -2726,18 +2946,69 @@ public class FileSystemManager
 
     private bool RuntimeFileExists(string path)
     {
-        EnsureRuntimePathIsSafe(path);
-        var exists = _loadTransactionOperations.FileExists(path);
-        EnsureRuntimePathIsSafe(path);
-        return exists;
+        return ProbeRuntimeNamespaceEntry(
+            path,
+            "Runtime file existence") switch
+        {
+            PhysicalFileAuthority.NamespaceEntryKind.Missing => false,
+            PhysicalFileAuthority.NamespaceEntryKind.RegularFile => true,
+            PhysicalFileAuthority.NamespaceEntryKind.Directory =>
+                throw new InvalidDataException(
+                    "Runtime file authority resolved to a directory."),
+            PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint =>
+                throw new InvalidDataException(
+                    "Runtime file authority resolved to a reparse point."),
+            _ => throw new InvalidDataException(
+                "Runtime file authority resolved to an unknown namespace entry.")
+        };
     }
 
     private bool RuntimeDirectoryExists(string path)
     {
+        return ProbeRuntimeNamespaceEntry(
+            path,
+            "Runtime directory existence") switch
+        {
+            PhysicalFileAuthority.NamespaceEntryKind.Missing => false,
+            PhysicalFileAuthority.NamespaceEntryKind.Directory => true,
+            PhysicalFileAuthority.NamespaceEntryKind.RegularFile =>
+                throw new InvalidDataException(
+                    "Runtime directory authority resolved to a regular file."),
+            PhysicalFileAuthority.NamespaceEntryKind.ReparsePoint =>
+                throw new InvalidDataException(
+                    "Runtime directory authority resolved to a reparse point."),
+            _ => throw new InvalidDataException(
+                "Runtime directory authority resolved to an unknown namespace entry.")
+        };
+    }
+
+    private PhysicalFileAuthority.NamespaceEntryKind
+        ProbeRuntimeNamespaceEntry(
+            string path,
+            string authorityName)
+    {
         EnsureRuntimePathIsSafe(path);
-        var exists = _loadTransactionOperations.DirectoryExists(path);
-        EnsureRuntimePathIsSafe(path);
-        return exists;
+        var runtimeRootKind =
+            PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                _basePath,
+                RuntimeRootPath,
+                authorityName + " root");
+        if (runtimeRootKind ==
+            PhysicalFileAuthority.NamespaceEntryKind.Missing)
+        {
+            return PhysicalFileAuthority.NamespaceEntryKind.Missing;
+        }
+        if (runtimeRootKind !=
+            PhysicalFileAuthority.NamespaceEntryKind.Directory)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} root is not a physical directory.");
+        }
+
+        return PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+            RuntimeRootPath,
+            path,
+            authorityName);
     }
 
     private string ReadRuntimeText(string path)
@@ -2816,7 +3087,7 @@ public class FileSystemManager
             ?? throw new InvalidDataException(
                 "Runtime authority directory has no parent."));
         _loadTransactionOperations.BeforeDeleteDirectory(path);
-        PhysicalFileAuthority.TryDeleteTree(
+        PhysicalFileAuthority.TryDeleteDirectoryTree(
             parentAuthority,
             path,
             "Runtime authority directory cleanup");
@@ -2876,7 +3147,7 @@ public class FileSystemManager
     {
         cancellationToken.ThrowIfCancellationRequested();
         var expectedFullPath = ResolvePath(relativePath);
-        if (!File.Exists(expectedFullPath))
+        if (!FileExistsCore(relativePath))
             return null;
 
         await InvokeBeforeCanonicalReadOpenAsync(relativePath);
@@ -2988,20 +3259,14 @@ public class FileSystemManager
         string authorityName)
     {
         EnsureRuntimePathIsSafe(path);
-        var destinationExists =
-            File.Exists(path) ||
-            Directory.Exists(path);
-        if (destinationExists &&
-            !SupportsReversibleFileReplacement)
-        {
-            throw new PlatformNotSupportedException(
-                "Runtime atomic overwrite requires a reversible opened-handle replacement backend.");
-        }
-        if (!destinationExists)
-        {
-            EnsureDescriptorBoundCreateOnlyPublicationSupported(
-                authorityName + " create-only publication");
-        }
+        var destinationEntry =
+            PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                _basePath,
+                path,
+                authorityName + " destination");
+        EnsureAuthorityFilePublicationSupported(
+            destinationEntry,
+            authorityName);
 
         var parentPath = Path.GetDirectoryName(path)
             ?? throw new InvalidDataException(
@@ -3043,7 +3308,9 @@ public class FileSystemManager
                     _hooks?.AfterPhysicalFileAuthorityValidatedAsync,
                     _hooks?.BeforePhysicalSourcePublishedAsync,
                     _hooks?.AfterPhysicalFilePublishedAsync,
-                    cancellationToken);
+                    cancellationToken,
+                    _hooks
+                        ?.BeforePhysicalRollbackAbsenceFinalValidationAsync);
             }
             else
             {
@@ -3140,9 +3407,10 @@ public class FileSystemManager
     {
         try
         {
-            var document = JsonSerializer.Deserialize<SessionGenerationDocument>(
+            var document = StrictJsonAuthority.Deserialize<SessionGenerationDocument>(
                 ReadRuntimeText(SessionGenerationPath),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                RecoveryJsonOptions,
+                "Session generation authority");
             if (document is null || document.SchemaVersion != 1 ||
                 !Guid.TryParseExact(document.GenerationId, "N", out var parsedGeneration) ||
                 !string.Equals(
@@ -3177,7 +3445,7 @@ public class FileSystemManager
 
     private static void DeleteDirectoryTreeWithoutFollowingReparsePoints(string path)
     {
-        PhysicalFileAuthority.TryDeleteTree(
+        PhysicalFileAuthority.TryDeleteDirectoryTree(
             path,
             "No-follow directory cleanup");
     }
@@ -3496,7 +3764,7 @@ public class FileSystemManager
         using var parentAuthority = EnsureStableCanonicalParent(
             relativePath,
             expectedFullPath);
-        PhysicalFileAuthority.TryDeleteTree(
+        PhysicalFileAuthority.TryDeleteDirectoryTree(
             parentAuthority,
             expectedFullPath,
             "Canonical directory-tree cleanup");

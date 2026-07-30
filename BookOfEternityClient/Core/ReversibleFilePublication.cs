@@ -330,6 +330,7 @@ internal static class ReversibleFilePublication
                 _destinationHandle,
                 _sourceParent,
                 _destinationParent,
+                beforeAbsenceFinalValidation: null,
                 out var sourceEvidenceRetained);
             RetainedEvidence = sourceEvidenceRetained;
             _resolved = exactRollback;
@@ -386,7 +387,8 @@ internal static class ReversibleFilePublication
         Func<string, Task>? afterAuthorityValidated,
         Func<string, Task>? beforeSourcePublished,
         Func<string, Task>? afterPublished,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Func<string, Task>? beforeAbsenceFinalValidation = null)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -563,6 +565,7 @@ internal static class ReversibleFilePublication
                     destinationHandle,
                     sourceParent,
                     destinationParent,
+                    beforeAbsenceFinalValidation,
                     out var sourceEvidenceRetained);
                 if (exactRollback && !sourceEvidenceRetained)
                 {
@@ -607,7 +610,8 @@ internal static class ReversibleFilePublication
         Func<string, Task>? afterAuthorityValidated,
         Func<string, Task>? beforeSourcePublished,
         Func<string, Task>? afterPublished,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Func<string, Task>? beforeAbsenceFinalValidation = null)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -779,6 +783,7 @@ internal static class ReversibleFilePublication
                     destinationHandle,
                     sourceParent,
                     destinationParent,
+                    beforeAbsenceFinalValidation,
                     out var sourceEvidenceRetained);
                 if (exactRollback && !sourceEvidenceRetained)
                 {
@@ -818,14 +823,27 @@ internal static class ReversibleFilePublication
         string authorityRoot,
         string journalRoot)
     {
-        if (!OperatingSystem.IsWindows() ||
-            !Directory.Exists(journalRoot))
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var journalRootKind =
+            PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                authorityRoot,
+                journalRoot,
+                "File publication recovery root");
+        if (journalRootKind ==
+            PhysicalFileAuthority.NamespaceEntryKind.Missing)
         {
             return;
         }
+        if (journalRootKind !=
+            PhysicalFileAuthority.NamespaceEntryKind.Directory)
+        {
+            throw new InvalidDataException(
+                "File publication recovery root is not a physical directory.");
+        }
 
-        using var rootAuthority = PhysicalFileAuthority.EnsureStableDirectory(
-            authorityRoot,
+        using var rootAuthority = PhysicalFileAuthority.OpenStableDirectory(
             journalRoot,
             "File publication recovery");
         foreach (var transactionRoot in Directory.EnumerateFileSystemEntries(
@@ -833,7 +851,11 @@ internal static class ReversibleFilePublication
                      "*",
                      SearchOption.TopDirectoryOnly).ToArray())
         {
-            if (!Directory.Exists(transactionRoot))
+            if (PhysicalFileAuthority.ProbeNamespaceEntry(
+                    rootAuthority,
+                    transactionRoot,
+                    "File publication recovery transaction") !=
+                PhysicalFileAuthority.NamespaceEntryKind.Directory)
             {
                 throw new InvalidDataException(
                     "File publication recovery root contains an unknown entry.");
@@ -883,8 +905,41 @@ internal static class ReversibleFilePublication
             return DeferredPublicationState.Missing;
 
         var transactionRoot = Path.Combine(journalRoot, transactionId);
-        if (!Directory.Exists(transactionRoot))
+        var journalRootKind =
+            PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
+                authorityRoot,
+                journalRoot,
+                "Deferred file publication root");
+        if (journalRootKind ==
+            PhysicalFileAuthority.NamespaceEntryKind.Missing)
+        {
             return DeferredPublicationState.Missing;
+        }
+        if (journalRootKind !=
+            PhysicalFileAuthority.NamespaceEntryKind.Directory)
+        {
+            throw new InvalidDataException(
+                "Deferred file publication root is not a physical directory.");
+        }
+
+        using var rootAuthority = PhysicalFileAuthority.OpenStableDirectory(
+            journalRoot,
+            "Deferred file publication root");
+        var transactionKind = PhysicalFileAuthority.ProbeNamespaceEntry(
+            rootAuthority,
+            transactionRoot,
+            "Deferred file publication transaction");
+        if (transactionKind ==
+            PhysicalFileAuthority.NamespaceEntryKind.Missing)
+        {
+            return DeferredPublicationState.Missing;
+        }
+        if (transactionKind !=
+            PhysicalFileAuthority.NamespaceEntryKind.Directory)
+        {
+            throw new InvalidDataException(
+                "Deferred file publication transaction is not a physical directory.");
+        }
 
         using var transactionAuthority =
             PhysicalFileAuthority.OpenStableDirectory(
@@ -1111,6 +1166,7 @@ internal static class ReversibleFilePublication
                 destinationHandle,
                 sourceParent,
                 destinationParent,
+                beforeAbsenceFinalValidation: null,
                 out var sourceEvidenceRetained);
             if (exactRollback && !sourceEvidenceRetained)
             {
@@ -1130,6 +1186,7 @@ internal static class ReversibleFilePublication
         SafeFileHandle? destinationHandle,
         PhysicalFileAuthority.StableDirectory sourceParent,
         PhysicalFileAuthority.StableDirectory destinationParent,
+        Func<string, Task>? beforeAbsenceFinalValidation,
         out bool sourceEvidenceRetained)
     {
         sourceEvidenceRetained = false;
@@ -1215,8 +1272,16 @@ internal static class ReversibleFilePublication
                 destinationParent,
                 intent,
                 sourceHandle);
-            if (File.Exists(intent.DestinationPath) ||
-                Directory.Exists(intent.DestinationPath))
+            beforeAbsenceFinalValidation
+                ?.Invoke(intent.DestinationPath)
+                .GetAwaiter()
+                .GetResult();
+            if (PhysicalFileAuthority.ProbeNamespaceEntry(
+                    destinationParent,
+                    intent.DestinationPath,
+                    intent.AuthorityName +
+                    " rollback final absence") !=
+                PhysicalFileAuthority.NamespaceEntryKind.Missing)
             {
                 throw new InvalidDataException(
                     $"{intent.AuthorityName} rollback could not restore exact prior absence.");
@@ -1358,14 +1423,23 @@ internal static class ReversibleFilePublication
         foreach (var candidate in candidates.Distinct(
                      StringComparer.OrdinalIgnoreCase))
         {
-            if (!File.Exists(candidate))
-                continue;
-
             var parent = PathsEqual(
                     Path.GetDirectoryName(candidate)!,
                     sourceParent.FullPath)
                 ? sourceParent
                 : destinationParent;
+            var entry = PhysicalFileAuthority.ProbeNamespaceEntry(
+                parent,
+                candidate,
+                authorityName + " candidate");
+            if (entry == PhysicalFileAuthority.NamespaceEntryKind.Missing)
+                continue;
+            if (entry != PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} candidate is not a physical regular file.");
+            }
+
             SafeFileHandle? handle = null;
             try
             {
@@ -1474,9 +1548,10 @@ internal static class ReversibleFilePublication
             "File publication durable intent completion");
         try
         {
-            return JsonSerializer.Deserialize<PublicationIntent>(
+            return StrictJsonAuthority.Deserialize<PublicationIntent>(
                        buffer.ToArray(),
-                       JournalJsonOptions)
+                       JournalJsonOptions,
+                       "File publication durable intent")
                    ?? throw new InvalidDataException(
                        "File publication durable intent is empty.");
         }

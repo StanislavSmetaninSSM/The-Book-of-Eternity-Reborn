@@ -40,7 +40,9 @@ public sealed class BrowserLocalWriteCoordinator
     private async Task<BrowserLocalWriteStatus> BuildStatusCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var pending = BrowserPendingTurnInspector.Build(_fs);
+        var pending = BrowserPendingTurnInspector.Build(
+            _fs,
+            writeLease);
         var lockSnapshot = await _lockService.InspectAsync(
             writeLease,
             LockLease);
@@ -87,7 +89,9 @@ public sealed class BrowserLocalWriteCoordinator
                 writeLease,
                 async () =>
                 {
-                    var pending = BrowserPendingTurnInspector.Build(_fs);
+                    var pending = BrowserPendingTurnInspector.Build(
+                        _fs,
+                        writeLease);
                     if (pending.HasActiveGmTurn)
                     {
                         return LocalUiSessionLockResult.BlockedBy(
@@ -247,7 +251,9 @@ public sealed class BrowserLocalWriteCoordinator
         BrowserPendingTurnStatus pending;
         try
         {
-            pending = BrowserPendingTurnInspector.Build(_fs);
+            pending = BrowserPendingTurnInspector.Build(
+                _fs,
+                writeLease);
         }
         catch (InvalidDataException ex)
         {
