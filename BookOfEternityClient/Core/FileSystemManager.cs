@@ -86,12 +86,16 @@ public class FileSystemManager
         private const int ActiveState = 1;
         private const int InactiveState = 2;
         private AmbientCanonicalLeaseRegistration? _previous;
+        private readonly ConcurrentDictionary<
+            AmbientCanonicalLeaseRegistration,
+            byte> _successors = new();
         private int _state = PendingState;
 
         internal AmbientCanonicalLeaseRegistration(
             AmbientCanonicalLeaseRegistration? previous)
         {
             _previous = previous;
+            previous?.RegisterSuccessor(this);
         }
 
         internal AmbientCanonicalLeaseRegistration? Previous =>
@@ -113,8 +117,20 @@ public class FileSystemManager
             }
         }
 
-        internal void Deactivate() =>
+        internal void Deactivate()
+        {
             Volatile.Write(ref _state, InactiveState);
+            Previous?.UnregisterSuccessor(this);
+            foreach (var successor in _successors.Keys)
+            {
+                if (successor.Inactive)
+                    _successors.TryRemove(successor, out _);
+                else
+                    successor.PruneInactivePredecessors();
+            }
+
+            _successors.Clear();
+        }
 
         internal void PruneInactivePredecessors()
         {
@@ -124,12 +140,44 @@ public class FileSystemManager
                 if (previous == null || !previous.Inactive)
                     return;
 
-                Interlocked.CompareExchange(
-                    ref _previous,
-                    previous.Previous,
-                    previous);
+                var replacement = previous.Previous;
+                if (!ReferenceEquals(
+                        Interlocked.CompareExchange(
+                            ref _previous,
+                            replacement,
+                            previous),
+                        previous))
+                {
+                    continue;
+                }
+
+                previous.UnregisterSuccessor(this);
+                replacement?.RegisterSuccessor(this);
             }
         }
+
+        private void RegisterSuccessor(
+            AmbientCanonicalLeaseRegistration successor)
+        {
+            if (successor.Inactive)
+                return;
+
+            _successors.TryAdd(successor, 0);
+            if (Inactive)
+            {
+                _successors.TryRemove(successor, out _);
+                if (!successor.Inactive)
+                    successor.PruneInactivePredecessors();
+            }
+            else if (successor.Inactive)
+            {
+                _successors.TryRemove(successor, out _);
+            }
+        }
+
+        private void UnregisterSuccessor(
+            AmbientCanonicalLeaseRegistration successor) =>
+            _successors.TryRemove(successor, out _);
     }
 
     internal sealed class SessionLifecycleLease : IAsyncDisposable

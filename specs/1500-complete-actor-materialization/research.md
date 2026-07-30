@@ -1399,14 +1399,16 @@ crash-safe physical primitive and only lacked an expected-current condition.
 
 ### Decision 136: Ambient compaction removes inactive interior nodes
 
-**Decision**: Ambient registration predecessors are atomically prunable. Every
-new acquisition and ambient-owner check removes inactive predecessors
-throughout the chain while preserving pending and active nodes.
+**Decision**: Ambient registration predecessors are atomically prunable.
+Pending and active registrations track their live successors, and deactivation
+notifies those successors to relink around the inactive predecessor. New
+acquisitions and ambient-owner checks retain path compaction as a fallback.
 
 **Rationale**: Cancellation continuations cannot rewrite a newer caller
-`AsyncLocal` head, but all contexts share registration objects. Pruning their
-predecessor links bounds retained state without treating a pending acquisition
-as inactive.
+`AsyncLocal` head, but all contexts share registration objects. Pruning only on
+later acquisition or observation leaves a successful survivor holding every
+predecessor cancelled before activation. Successor notification bounds retained
+state at cancellation time without treating a pending acquisition as inactive.
 
 ## Existing integration findings
 

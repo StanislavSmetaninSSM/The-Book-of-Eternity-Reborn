@@ -644,9 +644,10 @@ The closure reuses the existing physical primitives:
 2. deny concurrent destination writers while that retained authority is held;
 3. perform transaction-owned deletion through the same opened handle whose
    exact hash was accepted;
-4. make ambient registration predecessor links atomically prunable and compact
-   every inactive interior predecessor while preserving pending and active
-   registrations;
+4. make ambient registration predecessor links atomically prunable, track live
+   successor registrations, and notify them on predecessor deactivation so
+   inactive interior nodes are removed even when the final pending acquisition
+   succeeds before another ownership check;
 5. prove both restore/delete races and the overlapping cancellation order with
    deterministic RED/GREEN regressions and source guards.
 

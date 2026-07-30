@@ -4204,6 +4204,66 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal(0, GetAmbientCanonicalLeaseDepth(raceFs));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AcquireCanonicalWriteLeaseAsync_SurvivingPendingAcquisitionPrunesAllCancelledPredecessors(
+        bool reverseCancellationOrder)
+    {
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        FileSystemManager.CanonicalWriteLease? heldLease =
+            await raceFs.AcquireCanonicalWriteLeaseAsync();
+        var cancellations = new List<CancellationTokenSource>();
+        var acquisitions =
+            new List<Task<FileSystemManager.CanonicalWriteLease>>();
+        FileSystemManager.CanonicalWriteLease? survivingLease = null;
+        try
+        {
+            for (var attempt = 0; attempt < 12; attempt++)
+            {
+                var cancellation = new CancellationTokenSource();
+                cancellations.Add(cancellation);
+                acquisitions.Add(
+                    raceFs.AcquireCanonicalWriteLeaseAsync(
+                        cancellationToken: cancellation.Token));
+            }
+
+            IEnumerable<int> cancellationOrder = Enumerable.Range(
+                0,
+                acquisitions.Count - 1);
+            if (reverseCancellationOrder)
+                cancellationOrder = cancellationOrder.Reverse();
+            foreach (var attempt in cancellationOrder)
+            {
+                cancellations[attempt].Cancel();
+                await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                    () => acquisitions[attempt]);
+            }
+
+            await heldLease.DisposeAsync();
+            heldLease = null;
+            survivingLease = await acquisitions[^1];
+
+            Assert.Equal(1, GetAmbientCanonicalLeaseDepth(raceFs));
+            Assert.Equal(1, GetActiveAmbientCanonicalLeaseCount(raceFs));
+        }
+        finally
+        {
+            if (survivingLease != null)
+                await survivingLease.DisposeAsync();
+            if (heldLease != null)
+                await heldLease.DisposeAsync();
+            foreach (var cancellation in cancellations)
+                cancellation.Dispose();
+        }
+
+        Assert.False(raceFs.FileExists(
+            "game_state/world/ambient-survivor-cleanup.json"));
+        Assert.Equal(0, GetAmbientCanonicalLeaseDepth(raceFs));
+    }
+
     [Fact]
     public void OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive()
     {

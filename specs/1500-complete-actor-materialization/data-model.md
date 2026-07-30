@@ -830,6 +830,8 @@ Conditional deletion likewise hashes and deletes one opened physical file.
 ### Prunable ambient predecessor
 
 Each ambient lease registration retains a shared predecessor reference plus
-pending/active/inactive state. Compaction atomically skips every inactive
-predecessor reachable from a retained pending or active node. Pending and active
-nodes are never removed by compaction.
+pending/active/inactive state and a set of its live pending or active
+successors. Deactivation notifies each successor, which atomically relinks
+around the inactive predecessor and registers with the retained replacement.
+Compaction remains a fallback for caller-side observations. Pending and active
+nodes are never removed by either path.

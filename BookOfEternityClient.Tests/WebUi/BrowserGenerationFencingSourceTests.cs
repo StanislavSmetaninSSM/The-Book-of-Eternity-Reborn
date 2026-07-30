@@ -619,6 +619,14 @@ public sealed class BrowserGenerationFencingSourceTests
             "cursor.PruneInactivePredecessors()",
             compactAmbientLease,
             StringComparison.Ordinal);
+        Assert.Contains(
+            "previous?.RegisterSuccessor(this);",
+            fileSystemSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "successor.PruneInactivePredecessors();",
+            fileSystemSource,
+            StringComparison.Ordinal);
         Assert.DoesNotContain("!current.Active", compactAmbientLease, StringComparison.Ordinal);
         Assert.Contains("if (current.Active)", hasAmbientLease, StringComparison.Ordinal);
         Assert.Contains("current = current.Previous", hasAmbientLease, StringComparison.Ordinal);
