@@ -628,6 +628,32 @@ being enforced rather than changed; no Mortal/afterlife prompt or worked
 example update is required beyond synchronized Spec Kit and source-guard
 evidence.
 
+## Phase 44 implementation strategy
+
+The Phase 43 exact-diff review found two remaining synchronization gaps.
+Rollback compared current bytes through one read and then reopened the path for
+restore/delete, allowing a direct writer to win between authorization and
+mutation. Ambient lease compaction removed only inactive heads, allowing
+overlapping cancelled acquisitions to retain inactive interior nodes.
+
+The closure reuses the existing physical primitives:
+
+1. condition reversible publication on an allowed current SHA-256 set (or
+   explicitly allowed absence) checked through the same retained destination
+   handle that quarantines the old file;
+2. deny concurrent destination writers while that retained authority is held;
+3. perform transaction-owned deletion through the same opened handle whose
+   exact hash was accepted;
+4. make ambient registration predecessor links atomically prunable and compact
+   every inactive interior predecessor while preserving pending and active
+   registrations;
+5. prove both restore/delete races and the overlapping cancellation order with
+   deterministic RED/GREEN regressions and source guards.
+
+Phase 44 remains client-owned harness work. It changes no GM-authored Mortal or
+afterlife state, command, pending/control contract, gameplay mechanic, prompt,
+or worked example.
+
 ## Complexity Tracking
 
 No constitution violations require an exception.

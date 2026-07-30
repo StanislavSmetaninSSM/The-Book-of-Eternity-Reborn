@@ -468,7 +468,8 @@ internal static class PhysicalFileAuthority
         string expectedPath,
         bool isDirectory,
         string authorityName,
-        bool writable = false)
+        bool writable = false,
+        bool denyConcurrentWrites = false)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         if (!OperatingSystem.IsWindows())
@@ -491,7 +492,9 @@ internal static class PhysicalFileAuthority
         var handle = CreateFile(
             ToWindowsExtendedPath(normalizedPath),
             access,
-            FileShareRead | FileShareWrite,
+            denyConcurrentWrites
+                ? FileShareRead
+                : FileShareRead | FileShareWrite,
             IntPtr.Zero,
             OpenExisting,
             flags,

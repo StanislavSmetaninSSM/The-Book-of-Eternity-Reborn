@@ -4151,6 +4151,60 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task AcquireCanonicalWriteLeaseAsync_OverlappingCancelledContentionPrunesInactiveInteriorRegistrations()
+    {
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        var heldLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+        CancellationTokenSource? pendingCancellation = null;
+        Task<FileSystemManager.CanonicalWriteLease>? pendingLease = null;
+        try
+        {
+            for (var attempt = 0; attempt < 8; attempt++)
+            {
+                var nextCancellation = new CancellationTokenSource();
+                var nextLease = raceFs.AcquireCanonicalWriteLeaseAsync(
+                    cancellationToken: nextCancellation.Token);
+
+                if (pendingCancellation != null && pendingLease != null)
+                {
+                    pendingCancellation.Cancel();
+                    await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                        () => pendingLease);
+                    pendingCancellation.Dispose();
+                }
+
+                pendingCancellation = nextCancellation;
+                pendingLease = nextLease;
+                Assert.InRange(
+                    GetAmbientCanonicalLeaseDepth(raceFs),
+                    low: 2,
+                    high: 3);
+                Assert.Equal(
+                    1,
+                    GetActiveAmbientCanonicalLeaseCount(raceFs));
+            }
+        }
+        finally
+        {
+            if (pendingCancellation != null && pendingLease != null)
+            {
+                pendingCancellation.Cancel();
+                await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                    () => pendingLease);
+                pendingCancellation.Dispose();
+            }
+
+            await heldLease.DisposeAsync();
+        }
+
+        Assert.False(raceFs.FileExists(
+            "game_state/world/ambient-overlap-cleanup.json"));
+        Assert.Equal(0, GetAmbientCanonicalLeaseDepth(raceFs));
+    }
+
+    [Fact]
     public void OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive()
     {
         if (!OperatingSystem.IsWindows())

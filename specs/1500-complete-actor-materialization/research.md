@@ -1387,6 +1387,27 @@ skill validator.
 provide the action/effect structure needed for combat or prove that a governed
 section was materially populated.
 
+### Decision 135: Rollback comparison and mutation share retained authority
+
+**Decision**: Baseline restoration conditions reversible publication on the
+allowed current hashes through the retained destination handle; rollback
+deletion hashes and deletes the same opened handle.
+
+**Rationale**: A pathname read followed by a separate pathname mutation is not
+compare-and-swap. The existing reversible-publication quarantine is already the
+crash-safe physical primitive and only lacked an expected-current condition.
+
+### Decision 136: Ambient compaction removes inactive interior nodes
+
+**Decision**: Ambient registration predecessors are atomically prunable. Every
+new acquisition and ambient-owner check removes inactive predecessors
+throughout the chain while preserving pending and active nodes.
+
+**Rationale**: Cancellation continuations cannot rewrite a newer caller
+`AsyncLocal` head, but all contexts share registration objects. Pruning their
+predecessor links bounds retained state without treating a pending acquisition
+as inactive.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

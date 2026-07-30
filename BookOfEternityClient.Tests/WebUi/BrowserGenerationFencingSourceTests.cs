@@ -615,6 +615,10 @@ public sealed class BrowserGenerationFencingSourceTests
             releaseAmbientLease,
             StringComparison.Ordinal);
         Assert.Contains("current.Inactive", compactAmbientLease, StringComparison.Ordinal);
+        Assert.Contains(
+            "cursor.PruneInactivePredecessors()",
+            compactAmbientLease,
+            StringComparison.Ordinal);
         Assert.DoesNotContain("!current.Active", compactAmbientLease, StringComparison.Ordinal);
         Assert.Contains("if (current.Active)", hasAmbientLease, StringComparison.Ordinal);
         Assert.Contains("current = current.Previous", hasAmbientLease, StringComparison.Ordinal);
@@ -636,6 +640,14 @@ public sealed class BrowserGenerationFencingSourceTests
             "BookOfEternityClient",
             "Services",
             "ExplorerLocalTurnRollbackArtifacts.cs"));
+        var physicalAuthoritySource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "PhysicalFileAuthority.cs"));
+        var reversiblePublicationSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "ReversibleFilePublication.cs"));
         var saveLoadSource = File.ReadAllText(SourcePath(
             "BookOfEternityClient",
             "Services",
@@ -692,8 +704,28 @@ public sealed class BrowserGenerationFencingSourceTests
             rollbackSource,
             StringComparison.Ordinal);
         Assert.Contains(
+            "WriteFileAtomicBytesIfCurrentOwnedAsync(",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "DeleteFileIfCurrentOwnedAsync(",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
             "IsTransactionOwnedPostImage(entry, current)",
             rollbackSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "allowedDestinationSha256s",
+            reversiblePublicationSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "denyConcurrentWrites:",
+            reversiblePublicationSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "denyConcurrentWrites",
+            physicalAuthoritySource,
             StringComparison.Ordinal);
 
         var observationStart = fileSystemSource.IndexOf(

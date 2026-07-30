@@ -239,6 +239,74 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     }
 
     [Fact]
+    public async Task InterruptedStagedBrowserWrite_ForeignRewriteAfterOwnershipCheckBlocksRestoreAndRetainsEvidence()
+    {
+        const string trackedPath =
+            "game_state/meta/browser_write_foreign_at_restore_boundary.json";
+        const string foreignPostImage = """{"value":"foreign-at-boundary"}""";
+        await _fs.WriteFileAtomicAsync(
+            trackedPath,
+            """{"value":"before"}""");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "browser_write");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                """{"value":"owned"}""");
+        }
+
+        var foreignWriteInjected = false;
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = async path =>
+                {
+                    if (foreignWriteInjected ||
+                        !path.Equals(
+                            trackedPath,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        return;
+                    }
+
+                    foreignWriteInjected = true;
+                    await File.WriteAllTextAsync(
+                        _fs.ResolvePath(trackedPath),
+                        foreignPostImage);
+                }
+            });
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/browser_write_foreign_at_restore_boundary_trigger.json",
+                """{"ok":true}"""));
+
+        Assert.True(foreignWriteInjected);
+        Assert.Equal(
+            foreignPostImage,
+            await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+        Assert.True(File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
+        Assert.True(
+            File.Exists(
+                _fs.ResolvePath(
+                    Assert.Single(transaction.Entries).BackupPath!)));
+    }
+
+    [Fact]
     public async Task InterruptedStagedBrowserWrite_WithoutBaseline_PreservesForeignPostImageAndEvidence()
     {
         const string trackedPath = "game_state/meta/browser_write_foreign_missing.json";
@@ -272,6 +340,67 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
         Assert.True(File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
         Assert.False(restartedFs.FileExists(
             "game_state/meta/browser_write_foreign_missing_trigger.json"));
+    }
+
+    [Fact]
+    public async Task InterruptedStagedBrowserCreate_ForeignRewriteAfterOwnershipCheckBlocksDeleteAndRetainsEvidence()
+    {
+        const string trackedPath =
+            "game_state/meta/browser_create_foreign_at_delete_boundary.json";
+        const string foreignPostImage = """{"value":"foreign-at-boundary"}""";
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "browser_write");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                """{"value":"owned"}""");
+        }
+
+        var foreignWriteInjected = false;
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = async path =>
+                {
+                    if (foreignWriteInjected ||
+                        !path.Equals(
+                            trackedPath,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        return;
+                    }
+
+                    foreignWriteInjected = true;
+                    await File.WriteAllTextAsync(
+                        _fs.ResolvePath(trackedPath),
+                        foreignPostImage);
+                }
+            });
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/browser_create_foreign_at_delete_boundary_trigger.json",
+                """{"ok":true}"""));
+
+        Assert.True(foreignWriteInjected);
+        Assert.Equal(
+            foreignPostImage,
+            await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+        Assert.True(File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
     }
 
     [Fact]

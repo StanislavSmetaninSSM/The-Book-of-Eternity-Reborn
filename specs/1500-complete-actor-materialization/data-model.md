@@ -816,3 +816,20 @@ is true when any retained scope is active.
 `skillId` and `id` remain optional labels. Active/passive skill gameplay
 authority is derived only from the production structural validator; identity
 metadata cannot promote an incomplete object into a usable skill.
+
+## Phase 44 authority additions
+
+### Retained owned-mutation authority
+
+An identity-bound conditional replacement contains the allowed current
+SHA-256 set and an explicit missing-current policy. Reversible publication
+opens the destination with concurrent writers denied, checks the allowed state
+through that handle, and uses the same handle to quarantine the prior object.
+Conditional deletion likewise hashes and deletes one opened physical file.
+
+### Prunable ambient predecessor
+
+Each ambient lease registration retains a shared predecessor reference plus
+pending/active/inactive state. Compaction atomically skips every inactive
+predecessor reachable from a retained pending or active node. Pending and active
+nodes are never removed by compaction.

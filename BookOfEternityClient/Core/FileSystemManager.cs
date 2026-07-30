@@ -85,15 +85,17 @@ public class FileSystemManager
         private const int PendingState = 0;
         private const int ActiveState = 1;
         private const int InactiveState = 2;
+        private AmbientCanonicalLeaseRegistration? _previous;
         private int _state = PendingState;
 
         internal AmbientCanonicalLeaseRegistration(
             AmbientCanonicalLeaseRegistration? previous)
         {
-            Previous = previous;
+            _previous = previous;
         }
 
-        internal AmbientCanonicalLeaseRegistration? Previous { get; }
+        internal AmbientCanonicalLeaseRegistration? Previous =>
+            Volatile.Read(ref _previous);
         internal bool Active =>
             Volatile.Read(ref _state) == ActiveState;
         internal bool Inactive =>
@@ -113,6 +115,21 @@ public class FileSystemManager
 
         internal void Deactivate() =>
             Volatile.Write(ref _state, InactiveState);
+
+        internal void PruneInactivePredecessors()
+        {
+            while (true)
+            {
+                var previous = Previous;
+                if (previous == null || !previous.Inactive)
+                    return;
+
+                Interlocked.CompareExchange(
+                    ref _previous,
+                    previous.Previous,
+                    previous);
+            }
+        }
     }
 
     internal sealed class SessionLifecycleLease : IAsyncDisposable
@@ -736,13 +753,33 @@ public class FileSystemManager
         return CanonicalFileMutationResult.Applied;
     }
 
+    internal async Task WriteFileAtomicBytesIfCurrentOwnedAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        byte[] content,
+        IReadOnlyCollection<string> allowedCurrentSha256s,
+        bool allowMissingCurrent)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        var allowedHashes = NormalizeOwnedMutationHashes(
+            allowedCurrentSha256s);
+        await WriteFileAtomicBytesCoreAsync(
+            relativePath,
+            content,
+            CancellationToken.None,
+            allowedHashes,
+            allowMissingCurrent);
+    }
+
     private Task WriteFileAtomicBytesCoreAsync(string relativePath, byte[] content) =>
         WriteFileAtomicBytesCoreAsync(relativePath, content, CancellationToken.None);
 
     private async Task WriteFileAtomicBytesCoreAsync(
         string relativePath,
         byte[] content,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        IReadOnlySet<string>? allowedCurrentSha256s = null,
+        bool allowMissingCurrent = false)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var fullPath = ResolvePath(relativePath);
@@ -798,10 +835,20 @@ public class FileSystemManager
                     _hooks?.AfterPhysicalFilePublishedAsync,
                     cancellationToken,
                     _hooks
-                        ?.BeforePhysicalRollbackAbsenceFinalValidationAsync);
+                        ?.BeforePhysicalRollbackAbsenceFinalValidationAsync,
+                    allowedDestinationSha256s:
+                        allowedCurrentSha256s,
+                    allowMissingDestination:
+                        allowMissingCurrent);
             }
             else
             {
+                if (allowedCurrentSha256s != null)
+                {
+                    throw new PlatformNotSupportedException(
+                        "Identity-bound conditional canonical replacement requires reversible file publication.");
+                }
+
                 PhysicalFileAuthority.RenameOpenedObjectRelative(
                     stream.SafeFileHandle,
                     parentAuthority,
@@ -1693,6 +1740,87 @@ public class FileSystemManager
         DeleteFileCore(relativePath);
     }
 
+    internal async Task DeleteFileIfCurrentOwnedAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        IReadOnlyCollection<string> allowedCurrentSha256s)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        var allowedHashes = NormalizeOwnedMutationHashes(
+            allowedCurrentSha256s);
+        var fullPath = ResolvePath(relativePath);
+        using var mutationRegistration =
+            new InProcessMutationRegistration(fullPath);
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                await InvokeBeforeCanonicalMutationBoundaryAsync(
+                    relativePath);
+                using var parentAuthority = EnsureStableCanonicalParent(
+                    relativePath,
+                    fullPath);
+                EnsureCanonicalMutationBoundary(relativePath, fullPath);
+                var entry = PhysicalFileAuthority.ProbeNamespaceEntry(
+                    parentAuthority,
+                    fullPath,
+                    "Conditional canonical deletion");
+                if (entry == PhysicalFileAuthority.NamespaceEntryKind.Missing)
+                    return;
+                if (entry !=
+                    PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
+                {
+                    throw new InvalidDataException(
+                        "Conditional canonical deletion target is not a physical regular file.");
+                }
+
+                using var targetHandle =
+                    PhysicalFileAuthority.OpenForRename(
+                        parentAuthority,
+                        fullPath,
+                        isDirectory: false,
+                        "Conditional canonical deletion",
+                        denyConcurrentWrites: true);
+                var currentSha256 =
+                    PhysicalFileAuthority.ComputeOpenedFileSha256(
+                        targetHandle,
+                        "Conditional canonical deletion target");
+                if (!allowedHashes.Contains(currentSha256))
+                {
+                    throw new InvalidDataException(
+                        "Conditional canonical deletion refused a non-owned destination.");
+                }
+
+                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(
+                    relativePath);
+                PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
+                    targetHandle,
+                    fullPath,
+                    "Conditional canonical deletion final authority");
+                var finalSha256 =
+                    PhysicalFileAuthority.ComputeOpenedFileSha256(
+                        targetHandle,
+                        "Conditional canonical deletion final authority");
+                if (!allowedHashes.Contains(finalSha256))
+                {
+                    throw new InvalidDataException(
+                        "Conditional canonical deletion destination changed before deletion.");
+                }
+
+                PhysicalFileAuthority.DeleteOpenedFile(
+                    targetHandle,
+                    "Conditional canonical deletion target");
+                return;
+            }
+            catch (Exception ex) when (
+                IsTransientFileAccessException(ex) &&
+                attempt < TransientFileAccessRetryCount)
+            {
+                await Task.Delay(TransientFileAccessRetryDelay);
+            }
+        }
+    }
+
     private async Task DeleteFileWithLockAsync(string relativePath)
     {
         await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
@@ -1710,6 +1838,28 @@ public class FileSystemManager
         await writeLease.MutationIntentRecorder.RecordMutationIntentAsync(
             relativePath,
             desiredContent);
+    }
+
+    private static HashSet<string> NormalizeOwnedMutationHashes(
+        IReadOnlyCollection<string> hashes)
+    {
+        ArgumentNullException.ThrowIfNull(hashes);
+        var normalized = hashes
+            .Where(static hash =>
+                hash is { Length: 64 } &&
+                hash.All(static character =>
+                    character is >= '0' and <= '9' or
+                        >= 'a' and <= 'f' or
+                        >= 'A' and <= 'F'))
+            .Select(static hash => hash.ToLowerInvariant())
+            .ToHashSet(StringComparer.Ordinal);
+        if (normalized.Count != hashes.Count || normalized.Count == 0)
+        {
+            throw new InvalidDataException(
+                "Conditional canonical mutation requires unique SHA-256 authorities.");
+        }
+
+        return normalized;
     }
 
     private void DeleteFileCore(string relativePath)
@@ -2195,6 +2345,13 @@ public class FileSystemManager
         var current = _ambientCanonicalLease.Value;
         while (current != null && current.Inactive)
             current = current.Previous;
+
+        var cursor = current;
+        while (cursor != null)
+        {
+            cursor.PruneInactivePredecessors();
+            cursor = cursor.Previous;
+        }
 
         if (!ReferenceEquals(current, _ambientCanonicalLease.Value))
             _ambientCanonicalLease.Value = current;

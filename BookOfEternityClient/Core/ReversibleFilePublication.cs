@@ -388,7 +388,9 @@ internal static class ReversibleFilePublication
         Func<string, Task>? beforeSourcePublished,
         Func<string, Task>? afterPublished,
         CancellationToken cancellationToken,
-        Func<string, Task>? beforeAbsenceFinalValidation = null)
+        Func<string, Task>? beforeAbsenceFinalValidation = null,
+        IReadOnlySet<string>? allowedDestinationSha256s = null,
+        bool allowMissingDestination = false)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -422,7 +424,9 @@ internal static class ReversibleFilePublication
                 destinationParent,
                 normalizedDestinationPath,
                 authorityName,
-                cancellationToken);
+                cancellationToken,
+                denyConcurrentWrites:
+                    allowedDestinationSha256s != null);
             var destinationIdentity = destinationHandle == null
                 ? null
                 : PhysicalFileAuthority.CaptureFileIdentity(
@@ -437,6 +441,23 @@ internal static class ReversibleFilePublication
                 : PhysicalFileAuthority.ComputeOpenedFileSha256(
                     destinationHandle,
                     authorityName + " prior destination");
+            if (allowedDestinationSha256s != null)
+            {
+                if (destinationSha256 == null)
+                {
+                    if (!allowMissingDestination)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} destination is missing instead of matching transaction-owned authority.");
+                    }
+                }
+                else if (!allowedDestinationSha256s.Contains(
+                             destinationSha256))
+                {
+                    throw new InvalidDataException(
+                        $"{authorityName} destination does not match transaction-owned authority.");
+                }
+            }
 
             var transactionId = Guid.NewGuid().ToString("N");
             var destinationParentPath = Path.GetDirectoryName(
@@ -1355,7 +1376,8 @@ internal static class ReversibleFilePublication
     private static SafeFileHandle? TryOpenDestination(
         PhysicalFileAuthority.StableDirectory destinationParent,
         string destinationPath,
-        string authorityName)
+        string authorityName,
+        bool denyConcurrentWrites = false)
     {
         var entry = PhysicalFileAuthority.ProbeNamespaceEntry(
             destinationParent,
@@ -1375,7 +1397,8 @@ internal static class ReversibleFilePublication
             destinationParent,
             destinationPath,
             isDirectory: false,
-            authorityName);
+            authorityName,
+            denyConcurrentWrites: denyConcurrentWrites);
     }
 
     private static async Task<SafeFileHandle?>
@@ -1383,7 +1406,8 @@ internal static class ReversibleFilePublication
             PhysicalFileAuthority.StableDirectory destinationParent,
             string destinationPath,
             string authorityName,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            bool denyConcurrentWrites = false)
     {
         for (var attempt = 0; ; attempt++)
         {
@@ -1393,7 +1417,8 @@ internal static class ReversibleFilePublication
                 return TryOpenDestination(
                     destinationParent,
                     destinationPath,
-                    authorityName);
+                    authorityName,
+                    denyConcurrentWrites);
             }
             catch (IOException ex) when (
                 IsSharingViolation(ex) &&

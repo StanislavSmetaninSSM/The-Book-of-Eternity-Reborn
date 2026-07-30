@@ -607,38 +607,25 @@ public static class ExplorerLocalTurnRollbackArtifacts
             if (current != null && current.AsSpan().SequenceEqual(content))
                 return;
 
-            if (!IsTransactionOwnedPostImage(entry, current))
-            {
-                throw new InvalidDataException(
-                    $"Rollback refused to overwrite non-owned post-image for '{entry.TrackedFile}'.");
-            }
-
-            await fs.WriteFileAtomicBytesAsync(writeLease, entry.TrackedFile, content!);
+            var allowedCurrentSha256s = (entry.PublishedSha256s ?? [])
+                .Append(ComputeSha256(content!))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            await fs.WriteFileAtomicBytesIfCurrentOwnedAsync(
+                writeLease,
+                entry.TrackedFile,
+                content!,
+                allowedCurrentSha256s,
+                allowMissingCurrent:
+                    entry.DeletionIntended);
             return;
         }
 
         if (current == null)
             return;
-        if (!IsTransactionOwnedPostImage(entry, current))
-        {
-            throw new InvalidDataException(
-                $"Rollback refused to delete non-owned post-image for '{entry.TrackedFile}'.");
-        }
-
-        fs.DeleteFile(writeLease, entry.TrackedFile);
-    }
-
-    private static bool IsTransactionOwnedPostImage(
-        BrowserWriteRollbackEntry entry,
-        byte[]? current)
-    {
-        if (current == null)
-            return entry.DeletionIntended;
-
-        var currentSha256 = ComputeSha256(current);
-        return (entry.PublishedSha256s ?? []).Contains(
-            currentSha256,
-            StringComparer.OrdinalIgnoreCase);
+        await fs.DeleteFileIfCurrentOwnedAsync(
+            writeLease,
+            entry.TrackedFile,
+            entry.PublishedSha256s ?? []);
     }
 
     internal static bool TryDeleteBrowserWriteTransaction(
