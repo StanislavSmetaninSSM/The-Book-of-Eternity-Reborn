@@ -95,7 +95,11 @@ public class FileSystemManager
             AmbientCanonicalLeaseRegistration? previous)
         {
             _previous = previous;
-            previous?.RegisterSuccessor(this);
+            if (previous != null &&
+                !previous.RegisterSuccessor(this))
+            {
+                PruneInactivePredecessors();
+            }
         }
 
         internal AmbientCanonicalLeaseRegistration? Previous =>
@@ -152,27 +156,35 @@ public class FileSystemManager
                 }
 
                 previous.UnregisterSuccessor(this);
-                replacement?.RegisterSuccessor(this);
+                if (replacement == null)
+                    continue;
+                if (replacement.RegisterSuccessor(this))
+                    continue;
+                if (Inactive)
+                    return;
             }
         }
 
-        private void RegisterSuccessor(
+        private bool RegisterSuccessor(
             AmbientCanonicalLeaseRegistration successor)
         {
             if (successor.Inactive)
-                return;
+                return false;
 
             _successors.TryAdd(successor, 0);
             if (Inactive)
             {
                 _successors.TryRemove(successor, out _);
-                if (!successor.Inactive)
-                    successor.PruneInactivePredecessors();
+                return false;
             }
-            else if (successor.Inactive)
+
+            if (successor.Inactive)
             {
                 _successors.TryRemove(successor, out _);
+                return false;
             }
+
+            return true;
         }
 
         private void UnregisterSuccessor(

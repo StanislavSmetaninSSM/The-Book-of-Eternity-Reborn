@@ -1403,6 +1403,8 @@ crash-safe physical primitive and only lacked an expected-current condition.
 Pending and active registrations track their live successors, and deactivation
 notifies those successors to relink around the inactive predecessor. New
 acquisitions and ambient-owner checks retain path compaction as a fallback.
+Successor re-registration is iterative rather than mutually recursive so an
+adversarial contiguous inactive chain cannot exhaust the process stack.
 
 **Rationale**: Cancellation continuations cannot rewrite a newer caller
 `AsyncLocal` head, but all contexts share registration objects. Pruning only on
