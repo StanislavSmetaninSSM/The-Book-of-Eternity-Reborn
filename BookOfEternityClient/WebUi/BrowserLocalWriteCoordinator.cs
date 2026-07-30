@@ -302,12 +302,14 @@ public sealed class BrowserLocalWriteCoordinator
         catch (SessionReplacedException)
         {
             writeLease.ExternalPublicationContext = null;
+            writeLease.MutationIntentRecorder = null;
             backups?.DarenTransaction?.Dispose();
             await TryReleaseAsync(writeLease, lockLease);
             throw;
         }
         catch (Exception ex)
         {
+            writeLease.MutationIntentRecorder = null;
             Exception? rollbackFailure = null;
             try
             {
@@ -349,6 +351,7 @@ public sealed class BrowserLocalWriteCoordinator
             finally
             {
                 writeLease.ExternalPublicationContext = null;
+                writeLease.MutationIntentRecorder = null;
                 backups?.DarenTransaction?.Dispose();
                 await TryReleaseAsync(writeLease, lockLease);
             }
@@ -372,6 +375,7 @@ public sealed class BrowserLocalWriteCoordinator
                                               .BrowserWriteCleanupOutcome.Committed,
                                           out _);
         writeLease.ExternalPublicationContext = null;
+        writeLease.MutationIntentRecorder = null;
         backups?.DarenTransaction?.Dispose();
         var released = await TryReleaseAsync(writeLease, lockLease);
         return BrowserLocalWriteResult.Completed(

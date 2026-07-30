@@ -194,7 +194,6 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     [Theory]
     [InlineData("teacher")]
     [InlineData("trader")]
-    [InlineData("combat")]
     [InlineData("combat_idless")]
     [InlineData("actor_brain")]
     public async Task ValidateGameStateAsync_LegacyMortalNpcWithStructuredPromotion_ReportsMissingMaterialization(
@@ -208,6 +207,24 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var issues = await _validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_missing" &&
+            issue.Actor == "mortal_npc:legacy_structured_actor");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LegacyMortalNpcWithIdOnlyCombatDelta_DoesNotPromoteMaterialization()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        var preTurnJson = BuildMortalPromotionStateJson(promotion: null);
+        var currentJson = BuildMortalPromotionStateJson("combat");
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            currentJson,
+            preTurnJson);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
             issue.Actor == "mortal_npc:legacy_structured_actor");
     }
@@ -2536,7 +2553,26 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         if (family == "mortal")
         {
             currentState["NPCsInScene"]![0]!["activeSkills"]!.AsArray().Add(
-                new JsonObject { ["skillId"] = "skill_present_on_first_materialization" });
+                new JsonObject
+                {
+                    ["skillName"] = "Контур первого проявления",
+                    ["skillDescription"] = "Размыкает защитный контур при первой материализации.",
+                    ["rarity"] = "Common",
+                    ["actionCost"] = "Main",
+                    ["combatEffect"] = new JsonObject
+                    {
+                        ["isActivatedEffect"] = true,
+                        ["actionName"] = "Разомкнуть контур",
+                        ["effects"] = new JsonArray(new JsonObject
+                        {
+                            ["effectType"] = "Damage",
+                            ["value"] = "10%",
+                            ["targetType"] = "Enemy",
+                            ["effectDescription"] = "Импульс поражает выбранную цель.",
+                            ["poiseDamage"] = "5%"
+                        })
+                    }
+                });
         }
         else
         {

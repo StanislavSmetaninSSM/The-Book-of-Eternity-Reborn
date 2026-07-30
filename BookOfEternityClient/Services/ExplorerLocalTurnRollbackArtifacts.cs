@@ -30,7 +30,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string TrackedFile,
         bool Existed,
         string? BackupPath,
-        string? Sha256);
+        string? Sha256,
+        IReadOnlyList<string>? PublishedSha256s = null,
+        bool DeletionIntended = false);
 
     internal sealed record BrowserWriteExternalRollbackEntry(
         string FileId,
@@ -73,6 +75,119 @@ public static class ExplorerLocalTurnRollbackArtifacts
     {
         Committed,
         Restored
+    }
+
+    private sealed class BrowserWriteMutationIntentRecorder :
+        ICanonicalMutationIntentRecorder
+    {
+        private readonly FileSystemManager _fs;
+        private readonly FileSystemManager.CanonicalWriteLease _writeLease;
+        private readonly string _manifestPath;
+        private readonly string _scope;
+        private readonly string _createdAtUtc;
+        private readonly List<BrowserWriteRollbackEntry> _entries;
+        private readonly IReadOnlyList<string> _cleanupDirectories;
+        private readonly List<BrowserWriteExternalRollbackEntry> _externalEntries;
+        private readonly SemaphoreSlim _manifestGate = new(1, 1);
+
+        internal BrowserWriteMutationIntentRecorder(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string manifestPath,
+            string scope,
+            string createdAtUtc,
+            List<BrowserWriteRollbackEntry> entries,
+            IReadOnlyList<string> cleanupDirectories,
+            List<BrowserWriteExternalRollbackEntry> externalEntries)
+        {
+            _fs = fs;
+            _writeLease = writeLease;
+            _manifestPath = manifestPath;
+            _scope = scope;
+            _createdAtUtc = createdAtUtc;
+            _entries = entries;
+            _cleanupDirectories = cleanupDirectories;
+            _externalEntries = externalEntries;
+        }
+
+        public async Task RecordMutationIntentAsync(
+            string relativePath,
+            byte[]? desiredContent)
+        {
+            var trackedFile = NormalizeRelativePath(_fs, relativePath);
+            var index = _entries.FindIndex(entry =>
+                string.Equals(
+                    entry.TrackedFile,
+                    trackedFile,
+                    StringComparison.OrdinalIgnoreCase));
+            if (index < 0)
+                return;
+
+            await _manifestGate.WaitAsync();
+            try
+            {
+                var entry = _entries[index];
+                if (desiredContent == null)
+                {
+                    _entries[index] = entry with
+                    {
+                        DeletionIntended = true
+                    };
+                }
+                else
+                {
+                    var publishedSha256 = ComputeSha256(desiredContent);
+                    var publishedHashes = (entry.PublishedSha256s ?? [])
+                        .Append(publishedSha256)
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .OrderBy(static value => value, StringComparer.Ordinal)
+                        .ToArray();
+                    _entries[index] = entry with
+                    {
+                        PublishedSha256s = publishedHashes
+                    };
+                }
+
+                await PersistManifestAsync();
+            }
+            finally
+            {
+                _manifestGate.Release();
+            }
+        }
+
+        internal async Task UpdateExternalEntryAsync(
+            int index,
+            BrowserWriteExternalRollbackEntry entry)
+        {
+            await _manifestGate.WaitAsync();
+            try
+            {
+                _externalEntries[index] = entry;
+                await PersistManifestAsync();
+            }
+            finally
+            {
+                _manifestGate.Release();
+            }
+        }
+
+        private async Task PersistManifestAsync()
+        {
+            var manifest = new BrowserWriteRollbackManifest(
+                SchemaVersion: 5,
+                TransactionKind: "browser_local_write",
+                Status: "staged",
+                Scope: _scope,
+                CreatedAtUtc: _createdAtUtc,
+                Entries: _entries,
+                CleanupDirectories: _cleanupDirectories,
+                ExternalEntries: _externalEntries);
+            await _fs.WriteFileAtomicAsync(
+                _writeLease,
+                _manifestPath,
+                JsonSerializer.Serialize(manifest, ManifestJsonOptions));
+        }
     }
 
     public static async Task<string?> StageFileAsync(
@@ -166,6 +281,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             new List<BrowserWriteExternalRollbackEntry>(externalFileIds.Length);
         var createdPaths = new List<string>();
         DarenRewardProfileRollbackTransaction? darenTransaction = null;
+        BrowserWriteMutationIntentRecorder? mutationIntentRecorder = null;
 
         try
         {
@@ -242,7 +358,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
 
             var manifest = new BrowserWriteRollbackManifest(
-                SchemaVersion: 4,
+                SchemaVersion: 5,
                 TransactionKind: "browser_local_write",
                 Status: "staged",
                 Scope: safeScope,
@@ -255,6 +371,22 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 manifestPath,
                 JsonSerializer.Serialize(manifest, ManifestJsonOptions));
             createdPaths.Add(manifestPath);
+            if (writeLease.MutationIntentRecorder != null)
+            {
+                throw new InvalidOperationException(
+                    "Canonical write lease already owns a mutation-intent recorder.");
+            }
+
+            mutationIntentRecorder = new BrowserWriteMutationIntentRecorder(
+                fs,
+                writeLease,
+                manifestPath,
+                safeScope,
+                createdAtUtc,
+                entries,
+                cleanupDirectories,
+                externalEntries);
+            writeLease.MutationIntentRecorder = mutationIntentRecorder;
             if (darenTransaction != null)
             {
                 var darenEntryIndex = externalEntries.FindIndex(entry =>
@@ -265,7 +397,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 darenTransaction.SetPublishedAuthorityRecorder(
                     async (publishedIdentity, publishedSha256, publicationTransactionId) =>
                     {
-                        externalEntries[darenEntryIndex] =
+                        var updatedEntry =
                             externalEntries[darenEntryIndex] with
                             {
                                 PublishedIdentity = publishedIdentity,
@@ -273,22 +405,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
                                 PublicationTransactionId =
                                     publicationTransactionId
                             };
-                        var updatedManifest =
-                            new BrowserWriteRollbackManifest(
-                                SchemaVersion: 4,
-                                TransactionKind: "browser_local_write",
-                                Status: "staged",
-                                Scope: safeScope,
-                                CreatedAtUtc: createdAtUtc,
-                                Entries: entries,
-                                CleanupDirectories: cleanupDirectories,
-                                ExternalEntries: externalEntries);
-                        await fs.WriteFileAtomicAsync(
-                            writeLease,
-                            manifestPath,
-                            JsonSerializer.Serialize(
-                                updatedManifest,
-                                ManifestJsonOptions));
+                        await mutationIntentRecorder.UpdateExternalEntryAsync(
+                            darenEntryIndex,
+                            updatedEntry);
                     });
             }
 
@@ -317,6 +436,12 @@ public static class ExplorerLocalTurnRollbackArtifacts
         }
         catch
         {
+            if (ReferenceEquals(
+                    writeLease.MutationIntentRecorder,
+                    mutationIntentRecorder))
+            {
+                writeLease.MutationIntentRecorder = null;
+            }
             darenTransaction?.Dispose();
             foreach (var path in createdPaths.AsEnumerable().Reverse())
             {
@@ -476,18 +601,44 @@ public static class ExplorerLocalTurnRollbackArtifacts
         BrowserWriteRollbackEntry entry)
     {
         var content = await ReadBrowserWriteBeforeImageAsync(fs, writeLease, entry);
+        var current = await fs.ReadFileBytesAsync(writeLease, entry.TrackedFile);
         if (entry.Existed)
         {
-            var current = await fs.ReadFileBytesAsync(writeLease, entry.TrackedFile);
             if (current != null && current.AsSpan().SequenceEqual(content))
                 return;
+
+            if (!IsTransactionOwnedPostImage(entry, current))
+            {
+                throw new InvalidDataException(
+                    $"Rollback refused to overwrite non-owned post-image for '{entry.TrackedFile}'.");
+            }
 
             await fs.WriteFileAtomicBytesAsync(writeLease, entry.TrackedFile, content!);
             return;
         }
 
-        if (fs.FileExists(writeLease, entry.TrackedFile))
-            fs.DeleteFile(writeLease, entry.TrackedFile);
+        if (current == null)
+            return;
+        if (!IsTransactionOwnedPostImage(entry, current))
+        {
+            throw new InvalidDataException(
+                $"Rollback refused to delete non-owned post-image for '{entry.TrackedFile}'.");
+        }
+
+        fs.DeleteFile(writeLease, entry.TrackedFile);
+    }
+
+    private static bool IsTransactionOwnedPostImage(
+        BrowserWriteRollbackEntry entry,
+        byte[]? current)
+    {
+        if (current == null)
+            return entry.DeletionIntended;
+
+        var currentSha256 = ComputeSha256(current);
+        return (entry.PublishedSha256s ?? []).Contains(
+            currentSha256,
+            StringComparer.OrdinalIgnoreCase);
     }
 
     internal static bool TryDeleteBrowserWriteTransaction(
@@ -576,7 +727,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string manifestPath,
         BrowserWriteRollbackManifest manifest)
     {
-        if (manifest.SchemaVersion is not (1 or 2 or 3 or 4) ||
+        if (manifest.SchemaVersion is not (1 or 2 or 3 or 4 or 5) ||
             !string.Equals(manifest.TransactionKind, "browser_local_write", StringComparison.Ordinal) ||
             manifest.Status is not ("staged" or "committed" or "restored") ||
             manifest.Status == "restored" && manifest.SchemaVersion < 3 ||
@@ -641,6 +792,27 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     $"Browser rollback manifest '{manifestPath}' contains an unsafe or duplicate tracked path.");
             }
 
+            var publishedSha256s = entry.PublishedSha256s ?? [];
+            if (manifest.SchemaVersion < 5)
+            {
+                if (publishedSha256s.Count > 0 || entry.DeletionIntended)
+                {
+                    throw new InvalidDataException(
+                        $"Browser rollback manifest '{manifestPath}' declares post-image authority under a legacy schema.");
+                }
+            }
+            else if (publishedSha256s.Any(hash => !IsSha256(hash)) ||
+                     publishedSha256s.Distinct(StringComparer.OrdinalIgnoreCase).Count() !=
+                     publishedSha256s.Count)
+            {
+                throw new InvalidDataException(
+                    $"Browser rollback manifest '{manifestPath}' contains invalid or duplicate post-image hashes.");
+            }
+
+            var normalizedPublishedSha256s = publishedSha256s
+                .Select(static hash => hash.ToLowerInvariant())
+                .OrderBy(static hash => hash, StringComparer.Ordinal)
+                .ToArray();
             if (!entry.Existed)
             {
                 if (!string.IsNullOrWhiteSpace(entry.BackupPath) ||
@@ -650,7 +822,11 @@ public static class ExplorerLocalTurnRollbackArtifacts
                         $"Browser rollback manifest '{manifestPath}' has evidence for a missing baseline.");
                 }
 
-                entries.Add(entry with { TrackedFile = trackedFile });
+                entries.Add(entry with
+                {
+                    TrackedFile = trackedFile,
+                    PublishedSha256s = normalizedPublishedSha256s
+                });
                 continue;
             }
 
@@ -673,7 +849,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
             {
                 TrackedFile = trackedFile,
                 BackupPath = backupPath,
-                Sha256 = entry.Sha256!.ToLowerInvariant()
+                Sha256 = entry.Sha256!.ToLowerInvariant(),
+                PublishedSha256s = normalizedPublishedSha256s
             });
         }
 
@@ -900,7 +1077,11 @@ public static class ExplorerLocalTurnRollbackArtifacts
         }
 
         var restoredManifest = new BrowserWriteRollbackManifest(
-            SchemaVersion: transaction.ExternalEntries.Any(
+            SchemaVersion: transaction.Entries.Any(entry =>
+                entry.DeletionIntended ||
+                (entry.PublishedSha256s?.Count ?? 0) > 0)
+                ? 5
+                : transaction.ExternalEntries.Any(
                 static entry => entry.ParentIdentity != null)
                 ? 4
                 : 3,

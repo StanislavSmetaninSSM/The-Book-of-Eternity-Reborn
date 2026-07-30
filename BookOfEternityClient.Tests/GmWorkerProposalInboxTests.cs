@@ -161,6 +161,85 @@ public sealed class GmWorkerProposalInboxTests
         }
     }
 
+    [Fact]
+    public async Task ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var writerAtBoundary = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var allowPublication = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var readerContended = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+            var destination =
+                $"{GmWorkerProposalStore.ProposalRoot}/{proposal.ProposalId}";
+            var hooks = new FileSystemManagerHooks
+            {
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    readerContended.TrySetResult();
+                    return Task.CompletedTask;
+                },
+                AfterCanonicalMutationBoundaryValidatedAsync = async path =>
+                {
+                    if (!path.Equals(destination, StringComparison.OrdinalIgnoreCase))
+                        return;
+
+                    writerAtBoundary.TrySetResult();
+                    await allowPublication.Task.WaitAsync(TimeSpan.FromSeconds(10));
+                }
+            };
+            var fs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            var stagingDirectory = fs.CreateRuntimeProposalStagingRoot();
+            await File.WriteAllTextAsync(
+                Path.Combine(stagingDirectory, "proposal.json"),
+                GmWorkerJson.Serialize(proposal));
+            var inbox = new GmWorkerProposalInboxService(fs);
+            Task<GmWorkerProposalInboxEntry?> readerTask;
+            Task first;
+
+            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                var publicationTask =
+                    fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                        writeLease,
+                        stagingDirectory,
+                        destination);
+                await writerAtBoundary.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+                using (ExecutionContext.SuppressFlow())
+                {
+                    readerTask = Task.Run(
+                        () => inbox.ReadAsync(proposal.ProposalId));
+                }
+
+                first = await Task.WhenAny(
+                        readerTask,
+                        readerContended.Task)
+                    .WaitAsync(TimeSpan.FromSeconds(10));
+                allowPublication.TrySetResult();
+                await publicationTask;
+            }
+
+            Assert.Same(readerContended.Task, first);
+            var entry = await readerTask;
+            Assert.NotNull(entry);
+            Assert.Equal(proposal.ProposalId, entry!.ProposalId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static Task WriteTaskAsync(FileSystemManager fs, WorkerTaskPacket task) =>
         fs.WriteFileAtomicAsync(GmWorkerBridgePool.GetTaskPacketPath(task.TaskId), GmWorkerJson.Serialize(task));
 

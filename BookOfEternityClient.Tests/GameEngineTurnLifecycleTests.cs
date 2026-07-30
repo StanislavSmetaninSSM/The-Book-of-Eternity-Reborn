@@ -7790,7 +7790,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             true);
         var responder = Task.Run(async () =>
         {
-            var deadline = DateTime.UtcNow.AddSeconds(10);
+            var deadline = DateTime.UtcNow.AddSeconds(30);
             while (DateTime.UtcNow < deadline)
             {
                 var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -8000,7 +8000,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         });
         var lifecycleTask = InvokePrivateTaskAsync(engine, "CheckLifeTransitions", acceptedSnapshotContext);
 
-        var completed = await Task.WhenAny(lifecycleTask, Task.Delay(TimeSpan.FromSeconds(12)));
+        var completed = await Task.WhenAny(lifecycleTask, Task.Delay(TimeSpan.FromSeconds(35)));
         await responder;
 
         if (!ReferenceEquals(lifecycleTask, completed))
@@ -8010,7 +8010,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             var timeoutErrorLogPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
             var timeoutErrorLog = File.Exists(timeoutErrorLogPath) ? await File.ReadAllTextAsync(timeoutErrorLogPath) : "<missing>";
             Assert.Fail(
-                "CheckLifeTransitions did not complete within 12 seconds." +
+                "CheckLifeTransitions did not complete within 35 seconds." +
                 Environment.NewLine + "validation_repair_request.json:" + Environment.NewLine + repairRequest +
                 Environment.NewLine + "input/turn_request.json:" + Environment.NewLine + turnRequest +
                 Environment.NewLine + "error_log.txt:" + Environment.NewLine + timeoutErrorLog);

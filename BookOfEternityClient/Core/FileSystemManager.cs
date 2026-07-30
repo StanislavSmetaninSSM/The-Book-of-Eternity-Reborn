@@ -67,6 +67,13 @@ internal sealed record CanonicalWorkerApplyTransaction(
     string TransactionId,
     string TransactionRoot);
 
+internal interface ICanonicalMutationIntentRecorder
+{
+    Task RecordMutationIntentAsync(
+        string relativePath,
+        byte[]? desiredContent);
+}
+
 /// <summary>
 /// Manages the game_session directory structure per CLI API specification.
 /// Creates all required directories and validates file system integrity.
@@ -75,6 +82,11 @@ public class FileSystemManager
 {
     internal sealed class AmbientCanonicalLeaseRegistration
     {
+        private const int PendingState = 0;
+        private const int ActiveState = 1;
+        private const int InactiveState = 2;
+        private int _state = PendingState;
+
         internal AmbientCanonicalLeaseRegistration(
             AmbientCanonicalLeaseRegistration? previous)
         {
@@ -82,7 +94,25 @@ public class FileSystemManager
         }
 
         internal AmbientCanonicalLeaseRegistration? Previous { get; }
-        internal bool Active { get; set; }
+        internal bool Active =>
+            Volatile.Read(ref _state) == ActiveState;
+        internal bool Inactive =>
+            Volatile.Read(ref _state) == InactiveState;
+
+        internal void Activate()
+        {
+            if (Interlocked.CompareExchange(
+                    ref _state,
+                    ActiveState,
+                    PendingState) != PendingState)
+            {
+                throw new InvalidOperationException(
+                    "Canonical lease registration is no longer pending.");
+            }
+        }
+
+        internal void Deactivate() =>
+            Volatile.Write(ref _state, InactiveState);
     }
 
     internal sealed class SessionLifecycleLease : IAsyncDisposable
@@ -144,6 +174,7 @@ public class FileSystemManager
         internal FileSystemManager Owner { get; }
         internal CanonicalWritePurpose Purpose { get; }
         internal object? ExternalPublicationContext { get; set; }
+        internal ICanonicalMutationIntentRecorder? MutationIntentRecorder { get; set; }
         internal AmbientCanonicalLeaseRegistration? AmbientRegistration
         {
             get => _ambientRegistration;
@@ -162,6 +193,7 @@ public class FileSystemManager
             _stream = null;
             _parentAuthority = null;
             ExternalPublicationContext = null;
+            MutationIntentRecorder = null;
             try
             {
                 externalPublicationContext?.Dispose();
@@ -214,29 +246,74 @@ public class FileSystemManager
 
     private sealed class InProcessMutationObservation : IDisposable
     {
-        private string? _path;
-        private InProcessMutationState? _state;
+        private (string Path, InProcessMutationState State)[]? _states;
 
-        internal InProcessMutationObservation(string path)
+        internal InProcessMutationObservation(
+            string path,
+            string canonicalRoot)
         {
-            _path = Path.GetFullPath(path);
-            _state = AcquireInProcessMutationState(_path);
+            var normalizedPath = Path.GetFullPath(path);
+            var normalizedRoot = Path.TrimEndingDirectorySeparator(
+                Path.GetFullPath(canonicalRoot));
+            if (!IsSameOrDescendant(normalizedPath, normalizedRoot))
+            {
+                throw new InvalidDataException(
+                    "Canonical mutation observation escaped the session root.");
+            }
+
+            var states =
+                new List<(string Path, InProcessMutationState State)>();
+            var current = normalizedPath;
+            while (true)
+            {
+                states.Add((
+                    current,
+                    AcquireInProcessMutationState(current)));
+                if (string.Equals(
+                        Path.TrimEndingDirectorySeparator(current),
+                        normalizedRoot,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    break;
+                }
+
+                current = Path.GetDirectoryName(current) ??
+                          throw new InvalidDataException(
+                              "Canonical mutation observation has no session-root ancestor.");
+            }
+
+            _states = states.ToArray();
         }
 
-        internal InProcessMutationSnapshot CaptureMutationState() =>
-            GetState().CaptureSnapshot();
+        internal InProcessMutationSnapshot CaptureMutationState()
+        {
+            var states = _states ??
+                         throw new ObjectDisposedException(
+                             nameof(InProcessMutationObservation));
+            long aggregateVersion = 0;
+            var mutationActive = false;
+            foreach (var (_, state) in states)
+            {
+                var snapshot = state.CaptureSnapshot();
+                aggregateVersion = checked(
+                    aggregateVersion + snapshot.Version);
+                mutationActive |= snapshot.MutationActive;
+            }
+
+            return new InProcessMutationSnapshot(
+                aggregateVersion,
+                mutationActive);
+        }
 
         public void Dispose()
         {
-            var path = Interlocked.Exchange(ref _path, null);
-            var state = Interlocked.Exchange(ref _state, null);
-            if (path != null && state != null)
+            var states = Interlocked.Exchange(ref _states, null);
+            if (states == null)
+                return;
+
+            foreach (var (path, state) in states.Reverse())
                 ReleaseInProcessMutationState(path, state);
         }
-
-        private InProcessMutationState GetState() =>
-            _state ?? throw new ObjectDisposedException(
-                nameof(InProcessMutationObservation));
     }
 
     private sealed class InProcessMutationState
@@ -530,13 +607,16 @@ public class FileSystemManager
         string content)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        await WriteFileAtomicBytesCoreAsync(relativePath, EncodeUtf8WithPreamble(content));
+        await WriteFileAtomicBytesAsync(
+            writeLease,
+            relativePath,
+            EncodeUtf8WithPreamble(content));
     }
 
     public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
     {
         await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        await WriteFileAtomicBytesCoreAsync(relativePath, content);
+        await WriteFileAtomicBytesAsync(writeLock, relativePath, content);
     }
 
     internal async Task WriteFileAtomicBytesAsync(
@@ -545,6 +625,10 @@ public class FileSystemManager
         byte[] content)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        await RecordCanonicalMutationIntentAsync(
+            writeLease,
+            relativePath,
+            content);
         await WriteFileAtomicBytesCoreAsync(relativePath, content);
     }
 
@@ -581,6 +665,10 @@ public class FileSystemManager
         var nextContent = new byte[currentContent.Length + appendedContent.Length];
         Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
         Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
+        await RecordCanonicalMutationIntentAsync(
+            writeLease,
+            relativePath,
+            nextContent);
         await WriteFileAtomicBytesCoreAsync(relativePath, nextContent, cancellationToken);
     }
 
@@ -636,6 +724,10 @@ public class FileSystemManager
         if (!ExactBytesEqual(currentContent, expectedContent))
             return CanonicalFileMutationResult.Conflict;
 
+        await RecordCanonicalMutationIntentAsync(
+            writeLease,
+            relativePath,
+            desiredContent);
         if (desiredContent == null)
             DeleteFileCore(relativePath);
         else
@@ -1036,7 +1128,9 @@ public class FileSystemManager
             else if (!exists)
             {
                 using var observation =
-                    new InProcessMutationObservation(expectedFullPath);
+                    new InProcessMutationObservation(
+                        expectedFullPath,
+                        GameSessionPath);
                 var mutationBeforeProbe =
                     observation.CaptureMutationState();
                 _hooks?.BeforeCanonicalExistenceFollowUpProbeAsync
@@ -1590,13 +1684,32 @@ public class FileSystemManager
     internal void DeleteFile(CanonicalWriteLease writeLease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        RecordCanonicalMutationIntentAsync(
+                writeLease,
+                relativePath,
+                desiredContent: null)
+            .GetAwaiter()
+            .GetResult();
         DeleteFileCore(relativePath);
     }
 
     private async Task DeleteFileWithLockAsync(string relativePath)
     {
         await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        DeleteFileCore(relativePath);
+        DeleteFile(writeLock, relativePath);
+    }
+
+    private static async Task RecordCanonicalMutationIntentAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        byte[]? desiredContent)
+    {
+        if (writeLease.MutationIntentRecorder == null)
+            return;
+
+        await writeLease.MutationIntentRecorder.RecordMutationIntentAsync(
+            relativePath,
+            desiredContent);
     }
 
     private void DeleteFileCore(string relativePath)
@@ -1686,7 +1799,7 @@ public class FileSystemManager
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
                 cancellationToken);
-            registration.Active = true;
+            registration.Activate();
             writeLease.AmbientRegistration = registration;
             return writeLease;
         }
@@ -2080,7 +2193,7 @@ public class FileSystemManager
         CompactAmbientCanonicalLeaseHead()
     {
         var current = _ambientCanonicalLease.Value;
-        while (current != null && !current.Active)
+        while (current != null && current.Inactive)
             current = current.Previous;
 
         if (!ReferenceEquals(current, _ambientCanonicalLease.Value))
@@ -2088,8 +2201,18 @@ public class FileSystemManager
         return current;
     }
 
-    private bool HasAmbientCanonicalLease() =>
-        CompactAmbientCanonicalLeaseHead() != null;
+    private bool HasAmbientCanonicalLease()
+    {
+        var current = CompactAmbientCanonicalLeaseHead();
+        while (current != null)
+        {
+            if (current.Active)
+                return true;
+            current = current.Previous;
+        }
+
+        return false;
+    }
 
     private void ReleaseAmbientCanonicalLease(
         AmbientCanonicalLeaseRegistration? registration)
@@ -2097,7 +2220,7 @@ public class FileSystemManager
         if (registration == null)
             return;
 
-        registration.Active = false;
+        registration.Deactivate();
         if (ReferenceEquals(
                 _ambientCanonicalLease.Value,
                 registration))

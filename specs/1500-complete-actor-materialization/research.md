@@ -1327,12 +1327,65 @@ before typed deserialization.
 
 ### Decision 129: Ambient lease registrations are opportunistically compacted
 
-**Decision**: Before adding a registration or testing ambient ownership, unlink
-inactive heads until the nearest active ancestor or null is reached.
+**Decision**: Model registrations as pending, active, or inactive. Before
+adding a registration or testing ambient ownership, unlink only inactive heads;
+retain pending registrations until they resolve and scan through them for an
+active ancestor.
 
 **Rationale**: `AsyncLocal` assignment in an asynchronous failure continuation
 does not rewrite the caller's captured value, but the shared registration can
 still be marked inactive and safely removed at the next caller-side operation.
+A synchronous caller-side observation may occur before lock acquisition, so
+treating every not-yet-active registration as removable would detach a lease
+that later succeeds.
+
+### Decision 130: Browser rollback owns post-images, not paths
+
+**Decision**: Persist each intended canonical post-image hash or deletion in
+the rollback manifest before mutation, and recover only while the current
+destination still proves that intent.
+
+**Rationale**: A canonical path is shared authority. Baseline bytes alone prove
+what existed before the transaction, not that the transaction owns whatever is
+currently at the destination.
+
+### Decision 131: Current saves are content-addressed bundles
+
+**Decision**: Write a strict manifest for every current save payload and verify
+normalized paths, lengths, and SHA-256 digests before extraction or lifecycle
+replacement.
+
+**Rationale**: ZIP readability and the presence of an arbitrary file beneath
+`game_state` do not prove that the bundle is complete, untampered, or playable.
+
+### Decision 132: Legacy save compatibility requires real canonical state
+
+**Decision**: A manifestless legacy archive remains compatible only when it has
+an unambiguous, readable object-root
+`game_state/meta/soul_state.json` with non-empty `currentRealm`.
+
+**Rationale**: Existing released saves use that universal realm/session
+authority, while accepting an arbitrary durable file would still permit a
+metadata-only or fabricated replacement session.
+
+### Decision 133: Directory publication fences descendants
+
+**Decision**: A descendant existence/read observation includes active mutation
+state for each ancestor through the canonical root.
+
+**Rationale**: Publishing `worker_proposals/<id>` atomically creates
+`proposal.json` without registering that child separately. Exact-child-only
+observation can therefore report a false absence while the directory move is
+in flight.
+
+### Decision 134: Skill identity is not gameplay authority
+
+**Decision**: `skillId` and `id` never bypass the production active/passive
+skill validator.
+
+**Rationale**: Optional identity helps references and migration, but does not
+provide the action/effect structure needed for combat or prove that a governed
+section was materially populated.
 
 ## Existing integration findings
 

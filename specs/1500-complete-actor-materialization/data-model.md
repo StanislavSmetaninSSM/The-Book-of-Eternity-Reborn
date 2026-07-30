@@ -776,7 +776,43 @@ interpreted.
 
 ### Bounded ambient lease context
 
-Ambient canonical ownership is represented only by active registrations and at
-most one recently failed inactive head awaiting the next observation. Every new
-acquisition and ownership check removes inactive heads while preserving the
-nearest active ancestor.
+Ambient canonical context distinguishes pending, active, and inactive
+registrations. Pending acquisition remains linked but does not grant ownership;
+after successful acquisition the same registration becomes active. At most one
+recently failed inactive head may await the next caller-side observation. Every
+new acquisition and ownership check removes only inactive heads, preserves
+pending registrations, and scans through them to every active ancestor.
+
+## Phase 43 authority additions
+
+### Browser canonical mutation intent
+
+Each tracked canonical rollback entry contains its baseline plus a set of
+transaction-owned published SHA-256 post-images and an explicit
+transaction-owned deletion intent. The manifest containing that intent is
+durable before mutation. Recovery consumes a baseline only when the current
+destination is one of those owned post-images, or when an owned deletion still
+leaves the destination absent.
+
+### Save integrity manifest
+
+A current-format save owns one strict root manifest whose entries are keyed by
+normalized case-insensitive archive path. Each entry carries byte length and
+SHA-256 digest. The manifest covers every durable payload except itself, has no
+duplicate or case-colliding path, and identifies
+`game_state/meta/soul_state.json` as mandatory canonical state. A legacy save
+without the manifest is accepted only when that soul-state entry exists, is a
+readable JSON object, and carries a non-empty `currentRealm`.
+
+### Ancestor publication observation
+
+An in-process mutation observation for a canonical target retains the exact
+target state plus every ancestor mutation state through the canonical root. Its
+snapshot version is the checked aggregate of those states and its activity bit
+is true when any retained scope is active.
+
+### Skill identity metadata
+
+`skillId` and `id` remain optional labels. Active/passive skill gameplay
+authority is derived only from the production structural validator; identity
+metadata cannot promote an incomplete object into a usable skill.

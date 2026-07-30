@@ -201,6 +201,169 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     }
 
     [Fact]
+    public async Task InterruptedStagedBrowserWrite_WithExistingBaseline_PreservesForeignPostImageAndEvidence()
+    {
+        const string trackedPath = "game_state/meta/browser_write_foreign_existing.json";
+        const string foreignPostImage = """{"value":"foreign"}""";
+        await _fs.WriteFileAtomicAsync(trackedPath, """{"value":"before"}""");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                [trackedPath],
+                "browser_write");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                """{"value":"owned"}""");
+        }
+
+        await File.WriteAllTextAsync(_fs.ResolvePath(trackedPath), foreignPostImage);
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/browser_write_foreign_existing_trigger.json",
+                """{"ok":true}"""));
+
+        Assert.Equal(foreignPostImage, await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+        Assert.True(File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
+        Assert.True(File.Exists(_fs.ResolvePath(Assert.Single(transaction.Entries).BackupPath!)));
+        Assert.False(restartedFs.FileExists(
+            "game_state/meta/browser_write_foreign_existing_trigger.json"));
+    }
+
+    [Fact]
+    public async Task InterruptedStagedBrowserWrite_WithoutBaseline_PreservesForeignPostImageAndEvidence()
+    {
+        const string trackedPath = "game_state/meta/browser_write_foreign_missing.json";
+        const string foreignPostImage = """{"value":"foreign"}""";
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction transaction;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction = await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(
+                _fs,
+                writeLease,
+                [trackedPath],
+                "browser_write");
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                trackedPath,
+                """{"value":"owned"}""");
+        }
+
+        await File.WriteAllTextAsync(_fs.ResolvePath(trackedPath), foreignPostImage);
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/browser_write_foreign_missing_trigger.json",
+                """{"ok":true}"""));
+
+        Assert.Equal(foreignPostImage, await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+        Assert.True(File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
+        Assert.False(restartedFs.FileExists(
+            "game_state/meta/browser_write_foreign_missing_trigger.json"));
+    }
+
+    [Fact]
+    public async Task InterruptedStagedBrowserDeletion_RestoresOwnedDeletion()
+    {
+        const string trackedPath =
+            "game_state/meta/browser_delete_owned.json";
+        const string baseline = """{"value":"before"}""";
+        await _fs.WriteFileAtomicAsync(trackedPath, baseline);
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "browser_write");
+            _fs.DeleteFile(writeLease, trackedPath);
+        }
+
+        Assert.False(_fs.FileExists(trackedPath));
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        await restartedFs.WriteFileAtomicAsync(
+            "game_state/meta/browser_delete_owned_trigger.json",
+            """{"ok":true}""");
+
+        Assert.Equal(
+            baseline,
+            await restartedFs.ReadFileAsync(trackedPath));
+        Assert.False(
+            restartedFs.FileExists(transaction.ManifestPath));
+    }
+
+    [Fact]
+    public async Task InterruptedStagedBrowserDeletion_PreservesForeignRecreationAndEvidence()
+    {
+        const string trackedPath =
+            "game_state/meta/browser_delete_foreign.json";
+        const string foreignRecreation = """{"value":"foreign"}""";
+        await _fs.WriteFileAtomicAsync(
+            trackedPath,
+            """{"value":"before"}""");
+
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction
+            transaction;
+        await using (var writeLease =
+                     await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            transaction =
+                await ExplorerLocalTurnRollbackArtifacts
+                    .StageBrowserWriteTransactionAsync(
+                        _fs,
+                        writeLease,
+                        [trackedPath],
+                        "browser_write");
+            _fs.DeleteFile(writeLease, trackedPath);
+        }
+
+        await File.WriteAllTextAsync(
+            _fs.ResolvePath(trackedPath),
+            foreignRecreation);
+        var restartedFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => restartedFs.WriteFileAtomicAsync(
+                "game_state/meta/browser_delete_foreign_trigger.json",
+                """{"ok":true}"""));
+
+        Assert.Equal(
+            foreignRecreation,
+            await File.ReadAllTextAsync(_fs.ResolvePath(trackedPath)));
+        Assert.True(
+            File.Exists(_fs.ResolvePath(transaction.ManifestPath)));
+        Assert.True(
+            File.Exists(
+                _fs.ResolvePath(
+                    Assert.Single(transaction.Entries).BackupPath!)));
+        Assert.False(
+            restartedFs.FileExists(
+                "game_state/meta/browser_delete_foreign_trigger.json"));
+    }
+
+    [Fact]
     public async Task InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories()
     {
         const string trackedPath = "game_state/meta/interrupted_dynamic_artifacts.json";
@@ -1228,7 +1391,7 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 "{\"value\":\"interrupted\"}");
 
             var manifest = (await _fs.ReadFileAsync(writeLease, transaction.ManifestPath))!
-                .Replace("\"schemaVersion\": 4", "\"schemaVersion\": 2", StringComparison.Ordinal)
+                .Replace("\"schemaVersion\": 5", "\"schemaVersion\": 2", StringComparison.Ordinal)
                 .Replace("\"status\": \"staged\"", "\"status\": \"restored\"", StringComparison.Ordinal);
             await _fs.WriteFileAtomicAsync(writeLease, transaction.ManifestPath, manifest);
         }

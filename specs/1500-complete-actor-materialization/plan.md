@@ -591,6 +591,43 @@ bookkeeping, tests, and Spec Kit evidence. It changes no Mortal or afterlife
 GM-authored state, command, action, response, pending/control schema, receipt,
 scheduler, gameplay rule, prompt, or worked example.
 
+## Phase 43 implementation strategy
+
+The final Phase 42 exact-diff review found five remaining semantic-authority
+gaps. Browser recovery knew only the baseline and could therefore overwrite a
+foreign post-transaction write; save/load accepted any durable-looking
+`game_state` payload without proving a playable canonical root or archive
+integrity; a child read observed only its exact path while a writer published
+the parent proposal directory; failed ambient acquisition required the
+pending/active distinction completed in Phase 42; and optional skill identity
+still granted gameplay authority to an incomplete skill.
+
+The remediation is a narrow ownership layer over the existing physical
+primitives:
+
+1. record canonical mutation intent durably before every browser-owned write or
+   deletion and restore only a matching transaction-owned post-image;
+2. make new save archives self-verifying with a strict normalized-path,
+   byte-length, and SHA-256 manifest, and require a readable object-root soul
+   state before any load may acquire the lifecycle lease;
+3. preserve compatibility for legacy saves only when a real canonical soul
+   state is present and archive paths are unambiguous;
+4. observe all publication ancestors for descendant reads so a directory move
+   fences its future children;
+5. treat `skillId`/`id` as optional identity metadata only and retain the
+   production skill validators as the sole gameplay-capability authority;
+6. reproduce every finding with a deterministic RED regression, extend source
+   guards, and rerun the complete Phase 42 matrix before integration.
+
+Phase 43 changes client-owned storage ownership, save integrity, in-process
+publication synchronization, and actor-materialization validation. It does not
+add or change any GM-authored Mortal or afterlife command, state field,
+pending/control contract, response, receipt, scheduler, or gameplay mechanic.
+The skill rule already exists in the actor-materialization contract and is
+being enforced rather than changed; no Mortal/afterlife prompt or worked
+example update is required beyond synchronized Spec Kit and source-guard
+evidence.
+
 ## Complexity Tracking
 
 No constitution violations require an exception.

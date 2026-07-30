@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -22,6 +23,14 @@ internal sealed class SaveLoadServiceHooks
 /// </summary>
 public class SaveLoadService
 {
+    private const string GameStateDirectory = "game_state";
+    private const string GameStateArchivePrefix = GameStateDirectory + "/";
+    private const string SoulStateArchivePath =
+        "game_state/meta/soul_state.json";
+    private const string SaveManifestArchivePath = "save_manifest.json";
+    private const int SaveManifestSchemaVersion = 1;
+    private const string SaveManifestHashAlgorithm = "SHA-256";
+
     private static readonly HashSet<string> EphemeralControlFiles = new(StringComparer.OrdinalIgnoreCase)
     {
         "game_state/control/pending_turn_snapshot.json",
@@ -57,6 +66,11 @@ public class SaveLoadService
     private readonly SaveLoadServiceHooks? _hooks;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+    private static readonly JsonSerializerOptions SaveManifestJsonOptions =
+        new(JsonOpts)
+        {
+            PropertyNameCaseInsensitive = true
+        };
     private const int SaveMetadataReadAttempts = 10;
     private static readonly TimeSpan SaveMetadataReadRetryDelay = TimeSpan.FromMilliseconds(50);
 
@@ -104,6 +118,14 @@ public class SaveLoadService
         try
         {
             _fs.EnsureCanonicalWriteLeaseActive(canonicalSnapshotLease);
+            if (!_fs.DirectoryExists(
+                    canonicalSnapshotLease,
+                    GameStateDirectory))
+            {
+                throw new InvalidDataException(
+                    "The mandatory canonical game_state root is missing.");
+            }
+
             var state = _stateManager.CurrentState;
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var fileName = SanitizeFileName($"{saveName}_{timestamp}.zip");
@@ -119,38 +141,52 @@ public class SaveLoadService
                        ZipArchiveMode.Create,
                        leaveOpen: true))
             {
+                var manifestEntries =
+                    new List<SaveIntegrityManifestEntry>();
+
                 // Add game_state directory
-                await AddDirectoryToArchive(
+                var gameStateEntryCount = await AddDirectoryToArchive(
                     canonicalSnapshotLease,
                     archive,
-                    _fs.ResolvePath("game_state"),
-                    "game_state");
+                    _fs.ResolvePath(GameStateDirectory),
+                    GameStateDirectory,
+                    manifestEntries);
+                if (gameStateEntryCount == 0)
+                {
+                    throw new InvalidDataException(
+                        "The mandatory canonical game_state root contains no durable state.");
+                }
+                ValidateArchivedSoulState(manifestEntries);
 
                 // Add lore directory
                 await AddDirectoryToArchive(
                     canonicalSnapshotLease,
                     archive,
                     _fs.ResolvePath("lore"),
-                    "lore");
+                    "lore",
+                    manifestEntries);
 
                 // Add player-authored source layers that affect rules/world setup
                 await AddDirectoryToArchive(
                     canonicalSnapshotLease,
                     archive,
                     _fs.ResolvePath("mods"),
-                    "mods");
+                    "mods",
+                    manifestEntries);
                 await AddDirectoryToArchive(
                     canonicalSnapshotLease,
                     archive,
                     _fs.ResolvePath("world_profiles"),
-                    "world_profiles");
+                    "world_profiles",
+                    manifestEntries);
 
                 // Add stories (persistent conversation history)
                 await AddDirectoryToArchive(
                     canonicalSnapshotLease,
                     archive,
                     _fs.ResolvePath("stories"),
-                    "stories");
+                    "stories",
+                    manifestEntries);
 
                 // Add entity images (NPCs, items, locations, player — NOT scenes)
                 var imagesPath = _fs.ResolvePath("images");
@@ -164,7 +200,8 @@ public class SaveLoadService
                             canonicalSnapshotLease,
                             archive,
                             subDir,
-                            $"images/{dirName}");
+                            $"images/{dirName}",
+                            manifestEntries);
                     }
                 }
 
@@ -173,14 +210,21 @@ public class SaveLoadService
                     canonicalSnapshotLease,
                     archive,
                     _fs.ResolvePath("output"),
-                    "output");
+                    "output",
+                    manifestEntries);
 
                 // Add config
                 var configBytes = await _fs.ReadFileBytesAsync(
                     canonicalSnapshotLease,
                     "config.json");
                 if (configBytes != null)
-                    await AddBytesToArchiveAsync(archive, "config.json", configBytes);
+                {
+                    await AddManifestedBytesToArchiveAsync(
+                        archive,
+                        "config.json",
+                        configBytes,
+                        manifestEntries);
+                }
 
                 // Add metadata
                 var metadata = new SaveMetadata
@@ -198,9 +242,27 @@ public class SaveLoadService
                 };
 
                 var metadataJson = JsonSerializer.Serialize(metadata, JsonOpts);
-                var entry = archive.CreateEntry("save_metadata.json");
-                using var stream = entry.Open();
-                await stream.WriteAsync(Encoding.UTF8.GetBytes(metadataJson));
+                await AddManifestedBytesToArchiveAsync(
+                    archive,
+                    "save_metadata.json",
+                    Encoding.UTF8.GetBytes(metadataJson),
+                    manifestEntries);
+
+                var manifest = new SaveIntegrityManifest(
+                    SaveManifestSchemaVersion,
+                    SaveManifestHashAlgorithm,
+                    manifestEntries
+                        .OrderBy(
+                            entry => entry.Path,
+                            StringComparer.Ordinal)
+                        .ToArray());
+                await AddBytesToArchiveAsync(
+                    archive,
+                    SaveManifestArchivePath,
+                    Encoding.UTF8.GetBytes(
+                        JsonSerializer.Serialize(
+                            manifest,
+                            SaveManifestJsonOptions)));
             }
             if (_hooks?.BeforeSaveCommitAsync != null)
                 await _hooks.BeforeSaveCommitAsync();
@@ -288,6 +350,10 @@ public class SaveLoadService
                                ZipArchiveMode.Read,
                                leaveOpen: true))
                     {
+                        await ValidateArchiveStructureAsync(
+                            archive,
+                            transactionPaths.StagingSessionPath);
+
                         foreach (var entry in archive.Entries)
                         {
                             if (string.IsNullOrEmpty(entry.Name))
@@ -303,6 +369,17 @@ public class SaveLoadService
                                     entry.FullName);
                                 openedArchive.Abandon();
                                 return false;
+                            }
+                            var normalizedPath = Path
+                                .GetRelativePath(
+                                    transactionPaths.StagingSessionPath,
+                                    targetPath)
+                                .Replace('\\', '/');
+                            if (normalizedPath.Equals(
+                                    SaveManifestArchivePath,
+                                    StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
                             }
 
                             var targetDir = Path.GetDirectoryName(targetPath);
@@ -502,21 +579,22 @@ public class SaveLoadService
         ex is IOException &&
         (ex.HResult & 0xFFFF) is 32 or 33;
 
-    private async Task AddDirectoryToArchive(
+    private async Task<int> AddDirectoryToArchive(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
         ZipArchive archive,
         string sourceDir,
-        string entryPrefix)
+        string entryPrefix,
+        List<SaveIntegrityManifestEntry> manifestEntries)
     {
         if (!Directory.Exists(sourceDir) || FileSystemManager.IsReparsePoint(sourceDir))
-            return;
+            return 0;
 
+        var archivedFileCount = 0;
         foreach (var file in FileSystemManager.EnumerateFilesWithoutFollowingReparsePoints(sourceDir, "*"))
         {
             var relativePath = Path.GetRelativePath(sourceDir, file);
             var entryPath = Path.Combine(entryPrefix, relativePath).Replace('\\', '/');
-            if (EphemeralControlFiles.Contains(entryPath) ||
-                EphemeralPathPrefixes.Any(prefix => entryPath.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
+            if (IsEphemeralArchivePath(entryPath))
                 continue;
 
             var canonicalRelativePath = Path.GetRelativePath(_fs.GameSessionPath, file)
@@ -530,9 +608,22 @@ public class SaveLoadService
                     "Canonical save-snapshot file disappeared before verified read.",
                     file);
             }
+            if (entryPath.Equals(
+                    SoulStateArchivePath,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                ValidateSoulStateBytes(content);
+            }
 
-            await AddBytesToArchiveAsync(archive, entryPath, content);
+            await AddManifestedBytesToArchiveAsync(
+                archive,
+                entryPath,
+                content,
+                manifestEntries);
+            archivedFileCount++;
         }
+
+        return archivedFileCount;
     }
 
     private static async Task AddBytesToArchiveAsync(
@@ -543,6 +634,33 @@ public class SaveLoadService
         var entry = archive.CreateEntry(entryPath);
         await using var stream = entry.Open();
         await stream.WriteAsync(content);
+    }
+
+    private static async Task AddManifestedBytesToArchiveAsync(
+        ZipArchive archive,
+        string entryPath,
+        byte[] content,
+        List<SaveIntegrityManifestEntry> manifestEntries)
+    {
+        var normalizedPath = entryPath.Replace('\\', '/');
+        if (manifestEntries.Any(entry =>
+                entry.Path.Equals(
+                    normalizedPath,
+                    StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidDataException(
+                $"Save payload contains duplicate archive path '{normalizedPath}'.");
+        }
+
+        await AddBytesToArchiveAsync(
+            archive,
+            normalizedPath,
+            content);
+        manifestEntries.Add(
+            new SaveIntegrityManifestEntry(
+                normalizedPath,
+                content.LongLength,
+                Convert.ToHexString(SHA256.HashData(content))));
     }
 
     private static bool TryResolveArchiveEntryTargetPath(string sessionRoot, string archiveEntryPath, out string targetPath)
@@ -571,6 +689,220 @@ public class SaveLoadService
         return true;
     }
 
+    private static async Task ValidateArchiveStructureAsync(
+        ZipArchive archive,
+        string stagingSessionRoot)
+    {
+        var payloadEntries =
+            new Dictionary<string, ZipArchiveEntry>(
+                StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in archive.Entries)
+        {
+            if (string.IsNullOrEmpty(entry.Name))
+                continue;
+
+            var normalizedPath = NormalizeArchiveEntryPath(
+                stagingSessionRoot,
+                entry.FullName);
+            if (!payloadEntries.TryAdd(normalizedPath, entry))
+            {
+                throw new InvalidDataException(
+                    $"Save archive contains duplicate normalized path '{normalizedPath}'.");
+            }
+        }
+
+        if (!payloadEntries.TryGetValue(
+                SoulStateArchivePath,
+                out var soulStateEntry))
+        {
+            throw new InvalidDataException(
+                $"Save archive is missing mandatory canonical state '{SoulStateArchivePath}'.");
+        }
+
+        await ValidateSoulStateEntryAsync(soulStateEntry);
+
+        if (!payloadEntries.TryGetValue(
+                SaveManifestArchivePath,
+                out var manifestEntry))
+        {
+            return;
+        }
+
+        SaveIntegrityManifest manifest;
+        await using (var manifestStream = manifestEntry.Open())
+        using (var manifestBuffer = new MemoryStream())
+        {
+            await manifestStream.CopyToAsync(manifestBuffer);
+            manifest =
+                StrictJsonAuthority.Deserialize<SaveIntegrityManifest>(
+                    StripUtf8Bom(manifestBuffer.ToArray()),
+                    SaveManifestJsonOptions,
+                    "Save integrity manifest")
+                ?? throw new InvalidDataException(
+                    "Save integrity manifest is null.");
+        }
+
+        if (manifest.SchemaVersion != SaveManifestSchemaVersion ||
+            !manifest.Algorithm.Equals(
+                SaveManifestHashAlgorithm,
+                StringComparison.OrdinalIgnoreCase) ||
+            manifest.Entries == null)
+        {
+            throw new InvalidDataException(
+                "Save integrity manifest has an unsupported schema or hash algorithm.");
+        }
+
+        var expectedEntries =
+            new Dictionary<string, SaveIntegrityManifestEntry>(
+                StringComparer.OrdinalIgnoreCase);
+        foreach (var manifestPayload in manifest.Entries)
+        {
+            var normalizedPath = NormalizeArchiveEntryPath(
+                stagingSessionRoot,
+                manifestPayload.Path);
+            if (normalizedPath.Equals(
+                    SaveManifestArchivePath,
+                    StringComparison.OrdinalIgnoreCase) ||
+                IsEphemeralArchivePath(normalizedPath) ||
+                manifestPayload.Length < 0 ||
+                !IsSha256(manifestPayload.Sha256) ||
+                !expectedEntries.TryAdd(
+                    normalizedPath,
+                    manifestPayload with { Path = normalizedPath }))
+            {
+                throw new InvalidDataException(
+                    $"Save integrity manifest contains invalid or duplicate entry '{manifestPayload.Path}'.");
+            }
+        }
+
+        var durablePayloadEntries = payloadEntries
+            .Where(pair =>
+                !pair.Key.Equals(
+                    SaveManifestArchivePath,
+                    StringComparison.OrdinalIgnoreCase) &&
+                !IsEphemeralArchivePath(pair.Key))
+            .ToDictionary(
+                pair => pair.Key,
+                pair => pair.Value,
+                StringComparer.OrdinalIgnoreCase);
+        if (expectedEntries.Count != durablePayloadEntries.Count)
+        {
+            throw new InvalidDataException(
+                "Save integrity manifest does not cover every archive payload.");
+        }
+
+        foreach (var (path, expected) in expectedEntries)
+        {
+            if (!durablePayloadEntries.TryGetValue(path, out var actualEntry) ||
+                actualEntry.Length != expected.Length)
+            {
+                throw new InvalidDataException(
+                    $"Save payload '{path}' does not match its manifested length.");
+            }
+
+            await using var payloadStream = actualEntry.Open();
+            var digest = Convert.ToHexString(
+                await SHA256.HashDataAsync(payloadStream));
+            if (!digest.Equals(
+                    expected.Sha256,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException(
+                    $"Save payload '{path}' does not match its manifested SHA-256 digest.");
+            }
+        }
+    }
+
+    private static string NormalizeArchiveEntryPath(
+        string stagingSessionRoot,
+        string archiveEntryPath)
+    {
+        if (!TryResolveArchiveEntryTargetPath(
+                stagingSessionRoot,
+                archiveEntryPath,
+                out var targetPath))
+        {
+            throw new InvalidDataException(
+                $"Save archive entry escapes the session sandbox: {archiveEntryPath}");
+        }
+
+        return Path
+            .GetRelativePath(stagingSessionRoot, targetPath)
+            .Replace('\\', '/');
+    }
+
+    private static async Task ValidateSoulStateEntryAsync(
+        ZipArchiveEntry soulStateEntry)
+    {
+        await using var stream = soulStateEntry.Open();
+        using var buffer = new MemoryStream();
+        await stream.CopyToAsync(buffer);
+        ValidateSoulStateBytes(buffer.ToArray());
+    }
+
+    private static void ValidateArchivedSoulState(
+        IReadOnlyList<SaveIntegrityManifestEntry> manifestEntries)
+    {
+        if (!manifestEntries.Any(entry =>
+                entry.Path.Equals(
+                    SoulStateArchivePath,
+                    StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidDataException(
+                $"The mandatory canonical state '{SoulStateArchivePath}' is missing.");
+        }
+    }
+
+    private static void ValidateSoulStateBytes(byte[] content)
+    {
+        var root = StrictJsonAuthority.Deserialize<JsonElement>(
+            StripUtf8Bom(content),
+            SaveManifestJsonOptions,
+            "Canonical soul state");
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            throw new InvalidDataException(
+                $"Canonical state '{SoulStateArchivePath}' must be a JSON object.");
+        }
+
+        var hasRealm = root
+            .EnumerateObject()
+            .Any(property =>
+                property.Name.Equals(
+                    "currentRealm",
+                    StringComparison.OrdinalIgnoreCase) &&
+                property.Value.ValueKind == JsonValueKind.String &&
+                !string.IsNullOrWhiteSpace(
+                    property.Value.GetString()));
+        if (!hasRealm)
+        {
+            throw new InvalidDataException(
+                $"Canonical state '{SoulStateArchivePath}' requires non-empty currentRealm.");
+        }
+    }
+
+    private static ReadOnlyMemory<byte> StripUtf8Bom(byte[] content) =>
+        content.Length >= 3 &&
+        content[0] == 0xEF &&
+        content[1] == 0xBB &&
+        content[2] == 0xBF
+            ? content.AsMemory(3)
+            : content;
+
+    private static bool IsSha256(string? value) =>
+        value is { Length: 64 } &&
+        value.All(static character =>
+            character is >= '0' and <= '9' or
+                >= 'a' and <= 'f' or
+                >= 'A' and <= 'F');
+
+    private static bool IsEphemeralArchivePath(string entryPath) =>
+        EphemeralControlFiles.Contains(entryPath) ||
+        EphemeralPathPrefixes.Any(prefix =>
+            entryPath.StartsWith(
+                prefix,
+                StringComparison.OrdinalIgnoreCase));
+
     private void DeleteEphemeralArtifacts(string sessionRoot)
     {
         foreach (var relativePath in EphemeralControlFiles)
@@ -589,6 +921,16 @@ public class SaveLoadService
                 _fs.DeleteLoadTransactionDirectory(cleanupPath);
         }
     }
+
+    private sealed record SaveIntegrityManifest(
+        int SchemaVersion,
+        string Algorithm,
+        IReadOnlyList<SaveIntegrityManifestEntry> Entries);
+
+    private sealed record SaveIntegrityManifestEntry(
+        string Path,
+        long Length,
+        string Sha256);
 
     private async Task CleanupOldSaves(string saveDir, int maxSaves)
     {

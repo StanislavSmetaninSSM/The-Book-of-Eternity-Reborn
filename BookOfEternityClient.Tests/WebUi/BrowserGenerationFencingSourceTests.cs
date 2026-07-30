@@ -558,6 +558,21 @@ public sealed class BrowserGenerationFencingSourceTests
             fileSystemSource,
             "ReleaseAmbientCanonicalLease",
             "private void");
+        var hasAmbientLease = ExtractMethod(
+            fileSystemSource,
+            "HasAmbientCanonicalLease",
+            "private bool");
+        var compactAmbientLeaseStart = fileSystemSource.IndexOf(
+            "private AmbientCanonicalLeaseRegistration?",
+            StringComparison.Ordinal);
+        Assert.True(compactAmbientLeaseStart >= 0);
+        var hasAmbientLeaseStart = fileSystemSource.IndexOf(
+            "private bool HasAmbientCanonicalLease(",
+            compactAmbientLeaseStart,
+            StringComparison.Ordinal);
+        Assert.True(hasAmbientLeaseStart > compactAmbientLeaseStart);
+        var compactAmbientLease =
+            fileSystemSource[compactAmbientLeaseStart..hasAmbientLeaseStart];
         var physicalAuthoritySource = File.ReadAllText(SourcePath(
             "BookOfEternityClient",
             "Core",
@@ -599,10 +614,170 @@ public sealed class BrowserGenerationFencingSourceTests
             "CompactAmbientCanonicalLeaseHead()",
             releaseAmbientLease,
             StringComparison.Ordinal);
+        Assert.Contains("current.Inactive", compactAmbientLease, StringComparison.Ordinal);
+        Assert.DoesNotContain("!current.Active", compactAmbientLease, StringComparison.Ordinal);
+        Assert.Contains("if (current.Active)", hasAmbientLease, StringComparison.Ordinal);
+        Assert.Contains("current = current.Previous", hasAmbientLease, StringComparison.Ordinal);
 
         Assert.Contains(
             "requirePhysicalDirectory: true",
             strictDirectoryDelete,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Phase43AuthorityBoundaries_KeepOwnedPostImagesManifestedSavesAndAncestorFencing()
+    {
+        var fileSystemSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "FileSystemManager.cs"));
+        var rollbackSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "ExplorerLocalTurnRollbackArtifacts.cs"));
+        var saveLoadSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "SaveLoadService.cs"));
+        var actorContractSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Services",
+            "ActorMaterializationContract.cs"));
+
+        var canonicalWrite = ExtractMethod(
+            fileSystemSource,
+            "WriteFileAtomicBytesAsync",
+            "internal async Task");
+        Assert.True(
+            canonicalWrite.IndexOf(
+                "RecordCanonicalMutationIntentAsync(",
+                StringComparison.Ordinal) <
+            canonicalWrite.IndexOf(
+                "WriteFileAtomicBytesCoreAsync(",
+                StringComparison.Ordinal));
+        var compareExchange = ExtractMethod(
+            fileSystemSource,
+            "CompareExchangeFileBytesAsync",
+            "internal async Task<CanonicalFileMutationResult>");
+        Assert.True(
+            compareExchange.IndexOf(
+                "RecordCanonicalMutationIntentAsync(",
+                StringComparison.Ordinal) <
+            compareExchange.IndexOf(
+                "DeleteFileCore(",
+                StringComparison.Ordinal));
+        var canonicalDelete = ExtractMethod(
+            fileSystemSource,
+            "DeleteFile",
+            "internal void");
+        Assert.True(
+            canonicalDelete.IndexOf(
+                "RecordCanonicalMutationIntentAsync(",
+                StringComparison.Ordinal) <
+            canonicalDelete.IndexOf(
+                "DeleteFileCore(",
+                StringComparison.Ordinal));
+
+        Assert.Contains(
+            "SchemaVersion: 5",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "PublishedSha256s",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "DeletionIntended",
+            rollbackSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "IsTransactionOwnedPostImage(entry, current)",
+            rollbackSource,
+            StringComparison.Ordinal);
+
+        var observationStart = fileSystemSource.IndexOf(
+            "private sealed class InProcessMutationObservation",
+            StringComparison.Ordinal);
+        var mutationStateStart = fileSystemSource.IndexOf(
+            "private sealed class InProcessMutationState",
+            observationStart,
+            StringComparison.Ordinal);
+        Assert.True(observationStart >= 0);
+        Assert.True(mutationStateStart > observationStart);
+        var observation =
+            fileSystemSource[observationStart..mutationStateStart];
+        Assert.Contains(
+            "string canonicalRoot",
+            observation,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "while (true)",
+            observation,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "AcquireInProcessMutationState(current)",
+            observation,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "current = Path.GetDirectoryName(current)",
+            observation,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "save_manifest.json",
+            saveLoadSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "SHA256.HashDataAsync",
+            saveLoadSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<SaveIntegrityManifest>",
+            saveLoadSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "game_state/meta/soul_state.json",
+            saveLoadSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "await ValidateArchiveStructureAsync(",
+            saveLoadSource,
+            StringComparison.Ordinal);
+
+        var activeSkillStart = actorContractSource.IndexOf(
+            "private static bool IsUsableMortalActiveCombatSkill",
+            StringComparison.Ordinal);
+        var passiveSkillStart = actorContractSource.IndexOf(
+            "private static bool IsUsableMortalPassiveCombatSkill",
+            activeSkillStart,
+            StringComparison.Ordinal);
+        var teacherSkillStart = actorContractSource.IndexOf(
+            "private static bool IsUsableMortalTeacherSkill",
+            passiveSkillStart,
+            StringComparison.Ordinal);
+        Assert.True(activeSkillStart >= 0);
+        Assert.True(passiveSkillStart > activeSkillStart);
+        Assert.True(teacherSkillStart > passiveSkillStart);
+        var activeCombatSkill =
+            actorContractSource[activeSkillStart..passiveSkillStart];
+        var passiveCombatSkill =
+            actorContractSource[passiveSkillStart..teacherSkillStart];
+        Assert.DoesNotContain(
+            "HasLegacyMortalSkillIdentity",
+            activeCombatSkill,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "HasLegacyMortalSkillIdentity",
+            passiveCombatSkill,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ValidationService.IsProductionValidMortalActiveSkill(skill)",
+            activeCombatSkill,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ValidationService.IsProductionValidMortalPassiveSkill(skill)",
+            passiveCombatSkill,
             StringComparison.Ordinal);
     }
 

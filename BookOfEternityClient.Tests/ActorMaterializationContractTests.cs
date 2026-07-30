@@ -307,7 +307,25 @@ public sealed class ActorMaterializationContractTests
           "NPCId": null,
           "initialId": "npc_orbital_xenobiologist",
           "activeSkills": [
-            { "skillId": "skill_phase_lattice", "name": "Фазовая решётка" }
+            {
+              "skillName": "Фазовая решётка",
+              "skillDescription": "Перестраивает локальную геометрию поля вокруг цели.",
+              "rarity": "Common",
+              "actionCost": "Main",
+              "combatEffect": {
+                "isActivatedEffect": true,
+                "actionName": "Сдвиг фазы",
+                "effects": [
+                  {
+                    "effectType": "Damage",
+                    "value": "10%",
+                    "targetType": "Enemy",
+                    "effectDescription": "Фазовый импульс нарушает устойчивость цели.",
+                    "poiseDamage": "5%"
+                  }
+                ]
+              }
+            }
           ],
           "passiveSkills": [],
           "inventory": [
@@ -368,6 +386,130 @@ public sealed class ActorMaterializationContractTests
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_section_content_mismatch" &&
             issue.Section == "skills");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_ProductionValidIdlessPassiveSkill_SatisfiesCombatCapability()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["activeSkills"] = new JsonArray();
+        actor["passiveSkills"] = new JsonArray(BuildProductionValidIdlessPassiveSkill());
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canFight");
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "skills");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_IdOnlyActiveSkill_DoesNotSatisfyCurrentCombatCapability()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["activeSkills"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["skillId"] = "skill_arden_guard",
+                ["name"] = "Стойка хранителя"
+            }
+        };
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canFight");
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "skills");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_IdOnlyPassiveSkill_DoesNotSatisfyCurrentCombatCapability()
+    {
+        var actor = CreateMortalNpcWithEnvelope();
+        actor["activeSkills"] = new JsonArray();
+        actor["passiveSkills"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["id"] = "skill_arden_watch",
+                ["name"] = "Бдительность хранителя"
+            }
+        };
+        using var document = JsonDocument.Parse(actor.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "NPCsInScene");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Section == "canFight");
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_section_content_mismatch" &&
+            issue.Section == "skills");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_UntouchedLegacyIdOnlySkill_RemainsLoadable()
+    {
+        using var document = JsonDocument.Parse("""
+        {
+          "NPCId": "npc_legacy_guard",
+          "activeSkills": [
+            { "skillId": "skill_legacy_guard", "name": "Старая стойка" }
+          ],
+          "passiveSkills": []
+        }
+        """);
+
+        var issues = ActorMaterializationContract.ValidateMortalNpc(
+            document.RootElement,
+            "npc",
+            "UpdateNPCs");
+
+        Assert.Empty(issues);
+    }
+
+    [Fact]
+    public void HasUsableMortalCombatSkill_LegacyIdOnlyPreTurnDoesNotSuppressStructuredPromotion()
+    {
+        using var preTurnDocument = JsonDocument.Parse("""
+        {
+          "NPCId": "npc_legacy_guard",
+          "activeSkills": [
+            { "skillId": "skill_legacy_guard", "name": "Старая стойка" }
+          ],
+          "passiveSkills": []
+        }
+        """);
+        var currentActor = new JsonObject
+        {
+            ["NPCId"] = "npc_legacy_guard",
+            ["activeSkills"] = new JsonArray(BuildProductionValidIdlessActiveSkill()),
+            ["passiveSkills"] = new JsonArray()
+        };
+        using var currentDocument = JsonDocument.Parse(currentActor.ToJsonString());
+
+        var legacyIdOnlySkill = preTurnDocument.RootElement
+            .GetProperty("activeSkills")[0];
+        Assert.False(ValidationService.IsProductionValidMortalActiveSkill(legacyIdOnlySkill));
+        Assert.False(ActorMaterializationContract.HasUsableMortalCombatSkill(preTurnDocument.RootElement));
+        Assert.True(ActorMaterializationContract.HasUsableMortalCombatSkill(currentDocument.RootElement));
     }
 
     [Fact]
@@ -1116,11 +1258,7 @@ public sealed class ActorMaterializationContractTests
         actor["initialId"] = "npc_arden";
         actor["activeSkills"] = new JsonArray
         {
-            new JsonObject
-            {
-                ["skillId"] = "skill_arden_guard",
-                ["name"] = "Стойка хранителя"
-            }
+            BuildProductionValidIdlessActiveSkill()
         };
         actor["passiveSkills"] = new JsonArray();
         actor["inventory"] = new JsonArray
@@ -1164,6 +1302,19 @@ public sealed class ActorMaterializationContractTests
                     ["poiseDamage"] = "5%"
                 })
             }
+        };
+
+    private static JsonObject BuildProductionValidIdlessPassiveSkill() =>
+        new()
+        {
+            ["skillName"] = "Бдительность хранителя",
+            ["skillDescription"] = "Помогает заранее замечать угрозы у охраняемого прохода.",
+            ["rarity"] = "Common",
+            ["type"] = "Utility",
+            ["group"] = "Наблюдение",
+            ["masteryLevel"] = 1,
+            ["maxMasteryLevel"] = 5,
+            ["structuredBonuses"] = null
         };
 
     private static JsonObject CreateAfterlifeProfile(

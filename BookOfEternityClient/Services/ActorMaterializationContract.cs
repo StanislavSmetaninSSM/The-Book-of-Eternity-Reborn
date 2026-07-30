@@ -976,11 +976,9 @@ internal static class ActorMaterializationContract
         !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(skill, "skillId", "id"));
 
     private static bool IsUsableMortalActiveCombatSkill(JsonElement skill) =>
-        HasLegacyMortalSkillIdentity(skill) ||
         ValidationService.IsProductionValidMortalActiveSkill(skill);
 
     private static bool IsUsableMortalPassiveCombatSkill(JsonElement skill) =>
-        HasLegacyMortalSkillIdentity(skill) ||
         ValidationService.IsProductionValidMortalPassiveSkill(skill);
 
     private static bool IsUsableMortalTeacherSkill(JsonElement skill)

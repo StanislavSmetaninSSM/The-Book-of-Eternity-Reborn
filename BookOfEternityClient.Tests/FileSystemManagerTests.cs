@@ -4077,7 +4077,46 @@ public sealed class FileSystemManagerTests : IDisposable
         {
             allowFirstLockAttempt.TrySetResult();
             await using var lease = await pendingLease;
+            Assert.Equal(1, GetAmbientCanonicalLeaseDepth(raceFs));
+            Assert.Equal(1, GetActiveAmbientCanonicalLeaseCount(raceFs));
         }
+    }
+
+    [Fact]
+    public async Task AcquireCanonicalWriteLeaseAsync_PendingRegistrationSurvivesCallerSideObservation()
+    {
+        var firstLockAttempted = NewBarrier();
+        var allowFirstLockAttempt = NewBarrier();
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalWriteLockOpenAsync = async () =>
+            {
+                firstLockAttempted.TrySetResult();
+                await allowFirstLockAttempt.Task.WaitAsync(
+                    TimeSpan.FromSeconds(10));
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        var pendingLease = raceFs.AcquireCanonicalWriteLeaseAsync();
+        await firstLockAttempted.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        try
+        {
+            Assert.False(raceFs.FileExists(
+                "game_state/world/pending-ambient-observation.json"));
+        }
+        finally
+        {
+            allowFirstLockAttempt.TrySetResult();
+        }
+
+        await using var lease = await pendingLease;
+        Assert.Equal(1, GetAmbientCanonicalLeaseDepth(raceFs));
+        Assert.Equal(1, GetActiveAmbientCanonicalLeaseCount(raceFs));
     }
 
     [Fact]

@@ -1,6 +1,8 @@
 using System.IO.Compression;
 using System.Linq;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -23,6 +25,22 @@ public sealed class SaveLoadServiceTests : IDisposable
 
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
+        _fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                """
+                {
+                  "soulName": "Тестовая Душа",
+                  "currentRealm": "Mortal World",
+                  "currentIncarnation": 1
+                }
+                """)
+            .GetAwaiter()
+            .GetResult();
+        _fs.WriteFileAtomicAsync(
+                "game_state/world/test_fixture_state.json",
+                """{ "state": "test-fixture" }""")
+            .GetAwaiter()
+            .GetResult();
 
         var settings = new GameSettings();
         var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
@@ -570,6 +588,101 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveGameAsync_MissingMandatoryGameStateRootFailsClosed()
+    {
+        var gameStateRoot = Path.Combine(
+            _rootPath,
+            "game_session",
+            "game_state");
+        Directory.Delete(gameStateRoot, recursive: true);
+
+        Assert.False(await _service.SaveGameAsync(
+            "missing_game_state",
+            "mandatory game-state root regression"));
+        Assert.Empty(Directory.GetFiles(
+            _fs.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_EmptyMandatoryGameStateRootFailsClosed()
+    {
+        var gameStateRoot = Path.Combine(
+            _rootPath,
+            "game_session",
+            "game_state");
+        Directory.Delete(gameStateRoot, recursive: true);
+        Directory.CreateDirectory(gameStateRoot);
+
+        Assert.False(await _service.SaveGameAsync(
+            "empty_game_state",
+            "empty mandatory game-state root regression"));
+        Assert.Empty(Directory.GetFiles(
+            _fs.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed()
+    {
+        var gameStateRoot = Path.Combine(
+            _rootPath,
+            "game_session",
+            "game_state");
+        Directory.Delete(gameStateRoot, recursive: true);
+        await File.WriteAllTextAsync(gameStateRoot, "not-a-directory");
+
+        Assert.False(await _service.SaveGameAsync(
+            "file_game_state",
+            "wrong-kind game-state root regression"));
+        Assert.Empty(Directory.GetFiles(
+            _fs.ResolvePath("saves/manual_saves"),
+            "*.zip"));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var gameStateRoot = Path.Combine(
+            _rootPath,
+            "game_session",
+            "game_state");
+        var outsideRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-save-game-state-outside-" + Guid.NewGuid().ToString("N"));
+        Directory.Delete(gameStateRoot, recursive: true);
+        Directory.CreateDirectory(outsideRoot);
+        await File.WriteAllTextAsync(
+            Path.Combine(outsideRoot, "external-state.json"),
+            """{ "mustNotArchive": true }""");
+
+        try
+        {
+            CreateDirectoryJunction(gameStateRoot, outsideRoot);
+
+            Assert.False(await _service.SaveGameAsync(
+                "reparse_game_state",
+                "reparse game-state root regression"));
+            Assert.Empty(Directory.GetFiles(
+                _fs.ResolvePath("saves/manual_saves"),
+                "*.zip"));
+        }
+        finally
+        {
+            if (Directory.Exists(gameStateRoot) &&
+                FileSystemManager.IsReparsePoint(gameStateRoot))
+            {
+                Directory.Delete(gameStateRoot, recursive: false);
+            }
+            if (Directory.Exists(outsideRoot))
+                Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed()
     {
         if (!OperatingSystem.IsWindows())
@@ -915,6 +1028,456 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task LoadGameAsync_MetadataOnlyArchiveIsRejectedBeforeLifecycleLease()
+    {
+        const string liveStatePath = "game_state/world/live_state.json";
+        const string liveState = """{ "state": "live" }""";
+        await _fs.WriteFileAtomicAsync(liveStatePath, liveState);
+        var archivePath = Path.Combine(_rootPath, "metadata-only.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "save_metadata.json",
+                """
+                {
+                  "saveName": "metadata only",
+                  "description": "must not replace a live session",
+                  "timestamp": "2026-07-30T00:00:00Z",
+                  "turnNumber": 7
+                }
+                """);
+        }
+
+        var lifecycleBoundaryReached = false;
+        var stateManager = new StateManager(
+            _fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeLoadLeaseAcquisitionAsync = () =>
+                {
+                    lifecycleBoundaryReached = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.False(lifecycleBoundaryReached);
+        Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_ArchiveWithOnlyOptionalContentIsRejectedBeforeLifecycleLease()
+    {
+        const string liveStatePath = "game_state/world/live_state.json";
+        const string liveState = """{ "state": "live" }""";
+        await _fs.WriteFileAtomicAsync(liveStatePath, liveState);
+        var archivePath = Path.Combine(_rootPath, "optional-content-only.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "save_metadata.json",
+                """{ "saveName": "crafted optional-only archive" }""");
+            await WriteArchiveEntryAsync(
+                archive,
+                "lore/current_world/setting.json",
+                """{ "setting": "crafted" }""");
+        }
+
+        var lifecycleBoundaryReached = false;
+        var stateManager = new StateManager(
+            _fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeLoadLeaseAcquisitionAsync = () =>
+                {
+                    lifecycleBoundaryReached = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.False(lifecycleBoundaryReached);
+        Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry()
+    {
+        Assert.True(await _service.SaveGameAsync(
+            "manifested-save",
+            "integrity manifest regression"));
+
+        var savePath = Directory
+            .GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip")
+            .Single();
+        using var archive = ZipFile.OpenRead(savePath);
+        var manifestEntry = archive.GetEntry("save_manifest.json");
+        Assert.NotNull(manifestEntry);
+
+        using var manifestDocument = await JsonDocument.ParseAsync(
+            manifestEntry.Open());
+        var root = manifestDocument.RootElement;
+        Assert.Equal(1, root.GetProperty("schemaVersion").GetInt32());
+        Assert.Equal("SHA-256", root.GetProperty("algorithm").GetString());
+        var manifested = root
+            .GetProperty("entries")
+            .EnumerateArray()
+            .ToDictionary(
+                item => item.GetProperty("path").GetString()!,
+                item => (
+                    Length: item.GetProperty("length").GetInt64(),
+                    Sha256: item.GetProperty("sha256").GetString()!),
+                StringComparer.OrdinalIgnoreCase);
+
+        var payloadEntries = archive.Entries
+            .Where(entry =>
+                !string.IsNullOrEmpty(entry.Name) &&
+                !entry.FullName.Equals(
+                    "save_manifest.json",
+                    StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        Assert.Equal(payloadEntries.Length, manifested.Count);
+        Assert.Contains(
+            "game_state/meta/soul_state.json",
+            manifested.Keys,
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var entry in payloadEntries)
+        {
+            await using var stream = entry.Open();
+            var digest = Convert.ToHexString(
+                await SHA256.HashDataAsync(stream));
+            var expected = manifested[entry.FullName];
+            Assert.Equal(entry.Length, expected.Length);
+            Assert.Equal(expected.Sha256, digest, ignoreCase: true);
+        }
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_UsesIntegrityManifestWithoutAddingItToCanonicalSession()
+    {
+        Assert.True(await _service.SaveGameAsync(
+            "manifest-is-archive-metadata",
+            "manifest extraction regression"));
+        var savePath = Directory
+            .GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip")
+            .Single();
+
+        Assert.True(await _service.LoadGameAsync(savePath));
+        Assert.False(_fs.FileExists("save_manifest.json"));
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """[{"not":"a canonical soul object"}]""");
+
+        Assert.False(await _service.SaveGameAsync(
+            "invalid-soul-state",
+            "must not publish an invalid canonical save"));
+        Assert.Empty(
+            Directory.GetFiles(
+                _fs.ResolvePath("saves/manual_saves"),
+                "*.zip"));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_LegacySoulStateWithoutRealmIsRejectedBeforeLifecycleLease()
+    {
+        const string liveStatePath = "game_state/world/live_state.json";
+        const string liveState = """{ "state": "live" }""";
+        await _fs.WriteFileAtomicAsync(liveStatePath, liveState);
+        var archivePath = Path.Combine(
+            _rootPath,
+            "legacy-soul-without-realm.zip");
+        using (var archive = ZipFile.Open(
+                   archivePath,
+                   ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "game_state/meta/soul_state.json",
+                """{ "soulName": "Неполная Душа" }""");
+        }
+
+        var lifecycleBoundaryReached = false;
+        var stateManager = new StateManager(
+            _fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeLoadLeaseAcquisitionAsync = () =>
+                {
+                    lifecycleBoundaryReached = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.False(lifecycleBoundaryReached);
+        Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_LegacyArchiveWithSoulStateRemainsAccepted()
+    {
+        const string legacyStatePath = "game_state/meta/soul_state.json";
+        const string legacyState =
+            """
+            {
+              "soulName": "Наследуемая Душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 3
+            }
+            """;
+        var archivePath = Path.Combine(
+            _rootPath,
+            "legacy-with-soul-state.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                legacyStatePath,
+                legacyState);
+        }
+
+        Assert.True(await _service.LoadGameAsync(archivePath));
+        Assert.Equal(
+            legacyState,
+            await _fs.ReadFileAsync(legacyStatePath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_LegacyArchiveWithArbitraryGameStateIsRejectedBeforeLifecycleLease()
+    {
+        const string liveStatePath = "game_state/world/live_state.json";
+        const string liveState = """{ "state": "live" }""";
+        await _fs.WriteFileAtomicAsync(liveStatePath, liveState);
+        var archivePath = Path.Combine(
+            _rootPath,
+            "legacy-with-arbitrary-state.zip");
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "game_state/world/fabricated.json",
+                """{ "state": "not-a-session" }""");
+        }
+
+        var lifecycleBoundaryReached = false;
+        var stateManager = new StateManager(
+            _fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeLoadLeaseAcquisitionAsync = () =>
+                {
+                    lifecycleBoundaryReached = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.False(lifecycleBoundaryReached);
+        Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_ManifestedArchiveWithTamperedPayloadIsRejectedBeforeLifecycleLease()
+    {
+        const string liveStatePath = "game_state/world/live_state.json";
+        const string liveState = """{ "state": "live" }""";
+        await _fs.WriteFileAtomicAsync(liveStatePath, liveState);
+        var archivePath = Path.Combine(_rootPath, "tampered-manifested-save.zip");
+        await WriteManifestedArchiveAsync(
+            archivePath,
+            new Dictionary<string, string>
+            {
+                ["game_state/meta/soul_state.json"] =
+                    """
+                    {
+                      "soulName": "Архивная Душа",
+                      "currentRealm": "Chaos Sea",
+                      "currentIncarnation": 2
+                    }
+                    """,
+                ["game_state/world/marker.json"] = """{ "state": "expected" }"""
+            });
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
+        {
+            archive.GetEntry("game_state/world/marker.json")!.Delete();
+            await WriteArchiveEntryAsync(
+                archive,
+                "game_state/world/marker.json",
+                """{ "state": "tampered" }""");
+        }
+
+        var lifecycleBoundaryReached = false;
+        var stateManager = new StateManager(
+            _fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeLoadLeaseAcquisitionAsync = () =>
+                {
+                    lifecycleBoundaryReached = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.False(lifecycleBoundaryReached);
+        Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_ManifestedArchiveWithTruncatedPayloadIsRejectedBeforeLifecycleLease()
+    {
+        const string liveStatePath = "game_state/world/live_state.json";
+        const string liveState = """{ "state": "live" }""";
+        await _fs.WriteFileAtomicAsync(liveStatePath, liveState);
+        var archivePath = Path.Combine(
+            _rootPath,
+            "truncated-manifested-save.zip");
+        await WriteManifestedArchiveAsync(
+            archivePath,
+            new Dictionary<string, string>
+            {
+                ["game_state/meta/soul_state.json"] =
+                    """
+                    {
+                      "soulName": "Архивная Душа",
+                      "currentRealm": "Chaos Sea",
+                      "currentIncarnation": 2
+                    }
+                    """,
+                ["game_state/world/marker.json"] =
+                    """{ "state": "complete-payload" }"""
+            });
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
+        {
+            archive.GetEntry("game_state/world/marker.json")!.Delete();
+            await WriteArchiveEntryAsync(
+                archive,
+                "game_state/world/marker.json",
+                "{}");
+        }
+
+        var lifecycleBoundaryReached = false;
+        var stateManager = new StateManager(
+            _fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeLoadLeaseAcquisitionAsync = () =>
+                {
+                    lifecycleBoundaryReached = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.False(lifecycleBoundaryReached);
+        Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_ManifestedArchiveWithCaseCollidingPayloadIsRejectedBeforeLifecycleLease()
+    {
+        const string liveStatePath = "game_state/world/live_state.json";
+        const string liveState = """{ "state": "live" }""";
+        await _fs.WriteFileAtomicAsync(liveStatePath, liveState);
+        var archivePath = Path.Combine(
+            _rootPath,
+            "case-colliding-manifested-save.zip");
+        await WriteManifestedArchiveAsync(
+            archivePath,
+            new Dictionary<string, string>
+            {
+                ["game_state/meta/soul_state.json"] =
+                    """
+                    {
+                      "soulName": "Архивная Душа",
+                      "currentRealm": "Chaos Sea",
+                      "currentIncarnation": 2
+                    }
+                    """
+            });
+        using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "GAME_STATE/META/SOUL_STATE.JSON",
+                """{ "soulName": "Другая Душа" }""");
+        }
+
+        var lifecycleBoundaryReached = false;
+        var stateManager = new StateManager(
+            _fs,
+            new GameSettings(),
+            NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var service = new SaveLoadService(
+            _fs,
+            stateManager,
+            NullLogger<SaveLoadService>.Instance,
+            new SaveLoadServiceHooks
+            {
+                BeforeLoadLeaseAcquisitionAsync = () =>
+                {
+                    lifecycleBoundaryReached = true;
+                    return Task.CompletedTask;
+                }
+            });
+
+        Assert.False(await service.LoadGameAsync(archivePath));
+        Assert.False(lifecycleBoundaryReached);
+        Assert.Equal(liveState, await _fs.ReadFileAsync(liveStatePath));
+    }
+
+    [Fact]
     public async Task LoadGameAsync_LinkAddedAfterArchiveInitialValidationPreservesLiveSession()
     {
         if (!OperatingSystem.IsWindows())
@@ -1123,6 +1686,7 @@ public sealed class SaveLoadServiceTests : IDisposable
         var archivePath = Path.Combine(root, "new-session.zip");
         using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
         {
+            await WriteLegacySoulStateAsync(archive);
             await WriteArchiveEntryAsync(archive, "game_state/core/player_status.json", """
             { "characterName": "Новый герой" }
             """);
@@ -1160,7 +1724,10 @@ public sealed class SaveLoadServiceTests : IDisposable
 
         var archivePath = Path.Combine(root, "activation-failure.zip");
         using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteLegacySoulStateAsync(archive);
             await WriteArchiveEntryAsync(archive, markerPath, "{\"state\":\"replacement\"}");
+        }
 
         operations.FailStagedActivationMove = true;
         operations.FailBackupRestoreMove = true;
@@ -1199,7 +1766,10 @@ public sealed class SaveLoadServiceTests : IDisposable
 
         var archivePath = Path.Combine(root, "activation-failure.zip");
         using (var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create))
+        {
+            await WriteLegacySoulStateAsync(archive);
             await WriteArchiveEntryAsync(archive, markerPath, "{\"state\":\"replacement\"}");
+        }
 
         operations.FailStagedActivationMove = true;
         operations.FailBackupRestoreMove = true;
@@ -1336,6 +1906,50 @@ public sealed class SaveLoadServiceTests : IDisposable
         await using var stream = entry.Open();
         await using var writer = new StreamWriter(stream);
         await writer.WriteAsync(content);
+    }
+
+    private static Task WriteLegacySoulStateAsync(ZipArchive archive) =>
+        WriteArchiveEntryAsync(
+            archive,
+            "game_state/meta/soul_state.json",
+            """
+            {
+              "soulName": "Наследуемая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1
+            }
+            """);
+
+    private static async Task WriteManifestedArchiveAsync(
+        string archivePath,
+        IReadOnlyDictionary<string, string> payloads)
+    {
+        using var archive = ZipFile.Open(archivePath, ZipArchiveMode.Create);
+        var manifestEntries = new List<object>();
+        foreach (var (path, content) in payloads)
+        {
+            var bytes = Encoding.UTF8.GetBytes(content);
+            var entry = archive.CreateEntry(path);
+            await using (var stream = entry.Open())
+                await stream.WriteAsync(bytes);
+            manifestEntries.Add(new
+            {
+                path,
+                length = bytes.LongLength,
+                sha256 = Convert.ToHexString(SHA256.HashData(bytes))
+            });
+        }
+
+        await WriteArchiveEntryAsync(
+            archive,
+            "save_manifest.json",
+            JsonSerializer.Serialize(
+                new
+                {
+                    schemaVersion = 1,
+                    algorithm = "SHA-256",
+                    entries = manifestEntries
+                }));
     }
 
     private sealed class FaultInjectingLoadTransactionOperations : ILoadTransactionOperations
