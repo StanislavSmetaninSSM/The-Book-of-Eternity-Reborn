@@ -319,6 +319,9 @@ public sealed class GmWorkerApplyGateTests
             File.WriteAllText(
                 fs.SessionGenerationPath,
                 $$"""{"SchemaVersion":1,"GenerationId":"{{GmWorkerBridgeTestFixtures.SessionGeneration}}"}""");
+            await fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                """{"currentRealm":"Mortal World"}""");
             await fs.WriteFileAtomicAsync("game_state/world/weather.json", "{\"saved\":true}");
             var stateManager = new StateManager(
                 fs,

@@ -167,6 +167,9 @@ public sealed class SessionOperationContextTests : IDisposable
     public async Task BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation()
     {
         const string targetPath = "game_state/world/load-owner.json";
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            """{"currentRealm":"Mortal World"}""");
         await _fs.WriteFileAtomicAsync(targetPath, "{\"owner\":\"saved\"}");
         var stateManager = new StateManager(
             _fs,

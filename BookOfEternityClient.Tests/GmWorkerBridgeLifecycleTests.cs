@@ -998,6 +998,9 @@ public sealed class GmWorkerBridgeLifecycleTests
         {
             const string proposalId = "worker_proposal_stale_session";
             var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                """{"currentRealm":"Mortal World"}""");
             var stateManager = new StateManager(
                 fs,
                 new GameSettings(),
