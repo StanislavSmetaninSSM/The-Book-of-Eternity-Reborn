@@ -31,26 +31,6 @@ if (OperatingSystem.IsWindows() && !Console.IsInputRedirected)
 else
     Console.InputEncoding = System.Text.Encoding.UTF8;
 
-static string ResolveDefaultBasePath()
-{
-    var processDir = Path.GetDirectoryName(Environment.ProcessPath) ?? Environment.CurrentDirectory;
-
-    // Development/default layout:
-    // BookOfEternityClient\bin\Debug\net8.0\BookOfEternityClient.exe
-    // We want BookOfEternityClient\game_session, not bin\...\game_session.
-    var dir = new DirectoryInfo(processDir);
-    while (dir != null)
-    {
-        var csprojPath = Path.Combine(dir.FullName, "BookOfEternityClient.csproj");
-        if (File.Exists(csprojPath))
-            return dir.FullName;
-
-        dir = dir.Parent;
-    }
-
-    return processDir;
-}
-
 // Determine base path: prefer the project root containing BookOfEternityClient.csproj.
 var startupOptions = ClientStartupOptions.Parse(args, ResolveDefaultBasePath());
 var basePath = startupOptions.BasePath;
@@ -344,4 +324,27 @@ finally
     if (agentConsoleApp is not null)
         await agentConsoleApp.DisposeAsync();
     agentConsoleLiveInputSource?.Dispose();
+}
+
+internal partial class Program
+{
+    private static string ResolveDefaultBasePath()
+    {
+        var processDir = Path.GetDirectoryName(Environment.ProcessPath) ?? Environment.CurrentDirectory;
+
+        // Development/default layout:
+        // BookOfEternityClient\bin\Debug\net8.0\BookOfEternityClient.exe
+        // We want BookOfEternityClient\game_session, not bin\...\game_session.
+        var dir = new DirectoryInfo(processDir);
+        while (dir != null)
+        {
+            var csprojPath = Path.Combine(dir.FullName, "BookOfEternityClient.csproj");
+            if (File.Exists(csprojPath))
+                return dir.FullName;
+
+            dir = dir.Parent;
+        }
+
+        return processDir;
+    }
 }
