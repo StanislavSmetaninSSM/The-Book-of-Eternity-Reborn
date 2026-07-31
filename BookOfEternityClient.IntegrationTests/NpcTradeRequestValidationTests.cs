@@ -143,7 +143,8 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.FilePath, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase) &&
@@ -171,7 +172,8 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "npc_trade_receipt_item_count_mismatch", StringComparison.OrdinalIgnoreCase));
     }
@@ -190,7 +192,8 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.Contains(issues, issue => issue.FilePath.EndsWith(".merchantProfile", StringComparison.OrdinalIgnoreCase) &&
                                          string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase));
@@ -266,7 +269,8 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.FilePath, "game_state/meta/soul_state.json", StringComparison.OrdinalIgnoreCase) &&
@@ -301,7 +305,8 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
           ]
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "npc_buyback_entry_item_mismatch", StringComparison.OrdinalIgnoreCase));
     }

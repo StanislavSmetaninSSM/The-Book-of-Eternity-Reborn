@@ -31,7 +31,8 @@ public sealed class NpcStateFileValidationTests : IDisposable
             "game_state/npcs/npc_effects.json",
             new { unsupportedNpcEffectsRoot = Array.Empty<object>() });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.Contains(issues, issue =>
             IsFlexibleTopLevelKeyIssue(issue) &&
@@ -45,7 +46,8 @@ public sealed class NpcStateFileValidationTests : IDisposable
             "game_state/npcs/npc_personality.json",
             new { unsupportedNpcPersonalityRoot = Array.Empty<object>() });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.Contains(issues, issue =>
             IsFlexibleTopLevelKeyIssue(issue) &&

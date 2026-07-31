@@ -34,7 +34,8 @@ public sealed class NpcCoreChangesTests : IDisposable
         var fixture = await WriteFixtureAsync((root, actor, _) =>
             root["NPCCoreChanges"] = new JsonArray(BuildProfileChange(actor)));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.DoesNotContain(issues, issue =>
             issue.FilePath.Contains("NPCCoreChanges", StringComparison.Ordinal) ||
@@ -176,7 +177,8 @@ public sealed class NpcCoreChangesTests : IDisposable
             root["NPCCoreChanges"] = new JsonArray(change);
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.Contains(issues, issue => issue.Code == "npc_core_changes_unknown_member");
     }
@@ -260,7 +262,8 @@ public sealed class NpcCoreChangesTests : IDisposable
         await WriteFixtureAsync((root, actor, _) =>
             root["npcCoreChanges"] = new JsonArray(BuildProfileChange(actor)));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.NpcState);
 
         Assert.Contains(issues, issue => issue.Code == "npc_core_changes_invalid_top_level_name");
     }

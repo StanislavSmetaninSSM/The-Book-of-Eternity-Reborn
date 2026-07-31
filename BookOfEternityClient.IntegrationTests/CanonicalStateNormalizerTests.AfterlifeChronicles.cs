@@ -153,7 +153,8 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Contains("посмертие", json, StringComparison.OrdinalIgnoreCase);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeChronicle);
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_chronicle_player_text_internal_term", StringComparison.OrdinalIgnoreCase));
     }

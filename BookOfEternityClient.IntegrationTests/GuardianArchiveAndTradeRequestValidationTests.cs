@@ -43,7 +43,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 archiveActionResolutions = Array.Empty<object>()
             });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.DoesNotContain(issues, issue =>
             IsFlexibleTopLevelKeyIssue(issue) &&
@@ -60,7 +61,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 UpdateGuardianTradeInventoryReceipts = Array.Empty<object>()
             });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.DoesNotContain(issues, issue =>
             IsFlexibleTopLevelKeyIssue(issue) &&
@@ -130,7 +132,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_abode_resident_abode_devotion_tier_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -272,7 +275,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [AfterlifeArchiveActionState.ConsultationRequestPath] = backupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
@@ -335,7 +339,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 }
             });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "afterlife_archive_duplicate_receipt_identity", StringComparison.OrdinalIgnoreCase));
     }
@@ -401,7 +406,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 currentIncarnation = 1
             });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
     }
@@ -439,7 +445,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 }
             });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_current_archive_authority", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
@@ -581,7 +588,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -724,7 +732,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
     }
@@ -808,7 +817,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_malformed_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
     }
@@ -939,7 +949,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [AfterlifeArchiveActionState.ConsultationRequestPath] = backupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "afterlife_archive_consultation_receipt_missing_outcome", StringComparison.OrdinalIgnoreCase));
     }
@@ -985,7 +996,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianTradeRequestState.PendingRequestPath] = backupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_guardian_trade_request_modified", StringComparison.OrdinalIgnoreCase));
@@ -1066,7 +1078,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianAbodeResidentRequestState.PendingManifestationRequestPath] = backupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_resident_manifestation_request_modified", StringComparison.OrdinalIgnoreCase));
@@ -1116,7 +1129,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
@@ -1167,7 +1181,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         await WriteJsonAsync("game_state/meta/guardians.json", BuildGuardianTradeState(includeInventory: true));
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
@@ -1224,7 +1239,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_buyback_relic_guardian_mismatch", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_buyback_relic_id_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1327,7 +1343,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [AfterlifeArchiveActionState.ProjectFuelRequestPath] = backupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "afterlife_archive_project_fuel_receipt_invalid_result_mode", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "afterlife_archive_project_fuel_receipt_invalid_result_amount", StringComparison.OrdinalIgnoreCase));
@@ -1392,7 +1409,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 currentIncarnation = 1
             });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
     }
@@ -1453,7 +1471,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_current_archive_authority", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
@@ -1560,7 +1579,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -1667,7 +1687,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
     }
@@ -1751,7 +1772,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_malformed_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
     }
@@ -1776,7 +1798,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             completedQuests = Array.Empty<object>()
         }));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_live_quest_missing_quest_id", StringComparison.OrdinalIgnoreCase) ||
@@ -1803,7 +1826,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             completedQuests = Array.Empty<object>()
         }));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_live_quest_missing_quest_id", StringComparison.OrdinalIgnoreCase) ||
@@ -1853,7 +1877,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "rival_arc_hostile_direct_target_needs_two_visible_signals", StringComparison.OrdinalIgnoreCase));
     }
@@ -1901,7 +1926,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "rival_arc_hostile_direct_target_needs_two_visible_signals", StringComparison.OrdinalIgnoreCase));
     }
@@ -1935,7 +1961,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "missing_required_boolean_field", StringComparison.OrdinalIgnoreCase) &&
@@ -1986,7 +2013,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "rival_arc_hostile_direct_target_needs_two_visible_signals", StringComparison.OrdinalIgnoreCase));
     }
@@ -2034,7 +2062,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "rival_arc_hostile_direct_target_needs_two_visible_signals", StringComparison.OrdinalIgnoreCase));
     }
@@ -2078,7 +2107,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "world_event_rival_arc_missing_visibility", StringComparison.OrdinalIgnoreCase));
     }
@@ -2123,7 +2153,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "world_event_rival_arc_invalid_visibility", StringComparison.OrdinalIgnoreCase));
     }
@@ -2184,7 +2215,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_interaction_missing_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -2292,7 +2324,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_history_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
     }
@@ -2399,7 +2432,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_talk_missing_memory_update", StringComparison.OrdinalIgnoreCase));
     }
@@ -2506,7 +2540,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_history_missing_memory_update", StringComparison.OrdinalIgnoreCase));
     }
@@ -2610,7 +2645,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_quest_missing_interaction_log_update", StringComparison.OrdinalIgnoreCase));
     }
@@ -2729,7 +2765,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_reward_missing_interaction_log_update", StringComparison.OrdinalIgnoreCase));
     }
@@ -2837,7 +2874,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_devotion_shift_missing_canonical_trigger", StringComparison.OrdinalIgnoreCase));
     }
@@ -2873,7 +2911,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_abode_resident_transfer_invalid_migration_gate", StringComparison.OrdinalIgnoreCase));
     }
@@ -2913,7 +2952,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_abode_resident_transfer_invalid_selection_mode", StringComparison.OrdinalIgnoreCase));
     }
@@ -2953,7 +2993,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_abode_resident_transfer_inconsistent_selection_metadata", StringComparison.OrdinalIgnoreCase));
     }
@@ -3049,7 +3090,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_missing_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -3191,7 +3233,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_invalid_preturn_eligibility", StringComparison.OrdinalIgnoreCase));
     }
@@ -3345,7 +3388,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_invalid_accepted_resolution", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "abode_resident_devotion_projection_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -3384,7 +3428,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_abode_resident_invalid_interaction_token", StringComparison.OrdinalIgnoreCase));
     }
@@ -3421,7 +3466,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_abode_resident_unknown_guardian_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -3462,7 +3508,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_resident_companion_manifestation_duplicate_relic_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -3521,7 +3568,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_roster_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -3545,7 +3593,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_thought_unknown_guardian_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -3569,7 +3618,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "npc_interaction_journal_unknown_npc_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -3594,7 +3644,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "resident_thought_unknown_resident_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -3611,7 +3662,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             """
         );
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_malformed_file", StringComparison.OrdinalIgnoreCase));
     }
@@ -3628,7 +3680,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             """
         );
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_malformed_file", StringComparison.OrdinalIgnoreCase));
     }
@@ -3651,7 +3704,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_invalid_ink_feather_change_value", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_ink_feather_change_key", StringComparison.OrdinalIgnoreCase));
@@ -3674,7 +3728,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_invalid_enlightenment_progression_value", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_enlightenment_progression_key", StringComparison.OrdinalIgnoreCase));
@@ -3708,7 +3763,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase) &&
                                          issue.FilePath.Contains("metaStateUpdates.soulRelicOperations.addRelic.relicId", StringComparison.OrdinalIgnoreCase));
@@ -3733,7 +3789,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_top_level_update_key", StringComparison.OrdinalIgnoreCase));
     }

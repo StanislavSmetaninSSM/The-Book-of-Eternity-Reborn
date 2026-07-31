@@ -150,7 +150,8 @@ public sealed class ChaosSeaGuardianPoliticsStateTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianPolicy);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "chaos_guardian_politics_unknown_guardian", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "chaos_guardian_politics_attitude_score_out_of_range", StringComparison.OrdinalIgnoreCase));
@@ -166,7 +167,8 @@ public sealed class ChaosSeaGuardianPoliticsStateTests : IDisposable
         await SeedGuardianStateAsync();
         await WriteValidPoliticsStateAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianPolicy);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("chaos_guardian_politics_", StringComparison.OrdinalIgnoreCase) == true);

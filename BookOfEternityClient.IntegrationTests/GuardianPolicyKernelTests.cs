@@ -272,7 +272,8 @@ public sealed class GuardianPolicyKernelTests : IDisposable
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianPolicy);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_materialized_without_create_surface", StringComparison.OrdinalIgnoreCase));
@@ -308,7 +309,8 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         await WriteRawAsync("game_state/meta/guardians.json", SerializeJson(root));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianPolicy);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_commands_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) &&
@@ -366,7 +368,8 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         await WriteRawAsync("game_state/meta/guardians.json", SerializeJson(root));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianPolicy);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_process_gacha_missing_or_invalid_base_rarity", StringComparison.OrdinalIgnoreCase));

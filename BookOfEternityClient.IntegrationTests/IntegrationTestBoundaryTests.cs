@@ -49,6 +49,25 @@ public sealed class IntegrationTestBoundaryTests
             ["SoulIdentityValidationTests.cs"] = "SoulIdentity"
         };
 
+    private static readonly IReadOnlyDictionary<string, string> GuardianNpcAndCanonicalScopedSources =
+        new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["GuardianArchiveAndTradeRequestValidationTests.cs"] = "GuardianArchiveTrade",
+            ["GuardianPolicyKernelTests.cs"] = "GuardianPolicy",
+            ["GuardianTradeServiceTests.cs"] = "GuardianArchiveTrade",
+            ["ChaosSeaGuardianPoliticsStateTests.cs"] = "GuardianPolicy",
+            ["ChaosSeaPendingRequestHygieneTests.cs"] = "AfterlifeRealm",
+            ["PlayerGuardianFoundationValidationTests.cs"] = "PlayerGuardian",
+            ["QuestRewardAuthorityValidationTests.cs"] = "QuestReward",
+            ["NpcCoreChangesTests.cs"] = "NpcState",
+            ["NpcStateFileValidationTests.cs"] = "NpcState",
+            ["NpcTradeRequestValidationTests.cs"] = "NpcState",
+            ["CanonicalStateNormalizerTests.AfterlifeChronicles.cs"] = "AfterlifeChronicle",
+            ["CanonicalStateNormalizerTests.GuardianProjects.cs"] = "CanonicalGuardian",
+            ["CanonicalStateNormalizerTests.Inventory.cs"] = "CanonicalInventory",
+            ["CanonicalStateNormalizerTests.Npcs.cs"] = "CanonicalNpc"
+        };
+
     private static readonly string[] GuardianPartialSources =
     [
         "GuardianSystemRegressionTests.AcceptedAuthority.cs",
@@ -178,6 +197,23 @@ public sealed class IntegrationTestBoundaryTests
         Assert.True(
             violations.Length == 0,
             "Actor and afterlife validation source violations:" +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, violations));
+    }
+
+    [Fact]
+    public void GuardianNpcAndCanonicalValidationSources_UseScopedProfiles()
+    {
+        var violations = ActorAndAfterlifeScopedProfileViolations(
+            GuardianNpcAndCanonicalScopedSources.Select(mapping => (
+                FileName: mapping.Key,
+                ProfileName: mapping.Value,
+                Source: File.ReadAllText(
+                    SourcePath(IntegrationTestsDirectory, mapping.Key)))));
+
+        Assert.True(
+            violations.Length == 0,
+            "Guardian, NPC, and canonical validation source violations:" +
             Environment.NewLine +
             string.Join(Environment.NewLine, violations));
     }

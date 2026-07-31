@@ -100,7 +100,8 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.False(normalizedRoot.ContainsKey("UpdateNPCs"));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.CanonicalNpc);
         var forbiddenCodes = new[]
         {
             "npc_full_object_missing_required_fields",
@@ -168,7 +169,8 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal("Слуга вспомнил серебряную окантовку на форме посыльного.", legacyEntry["description"]?.GetValue<string>());
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.CanonicalNpc);
         Assert.DoesNotContain(issues, issue =>
             issue.FilePath.Contains("npc_journals", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) ||

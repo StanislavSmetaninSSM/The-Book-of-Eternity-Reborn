@@ -33,6 +33,7 @@ internal static class IntegrationValidationProfiles
         GameStateValidationPhase.AfterlifeGlobalFlagPreTurnContinuity);
 
     internal static readonly GameStateValidationSelection AfterlifeRealm = Select(
+        GameStateValidationPhase.CrossReferences |
         GameStateValidationPhase.SoulStateConsistency |
         GameStateValidationPhase.MetaMiscStateFiles |
         GameStateValidationPhase.ClientOwnedControlFiles |
@@ -70,6 +71,7 @@ internal static class IntegrationValidationProfiles
 
     internal static readonly GameStateValidationSelection GuardianArchiveTrade = Select(
         GameStateValidationPhase.CrossReferences |
+        GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
         GameStateValidationPhase.MetaMiscStateFiles |
         GameStateValidationPhase.GuardianResonancePowerEvents |
         GameStateValidationPhase.ClientOwnedControlFiles);

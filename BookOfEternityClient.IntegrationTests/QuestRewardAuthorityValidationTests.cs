@@ -46,7 +46,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingItemAuthorityCode));
     }
@@ -58,7 +59,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
           "itemsReceived": ["item_gold_ring"]
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.Contains(issues, issue =>
             IsIssue(issue, MissingItemAuthorityCode) &&
@@ -90,7 +92,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingSkillAuthorityCode));
     }
@@ -102,7 +105,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
           "skillsUnlocked": ["skill_trading_advanced"]
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.Contains(issues, issue =>
             IsIssue(issue, MissingSkillAuthorityCode) &&
@@ -129,7 +133,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingRelationshipAuthorityCode));
     }
@@ -141,7 +146,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
           "relationshipChanges": ["npc_guild_master_+20"]
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.Contains(issues, issue =>
             IsIssue(issue, MissingRelationshipAuthorityCode) &&
@@ -180,7 +186,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
           ]
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingItemAuthorityCode));
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingSkillAuthorityCode));
@@ -201,7 +208,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
           ]
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.Contains(issues, issue =>
             IsIssue(issue, MissingHistoryReasonCode) &&
@@ -223,7 +231,8 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
           ]
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
 
         Assert.Contains(issues, issue =>
             IsIssue(issue, MissingHistoryReasonCode) &&

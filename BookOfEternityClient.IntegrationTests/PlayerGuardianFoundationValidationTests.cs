@@ -56,7 +56,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
             [PlayerGuardianFoundationState.PendingRequestPath] = backupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "player_guardian_foundation_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -92,7 +93,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
             [PlayerGuardianFoundationState.PendingRequestPath] = backupPath
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "player_guardian_foundation_wrong_realm", StringComparison.OrdinalIgnoreCase));
     }
@@ -102,7 +104,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     {
         await WriteSuccessfulFoundationResolutionAsync(includeSoulStatus: false);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "player_guardian_foundation_missing_soul_status", StringComparison.OrdinalIgnoreCase));
     }
@@ -112,7 +115,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     {
         await WriteSuccessfulFoundationResolutionAsync(includeFormerPatronRole: false);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "player_guardian_foundation_missing_former_patron_role", StringComparison.OrdinalIgnoreCase));
     }
@@ -122,7 +126,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     {
         await WriteSuccessfulFoundationResolutionAsync(foundedGuardianReputation: 180);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "player_guardian_foundation_loyalty_below_soulbound_floor", StringComparison.OrdinalIgnoreCase));
     }
@@ -132,7 +137,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     {
         await WriteSuccessfulFoundationResolutionAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
         Assert.True(
@@ -186,7 +192,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
         });
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase) &&
@@ -204,7 +211,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     {
         await WriteSuccessfulFoundationResolutionAsync(includeCreateCommand: false);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_materialized_without_create_surface", StringComparison.OrdinalIgnoreCase));
     }
@@ -218,7 +226,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
         createData["mood"]!.AsObject()["reason"] = "tampered_create_surface";
         await WriteJsonAsync("game_state/meta/guardians.json", guardiansRoot);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(
             issues,
@@ -268,7 +277,8 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
         await WriteChaosSeaLoreBootstrapAsync();
         await WriteJsonAsync("ready/turn_complete.json", new { status = "ok" });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.PlayerGuardian);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
     }

@@ -1070,7 +1070,8 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.Contains("rival-интрига", projectJournalJson, StringComparison.Ordinal);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.CanonicalGuardian);
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_project_missing_project_outcome_audit", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_project_missing_offensive_impact_audit", StringComparison.OrdinalIgnoreCase));
     }
@@ -1271,7 +1272,8 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var powerJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.CanonicalGuardian);
 
         Assert.NotNull(trackerJson);
         var trackerRoot = JsonNode.Parse(trackerJson!)?.AsObject();
@@ -3936,7 +3938,8 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.True(Math.Abs(appliedDelta) <= targetLoss);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.CanonicalGuardian);
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_rival_strike_delta_target_loss_mismatch", StringComparison.OrdinalIgnoreCase));
     }

@@ -445,7 +445,8 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.DoesNotContain(issues, issue =>
             issue.FilePath.Contains("pending_resident_companion_manifestation_request", StringComparison.OrdinalIgnoreCase) &&
@@ -483,7 +484,8 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "stale_pending_guardian_creation_after_materialization", StringComparison.OrdinalIgnoreCase));
@@ -550,7 +552,8 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
         await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber,
             "Душа пробуждается в Море Хаоса и ожидает первого Хранителя.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "pending_guardian_creation_missing_materialized_guardian", StringComparison.OrdinalIgnoreCase));
@@ -602,7 +605,8 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
         await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber,
             "Душа выбирает свободно описанную Хранительницу Эйру как первого Хранителя.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "pending_guardian_creation_unresolved_after_startup_turn", StringComparison.OrdinalIgnoreCase));
@@ -623,7 +627,8 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
         """);
         await _fs.WriteFileAtomicAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "{ malformed");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "pending_resident_companion_manifestation_afterlife_malformed", StringComparison.OrdinalIgnoreCase));

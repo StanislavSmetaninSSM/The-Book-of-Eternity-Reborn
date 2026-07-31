@@ -53,7 +53,8 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal("На полях письма проступил след старой руны.", sidecar["journalEntries"]!.AsArray()[0]!.GetValue<string>());
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.CanonicalInventory);
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "item_journal_entry_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase));
     }

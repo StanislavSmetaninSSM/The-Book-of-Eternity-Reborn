@@ -972,7 +972,8 @@ public sealed class GuardianTradeServiceTests : IDisposable
         await DuplicateFirstGuardianTradeSlotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.GuardianArchiveTrade);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_inventory_duplicate_slot_id", StringComparison.OrdinalIgnoreCase));
     }
