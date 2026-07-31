@@ -89,6 +89,21 @@ public sealed class FastTestBoundaryTests
             "Production solution must not include the test support project");
     }
 
+    [Fact]
+    public void ProjectReferences_UpdateOnlyItem_DoesNotCreateDirectReference()
+    {
+        var project = XDocument.Parse(
+            """
+            <Project>
+              <ItemGroup>
+                <ProjectReference Update="..\BookOfEternityClient\BookOfEternityClient.csproj" />
+              </ItemGroup>
+            </Project>
+            """);
+
+        Assert.Empty(ProjectReferences(project, FastTestsDirectory));
+    }
+
     private static XDocument ReadProject(string directory, string fileName) =>
         XDocument.Load(ProjectPath(directory, fileName));
 
@@ -128,9 +143,7 @@ public sealed class FastTestBoundaryTests
         project
             .Descendants()
             .Where(element => string.Equals(element.Name.LocalName, "ProjectReference", StringComparison.Ordinal))
-            .Select(element =>
-                AttributeValue(element, "Include") ??
-                AttributeValue(element, "Update"))
+            .Select(element => AttributeValue(element, "Include"))
             .Where(reference => !string.IsNullOrWhiteSpace(reference))
             .Select(reference => ResolveRelativePath(ProjectPath(projectDirectory), reference!))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
