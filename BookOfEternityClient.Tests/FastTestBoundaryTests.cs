@@ -128,9 +128,11 @@ public sealed class FastTestBoundaryTests
         project
             .Descendants()
             .Where(element => string.Equals(element.Name.LocalName, "ProjectReference", StringComparison.Ordinal))
-            .Select(element => AttributeValue(element, "Include"))
-            .Where(include => !string.IsNullOrWhiteSpace(include))
-            .Select(include => Path.GetFullPath(Path.Combine(ProjectPath(projectDirectory), include!)))
+            .Select(element =>
+                AttributeValue(element, "Include") ??
+                AttributeValue(element, "Update"))
+            .Where(reference => !string.IsNullOrWhiteSpace(reference))
+            .Select(reference => ResolveRelativePath(ProjectPath(projectDirectory), reference!))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
     private static void AssertDoesNotReferencePackage(
@@ -202,10 +204,19 @@ public sealed class FastTestBoundaryTests
             .ReadLines(solutionPath)
             .Select(line => projectEntry.Match(line))
             .Where(match => match.Success)
-            .Select(match => Path.GetFullPath(Path.Combine(
+            .Select(match => ResolveRelativePath(
                 Path.GetDirectoryName(solutionPath)!,
-                match.Groups["path"].Value)))
+                match.Groups["path"].Value))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static string ResolveRelativePath(string baseDirectory, string relativePath)
+    {
+        var normalizedPath = relativePath
+            .Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar);
+
+        return Path.GetFullPath(Path.Combine(baseDirectory, normalizedPath));
     }
 
     private static string? AttributeValue(XElement element, string localName) =>
