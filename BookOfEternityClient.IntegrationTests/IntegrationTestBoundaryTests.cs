@@ -1,4 +1,6 @@
 using BookOfEternityClient.Services;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Xunit;
@@ -240,6 +242,74 @@ public sealed class IntegrationTestBoundaryTests
         ]));
 
         Assert.Contains("no member-call", violation, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_IgnoresCommentedInvocation()
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var profileType = "IntegrationValidation" + "Profiles";
+        var invocation = $"await validator.{methodName}({profileType}.Expected);";
+        var source = $"// {invocation}";
+
+        var violation = Assert.Single(ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("CommentedInvocation.cs", "Expected", source)
+        ]));
+
+        Assert.Contains("no member-call", violation, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_IgnoresInvocationInString()
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var profileType = "IntegrationValidation" + "Profiles";
+        var source =
+            $"var text = \"validator.{methodName}({profileType}.Expected)\";";
+
+        var violation = Assert.Single(ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("StringInvocation.cs", "Expected", source)
+        ]));
+
+        Assert.Contains("no member-call", violation, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_AcceptsTriviaAfterDot()
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var profileType = "IntegrationValidation" + "Profiles";
+        var source =
+            $"await validator. /* scope */ {methodName}({profileType}.Expected);";
+
+        var violations = ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("Trivia.cs", "Expected", source)
+        ]);
+
+        Assert.Empty(violations);
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsWrongProfileAfterDotTrivia()
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var profileType = "IntegrationValidation" + "Profiles";
+        var source =
+            $"await validator.{methodName}({profileType}.Expected);" +
+            Environment.NewLine +
+            $"await validator. /* scope */ {methodName}({profileType}.Wrong);";
+
+        var violation = Assert.Single(ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("WrongTrivia.cs", "Expected", source)
+        ]));
+
+        Assert.DoesNotContain("no member-call", violation, StringComparison.Ordinal);
+        Assert.Contains($"{profileType}.Expected", violation, StringComparison.Ordinal);
+        Assert.Contains($"{profileType}.Wrong", violation, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -706,40 +776,90 @@ public sealed class IntegrationTestBoundaryTests
     {
         var methodName = "ValidateGameState" + "Async";
         var profileType = "IntegrationValidation" + "Profiles";
-        var invocation = new Regex(
-            @"\." + Regex.Escape(methodName) + @"\s*\((?<argument>[^)]*)\)",
-            RegexOptions.CultureInvariant);
         var violations = new List<string>();
 
         foreach (var (fileName, profileName, source) in sources)
         {
             var expectedArgument = $"{profileType}.{profileName}";
-            var matches = invocation.Matches(source);
+            var root = CSharpSyntaxTree.ParseText(source).GetRoot();
+            var invocations = root
+                .DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
+                .Where(invocation => string.Equals(
+                    InvokedMemberName(invocation),
+                    methodName,
+                    StringComparison.Ordinal))
+                .ToArray();
 
-            if (matches.Count == 0)
+            if (invocations.Length == 0)
             {
                 violations.Add(
                     $"{fileName}: contains no member-call to {methodName}");
                 continue;
             }
 
-            foreach (Match match in matches)
+            foreach (var invocation in invocations)
             {
-                var argument = match.Groups["argument"].Value.Trim();
+                var arguments = invocation.ArgumentList.Arguments;
 
-                if (string.Equals(argument, expectedArgument, StringComparison.Ordinal))
+                if (arguments.Count == 1 &&
+                    IsExpectedIntegrationProfile(
+                        arguments[0].Expression,
+                        profileType,
+                        profileName))
                 {
                     continue;
                 }
 
-                var displayedArgument = argument.Length == 0 ? "<empty>" : argument;
+                var displayedArgument = arguments.Count switch
+                {
+                    0 => "<empty>",
+                    1 => arguments[0].Expression.ToString(),
+                    _ => $"<{arguments.Count} arguments: {arguments}>"
+                };
+                var line = invocation.GetLocation()
+                    .GetLineSpan()
+                    .StartLinePosition
+                    .Line + 1;
                 violations.Add(
-                    $"{fileName}:{LineNumber(source, match.Index)}: expected " +
+                    $"{fileName}:{line}: expected exactly one structural argument " +
                     $"{expectedArgument}; found {displayedArgument}");
             }
         }
 
         return violations.ToArray();
+    }
+
+    private static string? InvokedMemberName(InvocationExpressionSyntax invocation)
+    {
+        return invocation.Expression switch
+        {
+            MemberAccessExpressionSyntax memberAccess =>
+                memberAccess.Name.Identifier.ValueText,
+            MemberBindingExpressionSyntax memberBinding =>
+                memberBinding.Name.Identifier.ValueText,
+            _ => null
+        };
+    }
+
+    private static bool IsExpectedIntegrationProfile(
+        ExpressionSyntax argument,
+        string profileType,
+        string profileName)
+    {
+        return argument is MemberAccessExpressionSyntax
+        {
+            Expression: IdentifierNameSyntax profileTypeSyntax,
+            Name: IdentifierNameSyntax profileNameSyntax
+        } &&
+            string.Equals(
+                profileTypeSyntax.Identifier.ValueText,
+                profileType,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                profileNameSyntax.Identifier.ValueText,
+                profileName,
+                StringComparison.Ordinal);
     }
 
     private static void AssertGuardianBroadCallBudget(
