@@ -1797,7 +1797,7 @@ public sealed partial class GuardianSystemRegressionTests
             """{ "availability": "active", "factions": [] }""");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.ShiningFaction);
 
         AssertDoesNotContainIssueCodes(issues, "shining_faction_relevant_actor_missing_strategic_memory_delta");
     }

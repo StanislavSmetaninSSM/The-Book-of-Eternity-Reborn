@@ -9411,7 +9411,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         lead.Remove("artAuthoritySource");
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
 
-        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
+        var issues = await ValidateCoreAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_missing_actor_art_snapshot", StringComparison.OrdinalIgnoreCase) &&
