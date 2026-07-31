@@ -992,12 +992,13 @@ LocalWebUiBuiltFrontendSmokeTests.cs
 3. verify the reviewed regression anchor files carry `RegressionIntegration`;
 4. parse `partial class <name>` and assert every name occurs under exactly one of the two test roots;
 5. verify all Guardian profile partials call their reviewed profile;
-6. verify afterlife spiritual-conflict calls no parameterless full validation;
-7. verify `scripts/test-csharp.ps1` contains the currently implemented lanes `Fast`, `Focused`, `FullValidation`, `RegressionIntegration`, `ProcessIntegration`, `E2E`, and `Complete`.
+6. verify afterlife spiritual-conflict calls no parameterless full validation.
 
-`PreMerge` is intentionally introduced and guarded together in Task 13, whose
-first step captures the runner-guard RED before the project-aware routing is
-implemented.
+Task 7 intentionally performs no source read or assertion against
+`scripts/test-csharp.ps1`. Task 13 owns the entire runner source guard: current
+lane tokens and filters, artifacts, timing, owned-tree termination, and the new
+`PreMerge`/project-aware routing contract. Its first step captures that complete
+runner-guard RED before the routing implementation.
 
 Use the exact process/E2E manifest already present in the old guard and update its root from `BookOfEternityClient.Tests` to `BookOfEternityClient.IntegrationTests`.
 
@@ -1673,16 +1674,39 @@ git commit -m "test: replace life-transition polling with checkpoint (#1505)"
 
 - [ ] **Step 1: Extend runner source guards and capture RED**
 
-Assert the runner contains:
+Add the runner source guard in this task. Assert the runner contains the
+complete lane set:
 
 ```text
+Fast
+Focused
+FullValidation
+RegressionIntegration
+ProcessIntegration
+E2E
+Complete
+PreMerge
+```
+
+Assert it contains the current filter/artifact/timing/owned-tree safety tokens
+alongside the new project-routing tokens:
+
+```text
+Category=FullValidation
+Category=RegressionIntegration
+Category=ProcessIntegration
+Category=E2E
+test-results.trx
+dotnet-test.log
+Stopwatch
+WaitForExit
+Kill($true)
+ArgumentList.Add
 $fastTestProject
 $integrationTestProject
-PreMerge
 summary.json
 DuplicateTests
 Category=ProcessIntegration&Category!=E2E
-Category=E2E
 ```
 
 Assert it no longer contains the old Fast exclusion filter:
@@ -1690,6 +1714,9 @@ Assert it no longer contains the old Fast exclusion filter:
 ```text
 Category!=FullValidation&Category!=ProcessIntegration&Category!=E2E&Category!=RegressionIntegration
 ```
+
+Assert it never uses broad process discovery or termination through
+`Get-Process`, `Stop-Process`, or `taskkill`.
 
 Run both boundary classes. Expected: FAIL before runner changes.
 
