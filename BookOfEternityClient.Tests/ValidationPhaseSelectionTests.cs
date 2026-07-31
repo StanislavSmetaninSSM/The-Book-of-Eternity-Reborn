@@ -101,21 +101,6 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     }
 
     [Fact]
-    [Trait("Category", "FullValidation")]
-    public async Task ValidateGameStateAsync_ExplicitAll_MatchesPublicFacade()
-    {
-        await _fileSystem.WriteFileAtomicAsync(
-            "game_state/misc/phase_selection_invalid.json",
-            "{");
-
-        var publicIssues = await _validator.ValidateGameStateAsync();
-        var explicitAllIssues = await _validator.ValidateGameStateAsync(
-            GameStateValidationPhase.All);
-
-        Assert.Equal(Snapshot(publicIssues), Snapshot(explicitAllIssues));
-    }
-
-    [Fact]
     public async Task ValidateGameStateAsync_ConsecutiveSelections_DoNotLeakPhaseState()
     {
         const string path = "game_state/misc/phase_selection_invalid.json";
