@@ -1,6 +1,5 @@
 using System.Reflection;
 using BookOfEternityClient.Core;
-using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
@@ -20,11 +19,7 @@ internal static class FileSystemManagerHookTestHelper
         string propertyName,
         Func<string, Task> callback)
     {
-        var property = typeof(FileSystemManagerHooks).GetProperty(
-            propertyName,
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(property);
-        property!.SetValue(hooks, callback);
+        GetRequiredProperty(propertyName).SetValue(hooks, callback);
     }
 
     internal static FileSystemManagerHooks WithBooleanOverride(
@@ -41,10 +36,13 @@ internal static class FileSystemManagerHookTestHelper
         string propertyName,
         bool value)
     {
-        var property = typeof(FileSystemManagerHooks).GetProperty(
-            propertyName,
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(property);
-        property!.SetValue(hooks, value);
+        GetRequiredProperty(propertyName).SetValue(hooks, value);
     }
+
+    private static PropertyInfo GetRequiredProperty(string propertyName) =>
+        typeof(FileSystemManagerHooks).GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.NonPublic)
+        ?? throw new InvalidOperationException(
+            $"FileSystemManagerHooks property was not found: {propertyName}");
 }
