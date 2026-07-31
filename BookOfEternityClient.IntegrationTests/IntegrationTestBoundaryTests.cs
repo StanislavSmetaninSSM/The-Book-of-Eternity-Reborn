@@ -30,6 +30,23 @@ public sealed class IntegrationTestBoundaryTests
             ["GuardianSystemRegressionTests.TradeOfferingResonance.cs"] = "TradeOfferingResonance"
         };
 
+    private static readonly IReadOnlyDictionary<string, string> ActorAndAfterlifeScopedSources =
+        new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["ActorMaterializationValidationTests.cs"] = "ActorMaterialization",
+            ["AfterlifeActiveThreatValidationTests.cs"] = "AfterlifeActiveThreat",
+            ["AfterlifeArchiveActionStateTests.cs"] = "AfterlifeArchive",
+            ["AfterlifeChronicleValidationTests.cs"] = "AfterlifeChronicle",
+            ["AfterlifeEntityProfileValidationTests.cs"] = "AfterlifeEntityProfile",
+            ["AfterlifeGlobalFlagValidationTests.cs"] = "AfterlifeGlobalFlag",
+            ["AfterlifeRealmSegregationValidationTests.cs"] = "AfterlifeRealm",
+            ["AfterlifeSpiritualConflictBalanceTests.cs"] = "AfterlifeConflict",
+            ["AfterlifeStoryOutlineValidationTests.cs"] = "AfterlifeStory",
+            ["FactionIdentityValidationTests.cs"] = "FactionState",
+            ["RealmSemanticsValidationTests.cs"] = "RealmSemantics",
+            ["SoulIdentityValidationTests.cs"] = "SoulIdentity"
+        };
+
     private static readonly string[] GuardianPartialSources =
     [
         "GuardianSystemRegressionTests.AcceptedAuthority.cs",
@@ -144,6 +161,35 @@ public sealed class IntegrationTestBoundaryTests
                 GameStateValidationPhase.None,
                 profile.Phases & ~GameStateValidationPhase.Selectable);
         });
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles()
+    {
+        var broadValidationCall = "ValidateGameStateAsync" + "()";
+        var violations = new List<string>();
+
+        foreach (var (fileName, profileName) in ActorAndAfterlifeScopedSources)
+        {
+            var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName));
+            var profileReference = $"IntegrationValidationProfiles.{profileName}";
+
+            if (source.Contains(broadValidationCall, StringComparison.Ordinal))
+            {
+                violations.Add($"{fileName}: contains parameterless {broadValidationCall}");
+            }
+
+            if (!source.Contains(profileReference, StringComparison.Ordinal))
+            {
+                violations.Add($"{fileName}: missing {profileReference}");
+            }
+        }
+
+        Assert.True(
+            violations.Count == 0,
+            "Actor and afterlife validation source violations:" +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, violations));
     }
 
     [Fact]

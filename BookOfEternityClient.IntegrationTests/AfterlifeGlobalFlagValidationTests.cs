@@ -29,7 +29,8 @@ public sealed class AfterlifeGlobalFlagValidationTests : IDisposable
     {
         await WriteFlagStateAsync(BuildValidFlagStateJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeGlobalFlag);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_global_flag_", StringComparison.OrdinalIgnoreCase) == true);
@@ -41,7 +42,8 @@ public sealed class AfterlifeGlobalFlagValidationTests : IDisposable
         await WriteFlagStateAsync(BuildValidFlagStateJson()
             .Replace("\"state\": \"active\"", "\"state\": \"obsolete\"", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeGlobalFlag);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_global_flag_obsolete_reason_missing", StringComparison.OrdinalIgnoreCase));
@@ -68,7 +70,8 @@ public sealed class AfterlifeGlobalFlagValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeGlobalFlag);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_global_flag_update_missing_gm_thoughts", StringComparison.OrdinalIgnoreCase));
@@ -109,7 +112,8 @@ public sealed class AfterlifeGlobalFlagValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeGlobalFlag);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_global_flag_duplicate_id", StringComparison.OrdinalIgnoreCase));
@@ -128,7 +132,8 @@ public sealed class AfterlifeGlobalFlagValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeGlobalFlag);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_global_flag_removed_without_obsolete_marker", StringComparison.OrdinalIgnoreCase));

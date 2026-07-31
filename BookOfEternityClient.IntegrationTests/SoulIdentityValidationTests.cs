@@ -34,7 +34,8 @@ public sealed class SoulIdentityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SoulIdentity);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "soul_form_description_invalid_shape", StringComparison.OrdinalIgnoreCase) ||
@@ -56,7 +57,8 @@ public sealed class SoulIdentityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SoulIdentity);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "soul_form_description_invalid_shape", StringComparison.OrdinalIgnoreCase) &&
@@ -75,7 +77,8 @@ public sealed class SoulIdentityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SoulIdentity);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "soul_form_description_empty", StringComparison.OrdinalIgnoreCase) &&

@@ -45,7 +45,10 @@ public sealed class AfterlifeArchiveActionStateTests : IDisposable
         }
         """);
 
-        var issues = await new ValidationService(_fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync();
+        var issues = await new ValidationService(
+                _fs,
+                NullLogger<ValidationService>.Instance)
+            .ValidateGameStateAsync(IntegrationValidationProfiles.AfterlifeArchive);
 
         Assert.Contains(issues, static issue =>
             issue.Severity == IssueSeverity.Error &&

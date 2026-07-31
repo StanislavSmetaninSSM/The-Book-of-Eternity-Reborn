@@ -156,7 +156,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         """;
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -185,7 +186,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         """;
         await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -205,7 +207,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var currentJson = BuildMortalPromotionStateJson(promotion);
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -223,7 +226,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             currentJson,
             preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -309,7 +313,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var currentJson = BuildAfterlifeProfileStateJson(includeProfile: true);
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -327,7 +332,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             actorId: "player_soul");
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -343,7 +349,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             actorId: "mentor_combatant_legacy_profile");
         await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -364,7 +371,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var legacyJson = legacyRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is "actor_materialization_missing" or
@@ -382,7 +390,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             actorId: "legacy_case_variant_profile");
         await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_invalid_actor_type" &&
@@ -401,7 +410,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var currentJson = BuildAfterlifeProfileStateJson(includeProfile: true, promotion: promotion);
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -2208,7 +2218,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             authorityJson);
         await WriteValidatedSnapshotManifestAsync((authorityPath, authorityJson));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -2238,7 +2249,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var currentJson = BuildHistoricalEnvelopeStateJson(family, mutation);
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         var expectedActor = family == "mortal"
             ? "mortal_npc:historical_mortal_actor"
@@ -2261,7 +2273,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var currentJson = BuildHistoricalEnvelopeStateJson(family, mutation: "reordered");
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_historical_envelope_changed");
@@ -2343,7 +2356,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
 
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue => issue.Code == expectedCode);
     }
@@ -2371,7 +2385,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
 
         await WriteCurrentAndValidatedPreTurnAsync(path, currentState.ToJsonString(), preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("actor_materialization_", StringComparison.Ordinal) == true);
@@ -2394,7 +2409,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             : "radiant_actor:afterlife_actor_0042";
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, "[]");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "actor_materialization_missing" &&
@@ -2762,7 +2778,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
         await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "npc_personality_traits_cardinality_invalid" &&
@@ -2784,7 +2801,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var legacyJson = legacyRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is "npc_personality_traits_cardinality_invalid" or
@@ -2805,7 +2823,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var legacyJson = legacyRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, legacyJson, legacyJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "npc_characteristics_empty" &&
@@ -2827,7 +2846,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var historicalJson = historicalRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, historicalJson, historicalJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is "npc_personality_traits_cardinality_invalid" or
@@ -2850,7 +2870,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         historicalActor["personalityTraits"] = BuildCompleteMortalPersonalityTraits(2);
         await _fs.WriteFileAtomicAsync(path, historicalRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is "npc_personality_traits_cardinality_invalid" or
@@ -3655,7 +3676,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             currentRoot.ToJsonString(),
             preTurnRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "npc_existing_inventory_resend_forbidden" &&
@@ -3691,7 +3713,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             currentRoot.ToJsonString(),
             preTurnRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "npc_existing_inventory_resend_forbidden" &&
@@ -3724,7 +3747,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             includeInventory: true);
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "npc_existing_inventory_resend_forbidden" &&
@@ -3745,7 +3769,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "npc_existing_inventory_resend_forbidden" &&
@@ -3765,7 +3790,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             includeInventory: true);
         await _fs.WriteFileAtomicAsync(path, currentJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "npc_existing_inventory_resend_forbidden" &&
@@ -3789,7 +3815,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             currentRoot.ToJsonString(),
             "{ malformed validated NPC authority");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "npc_existing_inventory_resend_forbidden" &&
@@ -3927,7 +3954,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         currentRoot["UpdateNPCs"] = new JsonArray(retainedActor);
         await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_existing_resend_forbidden" &&
@@ -3948,7 +3976,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         currentRoot["NPCsInScene"]![0]!["plans"] = "Продолжить работу после принятого хода.";
         await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Actor == "mortal_npc:historical_retained_actor" &&
@@ -3966,7 +3995,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             includeEnvelope: true);
         await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Actor == "mortal_npc:historical_update_carrier" &&
@@ -3986,7 +4016,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         currentRoot["UpdateNPCs"]![0]!["plans"] = "Новый план текущего хода.";
         await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Actor == "mortal_npc:changed_historical_update_carrier" &&
@@ -4015,7 +4046,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             currentRoot.ToJsonString(),
             preTurnRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Actor == "mortal_npc:cross_section_historical_carrier" &&
@@ -4039,7 +4071,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             currentRoot.ToJsonString(),
             preTurnRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Actor == "mortal_npc:cross_section_changed_carrier" &&
@@ -4271,7 +4304,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             : """{ "schemaVersion": 1, "profiles": [] }""";
         await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_duplicate_id" &&
@@ -4303,7 +4337,8 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         actorArray.Add(duplicate);
         await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ActorMaterialization);
 
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_duplicate_id" &&

@@ -91,7 +91,8 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             ("game_state/meta/soul_state.json", preTurnSoul),
             (ShiningAbodeState.StatePath, preTurnShining));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
@@ -118,7 +119,8 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             ("game_state/meta/soul_state.json", preTurnSoul),
             (ShiningAbodeState.StatePath, preTurnShining));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
@@ -154,7 +156,8 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             ("game_state/meta/soul_state.json", preTurnSoul),
             ("game_state/factions/faction_projects.json", preTurnProjects));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
@@ -183,7 +186,8 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             ("game_state/meta/soul_state.json", preTurnSoul),
             (relativePath, preTurnJson));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
@@ -210,7 +214,8 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
         await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
         await WriteValidatedSnapshotManifestAsync(("game_state/meta/soul_state.json", preTurnSoul));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_missing_validated_tracked_baseline", StringComparison.OrdinalIgnoreCase) &&
@@ -259,7 +264,8 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             }
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
@@ -326,7 +332,8 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             ("game_state/meta/soul_state.json", preTurnSoul),
             ("game_state/inventory/items.json", inventory));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeRealm);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "item_journal_unknown_item_reference", StringComparison.OrdinalIgnoreCase));

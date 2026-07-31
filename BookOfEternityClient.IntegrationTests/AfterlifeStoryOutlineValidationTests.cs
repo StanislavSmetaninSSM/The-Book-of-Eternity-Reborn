@@ -27,7 +27,8 @@ public sealed class AfterlifeStoryOutlineValidationTests : IDisposable
     {
         await WriteOutlineStateAsync(BuildValidOutlineJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_story_outline_", StringComparison.OrdinalIgnoreCase) == true);
@@ -39,7 +40,8 @@ public sealed class AfterlifeStoryOutlineValidationTests : IDisposable
         await WriteOutlineStateAsync(BuildValidOutlineJson()
             .Replace("\"mainArc\": \"Скрытые следы Крыльев Ангелов\",", string.Empty, StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_story_outline_missing_main_arc", StringComparison.OrdinalIgnoreCase));
@@ -51,7 +53,8 @@ public sealed class AfterlifeStoryOutlineValidationTests : IDisposable
         await WriteOutlineStateAsync(BuildValidOutlineJson()
             .Replace("\"lastUpdatedTurn\": 9", "\"playerVisibleText\": \"Сареф уже рядом.\",\n      \"lastUpdatedTurn\": 9", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_story_outline_player_visible_text_forbidden", StringComparison.OrdinalIgnoreCase));
@@ -63,7 +66,8 @@ public sealed class AfterlifeStoryOutlineValidationTests : IDisposable
         await WriteOutlineStateAsync(BuildValidOutlineJson()
             .Replace("\"lastUpdatedTurn\": 9", "\"unusedTestMarker\": 9", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_story_outline_missing_last_updated_turn", StringComparison.OrdinalIgnoreCase));

@@ -27,7 +27,8 @@ public sealed class AfterlifeChronicleValidationTests : IDisposable
     {
         await WriteChronicleStateAsync(BuildValidChronicleJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeChronicle);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_chronicle_", StringComparison.OrdinalIgnoreCase) == true);
@@ -39,7 +40,8 @@ public sealed class AfterlifeChronicleValidationTests : IDisposable
         await WriteChronicleStateAsync(BuildValidChronicleJson()
             .Replace("\"scopeType\": \"guardian_scene\"", "\"scopeType\": \"mortal_city\"", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeChronicle);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_chronicle_invalid_scope_type", StringComparison.OrdinalIgnoreCase));
@@ -67,7 +69,8 @@ public sealed class AfterlifeChronicleValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeChronicle);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_chronicle_update_event_descriptions_forbidden", StringComparison.OrdinalIgnoreCase));
@@ -79,7 +82,8 @@ public sealed class AfterlifeChronicleValidationTests : IDisposable
         await WriteChronicleStateAsync(BuildValidChronicleJson()
             .Replace("\"lastEventsDescription\": \"[Turn 5] Игрок услышал зов зеркал.\",", string.Empty, StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeChronicle);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_chronicle_missing_last_events_description", StringComparison.OrdinalIgnoreCase));
@@ -94,7 +98,8 @@ public sealed class AfterlifeChronicleValidationTests : IDisposable
                 "Свод остается первой afterlife-точкой игрока.",
                 StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeChronicle);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_chronicle_player_text_internal_term", StringComparison.OrdinalIgnoreCase) &&

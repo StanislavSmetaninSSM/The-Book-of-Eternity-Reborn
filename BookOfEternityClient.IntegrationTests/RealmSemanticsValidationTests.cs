@@ -34,7 +34,8 @@ public sealed class RealmSemanticsValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.RealmSemantics);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "soul_state_unresolved_current_realm", StringComparison.OrdinalIgnoreCase));
@@ -49,7 +50,8 @@ public sealed class RealmSemanticsValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.RealmSemantics);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "soul_state_unresolved_current_realm", StringComparison.OrdinalIgnoreCase));

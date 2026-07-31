@@ -27,7 +27,8 @@ public sealed class AfterlifeActiveThreatValidationTests : IDisposable
     {
         await WriteThreatStateAsync(BuildValidThreatJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeActiveThreat);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_threat_", StringComparison.OrdinalIgnoreCase) == true);
@@ -48,7 +49,8 @@ public sealed class AfterlifeActiveThreatValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeActiveThreat);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_threat_update_null_current_activity_forbidden", StringComparison.OrdinalIgnoreCase));
@@ -71,7 +73,8 @@ public sealed class AfterlifeActiveThreatValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeActiveThreat);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_threat_update_terminal_activity_state_forbidden", StringComparison.OrdinalIgnoreCase));
@@ -83,7 +86,8 @@ public sealed class AfterlifeActiveThreatValidationTests : IDisposable
         await WriteThreatStateAsync(BuildValidThreatJson()
             .Replace("\"realm\": \"Chaos Sea\"", "\"realm\": \"Mortal World\"", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeActiveThreat);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_threat_invalid_realm", StringComparison.OrdinalIgnoreCase));

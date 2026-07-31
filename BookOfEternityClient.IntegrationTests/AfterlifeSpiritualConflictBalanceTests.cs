@@ -354,7 +354,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         await WriteConflictStateWithExchangeAsync(scenario, diceAudit);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeConflict);
 
         Assert.Equal(scenario.ExpectedMargin, diceAudit["margin"]?.GetValue<int>());
         Assert.Equal(scenario.ExpectedBand, diceAudit["outcomeBand"]?.GetValue<string>());
@@ -384,7 +385,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         await WriteConflictStateWithExchangeAsync(scenario, diceAudit);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeConflict);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_outcome_band_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -411,7 +413,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         await WriteConflictStateWithExchangeAsync(scenario, diceAudit);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeConflict);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_missing_critical_result", StringComparison.OrdinalIgnoreCase));
@@ -439,7 +442,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         await WriteConflictStateWithExchangeAsync(scenario, diceAudit);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeConflict);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_critical_normalized_band_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -455,7 +459,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         await WriteResolvedConflictRewardStateAsync(scenario);
         await WriteRewardBalanceSnapshotAsync(scenario);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeConflict);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_conflict_reward_", StringComparison.OrdinalIgnoreCase) == true);
@@ -484,7 +489,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         await WriteResolvedConflictRewardStateAsync(scenario);
         await WriteRewardBalanceSnapshotAsync(scenario, preTurnInkFeathers: 20);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeConflict);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_wrong_currency", StringComparison.OrdinalIgnoreCase));
@@ -512,7 +518,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         await WriteResolvedConflictRewardStateAsync(scenario);
         await WriteRewardBalanceSnapshotAsync(scenario, preTurnLightSparks: 5);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeConflict);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_amount_over_cap", StringComparison.OrdinalIgnoreCase));

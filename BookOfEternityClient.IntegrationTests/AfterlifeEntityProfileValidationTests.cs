@@ -27,7 +27,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     {
         await WriteProfileStateAsync(BuildValidProfileJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
@@ -74,7 +75,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             """,
             StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_relationship_", StringComparison.OrdinalIgnoreCase) == true);
@@ -88,7 +90,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                   "effectSummary": "При успехе отражает часть давления в сторону противника."
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_missing_combat_effect", StringComparison.OrdinalIgnoreCase));
@@ -110,7 +113,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                   }
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_special_art_", StringComparison.OrdinalIgnoreCase) == true);
@@ -176,7 +180,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     {
         await WriteProfileStateAsync(BuildCurrentProfileUpdateWithSpecialArt(artPayload));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
@@ -187,7 +192,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     {
         await WriteProfileStateAsync(BuildValidProfileJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_missing_combat_effect", StringComparison.OrdinalIgnoreCase));
@@ -224,7 +230,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             """,
             StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_mask_", StringComparison.OrdinalIgnoreCase) == true);
@@ -254,7 +261,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             """,
             StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_mask_active_requires_true_self", StringComparison.OrdinalIgnoreCase));
@@ -348,7 +356,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
           ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_mask_", StringComparison.OrdinalIgnoreCase) == true);
@@ -388,7 +397,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
           ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_mask_remove_active_without_true_self", StringComparison.OrdinalIgnoreCase));
@@ -422,7 +432,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             """,
             StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_relationship_positive_lock_missing_breakthrough", StringComparison.OrdinalIgnoreCase));
@@ -448,7 +459,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             """,
             StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_relationship_positive_threshold_missing_gate", StringComparison.OrdinalIgnoreCase));
@@ -482,7 +494,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             """,
             StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_relationship_point_of_no_return_missing_proof", StringComparison.OrdinalIgnoreCase));
@@ -550,7 +563,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_relationship_clear_requires_clear_keyword", StringComparison.OrdinalIgnoreCase));
@@ -561,7 +575,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     {
         await WriteProfileStateAsync(BuildValidProfileWithAgencyJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_agency_", StringComparison.OrdinalIgnoreCase) == true);
@@ -616,7 +631,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_fate_card_", StringComparison.OrdinalIgnoreCase) == true);
@@ -664,7 +680,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_fate_card_locked_effects_active", StringComparison.OrdinalIgnoreCase));
@@ -720,7 +737,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_fate_card_unlock_missing_evidence", StringComparison.OrdinalIgnoreCase));
@@ -732,7 +750,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         await WriteProfileStateAsync(BuildValidProfileWithAgencyJson()
             .Replace("\"linkedQuestId\": \"quest_mirror_oath_trial\"", "\"linkedQuestId\": \"quest_missing\"", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_agency_activity_missing_quest_link", StringComparison.OrdinalIgnoreCase));
@@ -787,7 +806,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_agency_activity_missing_quest_link", StringComparison.OrdinalIgnoreCase));
@@ -834,7 +854,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_agency_activity_missing_gm_thoughts", StringComparison.OrdinalIgnoreCase));
@@ -848,7 +869,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "\"currencies\": { \"inkFeathers\": 120, \"lightSparks\": 3 }",
                 StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_chaos_light_sparks_forbidden", StringComparison.OrdinalIgnoreCase));
@@ -861,7 +883,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             .Replace("\"ownerActorType\": \"guardian\"", "\"ownerActorType\": \"player_soul\"", StringComparison.Ordinal)
             .Replace("\"ownerActorId\": \"guardian_mirror\"", "\"ownerActorId\": \"player_soul\"", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_owner_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -874,7 +897,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             .Replace("\"actorId\": \"guardian_mirror\"", "\"actorId\": \"player_soul\"", StringComparison.Ordinal)
             .Replace("\"ownerActorId\": \"guardian_mirror\"", "\"ownerActorId\": \"player_soul\"", StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_player_identity_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -931,7 +955,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_negative_currency", StringComparison.OrdinalIgnoreCase));
@@ -985,7 +1010,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_missing_receipt_id", StringComparison.OrdinalIgnoreCase));
@@ -1010,7 +1036,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         await WriteProfileStateAsync(BuildValidProfileJson()
             .Replace("{ \"inkFeathers\": 30, \"lightSparks\": 0 }", upgradeCost, StringComparison.Ordinal));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_invalid_upgrade_cost", StringComparison.OrdinalIgnoreCase));
@@ -1103,7 +1130,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_unknown_art", StringComparison.OrdinalIgnoreCase));
@@ -1169,7 +1197,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_custom_state_missing_id", StringComparison.OrdinalIgnoreCase));
@@ -1213,7 +1242,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_custom_state_change_unknown_target", StringComparison.OrdinalIgnoreCase));
@@ -1250,7 +1280,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_command_invalid_authority", StringComparison.OrdinalIgnoreCase));
@@ -1304,7 +1335,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_progression_ledger_missing_entry_id", StringComparison.OrdinalIgnoreCase));
@@ -1355,7 +1387,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_progression_ledger_negative_amount", StringComparison.OrdinalIgnoreCase));
@@ -1402,7 +1435,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_strategy_unknown_priority", StringComparison.OrdinalIgnoreCase));
@@ -1439,7 +1473,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_strategy_unknown_spend_category", StringComparison.OrdinalIgnoreCase));
@@ -1480,7 +1515,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_progression_override_unknown_special_art", StringComparison.OrdinalIgnoreCase));
@@ -1502,7 +1538,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_progression_override_invalid_authority", StringComparison.OrdinalIgnoreCase));
@@ -1558,7 +1595,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_progression_override_invalid_special_art_delta", StringComparison.OrdinalIgnoreCase));

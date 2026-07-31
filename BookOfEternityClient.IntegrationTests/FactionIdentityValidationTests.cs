@@ -34,7 +34,8 @@ public sealed class FactionIdentityValidationTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", factionCoreJson);
         await WriteValidatedSnapshotManifestAsync(("game_state/factions/faction_core.json", factionCoreJson));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.FactionState);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "faction_full_object_existing_requires_faction_id", StringComparison.OrdinalIgnoreCase) &&
@@ -59,7 +60,8 @@ public sealed class FactionIdentityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.FactionState);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "canonical_faction_sidecar_requires_permanent_faction_id", StringComparison.OrdinalIgnoreCase) &&
@@ -71,7 +73,8 @@ public sealed class FactionIdentityValidationTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", CreatePermanentFactionCoreJson());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.FactionState);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "faction_full_object_unknown_faction_id", StringComparison.OrdinalIgnoreCase) &&
