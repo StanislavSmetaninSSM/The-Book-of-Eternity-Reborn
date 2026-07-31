@@ -193,6 +193,12 @@ Expected: `.serena/` and all unrelated test-lane work remain unstaged.
 - Modify: every `BookOfEternityClient.Tests/GuardianSystemRegressionTests.*.cs`
 - Modify: `BookOfEternityClient.Tests/MortalFactPersistenceValidationTests.cs`
 - Modify: `BookOfEternityClient.Tests/AfterlifeSpiritualConflictValidationTests.cs`
+- Modify: `BookOfEternityClient.Tests/ValidationPhaseSelectionTests.cs`
+- Modify: `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs`
+- Modify: `BookOfEternityClient/Services/ValidationService.cs`
 - Test: `BookOfEternityClient.Tests/TestLaneSourceGuardTests.cs`
 
 **Interfaces:**
@@ -200,6 +206,8 @@ Expected: `.serena/` and all unrelated test-lane work remain unstaged.
 - Produces: named `GuardianValidationProfiles` selections for all eight Guardian domains.
 - Produces: one immutable prepared Guardian snapshot per test host and an independently materialized writable root per test instance.
 - Produces: `ValidateCoreAsync()` and `ValidateWithContextAsync()` helpers in the afterlife spiritual-conflict suite.
+- Preserves the single shared partial Guardian test class; the bounded runner owns
+  non-overlapping method-level shards after Guardian moves to IntegrationTests.
 
 - [ ] **Step 1: Run the Guardian source guards and fixture-isolation test**
 
@@ -211,15 +219,27 @@ dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-re
 
 Expected: all guards pass; direct Guardian broad calls are zero; two Guardian instances receive different writable roots; the prepared snapshot build count is one.
 
-- [ ] **Step 2: Run every Guardian regression test with a five-minute bound**
+- [ ] **Step 2: Record the bounded Guardian two-way scaling control**
 
 Run:
 
 ```powershell
-pwsh -NoProfile -File scripts/test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~GuardianSystemRegressionTests" -TimeoutMinutes 5
+pwsh -NoProfile -File scripts/test-csharp.ps1 `
+  -Lane Focused `
+  -NoBuild `
+  -TimeoutMinutes 3 `
+  -Filter "FullyQualifiedName~GuardianSystemRegressionTestsProjectsPower|FullyQualifiedName~GuardianSystemRegressionTestsPowerJournalOfferings"
 ```
 
-Expected: all discovered Guardian cases pass before the five-minute deadline.
+Expected: 127/127 cases pass below three minutes. Record the wall time and both
+class durations. This control proves useful two-way scaling without assuming that
+the complete filesystem-heavy Guardian workload scales inside one testhost.
+
+Do not require the complete Guardian filter to finish below five minutes at this
+intermediate point. Guardian is explicitly moved to IntegrationTests by Task 6 and
+is executed through non-overlapping external method shards by Task 13 under the
+single 15-minute PreMerge deadline. Fast remains a five-minute gate because it no
+longer discovers Guardian.
 
 - [ ] **Step 3: Run the complete afterlife spiritual-conflict class with a five-minute bound**
 
@@ -250,6 +270,12 @@ git add BookOfEternityClient.Tests/GuardianSystemRegressionTests.cs
 git add BookOfEternityClient.Tests/GuardianSystemRegressionTests.*.cs
 git add BookOfEternityClient.Tests/MortalFactPersistenceValidationTests.cs
 git add BookOfEternityClient.Tests/AfterlifeSpiritualConflictValidationTests.cs
+git add BookOfEternityClient.Tests/ValidationPhaseSelectionTests.cs
+git add BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs
+git add BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs
+git add BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs
+git add BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs
+git add BookOfEternityClient/Services/ValidationService.cs
 git commit -m "perf: scope guardian and afterlife validation tests (#1505)"
 ```
 
