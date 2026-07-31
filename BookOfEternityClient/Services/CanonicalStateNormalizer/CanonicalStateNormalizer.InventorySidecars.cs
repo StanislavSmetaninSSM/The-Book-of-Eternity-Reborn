@@ -18,7 +18,7 @@ public partial class CanonicalStateNormalizer
         if (result == null || !NormalizeInventoryItemJournalEntries(result))
             return;
 
-        await _fs.WriteFileAtomicAsync(path, result.ToJsonString(JsonOpts));
+        await WriteCanonicalFileAtomicAsync(path, result.ToJsonString(JsonOpts));
     }
 
     private async Task NormalizeInventoryItemResourcesAsync(IReadOnlyDictionary<string, string>? backups)

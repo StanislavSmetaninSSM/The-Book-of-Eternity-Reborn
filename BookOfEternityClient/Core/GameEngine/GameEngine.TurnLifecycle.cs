@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -32,6 +33,9 @@ public partial class GameEngine
 
     private async Task<bool> WaitForGmResponse()
     {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        {
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
@@ -58,7 +62,13 @@ public partial class GameEngine
             return false;
         }
 
-        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(snapshotContext, rollbackSnapshot);
+        var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
+        await InvokeSessionFinalizationCheckpointAsync(
+            SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution);
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(
+            snapshotContext,
+            rollbackSnapshot,
+            terminalSignals);
         if (terminalOutcome.Kind == "failure")
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -88,6 +98,8 @@ public partial class GameEngine
                 return false;
             }
 
+            await InvokeSessionFinalizationCheckpointAsync(
+                SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization);
             _audioService.PlayCue(AudioCue.TurnReady);
             var response = await BuildGameResponseFromFiles();
 
@@ -176,7 +188,7 @@ public partial class GameEngine
         }
 
         _pendingMemoryLegacyAwaitingConsumption = false;
-        await ShowTurnErrorMessageAsync("ready/turn_error.json");
+        ShowTurnErrorMessage(terminalSignals.ErrorJson);
         _fs.DeleteFile("input/turn_request.json");
         _fs.DeleteFile("ready/turn_error.json");
 
@@ -189,6 +201,7 @@ public partial class GameEngine
 
         await CleanupPendingTurnSnapshotAsync();
         return false;
+        });
     }
 
     /// <summary>
@@ -198,6 +211,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> WaitForGmResponseRaw()
     {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        {
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
@@ -223,13 +239,19 @@ public partial class GameEngine
             return false;
         }
 
-        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(snapshotContext, rollbackSnapshot);
+        var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
+        await InvokeSessionFinalizationCheckpointAsync(
+            SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution);
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(
+            snapshotContext,
+            rollbackSnapshot,
+            terminalSignals);
         if (terminalOutcome.Kind == "failure")
             return false;
 
         if (terminalOutcome.Kind == "error")
         {
-            await ShowTurnErrorMessageAsync("ready/turn_error.json");
+            ShowTurnErrorMessage(terminalSignals.ErrorJson);
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
 
@@ -247,6 +269,7 @@ public partial class GameEngine
         _audioService.PlayCue(AudioCue.TurnReady);
 
         return true;
+        });
     }
 
     private async Task RollbackRejectedAcceptedTurnAsync(RollbackSnapshot? rollbackSnapshot, string playerMessage)
@@ -309,7 +332,7 @@ public partial class GameEngine
             return null;
         }
 
-        return ReadRelativeFileFromWorkspace(snapshotPath);
+        return ReadRelativeTextFromWorkspace(snapshotPath);
     }
 
     private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()
@@ -318,13 +341,23 @@ public partial class GameEngine
         var startTime = DateTime.UtcNow;
         var terminalTimeoutSeconds = await ResolveTerminalSignalTimeoutSecondsAsync();
         var nextRuntimeHealthCheckAt = startTime.AddSeconds(15);
+        await InvokeSessionFinalizationCheckpointAsync(
+            SessionFinalizationCheckpoint.TerminalWaitStarted);
 
         var waitTask = Task.Run(async () =>
         {
             while (!cts.Token.IsCancellationRequested)
             {
-                if (_fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json"))
-                    return TerminalSignalWaitOutcome.Completed;
+                await using (var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+                {
+                    await InvokeSessionFinalizationCheckpointAsync(
+                        SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired);
+                    if (_fs.FileExists(signalInspectionLease, "ready/turn_complete.json") ||
+                        _fs.FileExists(signalInspectionLease, "ready/turn_error.json"))
+                    {
+                        return TerminalSignalWaitOutcome.Completed;
+                    }
+                }
 
                 var now = DateTime.UtcNow;
                 var elapsedSeconds = (int)(now - startTime).TotalSeconds;
@@ -359,53 +392,69 @@ public partial class GameEngine
             return TerminalSignalWaitOutcome.Cancelled;
         }, cts.Token);
 
-        var result = await AnsiConsole.Status()
-            .Spinner(Spinner.Known.Dots12)
-            .SpinnerStyle(Style.Parse("cyan"))
-            .StartAsync(_loc.T("thinking"), async ctx =>
-            {
-                _ = Task.Run(() =>
+        try
+        {
+            var result = await AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots12)
+                .SpinnerStyle(Style.Parse("cyan"))
+                .StartAsync(_loc.T("thinking"), async ctx =>
                 {
-                    while (!cts.Token.IsCancellationRequested)
+                    _ = Task.Run(() =>
                     {
-                        if (_inputSource.KeyAvailable)
+                        while (!cts.Token.IsCancellationRequested)
                         {
-                            var key = _inputSource.ReadKey(intercept: true);
-                            if (key.Key == ConsoleKey.Escape)
+                            if (_inputSource.KeyAvailable)
                             {
-                                cts.Cancel();
-                                return;
+                                var key = _inputSource.ReadKey(intercept: true);
+                                if (key.Key == ConsoleKey.Escape)
+                                {
+                                    cts.Cancel();
+                                    return;
+                                }
                             }
-                        }
 
-                        Thread.Sleep(100);
+                            Thread.Sleep(100);
+                        }
+                    });
+
+                    while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
+                    {
+                        var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
+                        if (elapsed < 15)
+                            ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
+                        else if (elapsed < 120)
+                            ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
+                        else
+                            ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+
+                        await Task.Delay(1000);
+                    }
+
+                    try
+                    {
+                        return await waitTask;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return TerminalSignalWaitOutcome.Cancelled;
                     }
                 });
 
-                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
-                {
-                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
-                    if (elapsed < 15)
-                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
-                    else if (elapsed < 120)
-                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
-                    else
-                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+            return cts.IsCancellationRequested ? TerminalSignalWaitOutcome.Cancelled : result;
+        }
+        finally
+        {
+            if (!cts.IsCancellationRequested)
+                cts.Cancel();
+        }
+    }
 
-                    await Task.Delay(1000);
-                }
-
-                try
-                {
-                    return await waitTask;
-                }
-                catch (OperationCanceledException)
-                {
-                    return TerminalSignalWaitOutcome.Cancelled;
-                }
-            });
-
-        return cts.IsCancellationRequested ? TerminalSignalWaitOutcome.Cancelled : result;
+    private async Task<TerminalSignalSnapshot> CaptureBoundTerminalSignalSnapshotAsync()
+    {
+        await using var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return new TerminalSignalSnapshot(
+            await _fs.ReadFileAsync(signalInspectionLease, "ready/turn_complete.json"),
+            await _fs.ReadFileAsync(signalInspectionLease, "ready/turn_error.json"));
     }
 
     private async Task<int> ResolveTerminalSignalTimeoutSecondsAsync()
@@ -644,84 +693,99 @@ public partial class GameEngine
     // GAME LOOP
     // ═══════════════════════════════════════════════
 
-    private async Task EnterGameLoop()
+    private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
-        _inGame = true;
-        await _audioService.PlayInGameMusicAsync();
-        await NormalizePendingRepairArtifactsAsync();
-        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
-
-        // Check if there's already a correlated completion signal waiting
-        if (_fs.FileExists("ready/turn_complete.json"))
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
         {
-            await RefreshRuntimeStateAsync();
-        }
+            await InvokeSessionFinalizationCheckpointAsync(
+                SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
 
-        while (_inGame)
-        {
-            try
-            {
-            // Pick up late responses (agent finished after cancel/timeout, or response from previous turn)
+            // Pick up late responses (agent finished after cancel/timeout, or response from previous turn).
             var manifest = await LoadPendingTurnSnapshotManifestAsync();
-            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false);
+            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(
+                manifest,
+                requireCurrentContext: false);
             var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
-            if (await ResolveConcurrentActiveTerminalSignalsAsync(snapshotContext, rollbackSnapshot))
-                continue;
+            var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
+            var completionSignal = ParseReadySignalMetadata(
+                terminalSignals.CompletionJson,
+                "ready/turn_complete.json");
+            var errorSignal = ParseReadySignalMetadata(
+                terminalSignals.ErrorJson,
+                "ready/turn_error.json");
+            var concurrentResolution = await ResolveConcurrentActiveTerminalSignalsAsync(
+                terminalSignals,
+                completionSignal,
+                errorSignal,
+                snapshotContext,
+                rollbackSnapshot);
+            if (concurrentResolution.Failed)
+                return true;
 
-            if (_fs.FileExists("ready/turn_error.json"))
+            if (concurrentResolution.UseError)
             {
-                var signal = await ReadReadySignalMetadataAsync("ready/turn_error.json");
+                var signal = errorSignal;
                 if (await DiscardMismatchedReadySignalAsync("late turn_error", signal, snapshotContext))
-                    continue;
+                    return true;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
                 if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
                 {
-                    _logger.LogWarning("Игнорируется late error для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _logger.LogWarning(
+                        "Игнорируется late error для хода {Turn}, ожидался ход {ExpectedTurn}",
+                        signalTurn.Value,
+                        expectedTurn);
                     _fs.DeleteFile("ready/turn_error.json");
                     ClearTransientOutputFiles();
                     await CleanupPendingTurnSnapshotAsync();
-                    continue;
+                    return true;
                 }
 
                 if (signal != null &&
                     snapshotContext != null &&
                     HasValidTerminalSignalContract("turn_error", signal))
                 {
-                    var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(signal, snapshotContext);
+                    var recoveredSignal = await TryRecoverGmOutputWithoutTerminalSignalAsync(
+                        signal,
+                        snapshotContext);
                     if (recoveredSignal != null)
-                        continue;
+                        return true;
                 }
 
-                await ShowTurnErrorMessageAsync("ready/turn_error.json");
+                ShowTurnErrorMessage(terminalSignals.ErrorJson);
                 if (HasRollbackCapability(rollbackSnapshot))
                 {
                     await RestorePreTurnBackup(rollbackSnapshot!);
                     CleanupBackup(rollbackSnapshot!);
-                    AnsiConsole.MarkupLine("[yellow]↩ Поздний сигнал ошибки GM восстановил последнюю стабильную версию состояния.[/]");
+                    AnsiConsole.MarkupLine(
+                        "[yellow]↩ Поздний сигнал ошибки GM восстановил последнюю стабильную версию состояния.[/]");
                 }
 
                 _fs.DeleteFile("ready/turn_error.json");
                 await CleanupPendingTurnSnapshotAsync();
-                continue;
+                return true;
             }
 
-        if (_fs.FileExists("ready/turn_complete.json"))
-        {
-            var signal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+            if (concurrentResolution.UseCompletion)
+            {
+                var signal = completionSignal;
                 if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, snapshotContext))
-                    continue;
+                    return true;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
                 if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
                 {
-                    _logger.LogWarning("Игнорируется late response для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _logger.LogWarning(
+                        "Игнорируется late response для хода {Turn}, ожидался ход {ExpectedTurn}",
+                        signalTurn.Value,
+                        expectedTurn);
                     _fs.DeleteFile("ready/turn_complete.json");
                     ClearTransientOutputFiles();
                     await CleanupPendingTurnSnapshotAsync();
-                    continue;
+                    return true;
                 }
 
                 var acceptedLateResponse = false;
@@ -747,7 +811,7 @@ public partial class GameEngine
                             rollbackSnapshot,
                             "[yellow]↩ Поздний ответ GM отклонён после материализации. Состояние откатилось к последней стабильной версии.[/]");
                         await CleanupPendingTurnSnapshotAsync();
-                        continue;
+                        return true;
                     }
 
                     _lastResponse = lateResponse;
@@ -769,8 +833,9 @@ public partial class GameEngine
                         acceptedLateResponse = true;
                         if (HasRollbackCapability(rollbackSnapshot))
                             CleanupBackup(rollbackSnapshot!);
-                        continue;
+                        return true;
                     }
+
                     await CheckAscensionTrigger();
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
@@ -800,6 +865,7 @@ public partial class GameEngine
 
                     acceptedLateResponse = true;
                 }
+
                 if (acceptedLateResponse)
                 {
                     if (!await CheckGmIncarnationTrigger(snapshotContext))
@@ -815,7 +881,7 @@ public partial class GameEngine
                 }
             }
 
-            // Check for GM-initiated incarnation (GM sends player to Mortal World)
+            // Check for GM-initiated incarnation (GM sends player to Mortal World).
             await CheckAscensionTrigger();
             await CheckGmIncarnationTrigger();
 
@@ -827,8 +893,32 @@ public partial class GameEngine
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
                 await CheckLifeTransitions();
                 await CheckAscensionTrigger();
-                continue;
+                return true;
             }
+
+            return false;
+        });
+    }
+
+    private async Task EnterGameLoop()
+    {
+        _inGame = true;
+        await _audioService.PlayInGameMusicAsync();
+        await NormalizePendingRepairArtifactsAsync();
+        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+
+        // Check if there's already a correlated completion signal waiting
+        if (_fs.FileExists("ready/turn_complete.json"))
+        {
+            await RefreshRuntimeStateAsync();
+        }
+
+        while (_inGame)
+        {
+            try
+            {
+            if (await ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync())
+                continue;
 
             // Detect console resize — if width changed, just re-render (loop continues)
             try
@@ -977,6 +1067,13 @@ public partial class GameEngine
             await ProcessPlayerTurn(input);
 
             }
+            catch (SessionReplacedException ex)
+            {
+                _logger.LogInformation(
+                    ex,
+                    "Прерван старый игровой цикл после замены поколения game_session; rollback и очистка старых артефактов не выполняются.");
+                await RebindRuntimeAfterSessionReplacementAsync();
+            }
             catch (Exception ex)
             {
                 LogError(ex);
@@ -1028,6 +1125,9 @@ public partial class GameEngine
         string? waitingText = null,
         bool playerFacingTurn = true)
     {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        {
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return;
 
@@ -1038,9 +1138,6 @@ public partial class GameEngine
 
         try
         {
-            await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
-            await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync();
-
             // Create backup of game state files before sending turn (for escape-rollback)
             var backupId = DateTime.UtcNow.Ticks.ToString();
             backedUpFiles = await CreatePreTurnBackup(backupId);
@@ -1097,6 +1194,10 @@ public partial class GameEngine
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
             if (activeSnapshotContext == null)
                 throw new InvalidOperationException("Turn staging failed to create a validated pending snapshot context.");
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -1162,13 +1263,19 @@ public partial class GameEngine
             return;
         }
 
-        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(activeSnapshotContext, backedUpFiles);
+        var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
+        await InvokeSessionFinalizationCheckpointAsync(
+            SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution);
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(
+            activeSnapshotContext,
+            backedUpFiles,
+            terminalSignals);
         if (terminalOutcome.Kind == "failure")
             return;
 
         if (terminalOutcome.Kind == "error")
         {
-            await ShowTurnErrorMessageAsync("ready/turn_error.json");
+            ShowTurnErrorMessage(terminalSignals.ErrorJson);
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
@@ -1198,6 +1305,8 @@ public partial class GameEngine
             await CleanupPendingTurnSnapshotAsync();
             return;
         }
+        await InvokeSessionFinalizationCheckpointAsync(
+            SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization);
         var response = await BuildGameResponseFromFiles();
 
         // Turn accepted — backup no longer needed after lifecycle readers finish:
@@ -1275,6 +1384,7 @@ public partial class GameEngine
 
         CleanupBackup(backedUpFiles);
         await CleanupAcceptedTurnTerminalArtifactsAsync();
+        });
     }
 
     private void CleanupAfterAcceptedChaosSeaMarkerTurn(string? action)
@@ -1856,6 +1966,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> CheckLifeTransitions(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        {
         var transJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
         if (transJson == null) return false;
 
@@ -2007,6 +2120,8 @@ public partial class GameEngine
                     return true;
                 }
 
+                await InvokeSessionFinalizationCheckpointAsync(
+                    SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites);
                 var evalResponse = await BuildGameResponseFromFiles();
                 _gameLoop.IncrementTurn();
                 _lastResponse = evalResponse;
@@ -2041,6 +2156,10 @@ public partial class GameEngine
                 return true;
             }
         }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
         catch (TriggerLifeEndRuntimeContextException ex)
         {
             if (!requestDispatched)
@@ -2060,6 +2179,7 @@ public partial class GameEngine
         }
 
         return requestDispatched || localStateMutated;
+        });
     }
 
     internal static bool TryDescribeInvalidTriggerLifeEndRuntimeContext(
@@ -2266,6 +2386,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> CheckGmIncarnationTrigger(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        {
         var triggerJson = await _fs.ReadFileAsync("game_state/control/incarnation_trigger.json");
         if (triggerJson == null) return false;
         var isShiningBootstrapHandoff = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
@@ -2441,15 +2564,6 @@ public partial class GameEngine
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
             var newIncarnationNumber = _stateManager.CurrentState.Incarnation + 1;
-            var starterResourceGrant = MortalBootstrapStateBuilder.InferStarterResourceGrant(
-                charDesc,
-                worldDesc,
-                circumstances);
-            if (starterResourceGrant.Money > 0 || starterResourceGrant.CurrentLevelExperience > 0)
-            {
-                parts.Add(
-                    $"Client starter resource grant for requested training/trade: {starterResourceGrant.Money} money and {starterResourceGrant.CurrentLevelExperience} current-level XP already exist in baseline; preserve them unless local purchase/training spends them.");
-            }
 
             if (!await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для начала новой смертной жизни.");
@@ -2466,7 +2580,7 @@ public partial class GameEngine
                 poisePercentage = "100%",
                 currentCondition = "Здоров",
                 activeConditions = Array.Empty<string>(),
-                money = starterResourceGrant.Money
+                money = 0
             };
             await _fs.WriteFileAtomicAsync("game_state/core/player_status.json",
                 JsonSerializer.Serialize(status, JsonOpts));
@@ -2482,7 +2596,7 @@ public partial class GameEngine
                     neck = (object?)null, ring1 = (object?)null, ring2 = (object?)null
                 },
                 totalWeight = 0,
-                maxWeight = 45
+                maxWeight = (double?)null
             };
             await _fs.WriteFileAtomicAsync("game_state/inventory/items.json",
                 JsonSerializer.Serialize(inventory, JsonOpts));
@@ -2543,7 +2657,7 @@ public partial class GameEngine
                 Timestamp = DateTime.UtcNow.ToString("o"),
                 GameMode = "normal",
                 SystemReminder = await BuildTurnSystemReminderAsync(
-                    "MORTAL BOOTSTRAP BASELINE: this is the first Mortal World turn of a new incarnation. The client already materialized valid baseline location/map/faction/quest/current-world codex files before this request; if the player-authored start promised training, it also materialized a starter NPC teacher in npc_core.json. These files are captured in pending_turn_snapshot. Read game_state/control/mortal_bootstrap_scaffold.json, then develop the existing stable ids instead of recreating the world from scratch. Use canonical turn anchors exactly like #[3]. text for location/quest logs, do not write #3 - date, and do not edit client-owned game_state/world/guardian_corrections.json.")
+                    "MORTAL BOOTSTRAP BASELINE: this is the first Mortal World turn of a new incarnation. The client materialized only a setting-neutral structural baseline before this request; it did not infer actors, items, skills, capabilities, money, or experience from player prose. These files are captured in pending_turn_snapshot. Read game_state/control/mortal_bootstrap_scaffold.json, develop the existing stable world ids, and materialize every first-turn actor with the complete actor envelope because no bootstrap actor is grandfathered by the baseline. Use canonical turn anchors exactly like #[3]. text for location/quest logs, do not write #3 - date, and do not edit client-owned game_state/world/guardian_corrections.json.")
             };
             AttachFreshDiceAndGacha(request);
             request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync("Mortal World");
@@ -2583,6 +2697,15 @@ public partial class GameEngine
 
             return true;
         }
+        catch (SessionReplacedException ex)
+        {
+            _pendingMemoryLegacyAwaitingConsumption = false;
+            _logger.LogInformation(
+                ex,
+                "GM repair старого воплощения прерван после замены поколения game_session; переходные файлы новой сессии не изменяются.");
+            await RebindRuntimeAfterSessionReplacementAsync();
+            return false;
+        }
         catch (Exception ex)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -2595,6 +2718,7 @@ public partial class GameEngine
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
             return requestDispatched;
         }
+        });
     }
 
     private void SetIncarnationBootstrapFailureResponse(string? worldDescription, string? characterDescription)
@@ -2758,10 +2882,6 @@ public partial class GameEngine
         string? startingCircumstances)
     {
         var idSuffix = $"life_{Math.Max(incarnationNumber, 1):D3}";
-        var starterResourceGrant = MortalBootstrapStateBuilder.InferStarterResourceGrant(
-            characterDescription,
-            worldDescription,
-            startingCircumstances);
         var requiredMortalBootstrapFiles = new JsonArray
         {
             "lore/current_world/world_setting.json",
@@ -2800,19 +2920,14 @@ public partial class GameEngine
             "game_state/factions/faction_resources.json",
             "game_state/quests/regular_quests.json"
         };
-        if (starterResourceGrant.CurrentLevelExperience > 0)
-        {
-            requiredMortalBootstrapFiles.Add("game_state/npcs/npc_core.json");
-            preMaterializedBaselineFiles.Add("game_state/npcs/npc_core.json");
-        }
 
         var root = new JsonObject
         {
             ["schemaVersion"] = 1,
             ["purpose"] = "fresh_mortal_world_bootstrap",
-            ["authority"] = "client-authored harness scaffold for the first Mortal World turn",
+            ["authority"] = "client-authored harness contract; Mortal mechanics become authoritative only through explicit structured GM declarations and canonical GM state",
             ["baselineMaterializedBeforeDispatch"] = true,
-            ["gmWorkflow"] = "The client already wrote valid baseline files and saved them into pending_turn_snapshot. Treat those files as existing canonical state, update or enrich them carefully, and do not rebuild the bootstrap from an empty world.",
+            ["gmWorkflow"] = "The client wrote only a setting-neutral structural baseline and saved it into pending_turn_snapshot. It does not assign a default level, XP threshold, carrying capacity, faction resources, influence, control, or universal power profile. playerAuthoredStart is narrative context, not mechanical authority. Record every chosen skill, item, actor capability, resource, money, progression, carrying rule, and faction mechanic in structuredGmAuthority and write the matching complete canonical GM output. Every actor first created on this turn requires a complete materialization envelope.",
             ["sessionId"] = request.SessionId,
             ["requestId"] = request.RequestId,
             ["turnNumber"] = request.TurnNumber,
@@ -2824,7 +2939,28 @@ public partial class GameEngine
                 ["worldDescription"] = worldDescription ?? string.Empty,
                 ["startingCircumstances"] = startingCircumstances ?? string.Empty
             },
-            ["starterCompetencyRequirements"] = MortalBootstrapStateBuilder.BuildStarterCompetencyRequirements(characterDescription),
+            ["structuredGmAuthority"] = new JsonObject
+            {
+                ["authoritySource"] = "explicit_structured_gm_output_only",
+                ["authoredBy"] = "GM",
+                ["proseIsMechanicalAuthority"] = false,
+                ["rule"] = "The client leaves these arrays empty and creates no skills, items, NPCs, capabilities, money, progression values, carrying values, faction resources, influence, control, or universal power profile. The GM may add entries only as explicit setting-aware decisions and must write matching canonical state; never derive mechanics through client keyword or prose matching. playerProgression, carryingRules, and factionMechanics entries require canonicalPath plus a non-empty values object that exactly repeats every authorized canonical value.",
+                ["authorityRecordContract"] = new JsonObject
+                {
+                    ["playerProgression"] = "canonicalPath must equal game_state/player/experience.json; values must bind every progression field written there.",
+                    ["carryingRules"] = "canonicalPath must equal game_state/inventory/items.json; values must bind maxWeight and totalWeight when written.",
+                    ["factionMechanics"] = "canonicalPath must identify faction_core.json, faction_resources.json, or current_location.json; factionId and values must bind every faction mechanic written on that surface.",
+                    ["requiredFields"] = new JsonArray("canonicalPath", "values"),
+                    ["valuesRule"] = "values must be a non-empty object with exact JSON values. Empty objects, reason-only records, unrelated paths, and prose do not authorize mechanics."
+                },
+                ["playerSkills"] = new JsonArray(),
+                ["inventoryItems"] = new JsonArray(),
+                ["actorCapabilities"] = new JsonArray(),
+                ["resources"] = new JsonArray(),
+                ["playerProgression"] = new JsonArray(),
+                ["carryingRules"] = new JsonArray(),
+                ["factionMechanics"] = new JsonArray()
+            },
             ["worldEventRequirements"] = new JsonObject
             {
                 ["minimumCount"] = 1,
@@ -2834,10 +2970,7 @@ public partial class GameEngine
             ["suggestedStableIds"] = new JsonObject
             {
                 ["currentLocationId"] = $"loc_{idSuffix}_start",
-                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit",
-                ["primaryFactionId"] = $"faction_{idSuffix}_initial_context",
-                ["startingObjectiveId"] = $"quest_{idSuffix}_opening_hook",
-                ["startingAnchorItemId"] = $"item_{idSuffix}_opening_anchor"
+                ["nearbyExitLocationId"] = $"loc_{idSuffix}_nearby_exit"
             },
             ["requiredMortalBootstrapFiles"] = requiredMortalBootstrapFiles,
             ["preMaterializedBaselineFiles"] = preMaterializedBaselineFiles,
@@ -2855,8 +2988,7 @@ public partial class GameEngine
                     "knownExits"
                 },
                 ["noNullForRequiredCollectionsOnBootstrap"] = true,
-                ["coordinatesRequired"] = true,
-                ["difficultyProfilesRequired"] = true
+                ["coordinatesRequired"] = true
             },
             ["canonicalCoordinateAuthority"] = new JsonObject
             {
@@ -2885,25 +3017,20 @@ public partial class GameEngine
             },
             ["factionRequirements"] = new JsonObject
             {
-                ["persistentFactionIdRequired"] = true,
-                ["noNullFactionIdInCanonicalFactionCore"] = true,
-                ["sameTurnInitialIdAllowedOnlyInGmDelta"] = true,
-                ["canonicalFactionCoreMustUsePermanentId"] = true,
-                ["resourcesMustIncludeMetaResourcesAndStrategicGoodsArrays"] = true
+                ["bootstrapCollectionStartsEmpty"] = true,
+                ["creationRule"] = "Do not create a faction from playerAuthoredStart vocabulary. A GM-created faction uses a complete canonical record, and every numeric/resource/control mechanic must be bound by structuredGmAuthority.factionMechanics."
             },
             ["sceneAnchorRequirements"] = new JsonObject
             {
                 ["materializeActionableStartingProps"] = true,
                 ["startingItemOrPropIfNarrated"] = "If narration gives the player an inspectable object, sealed container, letter, weapon, clue, or tool, create or reference a matching canonical inventory/storage/location object.",
-                ["startingQuestIfNarrated"] = "If the opening scene creates an obvious investigation, escape, delivery, social, or survival hook, create a readable starting quest/objective instead of relying on narrative only.",
-                ["mapExitIfNarrated"] = "If the scene implies a door, corridor, road, gate, or route, create at least one known exit and map link.",
-                ["factionHookIfNarrated"] = "If the scene names an organization, house, guild, cult, guard, or authority, materialize it with a permanent factionId.",
-                ["trainingMentorIfNarrated"] = "If the player-authored start asks for a teacher, mentor, trainer, paid lesson, school, practice, apprenticeship/ученик/подмастерье, обучение, научиться/научить, тренировка, урок, наставник, or учитель, materialize at least one matching NPC teacher instead of leaving training only in prose."
+                ["navigationScaffoldRule"] = "Preserve the client-owned current location, known exit, coordinates, and map link as neutral identity/navigation scaffolding. Do not assign location type, travel mode, link type, biome, safety, or difficulty until the GM explicitly materializes those setting-owned values.",
+                ["actorRule"] = "Use semantic GM judgment over the complete setting and scene. When a non-player actor becomes concrete, author the complete setting-appropriate actor and materialization envelope; never ask the client to derive an actor from vocabulary."
             },
-            ["trainingAnchorRequirements"] = new JsonObject
+            ["trainingAuthoringGuidance"] = new JsonObject
             {
-                ["purpose"] = "Make requested Mortal training usable through /обучение instead of only narrated by the GM.",
-                ["trigger"] = "Apply when characterDescription, worldDescription, startingCircumstances, or first scene narration promises a teacher, mentor, paid lesson, drill, school, training yard, apprenticeship/ученик/подмастерье, обучение, научиться/научить, тренировка, урок, наставник, or учитель.",
+                ["purpose"] = "When GM semantic reasoning establishes an available teacher, make that actor usable through /обучение instead of mentioning training only in prose.",
+                ["authorityRule"] = "Do not treat words in playerAuthoredStart as structured capability declarations. A required teacher exists only after the GM explicitly records canTeach in structuredGmAuthority.actorCapabilities; otherwise the GM decides from the setting and writes the complete actor without client inference.",
                 ["requiredNpcShape"] = "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true. Do not advertise paid training only in prose.",
                 ["requiredTeacherProfileFields"] = new JsonArray
                 {
@@ -2924,95 +3051,8 @@ public partial class GameEngine
                 ["sourceCapRule"] = "Every future trainingShowcase offer sourceCap must be no higher than the matching teacherProfile.skills[] masteryLevel/currentMasteryLevel/maxMasteryLevel for that skill.",
                 ["playerFacingRule"] = "If the scene tells the player they can pay for a lesson, the /обучение command must list that teacher or a pending request for that teacher."
             },
-            ["starterResourceRequirements"] = new JsonObject
-            {
-                ["purpose"] = "Prevent a fresh Mortal training/trade opening from becoming a dead local purchase path.",
-                ["trigger"] = "If the player-authored start mentions training, lessons, teachers, learn-to/научиться intent, merchants, paid preparation, or trade, the client grants a small starter purse and, for training, current-level XP.",
-                ["starterMoney"] = starterResourceGrant.Money,
-                ["starterCurrentLevelExperience"] = starterResourceGrant.CurrentLevelExperience,
-                ["moneyPath"] = "game_state/core/player_status.json.money",
-                ["experiencePath"] = "game_state/player/experience.json.currentExperience",
-                ["gmRule"] = "Preserve these baseline resources unless the local training/trade systems spend them. Do not delete them as unexplained state, and do not charge the player again when resolving a paid-training evolution pending request."
-            },
             ["canonicalShapeHints"] = new JsonObject
             {
-                ["factionCoreMinimum"] = new JsonObject
-                {
-                    ["targetFile"] = "game_state/factions/faction_core.json",
-                    ["collection"] = "factions",
-                    ["requiredIdentityFields"] = new JsonArray
-                    {
-                        "factionId",
-                        "name",
-                        "displayName",
-                        "description",
-                        "status",
-                        "visibility",
-                        "developmentArchetype"
-                    },
-                    ["requiredProgressionFields"] = new JsonArray
-                    {
-                        "level",
-                        "experience",
-                        "experienceForNextLevel",
-                        "isPlayerFaction",
-                        "isPlayerMember"
-                    },
-                    ["requiredObjects"] = new JsonArray
-                    {
-                        "powerProfile",
-                        "ranks",
-                        "resources"
-                    },
-                    ["requiredArraysOrCollections"] = new JsonArray
-                    {
-                        "rankBranches",
-                        "relations",
-                        "projects",
-                        "chronicle",
-                        "customStates",
-                        "resources.metaResources",
-                        "resources.strategicGoods"
-                    },
-                    ["liveRepairNote"] = "Do not create a partial full faction object. If the faction is durable, create the complete canonical factions[] object with a permanent factionId before sidecars reference it."
-                },
-                ["factionCustomStateMinimum"] = new JsonObject
-                {
-                    ["targetFile"] = "game_state/factions/faction_custom.json",
-                    ["canonicalFactionCustomStateRequiredFields"] = new JsonArray
-                    {
-                        "stateId",
-                        "name",
-                        "currentValue",
-                        "minValue",
-                        "maxValue",
-                        "description",
-                        "progressionRule",
-                        "thresholds"
-                    },
-                    ["progressionRuleRequiredFields"] = new JsonArray
-                    {
-                        "changePerTurn",
-                        "description"
-                    },
-                    ["thresholdsRule"] = "thresholds must be an array; use [] when no threshold is needed.",
-                    ["minimalExample"] = new JsonObject
-                    {
-                        ["stateId"] = "state_life_001_social_pressure",
-                        ["name"] = "Социальное давление",
-                        ["currentValue"] = 1,
-                        ["minValue"] = 0,
-                        ["maxValue"] = 10,
-                        ["description"] = "Дом или организация начинает реагировать на событие первой сцены.",
-                        ["progressionRule"] = new JsonObject
-                        {
-                            ["changePerTurn"] = 0,
-                            ["description"] = "Не меняется автоматически; обновляется только после значимых сцен."
-                        },
-                        ["thresholds"] = new JsonArray()
-                    },
-                    ["avoidPartialSidecarRule"] = "If you only need a narrative note, put it in faction_core chronicle/description. Create faction_custom.json only when you can write the full Custom State Object above."
-                },
                 ["npcCoreMinimum"] = new JsonObject
                 {
                     ["targetFile"] = "game_state/npcs/npc_core.json",
@@ -3074,30 +3114,13 @@ public partial class GameEngine
                         "displayName",
                         "description",
                         "region",
-                        "type",
                         "coordinates",
                         "knownExits",
                         "adjacencyMap",
                         "factionControl",
                         "locationStorages",
                         "activeThreats",
-                        "internalDifficultyProfile",
-                        "externalDifficultyProfile",
                         "lastEventsDescription"
-                    },
-                    ["difficultyProfileFacets"] = new JsonArray
-                    {
-                        "combat",
-                        "environment",
-                        "social",
-                        "exploration"
-                    },
-                    ["allowedFactionControlTypes"] = new JsonArray
-                    {
-                        "Military",
-                        "Economic",
-                        "Social",
-                        "Covert"
                     },
                     ["lastEventsTimestampRule"] = "Use canonical historical-entry timestamp format when lastEventsDescription carries a timestamp; otherwise keep a readable event summary without a fake timestamp."
                 },
@@ -3110,7 +3133,6 @@ public partial class GameEngine
                         "name",
                         "displayName",
                         "region",
-                        "type",
                         "description",
                         "coordinates"
                     },
@@ -3118,9 +3140,7 @@ public partial class GameEngine
                     {
                         "targetLocationId",
                         "targetName",
-                        "targetCoordinates",
-                        "estimatedInternalDifficultyProfile",
-                        "estimatedExternalDifficultyProfile"
+                        "targetCoordinates"
                     },
                     ["requiredActiveThreatFields"] = new JsonArray
                     {
@@ -3192,7 +3212,7 @@ public partial class GameEngine
                         },
                         ["narrativePressureRule"] = "If a scene has only vague pressure or tension, keep activeThreats empty and describe it in faction chronicle or current location events. Do not create string-only activeThreat stubs."
                     },
-                    ["linkRule"] = "If the opening scene names a route, create a map location/link pair with targetCoordinates and both estimated difficulty profiles."
+                    ["linkRule"] = "Preserve the neutral bootstrap map location/link pair and exact targetCoordinates. Add setting-owned traversal or difficulty fields only through explicit GM materialization."
                 },
                 ["inventoryItemMinimum"] = new JsonObject
                 {
@@ -3270,7 +3290,6 @@ public partial class GameEngine
                 "Prevent npc_scene_location_mismatch: NPCsInScene is only for actors physically present in currentLocationData; offscreen voices, nearbyExitLocationId actors, and corridor/door pressure must stay outside NPCsInScene until the player reaches or directly interacts with them.",
                 "Prevent mortal_relevant_actor_missing_persistence: every Mortal relevant actor in gm_thoughts_markdown needs a matching persistent surface or must be moved outside scope.",
                 "Prevent player character NPC false positives: the player character is controlled by player state, not game_state/npcs, and should not be materialized as an NPC.",
-                "Prevent world_map_link_preview_missing_difficulty_profile: every opening map link preview needs estimatedInternalDifficultyProfile and estimatedExternalDifficultyProfile.",
                 "Prevent current_location_coordinates_mismatch: copy canonicalCoordinateAuthority coordinates exactly for suggested stable location ids across current_location, world_map newLocations, adjacencyMap, and newLinks.",
                 "Prevent faction_full_object_partial_optional_extension_data: if you create a durable faction, create complete faction core plus sidecars; do not mix partial optional arrays into a full faction object.",
                 "Prevent item_missing_equipment_slot/item_missing_durability: every starting item needs a valid slot when equipment-like and durability as a percentage string such as 100% when player-visible.",
@@ -3502,9 +3521,12 @@ public partial class GameEngine
     {
         try
         {
-            var logPath = Path.Combine(fs.GameSessionPath, "error_log.txt");
             var entry = $"[{DateTime.UtcNow:O}] {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}\n\n";
-            File.AppendAllText(logPath, entry, System.Text.Encoding.UTF8);
+            fs.AppendFileAtomicAsync("error_log.txt", entry).GetAwaiter().GetResult();
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
         }
         catch
         {

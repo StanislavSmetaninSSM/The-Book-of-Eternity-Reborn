@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -33,6 +32,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
     }
 
     public async Task<BrowserQueuedTurnRequest> QueueDirectChaosSeaGachaAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         LocalUiSessionLockOwner owner,
         string playerAction,
         PendingTurnState pendingState,
@@ -70,14 +70,15 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
 
         try
         {
-            await WritePendingTurnSnapshotAsync(request, rollbackBackups);
+            await WritePendingTurnSnapshotAsync(writeLease, request, rollbackBackups);
             await _fs.WriteFileAtomicAsync(
+                writeLease,
                 BrowserPendingTurnInspector.TurnRequestPath,
                 JsonSerializer.Serialize(request, JsonOpts));
         }
         catch
         {
-            CleanupQueuedTurnArtifacts();
+            CleanupQueuedTurnArtifacts(writeLease);
             throw;
         }
 
@@ -85,16 +86,18 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
     }
 
     private async Task WritePendingTurnSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         TurnRequest request,
         IReadOnlyDictionary<string, string> rollbackBackups)
     {
-        var baselineFiles = EnumerateRollbackBaselineFiles().ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var baselineFiles = EnumerateRollbackBaselineFiles(writeLease)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         baselineFiles.Add("game_state/meta/soul_state.json");
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var file in baselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
-            await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
+            await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
 
         var manifest = new BrowserPendingTurnSnapshotManifest
         {
@@ -110,7 +113,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             ProgressionControl = request.ProgressionControl,
             Files = files,
             SnapshotFileHashes = snapshotHashes,
-            ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(),
+            ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease),
             RollbackBackups = new Dictionary<string, string>(rollbackBackups, StringComparer.OrdinalIgnoreCase),
             RollbackBaselineFiles = baselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToList(),
             SourceLabel = DirectGachaSourceLabel
@@ -120,6 +123,14 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             SnapshotHashJsonOpts,
             static snapshotManifest => snapshotManifest.ManifestPayloadHash,
             static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash);
+
+        var rollbackContents = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        foreach (var rollbackPath in rollbackBackups.Values)
+        {
+            var normalized = rollbackPath.Replace('\\', '/');
+            rollbackContents[normalized] = await _fs.ReadFileBytesAsync(writeLease, normalized)
+                ?? throw new InvalidOperationException($"Rollback evidence is missing: {normalized}");
+        }
 
         var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
             manifest,
@@ -135,36 +146,43 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFileFromWorkspace);
+            relativePath =>
+            {
+                var normalized = relativePath.Replace('\\', '/');
+                return rollbackContents.TryGetValue(normalized, out var bytes)
+                    ? bytes
+                    : null;
+            });
 
         await _fs.WriteFileAtomicAsync(
+            writeLease,
             BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,
             JsonSerializer.Serialize(manifest, JsonOpts));
-        await _fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
+        await _fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            authorityJson);
     }
 
-    private IEnumerable<string> EnumerateRollbackBaselineFiles()
+    private IEnumerable<string> EnumerateRollbackBaselineFiles(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var gameSessionRoot = _fs.ResolvePath("");
         var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var absoluteFile in _fs.GetAllGameStateFiles())
+        var allFiles = _fs.EnumerateFiles(writeLease, "*");
+        foreach (var relative in allFiles)
         {
-            var relative = Path.GetRelativePath(gameSessionRoot, absoluteFile).Replace('\\', '/');
-            if (ShouldSkipRollbackBaselineFile(relative))
-                continue;
-
-            files.Add(relative);
-        }
-
-        var loreRoot = _fs.ResolvePath("lore");
-        if (Directory.Exists(loreRoot))
-        {
-            foreach (var absoluteFile in Directory.GetFiles(loreRoot, "*", SearchOption.AllDirectories))
+            if (relative.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(Path.GetExtension(relative), ".json", StringComparison.OrdinalIgnoreCase))
             {
-                var relative = Path.GetRelativePath(gameSessionRoot, absoluteFile).Replace('\\', '/');
-                if (!relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
+                if (!ShouldSkipRollbackBaselineFile(relative))
                     files.Add(relative);
+                continue;
+            }
+
+            if (relative.StartsWith("lore/", StringComparison.OrdinalIgnoreCase) &&
+                !relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
+            {
+                files.Add(relative);
             }
         }
 
@@ -176,7 +194,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
                      QteSceneService.QteOfferPath
                  })
         {
-            if (_fs.FileExists(outputFile))
+            if (_fs.FileExists(writeLease, outputFile))
                 files.Add(outputFile);
         }
 
@@ -196,83 +214,58 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
         relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
 
     private async Task SnapshotFileIfPresentAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string relativePath,
         IDictionary<string, string> files,
         IDictionary<string, string> snapshotHashes)
     {
-        var content = await _fs.ReadFileAsync(relativePath);
+        var content = await _fs.ReadFileBytesAsync(writeLease, relativePath);
         if (content == null)
             return;
 
         var snapshotPath = $"{BrowserPendingTurnInspector.PendingTurnSnapshotDirectory}/{relativePath}";
-        await _fs.WriteFileAtomicAsync(snapshotPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, snapshotPath, content);
         files[relativePath] = snapshotPath;
         snapshotHashes[relativePath] = PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
-    private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync()
+    private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["game_state/history/chat_log.json"] = await ReadFileHashOrEmptyAsync("game_state/history/chat_log.json")
+            ["game_state/history/chat_log.json"] = await ReadFileHashOrEmptyAsync(
+                writeLease,
+                "game_state/history/chat_log.json")
         };
 
-        foreach (var storyPath in EnumerateStoryContinuityFiles())
-            result[storyPath] = await ReadFileHashOrEmptyAsync(storyPath);
+        foreach (var storyPath in EnumerateStoryContinuityFiles(writeLease))
+            result[storyPath] = await ReadFileHashOrEmptyAsync(writeLease, storyPath);
 
         return result;
     }
 
-    private async Task<string> ReadFileHashOrEmptyAsync(string relativePath)
+    private async Task<string> ReadFileHashOrEmptyAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string relativePath)
     {
-        var content = await _fs.ReadFileAsync(relativePath);
+        var content = await _fs.ReadFileAsync(writeLease, relativePath);
         return content == null ? string.Empty : PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
-    private IEnumerable<string> EnumerateStoryContinuityFiles()
+    private IEnumerable<string> EnumerateStoryContinuityFiles(
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        _fs.EnumerateFiles(writeLease, "*.jsonl")
+            .Where(path => path.StartsWith("stories/", StringComparison.OrdinalIgnoreCase));
+
+    private void CleanupQueuedTurnArtifacts(FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var sessionRoot = _fs.ResolvePath("");
-        var storiesRoot = _fs.ResolvePath("stories");
-        if (!Directory.Exists(storiesRoot))
-            yield break;
-
-        foreach (var absoluteFile in Directory.EnumerateFiles(storiesRoot, "*.jsonl", SearchOption.AllDirectories))
-            yield return Path.GetRelativePath(sessionRoot, absoluteFile).Replace('\\', '/');
-    }
-
-    private string? ReadRelativeFileFromWorkspace(string relativePath)
-    {
-        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
-            return null;
-
-        var fullPath = _fs.ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
-            return null;
-
-        try
-        {
-            return File.ReadAllText(fullPath, Encoding.UTF8);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private void CleanupQueuedTurnArtifacts()
-    {
-        _fs.DeleteFile(BrowserPendingTurnInspector.TurnRequestPath);
-        _fs.DeleteFile(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath);
-        _fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
-
-        var sessionRoot = Path.GetFullPath(_fs.ResolvePath("")).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        var snapshotDirectory = Path.GetFullPath(_fs.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotDirectory));
-        var sessionRootPrefix = sessionRoot + Path.DirectorySeparatorChar;
-        if (Directory.Exists(snapshotDirectory) &&
-            snapshotDirectory.StartsWith(sessionRootPrefix, StringComparison.OrdinalIgnoreCase))
-        {
-            Directory.Delete(snapshotDirectory, recursive: true);
-        }
+        _fs.DeleteFile(writeLease, BrowserPendingTurnInspector.TurnRequestPath);
+        _fs.DeleteFile(writeLease, BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath);
+        _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
+        _fs.DeleteDirectoryTree(
+            writeLease,
+            BrowserPendingTurnInspector.PendingTurnSnapshotDirectory);
     }
 
     private sealed class BrowserPendingTurnSnapshotManifest

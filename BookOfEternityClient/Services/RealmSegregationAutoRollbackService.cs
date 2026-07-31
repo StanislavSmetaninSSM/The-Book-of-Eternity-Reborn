@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -144,9 +145,10 @@ public sealed class RealmSegregationAutoRollbackService
             return null;
         }
 
-        var json = await _fs.ReadFileAsync(snapshotPath);
-        if (string.IsNullOrWhiteSpace(json))
+        var bytes = await _fs.ReadFileBytesAsync(snapshotPath);
+        if (bytes == null)
             return null;
+        var json = DecodeSnapshotText(bytes);
 
         try
         {
@@ -180,13 +182,18 @@ public sealed class RealmSegregationAutoRollbackService
             return false;
         }
 
-        var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
-        var currentJson = await _fs.ReadFileAsync(path);
-        if (snapshotJson == null || currentJson == null)
+        var snapshotBytes = await _fs.ReadFileBytesAsync(snapshotPath);
+        var currentBytes = await _fs.ReadFileBytesAsync(path);
+        if (snapshotBytes == null || currentBytes == null)
             return false;
 
-        return string.Equals(PendingTurnSnapshotAuthority.ComputeSha256(snapshotJson), expectedHash, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(snapshotJson, currentJson, StringComparison.Ordinal);
+        return string.Equals(
+                   PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(
+                       manifest.SnapshotHashMode,
+                       snapshotBytes),
+                   expectedHash,
+                   StringComparison.OrdinalIgnoreCase) &&
+               snapshotBytes.AsSpan().SequenceEqual(currentBytes);
     }
 
     private async Task<RealmSegregationAutoRollbackAction?> TryRestoreFromSnapshotAsync(
@@ -203,22 +210,27 @@ public sealed class RealmSegregationAutoRollbackService
             return null;
         }
 
-        var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
-        if (snapshotJson == null)
+        var snapshotBytes = await _fs.ReadFileBytesAsync(snapshotPath);
+        if (snapshotBytes == null)
             return null;
 
         if (!manifest.SnapshotFileHashes.TryGetValue(path, out var expectedHash) ||
-            !string.Equals(PendingTurnSnapshotAuthority.ComputeSha256(snapshotJson), expectedHash, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(
+                PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(
+                    manifest.SnapshotHashMode,
+                    snapshotBytes),
+                expectedHash,
+                StringComparison.OrdinalIgnoreCase))
         {
             _logger.LogWarning("Rejected realm auto-rollback restore for {Path}: snapshot hash mismatch.", path);
             return null;
         }
 
-        var currentJson = await _fs.ReadFileAsync(path);
-        if (string.Equals(currentJson, snapshotJson, StringComparison.Ordinal))
+        var currentBytes = await _fs.ReadFileBytesAsync(path);
+        if (currentBytes != null && snapshotBytes.AsSpan().SequenceEqual(currentBytes))
             return null;
 
-        await _fs.WriteFileAtomicAsync(path, snapshotJson);
+        await _fs.WriteFileAtomicBytesAsync(path, snapshotBytes);
         return new RealmSegregationAutoRollbackAction(
             "restore",
             path,
@@ -262,7 +274,7 @@ public sealed class RealmSegregationAutoRollbackService
             static snapshotManifest => ToStringList(snapshotManifest["rollbackBaselineFiles"] as JsonArray),
             static snapshotManifest => snapshotManifest["sourceLabel"]?.GetValue<string>(),
             static snapshotManifest => ToStringDictionary(snapshotManifest["rollbackBackups"] as JsonObject),
-            ReadRelativeFile,
+            ReadRelativeFileBytes,
             out var payload,
             out var failureCode,
             requireRollbackArtifactPaths: true);
@@ -280,6 +292,7 @@ public sealed class RealmSegregationAutoRollbackService
             TurnNumber = payload.TurnNumber,
             Files = payload.Files,
             SnapshotFileHashes = payload.SnapshotFileHashes,
+            SnapshotHashMode = payload.SnapshotHashMode,
             ClientOwnedValidationHashes = payload.ClientOwnedValidationHashes,
             RollbackBackups = payload.RollbackBackups,
             RollbackBaselineFiles = payload.RollbackBaselineFiles,
@@ -288,13 +301,22 @@ public sealed class RealmSegregationAutoRollbackService
         };
     }
 
-    private string? ReadRelativeFile(string relativePath)
+    private byte[]? ReadRelativeFileBytes(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        var fullPath = _fs.ResolvePath(relativePath);
-        return File.Exists(fullPath) ? File.ReadAllText(fullPath) : null;
+        return _fs.ReadFileBytesSync(relativePath);
+    }
+
+    private static string DecodeSnapshotText(byte[] content)
+    {
+        using var stream = new MemoryStream(content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
     }
 
     private static bool IsKnownBaselineFile(RealmSegregationSnapshotManifest manifest, string path)
@@ -432,6 +454,7 @@ public sealed class RealmSegregationAutoRollbackService
         public int TurnNumber { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public string? SnapshotHashMode { get; set; }
         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public List<string> RollbackBaselineFiles { get; set; } = new();

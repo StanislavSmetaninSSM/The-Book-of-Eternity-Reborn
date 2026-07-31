@@ -145,8 +145,8 @@ public static class LocalWebUiHost
         app.MapGet("/api/explorer/command-coverage", () => BrowserCommandCoverageService.Build());
         app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
             await commandService.ExecuteAsync(request));
-        app.MapGet("/api/explorer/prompt-sessions/{sessionId}", (string sessionId, ExplorerWebCommandService commandService) =>
-            commandService.GetPromptSession(sessionId));
+        app.MapGet("/api/explorer/prompt-sessions/{sessionId}", async (string sessionId, ExplorerWebCommandService commandService) =>
+            await commandService.GetPromptSessionAsync(sessionId));
         app.MapPost("/api/explorer/prompt-sessions/submit", async (ExplorerPromptSessionSubmitRequest request, ExplorerWebCommandService commandService) =>
             await commandService.SubmitPromptSessionAsync(request));
         app.MapPost("/api/explorer/prompt-sessions/cancel", async (ExplorerPromptSessionCancelRequest request, ExplorerWebCommandService commandService) =>
@@ -183,20 +183,20 @@ public static class LocalWebUiHost
             await qte.StartPracticeAttemptAsync(request));
         app.MapPost("/api/qte/practice/action", async (QtePracticeActionRequest request, QteWebInteractionService qte) =>
             await qte.ResolvePracticeActionAsync(request));
-        app.MapPost("/api/qte/practice/retry", async (QteWebInteractionService qte) =>
-            await qte.RetryPracticeAttemptAsync());
-        app.MapPost("/api/qte/practice/exit", async (QteWebInteractionService qte) =>
-            await qte.ExitPracticeAttemptAsync());
+        app.MapPost("/api/qte/practice/retry", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+            await qte.RetryPracticeAttemptAsync(request.InteractionToken));
+        app.MapPost("/api/qte/practice/exit", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+            await qte.ExitPracticeAttemptAsync(request.InteractionToken));
         app.MapGet("/api/qte/daren", async (QteWebInteractionService qte) =>
             await qte.BuildDarenShowcaseStateAsync());
-        app.MapPost("/api/qte/daren/start", async (QteWebInteractionService qte) =>
-            await qte.StartDarenShowcaseAsync());
+        app.MapPost("/api/qte/daren/start", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+            await qte.StartDarenShowcaseAsync(request.InteractionToken));
         app.MapPost("/api/qte/daren/action", async (DarenShowcaseActionRequest request, QteWebInteractionService qte) =>
             await qte.ResolveDarenShowcaseActionAsync(request));
-        app.MapPost("/api/qte/daren/retry", async (QteWebInteractionService qte) =>
-            await qte.RetryDarenShowcaseAsync());
-        app.MapPost("/api/qte/daren/exit", async (QteWebInteractionService qte) =>
-            await qte.ExitDarenShowcaseAsync());
+        app.MapPost("/api/qte/daren/retry", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+            await qte.RetryDarenShowcaseAsync(request.InteractionToken));
+        app.MapPost("/api/qte/daren/exit", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+            await qte.ExitDarenShowcaseAsync(request.InteractionToken));
 
         app.MapFallback((HttpContext context) =>
             IsFrontendFallbackRequest(context.Request)

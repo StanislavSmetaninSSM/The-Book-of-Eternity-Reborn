@@ -172,7 +172,7 @@ public partial class ValidationService
             hasUpdates);
         var identities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         ValidateProfileArrayIfPresent(profiles, hasProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}", identities, issues);
-        ValidateProfileArrayIfPresent(responseProfiles, hasResponseProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ResponseProfilesProperty}", identities, issues, requireCurrentSpecialArtCombatEffect: true);
+        ValidateProfileArrayIfPresent(responseProfiles, hasResponseProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ResponseProfilesProperty}", identities, issues, requireCurrentSpecialArtCombatEffect: true, requireActorMaterialization: true);
         ValidateProfileArrayIfPresent(updates, hasUpdates, $"{contextPrefix}.{AfterlifeEntityProfileState.UpdateProperty}", identities, issues, requireCurrentSpecialArtCombatEffect: true);
         ValidateAfterlifeEntityCustomStateChangesIfPresent(
             customStateChanges,
@@ -272,7 +272,8 @@ public partial class ValidationService
         string context,
         HashSet<string> identities,
         List<ValidationIssue> issues,
-        bool requireCurrentSpecialArtCombatEffect = false)
+        bool requireCurrentSpecialArtCombatEffect = false,
+        bool requireActorMaterialization = false)
     {
         if (!hasProfiles)
             return;
@@ -293,7 +294,13 @@ public partial class ValidationService
         var index = 0;
         foreach (var profile in profiles.EnumerateArray())
         {
-            ValidateAfterlifeEntityProfile(profile, $"{context}[{index++}]", identities, issues, requireCurrentSpecialArtCombatEffect);
+            ValidateAfterlifeEntityProfile(
+                profile,
+                $"{context}[{index++}]",
+                identities,
+                issues,
+                requireCurrentSpecialArtCombatEffect,
+                requireActorMaterialization);
         }
     }
 
@@ -302,7 +309,8 @@ public partial class ValidationService
         string context,
         HashSet<string> identities,
         List<ValidationIssue> issues,
-        bool requireCurrentSpecialArtCombatEffect = false)
+        bool requireCurrentSpecialArtCombatEffect = false,
+        bool requireActorMaterialization = false)
     {
         if (profile.ValueKind != JsonValueKind.Object)
         {
@@ -384,6 +392,12 @@ public partial class ValidationService
                     expected: "unique actorType + actorId/actorRef",
                     actual: identity));
             }
+
+            issues.AddRange(ActorMaterializationContract.ValidateAfterlifeProfile(
+                profile,
+                context,
+                requireActorMaterialization,
+                canTradeEvidence: requireActorMaterialization ? null : false));
         }
 
         ValidateAfterlifeProfileCurrencies(profile, context, issues);

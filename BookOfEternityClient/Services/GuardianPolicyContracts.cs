@@ -101,6 +101,7 @@ internal static class GuardianPolicyContracts
     internal const string NpcCoreUpdateSectionName = "UpdateNPCs";
     internal const string NpcCoreSceneSectionName = "NPCsInScene";
     internal const string NpcCoreRenameSectionName = "NPCsRenameData";
+    internal const string NpcCoreChangesSectionName = NpcCoreChangesContract.PropertyName;
 
     internal static readonly HashSet<string> SoulStateLifecycleCompatibilityOnlyTopLevelKeys = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -171,6 +172,7 @@ internal static class GuardianPolicyContracts
 
     internal static readonly HashSet<string> NpcCoreLifecycleNonCarrierTopLevelSections = new(StringComparer.OrdinalIgnoreCase)
     {
+        NpcCoreChangesSectionName,
         NpcCoreRenameSectionName,
         NpcTradeRequestState.UpdateReceiptsProperty
     };
@@ -221,6 +223,64 @@ internal static class GuardianPolicyContracts
         var sections = new HashSet<string>(NpcCoreCanonicalNpcObjectSections, StringComparer.OrdinalIgnoreCase);
         sections.UnionWith(NpcCoreLifecycleNonCarrierTopLevelSections);
         return sections;
+    }
+
+    internal static bool TryResolveStrictPermanentNpcId(JsonObject actor, out string actorId)
+    {
+        actorId = string.Empty;
+        string? upperNpcId = null;
+        string? lowerNpcId = null;
+        string? genericId = null;
+        var hasUpperNpcId = false;
+        var hasLowerNpcId = false;
+        var hasGenericId = false;
+
+        foreach (var property in actor)
+        {
+            var resemblesIdentityAlias =
+                string.Equals(property.Key, "NPCId", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(property.Key, "id", StringComparison.OrdinalIgnoreCase);
+            if (!resemblesIdentityAlias)
+                continue;
+
+            if (property.Value is not JsonValue value ||
+                !value.TryGetValue<string>(out var aliasValue) ||
+                string.IsNullOrWhiteSpace(aliasValue))
+            {
+                return false;
+            }
+
+            if (string.Equals(property.Key, "NPCId", StringComparison.Ordinal))
+            {
+                hasUpperNpcId = true;
+                upperNpcId = aliasValue;
+            }
+            else if (string.Equals(property.Key, "npcId", StringComparison.Ordinal))
+            {
+                hasLowerNpcId = true;
+                lowerNpcId = aliasValue;
+            }
+            else if (string.Equals(property.Key, "id", StringComparison.Ordinal))
+            {
+                hasGenericId = true;
+                genericId = aliasValue;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        if (hasGenericId && (hasUpperNpcId || hasLowerNpcId))
+            return false;
+        if (hasUpperNpcId && hasLowerNpcId &&
+            !string.Equals(upperNpcId, lowerNpcId, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        actorId = genericId ?? upperNpcId ?? lowerNpcId ?? string.Empty;
+        return actorId.Length > 0;
     }
 
     internal static bool TryDescribeUnsupportedGuardianPolicySoulStateTopLevelKeys(

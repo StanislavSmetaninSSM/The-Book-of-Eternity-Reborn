@@ -954,11 +954,17 @@ export interface UiPromptSession {
 
 export interface QteWebOfferDecisionRequest {
   decision: 'accept' | 'decline' | null;
+  interactionToken: string;
 }
 
 export interface QteWebActionRequest {
   actionId: string | null;
   grade: 'success' | 'partial' | 'fail' | null;
+  interactionToken: string;
+}
+
+export interface QteInteractionRequest {
+  interactionToken: string;
 }
 
 export type QteWebCheckConfigDto =
@@ -1147,7 +1153,9 @@ export interface QteWebStateDto {
   lastResolvedReminder: string | null;
   lastDeclinedQteId: string | null;
   availableOperations: string[];
+  interactionToken: string | null;
   notification: string | null;
+  errorCode: string | null;
   error: string | null;
 }
 
@@ -1163,7 +1171,9 @@ export interface QtePracticeWebStateDto {
   feedback: string;
   localScoreNotice: string;
   availableOperations: string[];
+  interactionToken: string | null;
   notification: string | null;
+  errorCode: string | null;
   error: string | null;
 }
 
@@ -1187,11 +1197,13 @@ export interface QtePracticeDifficultyDto {
 export interface QtePracticeStartRequest {
   typeId: string | null;
   difficultyId: string | null;
+  interactionToken: string;
 }
 
 export interface QtePracticeActionRequest {
   actionId: string | null;
   grade: string | null;
+  interactionToken: string;
 }
 
 export interface DarenShowcaseWebStateDto {
@@ -1206,7 +1218,9 @@ export interface DarenShowcaseWebStateDto {
   completion: QteWebCompletionDto | null;
   ending: DarenShowcaseEndingDto | null;
   availableOperations: string[];
+  interactionToken: string | null;
   notification: string | null;
+  errorCode: string | null;
   error: string | null;
 }
 
@@ -1234,6 +1248,7 @@ export interface DarenShowcaseEndingDto {
 export interface DarenShowcaseActionRequest {
   actionId: string | null;
   grade: string | null;
+  interactionToken: string;
 }
 
 export interface QteWebOfferDto {

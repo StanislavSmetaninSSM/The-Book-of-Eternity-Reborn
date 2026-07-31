@@ -1,3 +1,8 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -516,6 +521,288 @@ public sealed class PromptDocumentationCoverageTests
         {
             Assert.Contains(requiredText, liveRoutes, StringComparison.Ordinal);
         }
+    }
+
+    [Fact]
+    public void MortalActorMaterializationContract_IsDocumentedForGm()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var npcRules = ReadRepoFile("Rules", "Block_19.txt");
+        var npcInventoryRules = ReadRepoFile("Rules", "Block_19.A.txt");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var npcValidation = ReadRepoFile(
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.NpcWorldAndMeta.cs");
+
+        foreach (var text in new[] { daemon, example })
+        {
+            foreach (var requiredText in new[]
+                     {
+                         "Actor Materialization v1",
+                         "materializationId",
+                         "materializedAtTurn",
+                         "actorType",
+                         "actorId",
+                         "capabilities",
+                         "sections",
+                         "populated",
+                         "empty_by_design",
+                         "in-world reason",
+                         "display name, prose, occupation, or setting genre",
+                         "existing NPC",
+                         "dedicated delta"
+                     })
+            {
+                Assert.Contains(requiredText, text, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        foreach (var text in new[] { daemon, example })
+        {
+            Assert.Contains("\"actorType\": \"mortal_npc\"", text, StringComparison.Ordinal);
+            Assert.Contains("\"relationships\": { \"state\": \"populated\" }", text, StringComparison.Ordinal);
+            Assert.Contains("\"inventory\": {", text, StringComparison.Ordinal);
+            Assert.Contains("\"state\": \"empty_by_design\"", text, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+                 {
+                     "Actor Materialization v1",
+                     "materializationId",
+                     "materializedAtTurn",
+                     "\"actorType\": \"mortal_npc\"",
+                     "\"state\": \"complete\"",
+                     "canFight",
+                     "canTeach",
+                     "canTrade",
+                     "ownsItems",
+                     "skills",
+                     "inventory",
+                     "fateCards",
+                     "personalQuests",
+                     "relationships",
+                     "core identity, personality, characteristics, goals, progression, location, and memory",
+                     "at least one setting-defined numeric property",
+                     "First materialization",
+                     "Legacy promotion",
+                     "Existing-actor update"
+                 })
+        {
+            Assert.Contains(requiredText, npcRules, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var requiredText in new[]
+                 {
+                     "Legacy promotion",
+                     "unchanged inventory snapshot",
+                     "semantically identical to the validated pre-turn inventory snapshot",
+                     "NPCInventoryAdds",
+                     "NPCInventoryUpdates",
+                     "NPCInventoryRemovals"
+                 })
+        {
+            Assert.Contains(requiredText, npcInventoryRules, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var requiredText in new[]
+                 {
+                     "first-materialization envelope",
+                     "legacy promotion",
+                     "same-turn initialId must not collide with a validated pre-turn permanent NPCId",
+                     "validated pre-turn inventory snapshot",
+                     "NPCInventoryAdds",
+                     "NPCInventoryUpdates",
+                     "NPCInventoryRemovals"
+                 })
+        {
+            Assert.Contains(requiredText, stepGuide, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var text in new[] { daemon, npcRules, npcInventoryRules, example })
+        {
+            Assert.Contains(
+                "same-turn initialId must not collide with a validated pre-turn permanent NPCId",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains(
+            "Restore the exact validated pre-turn inventory snapshot on this carrier",
+            npcValidation,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "For an ordinary existing UpdateNPCs entry, remove the whole full-object resend",
+            npcValidation,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn inventory snapshot", npcValidation, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("NPCInventoryAdds/Updates/Removals", npcValidation, StringComparison.Ordinal);
+
+        Assert.Contains("mortal_actor_materialization_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("E_CLI_Step_Main.txt", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MortalNpcCoreChangesContract_IsDocumentedAcrossGmAndCliSurfaces()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var responseRules = ReadRepoFile("Rules", "Block_2.txt");
+        var updateRules = ReadRepoFile("Rules", "Block_2.5.txt");
+        var npcRules = ReadRepoFile("Rules", "Block_19.txt");
+        var npcWorldRules = ReadRepoFile("Rules", "Block_19.D.txt");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var cliMapping = ReadRepoFile("Examples", "CLI_Translation_Guide.md");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+
+        foreach (var text in new[] { daemon, responseRules, npcRules, example })
+        {
+            foreach (var requiredText in new[]
+                     {
+                         "NPCCoreChanges",
+                         "NPCId",
+                         "reason",
+                         "profile",
+                         "location",
+                         "progression",
+                         "characteristicValues",
+                         "factionAffiliationsToUpsert",
+                         "fateCardsToAdd",
+                         "fateCardIdsToRemove"
+                     })
+            {
+                Assert.Contains(requiredText, text, StringComparison.Ordinal);
+            }
+        }
+
+        Assert.Contains("absolute resulting values", npcRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("non-carrier", responseRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("NPCCoreChanges", updateRules, StringComparison.Ordinal);
+        Assert.Contains("NPCCoreChanges", npcWorldRules, StringComparison.Ordinal);
+        Assert.Contains("NPCCoreChanges", stepGuide, StringComparison.Ordinal);
+        Assert.Contains("NPCCoreChanges", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("\"NPCCoreChanges\": [...]", cliMapping, StringComparison.Ordinal);
+        Assert.Contains("game_state/npcs/npc_core.json", cliMapping, StringComparison.Ordinal);
+        Assert.Contains("ordinary existing", example, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("retained scene state", example, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("every actor-owned field", npcRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full production Fate Card", npcRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("skillId is not required", npcRules, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("every actor-owned field", cliMapping, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void MortalActorMaterializationWorkedExample_PassesProductionNpcContract()
+    {
+        var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
+            string.Equals(candidate.File, "E_CLI_Step_Main.txt", StringComparison.OrdinalIgnoreCase) &&
+            candidate.RawText.Contains("mat_npc_orbital_xenobiologist_turn_4", StringComparison.Ordinal));
+        using var document = JsonDocument.Parse(snippet.RawText);
+        var npc = document.RootElement.GetProperty("NPCsInScene")[0];
+        var validationRoot = JsonNode.Parse(snippet.RawText)!.AsObject();
+        validationRoot["response"] = "Лиана завершает осмотр образца и фиксирует наблюдения.";
+        using var validationDocument = JsonDocument.Parse(validationRoot.ToJsonString());
+
+        var tempRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-mortal-example-validation-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+        try
+        {
+            var fs = new FileSystemManager(tempRoot, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+            var issues = validator.ValidateResponse(validationDocument.RootElement);
+
+            Assert.Empty(issues);
+        }
+        finally
+        {
+            Directory.Delete(tempRoot, recursive: true);
+        }
+
+        var personalityTraits = npc.GetProperty("personalityTraits").EnumerateArray().ToArray();
+        Assert.InRange(personalityTraits.Length, 3, 5);
+        Assert.All(personalityTraits, trait =>
+        {
+            Assert.True(trait.TryGetProperty("value", out var value));
+            Assert.Equal(JsonValueKind.Number, value.ValueKind);
+            Assert.True(value.TryGetInt32(out var integerValue));
+            Assert.InRange(integerValue, 1, 10);
+        });
+
+        var characteristicKeys = npc.GetProperty("characteristics")
+            .EnumerateObject()
+            .Select(property => property.Name)
+            .ToArray();
+        Assert.Contains("xenobiology", characteristicKeys);
+        Assert.Contains("biosafety_discipline", characteristicKeys);
+        foreach (var universalKey in new[]
+                 {
+                     "strength", "dexterity", "constitution", "intelligence", "wisdom", "faith",
+                     "attractiveness", "trade", "persuasion", "perception", "luck", "speed"
+                 })
+        {
+            Assert.DoesNotContain(universalKey, characteristicKeys);
+        }
+    }
+
+    [Fact]
+    public void MortalInventoryRepairGuidance_DistinguishesLifecycleCasesWithoutPromotionRemoval()
+    {
+        var packetSource = ReadRepoFile(
+            "BookOfEternityClient",
+            "Core",
+            "GameEngine",
+            "GameEngine.ValidationAndRepair.cs");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+
+        foreach (var text in new[] { packetSource, example })
+        {
+            Assert.DoesNotContain(
+                "preserve any other validated update fields",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "remove only the forbidden inventory",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("genuinely new NPC", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("ordinary existing NPC", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("true legacy promotion", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "remove the whole ordinary-existing full-object resend",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "skill, inventory, relationship, journal, activity, equipment/resource",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("main-GM rollback/repair path", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "exact semantically unchanged validated pre-turn inventory snapshot",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("NPCInventoryAdds", text, StringComparison.Ordinal);
+            Assert.Contains("NPCInventoryUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("NPCInventoryRemovals", text, StringComparison.Ordinal);
+        }
+
+        Assert.DoesNotContain(
+            "Remove inventory from UpdateNPCs for every existing NPC",
+            packetSource,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "Do not keep inventory: []",
+            packetSource,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "Do not remove the schema-required inventory from a full true legacy promotion",
+            packetSource,
+            StringComparison.OrdinalIgnoreCase);
     }
 
     private static string ReadRepoFile(params string[] parts) =>

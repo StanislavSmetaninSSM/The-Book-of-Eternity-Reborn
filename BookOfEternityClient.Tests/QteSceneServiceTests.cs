@@ -1435,6 +1435,11 @@ public sealed class QteSceneServiceTests : IDisposable
     [Fact]
     public async Task SaveGameAsync_ExcludesQteNormalizerBackupsFromArchive()
     {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World"
+        }
+        """);
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
         { "guardians": [] }
         """);

@@ -85,6 +85,10 @@ $script:InkFeatherExamplePath = Join-Path $script:RepoRootPath "Examples\E_CLI_I
 $script:GmDocPathDirective = " GM documentation paths are repo-local and authoritative: TaskGuide='$($script:TaskGuideMainPath)', MainExample='$($script:ExampleMainPath)', AfterlifeMatrix='$($script:AfterlifeMatrixPath)', AfterlifeTurns='$($script:AfterlifeTurnsExamplePath)'. Do not search other worktrees for GM docs; use these absolute paths."
 $script:AfterlifeRealmGateDirective = " Realm Gate is mandatory before broad state reads: read input/turn_request.json and game_state/meta/soul_state.json first. If currentRealm is Chaos Sea or Shining Abode, do not read or repair mortal world files before reading world, NPC, faction, quest, inventory, combat, or mortal misc state; use only afterlife surfaces unless validation_repair_request.json explicitly names a wrong-realm repair target. In afterlife turns, before terminal signal, verify you did not change MortalWorldProfile files under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, or Mortal quest files. If you accidentally changed any of them, restore or remove those wrong-realm changes before terminal completion or repair completion. The client may auto-rollback forbidden wrong-realm mutations from the validated pending_turn_snapshot and write game_state/control/validation_auto_rollback_report.json before repair; this report is diagnostic only and is not permission to author MortalWorldProfile changes from afterlife. If the client restored a forbidden file to the validated snapshot, remaining validation errors from that restored baseline are client-owned diagnostic noise for this turn; do not repair them by editing MortalWorldProfile files."
 $script:AfterlifeExamplesDirective = " If game_state/meta/soul_state.json.currentRealm is Chaos Sea or Shining Abode, or progressionControl contains any afterlife mustEvaluate*/afterlifeCatchup debt, read compact templates first and use '$($script:AfterlifeMatrixPath)' to select exact canonical afterlife surfaces/receipts. Open '$($script:AfterlifeTurnsExamplePath)' only when the compact templates and matrix do not cover the route-specific contract you need; do not open the huge example file for basic terminal, progression_report, actor reasoning, repair, or tempoAdvantage field names. Route references when needed: example 14 for Shining core action fragments, examples 16-18 for combined scheduler + pending contract + player-action turns, example 19 for ordinary scheduler-only Chaos Sea living-world turns, example 20 for system Guardian attraction, example 21 for protected return guard turns, example 22 for direct resident action / hidden pending-backed routing tags, example 23 for freeform Chaos Sea Abode search with reason/source=chaos_sea_abode_search, example 24 for afterlife spiritual conflict with diceAudit on contested exchange/resolve and either specialArtAudit/effectNote/specialCostMultiplierPercent or specialArtAudits[] when both sides use named special arts; never write both special-art audit fields on one exchange. Non-player special arts must match the resolved opposition operation used for actionCostAudit.opposition, not the player's exchange.operationType or a stale incomingAction candidate; incomingAction.finalOperationType is authoritative when present, and terminal/free player operations must not include actionCostAudit.player. Use example 25 for Source of Light capstone closure from game_state/control/pending_source_of_light_capstone.json into sourceOfLightCapstone, light_incarnate, and source_of_light_incarnated_light. Scheduler allowance is scheduler-owned only: progressionProcessingReport permits only scheduler-owned Shining/resident/trade progression fields and does not authorize availability, coreActionReceipts, gates, gachaSystem.gachaHistory, pendingNativeFactionDiscovery, preparedIncarnationPackage, lightSparks, treasury, or sourceOfLightCapstone unless that surface has its own client-authored contract closed in the same turn. Use example 26 for afterlifeEntityProfileUpdates / afterlifeEntityCustomStateChanges / afterlifeFateCardUnlocks / afterlifeActorGoalUpdates / afterlifeActorQuestUpdates / afterlifeActorActivityUpdates / completeAfterlifeActorActivities / afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates / afterlifeActorMaskAdds / afterlifeActorMaskUpdates / afterlifeActorMaskRemovals / afterlifeActorActiveMaskChanges / afterlifeEntityProgressionOverrides / afterlifeSpecialArtLearningReceipts / game_state/meta/afterlife_entity_profiles.json, including fateCards, guardianEffects, playerUnlocks, politicalEffects, combatEffects, trainingUnlocks, relationships, relationshipLock, breakthroughQuestId, redemptionQuestId, pointOfNoReturn, _clear_, masks, activeMaskId, concealedTruth, directives, revealConditions, deceptionRisk, linkedThreatId, linkedSarefAgentId, goals, personalQuests, currentActivity, completedActivities, gmThoughtsSummary, specialArts, upgradeCost with only inkFeathers/lightSparks and at least one positive value, no progression via initialTier in learning receipts, trainingConditions, costMultiplierPercent, customStates, statesToRemove, progressionLedger, lastAutoProgressionCycleKey, soulDissipationProof, targetStabilityCoefficient, and terminalGameOver. Use _true_self_ rather than null for active mask removal, keep hidden mask truth out of normal player UI until isRevealed=true, and never use Mortal NPCMaskAdds. Use example 26D for afterlifeThreatsToAdd / afterlifeThreatsToUpdate / completeAfterlifeThreatActivities / afterlifeThreatsToRemove / game_state/meta/afterlife_active_threats.json persistent threats: use threats[], currentActivity, impactProfile, visibleToPlayer, optional sarefLink, close currentActivity only through completion, do not leak hidden threats, and never use Mortal worldMapUpdates.activeThreats. Use example 26B for afterlifeChronicleUpdates / game_state/meta/afterlife_chronicles.json external memory: write lastEventsDescription only, never eventDescriptions[] in updates, and do not substitute worldEventsLog/currentLocationData/worldMapUpdates. Use example 28 for afterlifeGlobalFlagUpdates / game_state/meta/afterlife_global_flags.json global facts: use flags[] with visibility hidden/gm_only for private facts, include gmThoughtsSummary and obsoleteReason for obsolete flags, and never use Mortal worldStateFlags. If resolving afterlife spiritual conflict, Spiritual Arts, Source of Light capstone rewards, or afterlife entity profiles, also read '$($script:AfterlifeCombatGlossaryPath)' for Russian labels while keeping JSON keys/enums English."
+$script:ActorMaterializationDirective = " Actor Materialization v1 is mandatory for every newly significant Mortal NPC or non-player afterlife actor. Bind one materializationId and materializedAtTurn to one exact actorType:actorId; do not infer identity, skills, inventory, arts, or authority from a display name, prose, occupation, or setting genre. Record capabilities and every required sections disposition as populated or empty_by_design; every empty_by_design entry needs an in-world reason. A legacy actor that first gains teacher, merchant/trade, combat, Actor Brain, or non-vacant leadership authority is promoted into significant structured play and must receive a complete materialization envelope in that same accepted turn. Positive afterlife trade authority is exact and realm-local: in the Chaos Sea use canTrade=true only for the one active Guardian bound to the exact current abode; in the Shining Abode use it only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. When authoritative trade evidence is unavailable at the validation boundary, fail closed with canTrade=false; never infer trading from names, roles, descriptions, or genre vocabulary. A current materialized profile uses exactly one canonical actorType and actorId and no actorRef alias. The first envelope on an existing profile must validate current actor-owned memory; an untouched legacy profile without a new envelope remains readable. Route Guardian memory to the Guardian thought journal, resident memory to the resident thought journal, and common-profile actor memory to profile gmThoughtsSummary. A bounded common-profile repair may change only the exact actor's gmThoughtsSummary and must preserve unrelated actors, root data, currencies, progression, materialization, and scalar fields. A progression ledger or external chronicle is audit/history and never substitutes for actor-owned thought memory. Populated agency requires meaningful goals, non-empty personalQuests, meaningful currentActivity, or non-empty completedActivities; progressionStrategy or a mask alone is not agency. For an existing NPC or afterlife actor, preserve the historical envelope and use a dedicated delta rather than rewriting materialization. A bounded worker repair may alter only the exact named section; the apply gate mechanically rejects protected actor data changes outside that scope."
+$script:AfterlifeActorLifecycleDirective = " Afterlife actor lifecycle: accepted profile actor types are guardian, resident, shining_resident, shining_faction_head, radiant_actor, saref_agent, system_actor, and custom_afterlife_actor; source-backed actors still require exact canonical authority. canTeach=true requires a positive standard/special art tier or another supported positive lesson such as mentorTrainingShowcase sourceCap greater than zero; tier/cap zero and a bare mentor flag do not qualify. Remove a physical resident record only when the validated pre-turn snapshot contains its exact no-target departure_only request and current state contains the exact departed_only receipt plus referenced departure history. Ordinary player projections hide gmOnly, secret, non-player-visible, and system_actor profiles unless explicit diagnostics are enabled."
+$script:AfterlifeExamplesDirective += $script:ActorMaterializationDirective
+$script:AfterlifeExamplesDirective += $script:AfterlifeActorLifecycleDirective
 $script:AfterlifeCombatConditionsDirective = " If an afterlife spiritual conflict uses combatConditions[], use only kinds mark, ward, burden, opening, or vow; each active condition needs source, target, affected operations, duration/uses, counterplay, and summary. Conditions may affect only condition-backed rollMode sources, conflictPosition, legal anti-control controlState softening/narrowing, side strain, tempoAdvantage, counterPayoff, actionCostAudit / OD costs, or specialArtAudit.effectNote. This is no generic passive stat stacking: create, consume, expire, or clear combatConditions explicitly. Show visible active combatConditions in ordinary conflict/log output and keep hidden/gm_only combatConditions private."
 $script:AfterlifeSpecialArtCombatEffectDirective = " Current/new teachable specialArts[] require specialArts[].combatEffect beside effectSummary, with summary, trigger, mechanicalAxis, allowedPayoff, limit, and auditRequirement. Legal mechanicalAxis values are afterlife-only surfaces such as rollMode, conflictPosition, controlState, sideStrain, tempoAdvantage, counterPayoff, actionEconomy, actionCostAudit, or combatConditions. Preserve baseOperation, read combatEffect before applying a named special art, and record the applied trigger/payoff through specialArtAudit.effectNote or specialArtAudits[].effectNote; never use Mortal HP/status effects, unlimited passive bonuses, or tactical-matrix bypasses. Legacy profiles with only effectSummary remain readable."
 $script:WeatherContractDirective = " Weather contract: if you write game_state/world/weather.json direct root or game_state/world/current_location.json.normalizedWeatherState, the weather object MUST keep both non-empty description and canonical tendency (IMPROVE, WORSEN, NO_CHANGE, or a valid JUMP_TO_* command). Do not wait for weather_direct_state_missing_required_fields repair; preserve/add description and tendency before writing the terminal marker."
@@ -703,10 +707,10 @@ function New-GmExperienceLesson {
         "Use FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST and TURN_OUTPUT_TEMPLATE.md before broad docs. For first Mortal bootstrap, open game_state/control/mortal_bootstrap_scaffold.json and write the minimum complete output set: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, game_state/control/progression_report.json if progression counts are required, then finish with Complete-BoeTurn -FilesModified. Do not open large examples first and do not leave the player with no scene."
     }
     elseif ($hasMortalBootstrapPlaceholderIssue) {
-        "Open game_state/control/mortal_bootstrap_scaffold.json and replace every player-visible scaffold label from the accepted Mortal bootstrap. Do not keep names like 'Стартовая сцена', 'Силы стартовой сцены', 'Путь из стартовой сцены', 'Ближайший выход из стартовой сцены', or 'Наставник стартовой сцены'. Rename durable current_location/world_map entries, exits/links, faction_core/faction_resources entries, and starter NPCs to concrete in-world names derived from playerAuthoredStart.characterDescription/worldDescription/startingCircumstances. Do not delete the entities and do not expect the client to invent artistic names."
+        "Open game_state/control/mortal_bootstrap_scaffold.json and replace temporary scaffold labels only in player-visible identity/title fields. Do not keep names like 'Стартовая сцена', 'Путь из стартовой сцены', or 'Ближайший выход из стартовой сцены' as durable current_location/world_map names or exit/link titles. The same words are allowed inside ordinary description, history, summary, or other narrative prose. Name every GM-created NPC through setting-aware GM judgment; the client does not create or name starter NPCs."
     }
     elseif ($hasMortalBootstrapContentAnchorIssue) {
-        "Open game_state/control/mortal_bootstrap_scaffold.json and preserve its client-authored starterCompetencyRequirements and worldEventRequirements. Restore every required active/passive skill from the pre-turn baseline, including matching active mastery, and keep the required opening event in game_state/world/world_events.json so /новости_мира is useful. Do not replace explicit character competence or the opening world event with prose-only narration."
+        "Open game_state/control/mortal_bootstrap_scaffold.json. playerAuthoredStart is narrative context only and grants no mechanics. The client initializes structuredGmAuthority arrays empty, leaves experience.json empty, keeps faction and quest collections empty, and assigns no location type/traversal/difficulty, XP threshold, carrying capacity, faction resources, influence/control, or universal powerProfile. Every playerProgression, carryingRules, or factionMechanics authority record must name the exact canonicalPath and contain a non-empty values object that exactly repeats the authorized canonical values; faction records also identify factionId. Empty objects, reasons, unrelated paths, and prose do not grant authority. Preserve explicit GM declarations and worldEventRequirements. Merchant capability also requires an explicit valid tradeState.merchantProfile; never derive it or any other mechanic through role, occupation, class, name, description, genre, or keyword matching."
     }
     elseif ($hasMortalLocationIssue) {
         "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids. Register durable destination locations in world_map first, then update current_location and NPC currentLocationId/currentLocationName only to known ids. Every world_map adjacency/link/storage/threat target must point to an existing locationId or a same-turn newLocations.initialId that is fully materialized in the same response; do not leave unknown target/source ids. Resolve duplicate coordinates in same-turn map updates. If the place is narrative color inside the current room, keep current_location unchanged and describe it as part of the existing location."
@@ -715,7 +719,7 @@ function New-GmExperienceLesson {
         "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction as a complete factions[] object when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
     }
     elseif ($hasMortalNpcIssue) {
-        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize meaningful Mortal World NPCs through UpdateNPCs/NPCsInScene as full objects with relationshipLock, goals, personalityTraits, attitude, and culturalStance in canonical shapes. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest first-person thought and append journalEntries[] objects with fresh entryId, non-empty first-person description, and timestamp. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
+        "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize genuinely new or true legacy-promotion Mortal World NPCs through UpdateNPCs/NPCsInScene as complete objects with relationshipLock, goals, 3-5 integer-valued personalityTraits, attitude, and culturalStance. For an ordinary existing NPC, use dedicated commands and bounded NPCCoreChanges; never resend an unchanged or updated full object through UpdateNPCs. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest first-person thought and append journalEntries[] objects with fresh entryId, non-empty first-person description, and timestamp. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
     }
     elseif ($hasMortalSkillIssue) {
         "Use MORTAL_SKILL_PROGRESSION_TEMPLATE.md before writing Mortal World training, skill unlocks, active skill use, or mastery updates. If harnessRepairPackets[].kind is mortal_skill_progression_shape_repair, repair activeSkillChanges, passiveSkillChanges, removeActiveSkills, removePassiveSkills, and skillMasteryChanges as arrays, even for a single changed skill; read pending_training_showcase_requests.json for paid lesson authority and do not charge resources again. Attribute-only checks may stay prose/math only, but prose-only learning must be avoided when the fiction says the player learned or practiced a concrete skill: create/update passiveSkillChanges or activeSkillChanges, and initialize/update skillMasteryChanges for active skills."
@@ -754,7 +758,7 @@ function New-GmExperienceLesson {
         "Use TURN_OUTPUT_TEMPLATE.md for output/narrative_response.json: only response and timestamp are allowed there. Never put afterlifeChronicleUpdates into output/narrative_response.json. Use AFTERLIFE_CHRONICLE_TEMPLATE.md and the afterlifeChronicleUpdates surface for game_state/meta/afterlife_chronicles.json external memory, then include game_state/meta/afterlife_chronicles.json in Complete-BoeTurn -FilesModified when that state was changed."
     }
     elseif ($hasStalePlayerFacingOutputIssue) {
-        "Use OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md for this output-only validation repair. Possible output targets are output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json, but harnessRepairPackets[].targetFiles is the exact allowlist: rewrite only listed stale or technically contaminated artifacts. If output/debug_logs.json is absent from targetFiles, preserve it unchanged. If it is listed, preserve every full Actor Brain block and exact journal/ledger surface while repairing only the invalid fields. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response. Do not touch canonical game_state files unless the current validation_repair_request.json still lists canonical state errors."
+        "Use OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md for this output-only validation repair. Possible output targets are output/narrative_response.json, output/interface_updates.json, and output/debug_logs.json, but harnessRepairPackets[].targetFiles is the exact allowlist: rewrite only listed stale or technically contaminated artifacts. If output/debug_logs.json is absent from targetFiles, preserve it unchanged. If it is listed, preserve every full Actor Brain block and exact journal/ledger surface while repairing only the invalid fields. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response. Do not touch canonical game_state files unless the current validation_repair_request.json still lists canonical state errors; if it does, finish every canonical write before rewriting dependent output. The client retains the original canonical target set across output-only retries, and output must be strictly newer than every target's latest actual write; equal timestamps are stale."
     }
     elseif ($hasGenericTurnOutputArtifactIssue) {
         "Use TURN_OUTPUT_TEMPLATE.md before writing ordinary turn output artifacts. Write output/narrative_response.json with only response and timestamp. Write output/debug_logs.json with gm_thoughts_markdown and timestamp. Write output/interface_updates.json with payload and timestamp. Do not write generic checks/mode/outcome/requestId/rewards/sessionId/turnNumber envelopes into output artifacts. Finish with Complete-BoeTurn -FilesModified only after canonical state changes are written."
@@ -1039,7 +1043,7 @@ function Get-FirstMortalBootstrapPrompt {
         return ""
     }
 
-    return " FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST: do not open large examples first. Open game_state/control/mortal_bootstrap_scaffold.json and '$script:CompactTurnOutputTemplatePath'. Produce the minimum complete first mortal scene: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, and game_state/control/progression_report.json when progression counts are required. Preserve every client-authored starterCompetencyRequirements skill and worldEventRequirements opening event from the pre-materialized baseline; explicit competence and the first world news must not disappear into prose-only narration. Scaffold labels in the baseline are temporary only: before Complete-BoeTurn, replace player-visible names such as 'Стартовая сцена', 'Силы стартовой сцены', 'Путь из стартовой сцены', 'Ближайший выход из стартовой сцены', or 'Наставник стартовой сцены' with concrete in-world names for the current location, exits/links, factions, and starter NPCs. If preMaterializedBaselineFiles includes game_state/npcs/npc_core.json, preserve the starter teacher and make the scene/output consistent with that existing NPC instead of omitting training. If you add or update player-facing Mortal anchors, use the compact Mortal templates for that exact surface. Finish with Complete-BoeTurn -FilesModified as the LAST action; never return idle with no player-facing output."
+    return " FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST: do not open large examples first. Open game_state/control/mortal_bootstrap_scaffold.json and '$script:CompactTurnOutputTemplatePath'. Produce the minimum complete first mortal scene: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, and game_state/control/progression_report.json when progression counts are required. playerAuthoredStart is narrative context, not mechanical authority. The client baseline contains no inferred skills, items, NPCs, capabilities, money, progression, carrying values, factions, quests, location type/traversal/difficulty, faction resources, influence/control, or universal powerProfile; experience.json is an empty structural object. Every structuredGmAuthority.playerProgression, carryingRules, or factionMechanics entry must name the exact canonicalPath and contain a non-empty values object that repeats every authorized canonical value; faction entries also identify factionId. Empty objects, reasons, unrelated paths, and prose do not grant authority. Record other setting-aware decisions in playerSkills, inventoryItems, actorCapabilities, or resources and write matching complete canonical GM state; preserve those declarations and the worldEventRequirements opening event. Scaffold labels are temporary only in identity/title fields: before Complete-BoeTurn, replace names such as 'Стартовая сцена', 'Путь из стартовой сцены', or 'Ближайший выход из стартовой сцены' for the current location and exits/links; ordinary narrative prose may retain the same words. Every NPC first created on this turn requires the complete materialization envelope. A trader requires an explicit valid tradeState.merchantProfile; never infer it from NPC prose or genre. If you add or update player-facing Mortal anchors, use the compact Mortal templates for that exact surface. Finish with Complete-BoeTurn -FilesModified as the LAST action; never return idle with no player-facing output."
 }
 
 function Build-FirstMortalBootstrapDispatchMessage {
@@ -1051,7 +1055,7 @@ function Build-FirstMortalBootstrapDispatchMessage {
         [string]$FirstMortalBootstrapPrompt
     )
 
-    return "Process first Mortal bootstrap turn #$TurnNumber (requestId=$RequestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmExperienceLessonsDirective)$($ExperiencePrompt)$($FirstMortalBootstrapPrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json, game_state/control/mortal_bootstrap_scaffold.json, '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', and '$($script:CompactProgressionReportTemplatePath)' before writing output. This is a bounded bootstrap task packet: do not open broad examples, afterlife directives, weather guidance, combat guidance, faction/location/NPC/skill templates, or repository source unless validation later names an exact surface. FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST: produce the minimum complete first mortal scene only: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, and game_state/control/progression_report.json only when progression counts are required. If the baseline files are already valid, preserve them and avoid rebuilding the world. Keep all starterCompetencyRequirements entries in player skill state, including active-skill mastery, and keep worldEventRequirements entries in world_events.json; do not leave /навыки or /новости_мира empty after an explicit authored start. Replace temporary player-visible scaffold names before completion: no accepted current location, exit/link, faction, or starter NPC may stay named 'Стартовая сцена', 'Силы стартовой сцены', 'Путь из стартовой сцены', 'Ближайший выход из стартовой сцены', or 'Наставник стартовой сцены'. Use concrete in-world names derived from playerAuthoredStart. If preMaterializedBaselineFiles includes game_state/npcs/npc_core.json, keep the existing starter teacher actionable for /обучение instead of dropping training into prose only. If you must add or update a player-facing anchor from the scaffold, use the smallest matching compact Mortal template after the basic output files are ready. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request, copy exact sessionId/requestId/turnNumber from input/turn_request.json, never delete or rewrite input/turn_request.json or pending_turn_snapshot files, and finish with Complete-BoeTurn -FilesModified as the LAST action."
+    return "Process first Mortal bootstrap turn #$TurnNumber (requestId=$RequestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmExperienceLessonsDirective)$($ExperiencePrompt)$($FirstMortalBootstrapPrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json, game_state/control/mortal_bootstrap_scaffold.json, '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', and '$($script:CompactProgressionReportTemplatePath)' before writing output. This is a bounded bootstrap task packet: do not open broad examples, afterlife directives, weather guidance, combat guidance, faction/location/NPC/skill templates, or repository source unless validation later names an exact surface. FIRST MORTAL BOOTSTRAP OUTPUT CHECKLIST: produce the minimum complete first mortal scene only: output/narrative_response.json, output/debug_logs.json with NPC Scope, output/interface_updates.json with clear choices, and game_state/control/progression_report.json only when progression counts are required. If the setting-neutral baseline files are already valid, preserve them and avoid rebuilding the world. playerAuthoredStart is narrative context only. The client creates no inferred skills, items, NPCs, capabilities, money, progression, carrying values, factions, quests, location type/traversal/difficulty, faction resources, influence/control, or universal powerProfile; experience.json starts as an empty structural object. Every structuredGmAuthority.playerProgression, carryingRules, or factionMechanics entry must name the exact canonicalPath and contain a non-empty values object that repeats every authorized canonical value; faction entries also identify factionId. Empty objects, reasons, unrelated paths, and prose do not grant authority. Record other setting-aware choices in playerSkills, inventoryItems, actorCapabilities, or resources and write matching complete canonical GM state; keep worldEventRequirements entries in world_events.json. Replace temporary scaffold labels only in identity/title fields: no accepted current location or exit/link may stay named 'Стартовая сцена', 'Путь из стартовой сцены', or 'Ближайший выход из стартовой сцены'; ordinary narrative prose may retain the same words. Every NPC first created on this turn requires the complete materialization envelope. A trader requires an explicit valid tradeState.merchantProfile; never infer it from role, occupation, class, name, description, genre, or keywords. If you must add or update a player-facing anchor from the scaffold, use the smallest matching compact Mortal template after the basic output files are ready. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request, copy exact sessionId/requestId/turnNumber from input/turn_request.json, never delete or rewrite input/turn_request.json or pending_turn_snapshot files, and finish with Complete-BoeTurn -FilesModified as the LAST action."
 }
 
 function Write-GmSafeProbes {
@@ -1330,7 +1334,7 @@ Use this before opening large examples for ordinary live turns.
 1. Dot-source `game_state/control/gm_turn_helper.bootstrap.ps1`.
 2. Read `input/turn_request.json`, `game_state/meta/soul_state.json`, and the minimal state files needed for the current realm.
    - If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing an afterlife spiritual conflict exchange; copy its authoritative action-cost tiers/costs and dice outcome preview instead of guessing deterministic math.
-3. Write player-facing output first, then structured state/output files.
+3. Write every canonical structured-state change first. Write player-facing output only after the final canonical write so the prose and choices describe the state that will be validated.
 4. Finish with `Complete-BoeTurn -FilesModified @(...)` as the last command.
 
 ## Minimal files
@@ -1450,7 +1454,8 @@ Use this template only in validation repair mode when
    - `output/debug_logs.json`
 6. When `output/debug_logs.json` is absent from `targetFiles`, preserve its full Actor Brain and exact `Изменения состояния` journal/ledger surfaces unchanged.
 7. Do not touch canonical game_state files unless the current repair request still lists canonical state errors.
-8. Finish with `Complete-BoeValidationRepair` as the last command.
+8. If the same current request lists canonical errors, complete every listed canonical write before rewriting any dependent player-facing output. The client retains the original canonical target set across every later output-only retry. Output must be strictly newer than the latest actual write of every retained target; equal timestamps are stale. Repair-loop start/request time is not a freshness boundary, and an unobservable target write fails closed.
+9. Finish with `Complete-BoeValidationRepair` as the last command.
 
 ## Narrative response must stay diegetic
 
@@ -1498,6 +1503,7 @@ only in `output/debug_logs.json` or repair evidence.
 - This is output-only repair. Do not create a new turn, reroll dice, advance time, change rewards, or rewrite canonical state.
 - Preserve the accepted player action and already repaired story meaning.
 - If the old narrative/options contradict repaired canonical state, rewrite the text/options to match current canonical state.
+- Preserve the original canonical target set named by the mixed repair even when a later request lists only output files. If any retained target is rewritten again, rewrite dependent output again after that latest write.
 - If `output/debug_logs.json` is not listed in `targetFiles`, do not rewrite it.
 - If `output/debug_logs.json` is listed, preserve its full Actor Brain blocks. Never shorten profile inputs, motivation, constraints, strategy alternatives with `Выгода:`/`Риск:`, chosen strategy, rejected alternatives, actions, or exact `Изменения состояния`.
 - Preserve the exact memory surface already used: Mortal NPC `NPCJournals[].journalEntries[]`; Guardian `guardianThoughtJournalUpdates` or `UpdateGuardians.addMusings`; resident `residentThoughtJournalUpdates`; existing afterlife entity `ledger/progressionLedger`; existing Shining faction `shiningFactionChronicleUpdates`. Never replace one with generic `state unchanged` wording.
@@ -1596,6 +1602,7 @@ Use this before opening large examples for repair mode.
 - If `harnessRepairPackets[].kind` is `actor_memory_persistence_repair`, persist one new current-turn actor-owned memory delta only to the listed state surface. Guardians/NPCs/residents use first-person journal entries; direct repair of `game_state/meta/guardian_thought_journal.json` writes its canonical top-level `entries[]` root, never `schemaVersion` or a `guardianThoughtJournalUpdates`-only root. Existing afterlife profiles append actor-owned `ledger`/`progressionLedger` even when `gmThoughtsSummary` changes; existing Shining factions append `shiningFactionChronicleUpdates`, never a `shiningFactionStrategicMemoryUpdates` rewrite alone. In packet-listed `output/debug_logs.json`, update only the same actor's `Изменения состояния:` line to name the journal command/surface actually used. This internal memory-only repair does not invalidate or rewrite narrative/interface output. Do not rewrite old entries or unrelated canonical state.
 - If a wrong-realm auto-rollback report exists, treat it as diagnostic evidence, not permission to rewrite mortal files from afterlife.
 - If `harnessRepairPackets[].kind` is `accepted_turn_output_artifact_repair`, use `OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md`. Possible targets are `output/narrative_response.json`, `output/interface_updates.json`, and `output/debug_logs.json`, but `targetFiles` is the exact allowlist: repair only listed artifacts for the same turn. If `output/debug_logs.json` is absent, preserve it unchanged; if listed, preserve its complete Actor Brain blocks and exact journal/ledger surfaces. Do not create a new turn and do not touch canonical game_state files unless canonical errors remain listed in the current request.
+- In any repair request that lists both canonical and player-facing targets, finish all canonical writes first, then rewrite dependent player-facing output. The client retains the original canonical target set through later output-only retries. Output must be strictly newer than every retained target's latest actual write; equal timestamps are stale. Request creation and repair-loop start are not freshness boundaries, and an unobservable target write fails closed.
 - If validation reports `narrative_response_technical_repair_leak`, rewrite `output/narrative_response.json.response` as diegetic in-world prose only. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, storage shape, or that a technical state write succeeded.
 - If validation reports `narrative_response_unknown_field`, remove the unsupported field from `output/narrative_response.json`; keep only `response` and `timestamp`. If the field is `afterlifeChronicleUpdates`, move/keep that data only on the afterlife chronicle surface described by `AFTERLIFE_CHRONICLE_TEMPLATE.md` and `game_state/meta/afterlife_chronicles.json`.
 - If `harnessRepairPackets[].kind` is `mortal_skill_progression_shape_repair`, repair the listed Mortal player skill files in place. `activeSkillChanges`, `passiveSkillChanges`, `removeActiveSkills`, `removePassiveSkills`, and `skillMasteryChanges` are always arrays, even for one changed skill. Read `game_state/control/pending_training_showcase_requests.json` for paid lesson `targetKind` authority and do not charge money/XP/currency again.
@@ -1709,15 +1716,50 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 - Role-identifiable visible, speaking, acting, clue-giving, or directly addressed scene actors are NPC candidates even when their personal name is unknown. Use a stable role-based visible name such as `Агент дома Виренто`, then update/rename later when the player learns the real name.
 - Validation reports `mortal_relevant_actor_missing_persistence`, `npc_full_object_missing_required_fields`, `npc_attitude_relationship_tier_mismatch`, `npc_invalid_cultural_stance`, `npc_same_turn_initial_location_requires_null_current_location`, `npc_journal_unknown_npc_reference`, `missing_actor_current_location`, or object/nullability errors under `game_state/npcs/npc_core.json`.
 
+## Actor Materialization v1
+
+- Every genuinely new significant NPC must carry one immutable `materialization` envelope in its full `NPCsInScene`/`UpdateNPCs` object.
+- Bind it to the exact `actorType:actorId` pair. Mortal NPCs use `actorType: mortal_npc`; a same-turn new NPC uses the same stable `initialId` as `materialization.actorId`.
+- Never infer skills, inventory, teaching, trade, combat capability, or identity from a display name, prose, occupation, or setting genre. Materialize only structured facts justified by the current world and scene.
+- `capabilities` must agree with the full NPC object. Every required entry under `sections` is either `populated` or `empty_by_design`; `empty_by_design` requires a concise in-world reason, not a technical placeholder.
+- First materialization requires 3-5 `personalityTraits`; each trait includes `value` as a JSON integer from 1 through 10.
+- For an already materialized existing NPC, preserve the original envelope byte-for-byte. Apply later changes through a dedicated delta/command surface or bounded `NPCCoreChanges`; do not resend or regenerate `materialization`.
+- For a legacy promotion, add the first complete envelope and change only the role fields that establish the newly gained capability: `teacherProfile` for teaching, `tradeState` for trade, `activeSkills`/`passiveSkills` for combat, or `plans`/`currentActivity`/`completedActivities` for first Actor Brain scope. Preserve every unrelated pre-turn field. Include schema-required `inventory` only when it is semantically identical to the validated pre-turn inventory snapshot. Inventory additions, changes, and removals remain dedicated-command-only.
+- Never emit two current Mortal actor records under the same effective same-turn identity. `tradeInventory` and `trainingShowcase` are not legacy-promotion fields: change stock only for the exact pending NPC trade request plus matching ready receipt, and change a showcase only for the exact pending `mortal_teacher_showcase` request. Prefer the GM helper; a manual training fallback is a narrow `UpdateNPCs` patch containing only exact identity/display fields and the request-bound `trainingShowcase`.
+
+## Ordinary existing core changes
+
+- `NPCCoreChanges` is a Mortal-only non-carrier command mapped to `game_state/npcs/npc_core.json`. It targets one exact existing permanent `NPCId`; never target by name or `initialId`.
+- Every entry needs a non-empty in-world/mechanical `reason` and at least one non-empty mutation group. Values are absolute resulting values, not expressions or prose math.
+- Include only groups that actually change. Omit every unused optional group; never emit an empty object or array as a placeholder.
+- Allowed groups are exactly `profile`, `location`, `progression`, `characteristicValues`, `factionAffiliationsToUpsert`, `fateCardsToAdd`, and `fateCardIdsToRemove`. Unknown members and protected identity/name/materialization/inventory/equipment/skill/relationship/journal/goal/quest/activity/mask/custom-state/teacher/trade fields are forbidden.
+- `characteristicValues` may use only keys already owned by the actor or explicit current-world characteristic authority. Carrying and progression formulas also come only from explicit current-world authority; keep setting-owned nullable results null when no authority exists.
+- Unlock cards through `NPCFateCardUnlocks`. Add only complete new initially locked cards and remove only validated pre-turn locked/unrealized cards through `NPCCoreChanges`.
+
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "exact_existing_permanent_npc_id",
+      "reason": "non-empty in-world and mechanical justification",
+      "profile": {
+        "worldview": "absolute replacement from the current story"
+      }
+    }
+  ]
+}
+```
+
 ## Scene NPC location rules
 
 - Put scene-local present NPCs in `NPCsInScene`.
-- NPCsInScene is only for actors physically present in currentLocationData. voices behind a door, guards in a nearby corridor, people near nearbyExitLocationId, route pressure, and exit pressure are not scene NPCs for the current room; keep them in narrative, current location memory, quest/faction/location memory, Actors outside scope, or materialize them through UpdateNPCs at their own location only if they are durable known actors.
+- NPCsInScene is only for actors physically present in currentLocationData. Voices behind a door, guards in a nearby corridor, people near nearbyExitLocationId, route pressure, and exit pressure are not scene NPCs for the current room; keep them in narrative, current location memory, quest/faction/location memory, or Actors outside scope. A genuinely new durable off-screen actor may use a complete `UpdateNPCs` object at its own location; an existing actor moves only through `NPCCoreChanges.location`.
 - If `currentLocationData.locationId` is a known permanent id, set `currentLocationId` to that id and set `initialLocationId` to `null`.
 - If the current scene is a same-turn new location (`currentLocationData.locationId = null` with `currentLocationData.initialId`), set `initialLocationId` to that exact initial id and set `currentLocationId` to `null`.
 - Keep `currentLocationName` as the visible current location name.
 - For a genuinely new NPC, use `NPCId: null` plus non-empty `initialId`; do not invent a permanent NPCId before the client materializes it.
-- `inventory` inside the full NPC object is allowed for a genuinely new NPC's initial carried inventory. For an existing NPC, do not resend `inventory` inside `UpdateNPCs`; use NPC inventory command surfaces for deltas.
+- Identity continuity is strict: same-turn initialId must not collide with a validated pre-turn permanent NPCId. Restore that actor's permanent NPCId instead of disguising it as a new actor.
+- `inventory` inside the full NPC object is allowed for a genuinely new NPC's initial carried inventory. The only existing-identity exception is the unchanged snapshot required for a legacy promotion; every mutation uses `NPCInventoryAdds`, `NPCInventoryUpdates`, or `NPCInventoryRemovals`.
 - Use canonical `culturalStance`: `Conformist`, `Pragmatist`, or `Dissident`.
 - Keep `relationshipLevel` numeric. For neutral/unknown NPCs use `0` and `attitude: "Neutral"`.
 - Nullable string fields must be either a real string or JSON `null`, not `{}` and not missing when validator names them.
@@ -1756,6 +1798,8 @@ NPC journal shape is not the same as inventory item journal shape:
 
 ## Minimal safe NPC scene object
 
+The `characteristics` object below is a setting-defined placeholder. Copy the actual keys from current-world canonical characteristic authority; never reuse a universal list. If current-world authority supplies no carrying formula or compatible item weights, keep `maxWeight` and `totalWeight` null.
+
 ```json
 {
   "NPCId": null,
@@ -1791,11 +1835,30 @@ NPC journal shape is not the same as inventory item journal shape:
       "summary": "<short trait summary>",
       "traitName": "<same trait name>",
       "description": "<short description>",
+      "value": 5,
       "valueDescription": "<how it matters in play>"
+    },
+    {
+      "traitId": "trait_<npc_slug>_<short_2>",
+      "name": "<second trait name>",
+      "summary": "<short second trait summary>",
+      "traitName": "<same second trait name>",
+      "description": "<short second description>",
+      "value": 5,
+      "valueDescription": "<how the second trait matters in play>"
+    },
+    {
+      "traitId": "trait_<npc_slug>_<short_3>",
+      "name": "<third trait name>",
+      "summary": "<short third trait summary>",
+      "traitName": "<same third trait name>",
+      "description": "<short third description>",
+      "value": 5,
+      "valueDescription": "<how the third trait matters in play>"
     }
   ],
-  "maxWeight": 0,
-  "totalWeight": 0,
+  "maxWeight": null,
+  "totalWeight": null,
   "isOverloaded": false,
   "progressionTrackers": {
     "active": [],
@@ -1811,18 +1874,7 @@ NPC journal shape is not the same as inventory item journal shape:
     "breakthroughQuestId": null
   },
   "characteristics": {
-    "strength": 8,
-    "dexterity": 10,
-    "constitution": 10,
-    "intelligence": 10,
-    "wisdom": 10,
-    "faith": 8,
-    "attractiveness": 10,
-    "trade": 8,
-    "persuasion": 10,
-    "perception": 10,
-    "luck": 9,
-    "speed": 8
+    "setting_defined_characteristic_key": 0
   },
   "activeSkills": [],
   "passiveSkills": [],
@@ -1841,7 +1893,28 @@ NPC journal shape is not the same as inventory item journal shape:
   },
   "sceneStatus": "present",
   "turn": 0,
-  "lastSeenAtUtc": "<ISO 8601 UTC timestamp>"
+  "lastSeenAtUtc": "<ISO 8601 UTC timestamp>",
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_npc_<stable_slug>_turn_0",
+    "actorType": "mortal_npc",
+    "actorId": "npc_<stable_slug>",
+    "materializedAtTurn": 0,
+    "state": "complete",
+    "capabilities": {
+      "canFight": false,
+      "canTeach": false,
+      "canTrade": false,
+      "ownsItems": false
+    },
+    "sections": {
+      "skills": { "state": "empty_by_design", "reason": "Персонаж не демонстрирует оформленных навыков в этой сцене." },
+      "inventory": { "state": "empty_by_design", "reason": "У персонажа нет значимых переносимых предметов." },
+      "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не проявился." },
+      "personalQuests": { "state": "empty_by_design", "reason": "Личная задача персонажа пока не возникла." },
+      "relationships": { "state": "populated" }
+    }
+  }
 }
 ```
 
@@ -2015,7 +2088,7 @@ Use this before Mortal World turns that teach, unlock, practice, use, or improve
 
 - An attribute-only check is allowed when the fiction is just "try with Strength/Intelligence/Perception/etc." and no durable technique, craft, combat move, or knowledge skill is learned.
 - Prose-only learning is not enough when the fiction says the player learned, trained, practiced, unlocked, or repeatedly applied a concrete skill.
-- Fresh Mortal bootstrap may already create starter active and passive skills from the player's explicit character concept. Treat `mortal_bootstrap_scaffold.json.starterCompetencyRequirements` as client-authored authority: preserve active skills plus their mastery entries and preserve passive skills during early checks instead of narrating permanent competence as prose-only text.
+- Fresh Mortal bootstrap creates no skills from player prose. Treat `playerAuthoredStart` as narrative context only. Only explicit GM-authored active and passive skills may enter canonical state: record each setting-aware skill decision in `mortal_bootstrap_scaffold.json.structuredGmAuthority.playerSkills` and write the matching active/passive skill plus active mastery state; never use genre or keyword inference.
 - If the player learns durable knowledge, perception, craft, social, or utility expertise, write `passiveSkillChanges` with a complete passive skill object.
 - If the player learns a usable combat move or activated technique, write `activeSkillChanges` with a complete active skill object and initialize/update its mastery through `skillMasteryChanges`.
 - If the player uses an already-known active skill, update `skillMasteryChanges`; do not write mastery for a skill that is not already present in `game_state/player/skills_active.json` or added in the same turn.
@@ -2125,7 +2198,8 @@ Use this before Mortal World turns that award ordinary XP, resolve combat reward
 ## Mortal experience rule
 
 - Mortal XP lives in `game_state/player/experience.json`.
-- Fresh Mortal bootstrap creates the baseline file with `playerLevel`, `level`, `currentExperience`, `experience`, `totalExperience`, `experienceForNextLevel`, and `experienceGained`.
+- Fresh Mortal bootstrap creates an empty structural file and does not assign a default level, XP threshold, or progression curve.
+- On the first setting-aware progression decision, record the first complete progression tuple by adding an entry to `mortal_bootstrap_scaffold.json.structuredGmAuthority.playerProgression` with `canonicalPath: game_state/player/experience.json` and a non-empty `values` object containing every applicable `playerLevel`, `level`, `currentExperience`, `experience`, `totalExperience`, `experienceForNextLevel`, and `experienceGained` value exactly as written to canonical state.
 - If a Mortal World scene grants XP, update the XP file in the same turn and include `game_state/player/experience.json` in `Complete-BoeTurn -FilesModified`.
 - If updated `totalExperience >= experienceForNextLevel`, the level-up is not materialized yet. Advance `playerLevel` and `level`, then set `experienceForNextLevel` to the next threshold above `totalExperience`; otherwise validation will request repair.
 - Do not leave a meaningful victory, completed objective, or combat reward prose-only when the scene clearly grants mechanical progress.
@@ -4544,7 +4618,8 @@ function Test-JsonStringListEqual {
 
 function Test-PendingTurnSnapshotRollbackBackupHashes {
     param(
-        [object]$Payload
+        [object]$Payload,
+        [bool]$HashBytesExactly
     )
 
     $rollbackBackups = Get-JsonPropertyValue -Object $Payload -Names @("rollbackBackups")
@@ -4565,8 +4640,48 @@ function Test-PendingTurnSnapshotRollbackBackupHashes {
             return $false
         }
 
-        $content = Get-Content -LiteralPath $backupPath -Raw -Encoding UTF8
-        $actualHash = Get-Sha256HexFromText -Text $content
+        $actualHash = if ($HashBytesExactly) {
+            Get-Sha256HexFromBytes -Bytes ([System.IO.File]::ReadAllBytes($backupPath))
+        }
+        else {
+            $content = Get-Content -LiteralPath $backupPath -Raw -Encoding UTF8
+            Get-Sha256HexFromText -Text $content
+        }
+        if (-not [string]::Equals($actualHash, [string]$hashProperty.Value, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $false
+        }
+    }
+
+    return $true
+}
+
+function Test-PendingTurnSnapshotFileHashes {
+    param(
+        [object]$Payload,
+        [bool]$HashBytesExactly
+    )
+
+    $files = Get-JsonPropertyValue -Object $Payload -Names @("files")
+    $snapshotFileHashes = Get-JsonPropertyValue -Object $Payload -Names @("snapshotFileHashes")
+    $hashProperties = @(Get-JsonObjectProperties -Object $snapshotFileHashes)
+    foreach ($hashProperty in $hashProperties) {
+        $snapshotRelativePath = Get-JsonStringValue -Object $files -Names @($hashProperty.Name)
+        if ([string]::IsNullOrWhiteSpace($snapshotRelativePath)) {
+            return $false
+        }
+
+        $snapshotPath = Join-Path $GameSessionPath ($snapshotRelativePath.Replace("/", "\"))
+        if (!(Test-Path -LiteralPath $snapshotPath)) {
+            return $false
+        }
+
+        $actualHash = if ($HashBytesExactly) {
+            Get-Sha256HexFromBytes -Bytes ([System.IO.File]::ReadAllBytes($snapshotPath))
+        }
+        else {
+            $content = Get-Content -LiteralPath $snapshotPath -Raw -Encoding UTF8
+            Get-Sha256HexFromText -Text $content
+        }
         if (-not [string]::Equals($actualHash, [string]$hashProperty.Value, [System.StringComparison]::OrdinalIgnoreCase)) {
             return $false
         }
@@ -4583,7 +4698,8 @@ function Test-PendingTurnSnapshotAuthorityEnvelope {
 
     try {
         $authority = Get-Content -Path $PendingTurnSnapshotAuthorityFile -Raw -Encoding UTF8 | ConvertFrom-Json
-        if ([int](Get-JsonIntValue -Object $authority -Names @("formatVersion")) -ne 2) {
+        $formatVersion = [int](Get-JsonIntValue -Object $authority -Names @("formatVersion"))
+        if (@(2, 3, 4) -notcontains $formatVersion) {
             Write-Log "  Pending turn snapshot authority has unsupported formatVersion." -Level "WARN" -Color Yellow
             return $false
         }
@@ -4612,6 +4728,27 @@ function Test-PendingTurnSnapshotAuthorityEnvelope {
 
         $payloadJson = [System.Text.Encoding]::UTF8.GetString($payloadBytes)
         $payload = $payloadJson | ConvertFrom-Json
+        $rollbackHashMode = Get-JsonStringValue -Object $payload -Names @("rollbackHashMode")
+        $snapshotHashMode = Get-JsonStringValue -Object $payload -Names @("snapshotHashMode")
+        $hashModesAreValid = switch ($formatVersion) {
+            2 {
+                [string]::IsNullOrWhiteSpace($rollbackHashMode) -and
+                    [string]::IsNullOrWhiteSpace($snapshotHashMode)
+            }
+            3 {
+                [string]::Equals($rollbackHashMode, "bytes", [System.StringComparison]::Ordinal) -and
+                    [string]::IsNullOrWhiteSpace($snapshotHashMode)
+            }
+            4 {
+                [string]::Equals($rollbackHashMode, "bytes", [System.StringComparison]::Ordinal) -and
+                    [string]::Equals($snapshotHashMode, "bytes", [System.StringComparison]::Ordinal)
+            }
+        }
+        if (-not $hashModesAreValid) {
+            Write-Log "  Pending turn snapshot authority hash modes do not match formatVersion." -Level "WARN" -Color Yellow
+            return $false
+        }
+
         $requestSessionId = [string]$TurnRequest.sessionId
         $requestId = [string]$TurnRequest.requestId
         $turnNumber = [int]$TurnRequest.turnNumber
@@ -4635,8 +4772,13 @@ function Test-PendingTurnSnapshotAuthorityEnvelope {
             return $false
         }
 
-        if (-not (Test-PendingTurnSnapshotRollbackBackupHashes -Payload $payload)) {
+        if (-not (Test-PendingTurnSnapshotRollbackBackupHashes -Payload $payload -HashBytesExactly ($formatVersion -ge 3))) {
             Write-Log "  Pending turn snapshot authority rollback backup hashes are not usable." -Level "WARN" -Color Yellow
+            return $false
+        }
+
+        if (-not (Test-PendingTurnSnapshotFileHashes -Payload $payload -HashBytesExactly ($formatVersion -ge 4))) {
+            Write-Log "  Pending turn snapshot authority snapshot file hashes are not usable." -Level "WARN" -Color Yellow
             return $false
         }
 
@@ -5160,7 +5302,7 @@ function Process-Turn {
         }
 
         if ($null -eq $message) {
-        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($experiencePrompt)$($firstMortalBootstrapPrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', '$($script:CompactMortalSkillTemplatePath)', '$($script:CompactMortalExperienceTemplatePath)', '$($script:CompactAfterlifeChronicleTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '$($script:CompactMortalSkillTemplatePath)' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '$($script:CompactMortalExperienceTemplatePath)' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
+        $message = "Process turn #$turnNumber (requestId=$requestId).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($experiencePrompt)$($firstMortalBootstrapPrompt)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read '$($script:CompactTurnOutputTemplatePath)', '$($script:CompactProgressionReportTemplatePath)', '$($script:CompactActorReasoningTemplatePath)', '$($script:CompactMortalNpcTemplatePath)', '$($script:CompactMortalFactionTemplatePath)', '$($script:CompactMortalLocationTemplatePath)', '$($script:CompactMortalSkillTemplatePath)', '$($script:CompactMortalExperienceTemplatePath)', '$($script:CompactAfterlifeChronicleTemplatePath)', and '$($script:CompactTempoAdvantageTemplatePath)' before opening large copied examples. Read '$($script:TaskGuideMainPath)' for phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) $($script:WeatherContractDirective) If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read '$($script:InkFeatherExamplePath)' and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as NPCCoreChanges, UpdateNPCs, NPCGoalUpdates, or UpdateGuardians. If a Mortal World turn creates or updates NPCs, use '$($script:CompactMortalNpcTemplatePath)' before editing game_state/npcs/npc_core.json. If a Mortal World turn creates or updates factions, ranks, branches, chronicles, projects, faction relations, or faction sidecars, use '$($script:CompactMortalFactionTemplatePath)' before editing game_state/factions/*. If a Mortal World turn creates a durable location, changes current_location, edits world_map, or moves NPCs between map locations, use '$($script:CompactMortalLocationTemplatePath)' before editing game_state/world/* or NPC location ids. If a Mortal World turn teaches, practices, unlocks, or uses a concrete player skill, use '$($script:CompactMortalSkillTemplatePath)' before writing output/state; do not leave learned skills or active-skill mastery as prose-only text. If a Mortal World turn grants XP, resolves combat rewards, or crosses a level-up threshold, use '$($script:CompactMortalExperienceTemplatePath)' before editing game_state/player/experience.json; do not leave level progress prose-only. Use preGeneratedDices1d20 from the FIRST die for normal checks; afterlife spiritual conflicts use visible d20 values through diceAudit on contested exchange/resolve; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull, and preserve the exact cost phrase '<N> Чернильных Перьев' or '<N> Ink Feathers' because validation extracts prepaid cost from it. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed relic_forging project bonus; Guardian reputation does not improve rarity odds. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact sessionId/requestId/turnNumber copied from the CURRENT turn_request.json plus exact bounded processed cycle counts and new last-* markers. If progressionControl.afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired summary outcomes and do NOT simulate raw elapsed cycles one by one. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; never delete or rewrite input/turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
         $message += " If a Mortal World turn resolves open combat, enemy exchange, combat XP, active-skill combat mastery, or combat resource changes, you MUST read '$($script:CompactMortalCombatTemplatePath)' before writing output/state and leave /бой useful through game_state/combat/combat_log.json plus enemies/allies when relevant."
         }
@@ -5519,7 +5661,7 @@ function Process-RepairRequest {
             [string]::Equals($_, "guardian_trade_request_missing_receipt_resolution", [System.StringComparison]::OrdinalIgnoreCase)
         }).Count -gt 0
         $outputArtifactRepairDirective = if ($hasAcceptedTurnOutputArtifactRepair -or $hasStalePlayerFacingOutputRepair) {
-            " You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)' before any broad repair examples. For accepted_turn_output_artifact_repair, this is output-only repair: harnessRepairPackets[].targetFiles is the exact allowlist. Rewrite only listed artifacts; if output/debug_logs.json is absent, preserve it unchanged, and if listed, preserve its full Actor Brain blocks and exact journal/ledger surfaces. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response; do not touch canonical game_state files unless the current request still lists canonical errors."
+            " You MUST read '$($script:CompactOutputArtifactRepairTemplatePath)' before any broad repair examples. For accepted_turn_output_artifact_repair, harnessRepairPackets[].targetFiles is the exact allowlist. Rewrite only listed artifacts; if output/debug_logs.json is absent, preserve it unchanged, and if listed, preserve its full Actor Brain blocks and exact journal/ledger surfaces. Do not mention JSON, validation, repair, canonical state, arrays, file paths, field names, or storage mechanics inside narrative_response.response. Do not touch canonical game_state files unless the current request still lists canonical errors; if it does, finish every canonical write before dependent output because freshness follows the latest actual canonical-target write, not repair start."
         } else {
             ""
         }

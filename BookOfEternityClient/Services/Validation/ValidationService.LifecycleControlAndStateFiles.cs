@@ -16,9 +16,12 @@ public partial class ValidationService
         await ValidateNpcFile("game_state/npcs/npc_core.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "UpdateNPCs", "NPCsRenameData", "NPCsInScene",
+                "UpdateNPCs", "NPCCoreChanges", "NPCsRenameData", "NPCsInScene",
                 "UpdateNpcTradeInventoryReceipts", "trainingPurchaseReceipts"
             }, issues);
+
+        if (await NpcCoreChangesCommandIsPresentAsync())
+            issues.AddRange(await ValidateNpcCoreChangesBeforeNormalizationAsync());
 
         await ValidateNpcFile("game_state/npcs/npc_skills.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -4141,7 +4144,7 @@ public partial class ValidationService
         var hasDeletedCurrentRequestRecoveryBridgeCandidate =
             !hasCurrentFile &&
             _fs.FileExists("ready/turn_complete.json") &&
-            _fs.FileExists(_fs.ResolvePath($"game_state/control/pending_turn_snapshot/{relativePath}"));
+            _fs.FileExists($"game_state/control/pending_turn_snapshot/{relativePath}");
         var hasPreTurnContractEvidence = hasCurrentFile ||
                                          hasManifestRegistrationEvidence ||
                                          hasDeletedCurrentRequestRecoveryBridgeCandidate;

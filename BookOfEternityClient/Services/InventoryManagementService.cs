@@ -7,9 +7,21 @@ namespace BookOfEternityClient.Services;
 
 public static class InventoryManagementService
 {
-    public static async Task<InventoryManagementContext?> ReadContextAsync(FileSystemManager fs)
+    public static async Task<InventoryManagementContext?> ReadContextAsync(FileSystemManager fs) =>
+        await ReadContextCoreAsync(fs, writeLease: null);
+
+    internal static async Task<InventoryManagementContext?> ReadContextAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        await ReadContextCoreAsync(fs, writeLease);
+
+    private static async Task<InventoryManagementContext?> ReadContextCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var raw = await fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(InventoryEquipmentService.ItemsPath)
+            : await fs.ReadFileAsync(writeLease, InventoryEquipmentService.ItemsPath);
         if (string.IsNullOrWhiteSpace(raw))
             return null;
 
@@ -82,9 +94,21 @@ public static class InventoryManagementService
 
     public static async Task<InventoryManagementWriteOutcome> ValidateDropAsync(
         FileSystemManager fs,
+        string itemIdentityOrName) =>
+        await ValidateDropCoreAsync(fs, writeLease: null, itemIdentityOrName);
+
+    internal static async Task<InventoryManagementWriteOutcome> ValidateDropAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName) =>
+        await ValidateDropCoreAsync(fs, writeLease, itemIdentityOrName);
+
+    private static async Task<InventoryManagementWriteOutcome> ValidateDropCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string itemIdentityOrName)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryManagementWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -104,9 +128,21 @@ public static class InventoryManagementService
 
     public static async Task<InventoryManagementWriteOutcome> DropAsync(
         FileSystemManager fs,
+        string itemIdentityOrName) =>
+        await DropCoreAsync(fs, writeLease: null, itemIdentityOrName);
+
+    internal static async Task<InventoryManagementWriteOutcome> DropAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName) =>
+        await DropCoreAsync(fs, writeLease, itemIdentityOrName);
+
+    private static async Task<InventoryManagementWriteOutcome> DropCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string itemIdentityOrName)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryManagementWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -117,8 +153,9 @@ public static class InventoryManagementService
         context.ItemsArray.RemoveAt(item.Index);
         ClearMatchingEquipmentReferences(context.Root, item.Identity, item.Name);
 
-        await fs.WriteFileAtomicAsync(
-            InventoryEquipmentService.ItemsPath,
+        await WriteAsync(
+            fs,
+            writeLease,
             context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         return InventoryManagementWriteOutcome.Completed(
@@ -131,9 +168,23 @@ public static class InventoryManagementService
     public static async Task<InventoryManagementWriteOutcome> ValidateSplitAsync(
         FileSystemManager fs,
         string itemIdentityOrName,
+        int splitQuantity) =>
+        await ValidateSplitCoreAsync(fs, writeLease: null, itemIdentityOrName, splitQuantity);
+
+    internal static async Task<InventoryManagementWriteOutcome> ValidateSplitAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName,
+        int splitQuantity) =>
+        await ValidateSplitCoreAsync(fs, writeLease, itemIdentityOrName, splitQuantity);
+
+    private static async Task<InventoryManagementWriteOutcome> ValidateSplitCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string itemIdentityOrName,
         int splitQuantity)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryManagementWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -147,9 +198,23 @@ public static class InventoryManagementService
     public static async Task<InventoryManagementWriteOutcome> SplitAsync(
         FileSystemManager fs,
         string itemIdentityOrName,
+        int splitQuantity) =>
+        await SplitCoreAsync(fs, writeLease: null, itemIdentityOrName, splitQuantity);
+
+    internal static async Task<InventoryManagementWriteOutcome> SplitAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName,
+        int splitQuantity) =>
+        await SplitCoreAsync(fs, writeLease, itemIdentityOrName, splitQuantity);
+
+    private static async Task<InventoryManagementWriteOutcome> SplitCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string itemIdentityOrName,
         int splitQuantity)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryManagementWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -171,8 +236,9 @@ public static class InventoryManagementService
         AssignNewInventoryIdentity(copy);
         context.ItemsArray.Add(copy);
 
-        await fs.WriteFileAtomicAsync(
-            InventoryEquipmentService.ItemsPath,
+        await WriteAsync(
+            fs,
+            writeLease,
             context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         return InventoryManagementWriteOutcome.Completed(
@@ -184,9 +250,21 @@ public static class InventoryManagementService
 
     public static async Task<InventoryManagementWriteOutcome> ValidateMergeAsync(
         FileSystemManager fs,
+        string itemIdentityOrName) =>
+        await ValidateMergeCoreAsync(fs, writeLease: null, itemIdentityOrName);
+
+    internal static async Task<InventoryManagementWriteOutcome> ValidateMergeAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName) =>
+        await ValidateMergeCoreAsync(fs, writeLease, itemIdentityOrName);
+
+    private static async Task<InventoryManagementWriteOutcome> ValidateMergeCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string itemIdentityOrName)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryManagementWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -199,9 +277,21 @@ public static class InventoryManagementService
 
     public static async Task<InventoryManagementWriteOutcome> MergeAsync(
         FileSystemManager fs,
+        string itemIdentityOrName) =>
+        await MergeCoreAsync(fs, writeLease: null, itemIdentityOrName);
+
+    internal static async Task<InventoryManagementWriteOutcome> MergeAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName) =>
+        await MergeCoreAsync(fs, writeLease, itemIdentityOrName);
+
+    private static async Task<InventoryManagementWriteOutcome> MergeCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string itemIdentityOrName)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryManagementWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -235,8 +325,9 @@ public static class InventoryManagementService
         for (var j = matchingIndices.Count - 1; j >= 1; j--)
             context.ItemsArray.RemoveAt(matchingIndices[j]);
 
-        await fs.WriteFileAtomicAsync(
-            InventoryEquipmentService.ItemsPath,
+        await WriteAsync(
+            fs,
+            writeLease,
             context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         return InventoryManagementWriteOutcome.Completed(
@@ -245,6 +336,14 @@ public static class InventoryManagementService
             item.Name,
             totalCount);
     }
+
+    private static Task WriteAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string content) =>
+        writeLease == null
+            ? fs.WriteFileAtomicAsync(InventoryEquipmentService.ItemsPath, content)
+            : fs.WriteFileAtomicAsync(writeLease, InventoryEquipmentService.ItemsPath, content);
 
     private static InventoryManagementWriteOutcome ValidateSplit(InventoryManagementItem item, int splitQuantity)
     {

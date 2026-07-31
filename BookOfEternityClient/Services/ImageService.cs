@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Services;
@@ -14,6 +15,10 @@ public enum ImageExportFailureReason
     InvalidTarget,
     CopyFailed
 }
+
+internal sealed record StagedEntityImage(
+    byte[] Content,
+    string CanonicalRelativePath);
 
 public sealed class ImageExportResult
 {
@@ -77,6 +82,10 @@ public class ImageService
         ["abode"] = "abodes",
         ["quest"] = "quests",
     };
+
+    internal static bool IsSupportedEntityType(string? entityType) =>
+        !string.IsNullOrWhiteSpace(entityType) &&
+        EntityDirs.ContainsKey(entityType.Trim());
 
     private readonly Core.FileSystemManager _fs;
 
@@ -194,6 +203,9 @@ public class ImageService
     public async Task<bool> GenerateEntityImageAsync(string imagePrompt, string entityType, string entityKeyOrName,
         bool displayAfterGenerate = true, bool forceDisplay = false)
     {
+        if (!IsSupportedEntityType(entityType))
+            return false;
+
         if (string.IsNullOrWhiteSpace(imagePrompt))
         {
             AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(_loc.T("image_no_prompt"))}[/]");
@@ -221,6 +233,44 @@ public class ImageService
         }
 
         return false;
+    }
+
+    internal async Task<StagedEntityImage?> StageEntityImageAsync(
+        string imagePrompt,
+        string entityType,
+        string entityKeyOrName)
+    {
+        if (string.IsNullOrWhiteSpace(imagePrompt))
+            return null;
+        if (!IsSupportedEntityType(entityType))
+            return null;
+
+        var provider = (_settings.ImageProvider ?? "placeholder").ToLowerInvariant();
+        if (provider is "placeholder" or "none" or "off")
+            return null;
+
+        var safeKey = SanitizeFileName(entityKeyOrName);
+        if (string.IsNullOrWhiteSpace(safeKey))
+            safeKey = "entity";
+
+        var versionedFileName = $"{safeKey}{VersionSeparator}{DateTime.UtcNow:yyyyMMdd_HHmmssfff}";
+        var finalPath = Path.Combine(GetEntityDir(entityType), versionedFileName + ".png");
+        var canonicalRelativePath = Path.GetRelativePath(_fs.GameSessionPath, finalPath).Replace('\\', '/');
+        if (canonicalRelativePath.StartsWith("../", StringComparison.Ordinal) ||
+            Path.IsPathRooted(canonicalRelativePath))
+        {
+            throw new InvalidOperationException("Generated media target escapes game_session.");
+        }
+
+        var bytes = await DownloadImageBytesAsync(imagePrompt, entityType, versionedFileName);
+        if (bytes == null)
+            return null;
+
+        _logger.LogInformation(
+            "Image downloaded for generation-fenced commit: {Path} ({Size} KB)",
+            canonicalRelativePath,
+            bytes.Length / 1024);
+        return new StagedEntityImage(bytes, canonicalRelativePath);
     }
 
     /// <summary>
@@ -256,6 +306,9 @@ public class ImageService
     /// </summary>
     public string? GetEntityImagePath(string entityType, string entityKeyOrName)
     {
+        if (!IsSupportedEntityType(entityType))
+            return null;
+
         var dir = GetEntityDir(entityType);
         if (!Directory.Exists(dir)) return null;
 
@@ -392,10 +445,60 @@ public class ImageService
     /// </summary>
     private async Task<string?> GenerateImageAsync(string prompt, string entityType, string fileName)
     {
-        var dir = GetEntityDir(entityType);
-        Directory.CreateDirectory(dir);
-        var filePath = Path.Combine(dir, fileName + ".png");
+        if (!IsSupportedEntityType(entityType))
+            return null;
 
+        var dir = GetEntityDir(entityType);
+        var filePath = Path.Combine(dir, fileName + ".png");
+        var canonicalRelativePath = Path.GetRelativePath(
+                _fs.GameSessionPath,
+                filePath)
+            .Replace('\\', '/');
+
+        string generation;
+        if (!SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out generation))
+        {
+            await using var generationLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            generation = _fs.GetOrCreateSessionGeneration(generationLease);
+        }
+
+        try
+        {
+            return await SessionOperationContext.RunBoundAsync(
+                _fs,
+                generation,
+                async () =>
+                {
+                    var bytes = await DownloadImageBytesAsync(prompt, entityType, fileName);
+                    if (bytes == null)
+                        return null;
+
+                    await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    await _fs.WriteFileAtomicBytesAsync(
+                        writeLease,
+                        canonicalRelativePath,
+                        bytes);
+                    _logger.LogInformation(
+                        "Image saved through generation fence: {Path} ({Size} KB)",
+                        filePath,
+                        bytes.Length / 1024);
+                    return filePath;
+                });
+        }
+        catch (SessionReplacedException ex)
+        {
+            _logger.LogInformation(
+                ex,
+                "Generated image was discarded because the game session changed.");
+            return null;
+        }
+    }
+
+    private async Task<byte[]?> DownloadImageBytesAsync(
+        string prompt,
+        string entityType,
+        string fileName)
+    {
         var width = _settings.ImageWidth > 0 ? _settings.ImageWidth : 768;
         var height = _settings.ImageHeight > 0 ? _settings.ImageHeight : 512;
 
@@ -418,7 +521,7 @@ public class ImageService
 
         _logger.LogInformation("Generating image: {Provider} [{Type}/{File}]", provider, entityType, fileName);
 
-        string? resultPath = null;
+        byte[]? resultBytes = null;
         const int maxRetries = 2;
 
         for (int attempt = 1; attempt <= maxRetries; attempt++)
@@ -437,9 +540,7 @@ public class ImageService
                             var bytes = await response.Content.ReadAsByteArrayAsync();
                             if (bytes.Length > 1000)
                             {
-                                await File.WriteAllBytesAsync(filePath, bytes);
-                                resultPath = filePath;
-                                _logger.LogInformation("Image saved: {Path} ({Size} KB)", filePath, bytes.Length / 1024);
+                                resultBytes = bytes;
                             }
                             else
                             {
@@ -461,7 +562,7 @@ public class ImageService
                     }
                 });
 
-            if (resultPath != null) break;
+            if (resultBytes != null) break;
 
             if (errorMessage != null)
             {
@@ -473,7 +574,7 @@ public class ImageService
             }
         }
 
-        return resultPath;
+        return resultBytes;
     }
 
     /// <summary>
@@ -565,6 +666,9 @@ public class ImageService
     /// </summary>
     public void OpenImagesFolder(string? entityType = null)
     {
+        if (entityType != null && !IsSupportedEntityType(entityType))
+            return;
+
         var dir = entityType != null ? GetEntityDir(entityType) : _imageBaseDir;
         Directory.CreateDirectory(dir);
         try
@@ -610,8 +714,10 @@ public class ImageService
 
     private string GetEntityDir(string entityType)
     {
-        var subDir = EntityDirs.GetValueOrDefault(entityType, entityType);
-        return Path.Combine(_imageBaseDir, subDir);
+        if (!EntityDirs.TryGetValue(entityType.Trim(), out var subDir))
+            throw new InvalidDataException($"Unsupported image entity type: {entityType}");
+
+        return _fs.ResolvePath($"images/{subDir}");
     }
 
     private bool TryDeleteFile(string path)

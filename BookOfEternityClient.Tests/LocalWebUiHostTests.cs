@@ -105,12 +105,15 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task SessionEndpoint_ReportsPendingTurnAndLocalUiLock()
     {
         WriteSessionFile("input/turn_request.json", "{}");
-        WriteSessionFile("game_state/control/local_ui_session_lock.json", """
+        var sessionGeneration = await GetOrCreateSessionGenerationAsync();
+        WriteSessionFile("game_state/control/local_ui_session_lock.json", $$"""
         {
-          "schemaVersion": 1,
+          "schemaVersion": 2,
+          "sessionGeneration": "{{sessionGeneration}}",
           "ownerId": "console-owner",
           "ownerKind": "console",
           "ownerLabel": "Console",
+          "leaseToken": "console-test-lease",
           "acquiredAtUtc": "2026-05-21T00:00:00.0000000Z",
           "heartbeatAtUtc": "2026-05-21T00:00:00.0000000Z",
           "leaseSeconds": 120,
@@ -346,12 +349,15 @@ public sealed class LocalWebUiHostTests : IDisposable
         """);
         var activeOwnerId = $"browser:{Environment.MachineName}:{Environment.ProcessId}";
         var now = DateTime.UtcNow;
+        var sessionGeneration = await GetOrCreateSessionGenerationAsync();
         WriteSessionFile(LocalUiSessionLockService.LockPath, $$"""
         {
-          "schemaVersion": 1,
+          "schemaVersion": 2,
+          "sessionGeneration": "{{sessionGeneration}}",
           "ownerId": "{{activeOwnerId}}",
           "ownerKind": "browser",
           "ownerLabel": "Active browser prompt form",
+          "leaseToken": "active-browser-prompt-test-lease",
           "acquiredAtUtc": "{{now:O}}",
           "heartbeatAtUtc": "{{now:O}}",
           "leaseSeconds": 120,
@@ -1484,14 +1490,30 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
 
-        using var acceptResponse = await client.PostAsJsonAsync("/api/qte/offer", new { decision = "accept" });
+        var offerRoot = JsonNode.Parse(
+            await client.GetStringAsync("/api/qte/state"))!.AsObject();
+        using var acceptResponse = await client.PostAsJsonAsync(
+            "/api/qte/offer",
+            new
+            {
+                decision = "accept",
+                interactionToken =
+                    offerRoot["interactionToken"]!.GetValue<string>()
+            });
         var acceptRoot = JsonNode.Parse((await acceptResponse.Content.ReadAsStringAsync())!)!.AsObject();
 
         acceptResponse.EnsureSuccessStatusCode();
         Assert.Equal("Active", acceptRoot["state"]!.GetValue<string>());
         Assert.Equal("start", acceptRoot["activeScene"]!["currentChapter"]!["chapterId"]!.GetValue<string>());
 
-        using var actionResponse = await client.PostAsJsonAsync("/api/qte/action", new { actionId = "cross_bridge" });
+        using var actionResponse = await client.PostAsJsonAsync(
+            "/api/qte/action",
+            new
+            {
+                actionId = "cross_bridge",
+                interactionToken =
+                    acceptRoot["interactionToken"]!.GetValue<string>()
+            });
         var actionRoot = JsonNode.Parse((await actionResponse.Content.ReadAsStringAsync())!)!.AsObject();
 
         actionResponse.EnsureSuccessStatusCode();
@@ -1520,6 +1542,16 @@ public sealed class LocalWebUiHostTests : IDisposable
         var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
         var saved = await saveLoad.SaveGameAsync(saveName, "Browser main menu save/load test");
         Assert.True(saved, "The test fixture must be able to create a manual save before exercising the browser load endpoint.");
+    }
+
+    private async Task<string> GetOrCreateSessionGenerationAsync()
+    {
+        var fs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return fs.GetOrCreateSessionGeneration(writeLease);
     }
 
     private static string ExtractSwitchCase(string html, string caseName, string nextCaseName)

@@ -74,20 +74,33 @@ internal static class ShiningTradeService
     }
 
     public static Task<ShiningTradeView?> ReadTradeViewAsync(FileSystemManager fs, string factionId) =>
-        ReadTradeViewAsync(fs, factionId, new LocalInteractionScopeService(fs));
+        ReadTradeViewCoreAsync(fs, writeLease: null, factionId, new LocalInteractionScopeService(fs));
 
-    internal static async Task<ShiningTradeView?> ReadTradeViewAsync(
+    internal static Task<ShiningTradeView?> ReadTradeViewAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string factionId) =>
+        ReadTradeViewCoreAsync(fs, writeLease, factionId, new LocalInteractionScopeService(fs));
+
+    internal static Task<ShiningTradeView?> ReadTradeViewAsync(
+        FileSystemManager fs,
+        string factionId,
+        ILocalInteractionScopeResolver localScopeResolver) =>
+        ReadTradeViewCoreAsync(fs, writeLease: null, factionId, localScopeResolver);
+
+    private static async Task<ShiningTradeView?> ReadTradeViewCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string factionId,
         ILocalInteractionScopeResolver localScopeResolver)
     {
-        if (!await IsFactionAvailableInCurrentHallAsync(fs, factionId, localScopeResolver))
+        if (!await IsFactionAvailableInCurrentHallCoreAsync(fs, writeLease, factionId, localScopeResolver))
             return null;
 
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
         if (shiningRoot == null)
             return null;
         var shiningRootBaseline = shiningRoot.ToJsonString(JsonOpts);
@@ -101,7 +114,12 @@ internal static class ShiningTradeService
 
             var rawFactionName = GetNodeString(rawFaction["charter"]?["factionName"]) ?? factionId;
             var rawFactionStrength = GetNodeInt(rawFaction["factionStrength"], 0);
-            if (!await IsFactionAvailableInCurrentHallAsync(fs, factionId, localScopeResolver, shiningRootBaseline))
+            if (!await IsFactionAvailableInCurrentHallCoreAsync(
+                    fs,
+                    writeLease,
+                    factionId,
+                    localScopeResolver,
+                    shiningRootBaseline))
                 return null;
 
             return new ShiningTradeView(
@@ -141,7 +159,9 @@ internal static class ShiningTradeService
         string? inventoryStatusMessage = null;
         var offers = new List<ShiningTradeOffer>();
 
-        var requestState = await ShiningTradeRequestState.ReadRequestsStateAsync(fs);
+        var requestState = writeLease == null
+            ? await ShiningTradeRequestState.ReadRequestsStateAsync(fs)
+            : await ShiningTradeRequestState.ReadRequestsStateAsync(fs, writeLease);
         var matchingRequests = requestState.Requests
             .Where(request =>
                 string.Equals(request.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
@@ -212,7 +232,12 @@ internal static class ShiningTradeService
             }
         }
 
-        if (!await IsFactionAvailableInCurrentHallAsync(fs, factionId, localScopeResolver, shiningRootBaseline))
+        if (!await IsFactionAvailableInCurrentHallCoreAsync(
+                fs,
+                writeLease,
+                factionId,
+                localScopeResolver,
+                shiningRootBaseline))
             return null;
 
         return new ShiningTradeView(
@@ -257,10 +282,25 @@ internal static class ShiningTradeService
         FileSystemManager fs,
         string factionId,
         int currentTurn) =>
-        RequestInventoryAsync(fs, factionId, currentTurn, new LocalInteractionScopeService(fs));
+        RequestInventoryCoreAsync(fs, writeLease: null, factionId, currentTurn, new LocalInteractionScopeService(fs));
 
-    internal static async Task<ShiningTradeOperationResult> RequestInventoryAsync(
+    internal static Task<ShiningTradeOperationResult> RequestInventoryAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string factionId,
+        int currentTurn) =>
+        RequestInventoryCoreAsync(fs, writeLease, factionId, currentTurn, new LocalInteractionScopeService(fs));
+
+    internal static Task<ShiningTradeOperationResult> RequestInventoryAsync(
+        FileSystemManager fs,
+        string factionId,
+        int currentTurn,
+        ILocalInteractionScopeResolver localScopeResolver) =>
+        RequestInventoryCoreAsync(fs, writeLease: null, factionId, currentTurn, localScopeResolver);
+
+    private static async Task<ShiningTradeOperationResult> RequestInventoryCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string factionId,
         int currentTurn,
         ILocalInteractionScopeResolver localScopeResolver)
@@ -268,13 +308,13 @@ internal static class ShiningTradeService
         if (currentTurn <= 0)
             return new ShiningTradeOperationResult(false, false, "Shining trade request требует актуальный номер хода.");
 
-        if (!await IsFactionAvailableInCurrentHallAsync(fs, factionId, localScopeResolver))
+        if (!await IsFactionAvailableInCurrentHallCoreAsync(fs, writeLease, factionId, localScopeResolver))
             return new ShiningTradeOperationResult(false, false, "Эта сияющая фракция недоступна в текущем мире или зале.");
 
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
         if (shiningRoot == null)
             return new ShiningTradeOperationResult(false, false, "Не удалось прочитать shining_abode_state.json.");
         var shiningRootBaseline = shiningRoot.ToJsonString(JsonOpts);
@@ -297,7 +337,9 @@ internal static class ShiningTradeService
             CreatedAtTurn = currentTurn
         };
 
-        var error = await ShiningTradeRequestState.ValidateRequestAgainstCurrentStateAsync(fs, request);
+        var error = writeLease == null
+            ? await ShiningTradeRequestState.ValidateRequestAgainstCurrentStateAsync(fs, request)
+            : await ShiningTradeRequestState.ValidateRequestAgainstCurrentStateAsync(fs, writeLease, request);
         if (!string.IsNullOrWhiteSpace(error))
             return new ShiningTradeOperationResult(false, false, error);
 
@@ -305,11 +347,15 @@ internal static class ShiningTradeService
             fs,
             factionId,
             localScopeResolver,
-            shiningRootBaseline);
+            shiningRootBaseline,
+            writeLease);
         if (requestScope == null)
             return new ShiningTradeOperationResult(false, false, "Фракция покинула текущий зал до создания запроса. Состояние не изменено.");
 
-        if (!await ShiningTradeRequestState.TryWriteScopedRequestAsync(fs, request, requestScope))
+        var requestWritten = writeLease == null
+            ? await ShiningTradeRequestState.TryWriteScopedRequestAsync(fs, request, requestScope)
+            : await ShiningTradeRequestState.TryWriteScopedRequestAsync(fs, writeLease, request, requestScope);
+        if (!requestWritten)
             return new ShiningTradeOperationResult(false, false, "Мир или зал изменились до создания запроса. Состояние не изменено.");
         return new ShiningTradeOperationResult(true, true, $"Создан ожидающий запрос сияющей торговли для фракции «{request.FactionName}». В принятом ходе GM должен явно оформить tradeInventory и receipt.");
     }
@@ -448,10 +494,27 @@ internal static class ShiningTradeService
         string factionId,
         string slotId,
         int currentTurn) =>
-        BuyAsync(fs, factionId, slotId, currentTurn, new LocalInteractionScopeService(fs));
+        BuyCoreAsync(fs, writeLease: null, factionId, slotId, currentTurn, new LocalInteractionScopeService(fs));
 
-    internal static async Task<ShiningTradeOperationResult> BuyAsync(
+    internal static Task<ShiningTradeOperationResult> BuyAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string factionId,
+        string slotId,
+        int currentTurn) =>
+        BuyCoreAsync(fs, writeLease, factionId, slotId, currentTurn, new LocalInteractionScopeService(fs));
+
+    internal static Task<ShiningTradeOperationResult> BuyAsync(
+        FileSystemManager fs,
+        string factionId,
+        string slotId,
+        int currentTurn,
+        ILocalInteractionScopeResolver localScopeResolver) =>
+        BuyCoreAsync(fs, writeLease: null, factionId, slotId, currentTurn, localScopeResolver);
+
+    private static async Task<ShiningTradeOperationResult> BuyCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string factionId,
         string slotId,
         int currentTurn,
@@ -460,23 +523,29 @@ internal static class ShiningTradeService
         if (currentTurn <= 0)
             return new ShiningTradeOperationResult(false, false, "Локальная покупка из сияющей витрины требует актуальный номер хода.");
 
-        if (!await IsFactionAvailableInCurrentHallAsync(fs, factionId, localScopeResolver))
+        if (!await IsFactionAvailableInCurrentHallCoreAsync(fs, writeLease, factionId, localScopeResolver))
             return new ShiningTradeOperationResult(false, false, "Эта сияющая фракция недоступна в текущем мире или зале.");
 
-        var activeTurnBlocker = AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker(
-            fs,
-            "Локальная покупка сияющей витрины",
-            "soul_state.json.inkFeathers, soulRelics и shining_abode_state.json.tradeInventory");
+        var activeTurnBlocker = writeLease == null
+            ? AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker(
+                fs,
+                "Локальная покупка сияющей витрины",
+                "soul_state.json.inkFeathers, soulRelics и shining_abode_state.json.tradeInventory")
+            : AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker(
+                fs,
+                writeLease,
+                "Локальная покупка сияющей витрины",
+                "soul_state.json.inkFeathers, soulRelics и shining_abode_state.json.tradeInventory");
         if (activeTurnBlocker != null)
             return new ShiningTradeOperationResult(false, false, activeTurnBlocker);
 
-        var pendingCostBlocker = await TryDescribePendingCostContractBlockerAsync(fs);
+        var pendingCostBlocker = await TryDescribePendingCostContractBlockerAsync(fs, writeLease);
         if (pendingCostBlocker != null)
             return new ShiningTradeOperationResult(false, false, pendingCostBlocker);
 
-        var readinessProbeRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var readinessProbeResidents = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var readinessProbeGuardians = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
+        var readinessProbeRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var readinessProbeResidents = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var readinessProbeGuardians = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
         if (readinessProbeRoot != null)
         {
             ShiningAbodeState.NormalizeStateRoot(readinessProbeRoot, readinessProbeResidents, readinessProbeGuardians);
@@ -494,21 +563,23 @@ internal static class ShiningTradeService
             }
         }
 
-        var view = await ReadTradeViewAsync(fs, factionId);
+        var view = await ReadTradeViewCoreAsync(fs, writeLease, factionId, localScopeResolver);
         if (view == null)
             return new ShiningTradeOperationResult(false, false, "Не удалось подготовить витрину сияющей фракции.");
         if (view.TradeBlocked)
             return new ShiningTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
         if (!view.InventoryReady)
             return new ShiningTradeOperationResult(false, false, view.InventoryStatusMessage ?? "Витрина сияющей фракции ещё не подготовлена.");
-        var pendingRequestState = await ShiningTradeRequestState.ReadRequestsStateAsync(fs);
+        var pendingRequestState = writeLease == null
+            ? await ShiningTradeRequestState.ReadRequestsStateAsync(fs)
+            : await ShiningTradeRequestState.ReadRequestsStateAsync(fs, writeLease);
         if (pendingRequestState.IsMalformed)
             return new ShiningTradeOperationResult(false, false, "Ожидающий торговый запрос сияющей фракции повреждён. Покупка заблокирована до repair/cleanup pending_shining_trade_inventory_requests.json.");
 
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
         if (shiningRoot == null || soulRoot == null)
             return new ShiningTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
         var preBuyShiningJson = shiningRoot.ToJsonString(JsonOpts);
@@ -563,7 +634,8 @@ internal static class ShiningTradeService
             fs,
             factionId,
             localScopeResolver,
-            preBuyShiningJson);
+            preBuyShiningJson,
+            writeLease);
         if (commitScope == null)
             return new ShiningTradeOperationResult(false, false, "Фракция покинула текущий зал до завершения покупки. Перья не списаны.");
 
@@ -591,6 +663,7 @@ internal static class ShiningTradeService
 
         if (!await TryCommitCoordinatedStateWritesAsync(
                 fs,
+                writeLease,
                 commitScope,
                 new CoordinatedStateWrite(ShiningAbodeState.StatePath, preBuyShiningJson, postBuyShiningJson),
                 new CoordinatedStateWrite("game_state/meta/soul_state.json", preBuySoulJson, postBuySoulJson)))
@@ -606,10 +679,37 @@ internal static class ShiningTradeService
     }
 
     public static Task<bool> IsFactionAvailableInCurrentHallAsync(FileSystemManager fs, string factionId) =>
-        IsFactionAvailableInCurrentHallAsync(fs, factionId, new LocalInteractionScopeService(fs));
+        IsFactionAvailableInCurrentHallCoreAsync(
+            fs,
+            writeLease: null,
+            factionId,
+            new LocalInteractionScopeService(fs));
 
-    internal static async Task<bool> IsFactionAvailableInCurrentHallAsync(
+    internal static Task<bool> IsFactionAvailableInCurrentHallAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string factionId) =>
+        IsFactionAvailableInCurrentHallCoreAsync(
+            fs,
+            writeLease,
+            factionId,
+            new LocalInteractionScopeService(fs));
+
+    internal static Task<bool> IsFactionAvailableInCurrentHallAsync(
+        FileSystemManager fs,
+        string factionId,
+        ILocalInteractionScopeResolver localScopeResolver,
+        string? expectedShiningRootJson = null) =>
+        IsFactionAvailableInCurrentHallCoreAsync(
+            fs,
+            writeLease: null,
+            factionId,
+            localScopeResolver,
+            expectedShiningRootJson);
+
+    private static async Task<bool> IsFactionAvailableInCurrentHallCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string factionId,
         ILocalInteractionScopeResolver localScopeResolver,
         string? expectedShiningRootJson = null) =>
@@ -617,19 +717,23 @@ internal static class ShiningTradeService
             fs,
             factionId,
             localScopeResolver,
-            expectedShiningRootJson) != null;
+            expectedShiningRootJson,
+            writeLease) != null;
 
     private static async Task<LocalInteractionScope?> ResolveFactionAvailableInCurrentHallScopeAsync(
         FileSystemManager fs,
         string factionId,
         ILocalInteractionScopeResolver localScopeResolver,
-        string? expectedShiningRootJson = null)
+        string? expectedShiningRootJson = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         if (string.IsNullOrWhiteSpace(factionId))
             return null;
 
-        var localScope = await localScopeResolver.ResolveAsync();
-        var root = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+        var localScope = writeLease == null
+            ? await localScopeResolver.ResolveAsync()
+            : await localScopeResolver.ResolveAsync(writeLease);
+        var root = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
         if (root == null)
             return null;
         if (expectedShiningRootJson != null &&
@@ -647,25 +751,37 @@ internal static class ShiningTradeService
             : null;
     }
 
-    private static async Task<string?> TryDescribePendingCostContractBlockerAsync(FileSystemManager fs)
+    private static async Task<string?> TryDescribePendingCostContractBlockerAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var coreBlocker = await TryDescribePendingCoreActionCostBlockerAsync(fs);
+        var coreBlocker = await TryDescribePendingCoreActionCostBlockerAsync(fs, writeLease);
         if (coreBlocker != null)
             return coreBlocker;
 
-        var foundingMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
-            fs,
-            ShiningFactionRequestState.PendingFoundingsRequestPath,
-            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(
-                json,
-                JsonOpts));
+        var foundingMalformed = writeLease == null
+            ? await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(
+                    json,
+                    JsonOpts))
+            : await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+                fs,
+                writeLease,
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(
+                    json,
+                    JsonOpts));
         if (foundingMalformed)
         {
             return "Локальная покупка сияющей витрины заблокирована: pending founding contract " +
                    $"{ShiningFactionRequestState.PendingFoundingsRequestPath} повреждён. Выполните repair/closure перед покупкой.";
         }
 
-        var foundingRequest = (await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs)).FirstOrDefault();
+        var foundingRequest = (writeLease == null
+            ? await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs)
+            : await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs, writeLease)).FirstOrDefault();
         if (foundingRequest != null)
         {
             return "Локальная покупка сияющей витрины заблокирована: pending founding request " +
@@ -673,19 +789,25 @@ internal static class ShiningTradeService
                    $"{foundingRequest.QuotedCostLightSparks} ✨. Дождитесь accepted/refused/withdrawn closure перед покупкой.";
         }
 
-        return await TryDescribeLegacyDiscoveryCostBlockerAsync(fs);
+        return await TryDescribeLegacyDiscoveryCostBlockerAsync(fs, writeLease);
     }
 
-    private static async Task<string?> TryDescribePendingCoreActionCostBlockerAsync(FileSystemManager fs)
+    private static async Task<string?> TryDescribePendingCoreActionCostBlockerAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var pendingState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs);
+        var pendingState = writeLease == null
+            ? await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs)
+            : await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs, writeLease);
         if (pendingState.IsMalformed)
         {
             return "Локальная покупка сияющей витрины заблокирована: " +
                    $"{ShiningCoreActionRequestState.PendingActionsRequestPath} повреждён. Выполните repair/closure перед покупкой.";
         }
 
-        var rawJson = await fs.ReadFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath);
+        var rawJson = writeLease == null
+            ? await fs.ReadFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath)
+            : await fs.ReadFileAsync(writeLease, ShiningCoreActionRequestState.PendingActionsRequestPath);
         if (string.IsNullOrWhiteSpace(rawJson))
             return null;
 
@@ -756,9 +878,11 @@ internal static class ShiningTradeService
                value >= 0;
     }
 
-    private static async Task<string?> TryDescribeLegacyDiscoveryCostBlockerAsync(FileSystemManager fs)
+    private static async Task<string?> TryDescribeLegacyDiscoveryCostBlockerAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
         if (shiningRoot == null ||
             !shiningRoot.TryGetPropertyValue("pendingNativeFactionDiscovery", out var pendingDiscovery) ||
             pendingDiscovery == null)
@@ -801,9 +925,19 @@ internal static class ShiningTradeService
         return null;
     }
 
-    private static async Task<JsonObject?> ReadJsonObjectAsync(FileSystemManager fs, string path)
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        string path) =>
+        await ReadJsonObjectAsync(fs, writeLease: null, path);
+
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path)
     {
-        var json = await fs.ReadFileAsync(path);
+        var json = writeLease == null
+            ? await fs.ReadFileAsync(path)
+            : await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -914,18 +1048,22 @@ internal static class ShiningTradeService
 
     private static Task<bool> TryCommitCoordinatedStateWritesAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         LocalInteractionScope scope,
         params CoordinatedStateWrite[] writes)
-        => CoordinatedStateWriteHelper.TryCommitAsync(
-            fs,
-            CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope)
-                .Concat(writes
+    {
+        var plannedWrites = CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(scope)
+            .Concat(writes
                 .Select(write => new CoordinatedStateWriteHelper.PlannedWrite(
                     write.Path,
                     write.PreWriteJson,
                     write.PostWriteJson,
                     true)))
-                .ToArray());
+            .ToArray();
+        return writeLease == null
+            ? CoordinatedStateWriteHelper.TryCommitAsync(fs, plannedWrites)
+            : CoordinatedStateWriteHelper.TryCommitAsync(fs, writeLease, plannedWrites);
+    }
 
     private static void NormalizeSoulRelicsShape(JsonObject root)
     {

@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -43,6 +44,7 @@ public partial class GameEngine
     {
         public Dictionary<string, string> BackupFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public bool BackupHashesAreExactBytes { get; set; } = true;
         public HashSet<string> BaselineFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> ValidationSnapshotFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     }
@@ -139,6 +141,15 @@ public partial class GameEngine
         public string? Note { get; set; }
     }
 
+    private sealed record ValidationRepairDispatchState
+    {
+        public bool MetadataDiagnosticOnly { get; init; }
+        public bool WorkerApplyAccepted { get; init; }
+        public bool ReadySignalCreated { get; init; }
+        public bool SessionReplaced { get; init; }
+        public GmWorkerValidationRepairDispatchResult? WorkerResult { get; init; }
+    }
+
     private sealed class TerminalProtocolFailureRequest
     {
         public string SessionId { get; set; } = "";
@@ -170,5 +181,18 @@ public partial class GameEngine
         public string Kind { get; set; } = "failure";
         public ReadySignalMetadata? Signal { get; set; }
     }
+
+    private sealed record TerminalSignalSnapshot(
+        string? CompletionJson,
+        string? ErrorJson)
+    {
+        public bool CompletionExists => CompletionJson != null;
+        public bool ErrorExists => ErrorJson != null;
+    }
+
+    private sealed record ConcurrentTerminalSignalResolution(
+        bool Failed,
+        bool UseCompletion,
+        bool UseError);
 }
 

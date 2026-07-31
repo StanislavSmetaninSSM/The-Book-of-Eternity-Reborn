@@ -20,6 +20,8 @@
     "start",
     "exit"
   ],
+  "interactionToken": "fixture-daren-interaction-token",
   "notification": null,
+  "errorCode": null,
   "error": null
 }

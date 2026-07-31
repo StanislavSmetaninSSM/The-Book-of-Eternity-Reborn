@@ -1,6 +1,6 @@
 # GM Worker Bridges
 
-Tracked issues: #1141, #1143, #1145, #1147, #1149, #1231, #1232, #1233.
+Tracked issues: #1141, #1143, #1145, #1147, #1149, #1231, #1232, #1233, #1500.
 
 GM worker bridges are subordinate helpers for the main GM. They can be Codex
 or another supported CLI profile configured by the user. The main GM remains the
@@ -21,8 +21,17 @@ game state.
 - Workers return `worker-proposal-v1` proposals.
 - Workers must not edit canonical `game_session` files directly.
 - Canonical writes happen only through the apply gate.
+- Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
+- Status is mandatory; omission is invalid and must never default to completed.
 - The apply gate checks scope, reads proposal `contentRef` files, applies
   allowed changes, runs validation when required, and rolls back failed repairs.
+- Production apply-gate construction requires the real `ValidationService`.
+  There is no public fail-open or empty-validator construction path; the
+  internal delegate seam exists only for focused tests and is not a runtime
+  profile/configuration option.
+- The apply gate holds one canonical write lease from exact context/authority
+  verification through all proposal writes, validation, read-only context
+  revalidation, rollback when required, and the final accept/reject decision.
 - Stored proposals are inspectable through GM worker proposal inbox diagnostics.
   The inbox is read-only and does not apply proposal-only drafts.
 
@@ -46,6 +55,8 @@ Use workers as bounded RLM-like subcalls, not as alternate GMs.
    into `game_state/control/gm_trajectory_ledger.jsonl` as `workerEvents[]` for
    live-test and harness review.
 
+Every producer uses the collision-safe audit id shape `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>`; do not hand-build timestamp-only event ids.
+
 If a useful worker task cannot be expressed with these fields, record that as a
 missing harness surface instead of giving a worker broad repository authority.
 
@@ -57,21 +68,204 @@ When the worker pool launches a worker task, it starts the configured
 - `BOE_WORKER_TASK_PATH`: absolute path to the JSON `WorkerTaskPacket`.
 - `BOE_WORKER_PROPOSAL_PATH`: absolute path where the worker must write one
   JSON `WorkerProposal`.
-- `BOE_WORKER_SESSION_PATH`: absolute path to the current `game_session`
-  directory.
+- `BOE_WORKER_SESSION_PATH`: absolute path to a detached execution snapshot
+  under the client-owned `.worker_runtime` directory. The snapshot exposes only pinned task context,
+  not the live canonical `game_session` directory.
 
-The proposal file written to `BOE_WORKER_PROPOSAL_PATH` is an inbox response.
-After validation, the main GM/daemon stores it under
-`worker_proposals/<proposalId>/proposal.json`. Repair workers that include
-`changedFiles` must write referenced content under `worker_proposals/<proposalId>/...`
-and use safe relative `contentRef` paths. The worker must not overwrite
-canonical files such as `game_state/...` directly.
+The client places detached worker workspaces outside the replaceable game session.
+`BOE_WORKER_RUNTIME_BASE_PATH` may override the runtime base, but it must be an
+absolute path and must not be equal to or nested under the canonical `game_session`.
+The same rule is checked after resolving the path: a
+reparse-point alias into the canonical session is rejected. Without the
+override, Windows sessions on a non-system volume use
+`<session-volume>/BookOfEternityRuntime`; other sessions use the local application
+data directory, with the operating-system temporary directory only as a final
+fallback. A stable hash of the canonical session path separates concurrent game
+sessions under that base.
 
-If a worker CLI writes a valid proposal and only then times out or exits with a
-nonzero code, the worker pool preserves the proposal and records it as
-`proposal-received`. The abnormal exit remains diagnostic evidence, but the
-proposal is still proposal-only: the main GM must review it and any canonical
-change must still pass the apply gate.
+Worker handoff resources are bounded by the harness: `proposal.json` is limited
+to 1 MiB, each declared `contentRef` to 4 MiB, and the aggregate imported
+`contentRef` payload to 16 MiB. Captured standard output and standard error are
+each limited to 65,536 characters and receive an explicit truncation marker when
+the limit is reached. Exceeding an artifact budget rejects the handoff instead
+of allowing unbounded memory or disk use.
+
+The task, proposal inbox, and declared content files all live in that detached
+execution snapshot. Direct worker writes to copied `game_state/...`, `lore/...`,
+or any other snapshot path are discarded. After contract validation, the pool
+imports only the validated proposal and its declared contentRef bytes into the
+live proposal inbox; undeclared files are never imported. The detached
+`.worker_runtime` directory is ephemeral and is removed after the task, so a
+worker must not depend on it for durable state. This is a harness boundary for
+the configured worker protocol, not an operating-system sandbox for a
+deliberately malicious operator-supplied `launchCommand`.
+
+The pool verifies every declared non-delete `contentRef` digest before importing any worker artifact.
+One mismatched or missing artifact rejects the complete handoff, so a partially
+published proposal cannot become review authority. Task and proposal identifiers are immutable:
+reusing an existing identifier is a collision and never overwrites prior task,
+proposal, or review evidence. If the process timeout and a malformed handoff
+are both observed, timeout remains authoritative; the malformed proposal is
+reported as additional diagnostic evidence rather than rewriting the outcome
+as an ordinary failure.
+
+The bridge reserves every task identifier with a create-only compare/exchange,
+then publishes the complete proposal bundle through one create-only atomic directory rename.
+The bundle contains `proposal.json` and every declared `contentRef`; no separate
+proposal claim can outlive a partial publication. Under the canonical write
+lease, publication first verifies that the exact originating task bytes still
+belong to the current game session generation. The durable bundle is authority;
+the proposal inbox and audit record are derived views whose publication failure
+cannot erase or invalidate it. Validation-repair task IDs are globally unique
+per dispatch while retaining the repair-attempt number as a readable prefix.
+Caller cancellation/timeout and publication meet at one atomic transition.
+Staging and canonical-lease waiting remain cancellable. If cancellation wins
+before the transition, staging is removed and no durable bundle, derived inbox,
+or applyable proposal may appear later. If publication wins, the complete
+create-only directory rename is authoritative and the remaining derived
+publication finishes without revoking that bundle.
+The proposal id `inbox` is reserved for the derived inbox directory and is
+invalid for every worker proposal.
+`maxConcurrentTasks` is enforced at runtime for the same worker and game
+session, including calls made through separate bridge-pool instances. Worker
+slots use reference-counted gates that retire when idle, so an idle profile can
+change its limit; an active limit change fails as a worker result. Cancellation
+kills and awaits the complete worker process tree before releasing its worker slot.
+The durable session generation lives under `.boe_runtime/session-generation/current.json`
+and rotates on load and New Game. Task reservation, proposal publication, and
+apply are bound to that exact generation, while save archives exclude worker
+task/proposal roots. A result from an earlier generation is rejected even when
+its task and proposal bytes are later restored unchanged.
+`sessionGeneration` is mandatory in every task packet and contains exactly 32
+lowercase hexadecimal characters. The bridge captures it together with pinned
+context bytes under one canonical write lease; workers and callers must never
+invent, replace, or rebind this value after task construction.
+
+At apply time, the exact durable reserved task is the sole apply authority. The
+gate reloads that task under the canonical lease instead of trusting a mutable
+caller object, and reservation returns a deep copy of the exact persisted bytes.
+`sessionGeneration` must also be lowercase canonical GUID text in `N` format.
+When load or New Game rotates the generation, typed `SessionReplaced` aborts the
+old repair; no legacy fallback or rollback may write into the replacement
+session. Repair trajectory records use a generation-bound atomic append, and
+the latest validation-repair task is ephemeral and excluded from saves. For a
+committed worker apply, cleanup deletes the transaction directory before the
+active journal so a cleanup failure remains retryable without revoking accepted
+bytes.
+
+The same generation is also bound to each complete logical GM interaction as an
+immutable session operation. Every canonical mutation checks that generation
+after recovery and under the canonical write lease; a mismatch marks the whole
+operation replaced even when an inner caller catches an exception. Terminal
+polling verifies the generation before reading completion signals, and the
+operation performs a final durable check before returning. The client must not
+hold the lifecycle lease while waiting for the GM: the lifecycle lease is short
+and exists only to serialize load/New Game replacement, while typed
+`SessionReplaced` unwinds the old turn without cleanup, rollback, telemetry, or
+final writes entering the replacement session.
+
+Worker startup uses a hidden client-owned host gate: the configured worker
+command cannot start until process-tree ownership is attached. The parent creates
+private current-user named control/status pipe servers with unique endpoint names
+and starts the hidden host with only the two endpoint names and the per-launch
+nonce in its command line. The configured worker payload never appears in the
+hidden-host command line, and no worker-accessible marker files are created.
+After the hidden host connects both channels, parent-side client PID
+authentication authenticates both connected pipe clients as the exact
+hidden-host PID. The parent only after authentication sends a typed `Launch`
+frame containing the executable, arguments, working directory, and environment.
+The hidden host retains both channels; the configured worker receives neither
+channel nor any pipe handle.
+
+Unknown, duplicate, or missing frame fields are rejected. The hidden host
+returns typed `Ready` after accepting the launch payload while the configured
+worker is still stopped. The parent then sends typed `Release`, and only then
+does the host start the configured worker. The host publishes typed `Completed`
+with a non-null exit code immediately after the direct worker exits and before
+output pipes are drained. Typed `OutputDrained` follows bounded output capture
+and is awaited before ordinary host teardown. This explicit `OutputDrained`
+acknowledgement prevents descendants from delaying or forging the authoritative
+result. All readiness, release, completion, and
+output-drain messages are complete typed frames bound to the per-launch nonce.
+
+Windows Job Object is the supported complete descendant boundary. Platforms
+without an equivalent queryable kernel containment boundary fail closed before
+worker release. Timeout and cancellation remain authoritative; cleanup
+uncertainty quarantines the worker slot instead of changing the result or
+admitting another worker into uncertain capacity. Complete-tree termination and
+unattached-host cleanup is bounded; an expired confirmation deadline also
+quarantines the slot.
+
+Every validation-repair `contextFiles.sha256` and `changedFiles.beforeSha256`
+must be the exact 64-character SHA-256 digest of the same canonical file bytes,
+or the literal `missing` for an absent add target. Every non-delete
+`afterSha256` must be the exact 64-character SHA-256 digest of its referenced
+content bytes. A delete uses `afterSha256=missing` and no `contentRef`.
+`contentRef` is proposal-bound and must be exactly
+`worker_proposals/<proposalId>/<changedFiles.path>`.
+
+For every changed entry, `changeKind is mandatory` and must be exactly `add`, `replace`, or `delete`.
+Omission, zero/unspecified values, and unknown enum
+values are invalid even when hashes and content otherwise look correct.
+
+For an afterlife `validation-repair`,
+`game_state/meta/soul_state.json` is hash-pinned read-only realm authority. Its
+exact canonical bytes and SHA-256 must be present in `contextFiles`, its
+`currentRealm` must agree with `afterlifeContract.realmGate` and
+`afterlifeContract.currentRealm`, and it must not appear in `changedFiles` or
+`allowedProposalPaths`. Missing, malformed, duplicate-key, unsupported,
+changed-after-dispatch, or mismatched realm authority fails closed before any
+canonical write.
+
+Every `game_state/meta/` validation-repair target is afterlife-scoped, including
+non-actor metadata. A mixed Mortal/afterlife issue batch fails task construction
+closed instead of weakening either authority contract. Afterlife allowlists use
+exact wildcard-free afterlife paths; `game_state/**`, `*`, `?`, and equivalent
+patterns never grant repair authority. `lore/current_world/**` and
+`game_state/core/player_status.json` are Mortal, including nested validation
+coordinates beneath those files. Every exact afterlife validation-repair
+allowlist entry must stay under `game_state/meta/`; merely failing to match a
+known Mortal prefix is not repair authority. Typed afterlife content tasks may
+still use exact task-provided control/report surfaces. The harness uses case-insensitive canonical path identity
+for Windows session paths, rejects duplicate case aliases, and applies the same
+identity to setting/Soul read-only authority and proposal scope. For
+`npc_characteristics_empty`, `game_state/misc/characteristics.json` is likewise
+read-only context and must never appear in `allowedProposalPaths` or
+`changedFiles`.
+
+The apply gate acquires one canonical write lease before its final exact-byte
+context check. It retains that lease through every target compare/exchange,
+full-state validation, read-only context recheck, rollback if necessary, and
+decision linearization. A cooperating canonical writer waits; an external
+non-cooperating mutation is detected by the final byte checks and rejects the
+proposal without accepting mixed authority.
+
+The apply gate has no replaceable lock inside `game_session`; its sole exclusion
+authority is the external canonical write lease. Built-in backup, restore,
+game-state clear, and current-world lore clear operations acquire the same
+canonical write lease. Save and load operations use the same canonical write lease:
+saves read one coherent snapshot, and a loaded session cannot replace live
+state during worker apply. Load uses an external durable journal under
+`.boe_runtime/load-transactions`: startup recovers an interrupted swap before
+creating session directories, and rollback failure preserves the last valid
+backup plus journal for a later retry. State refresh and client-owned mirror
+repair use one lease-scoped read/modify/write instead of reading before lease
+acquisition or trying to reacquire it. Every canonical writer must recover an interrupted load transaction immediately after acquiring the canonical write lease
+or fail closed before touching live state. Worker apply uses an external durable
+journal under `.boe_runtime/worker-apply-transactions`: intent, exact before-images,
+and expected applied hashes are durable before the first canonical mutation.
+Every canonical writer recovers an interrupted worker apply transaction after
+lease acquisition or fails closed before mutation. A committed transaction keeps
+accepted canonical bytes authoritative; committed journal cleanup cannot roll
+back accepted bytes and may be retried later. Detached runtime cleanup
+never follows reparse points. A cleanup failure is an audit diagnostic and does
+not replace an already completed, timed-out, or rejected worker result.
+
+A proposal becomes applyable only after confirmed zero exit and confirmed process-tree termination.
+A timeout, cancellation, nonzero exit, missing exit
+code, incomplete process-tree cleanup, or uncertain host cleanup is
+diagnostic-only: any bytes written by that execution must not be imported as a
+worker proposal or passed to the apply gate.
 
 ## Local CLI Worker Runner
 
@@ -306,11 +500,23 @@ the `WorkerTaskPacket` must include `afterlifeContract`.
   preserve if it accepts the proposal;
 - `forbiddenMortalSubstitutes`: explicit forbidden shortcuts.
 
-When a task contains `afterlifeContract`, the worker proposal must include
-`afterlifeProposal`. The proposal must repeat the same `realmGate`, list only
+For proposal-only tasks with `afterlifeContract`, the worker proposal must
+include `afterlifeProposal`. It must repeat the same `realmGate`, list only
 target surfaces allowed by `allowedAfterlifeSurfaces`, include required receipts
 and reports, provide a player-visible summary, and give `gmReviewNotes` plus
-`validatorRisks` for the main GM.
+`validatorRisks` for the main GM. For `validation-repair`, `afterlifeProposal`
+is optional: the authoritative repair payload is the bounded, hashed
+`changedFiles` list, and every changed path must also be allowed by
+`allowedAfterlifeSurfaces`.
+
+Every `game_state/meta/` validation-repair target, including a non-actor state
+file, binds the contract to the exact
+hash-pinned read-only realm authority in `game_state/meta/soul_state.json`.
+That authority is context only and must not appear in `changedFiles`; the apply
+gate holds one canonical write lease while it checks the same bytes and realm,
+applies all targets, validates the result, rechecks every read-only context, and
+records the final decision. Mixed Mortal/afterlife issue batches fail task
+construction closed.
 
 The validator rejects afterlife proposals that try to use Mortal World
 substitutes such as `worldStateFlags`, `worldEventsLog`, Mortal NPC
@@ -413,8 +619,10 @@ Live dispatch status:
 
 - As of #1143, validation-repair is the first task type wired into the live
   repair loop.
-- The client still writes `game_state/control/validation_repair_request.json`
-  first. This legacy request remains the fallback channel.
+- The client removes stale request/ready/stall artifacts and attempts worker
+  dispatch before the legacy `validation_repair_request.json` fallback is
+  exposed. There is never a worker and legacy GM writing the same repair in
+  parallel.
 - If no enabled validation-repair profile exists, behavior is unchanged: no
   worker task, worker inbox, or audit file is created.
 - If a worker is configured, the client launches it hidden/background through
@@ -423,6 +631,10 @@ Live dispatch status:
 - If the apply gate accepts the proposal, the client creates
   `game_state/control/validation_repair_ready.json` with the active
   session/request/turn metadata so the existing repair loop can revalidate.
+- If canonical apply succeeds but ready signal publication fails, the accepted
+  worker remains the sole repair owner. The client records
+  `worker_apply_gate_accepted` and revalidates directly instead of creating a
+  legacy request or asking the main GM to repeat the repair.
 - If the worker times out, exits with an error before writing a valid proposal,
   writes malformed JSON, returns a rejected proposal, or fails validation, the
   ready file is not created and the legacy repair loop remains active for the

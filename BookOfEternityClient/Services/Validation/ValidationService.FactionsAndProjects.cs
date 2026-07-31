@@ -602,7 +602,7 @@ public partial class ValidationService
     }
 
 
-    private void RequireBooleanField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void RequireBooleanField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
         {

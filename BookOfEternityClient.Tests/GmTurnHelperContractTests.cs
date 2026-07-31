@@ -1340,6 +1340,41 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void Helper_WriteBoeJsonRejectsStaleReadModifyWrite()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-cas-" + Guid.NewGuid().ToString("N"));
+        var session = Path.Combine(root, "game_session");
+        var statePath = Path.Combine(session, "game_state", "world", "weather.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(statePath)!);
+        File.WriteAllText(statePath, "{\"generation\":1}", new UTF8Encoding(false));
+
+        try
+        {
+            var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+            var command = string.Join("; ", new[]
+            {
+                "$ErrorActionPreference = 'Stop'",
+                ". " + QuotePowerShell(helperPath),
+                "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
+                "$state = Read-BoeJson -RelativePath 'game_state/world/weather.json'",
+                "[System.IO.File]::WriteAllText(" + QuotePowerShell(statePath) + ", '{\"generation\":2}', [System.Text.UTF8Encoding]::new($false))",
+                "$state.generation = 3",
+                "try { Write-BoeJson -RelativePath 'game_state/world/weather.json' -Data $state; exit 91 } catch { if ($_.Exception.Message -notlike '*changed since Read-BoeJson*') { throw } }"
+            });
+
+            var result = RunPowerShell(command);
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.True(string.IsNullOrWhiteSpace(result.StdErr), result.StdErr);
+            Assert.Equal("{\"generation\":2}", File.ReadAllText(statePath, Encoding.UTF8));
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    [Fact]
     public void Helper_SetBoeJsonPropertyReplacesExistingNonPropertyMember()
     {
         var helperPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
@@ -2337,7 +2372,7 @@ public sealed class GmTurnHelperContractTests
 
             var mortalNpcTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_NPC_UPDATE_TEMPLATE.md"), Encoding.UTF8);
             Assert.Contains("NPCsInScene is only for actors physically present in currentLocationData", mortalNpcTemplate, StringComparison.Ordinal);
-            Assert.Contains("voices behind a door", mortalNpcTemplate, StringComparison.Ordinal);
+            Assert.Contains("voices behind a door", mortalNpcTemplate, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("nearbyExitLocationId", mortalNpcTemplate, StringComparison.Ordinal);
 
             var repairTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "VALIDATION_REPAIR_TEMPLATE.md"), Encoding.UTF8);
@@ -3782,6 +3817,9 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("ledger/progressionLedger", template, StringComparison.Ordinal);
             Assert.Contains("shiningFactionChronicleUpdates", template, StringComparison.Ordinal);
             Assert.Contains("do not invent an actor", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("strictly newer", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("original canonical target set", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("equal timestamps are stale", template, StringComparison.OrdinalIgnoreCase);
 
             var daemon = File.ReadAllText(Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1"), Encoding.UTF8);
             Assert.Contains("$script:CompactOutputArtifactRepairTemplatePath", daemon, StringComparison.Ordinal);
@@ -3790,6 +3828,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("narrative_response_technical_repair_leak", daemon, StringComparison.Ordinal);
             Assert.Contains("Test-GmValidationRepairArtifactWritingStall", daemon, StringComparison.Ordinal);
             Assert.Contains("gm_validation_repair_artifact_stall", daemon, StringComparison.Ordinal);
+            Assert.Contains("strictly newer", daemon, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("original canonical target set", daemon, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {
@@ -4037,6 +4077,16 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("Actors outside scope", template, StringComparison.Ordinal);
             Assert.Contains("Role-identifiable visible, speaking, acting, clue-giving, or directly addressed scene actors are NPC candidates even when their personal name is unknown", template, StringComparison.Ordinal);
             Assert.Contains("Use a stable role-based visible name", template, StringComparison.Ordinal);
+            Assert.Contains("current-world canonical characteristic authority", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("\"setting_defined_characteristic_key\": 0", template, StringComparison.Ordinal);
+            foreach (var universalKey in new[]
+                     {
+                         "strength", "dexterity", "constitution", "intelligence", "wisdom", "faith",
+                         "attractiveness", "trade", "persuasion", "perception", "luck", "speed"
+                     })
+            {
+                Assert.DoesNotContain($"\"{universalKey}\":", template, StringComparison.OrdinalIgnoreCase);
+            }
 
             var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
             Assert.True(WaitForFileContaining(readmePath, "Mortal World NPC updates", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
@@ -4118,6 +4168,12 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("playerLevel", template, StringComparison.Ordinal);
             Assert.Contains("stat points", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("level-up", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("empty structural file", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("first complete progression tuple", template, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                "Fresh Mortal bootstrap creates the baseline file with `playerLevel`",
+                template,
+                StringComparison.Ordinal);
 
             var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
             Assert.True(WaitForFileContaining(readmePath, "Mortal World experience and level progression", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
@@ -4203,8 +4259,8 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("skillMasteryChanges", template, StringComparison.Ordinal);
             Assert.Contains("attribute-only check", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("prose-only learning", template, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("starter active and passive skills", template, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("starterCompetencyRequirements", template, StringComparison.Ordinal);
+            Assert.Contains("explicit GM-authored active and passive skills", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("structuredGmAuthority.playerSkills", template, StringComparison.Ordinal);
             Assert.Contains("fresh Mortal bootstrap", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Чтение свидетельских меток", template, StringComparison.Ordinal);
             Assert.DoesNotContain("Р§С‚РµРЅРёРµ", template, StringComparison.Ordinal);
@@ -4510,6 +4566,29 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonPendingSnapshotAuthority_AcceptsVersionedExactByteHashContracts()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var envelopeBlock = ExtractFunctionBlock(
+            daemon,
+            "function Test-PendingTurnSnapshotAuthorityEnvelope");
+        var rollbackHashBlock = ExtractFunctionBlock(
+            daemon,
+            "function Test-PendingTurnSnapshotRollbackBackupHashes");
+        var snapshotHashBlock = ExtractFunctionBlock(
+            daemon,
+            "function Test-PendingTurnSnapshotFileHashes");
+
+        Assert.Contains("@(2, 3, 4) -notcontains $formatVersion", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("rollbackHashMode", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("snapshotHashMode", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("-HashBytesExactly ($formatVersion -ge 3)", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("-HashBytesExactly ($formatVersion -ge 4)", envelopeBlock, StringComparison.Ordinal);
+        Assert.Contains("[System.IO.File]::ReadAllBytes", rollbackHashBlock, StringComparison.Ordinal);
+        Assert.Contains("[System.IO.File]::ReadAllBytes", snapshotHashBlock, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
@@ -4642,12 +4721,18 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
-    public void MortalBootstrapGuidance_PreservesClientAuthoredCompetenciesNpcAndOpeningWorldEvent()
+    public void MortalBootstrapGuidance_UsesStructuredGmAuthorityAndPreservesOpeningWorldEvent()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
-        Assert.Contains("starterCompetencyRequirements", daemon, StringComparison.Ordinal);
+        Assert.Contains("structuredGmAuthority", daemon, StringComparison.Ordinal);
+        Assert.Contains("playerAuthoredStart is narrative context", daemon, StringComparison.Ordinal);
         Assert.Contains("worldEventRequirements", daemon, StringComparison.Ordinal);
-        Assert.Contains("preMaterializedBaselineFiles includes game_state/npcs/npc_core.json", daemon, StringComparison.Ordinal);
+        Assert.Contains("playerProgression", daemon, StringComparison.Ordinal);
+        Assert.Contains("carryingRules", daemon, StringComparison.Ordinal);
+        Assert.Contains("factionMechanics", daemon, StringComparison.Ordinal);
+        Assert.Contains("experience.json is an empty structural object", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("starterCompetencyRequirements", daemon, StringComparison.Ordinal);
+        Assert.DoesNotContain("preMaterializedBaselineFiles includes game_state/npcs/npc_core.json", daemon, StringComparison.Ordinal);
 
         var gmFacingSources = new[]
         {
@@ -4660,8 +4745,12 @@ public sealed class GmTurnHelperContractTests
 
         foreach (var source in gmFacingSources)
         {
-            Assert.Contains("starterCompetencyRequirements", source, StringComparison.Ordinal);
+            Assert.Contains("structuredGmAuthority", source, StringComparison.Ordinal);
             Assert.Contains("worldEventRequirements", source, StringComparison.Ordinal);
+            Assert.Contains("playerProgression", source, StringComparison.Ordinal);
+            Assert.Contains("carryingRules", source, StringComparison.Ordinal);
+            Assert.Contains("factionMechanics", source, StringComparison.Ordinal);
+            Assert.DoesNotContain("starterCompetencyRequirements", source, StringComparison.Ordinal);
         }
     }
 
@@ -5013,7 +5102,7 @@ public sealed class GmTurnHelperContractTests
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            relativePath => ReadSessionRelativeFile(session, relativePath));
+            relativePath => ReadSessionRelativeFileBytes(session, relativePath));
 
         File.WriteAllText(
             Path.Combine(control, "pending_turn_snapshot.authority.json"),
@@ -5021,13 +5110,13 @@ public sealed class GmTurnHelperContractTests
             Encoding.UTF8);
     }
 
-    private static string? ReadSessionRelativeFile(string session, string relativePath)
+    private static byte[]? ReadSessionRelativeFileBytes(string session, string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
         var fullPath = Path.Combine(session, relativePath.Replace('/', Path.DirectorySeparatorChar));
-        return File.Exists(fullPath) ? File.ReadAllText(fullPath, Encoding.UTF8) : null;
+        return File.Exists(fullPath) ? File.ReadAllBytes(fullPath) : null;
     }
 
     private static readonly JsonSerializerOptions PendingTurnSnapshotManifestJsonOptions = new()

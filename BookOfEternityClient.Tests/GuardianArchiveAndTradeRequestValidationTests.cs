@@ -19,7 +19,10 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
     public GuardianArchiveAndTradeRequestValidationTests()
     {
-        _rootPath = Path.Combine(Path.GetTempPath(), "boe-guardian-request-validation-" + Guid.NewGuid().ToString("N"));
+        _rootPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "boe-test-artifacts",
+            "guardian-request-validation-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         CopyDirectory(TestRepoPaths.BaseSessionRoot, Path.Combine(_rootPath, "game_session"));
 
@@ -1105,62 +1108,17 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
         const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_trade_request.json";
         await WriteJsonAsync(backupPath, request);
+        await WriteJsonAsync("game_state/meta/guardians.json", BuildGuardianTradeState());
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             [GuardianTradeRequestState.PendingRequestPath] = backupPath
         });
-
-        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
-        {
-          "guardians": [
-            {
-              "guardianId": "guardian_alpha",
-              "canonicalName": "Азалия",
-              "domain": "Порог Сна",
-              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
-              "manifestation": {
-                "currentDisplayName": "Азалия",
-                "formFlexibility": "selective",
-                "currentPresentationStyle": "feminine",
-                "currentPronouns": "она/её",
-                "appearanceDescription": "Тестовая форма."
-              },
-              "manifestationHistory": [],
-              "relationshipData": { "currentReputation": 110, "reputationHistory": [], "lastInteraction": null },
-              "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-              "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
-            }
-          ],
-          "activeGuardian": {
-            "guardianId": "guardian_alpha",
-            "canonicalName": "Азалия",
-            "domain": "Порог Сна",
-            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
-            "manifestation": {
-              "currentDisplayName": "Азалия",
-              "formFlexibility": "selective",
-              "currentPresentationStyle": "feminine",
-              "currentPronouns": "она/её",
-              "appearanceDescription": "Тестовая форма."
-            },
-            "manifestationHistory": [],
-            "relationshipData": { "currentReputation": 110, "reputationHistory": [], "lastInteraction": null },
-            "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-            "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
-            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
-          },
-          "chaosSeaNavigation": {
-            "currentAbodeId": "abode_alpha"
-          }
-        }
-        """);
-        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "guardian_trade_request_missing_guardian_resolution"));
-        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -1200,90 +1158,18 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
         const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_trade_request_receipt.json";
         await WriteJsonAsync(backupPath, request);
+        await WriteJsonAsync("game_state/meta/guardians.json", BuildGuardianTradeState());
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             [GuardianTradeRequestState.PendingRequestPath] = backupPath
         });
-
-        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
-        {
-          "guardians": [
-            {
-              "guardianId": "guardian_alpha",
-              "canonicalName": "Азалия",
-              "domain": "Порог Сна",
-              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
-              "manifestation": {
-                "currentDisplayName": "Азалия",
-                "formFlexibility": "selective",
-                "currentPresentationStyle": "feminine",
-                "currentPronouns": "она/её",
-                "appearanceDescription": "Тестовая форма."
-              },
-              "manifestationHistory": [],
-              "relationshipData": { "currentReputation": 110, "reputationHistory": [], "lastInteraction": null },
-              "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-              "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
-              "tradeInventory": {
-                "tradeCycleId": "return_1",
-                "generatedAtUtc": "2026-03-26T00:10:00Z",
-                "generationReputationTier": "Friendly",
-                "pricingReputationTier": "Friendly",
-                "projectBonusSignature": "0|0|0",
-                "effectiveRarityCeilingBonusSteps": 0,
-                "items": [
-                  { "slotId": "slot_1", "priceInFeathers": 30, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
-                  { "slotId": "slot_2", "priceInFeathers": 70, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Uncommon" } },
-                  { "slotId": "slot_3", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_3", "name": "Реликвия 3", "quality": "Rare" } },
-                  { "slotId": "slot_4", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_4", "name": "Реликвия 4", "quality": "Rare" } }
-                ]
-              },
-              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
-            }
-          ],
-          "activeGuardian": {
-            "guardianId": "guardian_alpha",
-            "canonicalName": "Азалия",
-            "domain": "Порог Сна",
-            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
-            "manifestation": {
-              "currentDisplayName": "Азалия",
-              "formFlexibility": "selective",
-              "currentPresentationStyle": "feminine",
-              "currentPronouns": "она/её",
-              "appearanceDescription": "Тестовая форма."
-            },
-            "manifestationHistory": [],
-            "relationshipData": { "currentReputation": 110, "reputationHistory": [], "lastInteraction": null },
-            "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
-            "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
-            "tradeInventory": {
-              "tradeCycleId": "return_1",
-              "generatedAtUtc": "2026-03-26T00:10:00Z",
-              "generationReputationTier": "Friendly",
-              "pricingReputationTier": "Friendly",
-              "projectBonusSignature": "0|0|0",
-              "effectiveRarityCeilingBonusSteps": 0,
-              "items": [
-                { "slotId": "slot_1", "priceInFeathers": 30, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
-                { "slotId": "slot_2", "priceInFeathers": 70, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Uncommon" } },
-                { "slotId": "slot_3", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_3", "name": "Реликвия 3", "quality": "Rare" } },
-                { "slotId": "slot_4", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_4", "name": "Реликвия 4", "quality": "Rare" } }
-              ]
-            },
-            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
-          },
-          "chaosSeaNavigation": {
-            "currentAbodeId": "abode_alpha"
-          }
-        }
-        """);
-        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
+        await WriteJsonAsync("game_state/meta/guardians.json", BuildGuardianTradeState(includeInventory: true));
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "guardian_trade_request_missing_guardian_resolution"));
-        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2295,10 +2181,11 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         {
             [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = backupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_interaction_missing_resolution"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_interaction_missing_resolution", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2402,10 +2289,11 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = requestBackupPath,
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_history_missing_canonical_result"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_history_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2508,10 +2396,11 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = requestBackupPath,
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_talk_missing_memory_update"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_talk_missing_memory_update", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2614,15 +2503,17 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = requestBackupPath,
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_history_missing_memory_update"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_history_missing_memory_update", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
     public async Task ValidateGameStateAsync_ResidentQuestGrantWithoutInteractionLog_Fails()
     {
+        await WriteJsonAsync("game_state/meta/soul_state.json", BuildChaosSeaSoulState());
         await WriteJsonAsync("game_state/meta/guardians.json", BuildGuardianState());
 
         await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
@@ -2708,15 +2599,19 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             }
         });
         await WriteJsonAsync(soulQuestBackupPath, new { quests = Array.Empty<object>() });
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            BuildChaosSeaSoulState());
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             [GuardianAbodeResidentState.StatePath] = residentBackupPath,
             ["game_state/quests/soul_quests.json"] = soulQuestBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_quest_missing_interaction_log_update"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_quest_missing_interaction_log_update", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2754,7 +2649,20 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         });
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
+            soulName = "Тестовая Душа",
             currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            enlightenment = new
+            {
+                currentTier = "Новичок",
+                experience = 0,
+                level = 0
+            },
+            inkFeathers = new
+            {
+                current = 0,
+                total = 0
+            },
             soulRelics = new
             {
                 equipped = Array.Empty<object>(),
@@ -2776,7 +2684,10 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                         }
                     }
                 }
-            }
+            },
+            afterlifeArchive = new { stored = Array.Empty<object>() },
+            livesHistory = Array.Empty<object>(),
+            pendingMemoryLegacy = (object?)null
         });
 
         const string residentBackupPath = "game_state/control/pending_turn_snapshot/pre_guardian_abode_residents_reward_memory.json";
@@ -2808,19 +2719,24 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 }
             }
         });
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            BuildChaosSeaSoulState());
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_reward_missing_interaction_log_update"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_reward_missing_interaction_log_update", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
     public async Task ValidateGameStateAsync_ResidentAbodeShiftWithoutCanonicalTrigger_Fails()
     {
+        await WriteJsonAsync("game_state/meta/soul_state.json", BuildChaosSeaSoulState());
         await WriteJsonAsync("game_state/meta/guardians.json", BuildGuardianState());
 
         await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
@@ -2911,14 +2827,18 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             thoughtJournal = Array.Empty<object>(),
             interactionLog = Array.Empty<object>()
         });
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            BuildChaosSeaSoulState());
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_devotion_shift_missing_canonical_trigger"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_devotion_shift_missing_canonical_trigger", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -3040,7 +2960,11 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
     [Fact]
     public async Task ValidateGameStateAsync_PendingResidentTransferWithoutMatchingReceipt_Fails()
     {
+        await WriteJsonAsync("game_state/meta/soul_state.json", BuildChaosSeaSoulState());
         await WriteJsonAsync("game_state/meta/guardians.json", BuildTwoGuardianState());
+        await WriteJsonAsync(
+            GuardianProjectState.TrackerPath,
+            new { activeProjects = Array.Empty<object>(), completedProjects = Array.Empty<object>() });
 
         var residentState = new
         {
@@ -3122,10 +3046,11 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             [GuardianAbodeResidentRequestState.PendingTransfersRequestPath] = requestBackupPath,
             [GuardianAbodeResidentState.StatePath] = residentBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_transfer_missing_resolution"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_missing_resolution", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -3593,10 +3518,11 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         {
             [GuardianAbodeResidentRequestState.PendingResidentsRequestPath] = requestBackupPath
         });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => HasExpectedOrGuardianAuthorityGate(issue, "abode_resident_roster_missing_receipt_resolution"));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_roster_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -3811,6 +3737,31 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_top_level_update_key", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task WritePendingTurnSnapshotManifestAsync_UsesCurrentRuntimeProductionRoots()
+    {
+        const string runtimeOnlyPath = "game_state/meta/runtime_only_snapshot_probe.json";
+        await WriteJsonAsync(runtimeOnlyPath, new { source = "current-runtime" });
+        await WriteJsonAsync("world_profiles/snapshot_probe.json", new { source = "excluded-root" });
+
+        await WritePendingTurnSnapshotManifestAsync(
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        var manifest = JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(
+            manifestJson!,
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+        Assert.NotNull(manifest);
+        Assert.True(manifest.Files.TryGetValue(runtimeOnlyPath, out var snapshotPath));
+        Assert.Equal(
+            await _fs.ReadFileAsync(runtimeOnlyPath),
+            await _fs.ReadFileAsync(snapshotPath!));
+        Assert.DoesNotContain(
+            manifest.Files.Keys,
+            path => path.StartsWith("world_profiles/", StringComparison.OrdinalIgnoreCase));
+    }
+
     private async Task WritePendingTurnSnapshotManifestAsync(Dictionary<string, string> rollbackBackups)
     {
         var normalizedBackups = rollbackBackups.ToDictionary(
@@ -3882,42 +3833,97 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         foreach (var pair in manifest.RollbackBackups)
         {
             var snapshotPath = $"game_state/control/pending_turn_snapshot/{pair.Key}";
-            var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
+            var snapshotJson = await _fs.ReadFileAsync(pair.Value);
             if (string.IsNullOrWhiteSpace(snapshotJson))
             {
-                snapshotJson = await _fs.ReadFileAsync(pair.Value);
+                snapshotJson = await _fs.ReadFileAsync(snapshotPath);
                 if (string.IsNullOrWhiteSpace(snapshotJson))
                     continue;
-
-                await _fs.WriteFileAtomicAsync(snapshotPath, snapshotJson);
             }
+
+            await _fs.WriteFileAtomicAsync(snapshotPath, snapshotJson);
 
             manifest.Files[pair.Key] = snapshotPath;
             manifest.SnapshotFileHashes[pair.Key] = ComputeSha256(snapshotJson);
         }
 
         var snapshotRoot = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
-        if (!Directory.Exists(snapshotRoot))
-            return;
-
-        foreach (var snapshotFile in Directory.GetFiles(snapshotRoot, "*", SearchOption.AllDirectories))
+        if (Directory.Exists(snapshotRoot))
         {
-            var relativeSnapshotPath = NormalizeRelativePath(Path.GetRelativePath(snapshotRoot, snapshotFile));
-            if (!relativeSnapshotPath.Contains('/'))
-                continue;
+            foreach (var snapshotFile in Directory.GetFiles(snapshotRoot, "*", SearchOption.AllDirectories))
+            {
+                var relativeSnapshotPath = NormalizeRelativePath(Path.GetRelativePath(snapshotRoot, snapshotFile));
+                if (!relativeSnapshotPath.Contains('/'))
+                    continue;
 
-            var trackedPath = relativeSnapshotPath;
-            if (manifest.Files.ContainsKey(trackedPath))
-                continue;
+                var trackedPath = relativeSnapshotPath;
+                if (manifest.Files.ContainsKey(trackedPath))
+                    continue;
 
-            var snapshotJson = await File.ReadAllTextAsync(snapshotFile);
-            if (string.IsNullOrWhiteSpace(snapshotJson))
-                continue;
+                var snapshotJson = await File.ReadAllTextAsync(snapshotFile);
+                if (string.IsNullOrWhiteSpace(snapshotJson))
+                    continue;
 
-            manifest.Files[trackedPath] = $"game_state/control/pending_turn_snapshot/{trackedPath}";
+                manifest.Files[trackedPath] = $"game_state/control/pending_turn_snapshot/{trackedPath}";
+                manifest.SnapshotFileHashes[trackedPath] = ComputeSha256(snapshotJson);
+            }
+        }
+
+        await RegisterCurrentRuntimeBaselinesAsync(manifest);
+        manifest.RollbackBaselineFiles = manifest.Files.Keys
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private async Task RegisterCurrentRuntimeBaselinesAsync(PendingTurnSnapshotManifest manifest)
+    {
+        var gameSessionRoot = _fs.ResolvePath("");
+        foreach (var sourceFile in _fs.GetAllGameStateFiles()
+                     .OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+        {
+            await RegisterCurrentRuntimeFileAsync(sourceFile);
+        }
+
+        var loreRoot = _fs.ResolvePath("lore");
+        if (Directory.Exists(loreRoot))
+        {
+            foreach (var sourceFile in Directory.EnumerateFiles(loreRoot, "*", SearchOption.AllDirectories)
+                         .OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+            {
+                await RegisterCurrentRuntimeFileAsync(sourceFile);
+            }
+        }
+
+        async Task RegisterCurrentRuntimeFileAsync(string sourceFile)
+        {
+            var trackedPath = NormalizeRelativePath(Path.GetRelativePath(gameSessionRoot, sourceFile));
+            if (ShouldExcludeRuntimeSnapshotFile(trackedPath) || manifest.Files.ContainsKey(trackedPath))
+                return;
+
+            var snapshotJson = await File.ReadAllTextAsync(sourceFile);
+            var snapshotPath = $"game_state/control/pending_turn_snapshot/{trackedPath}";
+            await _fs.WriteFileAtomicAsync(snapshotPath, snapshotJson);
+            manifest.Files[trackedPath] = snapshotPath;
             manifest.SnapshotFileHashes[trackedPath] = ComputeSha256(snapshotJson);
         }
     }
+
+    private static bool ShouldExcludeRuntimeSnapshotFile(string relativePath) =>
+        string.Equals(relativePath, "game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
+        relativePath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||
+        relativePath.StartsWith("game_state/control/gm_context_pack/", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/pending_dice_state.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/gm_daemon_status.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/gm_trajectory_ledger.jsonl", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/validation_auto_rollback_report.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/control/local_ui_session_lock.json", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(relativePath, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
+        relativePath.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
 
     private async Task EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync()
     {
@@ -3946,7 +3952,10 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         {
             var existingManifestJson = await File.ReadAllTextAsync(manifestPath);
             if (!string.IsNullOrWhiteSpace(existingManifestJson) &&
-                JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(existingManifestJson) is { RollbackBackups: not null } existingManifest)
+                JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(
+                    existingManifestJson,
+                    new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }) is
+                    { RollbackBackups: not null } existingManifest)
             {
                 foreach (var pair in existingManifest.RollbackBackups)
                     rollbackBackups[NormalizeRelativePath(pair.Key)] = NormalizeRelativePath(pair.Value);
@@ -3977,6 +3986,45 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 discoveredAbodes = new[] { abodeId }
             }
         };
+    }
+
+    private static JsonObject BuildGuardianTradeState(bool includeInventory = false)
+    {
+        var root = JsonSerializer.SerializeToNode(BuildGuardianState())!.AsObject();
+        var tradeInventory = includeInventory
+            ? JsonNode.Parse("""
+              {
+                "tradeCycleId": "return_1",
+                "generatedAtUtc": "2026-03-26T00:10:00Z",
+                "generationReputationTier": "Friendly",
+                "pricingReputationTier": "Friendly",
+                "projectBonusSignature": "0|0|0",
+                "effectiveRarityCeilingBonusSteps": 0,
+                "items": [
+                  { "slotId": "slot_1", "priceInFeathers": 30, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
+                  { "slotId": "slot_2", "priceInFeathers": 70, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Uncommon" } },
+                  { "slotId": "slot_3", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_3", "name": "Реликвия 3", "quality": "Rare" } },
+                  { "slotId": "slot_4", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_4", "name": "Реликвия 4", "quality": "Rare" } }
+                ]
+              }
+              """)!.AsObject()
+            : null;
+
+        foreach (var guardian in root["guardians"]!.AsArray().OfType<JsonObject>())
+            ConfigureGuardian(guardian);
+        ConfigureGuardian(root["activeGuardian"]!.AsObject());
+        return root;
+
+        void ConfigureGuardian(JsonObject guardian)
+        {
+            guardian["relationshipData"]!.AsObject()["currentReputation"] = 110;
+            var abodePower = guardian["abodePower"]!.AsObject();
+            abodePower["currentPower"] = 10;
+            abodePower["tier"] = "Угасающая";
+            guardian["gachaSystem"]!.AsObject()["chargesPerReturn"] = 2;
+            if (tradeInventory != null)
+                guardian["tradeInventory"] = tradeInventory.DeepClone();
+        }
     }
 
     private static object BuildChaosSeaSoulState() => new
@@ -4150,16 +4198,6 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         activeQuests = Array.Empty<object>(),
         completedQuests = Array.Empty<object>()
     };
-
-    private static bool HasExpectedOrGuardianAuthorityGate(ValidationIssue issue, params string[] expectedCodes)
-    {
-        if (expectedCodes.Any(code => string.Equals(issue.Code, code, StringComparison.OrdinalIgnoreCase)))
-            return true;
-
-        return string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "realm_segregation_invalid_validated_snapshot_realm", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "realm_segregation_missing_validated_preturn_realm", StringComparison.OrdinalIgnoreCase);
-    }
 
     private static string ComputeManifestPayloadHash(PendingTurnSnapshotManifest manifest)
     {

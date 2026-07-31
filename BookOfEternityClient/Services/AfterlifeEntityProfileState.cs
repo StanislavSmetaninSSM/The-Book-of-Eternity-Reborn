@@ -251,9 +251,13 @@ internal static class AfterlifeEntityProfileState
         }
     }
 
-    public static async Task<bool> ApplyPlayerSoulProfileClientAuthorityAsync(FileSystemManager fs)
+    internal static async Task<bool> ApplyPlayerSoulProfileClientAuthorityAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        Func<Task>? afterInputsReadAsync = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
 
         var currentRoot = await ReadObjectAsync(fs, StatePath);
         if (currentRoot == null)
@@ -265,12 +269,15 @@ internal static class AfterlifeEntityProfileState
 
         var projectedRoot = currentRoot.DeepClone().AsObject();
         var shiningRoot = await ReadObjectAsync(fs, ShiningAbodeState.StatePath);
+        if (afterInputsReadAsync != null)
+            await afterInputsReadAsync();
         ApplyPlayerSoulProfileClientAuthority(projectedRoot, soulRoot, shiningRoot);
 
         if (JsonNode.DeepEquals(currentRoot, projectedRoot))
             return false;
 
-        await fs.WriteFileAtomicAsync(StatePath, projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var content = projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        await fs.WriteFileAtomicAsync(writeLease, StatePath, content);
         return true;
     }
 
@@ -394,11 +401,36 @@ internal static class AfterlifeEntityProfileState
 
             var replacement = CloneObject(profile);
             PreserveProgressionSettlement(existing, replacement);
+            PreserveHistoricalMaterialization(existing, replacement);
             profiles[index] = replacement;
             return;
         }
 
         profiles.Add(CloneObject(profile));
+    }
+
+    private static void PreserveHistoricalMaterialization(JsonObject existing, JsonObject replacement)
+    {
+        if (replacement.ContainsKey(ActorMaterializationContract.PropertyName) ||
+            existing[ActorMaterializationContract.PropertyName] is not JsonObject historicalEnvelope ||
+            !HasExactActorIdentity(existing, replacement))
+        {
+            return;
+        }
+
+        replacement[ActorMaterializationContract.PropertyName] = historicalEnvelope.DeepClone();
+    }
+
+    private static bool HasExactActorIdentity(JsonObject existing, JsonObject replacement)
+    {
+        var existingType = GetNodeString(existing["actorType"]);
+        var replacementType = GetNodeString(replacement["actorType"]);
+        var existingId = GetNodeString(existing["actorId"]) ?? GetNodeString(existing["actorRef"]);
+        var replacementId = GetNodeString(replacement["actorId"]) ?? GetNodeString(replacement["actorRef"]);
+        return !string.IsNullOrWhiteSpace(existingType) &&
+               !string.IsNullOrWhiteSpace(existingId) &&
+               string.Equals(existingType, replacementType, StringComparison.Ordinal) &&
+               string.Equals(existingId, replacementId, StringComparison.Ordinal);
     }
 
     private static void PreserveProgressionSettlement(JsonObject existing, JsonObject replacement)

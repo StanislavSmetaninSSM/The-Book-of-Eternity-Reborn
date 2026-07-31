@@ -23,6 +23,7 @@ JSON Response Field               →    CLI File Location
 ├── "UpdateInventory": [...]      →    game_state/inventory/items.json
 ├── "playerStatus": {...}         →    game_state/core/player_status.json
 ├── "UpdateNPCs": [...]           →    game_state/npcs/npc_core.json
+├── "NPCCoreChanges": [...]       →    game_state/npcs/npc_core.json (validated non-carrier reducer input)
 ├── "worldMapUpdates": {...}      →    game_state/world/world_map.json
 ├── "metaStateUpdates": {...}     →    game_state/meta/soul_state.json
 ├── "UpdateGuardians": [...]      →    game_state/meta/guardians.json
@@ -105,9 +106,10 @@ echo '{"sessionId": "...", "requestId": "...", "turnNumber": 42, "timestamp": "2
 
 ### **Pattern 3: NPC Interaction**
 **API Response:**
-- Generate JSON with UpdateNPCs + relationship changes
+- For a genuinely new NPC or true legacy promotion, generate the complete `UpdateNPCs`/`NPCsInScene` carrier plus relationship commands.
+- For an ordinary existing NPC, preserve every actor-owned field in full carriers, generate the exact dedicated commands, and use bounded `NPCCoreChanges` only for supported profile, location, progression, setting-owned characteristic, faction affiliation, or locked/unrealized Fate Card definition changes.
 **CLI Action:**
-- Write NPCs → `npcs/npc_core.json`
+- Route complete carriers and `NPCCoreChanges` → `npcs/npc_core.json`; `NPCCoreChanges` is duplicate-sensitive, validates new Fate Cards through the full production nested skill/Combat Action contract, reduces only an entirely valid command into the exact existing actor, then consumes it. Do not hand-apply arbitrary fields.
 - Write relationships → `npcs/npc_relationships.json`
 - Keep dialogue in `output/narrative_response.json` / `output/interface_updates.json`
 

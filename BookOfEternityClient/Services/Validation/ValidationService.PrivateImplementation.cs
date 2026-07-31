@@ -604,7 +604,11 @@ public partial class ValidationService
         ValidateDialogueOptionsData(response, "response", issues);
 
         ValidatePlayerContract(response, "response", issues);
-        ValidateNpcContract(response, "response", issues);
+        ValidateNpcContract(
+            response,
+            "response",
+            issues,
+            validateCurrentMaterializationPersonality: true);
         ValidateWorldQuestCombatFactionContract(response, "response", issues);
         ValidateMetaMiscContract(response, "response", issues);
         ValidateMathAssistantContractRoot(response, "response", issues);

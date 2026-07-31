@@ -64,8 +64,10 @@ Shared rules
   unavailable and manual fallback is necessary, include only the identity
   (`npcId`/`name`) and the fresh `trainingShowcase`. Do not resend `inventory`,
   do not replace the whole NPC object, and do not repeat `teacherProfile` unless
-  the turn is intentionally creating or changing the teacher profile itself. The
-  client normalizer applies the showcase patch to the existing full NPC object.
+  the turn is a separate bounded legacy promotion. The showcase request itself
+  never authorizes that promotion or any unrelated actor field. The client
+  normalizer applies the exact request-bound showcase patch to the existing full
+  NPC object.
 - During validation repair, when `harnessRepairPackets[].kind` is
   `training_showcase_snapshot_hash_repair`, apply
   `exactFieldCorrections[]` first. Set each listed
@@ -78,12 +80,12 @@ Shared rules
   `pending_training_showcase_requests.json`, and deletes the file when no
   requests remain.
 - GM does not spend player currency.
-- During the first Mortal bootstrap, the client may grant a small starter purse
-  and current-level XP buffer when the player-authored start asks for training,
-  paid lessons, merchants, or trade. These resources live in
+- During the first Mortal bootstrap, `playerAuthoredStart` grants no money or
+  experience. The client initializes `structuredGmAuthority.resources` empty.
+  If the GM makes a setting-aware decision to grant money or current-level XP,
+  record that decision explicitly there and write the matching canonical
   `game_state/core/player_status.json.money` and
-  `game_state/player/experience.json.currentExperience`. Preserve them as
-  client-owned baseline resources; do not delete them as unexplained state.
+  `game_state/player/experience.json.currentExperience` values.
 - In afterlife showcase/self-training purchases, GM does not raise player tiers directly. The client applies standard spiritual-art, spirit_focus, and known special-art upgrades.
 - In Mortal World training, the client locally applies a normal new skill from
   a fresh showcase at mastery level 1, and may apply simple active-skill mastery
@@ -286,6 +288,8 @@ receipt; it is the list of available lessons.
         "schemaVersion": 1,
         "requestId": "training_req_hunter_roden_001",
         "requestKind": "mortal_teacher_showcase",
+        "sourceActorId": "npc_hunter_roden",
+        "sourceActorName": "Роден, охотник у северных ворот",
         "sourceActorSnapshotHash": "sha256:requested-hash-from-client",
         "preparedAtTurn": 12,
         "summary": "Роден готов провести короткое практическое занятие за оплату и часть опыта текущего уровня.",

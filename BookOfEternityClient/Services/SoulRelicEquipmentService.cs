@@ -28,9 +28,21 @@ public static class SoulRelicEquipmentService
         ["soulAnchor"] = "Якорь души"
     };
 
-    public static async Task<SoulRelicEquipmentContext?> ReadContextAsync(FileSystemManager fs)
+    public static Task<SoulRelicEquipmentContext?> ReadContextAsync(FileSystemManager fs) =>
+        ReadContextCoreAsync(fs, writeLease: null);
+
+    internal static Task<SoulRelicEquipmentContext?> ReadContextAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadContextCoreAsync(fs, writeLease);
+
+    private static async Task<SoulRelicEquipmentContext?> ReadContextCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var raw = await fs.ReadFileAsync(SoulStatePath);
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(SoulStatePath)
+            : await fs.ReadFileAsync(writeLease, SoulStatePath);
         if (string.IsNullOrWhiteSpace(raw))
             return null;
 
@@ -59,12 +71,26 @@ public static class SoulRelicEquipmentService
         return new SoulRelicEquipmentContext(root, stored, equipped);
     }
 
-    public static async Task<SoulRelicWriteOutcome> EquipAsync(
+    public static Task<SoulRelicWriteOutcome> EquipAsync(
         FileSystemManager fs,
+        string relicIdOrName,
+        string slotKey) =>
+        EquipCoreAsync(fs, writeLease: null, relicIdOrName, slotKey);
+
+    internal static Task<SoulRelicWriteOutcome> EquipAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string relicIdOrName,
+        string slotKey) =>
+        EquipCoreAsync(fs, writeLease, relicIdOrName, slotKey);
+
+    private static async Task<SoulRelicWriteOutcome> EquipCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string relicIdOrName,
         string slotKey)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return SoulRelicWriteOutcome.Failed("soul_state.json отсутствует или повреждён.");
 
@@ -86,19 +112,45 @@ public static class SoulRelicEquipmentService
         relic["gameplayStatus"]!["currentSlot"] = string.IsNullOrWhiteSpace(outcome.SlotKey) ? "Default" : outcome.SlotKey;
         equipped.Add(relic);
 
-        await fs.WriteFileAtomicAsync(
-            SoulStatePath,
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                context.Root,
-                GuardianPolicyContracts.SoulStatePatchConflictContext.None).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        if (writeLease == null)
+        {
+            await fs.WriteFileAtomicAsync(
+                SoulStatePath,
+                GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                        context.Root,
+                        GuardianPolicyContracts.SoulStatePatchConflictContext.None)
+                    .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
+        else
+        {
+            await fs.WriteFileAtomicAsync(
+                writeLease,
+                SoulStatePath,
+                GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                        context.Root,
+                        GuardianPolicyContracts.SoulStatePatchConflictContext.None)
+                    .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
         return outcome;
     }
 
-    public static async Task<SoulRelicWriteOutcome> UnequipAsync(
+    public static Task<SoulRelicWriteOutcome> UnequipAsync(
         FileSystemManager fs,
+        string slotKey) =>
+        UnequipCoreAsync(fs, writeLease: null, slotKey);
+
+    internal static Task<SoulRelicWriteOutcome> UnequipAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string slotKey) =>
+        UnequipCoreAsync(fs, writeLease, slotKey);
+
+    private static async Task<SoulRelicWriteOutcome> UnequipCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string slotKey)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return SoulRelicWriteOutcome.Failed("soul_state.json отсутствует или повреждён.");
         var validation = ValidateUnequip(context, slotKey);
@@ -117,11 +169,25 @@ public static class SoulRelicEquipmentService
         }
         stored.Add(relicNode.DeepClone()!.AsObject());
         equipped.Remove(relicNode);
-        await fs.WriteFileAtomicAsync(
-            SoulStatePath,
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                context.Root,
-                GuardianPolicyContracts.SoulStatePatchConflictContext.None).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        if (writeLease == null)
+        {
+            await fs.WriteFileAtomicAsync(
+                SoulStatePath,
+                GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                        context.Root,
+                        GuardianPolicyContracts.SoulStatePatchConflictContext.None)
+                    .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
+        else
+        {
+            await fs.WriteFileAtomicAsync(
+                writeLease,
+                SoulStatePath,
+                GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                        context.Root,
+                        GuardianPolicyContracts.SoulStatePatchConflictContext.None)
+                    .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
         return validation;
     }
 

@@ -37,9 +37,28 @@ public sealed class PendingTurnStateService
         return created;
     }
 
+    internal async Task<PendingTurnState> GetOrCreateAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var existing = await ReadAsync(writeLease);
+        if (IsValid(existing))
+            return existing!;
+
+        var created = CreateFreshState();
+        await WriteAsync(writeLease, created);
+        return created;
+    }
+
     public async Task<PendingTurnState?> TryReadExistingAsync()
     {
         var existing = await ReadAsync();
+        return IsValid(existing) ? existing : null;
+    }
+
+    internal async Task<PendingTurnState?> TryReadExistingAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var existing = await ReadAsync(writeLease);
         return IsValid(existing) ? existing : null;
     }
 
@@ -57,6 +76,21 @@ public sealed class PendingTurnStateService
         return state;
     }
 
+    internal async Task<PendingTurnState> RevealAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var state = await GetOrCreateAsync(writeLease);
+        if (!state.IsFateLocked)
+        {
+            state.IsFateLocked = true;
+            state.FateLockedAtUtc = DateTime.UtcNow.ToString("o");
+            state.LastUpdatedUtc = state.FateLockedAtUtc;
+            await WriteAsync(writeLease, state);
+        }
+
+        return state;
+    }
+
     public async Task<PendingTurnState> RewriteAsync()
     {
         var rewritten = CreateFreshState();
@@ -64,6 +98,17 @@ public sealed class PendingTurnStateService
         rewritten.FateLockedAtUtc = DateTime.UtcNow.ToString("o");
         rewritten.LastUpdatedUtc = rewritten.FateLockedAtUtc;
         await WriteAsync(rewritten);
+        return rewritten;
+    }
+
+    internal async Task<PendingTurnState> RewriteAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var rewritten = CreateFreshState();
+        rewritten.IsFateLocked = true;
+        rewritten.FateLockedAtUtc = DateTime.UtcNow.ToString("o");
+        rewritten.LastUpdatedUtc = rewritten.FateLockedAtUtc;
+        await WriteAsync(writeLease, rewritten);
         return rewritten;
     }
 
@@ -95,6 +140,18 @@ public sealed class PendingTurnStateService
     private async Task<PendingTurnState?> ReadAsync()
     {
         var json = await _fs.ReadFileAsync(PendingDiceStatePath);
+        return Deserialize(json);
+    }
+
+    private async Task<PendingTurnState?> ReadAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await _fs.ReadFileAsync(writeLease, PendingDiceStatePath);
+        return Deserialize(json);
+    }
+
+    private PendingTurnState? Deserialize(string? json)
+    {
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -113,6 +170,17 @@ public sealed class PendingTurnStateService
     {
         state.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
         await _fs.WriteFileAtomicAsync(PendingDiceStatePath, JsonSerializer.Serialize(state, JsonOpts));
+    }
+
+    private async Task WriteAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingTurnState state)
+    {
+        state.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
+        await _fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingDiceStatePath,
+            JsonSerializer.Serialize(state, JsonOpts));
     }
 
     private static bool IsValid(PendingTurnState? state)

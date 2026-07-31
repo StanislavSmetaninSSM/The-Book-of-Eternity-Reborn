@@ -81,6 +81,14 @@ cd "E:\Games\The Book of Eternity Reborn"
 
 Команда создаёт согласованные `input\turn_request.json`, `game_state\control\pending_turn_snapshot.json` и `game_state\control\pending_turn_snapshot.authority.json`, нормализуя пути и исключая служебные bridge/daemon/harness артефакты.
 
+Подготовка выполняется одной generation-bound транзакцией: клиент привязывает
+операцию к текущей сессии до первого чтения, затем под одной канонической
+блокировкой очищает прежние артефакты, снимает no-follow snapshot и публикует
+manifest, authority и запрос хода. Параллельный Load или New Game либо ждёт
+завершения этой транзакции, либо останавливает старую операцию через
+`SessionReplaced`; артефакты старой сессии не попадут в новую. Поэтому не
+собирайте и не очищайте эти файлы вручную.
+
 ## Самая короткая версия
 
 Окно 1:

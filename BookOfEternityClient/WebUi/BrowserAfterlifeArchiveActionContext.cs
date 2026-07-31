@@ -43,13 +43,27 @@ internal static class BrowserAfterlifeArchiveActionContextReader
 
     public static async Task<BrowserAfterlifeArchiveActionContext> ReadConsultationAsync(
         FileSystemManager fs,
-        StateManager stateManager)
+        StateManager stateManager) =>
+        await ReadConsultationCoreAsync(fs, stateManager, writeLease: null);
+
+    internal static async Task<BrowserAfterlifeArchiveActionContext> ReadConsultationAsync(
+        FileSystemManager fs,
+        StateManager stateManager,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        await ReadConsultationCoreAsync(fs, stateManager, writeLease);
+
+    private static async Task<BrowserAfterlifeArchiveActionContext> ReadConsultationCoreAsync(
+        FileSystemManager fs,
+        StateManager stateManager,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var baseContext = await ReadBaseContextAsync(fs, stateManager, requireProjectFuel: false);
+        var baseContext = await ReadBaseContextAsync(fs, stateManager, writeLease, requireProjectFuel: false);
         if (baseContext.IsBlocked)
             return baseContext;
 
-        var pending = await AfterlifeArchiveActionState.ReadConsultationStateAsync(fs);
+        var pending = writeLease == null
+            ? await AfterlifeArchiveActionState.ReadConsultationStateAsync(fs)
+            : await AfterlifeArchiveActionState.ReadConsultationStateAsync(fs, writeLease);
         if (pending.IsMalformed)
             return Blocked(baseContext.CurrentRealm, "Архивная консультация недоступна", "Ожидающий запрос консультации повреждён. Завершите проверку состояния, затем повторите действие.");
         if (pending.Exists)
@@ -63,13 +77,27 @@ internal static class BrowserAfterlifeArchiveActionContextReader
 
     public static async Task<BrowserAfterlifeArchiveActionContext> ReadProjectFuelAsync(
         FileSystemManager fs,
-        StateManager stateManager)
+        StateManager stateManager) =>
+        await ReadProjectFuelCoreAsync(fs, stateManager, writeLease: null);
+
+    internal static async Task<BrowserAfterlifeArchiveActionContext> ReadProjectFuelAsync(
+        FileSystemManager fs,
+        StateManager stateManager,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        await ReadProjectFuelCoreAsync(fs, stateManager, writeLease);
+
+    private static async Task<BrowserAfterlifeArchiveActionContext> ReadProjectFuelCoreAsync(
+        FileSystemManager fs,
+        StateManager stateManager,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var baseContext = await ReadBaseContextAsync(fs, stateManager, requireProjectFuel: true);
+        var baseContext = await ReadBaseContextAsync(fs, stateManager, writeLease, requireProjectFuel: true);
         if (baseContext.IsBlocked)
             return baseContext;
 
-        var pending = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(fs);
+        var pending = writeLease == null
+            ? await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(fs)
+            : await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(fs, writeLease);
         if (pending.IsMalformed)
             return Blocked(baseContext.CurrentRealm, "Подпитка проекта недоступна", "Ожидающий запрос подпитки проекта повреждён. Завершите проверку состояния, затем повторите действие.");
         if (pending.Exists)
@@ -84,10 +112,14 @@ internal static class BrowserAfterlifeArchiveActionContextReader
     private static async Task<BrowserAfterlifeArchiveActionContext> ReadBaseContextAsync(
         FileSystemManager fs,
         StateManager stateManager,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         bool requireProjectFuel)
     {
-        await stateManager.RefreshGameStateAsync();
-        var soulRoot = await TryReadObjectAsync(fs, SoulStatePath);
+        if (writeLease == null)
+            await stateManager.RefreshGameStateAsync();
+        else
+            await stateManager.RefreshGameStateAsync(writeLease);
+        var soulRoot = await TryReadObjectAsync(fs, writeLease, SoulStatePath);
         if (soulRoot == null)
             return Blocked(string.Empty, "Архив души недоступен", "Состояние души сейчас не читается. Повторите действие после проверки состояния.");
 
@@ -100,11 +132,11 @@ internal static class BrowserAfterlifeArchiveActionContextReader
         if (entries.Count == 0)
             return Blocked(currentRealm, "Нет доступной записи Архива", "Сейчас нет свободной записи Архива, подходящей для этого действия.");
 
-        var guardiansRoot = await TryReadObjectAsync(fs, GuardiansPath);
+        var guardiansRoot = await TryReadObjectAsync(fs, writeLease, GuardiansPath);
         if (guardiansRoot == null)
             return Blocked(currentRealm, "Хранители недоступны", "Список Хранителей сейчас не читается. Повторите действие после проверки состояния.");
 
-        var trackerRoot = await TryReadObjectAsync(fs, GuardianProjectState.TrackerPath);
+        var trackerRoot = await TryReadObjectAsync(fs, writeLease, GuardianProjectState.TrackerPath);
         var guardians = ReadFriendlyGuardians(guardiansRoot, trackerRoot)
             .Where(guardian => !requireProjectFuel || guardian.FuelAvailable)
             .OrderByDescending(guardian => guardian.Reputation)
@@ -209,9 +241,14 @@ internal static class BrowserAfterlifeArchiveActionContextReader
             yield return activeGuardian;
     }
 
-    private static async Task<JsonObject?> TryReadObjectAsync(FileSystemManager fs, string path)
+    private static async Task<JsonObject?> TryReadObjectAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path)
     {
-        var raw = await fs.ReadFileAsync(path);
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(path)
+            : await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(raw))
             return null;
 

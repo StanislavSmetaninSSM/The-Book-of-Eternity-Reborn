@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -23,6 +24,31 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
+    }
+
+    [Fact]
+    public async Task ReadCurrentTurnNumberForProjectAuthority_UsesCanonicalRelativeRequestPath()
+    {
+        await WriteRawAsync("input/turn_request.json", """
+        {
+          "sessionId": "guardian-relative-read-session",
+          "requestId": "guardian-relative-read-request",
+          "turnNumber": 27
+        }
+        """);
+
+        var validator = new ValidationService(
+            _fs,
+            NullLogger<ValidationService>.Instance);
+        var method = typeof(ValidationService).GetMethod(
+            "ReadCurrentTurnNumberForProjectAuthority",
+            BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException(
+                "Guardian turn-authority reader was not found.");
+
+        var turnNumber = Assert.IsType<int>(method.Invoke(validator, null));
+
+        Assert.Equal(27, turnNumber);
     }
 
     [Fact]

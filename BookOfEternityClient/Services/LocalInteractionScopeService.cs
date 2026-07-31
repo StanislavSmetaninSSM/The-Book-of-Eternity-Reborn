@@ -43,6 +43,10 @@ internal sealed record LocalInteractionScope(
 internal interface ILocalInteractionScopeResolver
 {
     Task<LocalInteractionScope> ResolveAsync(string? currentRealm = null);
+
+    Task<LocalInteractionScope> ResolveAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string? currentRealm = null);
 }
 
 internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResolver
@@ -61,19 +65,29 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         _fs = fs;
     }
 
-    public async Task<LocalInteractionScope> ResolveAsync(string? currentRealm = null)
+    public async Task<LocalInteractionScope> ResolveAsync(string? currentRealm = null) =>
+        await ResolveCoreAsync(writeLease: null, currentRealm);
+
+    public async Task<LocalInteractionScope> ResolveAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string? currentRealm = null) =>
+        await ResolveCoreAsync(writeLease, currentRealm);
+
+    private async Task<LocalInteractionScope> ResolveCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string? currentRealm)
     {
-        var soulRead = await ReadAuthorityObjectAsync(SoulStatePath);
+        var soulRead = await ReadAuthorityObjectAsync(writeLease, SoulStatePath);
         currentRealm ??= GetString(soulRead.Root?["currentRealm"]);
         var authoritySnapshots = new[] { soulRead.Snapshot };
         switch (ClassifyRealm(currentRealm))
         {
             case LocalInteractionRealmKind.ChaosSea:
-                return await ResolveChaosSeaAsync(authoritySnapshots);
+                return await ResolveChaosSeaAsync(writeLease, authoritySnapshots);
             case LocalInteractionRealmKind.ShiningAbode:
-                return await ResolveShiningAbodeAsync(authoritySnapshots);
+                return await ResolveShiningAbodeAsync(writeLease, authoritySnapshots);
             case LocalInteractionRealmKind.Mortal:
-                return await ResolveMortalAsync(authoritySnapshots);
+                return await ResolveMortalAsync(writeLease, authoritySnapshots);
             default:
                 return LocalInteractionScope.Unresolved(
                     LocalInteractionRealmKind.Unknown,
@@ -202,9 +216,10 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
     }
 
     private async Task<LocalInteractionScope> ResolveMortalAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
         IReadOnlyList<LocalInteractionAuthoritySnapshot> authoritySnapshots)
     {
-        var locationRead = await ReadAuthorityObjectAsync(MortalLocationPath);
+        var locationRead = await ReadAuthorityObjectAsync(writeLease, MortalLocationPath);
         var root = locationRead.Root;
         var resolvedSnapshots = AppendSnapshot(authoritySnapshots, locationRead.Snapshot);
         var location = root?["currentLocationData"] as JsonObject ?? root;
@@ -231,10 +246,11 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
     }
 
     private async Task<LocalInteractionScope> ResolveChaosSeaAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
         IReadOnlyList<LocalInteractionAuthoritySnapshot> authoritySnapshots)
     {
-        var guardiansRead = await ReadAuthorityObjectAsync(GuardiansPath);
-        var residentsRead = await ReadAuthorityObjectAsync(GuardianAbodeResidentState.StatePath);
+        var guardiansRead = await ReadAuthorityObjectAsync(writeLease, GuardiansPath);
+        var residentsRead = await ReadAuthorityObjectAsync(writeLease, GuardianAbodeResidentState.StatePath);
         var root = guardiansRead.Root;
         var resolvedSnapshots = AppendSnapshot(
             AppendSnapshot(authoritySnapshots, guardiansRead.Snapshot),
@@ -307,10 +323,11 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
     }
 
     private async Task<LocalInteractionScope> ResolveShiningAbodeAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
         IReadOnlyList<LocalInteractionAuthoritySnapshot> authoritySnapshots)
     {
-        var shiningRead = await ReadAuthorityObjectAsync(ShiningAbodePath);
-        var residentsRead = await ReadAuthorityObjectAsync(GuardianAbodeResidentState.StatePath);
+        var shiningRead = await ReadAuthorityObjectAsync(writeLease, ShiningAbodePath);
+        var residentsRead = await ReadAuthorityObjectAsync(writeLease, GuardianAbodeResidentState.StatePath);
         var root = shiningRead.Root;
         var resolvedSnapshots = AppendSnapshot(
             AppendSnapshot(authoritySnapshots, shiningRead.Snapshot),
@@ -402,9 +419,13 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         }
     }
 
-    private async Task<AuthorityRead> ReadAuthorityObjectAsync(string relativePath)
+    private async Task<AuthorityRead> ReadAuthorityObjectAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string relativePath)
     {
-        var raw = await _fs.ReadFileAsync(relativePath);
+        var raw = writeLease == null
+            ? await _fs.ReadFileAsync(relativePath)
+            : await _fs.ReadFileAsync(writeLease, relativePath);
         if (string.IsNullOrWhiteSpace(raw))
             return new AuthorityRead(null, new LocalInteractionAuthoritySnapshot(relativePath, raw));
 

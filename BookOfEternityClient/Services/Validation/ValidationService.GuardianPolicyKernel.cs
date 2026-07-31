@@ -1625,12 +1625,22 @@ public partial class ValidationService
             return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.MissingSnapshotFile, lookup.Manifest, null);
         }
 
-        var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
-        if (string.IsNullOrWhiteSpace(snapshotJson))
+        var snapshotBytes = await _fs.ReadFileBytesAsync(snapshotPath);
+        if (snapshotBytes == null)
             return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
 
-        var actualSnapshotHash = ComputeSha256(snapshotJson);
+        var authorityPayload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync();
+        if (authorityPayload == null)
+            return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
+
+        var actualSnapshotHash = PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(
+            authorityPayload,
+            snapshotBytes);
         if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+            return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
+
+        var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
+        if (string.IsNullOrWhiteSpace(snapshotJson))
             return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
 
         return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.Usable, lookup.Manifest, snapshotJson);
@@ -1655,26 +1665,37 @@ public partial class ValidationService
             return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.MissingSnapshotFile, lookup.Manifest, null);
         }
 
-        var resolvedSnapshotPath = _fs.ResolvePath(snapshotPath);
-        if (!File.Exists(resolvedSnapshotPath))
-            return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
-
+        byte[]? snapshotBytes;
         try
         {
-            var snapshotJson = File.ReadAllText(resolvedSnapshotPath);
-            if (string.IsNullOrWhiteSpace(snapshotJson))
-                return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
-
-            var actualSnapshotHash = ComputeSha256(snapshotJson);
-            if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
-                return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
-
-            return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.Usable, lookup.Manifest, snapshotJson);
+            snapshotBytes = _fs.ReadFileBytesAsync(snapshotPath).GetAwaiter().GetResult();
         }
         catch
         {
             return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
         }
+
+        if (snapshotBytes == null)
+            return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
+
+        PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(
+            ReadPendingTurnSnapshotAuthoritySync(),
+            out var authorityPayload);
+        if (authorityPayload == null)
+        {
+            return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
+        }
+
+        var actualSnapshotHash = PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(
+            authorityPayload,
+            snapshotBytes);
+        if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+            return new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null);
+
+        var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
+        return string.IsNullOrWhiteSpace(snapshotJson)
+            ? new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile, lookup.Manifest, null)
+            : new GuardianTrackedSnapshotFileResolution(lookup.Status, GuardianTrackedSnapshotFileStatus.Usable, lookup.Manifest, snapshotJson);
     }
 
     private async Task<GuardianProjectTrackerPolicyContext> ResolveGuardianProjectTrackerPolicyContextAsync()
@@ -2597,11 +2618,13 @@ public partial class ValidationService
 
     private int ReadCurrentTurnNumberForProjectAuthority()
     {
-        var repairContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("game_state/control/validation_repair_request.json"));
+        var repairContext = LoadPendingTurnRequestValidationContextSync(
+            "game_state/control/validation_repair_request.json");
         if (repairContext?.TurnNumber > 0)
             return repairContext.TurnNumber;
 
-        var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
+        var turnContext = LoadPendingTurnRequestValidationContextSync(
+            "input/turn_request.json");
         return turnContext?.TurnNumber ?? 0;
     }
 

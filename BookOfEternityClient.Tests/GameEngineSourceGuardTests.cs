@@ -84,12 +84,52 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void PendingTurnSnapshotCleanup_MustNotBypassCanonicalSessionFence()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
+        var wrapper = ExtractMethodSource(
+            source,
+            "private async Task CleanupPendingTurnSnapshotAsync(");
+        var core = ExtractMethodSource(
+            source,
+            "private void CleanupPendingTurnSnapshot(");
+
+        Assert.Contains("_fs.AcquireCanonicalWriteLeaseAsync()", wrapper, StringComparison.Ordinal);
+        Assert.Contains("CleanupPendingTurnSnapshot(writeLease", wrapper, StringComparison.Ordinal);
+        Assert.Contains("_fs.DeleteDirectoryTree(writeLease", core, StringComparison.Ordinal);
+        Assert.Contains("_fs.EnumerateFiles(writeLease", core, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.Delete(", core, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Delete(", core, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.EnumerateFiles(", core, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PendingTurnBackupAndSnapshot_MustEachHoldOneLeaseAcrossMultiFileCapture()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
+        var backupEntry = ExtractMethodSource(
+            source,
+            "private async Task<RollbackSnapshot> CreatePreTurnBackup(string backupId)");
+        var snapshotEntry = ExtractMethodSource(
+            source,
+            "private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,");
+
+        Assert.Contains("await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync()", backupEntry, StringComparison.Ordinal);
+        Assert.Contains("CreatePreTurnBackup(writeLease, backupId)", backupEntry, StringComparison.Ordinal);
+        Assert.Contains("await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync()", snapshotEntry, StringComparison.Ordinal);
+        Assert.Contains(
+            "CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel)",
+            snapshotEntry,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NewGameBootstrap_MustCreateGuardianProjectRollbackBaselineBeforeInitialDispatch()
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
         var method = ExtractMethodSource(
             source,
-            "private async Task InitializeChaosSea(");
+            "private async Task<string> InitializeChaosSea(");
 
         Assert.Contains("ChaosSeaBootstrapStateBuilder.BuildFreshNewGameFiles", method, StringComparison.Ordinal);
         Assert.Contains("\"lore/chaos_sea/player_chronicle.json\"", method, StringComparison.Ordinal);
@@ -99,6 +139,48 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("var rollbackBackups = await CreatePreTurnBackup(request.RequestId);", method, StringComparison.Ordinal);
         Assert.Contains("await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, sourceLabel: \"первого описания Моря Хаоса\");", method, StringComparison.Ordinal);
         Assert.DoesNotContain("await CreateCanonicalBaselineSnapshotAsync(request, sourceLabel: \"первого описания Моря Хаоса\");", method, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NewGameBootstrap_MustBindRotatedGenerationThroughInitialTurnPublication()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var method = ExtractMethodSource(
+            source,
+            "private async Task<string> InitializeChaosSea(");
+
+        var clearIndex = method.IndexOf(
+            "sessionGeneration = await _fs.ClearGameStateAsync(lifecycleLease)",
+            StringComparison.Ordinal);
+        var bindingIndex = method.IndexOf(
+            "SessionOperationContext.RunBoundAsync(_fs, sessionGeneration",
+            StringComparison.Ordinal);
+        var initialTurnIndex = method.IndexOf(
+            "_fs.WriteFileAtomicAsync(\"input/turn_request.json\"",
+            StringComparison.Ordinal);
+
+        Assert.True(clearIndex >= 0, "New Game clear must return the replacement generation.");
+        Assert.True(bindingIndex > clearIndex, "New Game bootstrap must bind the generation returned by Clear.");
+        Assert.True(initialTurnIndex > bindingIndex, "The bound operation must cover initial turn publication.");
+    }
+
+    [Fact]
+    public void NewGameFlow_MustCarryBootstrapGenerationIntoInitialGmWait()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var method = ExtractMethodSource(source, "private async Task NewGameFlow()");
+
+        var initializeIndex = method.IndexOf(
+            "var sessionGeneration = await InitializeChaosSea(",
+            StringComparison.Ordinal);
+        var waitBindingIndex = method.IndexOf(
+            "_fs, sessionGeneration, WaitForGmResponse",
+            StringComparison.Ordinal);
+        var enterLoopIndex = method.IndexOf("await EnterGameLoop();", StringComparison.Ordinal);
+
+        Assert.True(initializeIndex >= 0, "New Game must retain the generation created by bootstrap.");
+        Assert.True(waitBindingIndex > initializeIndex, "The initial GM wait must reuse the bootstrap generation.");
+        Assert.True(enterLoopIndex > waitBindingIndex, "The long-running game loop must start after the bootstrap wait scope.");
     }
 
     [Fact]
@@ -132,8 +214,8 @@ public sealed class GameEngineSourceGuardTests
         var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
 
         Assert.Contains("\"canonicalShapeHints\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"factionCoreMinimum\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"factionCustomStateMinimum\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"factionCoreMinimum\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"factionCustomStateMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"npcCoreMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"currentLocationMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"worldMapMinimum\"", method, StringComparison.Ordinal);
@@ -142,10 +224,6 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"codexEntryMinimum\"", method, StringComparison.Ordinal);
         Assert.Contains("\"sourceFilePrefixRequired\"", method, StringComparison.Ordinal);
         Assert.Contains("current_world/", method, StringComparison.Ordinal);
-        Assert.Contains("\"canonicalFactionCustomStateRequiredFields\"", method, StringComparison.Ordinal);
-        Assert.Contains("currentValue", method, StringComparison.Ordinal);
-        Assert.Contains("progressionRule", method, StringComparison.Ordinal);
-        Assert.Contains("thresholds", method, StringComparison.Ordinal);
         Assert.Contains("\"allowedThreatMotivations\"", method, StringComparison.Ordinal);
         Assert.Contains("Domination", method, StringComparison.Ordinal);
         Assert.Contains("Preservation", method, StringComparison.Ordinal);
@@ -160,64 +238,81 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"allowedEquipmentSlots\"", method, StringComparison.Ordinal);
         Assert.Contains("MainHand", method, StringComparison.Ordinal);
         Assert.Contains("Accessory1", method, StringComparison.Ordinal);
-        Assert.Contains("\"allowedFactionControlTypes\"", method, StringComparison.Ordinal);
-        Assert.Contains("Military", method, StringComparison.Ordinal);
-        Assert.Contains("Covert", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"allowedFactionControlTypes\"", method, StringComparison.Ordinal);
         Assert.Contains("\"repairPreventionChecklist\"", method, StringComparison.Ordinal);
         Assert.Contains("bootstrap_codex_missing_current_world_entries", method, StringComparison.Ordinal);
         Assert.Contains("npc_contract_unknown_top_level_key", method, StringComparison.Ordinal);
         Assert.Contains("player character", method, StringComparison.Ordinal);
-        Assert.Contains("world_map_link_preview_missing_difficulty_profile", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("world_map_link_preview_missing_difficulty_profile", method, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void MortalBootstrapScaffold_MustMakeRequestedTrainingMentorsActionable()
+    public void MortalBootstrapScaffold_MustMakeExplicitGmTrainingCapabilitiesActionable()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
 
-        Assert.Contains("\"trainingAnchorRequirements\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"trainingAuthoringGuidance\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"structuredGmAuthority\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"actorCapabilities\"", method, StringComparison.Ordinal);
         Assert.Contains("teacherProfile", method, StringComparison.Ordinal);
         Assert.Contains("canTeach", method, StringComparison.Ordinal);
         Assert.Contains("skills", method, StringComparison.Ordinal);
         Assert.Contains("/обучение", method, StringComparison.Ordinal);
-        Assert.Contains("научиться", method, StringComparison.Ordinal);
         Assert.Contains("pending_training_showcase_requests.json", method, StringComparison.Ordinal);
         Assert.Contains("Do not advertise paid training only in prose", method, StringComparison.Ordinal);
-        Assert.Contains("starterResourceGrant.CurrentLevelExperience", method, StringComparison.Ordinal);
-        Assert.Contains("preMaterializedBaselineFiles.Add(\"game_state/npcs/npc_core.json\")", method, StringComparison.Ordinal);
-        Assert.Contains("requiredMortalBootstrapFiles.Add(\"game_state/npcs/npc_core.json\")", method, StringComparison.Ordinal);
+        Assert.Contains("playerAuthoredStart", method, StringComparison.Ordinal);
+        Assert.Contains("not mechanical authority", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("preMaterializedBaselineFiles.Add(\"game_state/npcs/npc_core.json\")", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("requiredMortalBootstrapFiles.Add(\"game_state/npcs/npc_core.json\")", method, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void MortalBootstrapScaffold_MustPublishClientOwnedCompetencyAndWorldEventRequirements()
+    public void MortalBootstrapScaffold_MustPublishStructuredGmAuthorityAndWorldEventRequirements()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
 
-        Assert.Contains("\"starterCompetencyRequirements\"", method, StringComparison.Ordinal);
-        Assert.Contains("MortalBootstrapStateBuilder.BuildStarterCompetencyRequirements", method, StringComparison.Ordinal);
+        Assert.Contains("\"structuredGmAuthority\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"authoredBy\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"GM\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"proseIsMechanicalAuthority\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"playerSkills\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"inventoryItems\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"actorCapabilities\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"resources\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"playerProgression\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"carryingRules\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"factionMechanics\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"canonicalPath\"", method, StringComparison.Ordinal);
+        Assert.Contains("\"values\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildStarterCompetency", method, StringComparison.Ordinal);
         Assert.Contains("\"worldEventRequirements\"", method, StringComparison.Ordinal);
         Assert.Contains("world_event_{idSuffix}_opening", method, StringComparison.Ordinal);
         Assert.Contains("\"game_state/world/world_events.json\"", method, StringComparison.Ordinal);
         Assert.Contains("\"game_state/player/skills_active.json\"", method, StringComparison.Ordinal);
         Assert.Contains("\"game_state/player/skills_passive.json\"", method, StringComparison.Ordinal);
         Assert.Contains("\"game_state/player/skill_mastery.json\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"primaryFactionId\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"startingObjectiveId\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"difficultyProfilesRequired\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"startingQuestIfNarrated\"", method, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void MortalBootstrap_MustGrantStarterResourcesWhenPaidTrainingOrTradeIsRequested()
+    public void MortalBootstrap_MustNotInferStarterResourcesFromProse()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var triggerMethod = ExtractMethodSource(source, "private async Task<bool> CheckGmIncarnationTrigger(");
         var scaffoldMethod = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
 
-        Assert.Contains("MortalBootstrapStateBuilder.InferStarterResourceGrant", triggerMethod, StringComparison.Ordinal);
-        Assert.Contains("starterResourceGrant.Money", triggerMethod, StringComparison.Ordinal);
-        Assert.DoesNotContain("money = 0", triggerMethod, StringComparison.Ordinal);
-        Assert.Contains("\"starterResourceRequirements\"", scaffoldMethod, StringComparison.Ordinal);
-        Assert.Contains("starter purse", scaffoldMethod, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("current-level XP", scaffoldMethod, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("MortalBootstrapStateBuilder.InferStarter", triggerMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("starterResource", triggerMethod, StringComparison.Ordinal);
+        Assert.Contains("money = 0", triggerMethod, StringComparison.Ordinal);
+        Assert.Contains("\"structuredGmAuthority\"", scaffoldMethod, StringComparison.Ordinal);
+        Assert.Contains("\"resources\"", scaffoldMethod, StringComparison.Ordinal);
+        Assert.Contains("new JsonArray()", scaffoldMethod, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"starterResourceRequirements\"", scaffoldMethod, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -424,6 +519,65 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("AwaitingInput = false", helper, StringComparison.Ordinal);
         Assert.Contains("InputKind = AgentConsoleInputKind.None", helper, StringComparison.Ordinal);
         Assert.Contains("ScreenId = \"gm-waiting\"", helper, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TurnFinalizers_MustRunUnderImmutableSessionOperationFence()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var waitMethod = ExtractMethodSource(source, "private async Task<bool> WaitForGmResponse()");
+        var rawWaitMethod = ExtractMethodSource(source, "private async Task<bool> WaitForGmResponseRaw()");
+        var playerTurnMethod = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
+        var lifeTransitionMethod = ExtractMethodSource(source, "private async Task<bool> CheckLifeTransitions(");
+
+        Assert.Contains("CaptureCurrentSessionGenerationAsync()", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("CaptureCurrentSessionGenerationAsync()", rawWaitMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", rawWaitMethod, StringComparison.Ordinal);
+        Assert.Contains("CaptureCurrentSessionGenerationAsync()", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("CaptureCurrentSessionGenerationAsync()", lifeTransitionMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", lifeTransitionMethod, StringComparison.Ordinal);
+        Assert.Contains("catch (SessionReplacedException)", lifeTransitionMethod, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TerminalResolution_MustUseOneBoundSnapshotInsteadOfRereadingReadyFiles()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var waitMethod = ExtractMethodSource(
+            source,
+            "private async Task<bool> WaitForGmResponse()");
+        var rawWaitMethod = ExtractMethodSource(
+            source,
+            "private async Task<bool> WaitForGmResponseRaw()");
+        var captureMethod = ExtractMethodSource(
+            source,
+            "private async Task<TerminalSignalSnapshot> CaptureBoundTerminalSignalSnapshotAsync()");
+        var resolutionSource = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var resolveMethod = ExtractMethodSource(
+            resolutionSource,
+            "private async Task<ActiveTerminalOutcomeResolution> ResolveFinalActiveTerminalOutcomeAsync(");
+
+        Assert.Contains("CaptureBoundTerminalSignalSnapshotAsync()", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("CaptureBoundTerminalSignalSnapshotAsync()", rawWaitMethod, StringComparison.Ordinal);
+        Assert.Contains("AcquireCanonicalWriteLeaseAsync()", captureMethod, StringComparison.Ordinal);
+        Assert.Contains(
+            "_fs.ReadFileAsync(signalInspectionLease, \"ready/turn_complete.json\")",
+            captureMethod,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "_fs.ReadFileAsync(signalInspectionLease, \"ready/turn_error.json\")",
+            captureMethod,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "_fs.FileExists(\"ready/turn_complete.json\")",
+            resolveMethod,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ReadReadySignalMetadataAsync(\"ready/turn_complete.json\")",
+            resolveMethod,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1003,7 +1157,8 @@ public sealed class GameEngineSourceGuardTests
         Assert.DoesNotContain("foreach (var rollbackPath in manifest.RollbackBackups.Values)", source, StringComparison.Ordinal);
         Assert.DoesNotContain("GetRollbackSnapshot(manifest)", source, StringComparison.Ordinal);
         Assert.Contains("BuildValidatedRollbackSnapshot(snapshotContext)", source, StringComparison.Ordinal);
-        Assert.Contains("Directory.Delete(snapshotDirectoryPath, recursive: true);", source, StringComparison.Ordinal);
+        Assert.Contains("_fs.DeleteDirectoryTree(writeLease, PendingTurnSnapshotDirectory);", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("Directory.Delete(snapshotDirectoryPath, recursive: true);", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1126,7 +1281,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
         var method = ExtractMethodSource(source, "private async Task<bool> WaitForContractRepairAsync(");
 
-        var writeRequestIndex = method.IndexOf("await WriteValidationRepairRequestAsync(", StringComparison.Ordinal);
+        var writeRequestIndex = method.IndexOf("await WriteValidationRepairRequestForSessionAsync(", StringComparison.Ordinal);
         var diagnosticGuardIndex = method.IndexOf("FailClosedDiagnosticOnlyValidationRepairAsync(", StringComparison.Ordinal);
         var waitLoopIndex = method.IndexOf("while (true)", StringComparison.Ordinal);
 
@@ -1144,9 +1299,9 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
         var method = ExtractMethodSource(source, "private async Task<bool> FailClosedDiagnosticOnlyValidationRepairAsync(");
 
-        var rollbackIndex = method.IndexOf("await RestorePreTurnBackup(rollbackSnapshot!);", StringComparison.Ordinal);
-        var reportWriteIndex = method.IndexOf("await _fs.WriteFileAtomicAsync(ValidationDiagnosticFailureReportPath", StringComparison.Ordinal);
-        var cleanupIndex = method.IndexOf("await DeleteValidationRepairFilesAsync();", StringComparison.Ordinal);
+        var rollbackIndex = method.IndexOf("await RestorePreTurnBackupForSessionAsync(", StringComparison.Ordinal);
+        var reportWriteIndex = method.IndexOf("await WriteValidationRepairFileForSessionAsync(", StringComparison.Ordinal);
+        var cleanupIndex = method.IndexOf("await DeleteValidationRepairFilesForSessionAsync(", StringComparison.Ordinal);
 
         Assert.True(rollbackIndex >= 0, "Diagnostic-only fail-closed path should use rollback when available.");
         Assert.True(reportWriteIndex > rollbackIndex, "Diagnostic failure report must be written after rollback so the backup restore cannot erase it.");

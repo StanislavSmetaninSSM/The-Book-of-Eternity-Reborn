@@ -51,9 +51,21 @@ public static class InventoryEquipmentService
             ["аксессуар"] = "neck"
         };
 
-    public static async Task<InventoryEquipmentContext?> ReadContextAsync(FileSystemManager fs)
+    public static async Task<InventoryEquipmentContext?> ReadContextAsync(FileSystemManager fs) =>
+        await ReadContextCoreAsync(fs, writeLease: null);
+
+    internal static async Task<InventoryEquipmentContext?> ReadContextAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        await ReadContextCoreAsync(fs, writeLease);
+
+    private static async Task<InventoryEquipmentContext?> ReadContextCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        var raw = await fs.ReadFileAsync(ItemsPath);
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(ItemsPath)
+            : await fs.ReadFileAsync(writeLease, ItemsPath);
         if (string.IsNullOrWhiteSpace(raw))
             return null;
 
@@ -100,9 +112,23 @@ public static class InventoryEquipmentService
     public static async Task<InventoryEquipmentWriteOutcome> EquipAsync(
         FileSystemManager fs,
         string itemIdentityOrName,
+        string slotKey) =>
+        await EquipCoreAsync(fs, writeLease: null, itemIdentityOrName, slotKey);
+
+    internal static async Task<InventoryEquipmentWriteOutcome> EquipAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName,
+        string slotKey) =>
+        await EquipCoreAsync(fs, writeLease, itemIdentityOrName, slotKey);
+
+    private static async Task<InventoryEquipmentWriteOutcome> EquipCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string itemIdentityOrName,
         string slotKey)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryEquipmentWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -120,8 +146,9 @@ public static class InventoryEquipmentService
         var item = FindItem(context.Items, itemIdentityOrName)!;
         var reference = !string.IsNullOrWhiteSpace(item.Identity) ? item.Identity : item.Name;
         equipment[outcome.SlotKey] = reference;
-        await fs.WriteFileAtomicAsync(
-            ItemsPath,
+        await WriteAsync(
+            fs,
+            writeLease,
             context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         return outcome;
@@ -129,9 +156,21 @@ public static class InventoryEquipmentService
 
     public static async Task<InventoryEquipmentWriteOutcome> UnequipAsync(
         FileSystemManager fs,
+        string slotKey) =>
+        await UnequipCoreAsync(fs, writeLease: null, slotKey);
+
+    internal static async Task<InventoryEquipmentWriteOutcome> UnequipAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string slotKey) =>
+        await UnequipCoreAsync(fs, writeLease, slotKey);
+
+    private static async Task<InventoryEquipmentWriteOutcome> UnequipCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string slotKey)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryEquipmentWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -143,8 +182,9 @@ public static class InventoryEquipmentService
             return InventoryEquipmentWriteOutcome.Failed("Экипировка не найдена.");
 
         equipment[outcome.SlotKey] = null;
-        await fs.WriteFileAtomicAsync(
-            ItemsPath,
+        await WriteAsync(
+            fs,
+            writeLease,
             context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         return outcome;
@@ -153,9 +193,23 @@ public static class InventoryEquipmentService
     public static async Task<InventoryEquipmentWriteOutcome> ValidateEquipAsync(
         FileSystemManager fs,
         string itemIdentityOrName,
+        string slotKey) =>
+        await ValidateEquipCoreAsync(fs, writeLease: null, itemIdentityOrName, slotKey);
+
+    internal static async Task<InventoryEquipmentWriteOutcome> ValidateEquipAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string itemIdentityOrName,
+        string slotKey) =>
+        await ValidateEquipCoreAsync(fs, writeLease, itemIdentityOrName, slotKey);
+
+    private static async Task<InventoryEquipmentWriteOutcome> ValidateEquipCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string itemIdentityOrName,
         string slotKey)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryEquipmentWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
@@ -164,14 +218,34 @@ public static class InventoryEquipmentService
 
     public static async Task<InventoryEquipmentWriteOutcome> ValidateUnequipAsync(
         FileSystemManager fs,
+        string slotKey) =>
+        await ValidateUnequipCoreAsync(fs, writeLease: null, slotKey);
+
+    internal static async Task<InventoryEquipmentWriteOutcome> ValidateUnequipAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string slotKey) =>
+        await ValidateUnequipCoreAsync(fs, writeLease, slotKey);
+
+    private static async Task<InventoryEquipmentWriteOutcome> ValidateUnequipCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string slotKey)
     {
-        var context = await ReadContextAsync(fs);
+        var context = await ReadContextCoreAsync(fs, writeLease);
         if (context == null)
             return InventoryEquipmentWriteOutcome.Failed("Инвентарь пуст или повреждён.");
 
         return ValidateUnequip(context, slotKey);
     }
+
+    private static Task WriteAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string content) =>
+        writeLease == null
+            ? fs.WriteFileAtomicAsync(ItemsPath, content)
+            : fs.WriteFileAtomicAsync(writeLease, ItemsPath, content);
 
     public static InventoryEquipmentItem? FindItem(
         IEnumerable<InventoryEquipmentItem> items,

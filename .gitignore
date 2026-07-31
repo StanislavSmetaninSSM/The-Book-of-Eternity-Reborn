@@ -20,3 +20,5 @@
 /BookOfEternityClient.WebFrontend/.vite/
 /BookOfEternityClient.WebFrontend/*.tsbuildinfo
 /TestResults/
+**/.worker_runtime/
+**/.boe_runtime/

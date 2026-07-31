@@ -22,6 +22,46 @@ public sealed class GmWorkerAuditLog
 
     public async Task AppendEventAsync(WorkerAuditEvent auditEvent)
     {
+        await AppendEventCoreAsync(auditEvent, writeLease: null);
+    }
+
+    internal async Task AppendEventAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WorkerAuditEvent auditEvent)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        await AppendEventCoreAsync(auditEvent, writeLease);
+    }
+
+    internal async Task<bool> AppendEventIfCurrentSessionAsync(
+        string expectedSessionGeneration,
+        WorkerAuditEvent auditEvent)
+    {
+        return await AppendEventIfCurrentSessionAsync(
+            expectedSessionGeneration,
+            auditEvent,
+            CancellationToken.None);
+    }
+
+    internal async Task<bool> AppendEventIfCurrentSessionAsync(
+        string expectedSessionGeneration,
+        WorkerAuditEvent auditEvent,
+        CancellationToken cancellationToken)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+            cancellationToken: cancellationToken);
+        if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+            return false;
+
+        await AppendEventCoreAsync(auditEvent, writeLease, cancellationToken);
+        return true;
+    }
+
+    private async Task AppendEventCoreAsync(
+        WorkerAuditEvent auditEvent,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        CancellationToken cancellationToken = default)
+    {
         if (string.IsNullOrWhiteSpace(auditEvent.EventId))
             throw new ArgumentException("Audit event id is required.", nameof(auditEvent));
         if (string.IsNullOrWhiteSpace(auditEvent.EventType))
@@ -29,18 +69,42 @@ public sealed class GmWorkerAuditLog
         if (string.IsNullOrWhiteSpace(auditEvent.WorkerId))
             throw new ArgumentException("Audit worker id is required.", nameof(auditEvent));
 
-        var current = await _fs.ReadFileAsync(AuditLogPath) ?? "";
         var line = JsonSerializer.Serialize(auditEvent, CompactJsonOptions);
-        var next = string.IsNullOrWhiteSpace(current)
-            ? line + Environment.NewLine
-            : current.TrimEnd() + Environment.NewLine + line + Environment.NewLine;
-        await _fs.WriteFileAtomicAsync(AuditLogPath, next);
+        try
+        {
+            if (writeLease == null)
+                await _fs.AppendFileAtomicAsync(AuditLogPath, line + Environment.NewLine);
+            else
+                await _fs.AppendFileAtomicAsync(
+                    writeLease,
+                    AuditLogPath,
+                    line + Environment.NewLine,
+                    cancellationToken);
+        }
+        catch (Exception)
+        {
+            // Audit is diagnostic telemetry and must not revoke an accepted canonical operation.
+        }
     }
 
     public Task RecordTaskDispatchedAsync(WorkerTaskPacket task) =>
-        AppendEventAsync(new WorkerAuditEvent
+        AppendEventAsync(BuildTaskDispatchedEvent(task));
+
+    internal Task<bool> RecordTaskDispatchedIfCurrentSessionAsync(WorkerTaskPacket task) =>
+        AppendEventIfCurrentSessionAsync(task.SessionGeneration, BuildTaskDispatchedEvent(task));
+
+    internal Task<bool> RecordTaskDispatchedIfCurrentSessionAsync(
+        WorkerTaskPacket task,
+        CancellationToken cancellationToken) =>
+        AppendEventIfCurrentSessionAsync(
+            task.SessionGeneration,
+            BuildTaskDispatchedEvent(task),
+            cancellationToken);
+
+    private static WorkerAuditEvent BuildTaskDispatchedEvent(WorkerTaskPacket task) =>
+        new()
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = "task-dispatched",
             WorkerId = task.WorkerId,
             TaskId = task.TaskId,
@@ -54,12 +118,23 @@ public sealed class GmWorkerAuditLog
                 ["allowedProposalPaths"] = task.AllowedProposalPaths,
                 ["acceptanceCriteria"] = task.AcceptanceCriteria
             }
-        });
+        };
 
     public Task RecordProposalReceivedAsync(WorkerProposal proposal) =>
-        AppendEventAsync(new WorkerAuditEvent
+        RecordProposalReceivedCoreAsync(proposal, writeLease: null);
+
+    internal Task RecordProposalReceivedAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WorkerProposal proposal) =>
+        RecordProposalReceivedCoreAsync(proposal, writeLease);
+
+    private Task RecordProposalReceivedCoreAsync(
+        WorkerProposal proposal,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        var auditEvent = new WorkerAuditEvent
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = "proposal-received",
             WorkerId = proposal.WorkerId,
             TaskId = proposal.TaskId,
@@ -70,12 +145,27 @@ public sealed class GmWorkerAuditLog
             {
                 ["changedFiles"] = proposal.ChangedFiles.Select(file => file.Path).ToArray()
             }
-        });
+        };
+        return writeLease == null
+            ? AppendEventAsync(auditEvent)
+            : AppendEventAsync(writeLease, auditEvent);
+    }
 
     public Task RecordApplyDecisionAsync(WorkerProposal proposal, ApplyGateDecision decision) =>
-        AppendEventAsync(new WorkerAuditEvent
+        AppendEventAsync(BuildApplyDecisionEvent(proposal, decision));
+
+    internal Task RecordApplyDecisionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WorkerProposal proposal,
+        ApplyGateDecision decision) =>
+        AppendEventAsync(writeLease, BuildApplyDecisionEvent(proposal, decision));
+
+    private static WorkerAuditEvent BuildApplyDecisionEvent(
+        WorkerProposal proposal,
+        ApplyGateDecision decision) =>
+        new()
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = decision.Result switch
             {
                 ApplyGateResult.Accepted => "proposal-applied",
@@ -92,7 +182,7 @@ public sealed class GmWorkerAuditLog
                 ["appliedFiles"] = decision.AppliedFiles,
                 ["rejectionReasons"] = decision.RejectionReasons
             }
-        });
+        };
 
     public async Task<IReadOnlyList<WorkerAuditEvent>> ReadEventsAsync()
     {
@@ -110,9 +200,6 @@ public sealed class GmWorkerAuditLog
 
         return events;
     }
-
-    private static string CreateEventId() =>
-        "worker_audit_" + DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff");
 
     private static string ToKebabCase(WorkerTaskType taskType) =>
         taskType switch

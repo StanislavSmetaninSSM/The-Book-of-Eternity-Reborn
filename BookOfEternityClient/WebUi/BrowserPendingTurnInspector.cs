@@ -13,14 +13,35 @@ public static class BrowserPendingTurnInspector
 
     public static BrowserPendingTurnStatus Build(FileSystemManager fs)
     {
+        var writeLease = fs.AcquireCanonicalWriteLeaseAsync(
+                CanonicalWritePurpose.PublicationReadQuiescence)
+            .GetAwaiter()
+            .GetResult();
+        try
+        {
+            return Build(fs, writeLease);
+        }
+        finally
+        {
+            writeLease.DisposeAsync()
+                .AsTask()
+                .GetAwaiter()
+                .GetResult();
+        }
+    }
+
+    internal static BrowserPendingTurnStatus Build(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
         var artifacts = new List<BrowserPendingTurnArtifactStatus>
         {
-            FileArtifact(fs, TurnRequestPath, "Запрос хода GM"),
-            FileArtifact(fs, TurnCompletePath, "Готов успешный ответ"),
-            FileArtifact(fs, TurnErrorPath, "Готов terminal error"),
-            FileArtifact(fs, PendingTurnSnapshotManifestPath, "Validated pending snapshot"),
-            DirectoryArtifact(fs, PendingTurnSnapshotDirectory, "Копии snapshot файлов"),
-            DirectoryArtifact(fs, ExplorerRollbackDirectory, "Локальные rollback backup")
+            FileArtifact(fs, writeLease, TurnRequestPath, "Запрос хода GM"),
+            FileArtifact(fs, writeLease, TurnCompletePath, "Готов успешный ответ"),
+            FileArtifact(fs, writeLease, TurnErrorPath, "Готов terminal error"),
+            FileArtifact(fs, writeLease, PendingTurnSnapshotManifestPath, "Validated pending snapshot"),
+            DirectoryArtifact(fs, writeLease, PendingTurnSnapshotDirectory, "Копии snapshot файлов"),
+            DirectoryArtifact(fs, writeLease, ExplorerRollbackDirectory, "Локальные rollback backup")
         };
 
         var hasActive = artifacts.Any(static item => item.Exists);
@@ -32,17 +53,23 @@ public static class BrowserPendingTurnInspector
                 : "Активный ход ГМа не обнаружен.");
     }
 
-    private static BrowserPendingTurnArtifactStatus FileArtifact(FileSystemManager fs, string path, string label) =>
-        new(label, path, fs.FileExists(path), "file");
+    private static BrowserPendingTurnArtifactStatus FileArtifact(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        string label) =>
+        new(label, path, fs.FileExists(writeLease, path), "file");
 
-    private static BrowserPendingTurnArtifactStatus DirectoryArtifact(FileSystemManager fs, string path, string label) =>
-        new(label, path, DirectoryHasContent(fs, path), "directory");
-
-    private static bool DirectoryHasContent(FileSystemManager fs, string path)
-    {
-        var fullPath = fs.ResolvePath(path);
-        return Directory.Exists(fullPath) && Directory.EnumerateFileSystemEntries(fullPath, "*", SearchOption.AllDirectories).Any();
-    }
+    private static BrowserPendingTurnArtifactStatus DirectoryArtifact(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        string label) =>
+        new(
+            label,
+            path,
+            fs.DirectoryHasContent(writeLease, path),
+            "directory");
 }
 
 public sealed record BrowserPendingTurnStatus(

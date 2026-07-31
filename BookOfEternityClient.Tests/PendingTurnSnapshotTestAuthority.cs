@@ -48,6 +48,18 @@ internal static class PendingTurnSnapshotTestAuthority
 
     internal static async Task WriteAuthorityForManifestAsync(FileSystemManager fs, JsonObject manifest)
     {
+        var files = ToStringDictionary(manifest["files"] as JsonObject);
+        var snapshotHashes = ToStringDictionary(manifest["snapshotFileHashes"] as JsonObject);
+        var snapshotHashesAreExactBytes = files.All(pair =>
+        {
+            var content = ReadRelativeFileBytes(fs, pair.Value);
+            return content != null &&
+                   snapshotHashes.TryGetValue(pair.Key, out var expectedHash) &&
+                   string.Equals(
+                       PendingTurnSnapshotAuthority.ComputeSha256(content),
+                       expectedHash,
+                       StringComparison.OrdinalIgnoreCase);
+        });
         var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
             manifest,
             ManifestHashJsonOpts,
@@ -62,7 +74,8 @@ internal static class PendingTurnSnapshotTestAuthority
             static snapshotManifest => ToStringList(snapshotManifest["rollbackBaselineFiles"] as JsonArray),
             static snapshotManifest => snapshotManifest["sourceLabel"]?.GetValue<string>(),
             static snapshotManifest => ToStringDictionary(snapshotManifest["rollbackBackups"] as JsonObject),
-            relativePath => ReadRelativeFile(fs, relativePath));
+            relativePath => ReadRelativeFileBytes(fs, relativePath),
+            hashSnapshotBytesExactly: snapshotHashesAreExactBytes);
 
         await fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
     }
@@ -135,7 +148,7 @@ internal static class PendingTurnSnapshotTestAuthority
             fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
-    private static string? ReadRelativeFile(FileSystemManager fs, string relativePath)
+    private static byte[]? ReadRelativeFileBytes(FileSystemManager fs, string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
@@ -144,6 +157,6 @@ internal static class PendingTurnSnapshotTestAuthority
         if (!File.Exists(fullPath))
             return null;
 
-        return File.ReadAllText(fullPath);
+        return File.ReadAllBytes(fullPath);
     }
 }

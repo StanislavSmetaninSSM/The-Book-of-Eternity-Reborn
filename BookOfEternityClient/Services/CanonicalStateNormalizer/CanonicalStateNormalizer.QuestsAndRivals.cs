@@ -67,7 +67,7 @@ public partial class CanonicalStateNormalizer
         const string path = RivalSoulArcService.StatePath;
         var currentNode = await ReadCurrentAuthorityNodeAsync(
             path,
-            required: _fs.FileExists(path),
+            required: CanonicalFileExists(path),
             RivalSoulArcCurrentStateReadableRequiredMessage);
         if (currentNode == null) return;
 
@@ -85,10 +85,10 @@ public partial class CanonicalStateNormalizer
         foreach (var arc in CollectRivalSoulArcEntries(currentNode))
             UpsertByIdentity(arcs, arc, "arcId");
 
-        var rawCurrentWorldEventsJson = _fs.FileExists(worldEventsPath)
-            ? await _fs.ReadFileAsync(worldEventsPath)
+        var rawCurrentWorldEventsJson = CanonicalFileExists(worldEventsPath)
+            ? await ReadCanonicalFileAsync(worldEventsPath)
             : null;
-        var currentWorldEventsFileExists = _fs.FileExists(worldEventsPath);
+        var currentWorldEventsFileExists = CanonicalFileExists(worldEventsPath);
         var currentWorldEvents = default(JsonNode);
         var currentIncarnation = 0;
         var resolvedCurrentIncarnation = false;
@@ -145,10 +145,10 @@ public partial class CanonicalStateNormalizer
             currentIncarnation > 0 &&
             ConsumeLoreResearchVisibleRivalClues(previous, result, previousWorldEvents, currentWorldEvents, trackerRoot, currentIncarnation, currentTurn, projectJournalEntries, out worldEventsChanged))
         {
-            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
-            await _fs.WriteFileAtomicAsync(path, result.ToJsonString(JsonOpts));
+            await WriteCanonicalFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
+            await WriteCanonicalFileAtomicAsync(path, result.ToJsonString(JsonOpts));
             if (worldEventsChanged && currentWorldEvents != null)
-                await _fs.WriteFileAtomicAsync(worldEventsPath, currentWorldEvents.ToJsonString(JsonOpts));
+                await WriteCanonicalFileAtomicAsync(worldEventsPath, currentWorldEvents.ToJsonString(JsonOpts));
         }
 
         if (projectJournalEntries.Count > 0)

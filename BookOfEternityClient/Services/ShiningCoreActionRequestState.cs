@@ -147,6 +147,42 @@ internal static class ShiningCoreActionRequestState
         var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
         var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
         var pendingState = await ReadRequestsStateAsync(fs);
+        return await ValidateRequestAgainstCurrentStateAsync(
+            request,
+            soulRoot,
+            shiningRoot,
+            residentRoot,
+            guardiansRoot,
+            pendingState);
+    }
+
+    internal static async Task<string?> ValidateRequestAgainstCurrentStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningCoreActionRequest request)
+    {
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
+        var pendingState = await ReadRequestsStateAsync(fs, writeLease);
+        return await ValidateRequestAgainstCurrentStateAsync(
+            request,
+            soulRoot,
+            shiningRoot,
+            residentRoot,
+            guardiansRoot,
+            pendingState);
+    }
+
+    private static async Task<string?> ValidateRequestAgainstCurrentStateAsync(
+        PendingShiningCoreActionRequest request,
+        JsonObject? soulRoot,
+        JsonObject? shiningRoot,
+        JsonObject? residentRoot,
+        JsonObject? guardiansRoot,
+        PendingCoreRequestReadState pendingState)
+    {
         if (shiningRoot == null)
             return "shining_abode_state.json недоступен.";
         var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
@@ -173,20 +209,20 @@ internal static class ShiningCoreActionRequestState
 
         return request.ActionType.Trim().ToLowerInvariant() switch
         {
-            ActionTypeDiscoverNativeFaction => await ValidateDiscoverNativeFactionRequestAsync(fs, request, shiningRoot),
-            ActionTypeInvestInFaction => await ValidateFactionInvestmentRequestAsync(fs, request, shiningRoot, residentRoot),
-            ActionTypeCompleteProject => await ValidateCompleteProjectRequestAsync(fs, request, shiningRoot, residentRoot),
+            ActionTypeDiscoverNativeFaction => await ValidateDiscoverNativeFactionRequestAsync(request, shiningRoot, soulRoot),
+            ActionTypeInvestInFaction => await ValidateFactionInvestmentRequestAsync(request, shiningRoot, residentRoot, soulRoot),
+            ActionTypeCompleteProject => await ValidateCompleteProjectRequestAsync(request, shiningRoot, residentRoot, soulRoot),
             ActionTypeSupportProject => await ValidateSupportToggleRequestAsync(request, shiningRoot, support: true),
             ActionTypeUnsupportProject => await ValidateSupportToggleRequestAsync(request, shiningRoot, support: false),
             ActionTypeRetireProject => await ValidateRetireProjectRequestAsync(request, shiningRoot, residentRoot),
             ActionTypeOpenGates => await ValidateOpenGatesRequestAsync(request, shiningRoot, residentRoot),
             ActionTypePrepareIncarnationPackage => await ValidatePreparePackageRequestAsync(request, shiningRoot),
-            ActionTypePullRelicGacha => await ValidateRelicGachaPullRequestAsync(fs, request, shiningRoot, residentRoot),
+            ActionTypePullRelicGacha => await ValidateRelicGachaPullRequestAsync(request, shiningRoot, residentRoot, soulRoot),
             ActionTypeForgeRelicReshape or
             ActionTypeForgeRelicRetuneProperty or
             ActionTypeForgeRelicStrengthenBand or
             ActionTypeForgeRelicStabilizeEcho or
-            ActionTypeForgeRelicUpliftRarity => await ValidateForgeActionRequestAsync(fs, request, shiningRoot, residentRoot),
+            ActionTypeForgeRelicUpliftRarity => await ValidateForgeActionRequestAsync(request, shiningRoot, residentRoot, soulRoot),
             _ => "actionType использует неподдерживаемое значение."
         };
     }
@@ -201,6 +237,14 @@ internal static class ShiningCoreActionRequestState
     {
         var json = await fs.ReadFileAsync(PendingActionsRequestPath);
         return AnalyzeRequests(json, fs.FileExists(PendingActionsRequestPath));
+    }
+
+    internal static async Task<PendingCoreRequestReadState> ReadRequestsStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingActionsRequestPath);
+        return AnalyzeRequests(json, fs.FileExists(writeLease, PendingActionsRequestPath));
     }
 
     private static PendingCoreRequestReadState AnalyzeRequests(string? json, bool filePresent)
@@ -253,6 +297,29 @@ internal static class ShiningCoreActionRequestState
         }, JsonOpts));
     }
 
+    internal static async Task WriteRequestAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningCoreActionRequest request)
+    {
+        var existingState = await ReadRequestsStateAsync(fs, writeLease);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_shining_abode_actions.json повреждён и должен быть исправлен или очищен до записи нового core action request.");
+        if (existingState.Requests.Any(existing =>
+                !string.Equals(existing.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException("pending_shining_abode_actions.json уже содержит live foreign core action request; guarded writer не заменяет unresolved Shining contract.");
+        }
+
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            PendingActionsRequestPath,
+            JsonSerializer.Serialize(new Dictionary<string, object?>
+            {
+                [RequestsProperty] = new[] { request }
+            }, JsonOpts));
+    }
+
     public static async Task WriteForgeRequestWithRelicRerollCommitAsync(
         FileSystemManager fs,
         PendingShiningCoreActionRequest request,
@@ -280,6 +347,26 @@ internal static class ShiningCoreActionRequestState
                 await fs.WriteFileAtomicAsync(soulStatePath, preCommitSoulJson);
             throw;
         }
+    }
+
+    internal static async Task WriteForgeRequestWithRelicRerollCommitAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningCoreActionRequest request,
+        int currentTurnNumber,
+        int relicRerollsToCommit)
+    {
+        if (relicRerollsToCommit > 0 &&
+            !await ShiningBlessingEffectState.ConsumeRelicRerollsAsync(
+                fs,
+                writeLease,
+                currentTurnNumber,
+                relicRerollsToCommit))
+        {
+            throw new InvalidOperationException("Relic reroll entitlement больше недоступен; Shining forge request не создан.");
+        }
+
+        await WriteRequestAsync(fs, writeLease, request);
     }
 
     public static bool TryBuildProjectedShiningRootForPreview(
@@ -590,9 +677,9 @@ internal static class ShiningCoreActionRequestState
     }
 
     private static async Task<string?> ValidateDiscoverNativeFactionRequestAsync(
-        FileSystemManager fs,
         PendingShiningCoreActionRequest request,
-        JsonObject shiningRoot)
+        JsonObject shiningRoot,
+        JsonObject? soulRoot)
     {
         if (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
             return "pendingNativeFactionDiscovery уже существует.";
@@ -607,7 +694,7 @@ internal static class ShiningCoreActionRequestState
         if (request.RadianceTierAtRequest != radianceTier)
             return "radianceTierAtRequest должен совпадать с текущим canonical radiance tier.";
 
-        var currentFeathers = await ReadCurrentInkFeathersAsync(fs);
+        var currentFeathers = GetCurrentInkFeathers(soulRoot);
         if (currentFeathers < discoveryCost.Feathers)
             return $"Недостаточно Перьев. Нужно {discoveryCost.Feathers}.";
         if (GetNodeInt(shiningRoot["lightSparks"]) < discoveryCost.LightSparks)
@@ -617,10 +704,10 @@ internal static class ShiningCoreActionRequestState
     }
 
     private static async Task<string?> ValidateFactionInvestmentRequestAsync(
-        FileSystemManager fs,
         PendingShiningCoreActionRequest request,
         JsonObject shiningRoot,
-        JsonObject? residentRoot)
+        JsonObject? residentRoot,
+        JsonObject? soulRoot)
     {
         if (string.IsNullOrWhiteSpace(request.FactionId))
             return "invest_in_faction требует factionId.";
@@ -629,7 +716,7 @@ internal static class ShiningCoreActionRequestState
         if (request.QuotedCostFeathers != cost.Feathers || request.QuotedCostLightSparks != cost.LightSparks)
             return "Quoted cost для invest_in_faction не совпадает с canonical стоимостью.";
 
-        if (await ReadCurrentInkFeathersAsync(fs) < cost.Feathers)
+        if (GetCurrentInkFeathers(soulRoot) < cost.Feathers)
             return $"Недостаточно Перьев. Нужно {cost.Feathers}.";
 
         var cloneRoot = JsonNode.Parse(shiningRoot.ToJsonString())!.AsObject();
@@ -640,17 +727,17 @@ internal static class ShiningCoreActionRequestState
     }
 
     private static async Task<string?> ValidateCompleteProjectRequestAsync(
-        FileSystemManager fs,
         PendingShiningCoreActionRequest request,
         JsonObject shiningRoot,
-        JsonObject? residentRoot)
+        JsonObject? residentRoot,
+        JsonObject? soulRoot)
     {
         if (string.IsNullOrWhiteSpace(request.FactionId))
             return "complete_project требует factionId.";
         if (request.ProjectDraft == null)
             return "complete_project требует projectDraft.";
 
-        if (await ReadCurrentInkFeathersAsync(fs) < request.QuotedCostFeathers)
+        if (GetCurrentInkFeathers(soulRoot) < request.QuotedCostFeathers)
             return $"Недостаточно Перьев. Нужно {request.QuotedCostFeathers}.";
 
         var cloneRoot = JsonNode.Parse(shiningRoot.ToJsonString())!.AsObject();
@@ -767,24 +854,23 @@ internal static class ShiningCoreActionRequestState
     }
 
     private static async Task<string?> ValidateForgeActionRequestAsync(
-        FileSystemManager fs,
         PendingShiningCoreActionRequest request,
         JsonObject shiningRoot,
-        JsonObject? residentRoot)
+        JsonObject? residentRoot,
+        JsonObject? soulRoot)
     {
         if (string.IsNullOrWhiteSpace(request.FactionId))
             return "Forge action требует factionId.";
         if (string.IsNullOrWhiteSpace(request.RelicId))
             return "Forge action требует relicId.";
 
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
         if (soulRoot == null)
             return "soul_state.json недоступен для forge action.";
 
         var radianceTier = GetNodeInt(shiningRoot["radiance"]?["tier"]);
         if (request.RadianceTierAtRequest != radianceTier)
             return "radianceTierAtRequest должен совпадать с текущим canonical radiance tier.";
-        if (await ReadCurrentInkFeathersAsync(fs) < request.QuotedCostFeathers)
+        if (GetCurrentInkFeathers(soulRoot) < request.QuotedCostFeathers)
             return $"Недостаточно Перьев. Нужно {request.QuotedCostFeathers}.";
 
         if (!ShiningAbodeState.TryQuoteForgeAction(
@@ -811,15 +897,14 @@ internal static class ShiningCoreActionRequestState
     }
 
     private static async Task<string?> ValidateRelicGachaPullRequestAsync(
-        FileSystemManager fs,
         PendingShiningCoreActionRequest request,
         JsonObject shiningRoot,
-        JsonObject? residentRoot)
+        JsonObject? residentRoot,
+        JsonObject? soulRoot)
     {
         if (string.IsNullOrWhiteSpace(request.FactionId))
             return "pull_relic_gacha требует factionId.";
 
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
         if (soulRoot == null)
             return "soul_state.json недоступен для сияющей гачи.";
 
@@ -870,9 +955,8 @@ internal static class ShiningCoreActionRequestState
         return null;
     }
 
-    private static async Task<int> ReadCurrentInkFeathersAsync(FileSystemManager fs)
+    private static int GetCurrentInkFeathers(JsonObject? soulRoot)
     {
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
         if (soulRoot == null)
             return 0;
 
@@ -1059,6 +1143,25 @@ internal static class ShiningCoreActionRequestState
     private static async Task<JsonObject?> ReadJsonObjectAsync(FileSystemManager fs, string path)
     {
         var json = await fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path)
+    {
+        var json = await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 

@@ -144,18 +144,63 @@ public partial class GameEngine
         await _progressionSchedule.EnsureInitializedAsync();
     }
 
+    private async Task RebindRuntimeAfterSessionReplacementAsync()
+    {
+        _lastResponse = null;
+        _pendingImagePrompt = null;
+        _pendingMemoryLegacyAwaitingConsumption = false;
+        _mainMenuSessionWarning = null;
+        _lastConsoleWidth = 0;
+        _lastKnownLevel = 1;
+        _explorer.ForgetSessionTransientState();
+
+        var replacementGeneration = await CaptureCurrentSessionGenerationAsync();
+        await SessionOperationContext.RunBoundAsync(_fs, replacementGeneration, async () =>
+        {
+            await RefreshRuntimeStateAsync();
+            var replacementState = _stateManager.CurrentState;
+
+            string? replacementSessionId = null;
+            var hasSoulState = false;
+            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                hasSoulState = _fs.FileExists(writeLease, "game_state/meta/soul_state.json");
+                if (hasSoulState &&
+                    (string.IsNullOrWhiteSpace(replacementState.SessionId) &&
+                     !string.IsNullOrWhiteSpace(replacementState.SoulName)))
+                {
+                    replacementSessionId = _fs.GetOrCreateSessionGeneration(writeLease);
+                }
+            }
+
+            var hasActiveSession = hasSoulState &&
+                                   (!string.IsNullOrWhiteSpace(replacementState.SessionId) ||
+                                    !string.IsNullOrWhiteSpace(replacementState.SoulName));
+            if (!hasActiveSession)
+            {
+                _gameLoop.SetSession(string.Empty, 0);
+                _inGame = false;
+                return;
+            }
+
+            replacementSessionId ??= replacementState.SessionId;
+            _gameLoop.SetSession(replacementSessionId, Math.Max(0, replacementState.TurnNumber));
+        });
+    }
+
     private async Task RefreshCanonicalStateAsync(IReadOnlyDictionary<string, string> backups)
     {
         await _normalizer.NormalizeAccumulatedStateAsync(backups);
         await RefreshRuntimeStateAsync();
     }
 
-    private async Task EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync()
+    private async Task EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeSpiritualConflictState.StatePath))
             return;
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulJson = await _fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
             return;
 
@@ -167,6 +212,7 @@ public partial class GameEngine
                 return;
 
             await _fs.WriteFileAtomicAsync(
+                writeLease,
                 AfterlifeSpiritualConflictState.StatePath,
                 AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
@@ -176,12 +222,13 @@ public partial class GameEngine
         }
     }
 
-    private async Task EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync()
+    private async Task EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        if (_fs.FileExists(AfterlifeEntityProfileState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeEntityProfileState.StatePath))
             return;
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulJson = await _fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
             return;
 
@@ -193,6 +240,7 @@ public partial class GameEngine
                 return;
 
             await _fs.WriteFileAtomicAsync(
+                writeLease,
                 AfterlifeEntityProfileState.StatePath,
                 AfterlifeEntityProfileState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
@@ -202,12 +250,13 @@ public partial class GameEngine
         }
     }
 
-    private async Task EnsureAfterlifeChronicleStateInitializedForSnapshotAsync()
+    private async Task EnsureAfterlifeChronicleStateInitializedForSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        if (_fs.FileExists(AfterlifeChronicleState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeChronicleState.StatePath))
             return;
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulJson = await _fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
             return;
 
@@ -219,6 +268,7 @@ public partial class GameEngine
                 return;
 
             await _fs.WriteFileAtomicAsync(
+                writeLease,
                 AfterlifeChronicleState.StatePath,
                 AfterlifeChronicleState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
@@ -228,12 +278,13 @@ public partial class GameEngine
         }
     }
 
-    private async Task EnsureAfterlifeGlobalFlagStateInitializedForSnapshotAsync()
+    private async Task EnsureAfterlifeGlobalFlagStateInitializedForSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        if (_fs.FileExists(AfterlifeGlobalFlagState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeGlobalFlagState.StatePath))
             return;
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulJson = await _fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
             return;
 
@@ -245,6 +296,7 @@ public partial class GameEngine
                 return;
 
             await _fs.WriteFileAtomicAsync(
+                writeLease,
                 AfterlifeGlobalFlagState.StatePath,
                 AfterlifeGlobalFlagState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
@@ -259,64 +311,86 @@ public partial class GameEngine
         RollbackSnapshot? rollbackSnapshot = null,
         string? sourceLabel = null)
     {
-        await DeleteTerminalProtocolFailureRequestAsync();
-        await CleanupPendingTurnSnapshotAsync(rollbackSnapshot?.BackupFiles.Values);
-        var conflictStateExistedBeforeInitialization = _fs.FileExists(AfterlifeSpiritualConflictState.StatePath);
-        var entityProfileStateExistedBeforeInitialization = _fs.FileExists(AfterlifeEntityProfileState.StatePath);
-        var chronicleStateExistedBeforeInitialization = _fs.FileExists(AfterlifeChronicleState.StatePath);
-        var globalFlagStateExistedBeforeInitialization = _fs.FileExists(AfterlifeGlobalFlagState.StatePath);
-        await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
-        await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync();
-        await EnsureAfterlifeChronicleStateInitializedForSnapshotAsync();
-        await EnsureAfterlifeGlobalFlagStateInitializedForSnapshotAsync();
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel);
+    }
+
+    private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        TurnRequest request,
+        RollbackSnapshot? rollbackSnapshot = null,
+        string? sourceLabel = null)
+    {
+        await DeleteTerminalProtocolFailureRequestAsync(writeLease);
+        CleanupPendingTurnSnapshot(writeLease, rollbackSnapshot?.BackupFiles.Values);
+        var conflictStateExistedBeforeInitialization = _fs.FileExists(
+            writeLease,
+            AfterlifeSpiritualConflictState.StatePath);
+        var entityProfileStateExistedBeforeInitialization = _fs.FileExists(
+            writeLease,
+            AfterlifeEntityProfileState.StatePath);
+        var chronicleStateExistedBeforeInitialization = _fs.FileExists(
+            writeLease,
+            AfterlifeChronicleState.StatePath);
+        var globalFlagStateExistedBeforeInitialization = _fs.FileExists(
+            writeLease,
+            AfterlifeGlobalFlagState.StatePath);
+        await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(writeLease);
+        await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync(writeLease);
+        await EnsureAfterlifeChronicleStateInitializedForSnapshotAsync(writeLease);
+        await EnsureAfterlifeGlobalFlagStateInitializedForSnapshotAsync(writeLease);
         await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
+            writeLease,
             request,
             rollbackSnapshot,
             conflictStateExistedBeforeInitialization);
         await RegisterAfterlifeEntityProfileRollbackBackupIfInitializedAsync(
+            writeLease,
             request,
             rollbackSnapshot,
             entityProfileStateExistedBeforeInitialization);
         await RegisterAfterlifeChronicleRollbackBackupIfInitializedAsync(
+            writeLease,
             request,
             rollbackSnapshot,
             chronicleStateExistedBeforeInitialization);
         await RegisterAfterlifeGlobalFlagRollbackBackupIfInitializedAsync(
+            writeLease,
             request,
             rollbackSnapshot,
             globalFlagStateExistedBeforeInitialization);
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var clientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync();
+        var clientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease);
         var rollbackBaselineFiles = rollbackSnapshot?.BaselineFiles is { Count: > 0 }
             ? new HashSet<string>(rollbackSnapshot.BaselineFiles, StringComparer.OrdinalIgnoreCase)
-            : new HashSet<string>(EnumerateRollbackTrackedFiles(), StringComparer.OrdinalIgnoreCase);
+            : new HashSet<string>(EnumerateRollbackTrackedFiles(writeLease), StringComparer.OrdinalIgnoreCase);
 
         foreach (var file in GuardianPolicySnapshotRequestFiles)
         {
-            if (_fs.FileExists(file))
+            if (_fs.FileExists(writeLease, file))
                 rollbackBaselineFiles.Add(file);
             else
                 rollbackBaselineFiles.Remove(file);
         }
-        if (_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath))
+        if (_fs.FileExists(writeLease, SourceOfLightCapstoneState.PendingRequestPath))
             rollbackBaselineFiles.Add(SourceOfLightCapstoneState.PendingRequestPath);
         else
             rollbackBaselineFiles.Remove(SourceOfLightCapstoneState.PendingRequestPath);
-        if (_fs.FileExists(SarefMainStoryState.PendingWingsInfiltrationPath))
+        if (_fs.FileExists(writeLease, SarefMainStoryState.PendingWingsInfiltrationPath))
             rollbackBaselineFiles.Add(SarefMainStoryState.PendingWingsInfiltrationPath);
         else
             rollbackBaselineFiles.Remove(SarefMainStoryState.PendingWingsInfiltrationPath);
-        if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeSpiritualConflictState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
-        if (_fs.FileExists(AfterlifeEntityProfileState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeEntityProfileState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeEntityProfileState.StatePath);
-        if (_fs.FileExists(AfterlifeChronicleState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeChronicleState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeChronicleState.StatePath);
-        if (_fs.FileExists(AfterlifeGlobalFlagState.StatePath))
+        if (_fs.FileExists(writeLease, AfterlifeGlobalFlagState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeGlobalFlagState.StatePath);
-        if (_fs.FileExists(SarefMainStoryState.StatePath))
+        if (_fs.FileExists(writeLease, SarefMainStoryState.StatePath))
             rollbackBaselineFiles.Add(SarefMainStoryState.StatePath);
 
         var snapshotFiles = new HashSet<string>(rollbackBaselineFiles, StringComparer.OrdinalIgnoreCase);
@@ -331,7 +405,12 @@ public partial class GameEngine
 
         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
         {
-            await SnapshotFileOrRollbackBackupIfPresentAsync(file, rollbackSnapshot, files, snapshotHashes);
+            await SnapshotFileOrRollbackBackupIfPresentAsync(
+                writeLease,
+                file,
+                rollbackSnapshot,
+                files,
+                snapshotHashes);
         }
 
         var manifest = new PendingTurnSnapshotManifest
@@ -372,21 +451,25 @@ public partial class GameEngine
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFileFromWorkspace);
+            relativePath => ReadRelativeFileBytesFromWorkspace(writeLease, relativePath));
 
         try
         {
             await _fs.WriteFileAtomicAsync(
+                writeLease,
                 PendingTurnSnapshotManifestPath,
                 JsonSerializer.Serialize(manifest, JsonOpts));
-            await _fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                PendingTurnSnapshotAuthority.AuthorityPath,
+                authorityJson);
         }
         catch
         {
-            if (_fs.FileExists(PendingTurnSnapshotManifestPath))
-                _fs.DeleteFile(PendingTurnSnapshotManifestPath);
-            if (_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath))
-                _fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
+            if (_fs.FileExists(writeLease, PendingTurnSnapshotManifestPath))
+                _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);
+            if (_fs.FileExists(writeLease, PendingTurnSnapshotAuthority.AuthorityPath))
+                _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
             throw;
         }
 
@@ -394,126 +477,130 @@ public partial class GameEngine
     }
 
     private async Task RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         TurnRequest request,
         RollbackSnapshot? rollbackSnapshot,
         bool existedBeforeInitialization)
     {
         if (rollbackSnapshot == null ||
             existedBeforeInitialization ||
-            !_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
+            !_fs.FileExists(writeLease, AfterlifeSpiritualConflictState.StatePath))
         {
             return;
         }
 
-        var content = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
-        if (content == null)
-            return;
+        var content = await _fs.ReadFileBytesAsync(writeLease, AfterlifeSpiritualConflictState.StatePath) ??
+                      throw new IOException(
+                          $"Canonical file '{AfterlifeSpiritualConflictState.StatePath}' disappeared during snapshot initialization.");
 
         var backupPath = AfterlifeSpiritualConflictState.StatePath + $".rollback.{request.RequestId}.initialized";
-        await _fs.WriteFileAtomicAsync(backupPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
         rollbackSnapshot.BaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
         rollbackSnapshot.BackupFiles[AfterlifeSpiritualConflictState.StatePath] = backupPath;
         rollbackSnapshot.BackupHashes[AfterlifeSpiritualConflictState.StatePath] = ComputeSha256(content);
     }
 
     private async Task RegisterAfterlifeEntityProfileRollbackBackupIfInitializedAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         TurnRequest request,
         RollbackSnapshot? rollbackSnapshot,
         bool existedBeforeInitialization)
     {
         if (rollbackSnapshot == null ||
             existedBeforeInitialization ||
-            !_fs.FileExists(AfterlifeEntityProfileState.StatePath))
+            !_fs.FileExists(writeLease, AfterlifeEntityProfileState.StatePath))
         {
             return;
         }
 
-        var content = await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
-        if (content == null)
-            return;
+        var content = await _fs.ReadFileBytesAsync(writeLease, AfterlifeEntityProfileState.StatePath) ??
+                      throw new IOException(
+                          $"Canonical file '{AfterlifeEntityProfileState.StatePath}' disappeared during snapshot initialization.");
 
         var backupPath = AfterlifeEntityProfileState.StatePath + $".rollback.{request.RequestId}.initialized";
-        await _fs.WriteFileAtomicAsync(backupPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
         rollbackSnapshot.BaselineFiles.Add(AfterlifeEntityProfileState.StatePath);
         rollbackSnapshot.BackupFiles[AfterlifeEntityProfileState.StatePath] = backupPath;
         rollbackSnapshot.BackupHashes[AfterlifeEntityProfileState.StatePath] = ComputeSha256(content);
     }
 
     private async Task RegisterAfterlifeChronicleRollbackBackupIfInitializedAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         TurnRequest request,
         RollbackSnapshot? rollbackSnapshot,
         bool existedBeforeInitialization)
     {
         if (rollbackSnapshot == null ||
             existedBeforeInitialization ||
-            !_fs.FileExists(AfterlifeChronicleState.StatePath))
+            !_fs.FileExists(writeLease, AfterlifeChronicleState.StatePath))
         {
             return;
         }
 
-        var content = await _fs.ReadFileAsync(AfterlifeChronicleState.StatePath);
-        if (content == null)
-            return;
+        var content = await _fs.ReadFileBytesAsync(writeLease, AfterlifeChronicleState.StatePath) ??
+                      throw new IOException(
+                          $"Canonical file '{AfterlifeChronicleState.StatePath}' disappeared during snapshot initialization.");
 
         var backupPath = AfterlifeChronicleState.StatePath + $".rollback.{request.RequestId}.initialized";
-        await _fs.WriteFileAtomicAsync(backupPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
         rollbackSnapshot.BaselineFiles.Add(AfterlifeChronicleState.StatePath);
         rollbackSnapshot.BackupFiles[AfterlifeChronicleState.StatePath] = backupPath;
         rollbackSnapshot.BackupHashes[AfterlifeChronicleState.StatePath] = ComputeSha256(content);
     }
 
     private async Task RegisterAfterlifeGlobalFlagRollbackBackupIfInitializedAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         TurnRequest request,
         RollbackSnapshot? rollbackSnapshot,
         bool existedBeforeInitialization)
     {
         if (rollbackSnapshot == null ||
             existedBeforeInitialization ||
-            !_fs.FileExists(AfterlifeGlobalFlagState.StatePath))
+            !_fs.FileExists(writeLease, AfterlifeGlobalFlagState.StatePath))
         {
             return;
         }
 
-        var content = await _fs.ReadFileAsync(AfterlifeGlobalFlagState.StatePath);
-        if (content == null)
-            return;
+        var content = await _fs.ReadFileBytesAsync(writeLease, AfterlifeGlobalFlagState.StatePath) ??
+                      throw new IOException(
+                          $"Canonical file '{AfterlifeGlobalFlagState.StatePath}' disappeared during snapshot initialization.");
 
         var backupPath = AfterlifeGlobalFlagState.StatePath + $".rollback.{request.RequestId}.initialized";
-        await _fs.WriteFileAtomicAsync(backupPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
         rollbackSnapshot.BaselineFiles.Add(AfterlifeGlobalFlagState.StatePath);
         rollbackSnapshot.BackupFiles[AfterlifeGlobalFlagState.StatePath] = backupPath;
         rollbackSnapshot.BackupHashes[AfterlifeGlobalFlagState.StatePath] = ComputeSha256(content);
     }
 
-    private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync()
+    private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["game_state/history/chat_log.json"] = await ReadFileHashOrEmptyAsync("game_state/history/chat_log.json")
+            ["game_state/history/chat_log.json"] = await ReadFileHashOrEmptyAsync(
+                writeLease,
+                "game_state/history/chat_log.json")
         };
 
-        foreach (var storyPath in EnumerateStoryContinuityFiles())
-            result[storyPath] = await ReadFileHashOrEmptyAsync(storyPath);
+        foreach (var storyPath in EnumerateStoryContinuityFiles(writeLease))
+            result[storyPath] = await ReadFileHashOrEmptyAsync(writeLease, storyPath);
 
         return result;
     }
 
-    private async Task<string> ReadFileHashOrEmptyAsync(string relativePath)
+    private async Task<string> ReadFileHashOrEmptyAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string relativePath)
     {
-        var content = await _fs.ReadFileAsync(relativePath);
+        var content = await _fs.ReadFileAsync(writeLease, relativePath);
         return content == null ? string.Empty : ComputeSha256(content);
     }
 
-    private IEnumerable<string> EnumerateStoryContinuityFiles()
-    {
-        var sessionRoot = _fs.ResolvePath("");
-        var storiesRoot = _fs.ResolvePath("stories");
-        if (!Directory.Exists(storiesRoot))
-            yield break;
-
-        foreach (var absoluteFile in Directory.EnumerateFiles(storiesRoot, "*.jsonl", SearchOption.AllDirectories))
-            yield return Path.GetRelativePath(sessionRoot, absoluteFile).Replace('\\', '/');
-    }
+    private IEnumerable<string> EnumerateStoryContinuityFiles(
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        _fs.EnumerateFiles(writeLease, "*.jsonl")
+            .Where(path =>
+                path.StartsWith("stories/", StringComparison.OrdinalIgnoreCase));
 
     private async Task<Dictionary<string, string>?> LoadCanonicalBaselineSnapshotAsync(
         int expectedTurnNumber,
@@ -568,9 +655,12 @@ public partial class GameEngine
                 return null;
             }
 
-            var snapshotContent = await _fs.ReadFileAsync(snapshotPath);
-            if (string.IsNullOrWhiteSpace(snapshotContent) ||
-                !string.Equals(ComputeSha256(snapshotContent), expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+            var snapshotContent = await _fs.ReadFileBytesAsync(snapshotPath);
+            if (snapshotContent == null ||
+                !string.Equals(
+                    PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(payload, snapshotContent),
+                    expectedSnapshotHash,
+                    StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
@@ -629,9 +719,12 @@ public partial class GameEngine
             return false;
         }
 
-        var snapshotContent = await _fs.ReadFileAsync(snapshotPath);
-        if (string.IsNullOrWhiteSpace(snapshotContent) ||
-            !string.Equals(ComputeSha256(snapshotContent), expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+        var snapshotContent = await _fs.ReadFileBytesAsync(snapshotPath);
+        if (snapshotContent == null ||
+            !string.Equals(
+                PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(payload, snapshotContent),
+                expectedSnapshotHash,
+                StringComparison.OrdinalIgnoreCase))
         {
             return false;
         }
@@ -767,44 +860,62 @@ public partial class GameEngine
         return PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
+    private static string ComputeSha256(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content));
+
     private async Task SnapshotFileIfPresentAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string relativePath,
         IDictionary<string, string> files,
         IDictionary<string, string> snapshotHashes)
     {
-        var content = await _fs.ReadFileAsync(relativePath);
+        var content = await _fs.ReadFileBytesAsync(writeLease, relativePath);
         if (content == null)
             return;
 
         var snapshotPath = $"{PendingTurnSnapshotDirectory}/{relativePath}";
-        await _fs.WriteFileAtomicAsync(snapshotPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, snapshotPath, content);
         files[relativePath] = snapshotPath;
         snapshotHashes[relativePath] = ComputeSha256(content);
+        await InvokeSnapshotFileCapturedAsync(relativePath);
     }
 
     private async Task SnapshotFileOrRollbackBackupIfPresentAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string relativePath,
         RollbackSnapshot? rollbackSnapshot,
         IDictionary<string, string> files,
         IDictionary<string, string> snapshotHashes)
     {
-        var content = await _fs.ReadFileAsync(relativePath);
-        if (content == null &&
-            rollbackSnapshot?.BackupFiles.TryGetValue(relativePath, out var backupPath) == true)
+        byte[]? content = null;
+        if (rollbackSnapshot?.BackupFiles.TryGetValue(relativePath, out var backupPath) == true)
         {
-            content = await _fs.ReadFileAsync(backupPath);
+            content = await _fs.ReadFileBytesAsync(writeLease, backupPath);
+        }
+        else
+        {
+            content = await _fs.ReadFileBytesAsync(writeLease, relativePath);
         }
 
         if (content == null)
             return;
 
         var snapshotPath = $"{PendingTurnSnapshotDirectory}/{relativePath}";
-        await _fs.WriteFileAtomicAsync(snapshotPath, content);
+        await _fs.WriteFileAtomicBytesAsync(writeLease, snapshotPath, content);
         files[relativePath] = snapshotPath;
         snapshotHashes[relativePath] = ComputeSha256(content);
+        await InvokeSnapshotFileCapturedAsync(relativePath);
     }
 
     private async Task CleanupPendingTurnSnapshotAsync(IEnumerable<string>? preservedRollbackPaths = null)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CleanupPendingTurnSnapshot(writeLease, preservedRollbackPaths);
+    }
+
+    private void CleanupPendingTurnSnapshot(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IEnumerable<string>? preservedRollbackPaths = null)
     {
         var preservedRollbackSet = preservedRollbackPaths == null
             ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -817,72 +928,20 @@ public partial class GameEngine
         bool ShouldPreserveRollbackPath(string relativePath) =>
             preservedRollbackSet.Contains(NormalizeArtifactRelativePath(relativePath));
 
-        var manifest = await LoadPendingTurnSnapshotManifestAsync();
-        var payload = await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(
-            manifest,
-            requireCurrentContext: false);
-
-        if (payload != null)
+        _fs.DeleteDirectoryTree(writeLease, PendingTurnSnapshotDirectory);
+        foreach (var relativePath in _fs.EnumerateFiles(writeLease, "*.rollback.*"))
         {
-            try
+            if (ShouldPreserveRollbackPath(relativePath) ||
+                IsExplorerLocalTurnRollbackArtifactPath(relativePath))
             {
-                foreach (var snapshotPath in payload.Files.Values.Distinct(StringComparer.OrdinalIgnoreCase))
-                {
-                    if (!IsValidatedPendingSnapshotArtifactPath(snapshotPath))
-                        continue;
-
-                    if (_fs.FileExists(snapshotPath))
-                        _fs.DeleteFile(snapshotPath);
-                }
-
-                foreach (var rollbackPath in payload.RollbackBackups.Values.Distinct(StringComparer.OrdinalIgnoreCase))
-                {
-                    if (ShouldPreserveRollbackPath(rollbackPath))
-                        continue;
-
-                    if (!IsValidatedRollbackBackupArtifactPath(rollbackPath))
-                        continue;
-
-                    if (_fs.FileExists(rollbackPath))
-                        _fs.DeleteFile(rollbackPath);
-                }
+                continue;
             }
-            catch (Exception ex)
-            {
-                _logger.LogDebug(ex, "Не удалось очистить pending turn snapshot artifacts.");
-            }
-        }
-        else
-        {
-            try
-            {
-                var snapshotDirectoryPath = _fs.ResolvePath(PendingTurnSnapshotDirectory);
-                if (Directory.Exists(snapshotDirectoryPath))
-                    Directory.Delete(snapshotDirectoryPath, recursive: true);
 
-                foreach (var rollbackFile in Directory.EnumerateFiles(_fs.GameSessionPath, "*.rollback.*", SearchOption.AllDirectories))
-                {
-                    var relativePath = Path.GetRelativePath(_fs.GameSessionPath, rollbackFile).Replace('\\', '/');
-                    if (ShouldPreserveRollbackPath(relativePath) ||
-                        IsExplorerLocalTurnRollbackArtifactPath(relativePath))
-                    {
-                        continue;
-                    }
-
-                    if (File.Exists(rollbackFile))
-                        File.Delete(rollbackFile);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogDebug(ex, "Не удалось безопасно очистить fallback pending turn snapshot artifacts.");
-            }
+            _fs.DeleteFile(writeLease, relativePath);
         }
 
-        if (_fs.FileExists(PendingTurnSnapshotManifestPath))
-            _fs.DeleteFile(PendingTurnSnapshotManifestPath);
-        if (_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath))
-            _fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
+        _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);
+        _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
     private static bool HasRollbackCapability(RollbackSnapshot? snapshot) =>
@@ -923,7 +982,7 @@ public partial class GameEngine
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                ReadRelativeFileFromWorkspace,
+                ReadRelativeFileBytesFromWorkspace,
                 out var payload,
                 out _))
         {
@@ -958,6 +1017,10 @@ public partial class GameEngine
                 .Where(kv => !string.IsNullOrWhiteSpace(kv.Key) &&
                              !string.IsNullOrWhiteSpace(kv.Value))
                 .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase),
+            BackupHashesAreExactBytes = string.Equals(
+                payload.RollbackHashMode,
+                PendingTurnSnapshotAuthority.ExactRollbackHashMode,
+                StringComparison.Ordinal),
             BaselineFiles = new HashSet<string>(payload.RollbackBaselineFiles,
                 StringComparer.OrdinalIgnoreCase)
         };
@@ -965,23 +1028,42 @@ public partial class GameEngine
         return HasRollbackCapability(snapshot) ? snapshot : null;
     }
 
-    private string? ReadRelativeFileFromWorkspace(string relativePath)
+    private byte[]? ReadRelativeFileBytesFromWorkspace(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        var fullPath = _fs.ResolvePath(relativePath);
-        if (!File.Exists(fullPath))
-            return null;
-
         try
         {
-            return File.ReadAllText(fullPath, Encoding.UTF8);
+            return _fs.ReadFileBytesAsync(relativePath).GetAwaiter().GetResult();
         }
         catch
         {
             return null;
         }
+    }
+
+    private byte[]? ReadRelativeFileBytesFromWorkspace(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        try
+        {
+            return _fs.ReadFileBytesAsync(writeLease, relativePath).GetAwaiter().GetResult();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private string? ReadRelativeTextFromWorkspace(string relativePath)
+    {
+        var bytes = ReadRelativeFileBytesFromWorkspace(relativePath);
+        return bytes == null ? null : DecodeLegacyRollbackText(bytes);
     }
 
     private static bool IsValidatedPendingSnapshotArtifactPath(string relativePath)
@@ -1083,16 +1165,21 @@ public partial class GameEngine
     }
 
     private async Task<bool> TryPromoteValidationRepairArtifactStallToTerminalErrorAsync(
-        ValidatedPendingTurnSnapshotContext snapshotContext)
+        ValidatedPendingTurnSnapshotContext snapshotContext,
+        string? expectedSessionGeneration = null)
     {
-        if (!_fs.FileExists(ValidationRepairArtifactStallReportPath) ||
-            _fs.FileExists("ready/turn_error.json") ||
-            !_fs.FileExists(ValidationRepairRequestPath))
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+
+        if (!_fs.FileExists(writeLease, ValidationRepairArtifactStallReportPath) ||
+            _fs.FileExists(writeLease, "ready/turn_error.json") ||
+            !_fs.FileExists(writeLease, ValidationRepairRequestPath))
         {
             return false;
         }
 
-        var requestJson = await _fs.ReadFileAsync(ValidationRepairRequestPath);
+        var requestJson = await _fs.ReadFileAsync(writeLease, ValidationRepairRequestPath);
         if (string.IsNullOrWhiteSpace(requestJson))
             return false;
 
@@ -1115,9 +1202,11 @@ public partial class GameEngine
             return false;
         }
 
-        if (_fs.FileExists("ready/turn_complete.json"))
+        if (_fs.FileExists(writeLease, "ready/turn_complete.json"))
         {
-            var completeMetadata = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+            var completeMetadata = ParseReadySignalMetadata(
+                await _fs.ReadFileAsync(writeLease, "ready/turn_complete.json"),
+                "ready/turn_complete.json");
             if (completeMetadata == null ||
                 !string.Equals(completeMetadata.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
                 !string.Equals(completeMetadata.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
@@ -1128,7 +1217,7 @@ public partial class GameEngine
         }
 
         JsonNode? stallReportNode = null;
-        var stallReportJson = await _fs.ReadFileAsync(ValidationRepairArtifactStallReportPath);
+        var stallReportJson = await _fs.ReadFileAsync(writeLease, ValidationRepairArtifactStallReportPath);
         if (!string.IsNullOrWhiteSpace(stallReportJson))
         {
             try
@@ -1155,10 +1244,9 @@ public partial class GameEngine
         if (stallReportNode != null)
             signal["validationRepairArtifactStall"] = stallReportNode;
 
-        await _fs.WriteFileAtomicAsync("ready/turn_error.json", signal.ToJsonString(JsonOpts));
-        _fs.DeleteFile("ready/turn_complete.json");
-        if (_fs.FileExists(ValidationRepairReadyPath))
-            _fs.DeleteFile(ValidationRepairReadyPath);
+        await _fs.WriteFileAtomicAsync(writeLease, "ready/turn_error.json", signal.ToJsonString(JsonOpts));
+        _fs.DeleteFile(writeLease, "ready/turn_complete.json");
+        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
 
         _logger.LogWarning(
             "Validation repair artifact stall promoted to terminal error for pending turn(session={Session}, request={Request}, turn={Turn}).",
@@ -1343,7 +1431,11 @@ public partial class GameEngine
 
     private async Task<ReadySignalMetadata?> TryReadReadySignalMetadataOnceAsync(string relativePath)
     {
-        var json = await _fs.ReadFileAsync(relativePath);
+        return ParseReadySignalMetadata(await _fs.ReadFileAsync(relativePath), relativePath);
+    }
+
+    private ReadySignalMetadata? ParseReadySignalMetadata(string? json, string relativePath)
+    {
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -1529,41 +1621,37 @@ public partial class GameEngine
     }
 
 
-    private IEnumerable<string> EnumerateRollbackTrackedFiles()
+    private IEnumerable<string> EnumerateRollbackTrackedFiles(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var gameSessionRoot = _fs.ResolvePath("");
         var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var absoluteFile in _fs.GetAllGameStateFiles())
+        foreach (var relative in _fs.EnumerateFiles(writeLease, "*"))
         {
-            var relative = Path.GetRelativePath(gameSessionRoot, absoluteFile).Replace('\\', '/');
-            if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(relative, ValidationRepairRequestPath, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
-                relative.StartsWith($"{PendingTurnSnapshotDirectory}/", StringComparison.OrdinalIgnoreCase) ||
-                relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
+            if (relative.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase))
             {
+                if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, ValidationRepairRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
+                    relative.StartsWith($"{PendingTurnSnapshotDirectory}/", StringComparison.OrdinalIgnoreCase) ||
+                    relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                files.Add(relative);
                 continue;
             }
 
-            files.Add(relative);
-        }
-
-        foreach (var relativeDir in new[] { "lore" })
-        {
-            var absoluteDir = _fs.ResolvePath(relativeDir);
-            if (!Directory.Exists(absoluteDir))
-                continue;
-
-            foreach (var absoluteFile in Directory.GetFiles(absoluteDir, "*", SearchOption.AllDirectories))
+            if (relative.StartsWith("lore/", StringComparison.OrdinalIgnoreCase))
             {
-                var relative = Path.GetRelativePath(gameSessionRoot, absoluteFile).Replace('\\', '/');
                 if (relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
                     continue;
+
                 files.Add(relative);
             }
         }
@@ -1576,7 +1664,7 @@ public partial class GameEngine
             QteSceneService.QteOfferPath
         })
         {
-            if (_fs.FileExists(outputFile))
+            if (_fs.FileExists(writeLease, outputFile))
                 files.Add(outputFile);
         }
 
@@ -1585,51 +1673,82 @@ public partial class GameEngine
 
     private async Task<RollbackSnapshot> CreatePreTurnBackup(string backupId)
     {
-        var snapshot = new RollbackSnapshot
-        {
-            BaselineFiles = new HashSet<string>(EnumerateRollbackTrackedFiles(), StringComparer.OrdinalIgnoreCase)
-        };
-
-        foreach (var file in snapshot.BaselineFiles)
-        {
-            if (_fs.FileExists(file))
-            {
-                var backupPath = file + $".rollback.{backupId}";
-                try
-                {
-                    var content = await _fs.ReadFileAsync(file);
-                    if (content != null)
-                    {
-                        await _fs.WriteFileAtomicAsync(backupPath, content);
-                        snapshot.BackupFiles[file] = backupPath;
-                        snapshot.BackupHashes[file] = ComputeSha256(content);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogDebug(ex, "Не удалось создать backup для {File}", file);
-                }
-            }
-        }
-
-        await OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(snapshot);
-        return snapshot;
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await CreatePreTurnBackup(writeLease, backupId);
     }
 
-    private async Task OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(RollbackSnapshot snapshot)
+    private async Task<RollbackSnapshot> CreatePreTurnBackup(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string backupId)
     {
-        var stagedBackups = ExplorerLocalTurnRollbackArtifacts.DiscoverBackups(_fs, snapshot.BaselineFiles);
+        var snapshot = new RollbackSnapshot();
+        var createdBackupPaths = new List<string>();
+        var trackedFiles = EnumerateRollbackTrackedFiles(writeLease).ToArray();
+        try
+        {
+            foreach (var file in trackedFiles)
+            {
+                var content = await _fs.ReadFileBytesAsync(writeLease, file) ??
+                              throw new IOException(
+                                  $"Canonical file '{file}' disappeared while its rollback baseline was captured.");
+                var backupPath = file + $".rollback.{backupId}";
+                await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);
+                createdBackupPaths.Add(backupPath);
+                snapshot.BaselineFiles.Add(file);
+                snapshot.BackupFiles[file] = backupPath;
+                snapshot.BackupHashes[file] = ComputeSha256(content);
+            }
+
+            await OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(writeLease, snapshot);
+            return snapshot;
+        }
+        catch (Exception captureException)
+        {
+            var cleanupErrors = new List<Exception>();
+            foreach (var backupPath in createdBackupPaths)
+            {
+                try
+                {
+                    if (_fs.FileExists(writeLease, backupPath))
+                        _fs.DeleteFile(writeLease, backupPath);
+                }
+                catch (Exception cleanupException)
+                {
+                    cleanupErrors.Add(new IOException(
+                        $"Failed to clean partial rollback evidence '{backupPath}'.",
+                        cleanupException));
+                }
+            }
+
+            if (cleanupErrors.Count > 0)
+                throw new AggregateException(
+                    "Rollback snapshot capture failed and partial evidence cleanup was incomplete.",
+                    [captureException, .. cleanupErrors]);
+            throw;
+        }
+    }
+
+    private async Task OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        RollbackSnapshot snapshot)
+    {
+        var stagedBackups = ExplorerLocalTurnRollbackArtifacts.DiscoverBackups(
+            _fs,
+            writeLease,
+            snapshot.BaselineFiles);
         foreach (var stagedBackup in stagedBackups)
         {
-            var backupContent = await _fs.ReadFileAsync(stagedBackup.BackupPath);
+            var backupContent = await _fs.ReadFileBytesAsync(writeLease, stagedBackup.BackupPath);
             if (backupContent == null)
-                continue;
+                throw new FileNotFoundException(
+                    $"Staged rollback evidence for '{stagedBackup.TrackedFile}' disappeared during capture.",
+                    stagedBackup.BackupPath);
 
             if (snapshot.BackupFiles.TryGetValue(stagedBackup.TrackedFile, out var staleBackupPath) &&
                 !string.Equals(staleBackupPath, stagedBackup.BackupPath, StringComparison.OrdinalIgnoreCase) &&
-                _fs.FileExists(staleBackupPath))
+                _fs.FileExists(writeLease, staleBackupPath))
             {
-                _fs.DeleteFile(staleBackupPath);
+                _fs.DeleteFile(writeLease, staleBackupPath);
             }
 
             snapshot.BaselineFiles.Add(stagedBackup.TrackedFile);
@@ -1643,41 +1762,114 @@ public partial class GameEngine
     /// </summary>
     private async Task RestorePreTurnBackup(RollbackSnapshot snapshot)
     {
-        foreach (var trackedFile in EnumerateRollbackTrackedFiles())
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            await RestorePreTurnBackupAsync(writeLease, snapshot);
+        await RefreshRuntimeStateAsync();
+    }
+
+    private async Task RestorePreTurnBackupForSessionAsync(
+        RollbackSnapshot snapshot,
+        string expectedSessionGeneration)
+    {
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            await RestorePreTurnBackupAsync(writeLease, snapshot);
+            CleanupBackup(writeLease, snapshot);
+        }
+
+        await RefreshRuntimeStateAsync();
+    }
+
+    private async Task RestorePreTurnBackupAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        RollbackSnapshot snapshot)
+    {
+        var failures = new List<Exception>();
+        var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (original, backup) in snapshot.BackupFiles)
+        {
+            try
+            {
+                var content = await _fs.ReadFileBytesAsync(writeLease, backup);
+                if (content == null)
+                    throw new FileNotFoundException("Rollback evidence is missing.", backup);
+                if (!snapshot.BackupHashes.TryGetValue(original, out var expectedHash) ||
+                    string.IsNullOrWhiteSpace(expectedHash))
+                {
+                    throw new InvalidDataException($"Rollback evidence hash is missing for '{original}'.");
+                }
+
+                var actualHash = snapshot.BackupHashesAreExactBytes
+                    ? ComputeSha256(content)
+                    : ComputeSha256(DecodeLegacyRollbackText(content));
+                if (!string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidDataException($"Rollback evidence hash mismatch for '{original}'.");
+                validatedBackups[original] = content;
+            }
+            catch (Exception ex)
+            {
+                failures.Add(new InvalidDataException(
+                    $"Rollback evidence for '{original}' could not be validated.",
+                    ex));
+            }
+        }
+
+        if (failures.Count > 0)
+        {
+            throw new InvalidDataException(
+                "Pre-turn rollback evidence could not be validated. Rollback evidence was retained.",
+                new AggregateException(failures));
+        }
+
+        foreach (var trackedFile in EnumerateRollbackTrackedFiles(writeLease))
         {
             if (snapshot.BaselineFiles.Contains(trackedFile))
                 continue;
 
             try
             {
-                if (_fs.FileExists(trackedFile))
-                    _fs.DeleteFile(trackedFile);
+                if (_fs.FileExists(writeLease, trackedFile))
+                    _fs.DeleteFile(writeLease, trackedFile);
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex, "Не удалось удалить новый файл {File} при rollback", trackedFile);
+                failures.Add(new IOException(
+                    $"Failed to delete new canonical file '{trackedFile}' during rollback.",
+                    ex));
             }
         }
 
-        foreach (var (original, backup) in snapshot.BackupFiles)
+        foreach (var (original, content) in validatedBackups)
         {
             try
             {
-                var content = await _fs.ReadFileAsync(backup);
-                if (content != null &&
-                    snapshot.BackupHashes.TryGetValue(original, out var expectedHash) &&
-                    string.Equals(ComputeSha256(content), expectedHash, StringComparison.OrdinalIgnoreCase))
-                {
-                    await _fs.WriteFileAtomicAsync(original, content);
-                }
+                await _fs.WriteFileAtomicBytesAsync(writeLease, original, content);
             }
             catch (Exception ex)
             {
-                _logger.LogDebug(ex, "Не удалось восстановить {File}", original);
+                failures.Add(new IOException(
+                    $"Failed to restore canonical file '{original}' from rollback evidence.",
+                    ex));
             }
         }
 
-        await RefreshRuntimeStateAsync();
+        if (failures.Count > 0)
+        {
+            throw new InvalidDataException(
+                "Pre-turn rollback could not be completed. Rollback evidence was retained.",
+                new AggregateException(failures));
+        }
+    }
+
+    private static string DecodeLegacyRollbackText(byte[] content)
+    {
+        using var stream = new MemoryStream(content, writable: false);
+        using var reader = new StreamReader(
+            stream,
+            Encoding.UTF8,
+            detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
     }
 
     /// <summary>
@@ -1698,6 +1890,25 @@ public partial class GameEngine
         }
 
         ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs);
+    }
+
+    private void CleanupBackup(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        RollbackSnapshot snapshot)
+    {
+        foreach (var backup in snapshot.BackupFiles.Values)
+        {
+            try
+            {
+                _fs.DeleteFile(writeLease, backup);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось удалить rollback backup {BackupPath}.", backup);
+            }
+        }
+
+        ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
     }
 }
 

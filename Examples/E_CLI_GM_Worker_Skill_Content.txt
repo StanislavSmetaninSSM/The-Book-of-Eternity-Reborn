@@ -47,6 +47,7 @@ Task packet:
 {
   "schemaVersion": 1,
   "taskId": "worker_task_20260620_0004",
+  "sessionGeneration": "11111111111111111111111111111111",
   "workerId": "skill_content_codex",
   "role": "skill-content",
   "taskType": "skill-content",

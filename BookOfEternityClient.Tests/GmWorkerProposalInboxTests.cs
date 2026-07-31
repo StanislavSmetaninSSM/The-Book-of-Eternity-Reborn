@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -16,9 +17,12 @@ public sealed class GmWorkerProposalInboxTests
             var fs = CreateFileSystem(root);
             await WriteTaskAsync(fs, GmWorkerBridgeTestFixtures.ValidationRepairTask());
             await WriteTaskAsync(fs, GmWorkerBridgeTestFixtures.NarrativeDraftTask());
-            var store = new GmWorkerProposalStore(fs);
-            await store.SaveProposalAsync(GmWorkerBridgeTestFixtures.ValidationRepairProposal());
-            await store.SaveProposalAsync(GmWorkerBridgeTestFixtures.NarrativeDraftProposal());
+            await GmWorkerBridgeTestFixtures.WriteProposalFixtureAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.ValidationRepairProposal());
+            await GmWorkerBridgeTestFixtures.WriteProposalFixtureAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.NarrativeDraftProposal());
             var inbox = new GmWorkerProposalInboxService(fs);
 
             var entries = await inbox.ListAsync();
@@ -76,6 +80,33 @@ public sealed class GmWorkerProposalInboxTests
     }
 
     [Fact]
+    public async Task ListAsync_ProposalWithoutStatus_ReturnsUnreadableEntry()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var proposal = JsonNode.Parse(GmWorkerJson.Serialize(
+                GmWorkerBridgeTestFixtures.ValidationRepairProposal()))!.AsObject();
+            proposal.Remove("status");
+            await fs.WriteFileAtomicAsync(
+                "worker_proposals/proposal_without_status/proposal.json",
+                proposal.ToJsonString());
+            var inbox = new GmWorkerProposalInboxService(fs);
+
+            var entry = Assert.Single(await inbox.ListAsync());
+
+            Assert.False(entry.IsReadable);
+            Assert.Contains("status", entry.UnreadableReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal("unreadable", entry.ReviewMode);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ReadAsync_JoinsProposalWithRelatedAuditEventsAndApplyState()
     {
         var root = CreateTempRoot();
@@ -85,7 +116,7 @@ public sealed class GmWorkerProposalInboxTests
             var task = GmWorkerBridgeTestFixtures.ValidationRepairTask();
             var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
             await WriteTaskAsync(fs, task);
-            await new GmWorkerProposalStore(fs).SaveProposalAsync(proposal);
+            await GmWorkerBridgeTestFixtures.WriteProposalFixtureAsync(fs, proposal);
             var audit = new GmWorkerAuditLog(fs);
             await audit.RecordProposalReceivedAsync(proposal);
             await audit.RecordApplyDecisionAsync(proposal, new ApplyGateDecision
@@ -123,6 +154,85 @@ public sealed class GmWorkerProposalInboxTests
             var inbox = new GmWorkerProposalInboxService(fs);
 
             Assert.Null(await inbox.ReadAsync("missing_proposal"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var writerAtBoundary = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var allowPublication = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var readerContended = new TaskCompletionSource(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+            var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+            var destination =
+                $"{GmWorkerProposalStore.ProposalRoot}/{proposal.ProposalId}";
+            var hooks = new FileSystemManagerHooks
+            {
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    readerContended.TrySetResult();
+                    return Task.CompletedTask;
+                },
+                AfterCanonicalMutationBoundaryValidatedAsync = async path =>
+                {
+                    if (!path.Equals(destination, StringComparison.OrdinalIgnoreCase))
+                        return;
+
+                    writerAtBoundary.TrySetResult();
+                    await allowPublication.Task.WaitAsync(TimeSpan.FromSeconds(10));
+                }
+            };
+            var fs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
+            fs.EnsureDirectoryStructure();
+            var stagingDirectory = fs.CreateRuntimeProposalStagingRoot();
+            await File.WriteAllTextAsync(
+                Path.Combine(stagingDirectory, "proposal.json"),
+                GmWorkerJson.Serialize(proposal));
+            var inbox = new GmWorkerProposalInboxService(fs);
+            Task<GmWorkerProposalInboxEntry?> readerTask;
+            Task first;
+
+            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                var publicationTask =
+                    fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                        writeLease,
+                        stagingDirectory,
+                        destination);
+                await writerAtBoundary.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+                using (ExecutionContext.SuppressFlow())
+                {
+                    readerTask = Task.Run(
+                        () => inbox.ReadAsync(proposal.ProposalId));
+                }
+
+                first = await Task.WhenAny(
+                        readerTask,
+                        readerContended.Task)
+                    .WaitAsync(TimeSpan.FromSeconds(10));
+                allowPublication.TrySetResult();
+                await publicationTask;
+            }
+
+            Assert.Same(readerContended.Task, first);
+            var entry = await readerTask;
+            Assert.NotNull(entry);
+            Assert.Equal(proposal.ProposalId, entry!.ProposalId);
         }
         finally
         {

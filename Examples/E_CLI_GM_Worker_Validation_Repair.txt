@@ -2,9 +2,10 @@
 
 This example shows the live worker flow for a validation repair. The worker is
 a hidden/background subordinate process; the player does not see a new console.
-The client still writes `game_state/control/validation_repair_request.json`
-first. If no enabled worker exists or the worker fails, the legacy repair loop
-continues unchanged.
+The client first removes stale repair request/ready/stall artifacts and tries the
+worker. It writes `game_state/control/validation_repair_request.json` only when
+no enabled worker exists or worker dispatch/apply fails, so the worker and main
+GM never own the same repair concurrently.
 
 Worker profile:
 
@@ -41,11 +42,95 @@ The worker process receives `BOE_WORKER_TASK_PATH`,
 packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
 `BOE_WORKER_PROPOSAL_PATH`, and writes changed file content under
 `worker_proposals/<proposalId>/...` inside `BOE_WORKER_SESSION_PATH`.
+`BOE_WORKER_SESSION_PATH` is a detached execution snapshot under
+`.worker_runtime`, not the live session. It contains only pinned task context.
+If the worker directly edits the copied weather, Soul, characteristics, or any
+other state file, that edit is discarded. The pool imports only the validated proposal and its declared contentRef
+bytes; undeclared files never reach the
+canonical session.
+
+Before importing any worker artifact, the pool loads every declared non-delete
+content file and verifies that its SHA-256 equals `afterSha256`. One mismatch
+rejects the whole handoff; nothing from that proposal is published. Task and proposal identifiers are immutable,
+so retry with a new ID instead of overwriting an existing dispatch or proposal.
+If the runner exceeds its deadline and also leaves malformed JSON, timeout remains authoritative;
+the malformed handoff is an additional diagnostic, not a replacement result.
+Detached cleanup never follows a junction/symlink/reparse point. A cleanup failure is an audit diagnostic
+and does not hide the completed or timed-out result.
+
+The bridge reserves every task identifier with a create-only compare/exchange,
+then publishes the complete proposal bundle through one create-only atomic directory rename.
+The bundle contains `proposal.json` plus every declared `contentRef`; no separate
+proposal claim exists. Under the canonical write lease, publication checks that
+the exact task bytes still belong to the current game session generation. The
+durable bundle remains authoritative even when a derived inbox or audit write
+fails. Validation-repair task IDs are globally unique per dispatch while keeping
+the attempt number in a readable prefix. The proposal id `inbox` is reserved
+for the derived inbox directory and is invalid for every proposal.
+Staging and canonical-lease waiting remain cancellable. Cancellation/timeout
+and publication use one atomic transition: if cancellation wins first, no
+durable bundle, derived inbox, or applyable proposal may appear later; if
+publication wins first, the complete create-only rename is authoritative and
+late cancellation cannot revoke it.
+`maxConcurrentTasks` is enforced at
+runtime for the same worker and session, even across separate bridge-pool
+instances. Worker slots use reference-counted gates that retire when idle; an
+active profile-limit change returns a failed worker result. Cancellation kills
+and awaits the complete worker process tree before releasing its worker slot.
+The durable session generation lives under `.boe_runtime/session-generation/current.json`
+and rotates on load and New Game. Task reservation, proposal publication, and
+apply bind to that exact generation; saves omit worker task/proposal roots, so
+restoring byte-identical stale evidence cannot revive an earlier worker. A
+hidden client-owned host ensures that the configured worker command cannot start until process-tree ownership is attached.
+
+At apply time, the exact durable reserved task is the sole apply authority. The
+gate reloads it under the canonical lease and never trusts a mutable task object
+supplied with the proposal. `sessionGeneration` is lowercase canonical GUID
+text in `N` format. If load or New Game rotates it, typed `SessionReplaced`
+aborts the old repair; no legacy fallback or rollback may write into the
+replacement session. Repair trajectory evidence uses a generation-bound atomic
+append, and the latest validation-repair task is ephemeral and excluded from
+saves. Committed apply cleanup removes the transaction directory before the
+active journal, leaving cleanup failure retryable without undoing accepted
+canonical bytes.
+
+The parent creates private current-user named control/status pipe servers with
+unique endpoint names and starts the hidden host with only the two endpoint
+names and the per-launch nonce in its command line. The configured worker
+payload never appears in the hidden-host command line, and no worker-accessible
+marker files exist. After both channels connect, parent-side client PID
+authentication authenticates both connected pipe clients as the exact
+hidden-host PID. The parent only after authentication sends a typed `Launch`
+frame containing the executable, arguments, working directory, and environment.
+The hidden host retains both channels; the configured worker receives neither
+channel nor any pipe handle.
+
+Unknown, duplicate, or missing frame fields are rejected. The host emits typed
+`Ready` after accepting the payload while the configured worker remains stopped.
+The parent sends typed `Release`, and only then does the host start the configured
+worker. Typed `Completed` requires a non-null exit code and is published
+immediately after the direct worker exits, before output pipes are drained.
+Typed `OutputDrained` follows bounded output capture and is awaited before
+ordinary host teardown. This explicit `OutputDrained` acknowledgement remains
+diagnostic and cannot replace the authoritative completion. These are complete
+typed frames bound to the per-launch nonce.
+A proposal becomes applyable only after confirmed zero exit and confirmed process-tree termination.
+A timeout, cancellation, nonzero exit, missing exit
+code, incomplete process-tree cleanup, or uncertain host cleanup is
+diagnostic-only: any bytes written by that execution must not be imported as a
+worker proposal or passed to the apply gate.
+Windows Job Object is the supported complete descendant boundary. Platforms
+without an equivalent queryable kernel containment boundary fail closed before
+worker release. Timeout and cancellation remain authoritative; cleanup
+uncertainty quarantines the worker slot rather than changing the task result or
+releasing capacity. Complete-tree termination and unattached-host cleanup is
+bounded; an expired confirmation deadline quarantines the slot.
 
 ```json
 {
   "schemaVersion": 1,
   "taskId": "worker_task_20260620_0001",
+  "sessionGeneration": "11111111111111111111111111111111",
   "workerId": "validation_repair_codex",
   "role": "validation-repair",
   "taskType": "validation-repair",
@@ -66,7 +151,7 @@ packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
   "contextFiles": [
     {
       "path": "game_state/world/weather.json",
-      "sha256": "sha256-weather-before"
+      "sha256": "6cc0139810cee57e761b4f0549d4300004989eaceaf72e880be9265e5517947b"
     }
   ],
   "allowedProposalPaths": ["game_state/world/weather.json"],
@@ -85,6 +170,91 @@ packet from `BOE_WORKER_TASK_PATH`, writes the proposal JSON to
 }
 ```
 
+Validation-repair uses exact byte authority. Every context hash and
+`beforeSha256` is an exact 64-character SHA-256 digest of canonical bytes;
+every non-delete `afterSha256` is the exact 64-character SHA-256 digest of its
+own proposal content. For an afterlife validation-repair task,
+`afterlifeProposal` is optional; bounded `changedFiles` must still be inside
+both `allowedProposalPaths` and `afterlifeContract.allowedAfterlifeSurfaces`.
+For every entry, `changeKind is mandatory` and must be exactly `add`, `replace`, or `delete`;
+omission, zero/unspecified, and undefined values are rejected.
+For afterlife repair, `game_state/meta/soul_state.json` is hash-pinned read-only realm authority:
+it must be present in `contextFiles` with the exact canonical
+SHA-256, its realm must match the afterlife contract, and it must not appear in `changedFiles`
+or `allowedProposalPaths`. A missing, malformed, duplicate-key,
+unsupported, changed-after-dispatch, or mismatched authority fails closed.
+Every `game_state/meta/` validation-repair target is afterlife-scoped, including
+non-actor metadata. A mixed Mortal/afterlife issue batch is rejected at task
+construction. `allowedAfterlifeSurfaces` contains exact wildcard-free afterlife paths,
+never `game_state/**`, `*`, `?`, or another pattern. Realm ownership is explicit:
+`lore/current_world/**` and
+`game_state/core/player_status.json` are Mortal, including nested validation
+coordinates, while every allowed afterlife validation-repair surface must stay
+under `game_state/meta/`. An unknown non-Mortal path is not an afterlife repair
+surface. Typed afterlife content tasks may use exact task-provided control/report
+surfaces.
+Path ownership uses case-insensitive canonical path identity, so case aliases cannot duplicate
+context or bypass Soul/characteristics read-only scope. `game_state/misc/characteristics.json` is read-only context for
+an empty-characteristics repair and cannot be listed as a writable target.
+Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
+Status is mandatory; omission is invalid and must never default to completed.
+
+Worked afterlife authority fragment (the repeated hex strings stand for exact
+64-character SHA-256 values of the corresponding canonical bytes):
+
+```json
+{
+  "contextFiles": [
+    {
+      "path": "game_state/meta/guardians.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "path": "game_state/meta/soul_state.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "afterlifeContract": {
+    "realmGate": "ChaosSea",
+    "currentRealm": "Chaos Sea",
+    "allowedAfterlifeSurfaces": ["game_state/meta/guardians.json"]
+  },
+  "allowedProposalPaths": ["game_state/meta/guardians.json"]
+}
+```
+
+The worker may return a `replace` entry for `guardians.json` with matching exact
+hashes. It must preserve the pinned `soul_state.json` bytes and cannot include
+that authority path in its proposal. If another process changes the authority
+after dispatch, the apply gate rejects the whole proposal without partial
+writes.
+
+Immediately before applying, the client acquires one canonical write lease.
+The lease remains held while it verifies every pinned byte, performs every
+target compare/exchange, validates the complete state, rechecks all read-only
+context, rolls back if needed, and records the decision. Thus a cooperating
+writer cannot slip a realm or characteristic-authority change between check and
+commit, and an observed non-cooperating mutation rejects the proposal.
+The same lease covers built-in backup, restore, game-state clear, and
+current-world lore clear operations. Save and load operations use the same canonical write lease,
+so save archives contain one coherent session snapshot
+and load cannot replace live state during a worker apply decision. Load uses an
+external durable journal under `.boe_runtime/load-transactions`; startup restores
+an interrupted swap before creating session directories. If rollback cannot
+complete, the previous backup and journal remain available for startup recovery.
+Refresh and client-owned mirror repair are one lease-scoped read/modify/write.
+Every canonical writer must recover an interrupted load transaction immediately after acquiring the canonical write lease
+or fail closed before touching live state. The apply gate does not use a replaceable lock inside
+`game_session`. Worker apply uses an external durable journal under
+`.boe_runtime/worker-apply-transactions`; intent, exact before-images, and
+expected applied hashes are persisted before the first canonical write. Every
+canonical writer recovers an interrupted worker apply transaction after lease
+acquisition or fails closed before mutation. Once commit is durable, committed
+journal cleanup cannot roll back accepted bytes and may be retried later.
+The production apply gate always receives the real `ValidationService`. A
+scope-valid proposal that leaves any production validation issue is rolled back
+to the exact original bytes; there is no runtime empty-validator mode.
+
 Worker response proposal:
 
 ```json
@@ -99,8 +269,8 @@ Worker response proposal:
     {
       "path": "game_state/world/weather.json",
       "changeKind": "replace",
-      "beforeSha256": "sha256-weather-before",
-      "afterSha256": "sha256-weather-after",
+      "beforeSha256": "6cc0139810cee57e761b4f0549d4300004989eaceaf72e880be9265e5517947b",
+      "afterSha256": "6691bcf05a185d27168baad72602bf3a4faea235646948b7d84c5d9eede4b8be",
       "contentRef": "worker_proposals/worker_proposal_20260620_0001/game_state/world/weather.json"
     }
   ],
@@ -152,12 +322,32 @@ loop signal itself. The worker must not write this control file directly.
 }
 ```
 
+If canonical apply succeeds but the ready control file cannot be published, the
+client does not expose a legacy request. It revalidates the accepted canonical
+state directly and records a trajectory terminal like this:
+
+```json
+{
+  "mode": "validation_repair",
+  "validation": {
+    "status": "accepted",
+    "acceptanceScope": "worker_apply_gate"
+  },
+  "terminal": {
+    "kind": "worker_apply_gate_accepted",
+    "signalPath": null
+  }
+}
+```
+
 Audit events:
+
+Every audit producer uses `worker_audit_<UTC yyyyMMddHHmmssfff>_<32 lowercase hex GUID>` so ids stay readable and collision-safe under concurrent dispatch, rejection, apply, and ready-signal diagnostics.
 
 ```json
 {
   "schemaVersion": 1,
-  "eventId": "worker_audit_20260620_0001",
+  "eventId": "worker_audit_20260620000030000_00112233445566778899aabbccddeeff",
   "eventType": "proposal-applied",
   "workerId": "validation_repair_codex",
   "taskId": "worker_task_20260620_0001",
@@ -180,7 +370,7 @@ full proposal payloads.
 ```json
 {
   "schemaVersion": 1,
-  "eventId": "worker_audit_20260620_0002",
+  "eventId": "worker_audit_20260620000031000_11223344556677889900aabbccddeeff",
   "eventType": "validation-repair-ready-created",
   "workerId": "validation_repair_codex",
   "taskId": "worker_task_20260620_0001",

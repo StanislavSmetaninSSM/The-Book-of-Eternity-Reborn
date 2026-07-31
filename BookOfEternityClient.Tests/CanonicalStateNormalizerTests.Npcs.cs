@@ -17,9 +17,17 @@ public sealed partial class CanonicalStateNormalizerTests
             worldDescription: "Столица Этернии с городскими наставниками и витринами обучения.",
             startingCircumstances: "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-07T08:00:00Z"));
+        var explicitNpcRoot = MortalActorTestFixtures.CreateNpcCoreRoot();
+        var explicitTeacher = Assert.Single(
+            explicitNpcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        explicitTeacher["name"] = "Наставница семейного архива";
+        explicitTeacher["role"] = "Наставница";
 
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            explicitNpcRoot.ToJsonString());
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -29,7 +37,7 @@ public sealed partial class CanonicalStateNormalizerTests
         }
         """);
 
-        var npcRoot = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"].DeepClone());
+        var npcRoot = Assert.IsType<JsonObject>(explicitNpcRoot.DeepClone());
         var teacher = Assert.Single(npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
         var sourceHash = TrainingService.ComputeSourceSnapshotHash(teacher);
         npcRoot["UpdateNPCs"] = new JsonArray
@@ -164,5 +172,296 @@ public sealed partial class CanonicalStateNormalizerTests
             issue.FilePath.Contains("npc_journals", StringComparison.OrdinalIgnoreCase) &&
             (string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) ||
              string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_PreservesOmittedHistoricalMortalMaterializationEnvelope()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        await _fs.WriteFileAtomicAsync(path, BuildMortalNormalizerState(includeEnvelope: false));
+        await _fs.WriteFileAtomicAsync(backupPath, BuildMortalNormalizerState(includeEnvelope: true));
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(
+            "mat_normalizer_mortal_historical",
+            actor[ActorMaterializationContract.PropertyName]?["materializationId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotRestoreAmbiguousHistoricalMortalMaterializationEnvelope()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        var historicalRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: true))!.AsObject();
+        var duplicateActor = historicalRoot["NPCsInScene"]![0]!.DeepClone().AsObject();
+        duplicateActor[ActorMaterializationContract.PropertyName]!["materializationId"] =
+            "mat_normalizer_mortal_conflicting";
+        historicalRoot["NPCsInScene"]!.AsArray().Add(duplicateActor);
+        await _fs.WriteFileAtomicAsync(path, BuildMortalNormalizerState(includeEnvelope: false));
+        await _fs.WriteFileAtomicAsync(backupPath, historicalRoot.ToJsonString());
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.False(actor.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotRestoreHistoricalMortalEnvelopeWhenDuplicateIdentityLacksEnvelope()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        var historicalRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: true))!.AsObject();
+        var duplicateActor = historicalRoot["NPCsInScene"]![0]!.DeepClone().AsObject();
+        duplicateActor.Remove(ActorMaterializationContract.PropertyName);
+        historicalRoot["NPCsInScene"]!.AsArray().Add(duplicateActor);
+        await _fs.WriteFileAtomicAsync(path, BuildMortalNormalizerState(includeEnvelope: false));
+        await _fs.WriteFileAtomicAsync(backupPath, historicalRoot.ToJsonString());
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.False(actor.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotRestoreHistoricalMortalEnvelopeForAmbiguousCurrentIdentity()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: false))!.AsObject();
+        currentRoot["NPCsInScene"]!.AsArray().Add(currentRoot["NPCsInScene"]![0]!.DeepClone());
+        await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(backupPath, BuildMortalNormalizerState(includeEnvelope: true));
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actors = root["NPCsInScene"]!.AsArray().OfType<JsonObject>().ToList();
+        Assert.Equal(2, actors.Count);
+        Assert.All(actors, actor =>
+            Assert.False(actor.ContainsKey(ActorMaterializationContract.PropertyName)));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotRestoreMortalEnvelopeFromNonStringHistoricalIdentity()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        var historicalRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: true))!.AsObject();
+        var historicalActor = historicalRoot["NPCsInScene"]![0]!.AsObject();
+        historicalActor.Remove("npcId");
+        historicalActor["NPCId"] = 42;
+        historicalActor[ActorMaterializationContract.PropertyName]!["actorId"] = "42";
+        var currentRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: false))!.AsObject();
+        var currentActor = currentRoot["NPCsInScene"]![0]!.AsObject();
+        currentActor.Remove("npcId");
+        currentActor["NPCId"] = "42";
+        await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(backupPath, historicalRoot.ToJsonString());
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.False(actor.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotRestoreMortalEnvelopeForConflictingCurrentIdentityAliases()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        var currentRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: false))!.AsObject();
+        currentRoot["NPCsInScene"]![0]!["npcId"] = "npc_conflicting_identity";
+        await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(backupPath, BuildMortalNormalizerState(includeEnvelope: true));
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.False(actor.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotRestoreMortalEnvelopeWhenPermanentAliasIsExplicitNull(
+        bool nullAliasIsHistorical)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        var historicalRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: true))!.AsObject();
+        var currentRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: false))!.AsObject();
+        var actor = nullAliasIsHistorical
+            ? historicalRoot["NPCsInScene"]![0]!.AsObject()
+            : currentRoot["NPCsInScene"]![0]!.AsObject();
+        actor["npcId"] = null;
+        await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(backupPath, historicalRoot.ToJsonString());
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var normalizedActor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.False(normalizedActor.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task NormalizeAccumulatedStateAsync_RestoresMortalEnvelopeByInitialIdWhenPermanentIdIsUnassigned(
+        bool includeNullPermanentAlias)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        var historicalRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: true))!.AsObject();
+        var currentRoot = JsonNode.Parse(BuildMortalNormalizerState(includeEnvelope: false))!.AsObject();
+        foreach (var stateRoot in new[] { historicalRoot, currentRoot })
+        {
+            var stateActor = stateRoot["NPCsInScene"]![0]!.AsObject();
+            stateActor.Remove("NPCId");
+            stateActor.Remove("npcId");
+            if (includeNullPermanentAlias)
+                stateActor["NPCId"] = null;
+            stateActor["initialId"] = "npc_initial_materialization";
+        }
+        historicalRoot["NPCsInScene"]![0]![ActorMaterializationContract.PropertyName]!["actorId"] =
+            "npc_initial_materialization";
+        await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(backupPath, historicalRoot.ToJsonString());
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var normalizedRoot = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var normalizedActor = Assert.Single(normalizedRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(
+            "npc_initial_materialization",
+            normalizedActor[ActorMaterializationContract.PropertyName]?["actorId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotOverwriteExplicitChangedMortalMaterializationEnvelope()
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        await _fs.WriteFileAtomicAsync(
+            path,
+            BuildMortalNormalizerState(includeEnvelope: true, materializationId: "mat_normalizer_mortal_changed"));
+        await _fs.WriteFileAtomicAsync(backupPath, BuildMortalNormalizerState(includeEnvelope: true));
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(
+            "mat_normalizer_mortal_changed",
+            actor[ActorMaterializationContract.PropertyName]?["materializationId"]?.GetValue<string>());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotInventMortalMaterializationEnvelope(bool actorExistedPreviously)
+    {
+        const string path = "game_state/npcs/npc_core.json";
+        const string backupPath = "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json";
+        await _fs.WriteFileAtomicAsync(path, BuildMortalNormalizerState(includeEnvelope: false));
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            actorExistedPreviously
+                ? BuildMortalNormalizerState(includeEnvelope: false)
+                : """{ "UpdateNPCs": [], "NPCsInScene": [] }""");
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [path] = backupPath
+        });
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!.AsObject();
+        var actor = Assert.Single(root["NPCsInScene"]!.AsArray().OfType<JsonObject>());
+        Assert.False(actor.ContainsKey(ActorMaterializationContract.PropertyName));
+    }
+
+    private static string BuildMortalNormalizerState(
+        bool includeEnvelope,
+        string materializationId = "mat_normalizer_mortal_historical")
+    {
+        var actor = new JsonObject
+        {
+            ["NPCId"] = "npc_normalizer_materialization",
+            ["npcId"] = "npc_normalizer_materialization",
+            ["name"] = "Хранитель записи",
+            ["currentLocationId"] = "loc_normalizer_archive",
+            ["relationshipLevel"] = 0,
+            ["attitude"] = "Нейтралитет",
+            ["relationshipLock"] = new JsonObject { ["isLocked"] = false },
+            ["inventory"] = new JsonArray(),
+            ["goals"] = new JsonObject { ["shortTerm"] = "Сохранить запись." }
+        };
+        if (includeEnvelope)
+        {
+            actor[ActorMaterializationContract.PropertyName] = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["materializationId"] = materializationId,
+                ["actorType"] = "mortal_npc",
+                ["actorId"] = "npc_normalizer_materialization",
+                ["materializedAtTurn"] = 4,
+                ["state"] = "complete",
+                ["capabilities"] = new JsonObject(),
+                ["sections"] = new JsonObject()
+            };
+        }
+
+        return new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(),
+            ["NPCsInScene"] = new JsonArray(actor)
+        }.ToJsonString();
     }
 }

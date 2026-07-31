@@ -106,6 +106,8 @@
   "availableOperations": [
     "submitAction"
   ],
+  "interactionToken": "fixture-qte-interaction-token",
   "notification": null,
+  "errorCode": null,
   "error": null
 }

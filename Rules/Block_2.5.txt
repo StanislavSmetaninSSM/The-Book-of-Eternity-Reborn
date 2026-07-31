@@ -46,17 +46,18 @@
     Priority 2: Full State Update (For New Objects and Transformations)
    </title>
    <description>
-    Use arrays like 'UpdateInventory', 'UpdateNPCs', 'activeSkillChanges' to send the complete object state ONLY in two specific situations.
+    Complete-object arrays are limited to creation and surface-specific transformations. 'UpdateNPCs' is stricter: it is complete-object authority only for a genuinely new NPC or a true legacy promotion with exact inventory continuity.
    </description>
    <content type="rule_text">
     <![CDATA[
 
                     1.  Object Creation: When a new entity is created for the first time (a new item is found, a new NPC is met, a new skill is learned).
                 
-                    2.  Fundamental Transformation: When an existing entity undergoes a significant change that redefines its core identity, making a partial update insufficient.
+                    2.  Fundamental Transformation: When an existing non-NPC entity undergoes a significant change that redefines its core identity and its own contract explicitly requires a complete object.
                         - An item's Fate Card is unlocked, changing multiple properties at once (bonuses, combat effects, description).
                         - A skill evolves into a completely new one (e.g., 'Tough Skin' becomes 'Reinforced Hide').
-                        - An NPC's name, race, or fundamental history is altered by a major plot event.
+
+                    Existing NPCs are an explicit exception to complete-object transformation. Rename through 'NPCsRenameData'; mutate supported profile/location/progression/setting-owned characteristics/faction/Fate Card definition fields through 'NPCCoreChanges'; use the dedicated NPC command for every other supported domain. Do not resend an ordinary existing full NPC object.
 
                     ]]>
    </content>
@@ -79,9 +80,9 @@
    <content type="rule_text">
     <![CDATA[
 
-                    This applies to:
+                    This applies to surfaces whose own contract accepts partial objects:
                     -   'UpdateInventory': For changing item properties like 'durability', 'description', 'bonuses', or 'count'.
-                    -   'UpdateNPCs': For fundamental NPC changes like their 'history', 'class', or core 'appearanceDescription'.
+                    -   'NPCCoreChanges': For its closed, grouped ordinary-existing NPC core schema only. It is not arbitrary JSON patch and cannot change 'class' or 'appearanceDescription'.
                     -   'UpdateQuests': For changing a quest's 'description', 'questBackground', or adding to its 'detailsLog'.
                     -   'currentLocationData': For updating the 'lastEventsDescription' of a known location.
                     -   Any other data array where you are reporting a change to an existing object.

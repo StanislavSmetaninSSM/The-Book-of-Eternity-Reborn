@@ -298,6 +298,36 @@ internal static class GuardianAbodeResidentRequestState
         await WriteResidentsRequestsAsync(fs, existing);
     }
 
+    internal static async Task<bool> TryWriteResidentsRequestIfAbsentAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianAbodeResidentsRequest request)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingResidentsRequestPath);
+        var status = ReadRequestBundle(
+            json,
+            ResidentsRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentsRequest>(item, JsonOpts),
+            out var requests);
+        if (status == RequestBundleReadStatus.Malformed)
+            throw new InvalidOperationException("pending_guardian_abode_residents_request.json повреждён и должен быть исправлен или очищен до записи нового запроса состава.");
+
+        if (requests.Any(existing =>
+                string.Equals(existing.GuardianId, request.GuardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(existing.AbodeId, request.AbodeId, StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        await WriteBundleAsync(
+            fs,
+            writeLease,
+            PendingResidentsRequestPath,
+            ResidentsRequestsProperty,
+            requests.Append(request));
+        return true;
+    }
+
     public static async Task WriteInteractionRequestsAsync(
         FileSystemManager fs,
         IReadOnlyCollection<PendingGuardianAbodeResidentInteractionRequest> requests)
@@ -343,6 +373,36 @@ internal static class GuardianAbodeResidentRequestState
             existing.Add(request);
 
         await WriteInteractionRequestsAsync(fs, existing);
+    }
+
+    internal static async Task<bool> TryWriteInteractionRequestIfAbsentAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianAbodeResidentInteractionRequest request)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingInteractionsRequestPath);
+        var status = ReadRequestBundle(
+            json,
+            InteractionRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentInteractionRequest>(item, JsonOpts),
+            out var requests);
+        if (status == RequestBundleReadStatus.Malformed)
+            throw new InvalidOperationException("pending_guardian_abode_resident_interactions.json повреждён и должен быть исправлен или очищен до записи нового обращения.");
+
+        if (requests.Any(existing =>
+                string.Equals(existing.ResidentId, request.ResidentId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(existing.InteractionType, request.InteractionType, StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        await WriteBundleAsync(
+            fs,
+            writeLease,
+            PendingInteractionsRequestPath,
+            InteractionRequestsProperty,
+            requests.Append(request));
+        return true;
     }
 
     public static async Task WriteManifestationRequestsAsync(
@@ -413,9 +473,52 @@ internal static class GuardianAbodeResidentRequestState
         await WriteTransferRequestsAsync(fs, existing);
     }
 
+    internal static async Task<bool> TryWriteTransferRequestIfAbsentAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingGuardianAbodeResidentTransferRequest request)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingTransfersRequestPath);
+        var status = ReadRequestBundle(
+            json,
+            TransferRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentTransferRequest>(item, JsonOpts),
+            out var requests);
+        if (status == RequestBundleReadStatus.Malformed)
+            throw new InvalidOperationException("pending_guardian_abode_resident_transfers.json повреждён и должен быть исправлен или очищен до записи нового перехода.");
+
+        if (requests.Any(existing =>
+                string.Equals(existing.ResidentId, request.ResidentId, StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        await WriteBundleAsync(
+            fs,
+            writeLease,
+            PendingTransfersRequestPath,
+            TransferRequestsProperty,
+            requests.Append(request));
+        return true;
+    }
+
     public static async Task<IReadOnlyList<PendingGuardianAbodeResidentsRequest>> ReadResidentsRequestsAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingResidentsRequestPath);
+        return ReadRequestBundle(
+            json,
+            ResidentsRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentsRequest>(item, JsonOpts),
+            out var requests) == RequestBundleReadStatus.Valid
+            ? requests
+            : Array.Empty<PendingGuardianAbodeResidentsRequest>();
+    }
+
+    internal static async Task<IReadOnlyList<PendingGuardianAbodeResidentsRequest>> ReadResidentsRequestsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingResidentsRequestPath);
         return ReadRequestBundle(
             json,
             ResidentsRequestsProperty,
@@ -431,6 +534,20 @@ internal static class GuardianAbodeResidentRequestState
     public static async Task<IReadOnlyList<PendingGuardianAbodeResidentInteractionRequest>> ReadInteractionRequestsAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingInteractionsRequestPath);
+        return ReadRequestBundle(
+            json,
+            InteractionRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentInteractionRequest>(item, JsonOpts),
+            out var requests) == RequestBundleReadStatus.Valid
+            ? requests
+            : Array.Empty<PendingGuardianAbodeResidentInteractionRequest>();
+    }
+
+    internal static async Task<IReadOnlyList<PendingGuardianAbodeResidentInteractionRequest>> ReadInteractionRequestsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingInteractionsRequestPath);
         return ReadRequestBundle(
             json,
             InteractionRequestsProperty,
@@ -458,6 +575,22 @@ internal static class GuardianAbodeResidentRequestState
             string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase));
     }
 
+    internal static async Task<PendingGuardianAbodeResidentTransferRequest?> FindPendingTransferAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string residentId)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingTransfersRequestPath);
+        return ReadRequestBundle(
+                   json,
+                   TransferRequestsProperty,
+                   static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentTransferRequest>(item, JsonOpts),
+                   out var requests) == RequestBundleReadStatus.Valid
+            ? requests.FirstOrDefault(request =>
+                string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase))
+            : null;
+    }
+
     public static async Task<IReadOnlyList<PendingResidentCompanionManifestationRequest>> ReadManifestationRequestsAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingManifestationRequestPath);
@@ -482,9 +615,32 @@ internal static class GuardianAbodeResidentRequestState
             : Array.Empty<PendingGuardianAbodeResidentTransferRequest>();
     }
 
+    internal static async Task<IReadOnlyList<PendingGuardianAbodeResidentTransferRequest>> ReadTransferRequestsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingTransfersRequestPath);
+        return ReadRequestBundle(
+            json,
+            TransferRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentTransferRequest>(item, JsonOpts),
+            out var requests) == RequestBundleReadStatus.Valid
+            ? requests
+            : Array.Empty<PendingGuardianAbodeResidentTransferRequest>();
+    }
+
     public static async Task<bool> IsResidentsRequestFileMalformedAsync(FileSystemManager fs) =>
         ReadRequestBundle(
             await fs.ReadFileAsync(PendingResidentsRequestPath),
+            ResidentsRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentsRequest>(item, JsonOpts),
+            out _) == RequestBundleReadStatus.Malformed;
+
+    internal static async Task<bool> IsResidentsRequestFileMalformedAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadRequestBundle(
+            await fs.ReadFileAsync(writeLease, PendingResidentsRequestPath),
             ResidentsRequestsProperty,
             static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentsRequest>(item, JsonOpts),
             out _) == RequestBundleReadStatus.Malformed;
@@ -496,6 +652,15 @@ internal static class GuardianAbodeResidentRequestState
             static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentInteractionRequest>(item, JsonOpts),
             out _) == RequestBundleReadStatus.Malformed;
 
+    internal static async Task<bool> IsInteractionRequestFileMalformedAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadRequestBundle(
+            await fs.ReadFileAsync(writeLease, PendingInteractionsRequestPath),
+            InteractionRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentInteractionRequest>(item, JsonOpts),
+            out _) == RequestBundleReadStatus.Malformed;
+
     public static async Task<bool> IsTransferRequestFileMalformedAsync(FileSystemManager fs) =>
         ReadRequestBundle(
             await fs.ReadFileAsync(PendingTransfersRequestPath),
@@ -503,9 +668,27 @@ internal static class GuardianAbodeResidentRequestState
             static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentTransferRequest>(item, JsonOpts),
             out _) == RequestBundleReadStatus.Malformed;
 
+    internal static async Task<bool> IsTransferRequestFileMalformedAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadRequestBundle(
+            await fs.ReadFileAsync(writeLease, PendingTransfersRequestPath),
+            TransferRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingGuardianAbodeResidentTransferRequest>(item, JsonOpts),
+            out _) == RequestBundleReadStatus.Malformed;
+
     public static async Task<bool> IsManifestationRequestFileMalformedAsync(FileSystemManager fs) =>
         ReadRequestBundle(
             await fs.ReadFileAsync(PendingManifestationRequestPath),
+            ManifestationRequestsProperty,
+            static item => JsonSerializer.Deserialize<PendingResidentCompanionManifestationRequest>(item, JsonOpts),
+            out _) == RequestBundleReadStatus.Malformed;
+
+    internal static async Task<bool> IsManifestationRequestFileMalformedAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadRequestBundle(
+            await fs.ReadFileAsync(writeLease, PendingManifestationRequestPath),
             ManifestationRequestsProperty,
             static item => JsonSerializer.Deserialize<PendingResidentCompanionManifestationRequest>(item, JsonOpts),
             out _) == RequestBundleReadStatus.Malformed;
@@ -1736,6 +1919,25 @@ internal static class GuardianAbodeResidentRequestState
 
         return relics.OfType<JsonObject>()
             .FirstOrDefault(relic => string.Equals(GetNodeString(relic["relicId"]), relicId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static async Task WriteBundleAsync<T>(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        string propertyName,
+        IEnumerable<T> requests)
+        where T : class
+    {
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            path,
+            JsonSerializer.Serialize(
+                new Dictionary<string, object?>
+                {
+                    [propertyName] = requests.ToArray()
+                },
+                JsonOpts));
     }
 
     private static async Task EnsureBundleFileWritableAsync<T>(

@@ -811,7 +811,7 @@ private async Task ShowNPCs()
             "customStates", "maxWeight", "totalWeight", "isOverloaded", "progressionTrackers",
             "personalityProfile", "guardianId", "domain", "relationshipData", "questManagement",
             "gachaSystem", "rarity", "age", "class", "currentLocationId", "currentLocationName",
-            "initialLocationId", "initialLocationName", "sceneStatus", "lastSeenAtUtc", "turn" };
+            "initialLocationId", "initialLocationName", "sceneStatus", "lastSeenAtUtc", "turn", "materialization" };
         foreach (var prop in npc.EnumerateObject())
         {
             if (coreProps.Contains(prop.Name)) continue;

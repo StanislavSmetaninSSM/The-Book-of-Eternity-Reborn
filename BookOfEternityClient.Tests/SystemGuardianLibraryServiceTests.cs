@@ -140,6 +140,12 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.IsType<JsonObject>(guardian["questManagement"]);
         Assert.IsType<JsonObject>(guardian["gachaSystem"]);
 
+        var initialMusing = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(guardian["musings"])));
+        Assert.Equal(1, initialMusing["turn"]?.GetValue<int>());
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["topic"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["mood"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["thought"]?.GetValue<string>()));
+
         var loreFragments = Assert.IsType<JsonArray>(guardian["loreFragments"]);
         Assert.True(loreFragments.Count >= 7);
         foreach (var fragmentNode in loreFragments)
@@ -168,11 +174,14 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
         Assert.NotNull(preset);
 
+        const int turnNumber = 1;
+        var createdAtUtc = DateTimeOffset.Parse("2026-06-29T00:00:00Z");
+
         var root = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
             preset!,
             "Тестовая Душа",
-            turnNumber: 1,
-            createdAtUtc: DateTimeOffset.Parse("2026-06-29T00:00:00Z"));
+            turnNumber,
+            createdAtUtc);
 
         Assert.Equal(1, root["schemaVersion"]?.GetValue<int>());
         var profiles = Assert.IsType<JsonArray>(root["profiles"]);
@@ -202,12 +211,42 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         var entry = Assert.IsType<JsonObject>(Assert.Single(ledger));
         Assert.Equal("system_guardian_profile_bootstrap_azalia", entry["entryId"]?.GetValue<string>());
 
+        AssertCompleteSystemGuardianMaterialization(profile, "guard_system_azalia_001", turnNumber);
+
+        var repeatedRoot = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            preset,
+            "Тестовая Душа",
+            turnNumber,
+            createdAtUtc);
+        var repeatedProfile = GetOnlyAfterlifeProfile(repeatedRoot);
+        Assert.True(
+            JsonNode.DeepEquals(profile, repeatedProfile),
+            "Identical preset builder inputs must produce a semantically identical profile.");
+
+        var sameActorAndTurnRoot = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            preset,
+            "Другая Душа",
+            turnNumber,
+            createdAtUtc.AddDays(1));
+        Assert.Equal(
+            profile["materialization"]?["materializationId"]?.GetValue<string>(),
+            GetOnlyAfterlifeProfile(sameActorAndTurnRoot)["materialization"]?["materializationId"]?.GetValue<string>());
+
+        AssertDirectSystemGuardianMaterializationValidationPasses(profile);
+
+        var guardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            preset,
+            "Тестовая Душа",
+            turnNumber,
+            createdAtUtc);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardianRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
+        Assert.DoesNotContain(issues, IsActorMaterializationIssue);
     }
 
     [Fact]
@@ -244,21 +283,98 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             Assert.False(string.IsNullOrWhiteSpace(fragment["category"]?.GetValue<string>()));
         }
 
+        var initialMusing = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(guardian["musings"])));
+        Assert.Equal(1, initialMusing["turn"]?.GetValue<int>());
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["topic"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["mood"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(initialMusing["thought"]?.GetValue<string>()));
+
         var navigation = Assert.IsType<JsonObject>(root["chaosSeaNavigation"]);
         Assert.Equal(guardian["abode"]?["abodeId"]?.GetValue<string>(), navigation["currentAbodeId"]?.GetValue<string>());
         Assert.Equal(guardianId, navigation["currentGuardianId"]?.GetValue<string>());
     }
 
     [Fact]
+    public void FreshFreeformGuardianMaterialization_UsesNeutralSemanticSeedIndependentOfDescription()
+    {
+        const string knowledgeTradeDescription =
+            "Хранительница Селена Теневая: покровительница библиотек, архивов, мудрости и торговых сделок.";
+        const string combatHealingDescription =
+            "Хранительница Селена Теневая: воительница клинков, битв, охоты и исцеления.";
+        const int turnNumber = 7;
+        var createdAtUtc = DateTimeOffset.Parse("2026-06-29T00:00:00Z");
+
+        var knowledgeGuardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            knowledgeTradeDescription,
+            "Искра Перед Рассветом",
+            turnNumber,
+            createdAtUtc);
+        var combatGuardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            combatHealingDescription,
+            "Искра Перед Рассветом",
+            turnNumber,
+            createdAtUtc);
+        var knowledgeGuardian = Assert.IsType<JsonObject>(
+            Assert.Single(Assert.IsType<JsonArray>(knowledgeGuardianRoot["guardians"])));
+        var combatGuardian = Assert.IsType<JsonObject>(
+            Assert.Single(Assert.IsType<JsonArray>(combatGuardianRoot["guardians"])));
+
+        Assert.Equal(knowledgeTradeDescription, knowledgeGuardian["freeformSourceDescription"]?.GetValue<string>());
+        Assert.Equal(combatHealingDescription, combatGuardian["freeformSourceDescription"]?.GetValue<string>());
+        Assert.Equal("General", knowledgeGuardian["domain"]?.GetValue<string>());
+        Assert.Equal(
+            knowledgeGuardian["domain"]?.GetValue<string>(),
+            combatGuardian["domain"]?.GetValue<string>());
+
+        var knowledgeProfile = GetOnlyAfterlifeProfile(
+            _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                knowledgeTradeDescription,
+                "Искра Перед Рассветом",
+                turnNumber,
+                createdAtUtc));
+        var combatProfile = GetOnlyAfterlifeProfile(
+            _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+                combatHealingDescription,
+                "Искра Перед Рассветом",
+                turnNumber,
+                createdAtUtc));
+
+        Assert.Equal(knowledgeTradeDescription, knowledgeProfile["freeformSourceDescription"]?.GetValue<string>());
+        Assert.Equal(combatHealingDescription, combatProfile["freeformSourceDescription"]?.GetValue<string>());
+        var expectedStandardArts = new JsonObject
+        {
+            ["guard"] = 2,
+            ["maneuver"] = 1
+        };
+        Assert.True(JsonNode.DeepEquals(expectedStandardArts, knowledgeProfile["standardArts"]));
+        Assert.True(JsonNode.DeepEquals(knowledgeProfile["standardArts"], combatProfile["standardArts"]));
+
+        var knowledgeCapabilities = Assert.IsType<JsonObject>(
+            knowledgeProfile[ActorMaterializationContract.PropertyName]?["capabilities"]);
+        var combatCapabilities = Assert.IsType<JsonObject>(
+            combatProfile[ActorMaterializationContract.PropertyName]?["capabilities"]);
+        var expectedCapabilities = new JsonObject
+        {
+            ["canFight"] = true,
+            ["canTeach"] = true,
+            ["canTrade"] = true
+        };
+        Assert.True(JsonNode.DeepEquals(expectedCapabilities, knowledgeCapabilities));
+        Assert.True(JsonNode.DeepEquals(knowledgeCapabilities, combatCapabilities));
+    }
+
+    [Fact]
     public async Task BuildAfterlifeEntityProfileRootForFreshNewGame_Freeform_CreatesValidMentorProfile()
     {
         const string description = "Хранительница Селена Теневая: покровительница забытых библиотек, тайных сделок и осторожной мудрости.";
+        const int turnNumber = 7;
+        var createdAtUtc = DateTimeOffset.Parse("2026-06-29T00:00:00Z");
 
         var root = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
             description,
             "Искра Перед Рассветом",
-            turnNumber: 1,
-            createdAtUtc: DateTimeOffset.Parse("2026-06-29T00:00:00Z"));
+            turnNumber,
+            createdAtUtc);
 
         Assert.Equal(1, root["schemaVersion"]?.GetValue<int>());
         var profiles = Assert.IsType<JsonArray>(root["profiles"]);
@@ -275,12 +391,42 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Equal(2, standardArts["guard"]?.GetValue<int>());
         Assert.IsType<JsonArray>(profile["relationships"]);
 
+        AssertCompleteSystemGuardianMaterialization(profile, "guard_freeform_guardian_001", turnNumber);
+
+        var repeatedRoot = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            description,
+            "Искра Перед Рассветом",
+            turnNumber,
+            createdAtUtc);
+        var repeatedProfile = GetOnlyAfterlifeProfile(repeatedRoot);
+        Assert.True(
+            JsonNode.DeepEquals(profile, repeatedProfile),
+            "Identical freeform builder inputs must produce a semantically identical profile.");
+
+        var sameActorAndTurnRoot = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            description,
+            "Другая Душа",
+            turnNumber,
+            createdAtUtc.AddDays(1));
+        Assert.Equal(
+            profile["materialization"]?["materializationId"]?.GetValue<string>(),
+            GetOnlyAfterlifeProfile(sameActorAndTurnRoot)["materialization"]?["materializationId"]?.GetValue<string>());
+
+        AssertDirectSystemGuardianMaterializationValidationPasses(profile);
+
+        var guardianRoot = _service.BuildCanonicalGuardianRootForFreshNewGame(
+            description,
+            "Искра Перед Рассветом",
+            turnNumber,
+            createdAtUtc);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardianRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
+        Assert.DoesNotContain(issues, IsActorMaterializationIssue);
     }
 
     [Fact]
@@ -847,6 +993,105 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
 
         Assert.True(errors.Count == 0, string.Join(Environment.NewLine, errors));
     }
+
+    private static JsonObject GetOnlyAfterlifeProfile(JsonObject root)
+    {
+        var profiles = Assert.IsType<JsonArray>(root[AfterlifeEntityProfileState.ProfilesProperty]);
+        return Assert.IsType<JsonObject>(Assert.Single(profiles));
+    }
+
+    private static void AssertCompleteSystemGuardianMaterialization(
+        JsonObject profile,
+        string expectedGuardianId,
+        int expectedTurn)
+    {
+        Assert.Equal("guardian", profile["actorType"]?.GetValue<string>());
+        Assert.Equal(expectedGuardianId, profile["actorId"]?.GetValue<string>());
+
+        var expectedMaterialization = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["materializationId"] = $"mat_{expectedGuardianId}_turn_{expectedTurn}",
+            ["actorType"] = "guardian",
+            ["actorId"] = expectedGuardianId,
+            ["materializedAtTurn"] = expectedTurn,
+            ["state"] = "complete",
+            ["capabilities"] = new JsonObject
+            {
+                ["canFight"] = true,
+                ["canTeach"] = true,
+                ["canTrade"] = true
+            },
+            ["sections"] = new JsonObject
+            {
+                ["standardArts"] = new JsonObject { ["state"] = "populated" },
+                ["specialArts"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Хранитель ещё не создал личного особого искусства."
+                },
+                ["customStates"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "На Хранителе нет особых духовных состояний."
+                },
+                ["fateCards"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Карта Судьбы Хранителя ещё не открыта."
+                },
+                ["relationships"] = new JsonObject
+                {
+                    ["state"] = "empty_by_design",
+                    ["reason"] = "Устойчивые связи Хранителя ещё не сформировались."
+                },
+                ["agency"] = new JsonObject { ["state"] = "populated" },
+                ["progressionHistory"] = new JsonObject { ["state"] = "populated" }
+            }
+        };
+
+        Assert.True(
+            JsonNode.DeepEquals(expectedMaterialization, profile[ActorMaterializationContract.PropertyName]),
+            $"Unexpected System Guardian materialization: {profile[ActorMaterializationContract.PropertyName]?.ToJsonString()}");
+
+        Assert.Empty(Assert.IsType<JsonArray>(profile["relationships"]));
+        Assert.IsType<JsonArray>(profile[AfterlifeEntityProfileState.ProgressionLedgerProperty]);
+        Assert.NotEmpty(Assert.IsType<JsonArray>(profile["ledger"]));
+
+        var goals = Assert.IsType<JsonObject>(profile["goals"]);
+        Assert.False(string.IsNullOrWhiteSpace(goals["goalId"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["shortTermGoal"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["longTermGoal"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["plan"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(goals["gmThoughtsSummary"]?.GetValue<string>()));
+        Assert.Equal(expectedTurn, goals["updatedAtTurn"]?.GetValue<int>());
+        Assert.Empty(Assert.IsType<JsonArray>(profile["personalQuests"]));
+        Assert.True(profile.ContainsKey("currentActivity"));
+        Assert.Null(profile["currentActivity"]);
+        Assert.Empty(Assert.IsType<JsonArray>(profile["completedActivities"]));
+
+        var strategy = Assert.IsType<JsonObject>(profile["progressionStrategy"]);
+        var strategySummary = strategy["summary"]?.GetValue<string>();
+        var gmThoughtsSummary = profile["gmThoughtsSummary"]?.GetValue<string>();
+        Assert.False(string.IsNullOrWhiteSpace(gmThoughtsSummary));
+        Assert.Equal(strategySummary, gmThoughtsSummary);
+    }
+
+    private static void AssertDirectSystemGuardianMaterializationValidationPasses(JsonObject profile)
+    {
+        using var document = JsonDocument.Parse(profile.ToJsonString());
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            document.RootElement,
+            "systemGuardianProfile",
+            requireEnvelope: true,
+            canTradeEvidence: true);
+
+        Assert.Empty(issues);
+    }
+
+    private static bool IsActorMaterializationIssue(ValidationIssue issue) =>
+        issue.Code?.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase) == true;
 
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {

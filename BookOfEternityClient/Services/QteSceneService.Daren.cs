@@ -86,8 +86,11 @@ public sealed partial class QteSceneService
                 reachedHideout: true,
                 normalizedScore);
             var scoreSummary = BuildDarenFinalScoreSummary(offer.ScoreModel, active.ScoreState, ending);
-            var profileResult = await new DarenQteRewardProfileService(_fs)
-                .RecordCompletionAsync(ending, completedAtUtc ?? DateTime.UtcNow);
+            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            var profileResult = await RecordDarenCompletionAsync(
+                writeLease,
+                ending,
+                completedAtUtc ?? DateTime.UtcNow);
             var rewardMessage = ending.GrantsReward
                 ? profileResult.Message
                 : ending.RewardExplanation;

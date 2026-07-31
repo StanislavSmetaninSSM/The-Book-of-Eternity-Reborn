@@ -35,8 +35,12 @@ public sealed class BrowserClientSettingsService
         await BrowserAudioService.SettingsWriteGate.WaitAsync();
         try
         {
-            await _stateManager.LoadSettingsAsync();
-            return BuildDto();
+            return await _coordinator.RunBoundTransactionAsync(
+                async writeLease =>
+                {
+                    await _stateManager.LoadSettingsAsync(writeLease);
+                    return BuildDto();
+                });
         }
         finally
         {
@@ -49,31 +53,59 @@ public sealed class BrowserClientSettingsService
         await BrowserAudioService.SettingsWriteGate.WaitAsync();
         try
         {
-            await _stateManager.LoadSettingsAsync();
-            var shouldWriteGmProjection = request.Difficulty is not null;
-            var result = await _coordinator.ExecuteAsync(
-                new BrowserLocalWriteRequest(
-                    OwnerId: $"browser-settings:{Environment.MachineName}:{Environment.ProcessId}",
-                    OwnerLabel: "Browser Client settings",
-                    OperationLabel: "Browser Client settings update"),
-                ["config.json", "game_state/core/game_settings.json"],
-                async () =>
-                {
-                    ApplyRequest(request);
-                    await _stateManager.SaveSettingsAsync();
-                    if (shouldWriteGmProjection)
-                        await WriteGmSettingsProjectionAsync();
-                    await _audioService.ApplySettingsAsync();
-                });
-
-            return result.Success
-                ? BrowserClientSettingsUpdateResult.Completed(BuildDto())
-                : BrowserClientSettingsUpdateResult.Blocked(result.Message);
+            try
+            {
+                return await _coordinator.RunBoundTransactionAsync(
+                    writeLease => UpdateBoundAsync(writeLease, request));
+            }
+            catch (SessionReplacedException)
+            {
+                return BrowserClientSettingsUpdateResult.Blocked(
+                    "Игровая сессия изменилась во время сохранения настроек. Повторите действие.");
+            }
         }
         finally
         {
             BrowserAudioService.SettingsWriteGate.Release();
         }
+    }
+
+    private async Task<BrowserClientSettingsUpdateResult> UpdateBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserClientSettingsUpdateRequest request)
+    {
+        await _stateManager.LoadSettingsAsync(writeLease);
+        var shouldWriteGmProjection = request.Difficulty is not null;
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            new BrowserLocalWriteRequest(
+                OwnerId: $"browser-settings:{Environment.MachineName}:{Environment.ProcessId}",
+                OwnerLabel: "Browser Client settings",
+                OperationLabel: "Browser Client settings update"),
+            ["config.json", "game_state/core/game_settings.json"],
+            async transactionLease =>
+            {
+                ApplyRequest(request);
+                await _stateManager.SaveSettingsAsync(transactionLease);
+                if (shouldWriteGmProjection)
+                    await WriteGmSettingsProjectionAsync(transactionLease);
+                await _audioService.ApplySettingsAsync();
+            },
+            prepareAfterRollback: () =>
+            {
+                var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
+                var localizationLanguage = _localization.CurrentLanguage;
+                return () =>
+                {
+                    _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
+                    _localization.CurrentLanguage = localizationLanguage;
+                    _audioService.ApplySettingsAsync().GetAwaiter().GetResult();
+                };
+            });
+
+        return result.Success
+            ? BrowserClientSettingsUpdateResult.Completed(BuildDto())
+            : BrowserClientSettingsUpdateResult.Blocked(result.Message);
     }
 
     private void ApplyRequest(BrowserClientSettingsUpdateRequest request)
@@ -149,7 +181,8 @@ public sealed class BrowserClientSettingsService
                 SafetySummary: "Книга открыта только на этом устройстве и хранит настройки вместе с вашим прохождением."));
     }
 
-    private async Task WriteGmSettingsProjectionAsync()
+    private async Task WriteGmSettingsProjectionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var settings = _stateManager.Settings;
         var activeMods = settings.EnabledSystemMods
@@ -174,6 +207,7 @@ public sealed class BrowserClientSettingsService
         };
 
         await _fs.WriteFileAtomicAsync(
+            writeLease,
             "game_state/core/game_settings.json",
             JsonSerializer.Serialize(gameSettings, JsonOpts));
     }

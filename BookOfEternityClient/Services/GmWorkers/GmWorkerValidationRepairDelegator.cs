@@ -1,9 +1,13 @@
 using System.Security.Cryptography;
-using System.Text;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Services.GmWorkers;
+
+internal sealed class GmWorkerValidationRepairDelegatorHooks
+{
+    internal Func<Task>? BeforeReadyPublicationAsync { get; init; }
+}
 
 public enum GmWorkerValidationRepairOutcome
 {
@@ -13,6 +17,7 @@ public enum GmWorkerValidationRepairOutcome
     WorkerFailed,
     WorkerTimedOut,
     ApplyRejected,
+    SessionReplaced,
     Applied
 }
 
@@ -38,17 +43,29 @@ public sealed class GmWorkerValidationRepairDelegator
     private readonly GmWorkerBridgePool _bridgePool;
     private readonly GmWorkerApplyGate _applyGate;
     private readonly GmWorkerAuditLog _auditLog;
+    private readonly GmWorkerValidationRepairDelegatorHooks? _hooks;
 
     public GmWorkerValidationRepairDelegator(
         FileSystemManager fs,
         GmWorkerBridgePool bridgePool,
         GmWorkerApplyGate applyGate,
         GmWorkerAuditLog auditLog)
+        : this(fs, bridgePool, applyGate, auditLog, hooks: null)
+    {
+    }
+
+    internal GmWorkerValidationRepairDelegator(
+        FileSystemManager fs,
+        GmWorkerBridgePool bridgePool,
+        GmWorkerApplyGate applyGate,
+        GmWorkerAuditLog auditLog,
+        GmWorkerValidationRepairDelegatorHooks? hooks)
     {
         _fs = fs;
         _bridgePool = bridgePool;
         _applyGate = applyGate;
         _auditLog = auditLog;
+        _hooks = hooks;
     }
 
     public async Task<GmWorkerValidationRepairDispatchResult> TryRunAsync(
@@ -57,6 +74,7 @@ public sealed class GmWorkerValidationRepairDelegator
         WorkerTurnReference sourceTurn,
         string createdAtUtc,
         int attempt,
+        string? expectedSessionGeneration = null,
         CancellationToken cancellationToken = default)
     {
         if (prioritizedErrors.Count == 0)
@@ -84,8 +102,30 @@ public sealed class GmWorkerValidationRepairDelegator
         WorkerTaskPacket task;
         try
         {
-            task = await BuildTaskAsync(routing.Profile, prioritizedErrors, sourceTurn, createdAtUtc, attempt);
-            await _fs.WriteFileAtomicAsync(LatestValidationRepairTaskPath, GmWorkerJson.Serialize(task));
+            task = await BuildTaskAsync(
+                routing.Profile,
+                prioritizedErrors,
+                sourceTurn,
+                createdAtUtc,
+                attempt,
+                expectedSessionGeneration);
+            if (!await WriteLatestTaskIfCurrentAsync(task))
+            {
+                return new GmWorkerValidationRepairDispatchResult
+                {
+                    Outcome = GmWorkerValidationRepairOutcome.SessionReplaced,
+                    Task = task,
+                    FallbackReason = "Worker task context belongs to a replaced game session generation."
+                };
+            }
+        }
+        catch (GmWorkerSessionReplacedException ex)
+        {
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.SessionReplaced,
+                FallbackReason = ex.Message
+            };
         }
         catch (Exception ex)
         {
@@ -98,7 +138,23 @@ public sealed class GmWorkerValidationRepairDelegator
         }
 
         var run = await _bridgePool.RunTaskAsync(routing.Profile, task, cancellationToken);
-        if (run.Proposal == null)
+        if (run.SessionReplaced || !await IsCurrentSessionGenerationAsync(task.SessionGeneration))
+        {
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.SessionReplaced,
+                Task = task,
+                RunResult = run,
+                FallbackReason = run.Status.LastError ??
+                                 "Worker task belongs to a replaced game session generation."
+            };
+        }
+
+        var workerExecutionSucceeded =
+            !run.TimedOut &&
+            run.ExitCode == 0 &&
+            run.Status.State == WorkerBridgeState.Stopped;
+        if (!workerExecutionSucceeded || run.Proposal == null)
         {
             var outcome = run.TimedOut || run.Status.State == WorkerBridgeState.TimedOut
                 ? GmWorkerValidationRepairOutcome.WorkerTimedOut
@@ -112,7 +168,37 @@ public sealed class GmWorkerValidationRepairDelegator
             };
         }
 
-        var decision = await _applyGate.ApplyAsync(run.Proposal, task, routing.Profile);
+        if (run.BoundTask == null)
+        {
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.WorkerFailed,
+                Task = task,
+                RunResult = run,
+                FallbackReason =
+                    "Worker completed without an exact durable task reservation binding."
+            };
+        }
+
+        var boundTask = run.BoundTask;
+        var decision = await _applyGate.ApplyReservedAsync(
+            run.Proposal,
+            routing.Profile,
+            boundTask.SessionGeneration);
+        if (decision.Result == ApplyGateResult.SessionReplaced)
+        {
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.SessionReplaced,
+                Task = task,
+                RunResult = run,
+                ApplyDecision = decision,
+                FallbackReason = decision.RejectionReasons.Count == 0
+                    ? "Worker task belongs to a replaced game session generation."
+                    : string.Join(Environment.NewLine, decision.RejectionReasons)
+            };
+        }
+
         if (decision.Result != ApplyGateResult.Accepted)
         {
             return new GmWorkerValidationRepairDispatchResult
@@ -127,15 +213,29 @@ public sealed class GmWorkerValidationRepairDelegator
             };
         }
 
-        await WriteReadySignalAsync(sourceTurn, run.Proposal);
+        if (_hooks?.BeforeReadyPublicationAsync != null)
+            await _hooks.BeforeReadyPublicationAsync();
+        var readyPublication = await TryWriteReadySignalAsync(
+            sourceTurn,
+            run.Proposal,
+            boundTask.SessionGeneration);
         return new GmWorkerValidationRepairDispatchResult
         {
-            Outcome = GmWorkerValidationRepairOutcome.Applied,
+            Outcome = readyPublication.SessionReplaced
+                ? GmWorkerValidationRepairOutcome.SessionReplaced
+                : GmWorkerValidationRepairOutcome.Applied,
             Task = task,
             RunResult = run,
             ApplyDecision = decision,
-            ReadySignalCreated = true
+            ReadySignalCreated = readyPublication.Created,
+            FallbackReason = readyPublication.Diagnostic
         };
+    }
+
+    private async Task<bool> IsCurrentSessionGenerationAsync(string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return _fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration);
     }
 
     private async Task<WorkerTaskPacket> BuildTaskAsync(
@@ -143,28 +243,137 @@ public sealed class GmWorkerValidationRepairDelegator
         IReadOnlyList<ValidationIssue> prioritizedErrors,
         WorkerTurnReference sourceTurn,
         string createdAtUtc,
-        int attempt)
+        int attempt,
+        string? expectedSessionGeneration)
     {
-        var contextHashes = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var path in prioritizedErrors
-                     .Select(issue => issue.FilePath.Replace('\\', '/'))
-                     .Where(GmWorkerContractValidator.IsSafeRelativePath)
-                     .Distinct(StringComparer.Ordinal))
+        var targetPaths = prioritizedErrors
+            .Select(GmWorkerTaskPacketBuilder.ResolveValidationTargetPath)
+            .Where(GmWorkerContractValidator.IsSafeRelativePath)
+            .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+            .ToArray();
+        var requiresCharacteristicAuthority = prioritizedErrors.Any(issue => string.Equals(
+            issue.Code,
+            "npc_characteristics_empty",
+            StringComparison.OrdinalIgnoreCase));
+        var requiresAfterlifeRealmAuthority =
+            targetPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) ||
+            prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue);
+        var contextPaths = targetPaths.AsEnumerable();
+        if (requiresCharacteristicAuthority)
+            contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
+        if (requiresAfterlifeRealmAuthority)
+            contextPaths = contextPaths.Append(AfterlifeRealmAuthorityContract.StatePath);
+
+        var contextHashes = new Dictionary<string, string>(GmWorkerContractValidator.CanonicalPathComparer);
+        WorkerAfterlifeRealmGate realmGate = WorkerAfterlifeRealmGate.None;
+        var currentRealm = string.Empty;
+        string sessionGeneration;
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
-            var content = await _fs.ReadFileAsync(path);
-            contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
+            sessionGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+            if (expectedSessionGeneration != null &&
+                !_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+            {
+                throw new GmWorkerSessionReplacedException(
+                    "The validation-repair task belongs to a game session that is no longer current.");
+            }
+
+            foreach (var path in contextPaths.Distinct(GmWorkerContractValidator.CanonicalPathComparer))
+            {
+                var content = await _fs.ReadFileBytesAsync(writeLease, path);
+                if (path == MortalCharacteristicAuthorityContract.StatePath)
+                {
+                    var authorityJson = DecodeUtf8(content);
+                    if (!MortalCharacteristicAuthorityContract.TryReadKeys(authorityJson, out _, out var error))
+                        throw new InvalidOperationException(error);
+                }
+                else if (path == AfterlifeRealmAuthorityContract.StatePath)
+                {
+                    var authorityJson = DecodeUtf8(content);
+                    if (!AfterlifeRealmAuthorityContract.TryRead(
+                            authorityJson,
+                            out realmGate,
+                            out currentRealm,
+                            out var error))
+                    {
+                        throw new InvalidOperationException(error);
+                    }
+                }
+
+                contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
+            }
         }
 
+        var afterlifeContract = requiresAfterlifeRealmAuthority
+            ? BuildAfterlifeRepairContract(realmGate, currentRealm, targetPaths)
+            : null;
         return GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
             profile,
-            $"worker_task_validation_repair_{attempt:D4}",
+            $"worker_task_validation_repair_{attempt:D4}_{Guid.NewGuid():N}",
             sourceTurn,
             prioritizedErrors,
             contextHashes,
-            createdAtUtc);
+            createdAtUtc,
+            sessionGeneration,
+            afterlifeContract);
     }
 
-    private async Task WriteReadySignalAsync(WorkerTurnReference sourceTurn, WorkerProposal proposal)
+    private async Task<bool> WriteLatestTaskIfCurrentAsync(WorkerTaskPacket task)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
+            return false;
+
+        await _fs.WriteFileAtomicAsync(
+            writeLease,
+            LatestValidationRepairTaskPath,
+            GmWorkerJson.Serialize(task));
+        return true;
+    }
+
+    private static WorkerAfterlifeTaskContract BuildAfterlifeRepairContract(
+        WorkerAfterlifeRealmGate realmGate,
+        string currentRealm,
+        IEnumerable<string> targetPaths)
+    {
+        return new WorkerAfterlifeTaskContract
+        {
+            RealmGate = realmGate,
+            CurrentRealm = currentRealm,
+            AllowedAfterlifeSurfaces = targetPaths
+                .Where(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath)
+                .Where(path => !path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.OrdinalIgnoreCase))
+                .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+                .Order(GmWorkerContractValidator.CanonicalPathComparer)
+                .ToArray(),
+            RequiredReceipts = ["No new receipt is required for this bounded validation repair."],
+            RequiredReports = ["The apply-gate validation decision is the required repair report."],
+            ForbiddenMortalSubstitutes =
+            [
+                "worldStateFlags",
+                "worldEventsLog",
+                "Mortal NPC relationships",
+                "Mortal combat HP/status",
+                "Mortal factions or map files"
+            ]
+        };
+    }
+
+    private static bool IsAfterlifeActorMaterializationIssue(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        var actor = issue.Actor ?? string.Empty;
+        return code.StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+               code.StartsWith("afterlife_actor_binding_", StringComparison.OrdinalIgnoreCase) ||
+               (!actor.StartsWith("mortal_npc:", StringComparison.Ordinal) &&
+                actor.Contains(':', StringComparison.Ordinal) &&
+                code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task<(bool Created, string Diagnostic, bool SessionReplaced)> TryWriteReadySignalAsync(
+        WorkerTurnReference sourceTurn,
+        WorkerProposal proposal,
+        string sessionGeneration)
     {
         var ready = new ValidationRepairReadySignal
         {
@@ -174,27 +383,90 @@ public sealed class GmWorkerValidationRepairDelegator
             UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O"),
             Note = $"GM worker proposal {proposal.ProposalId} accepted by apply gate."
         };
-        await _fs.WriteFileAtomicAsync(ValidationRepairReadyPath, GmWorkerJson.Serialize(ready));
-        await _auditLog.AppendEventAsync(new WorkerAuditEvent
+
+        try
         {
-            EventId = CreateEventId(),
-            EventType = "validation-repair-ready-created",
-            WorkerId = proposal.WorkerId,
-            TaskId = proposal.TaskId,
-            ProposalId = proposal.ProposalId,
-            TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
-            Summary = "Created validation_repair_ready.json after accepted GM worker repair proposal.",
-            Details = new Dictionary<string, IReadOnlyList<string>>
+            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            if (!_fs.IsCurrentSessionGeneration(writeLease, sessionGeneration))
             {
-                ["readyPath"] = [ValidationRepairReadyPath]
+                return (
+                    false,
+                    "Worker repair belonged to a replaced game session generation; no ready signal was published.",
+                    true);
             }
-        });
+
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                ValidationRepairReadyPath,
+                GmWorkerJson.Serialize(ready));
+
+            await _auditLog.AppendEventAsync(writeLease, new WorkerAuditEvent
+            {
+                EventId = GmWorkerAuditEventIdGenerator.Create(),
+                EventType = "validation-repair-ready-created",
+                WorkerId = proposal.WorkerId,
+                TaskId = proposal.TaskId,
+                ProposalId = proposal.ProposalId,
+                TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
+                Summary = "Created validation_repair_ready.json after accepted GM worker repair proposal.",
+                Details = new Dictionary<string, IReadOnlyList<string>>
+                {
+                    ["readyPath"] = [ValidationRepairReadyPath]
+                }
+            });
+        }
+        catch (SessionReplacedException ex)
+        {
+            return (
+                false,
+                $"Worker repair belonged to a replaced game session generation; no ready signal was published: {ex.Message}",
+                true);
+        }
+        catch (Exception ex)
+        {
+            var diagnostic = $"Worker repair was applied, but ready signal publication failed: {ex.Message}";
+            await TryRecordPostApplyDiagnosticAsync(
+                "validation-repair-ready-failed",
+                proposal,
+                sessionGeneration,
+                diagnostic);
+            return (false, diagnostic, false);
+        }
+
+        return (true, string.Empty, false);
+    }
+
+    private async Task TryRecordPostApplyDiagnosticAsync(
+        string eventType,
+        WorkerProposal proposal,
+        string expectedSessionGeneration,
+        string summary)
+    {
+        try
+        {
+            _ = await _auditLog.AppendEventIfCurrentSessionAsync(
+                expectedSessionGeneration,
+                new WorkerAuditEvent
+                {
+                    EventId = GmWorkerAuditEventIdGenerator.Create(),
+                    EventType = eventType,
+                    WorkerId = proposal.WorkerId,
+                    TaskId = proposal.TaskId,
+                    ProposalId = proposal.ProposalId,
+                    TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
+                    Summary = summary
+                });
+        }
+        catch
+        {
+            // The canonical repair already succeeded; diagnostics must not reclassify its ownership.
+        }
     }
 
     private Task RecordRouterEventAsync(string eventType, string? workerId, string? taskId, string summary) =>
         _auditLog.AppendEventAsync(new WorkerAuditEvent
         {
-            EventId = CreateEventId(),
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
             EventType = eventType,
             WorkerId = string.IsNullOrWhiteSpace(workerId) ? "validation_repair_router" : workerId,
             TaskId = taskId,
@@ -202,14 +474,16 @@ public sealed class GmWorkerValidationRepairDelegator
             Summary = summary
         });
 
-    private static string ComputeSha256(string content)
-    {
-        var bytes = Encoding.UTF8.GetBytes(content);
-        return Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
-    }
+    private static string ComputeSha256(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content)).ToLowerInvariant();
 
-    private static string CreateEventId() =>
-        "worker_audit_" + Guid.NewGuid().ToString("N");
+    private static string? DecodeUtf8(byte[]? content)
+    {
+        if (content == null)
+            return null;
+        var text = System.Text.Encoding.UTF8.GetString(content);
+        return text.Length > 0 && text[0] == '\ufeff' ? text[1..] : text;
+    }
 
     private sealed record ValidationRepairReadySignal
     {

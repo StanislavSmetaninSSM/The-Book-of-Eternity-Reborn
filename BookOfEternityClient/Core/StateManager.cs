@@ -8,6 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
 
+internal sealed class StateManagerHooks
+{
+    internal Func<Task>? AfterPlayerSoulProfileInputsReadAsync { get; init; }
+}
+
 /// <summary>
 /// Central game state manager. Loads aggregated state from files,
 /// manages settings, and coordinates between subsystems.
@@ -16,6 +21,7 @@ public class StateManager
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<StateManager> _logger;
+    private readonly StateManagerHooks? _hooks;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
@@ -23,15 +29,36 @@ public class StateManager
     public GameSettings Settings { get; }
 
     public StateManager(FileSystemManager fs, GameSettings settings, ILogger<StateManager> logger)
+        : this(fs, settings, logger, hooks: null)
+    {
+    }
+
+    internal StateManager(
+        FileSystemManager fs,
+        GameSettings settings,
+        ILogger<StateManager> logger,
+        StateManagerHooks? hooks)
     {
         _fs = fs;
         Settings = settings;
         _logger = logger;
+        _hooks = hooks;
     }
 
     public async Task LoadSettingsAsync()
     {
         var json = await _fs.ReadFileAsync("config.json");
+        LoadSettingsJson(json);
+    }
+
+    internal async Task LoadSettingsAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await _fs.ReadFileAsync(writeLease, "config.json");
+        LoadSettingsJson(json);
+    }
+
+    private void LoadSettingsJson(string? json)
+    {
         if (json == null)
             return;
 
@@ -63,16 +90,43 @@ public class StateManager
         await _fs.WriteFileAtomicAsync("config.json", json);
     }
 
+    internal async Task SaveSettingsAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = JsonSerializer.Serialize(Settings, JsonOpts);
+        await _fs.WriteFileAtomicAsync(writeLease, "config.json", json);
+    }
+
     /// <summary>
     /// Load aggregated game state from all game_state/ files for UI display.
     /// </summary>
     public async Task RefreshGameStateAsync()
     {
-        await RepairClientOwnedProfileMirrorsAsync();
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        try
+        {
+            await RepairClientOwnedProfileMirrorsAsync(writeLease);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
+        }
+        await RefreshGameStateCoreAsync(writeLease);
+    }
+
+    internal async Task RefreshGameStateAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        await RepairClientOwnedProfileMirrorsAsync(writeLease);
+        await RefreshGameStateCoreAsync(writeLease);
+    }
+
+    private async Task RefreshGameStateCoreAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
         var state = new AggregatedGameState();
 
         // Core: Player status
-        await TryLoadJson("game_state/core/player_status.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/core/player_status.json", (doc) =>
         {
             var root = doc.RootElement;
             state.PlayerStatus = new PlayerStatusState
@@ -90,20 +144,20 @@ public class StateManager
         });
 
         // Core: Narrative
-        await TryLoadJson("output/narrative_response.json", (doc) =>
+        await TryLoadJson(writeLease, "output/narrative_response.json", (doc) =>
         {
             state.Narrative = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(
                 GetString(doc.RootElement, "response", "")) ?? "";
         });
 
         // Core: GM Debug
-        await TryLoadJson("output/debug_logs.json", (doc) =>
+        await TryLoadJson(writeLease, "output/debug_logs.json", (doc) =>
         {
             state.GmDebug = GetString(doc.RootElement, "gm_thoughts_markdown", "");
         });
 
         // World: Location
-        await TryLoadJson("game_state/world/current_location.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/world/current_location.json", (doc) =>
         {
             var root = doc.RootElement;
             if (root.TryGetProperty("currentLocationData", out var locationData) &&
@@ -114,13 +168,13 @@ public class StateManager
         });
 
         // World: Time
-        await TryLoadJson("game_state/world/world_time.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/world/world_time.json", (doc) =>
         {
             state.WorldTime = FormatWorldTime(doc.RootElement);
         });
 
         // Player: Transformation (name, class, race)
-        await TryLoadJson("game_state/player/transformation.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/player/transformation.json", (doc) =>
         {
             var root = doc.RootElement;
             state.CharacterName = GetString(root, "playerCharacterNameChange", state.CharacterName);
@@ -129,7 +183,7 @@ public class StateManager
         });
 
         // Meta: Soul state
-        await TryLoadJson("game_state/meta/soul_state.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/meta/soul_state.json", (doc) =>
         {
             var root = doc.RootElement;
             state.SoulName = GetString(root, "soulName", "");
@@ -157,10 +211,12 @@ public class StateManager
                 state.EnlightenmentTier = tier.GetString() ?? "Новичок";
         });
 
-        await TryLoadMortalIncarnationIdentityFallbackAsync(state);
+        await TryLoadMortalIncarnationIdentityFallbackAsync(
+            writeLease,
+            state);
 
         // Meta: Shining Abode lifecycle handoff
-        await TryLoadJson("game_state/meta/shining_abode_state.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/meta/shining_abode_state.json", (doc) =>
         {
             var root = doc.RootElement;
             state.ShiningAbodeAvailability = GetString(root, "availability", "");
@@ -228,14 +284,16 @@ public class StateManager
 
         // Control: Post-life guard for the first ordinary afterlife turn.
         // A malformed or semantically invalid guard still blocks re-entry until runtime normalization clears it.
-        var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+        var rawReturnGuard = await _fs.ReadFileAsync(
+            writeLease,
+            AfterlifeReturnGuardService.GuardPath);
         var guardSemanticState = AfterlifeReturnGuardService.Classify(rawReturnGuard, out _);
         state.HasBlockingAfterlifeReturnGuard =
             guardSemanticState is AfterlifeReturnGuardSemanticState.ActiveValid or
             AfterlifeReturnGuardSemanticState.BlockingInvalid;
 
         // Meta: Guardians (active guardian name)
-        await TryLoadJson("game_state/meta/guardians.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/meta/guardians.json", (doc) =>
         {
             var root = doc.RootElement;
             if (root.ValueKind == JsonValueKind.Object)
@@ -247,7 +305,7 @@ public class StateManager
         });
 
         // History: Chat log for turn number
-        await TryLoadJson("game_state/history/chat_log.json", (doc) =>
+        await TryLoadJson(writeLease, "game_state/history/chat_log.json", (doc) =>
         {
             var root = doc.RootElement;
             if (root.TryGetProperty("sessionId", out var sid))
@@ -367,9 +425,12 @@ public class StateManager
         return null;
     }
 
-    private async Task TryLoadJson(string path, Action<JsonDocument> handler)
+    private async Task TryLoadJson(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        Action<JsonDocument> handler)
     {
-        var json = await _fs.ReadFileAsync(path);
+        var json = await _fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -383,12 +444,17 @@ public class StateManager
         }
     }
 
-    private async Task TryLoadMortalIncarnationIdentityFallbackAsync(AggregatedGameState state)
+    private async Task TryLoadMortalIncarnationIdentityFallbackAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AggregatedGameState state)
     {
         if (state.IsInAfterlifeRealm || !string.IsNullOrWhiteSpace(state.CharacterName))
             return;
 
-        await TryLoadJson("game_state/control/next_life_scenario_core.json", doc =>
+        await TryLoadJson(
+            writeLease,
+            "game_state/control/next_life_scenario_core.json",
+            doc =>
         {
             if (!doc.RootElement.TryGetProperty("scenarioCoreAssertions", out var assertions) ||
                 assertions.ValueKind != JsonValueKind.Array)
@@ -430,17 +496,27 @@ public class StateManager
         return words.Length <= 4 ? candidate : string.Join(' ', words.Take(4));
     }
 
-    private async Task RepairClientOwnedProfileMirrorsAsync()
+    private Task RepairClientOwnedProfileMirrorsAsync(FileSystemManager.CanonicalWriteLease writeLease) =>
+        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(
+            _fs,
+            writeLease,
+            _hooks?.AfterPlayerSoulProfileInputsReadAsync);
+
+    internal RuntimeSnapshot CaptureRuntimeSnapshot()
     {
-        try
-        {
-            await AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync(_fs);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
-        }
+        var settingsJson = JsonSerializer.Serialize(Settings, JsonOpts);
+        var settingsCopy = JsonSerializer.Deserialize<GameSettings>(settingsJson, JsonOpts) ?? new GameSettings();
+        return new RuntimeSnapshot(CurrentState, settingsCopy);
     }
+
+    internal void RestoreRuntimeSnapshot(RuntimeSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        CurrentState = snapshot.State;
+        Settings.ApplyLoadedValues(snapshot.Settings);
+    }
+
+    internal sealed record RuntimeSnapshot(AggregatedGameState State, GameSettings Settings);
 
     private static string GetString(JsonElement el, string prop, string def)
     {

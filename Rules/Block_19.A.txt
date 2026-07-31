@@ -11,6 +11,7 @@
 
             You are STRICTLY FORBIDDEN from modifying an NPC's inventory by re-sending their entire 'inventory' array within the 'UpdateNPCs' object.
             That method is now deprecated and is known to cause data corruption.
+            A schema-required unchanged inventory snapshot during Legacy promotion is not a modification and is the only existing-identity exception; Rule 19.A.5 defines its exact boundary.
 
             Instead, you MUST use the following specific, targeted commands to manage NPC inventory changes:
             - To ADD new items: Use the 'NPCInventoryAdds' array.
@@ -177,13 +178,20 @@
    <instructiontext>
     <![CDATA[
                     
-                    You MUST differentiate between two distinct operations: Creation and Modification.
+                    You MUST differentiate between three lifecycle cases: Creation, Legacy promotion, and Modification.
+
+                    Identity guard: same-turn initialId must not collide with a validated pre-turn permanent NPCId. An actor already present under a permanent NPCId is existing even if the current payload tries NPCId=null plus that id as initialId.
 
                     1.  For NEW NPCs (Creation):
                         -   The NPC's complete, initial inventory MUST be defined exclusively within the 'inventory' array of their main object in the 'UpdateNPCs' key.
                         -   The commands 'NPCInventoryAdds', 'NPCInventoryUpdates', and 'NPCInventoryRemovals' MUST NOT be used for this new NPC in the same turn it is created.
 
-                    2.  For EXISTING NPCs (Modification):
+                    2.  For an EXISTING LEGACY NPC receiving its first complete envelope (Legacy promotion):
+                        -   The complete NPC schema requires 'inventory', but it is continuity evidence only: resend the unchanged inventory snapshot semantically identical to the validated pre-turn inventory snapshot.
+                        -   Any added, removed, reordered into a different meaning, or changed item makes the promotion invalid through 'UpdateNPCs.inventory'.
+                        -   Apply every real inventory mutation through 'NPCInventoryAdds', 'NPCInventoryUpdates', or 'NPCInventoryRemovals', never by editing the promotion snapshot.
+
+                    3.  For EXISTING NPCs (Modification):
                         -   An "existing" NPC is one that has an 'NPCId' in your 'NPCsInScene'.
                         -   You are STRICTLY FORBIDDEN from modifying their inventory by re-sending a new 'inventory' array within an 'UpdateNPCs' object. This is a deprecated method that causes data loss.
                         -   ALL subsequent changes to an existing NPC's inventory MUST be done using the atomic commands: 'NPCInventoryAdds', 'NPCInventoryUpdates', 'NPCInventoryRemovals'.

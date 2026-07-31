@@ -1,3 +1,5 @@
+using BookOfEternityClient.Core;
+
 namespace BookOfEternityClient.Services.GmWorkers;
 
 public enum WorkerLaunchVisibility
@@ -105,6 +107,7 @@ public static class WorkerTaskTypes
 
 public enum WorkerProposalStatus
 {
+    Unspecified = 0,
     Completed,
     Failed,
     TimedOut,
@@ -113,6 +116,7 @@ public enum WorkerProposalStatus
 
 public enum WorkerFileChangeKind
 {
+    Unspecified = 0,
     Add,
     Replace,
     Delete
@@ -133,7 +137,8 @@ public enum ApplyGateResult
 {
     Accepted,
     Rejected,
-    ValidationFailed
+    ValidationFailed,
+    SessionReplaced
 }
 
 public sealed record WorkerBridgeProfile
@@ -162,6 +167,7 @@ public sealed record WorkerTaskPacket
 {
     public int SchemaVersion { get; init; } = 1;
     public string TaskId { get; init; } = "";
+    public string SessionGeneration { get; init; } = "";
     public string WorkerId { get; init; } = "";
     public WorkerRole Role { get; init; } = WorkerRole.ValidationRepair;
     public WorkerTaskType TaskType { get; init; } = WorkerTaskType.ValidationRepair;
@@ -194,6 +200,10 @@ public sealed record WorkerValidationIssue
     public string Code { get; init; } = "";
     public string Path { get; init; } = "";
     public string Message { get; init; } = "";
+    public string? Actor { get; init; }
+    public string? Section { get; init; }
+    public string? Expected { get; init; }
+    public string? Actual { get; init; }
 }
 
 public sealed record WorkerFileReference
@@ -257,7 +267,7 @@ public sealed record WorkerProposal
     public string ProposalId { get; init; } = "";
     public string TaskId { get; init; } = "";
     public string WorkerId { get; init; } = "";
-    public WorkerProposalStatus Status { get; init; } = WorkerProposalStatus.Completed;
+    public required WorkerProposalStatus Status { get; init; }
     public string Summary { get; init; } = "";
     public IReadOnlyList<WorkerChangedFile> ChangedFiles { get; init; } = [];
     public IReadOnlyList<WorkerFinding> Findings { get; init; } = [];
@@ -375,7 +385,7 @@ public sealed record WorkerValidatorRisk
 public sealed record WorkerChangedFile
 {
     public string Path { get; init; } = "";
-    public WorkerFileChangeKind ChangeKind { get; init; } = WorkerFileChangeKind.Replace;
+    public WorkerFileChangeKind ChangeKind { get; init; } = WorkerFileChangeKind.Unspecified;
     public string? BeforeSha256 { get; init; }
     public string? AfterSha256 { get; init; }
     public string? ContentRef { get; init; }
@@ -438,11 +448,16 @@ public sealed record GmWorkerTaskRunResult
     public WorkerBridgeStatus Status { get; init; } = new();
     public IReadOnlyList<WorkerBridgeStatus> StatusHistory { get; init; } = [];
     public WorkerProposal? Proposal { get; init; }
+    public WorkerTaskPacket? BoundTask { get; init; }
     public int? ExitCode { get; init; }
     public string StandardOutput { get; init; } = "";
     public string StandardError { get; init; } = "";
     public bool TimedOut { get; init; }
+    public bool SessionReplaced { get; init; }
 }
+
+internal sealed class GmWorkerSessionReplacedException(string message)
+    : SessionReplacedException(message, string.Empty, null);
 
 public sealed record WorkerAuditEvent
 {

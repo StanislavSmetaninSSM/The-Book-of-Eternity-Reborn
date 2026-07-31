@@ -47,6 +47,7 @@ public partial class ExplorerMode
     private readonly Services.IClipboardService? _clipboardService;
     private readonly Services.LocalUiSessionLockService _localUiSessionLockService;
     private readonly Services.LocalUiSessionLockOwner _localUiSessionLockOwner;
+    private Services.LocalUiSessionLockLease? _localUiSessionLockLease;
 
     // Set by interactive commands (equip/unequip) to signal an action to send to the GM
     private string? _pendingGmAction;
@@ -313,9 +314,26 @@ public partial class ExplorerMode
             return true;
 
         var operationLabel = $"Команда {commandName}";
-        var result = await _localUiSessionLockService.AcquireOrRefreshAsync(_localUiSessionLockOwner, operationLabel);
+        var result = _localUiSessionLockLease == null
+            ? await _localUiSessionLockService.AcquireOrRefreshAsync(
+                _localUiSessionLockOwner,
+                operationLabel)
+            : await _localUiSessionLockService.RefreshAsync(
+                _localUiSessionLockLease,
+                operationLabel);
+        if (!result.Acquired && _localUiSessionLockLease != null)
+        {
+            _localUiSessionLockLease = null;
+            result = await _localUiSessionLockService.AcquireOrRefreshAsync(
+                _localUiSessionLockOwner,
+                operationLabel);
+        }
+
         if (result.Acquired)
+        {
+            _localUiSessionLockLease = result.Lease;
             return true;
+        }
 
         MarkupLine($"[yellow]⚠️ {Markup.Escape(result.BlockerMessage)}[/]");
         MarkupLine($"[dim]Lock-файл: {Markup.Escape(LocalUiSessionLockService.LockPath)}[/]");
@@ -667,6 +685,18 @@ public partial class ExplorerMode
         return snapshot;
     }
 
+    internal void ForgetSessionTransientState()
+    {
+        _pendingGmAction = null;
+        _pendingInPlaceGmRequest = null;
+        _currentCommandInput = string.Empty;
+        _currentCommandRemainder = string.Empty;
+        _pendingLocalTurnRollbackSnapshot = null;
+        _agentConsoleWaitKeyScreenIndex = 0;
+        _diceRevealed = false;
+        _agentConsoleCapture?.ClearCapture();
+    }
+
     internal Task StagePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles) =>
         EnsurePendingLocalTurnRollbackSnapshotAsync(trackedFiles);
 
@@ -708,21 +738,22 @@ public partial class ExplorerMode
         if (normalizedTrackedFiles.Count == 0)
             return;
 
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _pendingLocalTurnRollbackSnapshot ??= new PendingLocalTurnRollbackSnapshot();
         foreach (var trackedFile in normalizedTrackedFiles)
         {
             if (!_pendingLocalTurnRollbackSnapshot.TrackedFiles.Add(trackedFile))
                 continue;
 
-            if (!_fs.FileExists(trackedFile))
+            if (!_fs.FileExists(writeLease, trackedFile))
                 continue;
 
-            var backupContent = await _fs.ReadFileAsync(trackedFile);
+            var backupContent = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
             if (backupContent == null)
                 continue;
 
             var backupPath = CreateExplorerRollbackBackupPath(trackedFile);
-            await _fs.WriteFileAtomicAsync(backupPath, backupContent);
+            await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, backupContent);
             _pendingLocalTurnRollbackSnapshot.BaselineFiles.Add(trackedFile);
             _pendingLocalTurnRollbackSnapshot.BackupFiles[trackedFile] = backupPath;
             _pendingLocalTurnRollbackSnapshot.BackupHashes[trackedFile] = ComputeExplorerRollbackHash(backupContent);
@@ -747,73 +778,74 @@ public partial class ExplorerMode
         if (snapshot == null)
             return;
 
-        foreach (var trackedFile in snapshot.TrackedFiles)
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
-            if (snapshot.BaselineFiles.Contains(trackedFile))
-                continue;
-
-            if (_fs.FileExists(trackedFile))
-                _fs.DeleteFile(trackedFile);
-        }
-
-        foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
-        {
-            var backupContent = await _fs.ReadFileAsync(backupPath);
-            if (backupContent == null)
-                continue;
-
-            if (snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) &&
-                !string.Equals(ComputeExplorerRollbackHash(backupContent), expectedHash, StringComparison.OrdinalIgnoreCase))
+            var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
             {
-                continue;
+                var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath)
+                    ?? throw new FileNotFoundException("Explorer rollback evidence is missing.", backupPath);
+                if (!snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) ||
+                    !string.Equals(
+                        ComputeExplorerRollbackHash(backupContent),
+                        expectedHash,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidDataException(
+                        $"Explorer rollback evidence hash mismatch for '{originalPath}'.");
+                }
+
+                validatedBackups[originalPath] = backupContent;
             }
 
-            await _fs.WriteFileAtomicAsync(originalPath, backupContent);
+            foreach (var trackedFile in snapshot.TrackedFiles)
+            {
+                if (snapshot.BaselineFiles.Contains(trackedFile))
+                    continue;
+
+                if (_fs.FileExists(writeLease, trackedFile))
+                    _fs.DeleteFile(writeLease, trackedFile);
+            }
+
+            foreach (var (originalPath, backupContent) in validatedBackups)
+            {
+                await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);
+            }
+
+            DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
+            ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
         }
 
-        await DiscardPendingLocalTurnRollbackSnapshotAsync();
         await _stateManager.RefreshGameStateAsync();
     }
 
     private async Task DiscardPendingLocalTurnRollbackSnapshotAsync()
     {
         var snapshot = _pendingLocalTurnRollbackSnapshot;
-        _pendingLocalTurnRollbackSnapshot = null;
         if (snapshot == null)
             return;
 
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
+            ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+        }
+    }
+
+    private void DiscardPendingLocalTurnRollbackSnapshot(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingLocalTurnRollbackSnapshot snapshot)
+    {
+        _pendingLocalTurnRollbackSnapshot = null;
         foreach (var backupPath in snapshot.BackupFiles.Values.Distinct(StringComparer.OrdinalIgnoreCase))
         {
-            if (_fs.FileExists(backupPath))
-                _fs.DeleteFile(backupPath);
+            if (_fs.FileExists(writeLease, backupPath))
+                _fs.DeleteFile(writeLease, backupPath);
         }
-
-        DeleteEmptyExplorerRollbackDirectories();
-        await Task.CompletedTask;
     }
 
-    private void DeleteEmptyExplorerRollbackDirectories()
-    {
-        var rollbackRoot = _fs.ResolvePath(ExplorerLocalTurnRollbackRoot);
-        if (!Directory.Exists(rollbackRoot))
-            return;
-
-        foreach (var directory in Directory.GetDirectories(rollbackRoot, "*", SearchOption.AllDirectories)
-                     .OrderByDescending(path => path.Length))
-        {
-            if (!Directory.EnumerateFileSystemEntries(directory).Any())
-                Directory.Delete(directory);
-        }
-
-        if (!Directory.EnumerateFileSystemEntries(rollbackRoot).Any())
-            Directory.Delete(rollbackRoot);
-    }
-
-    private static string ComputeExplorerRollbackHash(string content)
-    {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(content));
-        return Convert.ToHexString(bytes);
-    }
+    private static string ComputeExplorerRollbackHash(byte[] content) =>
+        Convert.ToHexString(SHA256.HashData(content));
 
     private async Task ShowScenarioCoreReviewAsync()
     {

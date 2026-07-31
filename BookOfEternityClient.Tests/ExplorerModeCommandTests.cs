@@ -177,7 +177,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
           "currentLocationName": "Счётная комната",
           "sceneStatus": "present_note_written_partial",
           "lastSeenAtUtc": "2026-06-30T02:26:04Z",
-          "turn": 25
+          "turn": 25,
+          "materialization": "private_mortal_materialization_marker"
         }
         """);
 
@@ -220,6 +221,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("currentLocationId", rendered);
         Assert.DoesNotContain("sceneStatus", rendered);
         Assert.DoesNotContain("lastSeenAtUtc", rendered);
+        Assert.DoesNotContain("materialization", rendered, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("private_mortal_materialization_marker", rendered, StringComparison.Ordinal);
     }
 
     private async Task SeedSessionForCommandAsync(string command)

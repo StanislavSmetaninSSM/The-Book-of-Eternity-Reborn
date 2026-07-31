@@ -54,6 +54,22 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
         AssertIssue1066Action(result, expectedActionId, expectedCommand, expectedLabelText);
     }
 
+    [Fact]
+    public async Task T155_ExecuteAsync_AfterlifeProfiles_HidesPrivateAndSystemProfiles()
+    {
+        await SeedRichAfterlifeProfileInboxDrilldownFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var payload = SerializePlayerFacingResult(result);
+        Assert.Contains("Хранитель Зеркал", CollectBlockText(result.Blocks), StringComparison.Ordinal);
+        Assert.DoesNotContain("hidden_profile_marker", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("gm_only_profile_marker", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("secret_profile_marker", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("system_profile_marker", payload, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("/afterlife_profiles профиль guardian_mirror", "Профиль посмертия: Хранитель Зеркал", "Собирает отражения", "hidden_profile_marker")]
     [InlineData("/afterlife_threats угроза threat_moth", "Угроза посмертия: Моль Сомнений", "плетёт сомнения", "hidden_threat_marker")]
@@ -209,7 +225,7 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
           "currentRealm": "Chaos Sea",
           "currentIncarnation": 12,
           "afterlifeCombatProfile": {
-            "standardArts": { "pressure": 2, "guard": 1 }
+            "artTiers": { "pressure": 2, "guard": 1 }
           }
         }
         """);
@@ -251,6 +267,23 @@ public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldown
               "displayName": "hidden_profile_marker",
               "isPlayerVisible": false,
               "currentActivity": { "summary": "не показывать игроку" }
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "gm_only_profile",
+              "displayName": "gm_only_profile_marker",
+              "gmOnly": true
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "secret_profile",
+              "displayName": "secret_profile_marker",
+              "visibility": "secret"
+            },
+            {
+              "actorType": "system_actor",
+              "actorId": "system_profile",
+              "displayName": "system_profile_marker"
             }
           ]
         }

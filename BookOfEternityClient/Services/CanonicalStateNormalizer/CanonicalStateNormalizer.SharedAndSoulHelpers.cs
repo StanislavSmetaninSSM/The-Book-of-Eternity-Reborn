@@ -560,7 +560,7 @@ public partial class CanonicalStateNormalizer
 
     private async Task<JsonNode?> ReadNodeAsync(string relativePath)
     {
-        var json = await _fs.ReadFileAsync(relativePath);
+        var json = await ReadCanonicalFileAsync(relativePath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -594,7 +594,7 @@ public partial class CanonicalStateNormalizer
     {
         return await ReadCurrentGuardianProjectAuthorityObjectAsync(
             GuardianProjectState.TrackerPath,
-            required: _fs.FileExists(GuardianProjectState.TrackerPath),
+            required: CanonicalFileExists(GuardianProjectState.TrackerPath),
             GuardianProjectCurrentTrackerReadableRequiredMessage);
     }
 
@@ -651,10 +651,10 @@ public partial class CanonicalStateNormalizer
 
     private void RequireGuardianProjectAuthorityBaselines(JsonObject? trackerRoot, JsonObject? guardiansRoot)
     {
-        if (!_fs.FileExists(GuardianProjectState.TrackerPath))
+        if (!CanonicalFileExists(GuardianProjectState.TrackerPath))
             return;
 
-        var requiresGuardiansBaseline = _fs.FileExists(GuardiansStatePath);
+        var requiresGuardiansBaseline = CanonicalFileExists(GuardiansStatePath);
         if (trackerRoot != null && (!requiresGuardiansBaseline || guardiansRoot != null))
             return;
 
@@ -681,7 +681,7 @@ public partial class CanonicalStateNormalizer
         bool required,
         string failureMessage)
     {
-        if (!_fs.FileExists(relativePath))
+        if (!CanonicalFileExists(relativePath))
         {
             if (required)
                 throw new InvalidOperationException(failureMessage);
@@ -689,7 +689,7 @@ public partial class CanonicalStateNormalizer
             return null;
         }
 
-        var json = await _fs.ReadFileAsync(relativePath);
+        var json = await ReadCanonicalFileAsync(relativePath);
         if (string.IsNullOrWhiteSpace(json))
         {
             if (required)

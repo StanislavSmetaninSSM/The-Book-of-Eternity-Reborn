@@ -231,22 +231,35 @@ internal static class ShiningFactionRequestState
     public static bool IsSupportedLeadershipStatus(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedLeadershipStatuses.Contains(value);
     public static bool IsSupportedLeadershipHistoryEventType(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedLeadershipHistoryEventTypes.Contains(value);
 
-    public static async Task<string?> ValidateFoundingRequestAgainstCurrentStateAsync(
+    public static Task<string?> ValidateFoundingRequestAgainstCurrentStateAsync(
         FileSystemManager fs,
+        PendingShiningFactionFoundingRequest request) =>
+        ValidateFoundingRequestAgainstCurrentStateCoreAsync(fs, writeLease: null, request);
+
+    internal static Task<string?> ValidateFoundingRequestAgainstCurrentStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningFactionFoundingRequest request) =>
+        ValidateFoundingRequestAgainstCurrentStateCoreAsync(fs, writeLease, request);
+
+    private static async Task<string?> ValidateFoundingRequestAgainstCurrentStateCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         PendingShiningFactionFoundingRequest request)
     {
-        if (await IsRequestFileMalformedAsync(
+        if (await IsRequestFileMalformedCoreAsync(
                 fs,
+                writeLease,
                 PendingFoundingsRequestPath,
                 static json => JsonSerializer.Deserialize<PendingShiningFactionFoundingRequest>(json, JsonOpts)))
         {
             return "pending_shining_faction_foundings.json повреждён. Исправьте или очистите pending founding contract перед созданием нового запроса.";
         }
 
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
         if (shiningRoot == null)
             return "shining_abode_state.json недоступен.";
         var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
@@ -306,7 +319,7 @@ internal static class ShiningFactionRequestState
             return "Зал с таким proposedHallId уже materialized в Сияющей Обители.";
         }
 
-        var foundingRequests = (await ReadFoundingRequestsAsync(fs)).ToList();
+        var foundingRequests = (await ReadFoundingRequestsCoreAsync(fs, writeLease)).ToList();
         if (!string.IsNullOrWhiteSpace(request.RequestId))
         {
             var duplicateRequestIdEntries = foundingRequests
@@ -370,31 +383,44 @@ internal static class ShiningFactionRequestState
                 return $"Supporter resident '{supporterId}' не находится в ascended state.";
             if (TryGetCurrentResidentHeadFactionId(shiningRoot, supporterId, out _))
                 return $"Supporter resident '{supporterId}' сейчас является главой фракции и не может поддерживать founding.";
-            if (await HasPendingOrdinaryTransferAsync(fs, supporterId))
+            if (await HasPendingOrdinaryTransferAsync(fs, writeLease, supporterId))
                 return $"Supporter resident '{supporterId}' уже участвует в ordinary inter-Abode transfer.";
-            if (await IsResidentLockedByPendingFlowInternalAsync(fs, supporterId, excludeFoundingFactionId: request.ProposedFactionId, excludeRealignmentResidentId: null, excludeLeadershipFactionId: null))
+            if (await IsResidentLockedByPendingFlowInternalAsync(fs, writeLease, supporterId, excludeFoundingFactionId: request.ProposedFactionId, excludeRealignmentResidentId: null, excludeLeadershipFactionId: null))
                 return $"Supporter resident '{supporterId}' уже заблокирован другим pending Shining flow.";
         }
 
         return null;
     }
 
-    public static async Task<string?> ValidateRealignmentRequestAgainstCurrentStateAsync(
+    public static Task<string?> ValidateRealignmentRequestAgainstCurrentStateAsync(
         FileSystemManager fs,
+        PendingShiningFactionRealignmentRequest request) =>
+        ValidateRealignmentRequestAgainstCurrentStateCoreAsync(fs, writeLease: null, request);
+
+    internal static Task<string?> ValidateRealignmentRequestAgainstCurrentStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningFactionRealignmentRequest request) =>
+        ValidateRealignmentRequestAgainstCurrentStateCoreAsync(fs, writeLease, request);
+
+    private static async Task<string?> ValidateRealignmentRequestAgainstCurrentStateCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         PendingShiningFactionRealignmentRequest request)
     {
-        if (await IsRequestFileMalformedAsync(
+        if (await IsRequestFileMalformedCoreAsync(
                 fs,
+                writeLease,
                 PendingRealignmentsRequestPath,
                 static json => JsonSerializer.Deserialize<PendingShiningFactionRealignmentRequest>(json, JsonOpts)))
         {
             return "pending_shining_faction_realignments.json повреждён. Исправьте или очистите pending realignment contract перед созданием нового запроса.";
         }
 
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
         if (shiningRoot == null)
             return "shining_abode_state.json недоступен.";
         var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
@@ -425,11 +451,11 @@ internal static class ShiningFactionRequestState
         if (!string.Equals(actualRealignmentState, ShiningAbodeState.FactionRealignmentStateReadyToRealign, StringComparison.OrdinalIgnoreCase))
             return "Faction realignment request допустим только для resident в состоянии ready_to_realign.";
 
-        if (await HasForeignPendingRealignmentForResidentAsync(fs, request.ResidentId, request.RequestId))
+        if (await HasForeignPendingRealignmentForResidentAsync(fs, writeLease, request.ResidentId, request.RequestId))
             return "Resident уже имеет live foreign pending Shining realignment contract.";
-        if (await HasPendingOrdinaryTransferAsync(fs, request.ResidentId))
+        if (await HasPendingOrdinaryTransferAsync(fs, writeLease, request.ResidentId))
             return "Resident уже участвует в ordinary inter-Abode transfer.";
-        if (await IsResidentLockedByPendingFlowInternalAsync(fs, request.ResidentId, excludeFoundingFactionId: null, excludeRealignmentResidentId: request.ResidentId, excludeLeadershipFactionId: null))
+        if (await IsResidentLockedByPendingFlowInternalAsync(fs, writeLease, request.ResidentId, excludeFoundingFactionId: null, excludeRealignmentResidentId: request.ResidentId, excludeLeadershipFactionId: null))
             return "Resident уже заблокирован другим pending Shining flow.";
 
         var sourceFaction = FindFaction(shiningRoot, request.SourceFactionId);
@@ -459,22 +485,35 @@ internal static class ShiningFactionRequestState
         return null;
     }
 
-    public static async Task<string?> ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(
+    public static Task<string?> ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(
         FileSystemManager fs,
+        PendingShiningFactionLeadershipTransitionRequest request) =>
+        ValidateLeadershipTransitionRequestAgainstCurrentStateCoreAsync(fs, writeLease: null, request);
+
+    internal static Task<string?> ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningFactionLeadershipTransitionRequest request) =>
+        ValidateLeadershipTransitionRequestAgainstCurrentStateCoreAsync(fs, writeLease, request);
+
+    private static async Task<string?> ValidateLeadershipTransitionRequestAgainstCurrentStateCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         PendingShiningFactionLeadershipTransitionRequest request)
     {
-        if (await IsRequestFileMalformedAsync(
+        if (await IsRequestFileMalformedCoreAsync(
                 fs,
+                writeLease,
                 PendingLeadershipTransitionsRequestPath,
                 static json => JsonSerializer.Deserialize<PendingShiningFactionLeadershipTransitionRequest>(json, JsonOpts)))
         {
             return "pending_shining_faction_leadership_transitions.json повреждён. Исправьте или очистите pending leadership contract перед созданием нового запроса.";
         }
 
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
         if (shiningRoot == null)
             return "shining_abode_state.json недоступен.";
         var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
@@ -510,6 +549,7 @@ internal static class ShiningFactionRequestState
 
         var incumbentLockError = await ValidateLeadershipActorPendingLocksAsync(
             fs,
+            writeLease,
             "Incumbent",
             request.IncumbentHeadActorType,
             request.IncumbentHeadActorId,
@@ -561,6 +601,7 @@ internal static class ShiningFactionRequestState
 
             var candidateLockError = await ValidateLeadershipActorPendingLocksAsync(
                 fs,
+                writeLease,
                 "Candidate",
                 request.CandidateHeadActorType,
                 request.CandidateHeadActorId,
@@ -569,7 +610,7 @@ internal static class ShiningFactionRequestState
                 return candidateLockError;
         }
 
-        if (await HasForeignPendingLeadershipForFactionAsync(fs, request.FactionId, request.RequestId))
+        if (await HasForeignPendingLeadershipForFactionAsync(fs, writeLease, request.FactionId, request.RequestId))
             return "Faction уже имеет live foreign pending Shining leadership contract.";
 
         var supporterIds = request.SupportingResidentIds
@@ -617,9 +658,9 @@ internal static class ShiningFactionRequestState
                 return $"Supporter resident '{supporterId}' уже является current head другой фракции.";
             }
 
-            if (await HasPendingOrdinaryTransferAsync(fs, supporterId))
+            if (await HasPendingOrdinaryTransferAsync(fs, writeLease, supporterId))
                 return $"Supporter resident '{supporterId}' уже участвует в ordinary inter-Abode transfer.";
-            if (await IsResidentLockedByPendingFlowInternalAsync(fs, supporterId, excludeFoundingFactionId: null, excludeRealignmentResidentId: null, excludeLeadershipFactionId: request.FactionId))
+            if (await IsResidentLockedByPendingFlowInternalAsync(fs, writeLease, supporterId, excludeFoundingFactionId: null, excludeRealignmentResidentId: null, excludeLeadershipFactionId: request.FactionId))
                 return $"Supporter resident '{supporterId}' уже заблокирован другим pending Shining flow.";
         }
 
@@ -629,11 +670,33 @@ internal static class ShiningFactionRequestState
     public static async Task<IReadOnlyList<PendingShiningFactionFoundingRequest>> ReadFoundingRequestsAsync(FileSystemManager fs) =>
         (await ReadRequestsStateAsync(fs, PendingFoundingsRequestPath, static json => JsonSerializer.Deserialize<PendingShiningFactionFoundingRequest>(json, JsonOpts))).Requests;
 
+    internal static async Task<IReadOnlyList<PendingShiningFactionFoundingRequest>> ReadFoundingRequestsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        (await ReadRequestsStateAsync(fs, writeLease, PendingFoundingsRequestPath, static json => JsonSerializer.Deserialize<PendingShiningFactionFoundingRequest>(json, JsonOpts))).Requests;
+
+    private static Task<IReadOnlyList<PendingShiningFactionFoundingRequest>> ReadFoundingRequestsCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease) =>
+        writeLease == null
+            ? ReadFoundingRequestsAsync(fs)
+            : ReadFoundingRequestsAsync(fs, writeLease);
+
     public static async Task<IReadOnlyList<PendingShiningFactionRealignmentRequest>> ReadRealignmentRequestsAsync(FileSystemManager fs) =>
         (await ReadRequestsStateAsync(fs, PendingRealignmentsRequestPath, static json => JsonSerializer.Deserialize<PendingShiningFactionRealignmentRequest>(json, JsonOpts))).Requests;
 
+    internal static async Task<IReadOnlyList<PendingShiningFactionRealignmentRequest>> ReadRealignmentRequestsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        (await ReadRequestsStateAsync(fs, writeLease, PendingRealignmentsRequestPath, static json => JsonSerializer.Deserialize<PendingShiningFactionRealignmentRequest>(json, JsonOpts))).Requests;
+
     public static async Task<IReadOnlyList<PendingShiningFactionLeadershipTransitionRequest>> ReadLeadershipTransitionRequestsAsync(FileSystemManager fs) =>
         (await ReadRequestsStateAsync(fs, PendingLeadershipTransitionsRequestPath, static json => JsonSerializer.Deserialize<PendingShiningFactionLeadershipTransitionRequest>(json, JsonOpts))).Requests;
+
+    internal static async Task<IReadOnlyList<PendingShiningFactionLeadershipTransitionRequest>> ReadLeadershipTransitionRequestsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        (await ReadRequestsStateAsync(fs, writeLease, PendingLeadershipTransitionsRequestPath, static json => JsonSerializer.Deserialize<PendingShiningFactionLeadershipTransitionRequest>(json, JsonOpts))).Requests;
 
     public static IReadOnlyList<PendingShiningFactionFoundingRequest> ReadFoundingRequests(string? json) =>
         ReadRequestsState(json, !string.IsNullOrEmpty(json), static itemJson => JsonSerializer.Deserialize<PendingShiningFactionFoundingRequest>(itemJson, JsonOpts)).Requests;
@@ -651,6 +714,17 @@ internal static class ShiningFactionRequestState
             request,
             static (_, _) => true);
 
+    internal static Task WriteFoundingRequestAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningFactionFoundingRequest request) =>
+        WriteSingleRequestAsync(
+            fs,
+            writeLease,
+            PendingFoundingsRequestPath,
+            request,
+            static (_, _) => true);
+
     public static Task WriteRealignmentRequestAsync(FileSystemManager fs, PendingShiningFactionRealignmentRequest request) =>
         WriteSingleRequestAsync(
             fs,
@@ -660,8 +734,34 @@ internal static class ShiningFactionRequestState
                 string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(existing.ResidentId, pending.ResidentId, StringComparison.OrdinalIgnoreCase));
 
+    internal static Task WriteRealignmentRequestAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningFactionRealignmentRequest request) =>
+        WriteSingleRequestAsync(
+            fs,
+            writeLease,
+            PendingRealignmentsRequestPath,
+            request,
+            static (existing, pending) =>
+                string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(existing.ResidentId, pending.ResidentId, StringComparison.OrdinalIgnoreCase));
+
     public static Task WriteLeadershipTransitionRequestAsync(FileSystemManager fs, PendingShiningFactionLeadershipTransitionRequest request) =>
         WriteSingleRequestAsync(fs, PendingLeadershipTransitionsRequestPath, request, static item => item.FactionId);
+
+    internal static Task WriteLeadershipTransitionRequestAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningFactionLeadershipTransitionRequest request) =>
+        WriteSingleRequestAsync(
+            fs,
+            writeLease,
+            PendingLeadershipTransitionsRequestPath,
+            request,
+            static (existing, pending) =>
+                string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(existing.FactionId, pending.FactionId, StringComparison.OrdinalIgnoreCase));
 
     public static void ClearFoundingRequests(FileSystemManager fs) => fs.DeleteFile(PendingFoundingsRequestPath);
     public static void ClearRealignmentRequests(FileSystemManager fs) => fs.DeleteFile(PendingRealignmentsRequestPath);
@@ -909,6 +1009,27 @@ internal static class ShiningFactionRequestState
         return ReadRequestsState(json, fs.FileExists(path), deserialize).IsMalformed;
     }
 
+    internal static async Task<bool> IsRequestFileMalformedAsync<TRequest>(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        Func<string, TRequest?> deserialize)
+        where TRequest : class
+    {
+        var json = await fs.ReadFileAsync(writeLease, path);
+        return ReadRequestsState(json, fs.FileExists(writeLease, path), deserialize).IsMalformed;
+    }
+
+    private static Task<bool> IsRequestFileMalformedCoreAsync<TRequest>(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path,
+        Func<string, TRequest?> deserialize)
+        where TRequest : class =>
+        writeLease == null
+            ? IsRequestFileMalformedAsync(fs, path, deserialize)
+            : IsRequestFileMalformedAsync(fs, writeLease, path, deserialize);
+
     private static async Task<PendingPoliticalRequestReadState<TRequest>> ReadRequestsStateAsync<TRequest>(
         FileSystemManager fs,
         string path,
@@ -917,6 +1038,17 @@ internal static class ShiningFactionRequestState
     {
         var json = await fs.ReadFileAsync(path);
         return ReadRequestsState(json, fs.FileExists(path), deserialize);
+    }
+
+    private static async Task<PendingPoliticalRequestReadState<TRequest>> ReadRequestsStateAsync<TRequest>(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        Func<string, TRequest?> deserialize)
+        where TRequest : class
+    {
+        var json = await fs.ReadFileAsync(writeLease, path);
+        return ReadRequestsState(json, fs.FileExists(writeLease, path), deserialize);
     }
 
     private static PendingPoliticalRequestReadState<TRequest> ReadRequestsState<TRequest>(string? json, bool filePresent, Func<string, TRequest?> deserialize)
@@ -953,9 +1085,17 @@ internal static class ShiningFactionRequestState
         }
     }
 
-    private static async Task<JsonObject?> ReadJsonObjectAsync(FileSystemManager fs, string path)
+    private static Task<JsonObject?> ReadJsonObjectAsync(FileSystemManager fs, string path) =>
+        ReadJsonObjectAsync(fs, writeLease: null, path);
+
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path)
     {
-        var json = await fs.ReadFileAsync(path);
+        var json = writeLease == null
+            ? await fs.ReadFileAsync(path)
+            : await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -1127,39 +1267,88 @@ internal static class ShiningFactionRequestState
             string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static async Task<bool> HasForeignPendingRealignmentForResidentAsync(FileSystemManager fs, string residentId, string requestId)
+    private static Task<bool> HasForeignPendingRealignmentForResidentAsync(
+        FileSystemManager fs,
+        string residentId,
+        string requestId) =>
+        HasForeignPendingRealignmentForResidentAsync(fs, writeLease: null, residentId, requestId);
+
+    private static async Task<bool> HasForeignPendingRealignmentForResidentAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string residentId,
+        string requestId)
     {
         if (string.IsNullOrWhiteSpace(residentId))
             return false;
 
-        var requests = await ReadRealignmentRequestsAsync(fs);
+        var requests = writeLease == null
+            ? await ReadRealignmentRequestsAsync(fs)
+            : await ReadRealignmentRequestsAsync(fs, writeLease);
         return requests.Any(request =>
             string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(request.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static async Task<bool> HasForeignPendingLeadershipForFactionAsync(FileSystemManager fs, string factionId, string requestId)
+    private static Task<bool> HasForeignPendingLeadershipForFactionAsync(
+        FileSystemManager fs,
+        string factionId,
+        string requestId) =>
+        HasForeignPendingLeadershipForFactionAsync(fs, writeLease: null, factionId, requestId);
+
+    private static async Task<bool> HasForeignPendingLeadershipForFactionAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string factionId,
+        string requestId)
     {
         if (string.IsNullOrWhiteSpace(factionId))
             return false;
 
-        var requests = await ReadLeadershipTransitionRequestsAsync(fs);
+        var requests = writeLease == null
+            ? await ReadLeadershipTransitionRequestsAsync(fs)
+            : await ReadLeadershipTransitionRequestsAsync(fs, writeLease);
         return requests.Any(request =>
             string.Equals(request.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(request.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static async Task<bool> HasPendingOrdinaryTransferAsync(FileSystemManager fs, string residentId)
+    private static Task<bool> HasPendingOrdinaryTransferAsync(
+        FileSystemManager fs,
+        string residentId) =>
+        HasPendingOrdinaryTransferAsync(fs, writeLease: null, residentId);
+
+    private static async Task<bool> HasPendingOrdinaryTransferAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string residentId)
     {
         if (string.IsNullOrWhiteSpace(residentId))
             return false;
 
-        var transferRequests = await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(fs);
+        var transferRequests = writeLease == null
+            ? await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(fs)
+            : await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(fs, writeLease);
         return transferRequests.Any(request => string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase));
     }
 
+    private static Task<bool> IsResidentLockedByPendingFlowInternalAsync(
+        FileSystemManager fs,
+        string residentId,
+        string? excludeFoundingFactionId,
+        string? excludeRealignmentResidentId,
+        string? excludeLeadershipFactionId) =>
+        IsResidentLockedByPendingFlowInternalAsync(
+            fs,
+            writeLease: null,
+            residentId,
+            excludeFoundingFactionId,
+            excludeRealignmentResidentId,
+            excludeLeadershipFactionId);
+
     private static async Task<bool> IsResidentLockedByPendingFlowInternalAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string residentId,
         string? excludeFoundingFactionId,
         string? excludeRealignmentResidentId,
@@ -1168,7 +1357,9 @@ internal static class ShiningFactionRequestState
         if (string.IsNullOrWhiteSpace(residentId))
             return false;
 
-        var realignmentRequests = await ReadRealignmentRequestsAsync(fs);
+        var realignmentRequests = writeLease == null
+            ? await ReadRealignmentRequestsAsync(fs)
+            : await ReadRealignmentRequestsAsync(fs, writeLease);
         if (realignmentRequests.Any(request =>
                 !string.Equals(request.ResidentId, excludeRealignmentResidentId, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase)))
@@ -1176,7 +1367,7 @@ internal static class ShiningFactionRequestState
             return true;
         }
 
-        var foundingRequests = await ReadFoundingRequestsAsync(fs);
+        var foundingRequests = await ReadFoundingRequestsCoreAsync(fs, writeLease);
         if (foundingRequests.Any(request =>
                 !string.Equals(request.ProposedFactionId, excludeFoundingFactionId, StringComparison.OrdinalIgnoreCase) &&
                 request.SupportingResidentIds.Any(id => string.Equals(id, residentId, StringComparison.OrdinalIgnoreCase))))
@@ -1184,7 +1375,9 @@ internal static class ShiningFactionRequestState
             return true;
         }
 
-        var leadershipRequests = await ReadLeadershipTransitionRequestsAsync(fs);
+        var leadershipRequests = writeLease == null
+            ? await ReadLeadershipTransitionRequestsAsync(fs)
+            : await ReadLeadershipTransitionRequestsAsync(fs, writeLease);
         return leadershipRequests.Any(request =>
             !string.Equals(request.FactionId, excludeLeadershipFactionId, StringComparison.OrdinalIgnoreCase) &&
             (
@@ -1196,8 +1389,23 @@ internal static class ShiningFactionRequestState
             ));
     }
 
+    private static Task<string?> ValidateLeadershipActorPendingLocksAsync(
+        FileSystemManager fs,
+        string label,
+        string actorType,
+        string actorId,
+        string currentFactionId) =>
+        ValidateLeadershipActorPendingLocksAsync(
+            fs,
+            writeLease: null,
+            label,
+            actorType,
+            actorId,
+            currentFactionId);
+
     private static async Task<string?> ValidateLeadershipActorPendingLocksAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string label,
         string actorType,
         string actorId,
@@ -1208,15 +1416,17 @@ internal static class ShiningFactionRequestState
 
         if (string.Equals(actorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase))
         {
-            if (await HasPendingOrdinaryTransferAsync(fs, actorId))
+            if (await HasPendingOrdinaryTransferAsync(fs, writeLease, actorId))
                 return $"{label} resident '{actorId}' уже участвует в ordinary inter-Abode transfer.";
-            if (await IsResidentLockedByPendingFlowInternalAsync(fs, actorId, excludeFoundingFactionId: null, excludeRealignmentResidentId: null, excludeLeadershipFactionId: currentFactionId))
+            if (await IsResidentLockedByPendingFlowInternalAsync(fs, writeLease, actorId, excludeFoundingFactionId: null, excludeRealignmentResidentId: null, excludeLeadershipFactionId: currentFactionId))
                 return $"{label} resident '{actorId}' уже заблокирован другим pending Shining flow.";
 
             return null;
         }
 
-        var leadershipRequests = await ReadLeadershipTransitionRequestsAsync(fs);
+        var leadershipRequests = writeLease == null
+            ? await ReadLeadershipTransitionRequestsAsync(fs)
+            : await ReadLeadershipTransitionRequestsAsync(fs, writeLease);
         return leadershipRequests.Any(request =>
             !string.Equals(request.FactionId, currentFactionId, StringComparison.OrdinalIgnoreCase) &&
             LeadershipRequestReferencesActor(request, actorType, actorId))
@@ -1368,6 +1578,37 @@ internal static class ShiningFactionRequestState
         await PersistRequestsAsync(fs, path, existing);
     }
 
+    private static async Task WriteSingleRequestAsync<TRequest>(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        TRequest request,
+        Func<TRequest, TRequest, bool> conflictSelector)
+        where TRequest : class
+    {
+        var json = await fs.ReadFileAsync(writeLease, path);
+        var existingState = ReadRequestsState(
+            json,
+            fs.FileExists(writeLease, path),
+            static itemJson => JsonSerializer.Deserialize<TRequest>(itemJson, JsonOpts));
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException($"{Path.GetFileName(path)} повреждён и должен быть исправлен или очищен до записи нового политического запроса.");
+
+        var requestId = GetPoliticalRequestId(request);
+        if (existingState.Requests.Any(existingRequest =>
+                conflictSelector(existingRequest, request) &&
+                !string.Equals(GetPoliticalRequestId(existingRequest), requestId, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException($"{Path.GetFileName(path)} уже содержит live foreign Shining political contract with the same target identity; guarded writer не заменяет unresolved contract.");
+        }
+
+        var existing = existingState.Requests.ToList();
+        existing.RemoveAll(existingRequest => conflictSelector(existingRequest, request));
+        existing.Add(request);
+
+        await PersistRequestsAsync(fs, writeLease, path, existing);
+    }
+
     private static string GetPoliticalRequestId<TRequest>(TRequest request)
         where TRequest : class =>
         request switch
@@ -1391,6 +1632,28 @@ internal static class ShiningFactionRequestState
         {
             [RequestsProperty] = requests
         }, JsonOpts));
+    }
+
+    private static async Task PersistRequestsAsync<TRequest>(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        IReadOnlyCollection<TRequest> requests)
+        where TRequest : class
+    {
+        if (requests.Count == 0)
+        {
+            fs.DeleteFile(writeLease, path);
+            return;
+        }
+
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            path,
+            JsonSerializer.Serialize(new Dictionary<string, object?>
+            {
+                [RequestsProperty] = requests
+            }, JsonOpts));
     }
 
     private static bool HasMatchingFoundingClosure(JsonObject shiningRoot, JsonObject? residentRoot, PendingShiningFactionFoundingRequest request)

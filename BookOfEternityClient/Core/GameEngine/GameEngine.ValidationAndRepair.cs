@@ -72,11 +72,18 @@ public partial class GameEngine
     private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(string source,
         RollbackSnapshot? rollbackSnapshot = null,
         ProgressionControl? progressionControl = null,
-        bool allowRepairLoop = false)
+        bool allowRepairLoop = false,
+        DateTime? initialCanonicalRepairBoundaryUtc = null,
+        IReadOnlyCollection<ValidationIssue>? initialCanonicalRepairErrors = null,
+        DateTime? initialCanonicalRepairStartedAtUtc = null)
     {
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
+        IReadOnlyCollection<ValidationIssue>? outputFreshnessRepairErrors = initialCanonicalRepairErrors;
         var lastRepairAttempt = 0;
+        var lastCanonicalRepairBoundaryUtc = initialCanonicalRepairBoundaryUtc;
+        DateTime? lastCanonicalRepairStartedAtUtc = initialCanonicalRepairStartedAtUtc;
+        string? lastRepairSessionGeneration = null;
 
         while (true)
         {
@@ -93,8 +100,23 @@ public partial class GameEngine
                 issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
                 issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
             }
-            if (allowRepairLoop && lastRepairErrors is { Count: > 0 })
-                issues.AddRange(CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(lastRepairErrors));
+            if (allowRepairLoop &&
+                outputFreshnessRepairErrors is { Count: > 0 } &&
+                lastCanonicalRepairStartedAtUtc.HasValue)
+            {
+                lastCanonicalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    outputFreshnessRepairErrors,
+                    lastCanonicalRepairStartedAtUtc.Value,
+                    lastCanonicalRepairBoundaryUtc);
+            }
+            if (allowRepairLoop &&
+                outputFreshnessRepairErrors is { Count: > 0 } &&
+                lastCanonicalRepairBoundaryUtc.HasValue)
+            {
+                issues.AddRange(CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
+                    outputFreshnessRepairErrors,
+                    lastCanonicalRepairBoundaryUtc.Value));
+            }
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
             if (progressionControl != null)
                 issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(progressionControl));
@@ -106,8 +128,18 @@ public partial class GameEngine
             if (errors.Count == 0)
             {
                 if (allowRepairLoop && lastRepairErrors is { Count: > 0 })
-                    await AppendClearedValidationRepairTrajectoryAsync(source, lastRepairErrors, lastRepairAttempt);
-                await DeleteValidationRepairFilesAsync();
+                {
+                    await AppendClearedValidationRepairTrajectoryAsync(
+                        source,
+                        lastRepairErrors,
+                        lastRepairAttempt,
+                        lastRepairSessionGeneration!);
+                    await DeleteValidationRepairFilesForSessionAsync(lastRepairSessionGeneration!);
+                }
+                else
+                {
+                    await DeleteValidationRepairFilesAsync();
+                }
                 if (progressionControl != null)
                     await _progressionSchedule.ApplyAcceptedTurnOutcomeAsync(progressionControl);
                 return true;
@@ -143,8 +175,38 @@ public partial class GameEngine
             repairAttempt++;
             lastRepairErrors = errors;
             lastRepairAttempt = repairAttempt;
-            if (!await WaitForContractRepairAsync(source, errors, repairAttempt, rollbackSnapshot))
+            lastRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+            var repairStartedAtUtc = DateTime.UtcNow;
+            if (!await WaitForContractRepairAsync(
+                    source,
+                    errors,
+                    repairAttempt,
+                    rollbackSnapshot,
+                    lastRepairSessionGeneration))
                 return false;
+            var canonicalRepairErrors = errors
+                .Where(issue => IsCanonicalStateRepairIssue(issue) &&
+                                !IsPlayerFacingNeutralActorMemoryRepairIssue(issue))
+                .ToArray();
+            if (canonicalRepairErrors.Length > 0)
+            {
+                outputFreshnessRepairErrors = MergeCanonicalRepairErrors(
+                    outputFreshnessRepairErrors,
+                    canonicalRepairErrors);
+                lastCanonicalRepairStartedAtUtc = repairStartedAtUtc;
+            }
+
+            if (outputFreshnessRepairErrors is { Count: > 0 } &&
+                lastCanonicalRepairStartedAtUtc.HasValue)
+            {
+                var unobservableFallbackUtc = canonicalRepairErrors.Length > 0
+                    ? DateTime.UtcNow
+                    : lastCanonicalRepairBoundaryUtc;
+                lastCanonicalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    outputFreshnessRepairErrors,
+                    lastCanonicalRepairStartedAtUtc.Value,
+                    unobservableFallbackUtc);
+            }
         }
     }
 
@@ -158,12 +220,15 @@ public partial class GameEngine
         var criticalRepairAttempt = 0;
         List<ValidationIssue>? lastCriticalRepairErrors = null;
         var lastCriticalRepairAttempt = 0;
+        DateTime? lastCriticalRepairBoundaryUtc = null;
+        DateTime? lastCriticalRepairStartedAtUtc = null;
+        string? lastCriticalRepairSessionGeneration = null;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
         {
             await EnsureClientOwnedSystemFilesHealthyAsync();
-            var rawIssues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
+            var rawIssues = await CollectAcceptedTurnRawStateIssuesAsync();
             var rawErrors = PrioritizeValidationErrors(rawIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
             if (rawErrors.Count > 0)
             {
@@ -175,8 +240,19 @@ public partial class GameEngine
 
                 lastCriticalRepairErrors = rawErrors;
                 lastCriticalRepairAttempt = criticalRepairAttempt;
-                if (!await WaitForContractRepairAsync(source, rawErrors, criticalRepairAttempt, rollbackSnapshot))
+                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                var rawRepairStartedAtUtc = DateTime.UtcNow;
+                if (!await WaitForContractRepairAsync(
+                        source,
+                        rawErrors,
+                        criticalRepairAttempt,
+                        rollbackSnapshot,
+                        lastCriticalRepairSessionGeneration))
                     return false;
+                lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    rawErrors,
+                    rawRepairStartedAtUtc);
 
                 continue;
             }
@@ -204,8 +280,19 @@ public partial class GameEngine
 
                 lastCriticalRepairErrors = baselineErrors;
                 lastCriticalRepairAttempt = criticalRepairAttempt;
-                if (!await WaitForContractRepairAsync(source, baselineErrors, criticalRepairAttempt, rollbackSnapshot))
+                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                var baselineRepairStartedAtUtc = DateTime.UtcNow;
+                if (!await WaitForContractRepairAsync(
+                        source,
+                        baselineErrors,
+                        criticalRepairAttempt,
+                        rollbackSnapshot,
+                        lastCriticalRepairSessionGeneration))
                     return false;
+                lastCriticalRepairStartedAtUtc = baselineRepairStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    baselineErrors,
+                    baselineRepairStartedAtUtc);
 
                 continue;
             }
@@ -223,21 +310,64 @@ public partial class GameEngine
 
                 lastCriticalRepairErrors = canonicalErrors;
                 lastCriticalRepairAttempt = criticalRepairAttempt;
-                if (!await WaitForContractRepairAsync(source, canonicalErrors, criticalRepairAttempt, rollbackSnapshot))
+                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                var canonicalRepairStartedAtUtc = DateTime.UtcNow;
+                if (!await WaitForContractRepairAsync(
+                        source,
+                        canonicalErrors,
+                        criticalRepairAttempt,
+                        rollbackSnapshot,
+                        lastCriticalRepairSessionGeneration))
                     return false;
+                lastCriticalRepairStartedAtUtc = canonicalRepairStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    canonicalErrors,
+                    canonicalRepairStartedAtUtc);
 
                 continue;
             }
 
-            if (!await ValidateCurrentGameStateOrShowErrorsAsync(source, rollbackSnapshot, progressionControl, allowRepairLoop: true))
+            if (lastCriticalRepairErrors is { Count: > 0 } &&
+                lastCriticalRepairStartedAtUtc.HasValue)
+            {
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    lastCriticalRepairErrors,
+                    lastCriticalRepairStartedAtUtc.Value);
+            }
+
+            if (!await ValidateCurrentGameStateOrShowErrorsAsync(
+                    source,
+                    rollbackSnapshot,
+                    progressionControl,
+                    allowRepairLoop: true,
+                    initialCanonicalRepairBoundaryUtc: lastCriticalRepairBoundaryUtc,
+                    initialCanonicalRepairErrors: lastCriticalRepairErrors,
+                    initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc))
                 return false;
 
             if (lastCriticalRepairErrors is { Count: > 0 })
-                await AppendClearedValidationRepairTrajectoryAsync(source, lastCriticalRepairErrors, lastCriticalRepairAttempt);
-            await CleanupAcceptedTurnCommandSurfacesAsync();
+            {
+                await AppendClearedValidationRepairTrajectoryAsync(
+                    source,
+                    lastCriticalRepairErrors,
+                    lastCriticalRepairAttempt,
+                    lastCriticalRepairSessionGeneration!);
+                await CleanupAcceptedTurnCommandSurfacesAsync(lastCriticalRepairSessionGeneration);
+            }
+            else
+            {
+                await CleanupAcceptedTurnCommandSurfacesAsync();
+            }
             await RefreshRuntimeStateAsync();
             return true;
         }
+    }
+
+    private async Task<List<ValidationIssue>> CollectAcceptedTurnRawStateIssuesAsync()
+    {
+        var issues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
+        issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
+        return issues;
     }
 
     private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
@@ -267,15 +397,20 @@ public partial class GameEngine
         return true;
     }
 
-    private async Task CleanupAcceptedTurnCommandSurfacesAsync()
+    private async Task CleanupAcceptedTurnCommandSurfacesAsync(string? expectedSessionGeneration = null)
     {
-        await RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync();
+        await RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(expectedSessionGeneration);
     }
 
-    private async Task RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync()
+    private async Task RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(
+        string? expectedSessionGeneration = null)
     {
         const string path = "game_state/meta/guardians.json";
-        var json = await _fs.ReadFileAsync(path);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+
+        var json = await _fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json))
             return;
 
@@ -287,7 +422,7 @@ public partial class GameEngine
                 return;
             }
 
-            await _fs.WriteFileAtomicAsync(path, root.ToJsonString(JsonOpts));
+            await _fs.WriteFileAtomicAsync(writeLease, path, root.ToJsonString(JsonOpts));
         }
         catch (Exception ex)
         {
@@ -301,7 +436,8 @@ public partial class GameEngine
     }
 
     private List<ValidationIssue> CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
-        IReadOnlyCollection<ValidationIssue> repairedErrors)
+        IReadOnlyCollection<ValidationIssue> repairedErrors,
+        DateTime canonicalRepairBoundaryUtc)
     {
         var canonicalRepairCodes = repairedErrors
             .Where(issue => IsCanonicalStateRepairIssue(issue) &&
@@ -313,11 +449,6 @@ public partial class GameEngine
         if (canonicalRepairCodes.Length == 0)
             return [];
 
-        var requestFullPath = _fs.ResolvePath(ValidationRepairRequestPath);
-        if (!File.Exists(requestFullPath))
-            return [];
-
-        var requestWrittenAtUtc = File.GetLastWriteTimeUtc(requestFullPath);
         var issues = new List<ValidationIssue>();
         foreach (var outputPath in new[]
                  {
@@ -330,7 +461,7 @@ public partial class GameEngine
                 continue;
 
             var outputWrittenAtUtc = File.GetLastWriteTimeUtc(outputFullPath);
-            if (outputWrittenAtUtc >= requestWrittenAtUtc)
+            if (outputWrittenAtUtc > canonicalRepairBoundaryUtc)
                 continue;
 
             issues.Add(new ValidationIssue(
@@ -339,12 +470,90 @@ public partial class GameEngine
                 $"{outputPath} был записан до canonical validation repair и может противоречить исправленному состоянию.",
                 code: "accepted_turn_stale_player_facing_output_after_canonical_repair",
                 section: "PlayerFacingOutput",
-                expected: $"player-facing output rewritten after canonical state repair request at {requestWrittenAtUtc:o}",
+                expected: $"player-facing output rewritten after repaired canonical state was last written at {canonicalRepairBoundaryUtc:o}",
                 actual: $"{outputPath} last write {outputWrittenAtUtc:o}; repaired canonical issues: {string.Join(", ", canonicalRepairCodes)}",
                 repairHint: "Перепиши player-facing output под уже исправленное canonical state: обнови output/narrative_response.json.response и, если есть варианты выбора, output/interface_updates.json.dialogueOptions. Не меняй canonical state повторно, если validation_repair_request.json не перечисляет новые canonical ошибки."));
         }
 
         return issues;
+    }
+
+    private DateTime ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+        IReadOnlyCollection<ValidationIssue> repairedErrors,
+        DateTime repairStartedAtUtc,
+        DateTime? unobservableFallbackUtc = null)
+    {
+        var canonicalTargetPaths = repairedErrors
+            .Where(issue => IsCanonicalStateRepairIssue(issue) &&
+                            !IsPlayerFacingNeutralActorMemoryRepairIssue(issue))
+            .Select(issue => NormalizeCanonicalRepairTargetFilePath(issue.FilePath))
+            .Where(PendingTurnSnapshotAuthority.IsSafeRelativePath)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        if (canonicalTargetPaths.Length == 0)
+            return unobservableFallbackUtc ?? DateTime.UtcNow;
+
+        var latestWriteUtc = DateTime.MinValue;
+        var hasUnobservableTarget = false;
+        foreach (var targetPath in canonicalTargetPaths)
+        {
+            try
+            {
+                var targetFullPath = _fs.ResolvePath(targetPath);
+                if (!File.Exists(targetFullPath))
+                {
+                    hasUnobservableTarget = true;
+                    continue;
+                }
+
+                var targetWriteUtc = File.GetLastWriteTimeUtc(targetFullPath);
+                if (targetWriteUtc < repairStartedAtUtc)
+                {
+                    hasUnobservableTarget = true;
+                    continue;
+                }
+
+                if (targetWriteUtc > latestWriteUtc)
+                    latestWriteUtc = targetWriteUtc;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Не удалось определить фактическую границу записи repaired canonical target {TargetPath}; freshness validation будет fail-closed.",
+                    targetPath);
+                hasUnobservableTarget = true;
+            }
+        }
+
+        var fallbackUtc = unobservableFallbackUtc ?? DateTime.UtcNow;
+        if (hasUnobservableTarget)
+            return latestWriteUtc > fallbackUtc ? latestWriteUtc : fallbackUtc;
+        return latestWriteUtc == DateTime.MinValue ? fallbackUtc : latestWriteUtc;
+    }
+
+    private static IReadOnlyCollection<ValidationIssue> MergeCanonicalRepairErrors(
+        IReadOnlyCollection<ValidationIssue>? retainedErrors,
+        IReadOnlyCollection<ValidationIssue> currentErrors)
+    {
+        return (retainedErrors ?? [])
+            .Concat(currentErrors)
+            .GroupBy(
+                issue =>
+                    $"{NormalizeCanonicalRepairTargetFilePath(issue.FilePath)}\u001f{issue.Code ?? issue.Category.ToString()}",
+                StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.Last())
+            .ToArray();
+    }
+
+    private static string NormalizeCanonicalRepairTargetFilePath(string path)
+    {
+        var normalized = NormalizeRepairTargetPath(path).Replace('\\', '/');
+        var jsonExtensionIndex = normalized.IndexOf(".json", StringComparison.OrdinalIgnoreCase);
+        return jsonExtensionIndex < 0
+            ? normalized
+            : normalized[..(jsonExtensionIndex + ".json".Length)];
     }
 
     private static bool IsCanonicalStateRepairIssue(ValidationIssue issue)
@@ -738,12 +947,42 @@ public partial class GameEngine
         _inputSource.ReadKey(intercept: true);
     }
 
-    private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
-        int attempt, RollbackSnapshot? rollbackSnapshot)
+    private async Task<string> CaptureCurrentSessionGenerationAsync()
     {
-        var metadataDiagnosticOnly = await WriteValidationRepairRequestAsync(source, errors, attempt);
-        if (metadataDiagnosticOnly)
-            return await FailClosedDiagnosticOnlyValidationRepairAsync(source, errors, attempt, rollbackSnapshot);
+        if (SessionOperationContext.TryGetExpectedGeneration(
+                _fs.BasePath,
+                out var boundSessionGeneration))
+        {
+            return boundSessionGeneration;
+        }
+
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return _fs.GetOrCreateSessionGeneration(writeLease);
+    }
+
+    private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
+        int attempt, RollbackSnapshot? rollbackSnapshot, string repairSessionGeneration)
+    {
+        await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
+        var dispatch = await WriteValidationRepairRequestForSessionAsync(
+            source,
+            errors,
+            attempt,
+            repairSessionGeneration);
+        ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
+        if (dispatch.MetadataDiagnosticOnly)
+            return await FailClosedDiagnosticOnlyValidationRepairAsync(
+                source,
+                errors,
+                attempt,
+                rollbackSnapshot,
+                repairSessionGeneration);
+
+        if (dispatch.WorkerApplyAccepted && !dispatch.ReadySignalCreated)
+        {
+            await AppendWorkerAcceptedValidationRepairTrajectoryAsync(source, errors, attempt, dispatch);
+            return true;
+        }
 
         using var agentConsoleRepairInputBlock = BeginAgentConsoleInputBlockFromCurrentSnapshot(
             "Validation repair is active. Agent Console input is blocked until GM finishes data repair.");
@@ -759,13 +998,16 @@ public partial class GameEngine
             {
                 while (!cts.Token.IsCancellationRequested)
                 {
+                    await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
                     if (_fs.FileExists(ValidationRepairReadyPath))
                         return true;
                     if (_fs.FileExists(ValidationRepairArtifactStallReportPath))
                     {
                         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
                         if (pendingSnapshot is { Status: PendingTurnSnapshotResolutionStatus.Usable, Context: not null } &&
-                            await TryPromoteValidationRepairArtifactStallToTerminalErrorAsync(pendingSnapshot.Context))
+                            await TryPromoteValidationRepairArtifactStallToTerminalErrorAsync(
+                                pendingSnapshot.Context,
+                                repairSessionGeneration))
                         {
                             harnessTerminalErrorPublished = true;
                             return false;
@@ -809,8 +1051,9 @@ public partial class GameEngine
             {
                 if (rollbackAvailable)
                 {
-                    await RestorePreTurnBackup(rollbackSnapshot!);
-                    CleanupBackup(rollbackSnapshot!);
+                    await RestorePreTurnBackupForSessionAsync(
+                        rollbackSnapshot!,
+                        repairSessionGeneration);
                     AnsiConsole.MarkupLine("[yellow]⏹ Ремонтный цикл прерван. Состояние откатилось к последней стабильной версии.[/]");
                 }
                 else
@@ -818,8 +1061,13 @@ public partial class GameEngine
                     AnsiConsole.MarkupLine("[yellow]⏹ Ремонтный цикл прерван. Автоматический откат для этого режима недоступен; текущее состояние оставлено как есть.[/]");
                 }
 
-                await _progressionSchedule.DeleteTransientReportAsync();
-                await DeleteValidationRepairFilesAsync();
+                if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
+                        repairSessionGeneration))
+                {
+                    throw new GmWorkerSessionReplacedException(
+                        "The validation-repair cycle belongs to a game session that is no longer current.");
+                }
+                await DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration);
                 return false;
             }
 
@@ -832,8 +1080,10 @@ public partial class GameEngine
             if (!result)
                 continue;
 
-            var readyJson = await _fs.ReadFileAsync(ValidationRepairReadyPath);
-            var ready = await ReadValidationRepairReadyAsync();
+            var readyJson = await ReadValidationRepairFileForSessionAsync(
+                ValidationRepairReadyPath,
+                repairSessionGeneration);
+            var ready = ReadValidationRepairReady(readyJson);
             var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
             if (ready == null)
             {
@@ -846,11 +1096,33 @@ public partial class GameEngine
                     "Клиент отклонил validation_repair_ready.json: файл не читается как валидный JSON.",
                     "Valid JSON object with matching sessionId/requestId/turnNumber for the active repair cycle",
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
-                    BuildInvalidRepairReadyRepairHint(pendingSnapshot));
-                if (rejectedReadyRepair.MetadataDiagnosticOnly)
-                    return await FailClosedDiagnosticOnlyValidationRepairAsync(source, rejectedReadyRepair.ReportErrors, attempt, rollbackSnapshot);
+                    BuildInvalidRepairReadyRepairHint(pendingSnapshot),
+                    repairSessionGeneration);
+                ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
+                if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
+                    return await FailClosedDiagnosticOnlyValidationRepairAsync(
+                        source,
+                        rejectedReadyRepair.ReportErrors,
+                        attempt,
+                        rollbackSnapshot,
+                        repairSessionGeneration);
 
-                await DeleteValidationRepairReadyAsync();
+                if (rejectedReadyRepair.Dispatch.WorkerApplyAccepted)
+                {
+                    if (!rejectedReadyRepair.Dispatch.ReadySignalCreated)
+                    {
+                        await AppendWorkerAcceptedValidationRepairTrajectoryAsync(
+                            source,
+                            rejectedReadyRepair.ReportErrors,
+                            attempt,
+                            rejectedReadyRepair.Dispatch);
+                        return true;
+                    }
+
+                    continue;
+                }
+
+                await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
                 continue;
@@ -875,19 +1147,57 @@ public partial class GameEngine
                     "Клиент отклонил validation_repair_ready.json: metadata не совпадает с активным repair cycle.",
                     BuildExpectedRepairContext(pendingSnapshot),
                     BuildActualRepairContext(ready, pendingSnapshot),
-                    BuildMismatchedRepairReadyRepairHint(pendingSnapshot));
-                if (rejectedReadyRepair.MetadataDiagnosticOnly)
-                    return await FailClosedDiagnosticOnlyValidationRepairAsync(source, rejectedReadyRepair.ReportErrors, attempt, rollbackSnapshot);
+                    BuildMismatchedRepairReadyRepairHint(pendingSnapshot),
+                    repairSessionGeneration);
+                ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
+                if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
+                    return await FailClosedDiagnosticOnlyValidationRepairAsync(
+                        source,
+                        rejectedReadyRepair.ReportErrors,
+                        attempt,
+                        rollbackSnapshot,
+                        repairSessionGeneration);
 
-                await DeleteValidationRepairReadyAsync();
+                if (rejectedReadyRepair.Dispatch.WorkerApplyAccepted)
+                {
+                    if (!rejectedReadyRepair.Dispatch.ReadySignalCreated)
+                    {
+                        await AppendWorkerAcceptedValidationRepairTrajectoryAsync(
+                            source,
+                            rejectedReadyRepair.ReportErrors,
+                            attempt,
+                            rejectedReadyRepair.Dispatch);
+                        return true;
+                    }
+
+                    continue;
+                }
+
+                await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
                 continue;
             }
 
-            await AppendAcceptedValidationRepairTrajectoryAsync(source, errors, attempt, ready, pendingSnapshot);
-            await DeleteValidationRepairReadyAsync();
+            await AppendAcceptedValidationRepairTrajectoryAsync(
+                source,
+                errors,
+                attempt,
+                ready,
+                pendingSnapshot,
+                repairSessionGeneration);
+            await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
             return true;
+        }
+    }
+
+    private static void ThrowIfValidationRepairDispatchSessionReplaced(
+        ValidationRepairDispatchState dispatch)
+    {
+        if (dispatch.SessionReplaced)
+        {
+            throw new GmWorkerSessionReplacedException(
+                "The validation-repair worker belongs to a game session that is no longer current.");
         }
     }
 
@@ -896,7 +1206,12 @@ public partial class GameEngine
         List<ValidationIssue> errors,
         int attempt,
         ValidationRepairReady ready,
-        PendingTurnSnapshotResolution pendingSnapshot)
+        PendingTurnSnapshotResolution pendingSnapshot,
+        string expectedSessionGeneration,
+        string acceptanceScope = "correlated_repair_ready",
+        string terminalKind = "validation_repair_ready",
+        string? signalPath = ValidationRepairReadyPath,
+        string dispatchStatus = "client_observed_terminal")
     {
         const string ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl";
 
@@ -932,13 +1247,13 @@ public partial class GameEngine
                     attempts = 0,
                     busyRetries = 0,
                     timeout = false,
-                    status = "client_observed_terminal"
+                    status = dispatchStatus
                 },
                 validation = new
                 {
                     status = "accepted",
                     source,
-                    acceptanceScope = "correlated_repair_ready",
+                    acceptanceScope,
                     fullCanonicalStateAccepted = false,
                     issueKinds = BuildValidationRepairTrajectoryIssueKinds(errors),
                     repairPacketRefs
@@ -952,8 +1267,8 @@ public partial class GameEngine
                 rollbackEvents = Array.Empty<object>(),
                 terminal = new
                 {
-                    kind = "validation_repair_ready",
-                    signalPath = ValidationRepairReadyPath
+                    kind = terminalKind,
+                    signalPath
                 },
                 durationSeconds = (double?)null,
                 rubric = new
@@ -969,16 +1284,22 @@ public partial class GameEngine
                 observedBy = "client"
             };
 
-            var fullPath = _fs.ResolvePath(ledgerPath);
-            var directory = Path.GetDirectoryName(fullPath);
-            if (!string.IsNullOrWhiteSpace(directory))
-                Directory.CreateDirectory(directory);
-
             var json = JsonSerializer.Serialize(record, new JsonSerializerOptions(JsonOpts)
             {
                 WriteIndented = false
             });
-            await File.AppendAllTextAsync(fullPath, json + Environment.NewLine, Encoding.UTF8);
+            if (!await _fs.AppendFileAtomicIfCurrentSessionAsync(
+                    ledgerPath,
+                    json + Environment.NewLine,
+                    expectedSessionGeneration))
+            {
+                throw new GmWorkerSessionReplacedException(
+                    "The accepted validation-repair trajectory belongs to a game session that is no longer current.");
+            }
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -989,10 +1310,59 @@ public partial class GameEngine
         }
     }
 
+    private async Task EnsureRepairSessionCurrentAsync(string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+        {
+            throw new GmWorkerSessionReplacedException(
+                "The validation-repair cycle belongs to a game session that is no longer current.");
+        }
+    }
+
+    private async Task AppendWorkerAcceptedValidationRepairTrajectoryAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt,
+        ValidationRepairDispatchState dispatch)
+    {
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        var sourceTurn = dispatch.WorkerResult?.Task?.SourceTurn;
+        var workerSessionGeneration = dispatch.WorkerResult?.Task?.SessionGeneration;
+        if (string.IsNullOrWhiteSpace(workerSessionGeneration))
+        {
+            _logger.LogWarning(
+                "Skipped worker accepted validation repair trajectory because its reserved task session generation is unavailable after {Source}.",
+                source);
+            return;
+        }
+        var ready = new ValidationRepairReady
+        {
+            SessionId = sourceTurn?.SessionId ?? pendingSnapshot.Context?.SessionId ?? string.Empty,
+            RequestId = sourceTurn?.RequestId ?? pendingSnapshot.Context?.RequestId ?? string.Empty,
+            TurnNumber = sourceTurn?.TurnNumber ?? pendingSnapshot.Context?.TurnNumber ?? 0,
+            UpdatedAtUtc = DateTime.UtcNow.ToString("o"),
+            Note = dispatch.WorkerResult?.FallbackReason
+        };
+
+        await AppendAcceptedValidationRepairTrajectoryAsync(
+            source,
+            errors,
+            attempt,
+            ready,
+            pendingSnapshot,
+            workerSessionGeneration,
+            acceptanceScope: "worker_apply_gate",
+            terminalKind: "worker_apply_gate_accepted",
+            signalPath: null,
+            dispatchStatus: "worker_applied_without_ready_signal");
+    }
+
     private async Task AppendClearedValidationRepairTrajectoryAsync(
         string source,
         IReadOnlyCollection<ValidationIssue> errors,
-        int attempt)
+        int attempt,
+        string expectedSessionGeneration)
     {
         const string ledgerPath = "game_state/control/gm_trajectory_ledger.jsonl";
 
@@ -1067,16 +1437,22 @@ public partial class GameEngine
                 observedBy = "client"
             };
 
-            var fullPath = _fs.ResolvePath(ledgerPath);
-            var directory = Path.GetDirectoryName(fullPath);
-            if (!string.IsNullOrWhiteSpace(directory))
-                Directory.CreateDirectory(directory);
-
             var json = JsonSerializer.Serialize(record, new JsonSerializerOptions(JsonOpts)
             {
                 WriteIndented = false
             });
-            await File.AppendAllTextAsync(fullPath, json + Environment.NewLine, Encoding.UTF8);
+            if (!await _fs.AppendFileAtomicIfCurrentSessionAsync(
+                    ledgerPath,
+                    json + Environment.NewLine,
+                    expectedSessionGeneration))
+            {
+                throw new GmWorkerSessionReplacedException(
+                    "The cleared validation-repair trajectory belongs to a game session that is no longer current.");
+            }
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -1208,8 +1584,26 @@ public partial class GameEngine
         return "Unknown";
     }
 
-    private async Task<bool> WriteValidationRepairRequestAsync(string source, List<ValidationIssue> errors, int attempt)
+    private async Task<ValidationRepairDispatchState> WriteValidationRepairRequestAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt)
     {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        return await WriteValidationRepairRequestForSessionAsync(
+            source,
+            errors,
+            attempt,
+            sessionGeneration);
+    }
+
+    private async Task<ValidationRepairDispatchState> WriteValidationRepairRequestForSessionAsync(
+        string source,
+        List<ValidationIssue> errors,
+        int attempt,
+        string expectedSessionGeneration)
+    {
+        await DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration);
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
         var requestMetadata = BuildProtocolRequestMetadata(pendingSnapshot);
@@ -1245,18 +1639,52 @@ public partial class GameEngine
             }).ToList()
         };
 
-        await _fs.WriteFileAtomicAsync(ValidationRepairRequestPath, JsonSerializer.Serialize(request, JsonOpts));
         PublishAgentConsoleValidationRepairSnapshot(request);
+        GmWorkerValidationRepairDispatchResult? workerResult = null;
         if (!metadataDiagnosticOnly)
-            await RunWorkerValidationRepairIfAvailableAsync(prioritizedErrors, requestMetadata, request.DetectedAtUtc, attempt);
-        return metadataDiagnosticOnly;
+        {
+            workerResult = await RunWorkerValidationRepairIfAvailableAsync(
+                prioritizedErrors,
+                requestMetadata,
+                request.DetectedAtUtc,
+                attempt,
+                expectedSessionGeneration);
+            if (workerResult.Outcome == GmWorkerValidationRepairOutcome.Applied)
+            {
+                return new ValidationRepairDispatchState
+                {
+                    WorkerApplyAccepted = true,
+                    ReadySignalCreated = workerResult.ReadySignalCreated,
+                    WorkerResult = workerResult
+                };
+            }
+            if (workerResult.Outcome == GmWorkerValidationRepairOutcome.SessionReplaced)
+            {
+                return new ValidationRepairDispatchState
+                {
+                    SessionReplaced = true,
+                    WorkerResult = workerResult
+                };
+            }
+        }
+
+        await WriteValidationRepairFileForSessionAsync(
+            ValidationRepairRequestPath,
+            JsonSerializer.Serialize(request, JsonOpts),
+            expectedSessionGeneration);
+        return new ValidationRepairDispatchState
+        {
+            MetadataDiagnosticOnly = metadataDiagnosticOnly,
+            WorkerResult = workerResult
+        };
     }
 
     private async Task<bool> FailClosedDiagnosticOnlyValidationRepairAsync(
         string source,
         List<ValidationIssue> errors,
         int attempt,
-        RollbackSnapshot? rollbackSnapshot)
+        RollbackSnapshot? rollbackSnapshot,
+        string expectedSessionGeneration)
     {
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
         _logger.LogError(
@@ -1288,8 +1716,9 @@ public partial class GameEngine
 
         if (HasRollbackCapability(rollbackSnapshot))
         {
-            await RestorePreTurnBackup(rollbackSnapshot!);
-            CleanupBackup(rollbackSnapshot!);
+            await RestorePreTurnBackupForSessionAsync(
+                rollbackSnapshot!,
+                expectedSessionGeneration);
             AnsiConsole.MarkupLine("[yellow]↩ Клиент остановил неремонтопригодный diagnostic-only repair и восстановил состояние из rollback backup.[/]");
         }
         else
@@ -1297,9 +1726,17 @@ public partial class GameEngine
             AnsiConsole.MarkupLine("[yellow]⚠ Клиент остановил неремонтопригодный diagnostic-only repair. Автоматический rollback для этого режима недоступен.[/]");
         }
 
-        await _fs.WriteFileAtomicAsync(ValidationDiagnosticFailureReportPath, JsonSerializer.Serialize(report, JsonOpts));
-        await _progressionSchedule.DeleteTransientReportAsync();
-        await DeleteValidationRepairFilesAsync();
+        await WriteValidationRepairFileForSessionAsync(
+            ValidationDiagnosticFailureReportPath,
+            JsonSerializer.Serialize(report, JsonOpts),
+            expectedSessionGeneration);
+        if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
+                expectedSessionGeneration))
+        {
+            throw new GmWorkerSessionReplacedException(
+                "The validation-repair cycle belongs to a game session that is no longer current.");
+        }
+        await DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration);
         return false;
     }
 
@@ -1316,6 +1753,7 @@ public partial class GameEngine
             .Where(issue => !guardianScopeActorNames.Contains(NormalizeRepairActorName(issue.Actor)))
             .ToList();
         var actorMemoryPersistenceErrors = errors.Where(IsActorMemoryPersistenceRepairIssue).ToList();
+        var actorMaterializationErrors = errors.Where(IsActorMaterializationRepairIssue).ToList();
         var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
         var mortalFactionResourceErrors = errors.Where(IsMortalFactionResourceRepairIssue).ToList();
         var mortalBootstrapMaterializationErrors = errors.Where(IsMortalBootstrapMaterializationRepairIssue).ToList();
@@ -1360,6 +1798,9 @@ public partial class GameEngine
 
         if (actorMemoryPersistenceErrors.Count > 0)
             packets.Add(BuildActorMemoryPersistenceRepairPacket(actorMemoryPersistenceErrors, guardianActorNameHints));
+
+        if (actorMaterializationErrors.Count > 0)
+            packets.Add(BuildActorMaterializationRepairPacket(actorMaterializationErrors));
 
         if (factionIdentityErrors.Count > 0)
             packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
@@ -1460,6 +1901,29 @@ public partial class GameEngine
                string.Equals(issue.Code, "shining_faction_relevant_actor_missing_strategic_memory_delta", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(issue.Code, "actor_thought_journal_not_first_person", StringComparison.OrdinalIgnoreCase) ||
                IsGuardianThoughtJournalShapeRepairIssue(issue);
+    }
+
+    private static bool IsActorMaterializationRepairIssue(ValidationIssue issue)
+    {
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "actor_materialization_missing" => true,
+            "actor_materialization_invalid_envelope" => true,
+            "actor_materialization_actor_binding_mismatch" => true,
+            "actor_materialization_duplicate_id" => true,
+            "actor_materialization_duplicate_property" => true,
+            "actor_materialization_invalid_actor_type" => true,
+            "actor_materialization_inventory_reference_mismatch" => true,
+            "actor_materialization_section_missing" => true,
+            "actor_materialization_section_content_mismatch" => true,
+            "actor_materialization_capability_mismatch" => true,
+            "actor_materialization_existing_resend_forbidden" => true,
+            "actor_materialization_historical_envelope_changed" => true,
+            "afterlife_actor_materialization_profile_missing" => true,
+            "afterlife_actor_materialization_profile_ambiguous" => true,
+            "afterlife_actor_materialization_memory_missing" => true,
+            _ => false
+        };
     }
 
     private static bool IsGuardianThoughtJournalShapeRepairIssue(ValidationIssue issue)
@@ -2810,7 +3274,8 @@ public partial class GameEngine
             ExpectedShape = new List<string>
             {
                 $"Repair these bootstrap issue codes first: {string.Join(", ", issueCodes)}.",
-                "The first Mortal World turn must materialize the player-facing anchors from game_state/control/mortal_bootstrap_scaffold.json into canonical current-world files.",
+                "The first Mortal World turn must materialize only explicit GM-authored player-facing anchors from game_state/control/mortal_bootstrap_scaffold.json into canonical current-world files; the neutral baseline does not require factions, quests, or setting-owned location mechanics.",
+                "Every structuredGmAuthority.playerProgression, carryingRules, or factionMechanics record must name the exact canonicalPath and contain a non-empty values object that repeats every authorized canonical value; faction records also identify factionId. Empty objects, reasons, unrelated paths, and prose do not grant authority.",
                 "Current-world codex entries must describe this Mortal World, not afterlife lore or a previous world; sourceFile must start with current_world/ (for example current_world/world_setting.json), not lore/current_world/.",
                 "Readable document/book inventory items need matching detail authority so /книги or document-reading surfaces can show contents.",
                 "Starting items need canonical quality/rarity, durability when inspectable, and a valid equipment/accessory slot when item type implies one.",
@@ -2820,13 +3285,13 @@ public partial class GameEngine
                 "Mortal World Relevant actors must be backed by a persistent NPC/faction/quest/inventory surface, or moved to Actors outside scope when they are only background scenery.",
             "The player character is not an NPC persistence target. If the current protagonist is named in Relevant actors, mark them as player character and do not create NPCsInScene/UpdateNPCs for them.",
             "NPCsInScene is only for actors physically present in currentLocationData. Offscreen voices, people behind a door, nearbyExitLocationId actors, and route pressure do not belong in NPCsInScene for the current room.",
-            "If mortal_bootstrap_scaffold.json or the opening scene promises a teacher, mentor, paid lesson, training yard, learn-to/научиться hook, or /обучение surface, game_state/npcs/npc_core.json must materialize at least one matching NPC with teacherProfile.canTeach=true and non-empty teacherProfile.skills[].",
-            "If mortal_bootstrap_scaffold.json or the opening scene promises a trader, merchant, vendor, shop, stall, купить/продать, or /торговля_нпс surface, game_state/npcs/npc_core.json must materialize at least one matching NPC with tradeState.canTrade=true, a valid merchantProfile, relationshipLevel, and summary. Leave tradeInventory absent until a trade vitrine is actually ready; if tradeInventory is present, it must be a full object, never a scalar/string/array placeholder.",
-            "Every starterCompetencyRequirements[] entry is client-authored authority derived from the player's explicit character concept. Preserve each matching active/passive skill and the active-skill mastery entry; do not replace permanent competence with prose.",
+            "Only an explicit structuredGmAuthority.actorCapabilities[] declaration with capability=canTeach and required=true requires a matching NPC with teacherProfile.canTeach=true and non-empty teacherProfile.skills[]. playerAuthoredStart prose alone never creates this requirement.",
+            "Only an explicit structuredGmAuthority.actorCapabilities[] declaration with capability=canTrade and required=true requires a matching NPC with tradeState.canTrade=true, an explicit valid merchantProfile, relationshipLevel, and summary. Never infer merchantProfile from role, occupation, class, progression type, name, description, genre, or keywords. Leave tradeInventory absent until a trade vitrine is actually ready; if tradeInventory is present, it must be a full object, never a scalar/string/array placeholder.",
+            "Every structuredGmAuthority.playerSkills[] entry is explicit GM authority. Preserve each matching active/passive skill and the active-skill mastery entry; do not infer any skill from playerAuthoredStart prose.",
             "worldEventRequirements requires the client-authored opening event to remain in game_state/world/world_events.json.worldEventsLog so /новости_мира is useful immediately after incarnation.",
             "Faction custom sidecars must carry full Custom State Objects: stateId/name, currentValue, minValue, maxValue, description, progressionRule { changePerTurn, description }, and thresholds[]; if you only need a narrative note, use faction_core chronicle instead.",
             "Active threats must be full objects, not strings: threatId/name/longTermGoal plus threatArchetype { motivation, method } and impactProfile { primaryTargetType, primaryTargetId, primaryTargetName, primaryImpact, baseImpactValue }. Use canonical enum values or keep activeThreats empty for vague pressure.",
-            "current_location coordinates/factionControl must match world_map and use object-shaped faction-control data."
+            "current_location and world_map must agree on shared identity, coordinates, and navigation links. Location type, traversal, safety, biome, difficulty, faction control, factions, chronicles, and quests are setting-owned and remain absent or empty unless the GM explicitly materializes them with complete canonical data."
             },
             SafeCorrectionRules = new List<string>
             {
@@ -2844,28 +3309,28 @@ public partial class GameEngine
                 "Patch item journalEntries as a JSON array of non-empty strings, not objects; preserve useful text by flattening each malformed object into one player-facing note string.",
                 "Patch string-array fields as JSON arrays of strings, not scalar text or semicolon-delimited strings.",
                 "Patch output/debug_logs.json Relevant actors: keep the current protagonist as player character, materialize real non-player Mortal actors through NPC/faction/quest/inventory surfaces, or move background objects to Actors outside scope with a clear reason.",
-                "Patch requested training anchors: if the player-authored start names a teacher/mentor/trainer or promises paid lessons/training showcase/learn-to intent, add that NPC to NPCsInScene or UpdateNPCs with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
-                "Patch requested trade anchors: if the player-authored start names a trader/merchant/vendor/shop or promises immediate buying/selling, add that NPC to NPCsInScene or UpdateNPCs with tradeState.canTrade=true, tradeState.merchantProfile such as GeneralGoods/BlackMarket/Apothecary/Armorer/FoodAndSupplies, relationshipLevel, summary, and a player-facing role that makes /торговля_нпс discoverable.",
-                "Patch explicit starter competencies: copy every starterCompetencyRequirements[] entry into the matching skills_active.json or skills_passive.json canonical collection, preserve its concrete playable fields from the pre-turn baseline, and restore matching skill_mastery.json data for active skills.",
+                "Patch requested training anchors only from structuredGmAuthority.actorCapabilities: for each required canTeach declaration, add the explicitly selected NPC to NPCsInScene or UpdateNPCs with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[] entries containing skillId, skillName, displayName, skillKind, and masteryLevel.",
+                "Patch requested trade anchors only from structuredGmAuthority.actorCapabilities: for each required canTrade declaration, add the explicitly selected NPC to NPCsInScene or UpdateNPCs with tradeState.canTrade=true, an explicit valid tradeState.merchantProfile, relationshipLevel, summary, and a player-facing role that makes /торговля_нпс discoverable. Never infer the profile from NPC prose or genre.",
+                "Patch explicit GM-authored starter competencies: copy every structuredGmAuthority.playerSkills[] entry into the matching skills_active.json or skills_passive.json canonical collection and restore matching skill_mastery.json data for active skills.",
                 "Patch opening world news: restore each worldEventRequirements.requiredEventIds entry in world_events.json.worldEventsLog and keep its title/description grounded in playerAuthoredStart.startingCircumstances.",
                 "For a promised trader, use tradeBlockedReason only when canTrade=false, and keep it a string explaining the story gate. When canTrade=true, omit tradeBlockedReason or keep it as an empty string; never write null/object/array.",
                 "For a promised trader, do not include inventory in UpdateNPCs when updating an existing NPC. Use inventory: [] only for a genuinely new full NPC object; use NPC inventory delta commands for existing NPC inventory changes.",
                 "For a promised trader, do not fabricate a partial tradeInventory just to prove the NPC can trade. Leave tradeInventory absent so /торговля_нпс can request a vitrine, unless you are writing a complete canonical tradeInventory object with valid items and matching receipts.",
                 "Patch NPCsInScene location scope: if an actor is behind a door, near nearbyExitLocationId, in another corridor, or only heard offscreen, remove them from NPCsInScene and represent them through narrative/location/quest/faction memory or UpdateNPCs at their actual location only when they are durable known actors.",
-                "Patch factions: complete faction custom/progression sidecar fields with full Custom State Objects, or move narrative-only pressure into faction_core chronicle and leave faction_custom customStates empty.",
+                "Patch factions only when the GM explicitly created them: complete faction custom/progression sidecar fields with full Custom State Objects, or move narrative-only pressure into an explicitly materialized faction chronicle. Keep neutral bootstrap faction collections empty.",
                 "Patch active threats: either write complete Active Threat Objects with canonical enum values, or remove vague string-only threats and represent pressure through location events/faction chronicle.",
-                "Patch location/map data: synchronize current_location coordinates with world_map and make factionControl an object-shaped authority.",
+                "Patch location/map data: synchronize shared identity, coordinates, and navigation links. Do not invent location type, traversal, safety, biome, difficulty, faction control, faction chronicles, or quest mechanics merely to satisfy bootstrap.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
             },
             DoNotDo = new List<string>
             {
-                "Do not delete the opening book, letter, NPC, faction, map exit, or codex hook just to silence validation.",
+                "Do not delete an explicitly GM-authored opening book, letter, NPC, faction, quest, map exit, or codex hook just to silence validation; neutral empty faction and quest collections do not require replacement entities.",
                 "Do not copy afterlife lore or previous-world lore into current-world bootstrap files.",
                 "Do not write item durability as bare numbers such as 100; use percentage strings such as 100%.",
                 "Do not write item journalEntries as objects; journalEntries[] entries must be non-empty strings.",
-                "Do not remove a promised teacher, mentor, lesson, learn-to intent, or /обучение hook from the player-facing scene just to avoid creating teacherProfile.",
-                "Do not remove a promised trader, shop, buying/selling hook, or /торговля_нпс hook from the player-facing scene just to avoid creating tradeState.",
-                "Do not delete a client-authored starter competency or opening world event to reduce bootstrap scope.",
+                "Do not delete a structuredGmAuthority canTeach declaration just to avoid creating its complete teacherProfile.",
+                "Do not delete a structuredGmAuthority canTrade declaration just to avoid creating its complete tradeState.",
+                "Do not delete an explicit structuredGmAuthority player skill or the client-authored opening world event to reduce bootstrap scope.",
                 "Do not write tradeInventory as a scalar, string, array, or empty placeholder; omit it until a complete trade vitrine exists.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer bootstrap rules; use this packet, the scaffold, templates, and validation errors."
             }
@@ -3030,28 +3495,35 @@ public partial class GameEngine
             CanonicalActorNames = actorNames,
             ExpectedShape = new List<string>
             {
-                "UpdateNPCs for an existing NPC must not resend an inventory array/object.",
-                "Existing NPC inventory changes must use NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, equipment/resource commands, or no inventory command when nothing changed.",
-                "Only a genuinely new NPC with NPCId = JSON null and a non-empty initialId may carry initial inventory inside the full UpdateNPCs/NPCsInScene object."
+                "A genuinely new NPC with NPCId = JSON null and a non-empty initialId may carry its initial inventory inside the full UpdateNPCs/NPCsInScene object.",
+                "An ordinary existing NPC must remove the whole ordinary-existing full-object resend from UpdateNPCs. Every legitimate supported change uses its dedicated delta/command surface.",
+                "A true legacy promotion must retain schema-required inventory and restore the exact semantically unchanged validated pre-turn inventory snapshot carried by validationIssues[].expected; real mutations still use dedicated inventory commands."
             },
             SafeCorrectionRules = new List<string>
             {
                 "Patch only the listed NPC entries and inventory command surfaces.",
-                "If the NPC is existing, remove inventory from UpdateNPCs and keep unrelated profile/location/relationship fields intact.",
-                "If the NPC is genuinely new, change identity to NPCId = JSON null plus initialId and keep inventory only as that new NPC's initial carried inventory."
+                "For an ordinary existing NPC, remove the whole ordinary-existing full-object resend; never retain a schema-invalid UpdateNPCs object with inventory omitted.",
+                "Express every legitimate skill, inventory, relationship, journal, activity, equipment/resource, or other supported change through its dedicated delta/command surface.",
+                "If a required delta surface does not exist, use the main-GM rollback/repair path instead of constructing a partial full object.",
+                "For a true legacy promotion, copy the exact inventory JSON from validationIssues[].expected back into the full promotion object without semantic changes.",
+                "Keep initial inventory only for a genuinely new NPC that was already new in validated continuity authority; never change an existing identity into NPCId = JSON null plus initialId to evade this error."
             },
             Steps = new List<string>
             {
                 "Open Templates/MORTAL_NPC_UPDATE_TEMPLATE.md before repairing NPC inventory update validation errors.",
-                "Remove inventory from UpdateNPCs for every existing NPC named by validation_repair_request.json.",
-                "If an existing NPC's inventory really changed this turn, express the delta through NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, equipment/resource commands, or another documented inventory command surface.",
-                "If there was no inventory change, delete only the forbidden inventory field and preserve the rest of the NPC object.",
+                "For each named actor, classify the object as a genuinely new NPC, an ordinary existing NPC, or a true legacy promotion using validated identity/materialization continuity and the issue metadata.",
+                "For an ordinary existing NPC, remove the whole ordinary-existing full-object resend from UpdateNPCs. Re-author every legitimate supported change through NPCInventoryAdds, NPCInventoryUpdates, NPCInventoryRemovals, skill, relationship, journal, activity, equipment/resource, or another documented dedicated command surface.",
+                "If any required ordinary-existing change has no dedicated delta/command surface, stop and use the main-GM rollback/repair path; do not retain a partial full object.",
+                "For a true legacy promotion, keep inventory present and restore the exact semantically unchanged validated pre-turn inventory snapshot from validationIssues[].expected.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
             },
             DoNotDo = new List<string>
             {
                 "Do not delete a meaningful NPC to silence an inventory resend error.",
-                "Do not keep inventory: [] inside UpdateNPCs for an existing NPC.",
+                "Do not keep an ordinary existing full UpdateNPCs object after removing only its inventory property; that partial object is schema-invalid.",
+                "Do not remove the schema-required inventory from a full true legacy promotion.",
+                "Do not mutate or reconstruct the validated pre-turn promotion snapshot; copy validationIssues[].expected exactly.",
+                "Do not reclassify an existing NPC as genuinely new by replacing its permanent NPCId with initialId.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC inventory rules."
             }
         };
@@ -3120,6 +3592,132 @@ public partial class GameEngine
                 "Do not use raw nulls for required strings or collapse single-item arrays into scalars.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer NPC object rules."
             }
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildActorMaterializationRepairPacket(
+        IReadOnlyList<ValidationIssue> materializationErrors)
+    {
+        var actorIdentities = CollectRepairActorNames(materializationErrors)
+            .OrderBy(actor => actor, StringComparer.Ordinal)
+            .ToList();
+        var targetFiles = materializationErrors
+            .SelectMany(ResolveActorMaterializationRepairTargetFiles)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToList();
+        var missingTargets = materializationErrors
+            .Select(DescribeMissingActorMaterializationTarget)
+            .Where(target => !string.IsNullOrWhiteSpace(target))
+            .Select(target => target!)
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(target => target, StringComparer.Ordinal)
+            .ToList();
+        var hasMortalTargets = targetFiles.Contains(
+            "game_state/npcs/npc_core.json",
+            StringComparer.OrdinalIgnoreCase);
+        var hasAfterlifeTargets = targetFiles.Contains(
+            AfterlifeEntityProfileState.StatePath,
+            StringComparer.OrdinalIgnoreCase);
+        var templateRefs = new List<string>();
+        if (hasMortalTargets)
+            templateRefs.Add("Templates/MORTAL_NPC_UPDATE_TEMPLATE.md");
+        if (hasAfterlifeTargets)
+        {
+            templateRefs.Add("OtherGuides/Afterlife_Contract_Matrix.md");
+            templateRefs.Add("Examples/E_CLI_Afterlife_Turns.txt");
+        }
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "actor_materialization_repair",
+            Priority = "critical",
+            Title = "Bounded actor materialization repair",
+            TargetFiles = targetFiles,
+            TemplateRefs = templateRefs,
+            CanonicalActorNames = actorIdentities,
+            MissingFields = missingTargets.Count == 0 ? null : missingTargets,
+            ExactFieldCorrections = materializationErrors
+                .Select(BuildExactFieldCorrection)
+                .OrderBy(correction => correction.Path, StringComparer.Ordinal)
+                .ThenBy(correction => correction.Code, StringComparer.Ordinal)
+                .ToList(),
+            ExpectedShape = new List<string>
+            {
+                "Each listed actor uses one exact canonical actorType:actorId identity; display names, prose, and setting genre are never identity authority.",
+                "A new or promoted significant actor has one complete actor-bound materialization v1 envelope with exact capabilities and every required section disposition.",
+                "A section with canonical content uses state=populated; a deliberately empty section uses state=empty_by_design plus a non-empty in-world reason.",
+                "Existing valid actor fields, valid sections, and accepted historical materialization envelopes remain unchanged unless an exact correction explicitly targets them."
+            },
+            SafeCorrectionRules = new List<string>
+            {
+                "Repair only the actors and materialization sections listed in canonicalActorNames, missingFields, and exactFieldCorrections.",
+                "Preserve every valid actor field and valid materialization section that is not named by an exact validation error.",
+                "For afterlife_actor_materialization_profile_missing, add exactly one common profile for the listed exact actorType:actorId in game_state/meta/afterlife_entity_profiles.json.",
+                "For profile ambiguity, keep one canonical exact type-and-ID profile and preserve its valid sections; do not merge records by displayName.",
+                "For actor-owned memory errors, initialize memory from facts of the current accepted turn in the exact actor profile or documented type-specific journal."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json and only the packet-listed targetFiles/templates first.",
+                "Locate each actor by the exact actorType:actorId value in canonicalActorNames; do not resolve an actor by displayName or narrative description.",
+                "Apply missingFields and exactFieldCorrections one by one, changing only the named envelope/profile/section target.",
+                "Recheck that all unrelated actor data, already valid materialization sections, and historical envelopes are byte-for-byte or semantically preserved as required by the listed error.",
+                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer Actor Materialization rules; use this packet, validation_repair_request.json, templates, docs, examples, and canonical state.",
+                "Do not rewrite the whole actor, entire profile collection, or unrelated materialization sections to fix one listed target.",
+                "Do not delete an actor, profile, item, memory record, or valid section merely to silence a materialization error.",
+                "Do not infer identity, capabilities, skills, inventory, or section content from an actor name, prose keywords, or the setting genre.",
+                "Do not ask the client to invent GM-authored actor content or fabricate missing narrative facts; the GM must author only the exact bounded repair from current canonical evidence.",
+                "Do not create a new turn or write ready/turn_complete.json during validation repair."
+            }
+        };
+    }
+
+    private static IEnumerable<string> ResolveActorMaterializationRepairTargetFiles(ValidationIssue issue)
+    {
+        var authorityPath = GmWorkerTaskPacketBuilder.ResolveActorMaterializationAuthorityPath(issue);
+        if (authorityPath != null)
+        {
+            yield return authorityPath;
+            yield break;
+        }
+
+        var actor = NormalizeRepairActorName(issue.Actor);
+        if ((issue.Code ?? string.Empty).StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrWhiteSpace(actor) && actor.Contains(':', StringComparison.Ordinal)))
+        {
+            yield return AfterlifeEntityProfileState.StatePath;
+            yield break;
+        }
+
+        var normalizedPath = NormalizeRepairTargetPath(issue.FilePath);
+        if (normalizedPath.StartsWith("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase))
+        {
+            yield return "game_state/npcs/npc_core.json";
+            yield break;
+        }
+
+        if (normalizedPath.StartsWith(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase))
+            yield return AfterlifeEntityProfileState.StatePath;
+    }
+
+    private static string? DescribeMissingActorMaterializationTarget(ValidationIssue issue)
+    {
+        var actor = NormalizeRepairActorName(issue.Actor);
+        if (string.IsNullOrWhiteSpace(actor))
+            actor = "exact actor from errors[]";
+
+        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
+        {
+            "actor_materialization_missing" => $"{actor} / materialization",
+            "actor_materialization_section_missing" => $"{actor} / {issue.Section ?? "required section"}",
+            "afterlife_actor_materialization_profile_missing" => $"{actor} / common profile",
+            "afterlife_actor_materialization_memory_missing" => $"{actor} / actor-owned memory",
+            _ => null
         };
     }
 
@@ -4328,22 +4926,24 @@ public partial class GameEngine
         builder.AppendLine("- Изменения состояния: перечисли точные canonical surfaces, включая собственный журнал мыслей, или явно обоснуй отсутствие изменения.");
     }
 
-    private async Task RunWorkerValidationRepairIfAvailableAsync(
+    private async Task<GmWorkerValidationRepairDispatchResult> RunWorkerValidationRepairIfAvailableAsync(
         IReadOnlyList<ValidationIssue> prioritizedErrors,
         (string SessionId, string RequestId, int TurnNumber) requestMetadata,
         string createdAtUtc,
-        int attempt)
+        int attempt,
+        string expectedSessionGeneration)
     {
         try
         {
-            var audit = new GmWorkerAuditLog(_fs);
+            var workerFileSystem = _validator.CanonicalFileSystem;
+            var audit = new GmWorkerAuditLog(workerFileSystem);
             var delegator = new GmWorkerValidationRepairDelegator(
-                _fs,
-                new GmWorkerBridgePool(_fs, new GmWorkerProposalStore(_fs), audit),
-                new GmWorkerApplyGate(
-                    _fs,
-                    async () => (IReadOnlyList<ValidationIssue>)await _validator.ValidateGameStateAsync(),
+                workerFileSystem,
+                new GmWorkerBridgePool(
+                    workerFileSystem,
+                    new GmWorkerProposalStore(workerFileSystem),
                     audit),
+                new GmWorkerApplyGate(_validator, audit),
                 audit);
             var result = await delegator.TryRunAsync(
                 _stateManager.Settings.GmWorkerBridgeProfiles,
@@ -4355,7 +4955,8 @@ public partial class GameEngine
                     TurnNumber = requestMetadata.TurnNumber
                 },
                 createdAtUtc,
-                attempt);
+                attempt,
+                expectedSessionGeneration);
 
             if (result.Outcome is not GmWorkerValidationRepairOutcome.SkippedNoWorker and
                 not GmWorkerValidationRepairOutcome.Applied)
@@ -4365,10 +4966,25 @@ public partial class GameEngine
                     result.Outcome,
                     result.FallbackReason);
             }
+
+            return result;
+        }
+        catch (SessionReplacedException ex)
+        {
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.SessionReplaced,
+                FallbackReason = ex.Message
+            };
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to run GM worker validation repair. Legacy repair loop remains active.");
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = GmWorkerValidationRepairOutcome.WorkerFailed,
+                FallbackReason = ex.Message
+            };
         }
     }
 
@@ -4570,9 +5186,10 @@ public partial class GameEngine
         _ => "State"
     };
 
-    private async Task<(bool MetadataDiagnosticOnly, List<ValidationIssue> ReportErrors)> ReportRejectedRepairReadyAsync(
+    private async Task<(ValidationRepairDispatchState Dispatch, List<ValidationIssue> ReportErrors)> ReportRejectedRepairReadyAsync(
         string source, List<ValidationIssue> baseErrors, int attempt,
-        string code, string message, string expected, string actual, string repairHint)
+        string code, string message, string expected, string actual, string repairHint,
+        string expectedSessionGeneration)
     {
         var reportErrors = new List<ValidationIssue>
         {
@@ -4587,13 +5204,16 @@ public partial class GameEngine
                 repairHint: repairHint)
         };
 
-        var metadataDiagnosticOnly = await WriteValidationRepairRequestAsync(source, reportErrors, attempt);
-        return (metadataDiagnosticOnly, reportErrors);
+        var dispatch = await WriteValidationRepairRequestForSessionAsync(
+            source,
+            reportErrors,
+            attempt,
+            expectedSessionGeneration);
+        return (dispatch, reportErrors);
     }
 
-    private async Task<ValidationRepairReady?> ReadValidationRepairReadyAsync()
+    private static ValidationRepairReady? ReadValidationRepairReady(string? json)
     {
-        var json = await _fs.ReadFileAsync(ValidationRepairReadyPath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -4658,9 +5278,22 @@ public partial class GameEngine
 
     private async Task DeleteValidationRepairFilesAsync()
     {
-        await DeleteValidationRepairReadyAsync();
-        if (_fs.FileExists(ValidationRepairRequestPath))
-            _fs.DeleteFile(ValidationRepairRequestPath);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        DeleteValidationRepairFiles(writeLease);
+    }
+
+    private async Task DeleteValidationRepairFilesForSessionAsync(string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+        DeleteValidationRepairFiles(writeLease);
+    }
+
+    private void DeleteValidationRepairFiles(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        _fs.DeleteFile(writeLease, ValidationRepairRequestPath);
+        _fs.DeleteFile(writeLease, ValidationRepairArtifactStallReportPath);
     }
 
     private Task DeleteTerminalProtocolFailureRequestAsync()
@@ -4670,16 +5303,68 @@ public partial class GameEngine
         return Task.CompletedTask;
     }
 
+    private Task DeleteTerminalProtocolFailureRequestAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        _fs.DeleteFile(writeLease, TerminalProtocolFailureRequestPath);
+        return Task.CompletedTask;
+    }
+
     private Task DeleteValidationRepairReadyAsync()
     {
-        if (_fs.FileExists(ValidationRepairReadyPath))
-            _fs.DeleteFile(ValidationRepairReadyPath);
-        return Task.CompletedTask;
+        return DeleteValidationRepairReadyCoreAsync();
+    }
+
+    private async Task DeleteValidationRepairReadyCoreAsync()
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+    }
+
+    private async Task DeleteValidationRepairReadyForSessionAsync(string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+    }
+
+    private async Task WriteValidationRepairFileForSessionAsync(
+        string relativePath,
+        string content,
+        string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+        await _fs.WriteFileAtomicAsync(writeLease, relativePath, content);
+    }
+
+    private async Task<string?> ReadValidationRepairFileForSessionAsync(
+        string relativePath,
+        string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+        return await _fs.ReadFileAsync(writeLease, relativePath);
+    }
+
+    private void ThrowIfRepairSessionReplaced(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string expectedSessionGeneration)
+    {
+        if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+        {
+            throw new GmWorkerSessionReplacedException(
+                "The validation-repair cycle belongs to a game session that is no longer current.");
+        }
     }
 
     private async Task ShowTurnErrorMessageAsync(string readyErrorPath)
     {
-        var errorJson = await _fs.ReadFileAsync(readyErrorPath);
+        ShowTurnErrorMessage(await _fs.ReadFileAsync(readyErrorPath));
+    }
+
+    private void ShowTurnErrorMessage(string? errorJson)
+    {
         string errorMsg;
         if (errorJson == null)
         {
@@ -4791,8 +5476,11 @@ public partial class GameEngine
         return true;
     }
 
-    private async Task HandleMissingActiveTerminalOutcomeAsync(ValidatedPendingTurnSnapshotContext? snapshotContext,
-        RollbackSnapshot? rollbackSnapshot)
+    private async Task HandleMissingActiveTerminalOutcomeAsync(
+        ValidatedPendingTurnSnapshotContext? snapshotContext,
+        RollbackSnapshot? rollbackSnapshot,
+        bool turnCompleteExists,
+        bool turnErrorExists)
     {
         var errors = new List<ValidationIssue>
         {
@@ -4803,7 +5491,10 @@ public partial class GameEngine
                 code: "missing_correlated_terminal_signal_after_wait",
                 section: "terminal_ready",
                 expected: "Exactly one correlated ready/turn_complete.json or ready/turn_error.json for the active turn",
-                actual: BuildMissingActiveTerminalOutcomeActual(snapshotContext),
+                actual: BuildMissingActiveTerminalOutcomeActual(
+                    snapshotContext,
+                    turnCompleteExists,
+                    turnErrorExists),
                 repairHint: "Записывай ровно один terminal signal с точными sessionId/requestId/turnNumber, не удаляй и не перезаписывай его после записи и не смешивай terminal protocol failure с validation repair loop.")
         };
 
@@ -4824,29 +5515,46 @@ public partial class GameEngine
         await CleanupPendingTurnSnapshotAsync();
     }
 
-    private async Task<bool> ResolveConcurrentActiveTerminalSignalsAsync(ValidatedPendingTurnSnapshotContext? snapshotContext,
+    private async Task<ConcurrentTerminalSignalResolution> ResolveConcurrentActiveTerminalSignalsAsync(
+        TerminalSignalSnapshot terminalSignals,
+        ReadySignalMetadata? completionSignal,
+        ReadySignalMetadata? errorSignal,
+        ValidatedPendingTurnSnapshotContext? snapshotContext,
         RollbackSnapshot? rollbackSnapshot)
     {
-        if (!_fs.FileExists("ready/turn_complete.json") || !_fs.FileExists("ready/turn_error.json"))
-            return false;
+        if (!terminalSignals.CompletionExists || !terminalSignals.ErrorExists)
+        {
+            return new ConcurrentTerminalSignalResolution(
+                Failed: false,
+                UseCompletion: terminalSignals.CompletionExists,
+                UseError: terminalSignals.ErrorExists);
+        }
 
         if (snapshotContext == null)
-            return false;
+            return new ConcurrentTerminalSignalResolution(false, true, true);
 
-        var completionSignal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
-        var errorSignal = await ReadReadySignalMetadataAsync("ready/turn_error.json");
         if (completionSignal != null &&
             IsMatchingReadySignal(completionSignal, snapshotContext) &&
             !HasValidTerminalSignalContract("turn_complete", completionSignal))
         {
-            return await HandleRejectedActiveReadySignalAsync("turn_complete", completionSignal, snapshotContext, rollbackSnapshot);
+            var failed = await HandleRejectedActiveReadySignalAsync(
+                "turn_complete",
+                completionSignal,
+                snapshotContext,
+                rollbackSnapshot);
+            return new ConcurrentTerminalSignalResolution(failed, false, false);
         }
 
         if (errorSignal != null &&
             IsMatchingReadySignal(errorSignal, snapshotContext) &&
             !HasValidTerminalSignalContract("turn_error", errorSignal))
         {
-            return await HandleRejectedActiveReadySignalAsync("turn_error", errorSignal, snapshotContext, rollbackSnapshot);
+            var failed = await HandleRejectedActiveReadySignalAsync(
+                "turn_error",
+                errorSignal,
+                snapshotContext,
+                rollbackSnapshot);
+            return new ConcurrentTerminalSignalResolution(failed, false, false);
         }
 
         var completionMatches = completionSignal != null &&
@@ -4860,14 +5568,14 @@ public partial class GameEngine
         {
             _logger.LogWarning("Удаляется competing terminal error signal во время active wait; success signal остаётся authoritative.");
             _fs.DeleteFile("ready/turn_error.json");
-            return false;
+            return new ConcurrentTerminalSignalResolution(false, true, false);
         }
 
         if (errorMatches && !completionMatches)
         {
             _logger.LogWarning("Удаляется competing terminal success signal во время active wait; error signal остаётся authoritative.");
             _fs.DeleteFile("ready/turn_complete.json");
-            return false;
+            return new ConcurrentTerminalSignalResolution(false, false, true);
         }
 
         var errors = new List<ValidationIssue>
@@ -4900,7 +5608,7 @@ public partial class GameEngine
         }
 
         await CleanupPendingTurnSnapshotAsync();
-        return true;
+        return new ConcurrentTerminalSignalResolution(true, false, false);
     }
 
     private static string BuildConcurrentTerminalSignalActual(ReadySignalMetadata? completionSignal,
@@ -4916,10 +5624,11 @@ public partial class GameEngine
         return $"{Describe("turn_complete", completionSignal)}; {Describe("turn_error", errorSignal)}";
     }
 
-    private string BuildMissingActiveTerminalOutcomeActual(ValidatedPendingTurnSnapshotContext? snapshotContext)
+    private static string BuildMissingActiveTerminalOutcomeActual(
+        ValidatedPendingTurnSnapshotContext? snapshotContext,
+        bool turnCompleteExists,
+        bool turnErrorExists)
     {
-        var turnCompleteExists = _fs.FileExists("ready/turn_complete.json");
-        var turnErrorExists = _fs.FileExists("ready/turn_error.json");
         var manifestDescription = snapshotContext == null
             ? "pendingSnapshot=missing"
             : $"pendingSnapshot=sessionId={snapshotContext.SessionId}, requestId={snapshotContext.RequestId}, turnNumber={snapshotContext.TurnNumber}";
@@ -4962,7 +5671,8 @@ public partial class GameEngine
             filesModified
         };
 
-        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", JsonSerializer.Serialize(recoveredSignal, JsonOpts));
+        var recoveredSignalJson = JsonSerializer.Serialize(recoveredSignal, JsonOpts);
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", recoveredSignalJson);
         _fs.DeleteFile("ready/turn_error.json");
         _logger.LogWarning(
             "Recovered GM output for turn {TurnNumber} after daemon emitted {HarnessSource}; synthesized ready/turn_complete.json with {FileCount} modified files.",
@@ -4970,7 +5680,7 @@ public partial class GameEngine
             errorSignal.HarnessSource,
             filesModified.Length);
 
-        return await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+        return ParseReadySignalMetadata(recoveredSignalJson, "ready/turn_complete.json");
     }
 
     private static bool IsRecoverableMissingTerminalSignal(ReadySignalMetadata signal) =>
@@ -5091,14 +5801,26 @@ public partial class GameEngine
 
     private async Task<ActiveTerminalOutcomeResolution> ResolveFinalActiveTerminalOutcomeAsync(
         ValidatedPendingTurnSnapshotContext? snapshotContext,
-        RollbackSnapshot? rollbackSnapshot)
+        RollbackSnapshot? rollbackSnapshot,
+        TerminalSignalSnapshot terminalSignals)
     {
-        if (await ResolveConcurrentActiveTerminalSignalsAsync(snapshotContext, rollbackSnapshot))
+        var completionSignal = ParseReadySignalMetadata(
+            terminalSignals.CompletionJson,
+            "ready/turn_complete.json");
+        var errorSignal = ParseReadySignalMetadata(
+            terminalSignals.ErrorJson,
+            "ready/turn_error.json");
+        var concurrentResolution = await ResolveConcurrentActiveTerminalSignalsAsync(
+            terminalSignals,
+            completionSignal,
+            errorSignal,
+            snapshotContext,
+            rollbackSnapshot);
+        if (concurrentResolution.Failed)
             return new ActiveTerminalOutcomeResolution { Kind = "failure" };
 
-        if (_fs.FileExists("ready/turn_complete.json"))
+        if (concurrentResolution.UseCompletion)
         {
-            var completionSignal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
             if (completionSignal != null &&
                 snapshotContext != null &&
                 IsMatchingReadySignal(completionSignal, snapshotContext) &&
@@ -5115,9 +5837,8 @@ public partial class GameEngine
                 return new ActiveTerminalOutcomeResolution { Kind = "failure" };
         }
 
-        if (_fs.FileExists("ready/turn_error.json"))
+        if (concurrentResolution.UseError)
         {
-            var errorSignal = await ReadReadySignalMetadataAsync("ready/turn_error.json");
             if (errorSignal != null &&
                 snapshotContext != null &&
                 IsMatchingReadySignal(errorSignal, snapshotContext) &&
@@ -5145,7 +5866,11 @@ public partial class GameEngine
                 return new ActiveTerminalOutcomeResolution { Kind = "failure" };
         }
 
-        await HandleMissingActiveTerminalOutcomeAsync(snapshotContext, rollbackSnapshot);
+        await HandleMissingActiveTerminalOutcomeAsync(
+            snapshotContext,
+            rollbackSnapshot,
+            concurrentResolution.UseCompletion,
+            concurrentResolution.UseError);
         return new ActiveTerminalOutcomeResolution { Kind = "failure" };
     }
 

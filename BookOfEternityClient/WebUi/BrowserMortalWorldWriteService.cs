@@ -40,42 +40,101 @@ public sealed class BrowserMortalWorldWriteService
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
+        try
+        {
+            return await RunMortalWorldTransactionAsync(
+                writeLease => TryApplyBoundAsync(writeLease, command, answers, owner));
+        }
+        catch (SessionReplacedException)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Сессия заменена",
+                "Игровая сессия изменилась во время действия. Повторите действие в текущей сессии.");
+        }
+    }
+
+    internal async Task<BrowserPromptWriteResult> TryApplyAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        try
+        {
+            var generation = _fs.GetOrCreateSessionGeneration(writeLease);
+            return await SessionOperationContext.RunBoundAsync(
+                _fs,
+                generation,
+                writeLease,
+                () => TryApplyBoundAsync(writeLease, command, answers, owner));
+        }
+        catch (SessionReplacedException)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Сессия заменена",
+                "Игровая сессия изменилась во время действия. Повторите действие в текущей сессии.");
+        }
+    }
+
+    private Task<BrowserPromptWriteResult> RunMortalWorldTransactionAsync(
+        Func<FileSystemManager.CanonicalWriteLease, Task<BrowserPromptWriteResult>> operation)
+    {
+        if (SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out _))
+            return _coordinator.RunBoundTransactionAsync(operation);
+
+        return _coordinator.RunBoundAsync(
+            () => _coordinator.RunBoundTransactionAsync(operation));
+    }
+
+    private async Task<BrowserPromptWriteResult> TryApplyBoundAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
         var token = NormalizeCommand(command);
         return token switch
         {
-            "/world_setup" or "/настройка_мира" => await ApplyWorldSetupAsync(answers, owner),
-            "/distribute" or "/распределить" => await ApplyStatDistributionAsync(answers, owner),
-            "/companion_directive" or "/директива_компаньону" => await ApplyCompanionDirectiveAsync(answers, owner),
-            "/faction_directive" or "/директива_фракции" => await ApplyFactionDirectiveAsync(answers, owner),
-            "/npc_talk" or "/talk_npc" or "/поговорить_с_нпс" or "/разговор_с_нпс" => await ApplyNpcTalkAsync(command, answers, owner),
-            "/equip" or "/экипировать" => await ApplyInventoryEquipAsync(command, answers, owner),
-            "/unequip" or "/снять" => await ApplyInventoryUnequipAsync(command, answers, owner),
-            "/inventory_drop" or "/выбросить_предмет" => await ApplyInventoryDropAsync(command, answers, owner),
-            "/inventory_split" or "/разделить_стопку" => await ApplyInventorySplitAsync(command, answers, owner),
-            "/inventory_merge" or "/объединить_стопки" => await ApplyInventoryMergeAsync(command, answers, owner),
-            "/storage_move" or "/хранилище_предметы" => await ApplyStorageItemMoveAsync(answers, owner),
-            "/vehicle_move" or "/транспорт_предметы" => await ApplyVehicleItemMoveAsync(answers, owner),
-            "/npc_trade" or "/торговля_нпс" => await ApplyNpcTradeAsync(command, answers, owner),
-            "/craft" or "/ремесло" => await ApplyCraftAsync(answers, owner),
+            "/world_setup" or "/настройка_мира" => await ApplyWorldSetupAsync(writeLease, answers, owner),
+            "/distribute" or "/распределить" => await ApplyStatDistributionAsync(writeLease, answers, owner),
+            "/companion_directive" or "/директива_компаньону" => await ApplyCompanionDirectiveAsync(writeLease, answers, owner),
+            "/faction_directive" or "/директива_фракции" => await ApplyFactionDirectiveAsync(writeLease, answers, owner),
+            "/npc_talk" or "/talk_npc" or "/поговорить_с_нпс" or "/разговор_с_нпс" => await ApplyNpcTalkAsync(writeLease, command, answers, owner),
+            "/equip" or "/экипировать" => await ApplyInventoryEquipAsync(writeLease, command, answers, owner),
+            "/unequip" or "/снять" => await ApplyInventoryUnequipAsync(writeLease, command, answers, owner),
+            "/inventory_drop" or "/выбросить_предмет" => await ApplyInventoryDropAsync(writeLease, command, answers, owner),
+            "/inventory_split" or "/разделить_стопку" => await ApplyInventorySplitAsync(writeLease, command, answers, owner),
+            "/inventory_merge" or "/объединить_стопки" => await ApplyInventoryMergeAsync(writeLease, command, answers, owner),
+            "/storage_move" or "/хранилище_предметы" => await ApplyStorageItemMoveAsync(writeLease, answers, owner),
+            "/vehicle_move" or "/транспорт_предметы" => await ApplyVehicleItemMoveAsync(writeLease, answers, owner),
+            "/npc_trade" or "/торговля_нпс" => await ApplyNpcTradeAsync(writeLease, command, answers, owner),
+            "/craft" or "/ремесло" => await ApplyCraftAsync(writeLease, answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
     }
 
     private async Task<BrowserPromptWriteResult> ApplyWorldSetupAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         var mode = ReadAnswer(answers, "world_setup_mode");
         if (string.Equals(mode, "clear", StringComparison.OrdinalIgnoreCase))
         {
-            return await ExecuteAsync(
+            return await ExecuteAtomicAsync(
+                writeLease,
                 owner,
                 "Очистка подготовки следующего мира",
                 [WorldDirectiveService.PendingSetupPath, ScenarioCoreService.ManifestPath],
-                async () =>
+                async writeLease =>
                 {
-                    _fs.DeleteFile(WorldDirectiveService.PendingSetupPath);
-                    await _scenarioCoreService.ClearAsync();
+                    _fs.DeleteFile(writeLease, WorldDirectiveService.PendingSetupPath);
+                    await _scenarioCoreService.ClearAsync(writeLease);
                 },
                 "Подготовка мира очищена",
                 "Файлы подготовки следующей смертной жизни и сценарного ядра удалены.",
@@ -108,16 +167,18 @@ public sealed class BrowserMortalWorldWriteService
         };
 
         var payload = PendingWorldSetupToJson(setup);
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Запись подготовки следующего мира",
             [WorldDirectiveService.PendingSetupPath, ScenarioCoreService.ManifestPath],
-            async () =>
+            async writeLease =>
             {
                 await _fs.WriteFileAtomicAsync(
+                    writeLease,
                     WorldDirectiveService.PendingSetupPath,
                     JsonSerializer.Serialize(setup, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-                await _scenarioCoreService.RefreshFromPendingSetupAsync();
+                await _scenarioCoreService.RefreshFromPendingSetupAsync(writeLease);
             },
             "Подготовка мира записана",
             "Браузерная форма обновила client-owned подготовку следующей смертной жизни.",
@@ -125,6 +186,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyStatDistributionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -144,13 +206,13 @@ public sealed class BrowserMortalWorldWriteService
         if (allocation.Count == 0)
             return BrowserPromptWriteResult.ValidationError("Распределение не содержит положительных значений.");
 
-        var statPoints = await ReadObjectAsync(StatPointsPath) ?? new JsonObject();
+        var statPoints = await ReadObjectAsync(writeLease, StatPointsPath) ?? new JsonObject();
         var available = ReadInt(statPoints, "unspentStatPoints", 0);
         var total = allocation.Values.Sum();
         if (total > available)
             return BrowserPromptWriteResult.ValidationError($"Недостаточно очков характеристик: доступно {available}, запрошено {total}.");
 
-        var characteristics = await ReadObjectAsync(CharacteristicsPath) ?? new JsonObject();
+        var characteristics = await ReadObjectAsync(writeLease, CharacteristicsPath) ?? new JsonObject();
         foreach (var (stat, amount) in allocation)
         {
             var current = ReadInt(characteristics, stat, 1);
@@ -158,11 +220,12 @@ public sealed class BrowserMortalWorldWriteService
                 return BrowserPromptWriteResult.ValidationError($"Характеристика {stat} превысит максимум 100.");
         }
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Распределение характеристик",
             [StatPointsPath, CharacteristicsPath, "game_state/player/computed_characteristics.json"],
-            async () =>
+            async writeLease =>
             {
                 foreach (var (stat, amount) in allocation)
                 {
@@ -171,8 +234,14 @@ public sealed class BrowserMortalWorldWriteService
                 }
 
                 statPoints["unspentStatPoints"] = available - total;
-                await _fs.WriteFileAtomicAsync(CharacteristicsPath, characteristics.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-                await _fs.WriteFileAtomicAsync(StatPointsPath, statPoints.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await _fs.WriteFileAtomicAsync(
+                    writeLease,
+                    CharacteristicsPath,
+                    characteristics.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await _fs.WriteFileAtomicAsync(
+                    writeLease,
+                    StatPointsPath,
+                    statPoints.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             },
             "Характеристики распределены",
             $"Потрачено очков: {total}. Осталось: {available - total}.",
@@ -180,6 +249,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyCompanionDirectiveAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -188,7 +258,7 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(companionId))
             return BrowserPromptWriteResult.ValidationError("Укажите ID компаньона.");
 
-        var root = await ReadNodeAsync(NpcCorePath);
+        var root = await ReadNodeAsync(writeLease, NpcCorePath);
         if (root == null)
             return BrowserPromptWriteResult.ValidationError("Файл npc_core.json не найден или пуст.");
 
@@ -199,14 +269,18 @@ public sealed class BrowserMortalWorldWriteService
         if (!string.Equals(ReadString(target, "progressionType"), "Companion", StringComparison.OrdinalIgnoreCase))
             return BrowserPromptWriteResult.ValidationError($"НПС {companionId} не является активным компаньоном.");
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Запись директивы компаньона",
             [NpcCorePath],
-            async () =>
+            async lease =>
             {
                 target["playerCompanionDirective"] = string.IsNullOrWhiteSpace(directive) ? null : directive.Trim();
-                await _fs.WriteFileAtomicAsync(NpcCorePath, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await _fs.WriteFileAtomicAsync(
+                    lease,
+                    NpcCorePath,
+                    root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             },
             "Директива компаньона записана",
             string.IsNullOrWhiteSpace(directive)
@@ -220,6 +294,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyFactionDirectiveAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -228,7 +303,7 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(factionId))
             return BrowserPromptWriteResult.ValidationError("Укажите ID фракции.");
 
-        var root = await ReadNodeAsync(FactionCorePath);
+        var root = await ReadNodeAsync(writeLease, FactionCorePath);
         if (root == null)
             return BrowserPromptWriteResult.ValidationError("Файл faction_core.json не найден или пуст.");
 
@@ -239,14 +314,18 @@ public sealed class BrowserMortalWorldWriteService
         if (!ReadBool(target, "isPlayerFaction") && !ReadBool(target, "isPlayerMember"))
             return BrowserPromptWriteResult.ValidationError($"Фракция {factionId} не является фракцией игрока или членством игрока.");
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Запись директивы фракции",
             [FactionCorePath],
-            async () =>
+            async lease =>
             {
                 target["playerStrategyDirective"] = string.IsNullOrWhiteSpace(directive) ? null : directive.Trim();
-                await _fs.WriteFileAtomicAsync(FactionCorePath, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await _fs.WriteFileAtomicAsync(
+                    lease,
+                    FactionCorePath,
+                    root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             },
             "Директива фракции записана",
             string.IsNullOrWhiteSpace(directive)
@@ -260,11 +339,12 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyNpcTalkAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
-        var currentRealm = await ReadCurrentRealmAsync();
+        var currentRealm = await ReadCurrentRealmAsync(writeLease);
         if (!RealmSemantics.IsMortalRealm(currentRealm))
         {
             return BrowserPromptWriteResult.Failed(
@@ -284,7 +364,7 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(topic))
             return BrowserPromptWriteResult.ValidationError("Опишите тему разговора.");
 
-        var root = await ReadNodeAsync(NpcCorePath);
+        var root = await ReadNodeAsync(writeLease, NpcCorePath);
         if (root == null)
             return BrowserPromptWriteResult.ValidationError("Список известных персонажей сейчас недоступен.");
 
@@ -294,7 +374,7 @@ public sealed class BrowserMortalWorldWriteService
 
         var stableNpcId = FirstNonEmpty(ReadString(target, "npcId"), ReadString(target, "id"), npcId);
         var npcName = FirstNonEmpty(ReadString(target, "name"), ReadString(target, "npcName"), ReadString(target, "displayName"), stableNpcId);
-        var pendingState = await ActorSocialInteractionRequestState.ReadNpcRequestsStateAsync(_fs);
+        var pendingState = await ActorSocialInteractionRequestState.ReadNpcRequestsStateAsync(_fs, writeLease);
         if (pendingState.IsMalformed)
         {
             return BrowserPromptWriteResult.Failed(
@@ -316,7 +396,7 @@ public sealed class BrowserMortalWorldWriteService
                 $"Разговор с {npcName} уже ожидает ответа ГМ. Дождитесь результата, затем начните новый разговор.");
         }
 
-        var currentTurn = await ReadCurrentTurnNumberAsync();
+        var currentTurn = await ReadCurrentTurnNumberAsync(writeLease);
         var request = new ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest
         {
             NpcId = stableNpcId,
@@ -328,13 +408,17 @@ public sealed class BrowserMortalWorldWriteService
         };
 
         var duplicateDuringWrite = false;
-        var writeResult = await ExecuteAsync(
+        var writeResult = await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Разговор с НПС",
             [ActorSocialInteractionRequestState.PendingNpcRequestPath],
-            async () =>
+            async lease =>
             {
-                duplicateDuringWrite = !await ActorSocialInteractionRequestState.TryWriteNpcRequestIfAbsentAsync(_fs, request);
+                duplicateDuringWrite = !await ActorSocialInteractionRequestState.TryWriteNpcRequestIfAbsentAsync(
+                    _fs,
+                    lease,
+                    request);
             },
             "Разговор отправлен ГМ",
             $"ГМ получит запрос разговора с {npcName} и тему: {request.Topic}.",
@@ -350,6 +434,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInventoryEquipAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -367,17 +452,18 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(slotKey))
             return BrowserPromptWriteResult.ValidationError("Выберите слот экипировки.");
 
-        var validation = await InventoryEquipmentService.ValidateEquipAsync(_fs, itemIdentity, slotKey);
+        var validation = await InventoryEquipmentService.ValidateEquipAsync(_fs, writeLease, itemIdentity, slotKey);
         if (!validation.Success)
             return BrowserPromptWriteResult.ValidationError(validation.Message);
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Экипировка предмета",
             [InventoryEquipmentService.ItemsPath],
-            async () =>
+            async lease =>
             {
-                var outcome = await InventoryEquipmentService.EquipAsync(_fs, itemIdentity, slotKey);
+                var outcome = await InventoryEquipmentService.EquipAsync(_fs, lease, itemIdentity, slotKey);
                 if (!outcome.Success)
                     throw new InventoryEquipmentWriteException(outcome.Message);
             },
@@ -387,6 +473,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInventoryUnequipAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -400,17 +487,18 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(slotKey))
             return BrowserPromptWriteResult.ValidationError("Выберите слот, с которого нужно снять предмет.");
 
-        var validation = await InventoryEquipmentService.ValidateUnequipAsync(_fs, slotKey);
+        var validation = await InventoryEquipmentService.ValidateUnequipAsync(_fs, writeLease, slotKey);
         if (!validation.Success)
             return BrowserPromptWriteResult.ValidationError(validation.Message);
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Снятие предмета",
             [InventoryEquipmentService.ItemsPath],
-            async () =>
+            async lease =>
             {
-                var outcome = await InventoryEquipmentService.UnequipAsync(_fs, slotKey);
+                var outcome = await InventoryEquipmentService.UnequipAsync(_fs, lease, slotKey);
                 if (!outcome.Success)
                     throw new InventoryEquipmentWriteException(outcome.Message);
             },
@@ -420,6 +508,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInventoryDropAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -433,17 +522,18 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(itemIdentity))
             return BrowserPromptWriteResult.ValidationError("Выберите предмет.");
 
-        var validation = await InventoryManagementService.ValidateDropAsync(_fs, itemIdentity);
+        var validation = await InventoryManagementService.ValidateDropAsync(_fs, writeLease, itemIdentity);
         if (!validation.Success)
             return BrowserPromptWriteResult.ValidationError(validation.Message);
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Выброс предмета",
             [InventoryEquipmentService.ItemsPath],
-            async () =>
+            async lease =>
             {
-                var outcome = await InventoryManagementService.DropAsync(_fs, itemIdentity);
+                var outcome = await InventoryManagementService.DropAsync(_fs, lease, itemIdentity);
                 if (!outcome.Success)
                     throw new InventoryManagementWriteException(outcome.Message);
             },
@@ -455,6 +545,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInventorySplitAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -471,17 +562,26 @@ public sealed class BrowserMortalWorldWriteService
         if (!TryReadIntAnswer(answers, "split_quantity", out var splitQuantity))
             return BrowserPromptWriteResult.ValidationError("Введите количество целым числом.");
 
-        var validation = await InventoryManagementService.ValidateSplitAsync(_fs, itemIdentity, splitQuantity);
+        var validation = await InventoryManagementService.ValidateSplitAsync(
+            _fs,
+            writeLease,
+            itemIdentity,
+            splitQuantity);
         if (!validation.Success)
             return BrowserPromptWriteResult.ValidationError(validation.Message);
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Разделение стопки",
             [InventoryEquipmentService.ItemsPath],
-            async () =>
+            async lease =>
             {
-                var outcome = await InventoryManagementService.SplitAsync(_fs, itemIdentity, splitQuantity);
+                var outcome = await InventoryManagementService.SplitAsync(
+                    _fs,
+                    lease,
+                    itemIdentity,
+                    splitQuantity);
                 if (!outcome.Success)
                     throw new InventoryManagementWriteException(outcome.Message);
             },
@@ -491,6 +591,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInventoryMergeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -504,17 +605,18 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(itemIdentity))
             return BrowserPromptWriteResult.ValidationError("Выберите стопки.");
 
-        var validation = await InventoryManagementService.ValidateMergeAsync(_fs, itemIdentity);
+        var validation = await InventoryManagementService.ValidateMergeAsync(_fs, writeLease, itemIdentity);
         if (!validation.Success)
             return BrowserPromptWriteResult.ValidationError(validation.Message);
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Объединение стопок",
             [InventoryEquipmentService.ItemsPath],
-            async () =>
+            async lease =>
             {
-                var outcome = await InventoryManagementService.MergeAsync(_fs, itemIdentity);
+                var outcome = await InventoryManagementService.MergeAsync(_fs, lease, itemIdentity);
                 if (!outcome.Success)
                     throw new InventoryManagementWriteException(outcome.Message);
             },
@@ -524,13 +626,14 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyStorageItemMoveAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_storage_move"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите перемещение предмета.");
 
-        var currentRealm = await ReadCurrentRealmAsync();
+        var currentRealm = await ReadCurrentRealmAsync(writeLease);
         if (!RealmSemantics.IsMortalRealm(currentRealm))
             return StorageTransportMortalRealmBlocker();
 
@@ -540,17 +643,28 @@ public sealed class BrowserMortalWorldWriteService
             ? ReadAnswer(answers, "storage_item_key")
             : ReadAnswer(answers, "inventory_item_key");
 
-        var validation = await StorageTransportMoveService.ValidateStorageMoveAsync(_fs, direction, storageKey, itemKey);
+        var validation = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            writeLease,
+            direction,
+            storageKey,
+            itemKey);
         if (!validation.Success)
             return BrowserPromptWriteResult.ValidationError(validation.Message);
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Перемещение предмета в хранилище",
             [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.CurrentLocationPath],
-            async () =>
+            async writeLease =>
             {
-                var outcome = await StorageTransportMoveService.MoveStorageItemAsync(_fs, direction, storageKey, itemKey);
+                var outcome = await StorageTransportMoveService.MoveStorageItemAsync(
+                    _fs,
+                    writeLease,
+                    direction,
+                    storageKey,
+                    itemKey);
                 if (!outcome.Success)
                     throw new StorageTransportMoveWriteException(outcome.Message);
             },
@@ -560,13 +674,14 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyVehicleItemMoveAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
         if (!ReadBoolAnswer(answers, "confirm_vehicle_move"))
             return BrowserPromptWriteResult.ValidationError("Подтвердите перемещение предмета.");
 
-        var currentRealm = await ReadCurrentRealmAsync();
+        var currentRealm = await ReadCurrentRealmAsync(writeLease);
         if (!RealmSemantics.IsMortalRealm(currentRealm))
             return StorageTransportMortalRealmBlocker();
 
@@ -576,17 +691,28 @@ public sealed class BrowserMortalWorldWriteService
             ? ReadAnswer(answers, "vehicle_item_key")
             : ReadAnswer(answers, "inventory_item_key");
 
-        var validation = await StorageTransportMoveService.ValidateVehicleMoveAsync(_fs, direction, vehicleKey, itemKey);
+        var validation = await StorageTransportMoveService.ValidateVehicleMoveAsync(
+            _fs,
+            writeLease,
+            direction,
+            vehicleKey,
+            itemKey);
         if (!validation.Success)
             return BrowserPromptWriteResult.ValidationError(validation.Message);
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Перемещение предмета в транспорт",
             [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.VehiclesPath],
-            async () =>
+            async writeLease =>
             {
-                var outcome = await StorageTransportMoveService.MoveVehicleItemAsync(_fs, direction, vehicleKey, itemKey);
+                var outcome = await StorageTransportMoveService.MoveVehicleItemAsync(
+                    _fs,
+                    writeLease,
+                    direction,
+                    vehicleKey,
+                    itemKey);
                 if (!outcome.Success)
                     throw new StorageTransportMoveWriteException(outcome.Message);
             },
@@ -603,6 +729,7 @@ public sealed class BrowserMortalWorldWriteService
             "Перемещение предметов между рюкзаком, хранилищем и транспортом доступно только в смертном мире. Сейчас действие недоступно для текущего царства.");
 
     private async Task<BrowserPromptWriteResult> ApplyNpcTradeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -622,7 +749,7 @@ public sealed class BrowserMortalWorldWriteService
         if (operation == "request" && string.Equals(targetId, "__selected__", StringComparison.OrdinalIgnoreCase))
             targetId = npcId;
 
-        var currentTurn = await ReadCurrentTurnNumberAsync();
+        var currentTurn = await ReadCurrentTurnNumberAsync(writeLease);
         var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
         var rollbackPaths = new[]
         {
@@ -632,18 +759,19 @@ public sealed class BrowserMortalWorldWriteService
             NpcTradeRequestState.PendingRequestPath
         };
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Торговля с НПС",
             rollbackPaths,
-            async () =>
+            async lease =>
             {
                 var result = operation switch
                 {
-                    "request" => await BuildNpcTradeRequestResultAsync(service, targetId, currentTurn),
-                    "buy" => await service.BuyAsync(npcId, targetId, currentTurn),
-                    "sell" => await service.SellAsync(npcId, targetId, currentTurn),
-                    "buyback" => await service.BuyBackAsync(npcId, targetId, currentTurn),
+                    "request" => await BuildNpcTradeRequestResultAsync(service, lease, targetId, currentTurn),
+                    "buy" => await service.BuyAsync(lease, npcId, targetId, currentTurn),
+                    "sell" => await service.SellAsync(lease, npcId, targetId, currentTurn),
+                    "buyback" => await service.BuyBackAsync(lease, npcId, targetId, currentTurn),
                     _ => new NpcTradeService.NpcTradeOperationResult(false, false, "Выберите поддерживаемую сделку.")
                 };
 
@@ -664,10 +792,15 @@ public sealed class BrowserMortalWorldWriteService
 
     private static async Task<NpcTradeService.NpcTradeOperationResult> BuildNpcTradeRequestResultAsync(
         NpcTradeService service,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string npcId,
         int currentTurn)
     {
-        var view = await service.EnsureTradeInventoryAsync(npcId, currentTurn, createPendingRequests: true);
+        var view = await service.EnsureTradeInventoryAsync(
+            writeLease,
+            npcId,
+            currentTurn,
+            createPendingRequests: true);
         if (view == null)
             return new NpcTradeService.NpcTradeOperationResult(false, false, "Торговец не найден.");
         if (view.TradeBlocked)
@@ -680,6 +813,7 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private async Task<BrowserPromptWriteResult> ApplyCraftAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
@@ -701,27 +835,37 @@ public sealed class BrowserMortalWorldWriteService
             ["craftIntent"] = intent.Trim()
         };
 
-        return await ExecuteAsync(
+        return await ExecuteAtomicAsync(
+            writeLease,
             owner,
             "Запись ремесленного запроса",
             [PendingCraftRequestPath],
-            async () => await _fs.WriteFileAtomicAsync(PendingCraftRequestPath, request.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)),
+            async lease => await _fs.WriteFileAtomicAsync(
+                lease,
+                PendingCraftRequestPath,
+                request.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)),
             "Ремесленный запрос записан",
             "Создан pending-запрос для разрешения ремесленного действия ГМ.",
             request);
     }
 
-    private async Task<BrowserPromptWriteResult> ExecuteAsync(
+    private async Task<BrowserPromptWriteResult> ExecuteAtomicAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
         LocalUiSessionLockOwner owner,
         string operationLabel,
         IReadOnlyCollection<string> rollbackPaths,
-        Func<Task> writeOperation,
+        Func<FileSystemManager.CanonicalWriteLease, Task> writeOperation,
         string title,
         string message,
         JsonObject? payload)
     {
-        var result = await _coordinator.ExecuteAsync(
-            new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
+        var result = await _coordinator.ExecuteAtomicWithinTransactionAsync(
+            writeLease,
+            new BrowserLocalWriteRequest(
+                owner.OwnerId,
+                owner.OwnerLabel,
+                operationLabel,
+                owner.Lease),
             rollbackPaths,
             writeOperation);
 
@@ -756,9 +900,11 @@ public sealed class BrowserMortalWorldWriteService
             .Replace("lease", "срока блокировки", StringComparison.Ordinal);
     }
 
-    private async Task<JsonNode?> ReadNodeAsync(string path)
+    private async Task<JsonNode?> ReadNodeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path)
     {
-        var raw = await _fs.ReadFileAsync(path);
+        var raw = await _fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(raw))
             return null;
 
@@ -772,8 +918,10 @@ public sealed class BrowserMortalWorldWriteService
         }
     }
 
-    private async Task<JsonObject?> ReadObjectAsync(string path) =>
-        await ReadNodeAsync(path) as JsonObject;
+    private async Task<JsonObject?> ReadObjectAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path) =>
+        await ReadNodeAsync(writeLease, path) as JsonObject;
 
     private static bool TryParseAllocation(string raw, out Dictionary<string, int> allocation, out string error)
     {
@@ -926,13 +1074,15 @@ public sealed class BrowserMortalWorldWriteService
     private static string FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
 
-    private async Task<string?> ReadCurrentRealmAsync()
+    private async Task<string?> ReadCurrentRealmAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var soul = await ReadObjectAsync(SoulStatePath);
+        var soul = await ReadObjectAsync(writeLease, SoulStatePath);
         return soul == null ? null : ReadString(soul, "currentRealm");
     }
 
-    private async Task<int> ReadCurrentTurnNumberAsync()
+    private async Task<int> ReadCurrentTurnNumberAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
     {
         var storiesRoot = _fs.ResolvePath("stories");
         if (!Directory.Exists(storiesRoot))
@@ -943,7 +1093,11 @@ public sealed class BrowserMortalWorldWriteService
         {
             try
             {
-                using var document = JsonDocument.Parse(await File.ReadAllTextAsync(path));
+                var relativePath = Path.GetRelativePath(_fs.GameSessionPath, path).Replace('\\', '/');
+                var json = await _fs.ReadFileAsync(writeLease, relativePath);
+                if (string.IsNullOrWhiteSpace(json))
+                    continue;
+                using var document = JsonDocument.Parse(json);
                 if (document.RootElement.TryGetProperty("turnNumber", out var turnNode) &&
                     turnNode.ValueKind == JsonValueKind.Number &&
                     turnNode.TryGetInt32(out var turn))

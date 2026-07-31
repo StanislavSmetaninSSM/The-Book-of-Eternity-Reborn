@@ -109,6 +109,14 @@ internal static class ShiningTradeRequestState
         return AnalyzeRequests(json, fs.FileExists(PendingRequestsPath));
     }
 
+    internal static async Task<PendingRequestReadState> ReadRequestsStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var json = await fs.ReadFileAsync(writeLease, PendingRequestsPath);
+        return AnalyzeRequests(json, fs.FileExists(writeLease, PendingRequestsPath));
+    }
+
     internal static async Task<PendingRequestSnapshot> ReadRequestsSnapshotAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingRequestsPath);
@@ -153,13 +161,14 @@ internal static class ShiningTradeRequestState
 
     public static async Task WriteRequestAsync(FileSystemManager fs, PendingShiningTradeInventoryRequest request)
     {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         await RequestWriteGate.WaitAsync();
         try
         {
-            var existingState = await ReadRequestsStateAsync(fs);
+            var existingState = await ReadRequestsStateAsync(fs, writeLease);
             ValidateRequestReplacement(existingState, request);
             var requests = UpsertRequest(existingState.Requests, request);
-            await WriteRequestsCoreAsync(fs, requests);
+            await WriteRequestsCoreAsync(fs, writeLease, requests);
         }
         finally
         {
@@ -172,11 +181,30 @@ internal static class ShiningTradeRequestState
         PendingShiningTradeInventoryRequest request,
         LocalInteractionScope scope)
     {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return await TryWriteScopedRequestCoreAsync(fs, writeLease, request, scope);
+    }
+
+    internal static Task<bool> TryWriteScopedRequestAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningTradeInventoryRequest request,
+        LocalInteractionScope scope) =>
+        TryWriteScopedRequestCoreAsync(fs, writeLease, request, scope);
+
+    private static async Task<bool> TryWriteScopedRequestCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningTradeInventoryRequest request,
+        LocalInteractionScope scope)
+    {
         await RequestWriteGate.WaitAsync();
         try
         {
-            var previousJson = await fs.ReadFileAsync(PendingRequestsPath);
-            var existingState = AnalyzeRequests(previousJson, fs.FileExists(PendingRequestsPath));
+            var previousJson = await fs.ReadFileAsync(writeLease, PendingRequestsPath);
+            var existingState = AnalyzeRequests(
+                previousJson,
+                fs.FileExists(writeLease, PendingRequestsPath));
             ValidateRequestReplacement(existingState, request);
             var requests = UpsertRequest(existingState.Requests, request);
             var nextJson = SerializeRequests(requests);
@@ -191,7 +219,7 @@ internal static class ShiningTradeRequestState
                 })
                 .ToArray();
 
-            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes);
+            return await CoordinatedStateWriteHelper.TryCommitAsync(fs, writeLease, writes);
         }
         finally
         {
@@ -201,13 +229,14 @@ internal static class ShiningTradeRequestState
 
     public static async Task WriteRequestsAsync(FileSystemManager fs, IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
     {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         await RequestWriteGate.WaitAsync();
         try
         {
-            var existingState = await ReadRequestsStateAsync(fs);
+            var existingState = await ReadRequestsStateAsync(fs, writeLease);
             if (existingState.IsMalformed)
                 throw new InvalidOperationException("pending_shining_trade_inventory_requests.json повреждён и должен быть исправлен или очищен до записи новых торговых запросов.");
-            await WriteRequestsCoreAsync(fs, requests);
+            await WriteRequestsCoreAsync(fs, writeLease, requests);
         }
         finally
         {
@@ -220,6 +249,7 @@ internal static class ShiningTradeRequestState
         string? expectedJson,
         IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
     {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         await RequestWriteGate.WaitAsync();
         try
         {
@@ -227,6 +257,7 @@ internal static class ShiningTradeRequestState
             var nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
             return await CoordinatedStateWriteHelper.TryCommitAsync(
                 fs,
+                writeLease,
                 new CoordinatedStateWriteHelper.PlannedWrite(
                     PendingRequestsPath,
                     expectedJson,
@@ -276,16 +307,17 @@ internal static class ShiningTradeRequestState
 
     private static async Task WriteRequestsCoreAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
         IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
     {
         if (requests.Count == 0)
         {
-            fs.DeleteFile(PendingRequestsPath);
+            fs.DeleteFile(writeLease, PendingRequestsPath);
             return;
         }
 
         ValidateRequestCollection(requests);
-        await fs.WriteFileAtomicAsync(PendingRequestsPath, SerializeRequests(requests));
+        await fs.WriteFileAtomicAsync(writeLease, PendingRequestsPath, SerializeRequests(requests));
     }
 
     private static void ValidateRequestCollection(
@@ -493,23 +525,25 @@ internal static class ShiningTradeRequestState
 
     public static async Task EnsureHealthyAsync(FileSystemManager fs, string? currentRealm)
     {
-        if (!fs.FileExists(PendingRequestsPath))
-            return;
-
         if (!RealmSemantics.HasResolvedRealm(currentRealm))
             return;
 
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         await RequestWriteGate.WaitAsync();
         try
         {
-            var previousJson = await fs.ReadFileAsync(PendingRequestsPath);
-            var requestState = AnalyzeRequests(previousJson, fs.FileExists(PendingRequestsPath));
+            if (!fs.FileExists(writeLease, PendingRequestsPath))
+                return;
+
+            var previousJson = await fs.ReadFileAsync(writeLease, PendingRequestsPath);
+            var requestState = AnalyzeRequests(previousJson, fs.FileExists(writeLease, PendingRequestsPath));
             if (!IsShiningRealm(currentRealm))
             {
                 if (!requestState.IsMalformed && requestState.Requests.Count == 0)
                 {
                     await CoordinatedStateWriteHelper.TryCommitAsync(
                         fs,
+                        writeLease,
                         new CoordinatedStateWriteHelper.PlannedWrite(
                             PendingRequestsPath,
                             previousJson,
@@ -527,6 +561,7 @@ internal static class ShiningTradeRequestState
             {
                 await CoordinatedStateWriteHelper.TryCommitAsync(
                     fs,
+                    writeLease,
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         PendingRequestsPath,
                         previousJson,
@@ -535,9 +570,9 @@ internal static class ShiningTradeRequestState
                 return;
             }
 
-            var shiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
-            var residentJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
-            var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+            var shiningJson = await fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath);
+            var residentJson = await fs.ReadFileAsync(writeLease, GuardianAbodeResidentState.StatePath);
+            var guardiansJson = await fs.ReadFileAsync(writeLease, "game_state/meta/guardians.json");
             if (string.IsNullOrWhiteSpace(shiningJson))
                 return;
 
@@ -572,6 +607,7 @@ internal static class ShiningTradeRequestState
                 var nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
                 await CoordinatedStateWriteHelper.TryCommitAsync(
                     fs,
+                    writeLease,
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         PendingRequestsPath,
                         previousJson,
@@ -659,15 +695,29 @@ internal static class ShiningTradeRequestState
             sb.AppendLine($"    {line}");
     }
 
-    public static async Task<string?> ValidateRequestAgainstCurrentStateAsync(
+    public static Task<string?> ValidateRequestAgainstCurrentStateAsync(
         FileSystemManager fs,
+        PendingShiningTradeInventoryRequest request) =>
+        ValidateRequestAgainstCurrentStateCoreAsync(fs, writeLease: null, request);
+
+    internal static Task<string?> ValidateRequestAgainstCurrentStateAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PendingShiningTradeInventoryRequest request) =>
+        ValidateRequestAgainstCurrentStateCoreAsync(fs, writeLease, request);
+
+    private static async Task<string?> ValidateRequestAgainstCurrentStateCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         PendingShiningTradeInventoryRequest request)
     {
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
-        var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
-        var pendingState = await ReadRequestsStateAsync(fs);
+        var soulRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);
+        var residentRoot = await ReadJsonObjectAsync(fs, writeLease, GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = await ReadJsonObjectAsync(fs, writeLease, "game_state/meta/guardians.json");
+        var pendingState = writeLease == null
+            ? await ReadRequestsStateAsync(fs)
+            : await ReadRequestsStateAsync(fs, writeLease);
         if (shiningRoot == null)
             return "shining_abode_state.json недоступен.";
         var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
@@ -775,9 +825,19 @@ internal static class ShiningTradeRequestState
         return null;
     }
 
-    private static async Task<JsonObject?> ReadJsonObjectAsync(FileSystemManager fs, string path)
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        string path) =>
+        await ReadJsonObjectAsync(fs, writeLease: null, path);
+
+    private static async Task<JsonObject?> ReadJsonObjectAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path)
     {
-        var json = await fs.ReadFileAsync(path);
+        var json = writeLease == null
+            ? await fs.ReadFileAsync(path)
+            : await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 

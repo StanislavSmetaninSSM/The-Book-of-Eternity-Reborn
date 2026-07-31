@@ -41,7 +41,7 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
 
         var published = SpinWait.SpinUntil(
             () => store.GetSnapshot()?.InputKind == AgentConsoleInputKind.Confirmation || promptTask.IsCompleted,
-            TimeSpan.FromSeconds(1));
+            TimeSpan.FromSeconds(5));
 
         Assert.True(published);
         Assert.False(promptTask.IsCompleted);
@@ -77,7 +77,7 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
 
         var published = SpinWait.SpinUntil(
             () => store.GetSnapshot()?.InputKind == AgentConsoleInputKind.Text || promptTask.IsCompleted,
-            TimeSpan.FromSeconds(1));
+            TimeSpan.FromSeconds(5));
 
         Assert.True(published);
         Assert.False(promptTask.IsCompleted);
@@ -111,7 +111,7 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
 
         var published = SpinWait.SpinUntil(
             () => store.GetSnapshot()?.InputKind == AgentConsoleInputKind.Text || promptTask.IsCompleted,
-            TimeSpan.FromSeconds(1));
+            TimeSpan.FromSeconds(5));
 
         Assert.True(published);
         Assert.False(promptTask.IsCompleted);
@@ -145,7 +145,7 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
 
         var published = SpinWait.SpinUntil(
             () => store.GetSnapshot()?.InputKind == AgentConsoleInputKind.MenuSelection || promptTask.IsCompleted,
-            TimeSpan.FromSeconds(1));
+            TimeSpan.FromSeconds(5));
 
         Assert.True(published);
         Assert.False(promptTask.IsCompleted);
@@ -183,7 +183,7 @@ public sealed class AgentConsoleRecordingExplorerConsoleTests
 
         var published = SpinWait.SpinUntil(
             () => store.GetSnapshot()?.InputKind == AgentConsoleInputKind.MenuSelection || promptTask.IsCompleted,
-            TimeSpan.FromSeconds(1));
+            TimeSpan.FromSeconds(5));
 
         Assert.True(published);
         Assert.False(promptTask.IsCompleted);

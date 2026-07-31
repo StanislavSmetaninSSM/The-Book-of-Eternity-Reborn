@@ -282,12 +282,27 @@ internal static class AfterlifeNotificationState
             .ToList();
     }
 
-    public static async Task MarkReadAsync(FileSystemManager fs, string notificationId)
+    public static Task MarkReadAsync(FileSystemManager fs, string notificationId) =>
+        MarkReadCoreAsync(fs, writeLease: null, notificationId);
+
+    internal static Task MarkReadAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string notificationId) =>
+        MarkReadCoreAsync(fs, writeLease, notificationId);
+
+    private static async Task MarkReadCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string notificationId)
     {
-        if (!fs.FileExists(NotificationsPath) || string.IsNullOrWhiteSpace(notificationId))
+        var fileExists = writeLease == null
+            ? fs.FileExists(NotificationsPath)
+            : fs.FileExists(writeLease, NotificationsPath);
+        if (!fileExists || string.IsNullOrWhiteSpace(notificationId))
             return;
 
-        var root = await ReadRootAsync(fs);
+        var root = await ReadRootAsync(fs, writeLease);
         NormalizeShape(root);
         var notifications = EnsureNotificationsArray(root);
         var changed = false;
@@ -305,15 +320,28 @@ internal static class AfterlifeNotificationState
         }
 
         if (changed)
-            await WriteRootAsync(fs, root);
+            await WriteRootAsync(fs, writeLease, root);
     }
 
-    public static async Task MarkAllReadAsync(FileSystemManager fs)
+    public static Task MarkAllReadAsync(FileSystemManager fs) =>
+        MarkAllReadCoreAsync(fs, writeLease: null);
+
+    internal static Task MarkAllReadAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease) =>
+        MarkAllReadCoreAsync(fs, writeLease);
+
+    private static async Task MarkAllReadCoreAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
-        if (!fs.FileExists(NotificationsPath))
+        var fileExists = writeLease == null
+            ? fs.FileExists(NotificationsPath)
+            : fs.FileExists(writeLease, NotificationsPath);
+        if (!fileExists)
             return;
 
-        var root = await ReadRootAsync(fs);
+        var root = await ReadRootAsync(fs, writeLease);
         NormalizeShape(root);
         var notifications = EnsureNotificationsArray(root);
         var changed = false;
@@ -328,7 +356,7 @@ internal static class AfterlifeNotificationState
         }
 
         if (changed)
-            await WriteRootAsync(fs, root);
+            await WriteRootAsync(fs, writeLease, root);
     }
 
     public static string GetTypeLabel(string? notificationType) =>
@@ -2761,10 +2789,46 @@ internal static class AfterlifeNotificationState
         }
     }
 
+    private static async Task<JsonObject> ReadRootAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        if (writeLease == null)
+            return await ReadRootAsync(fs);
+
+        var json = await fs.ReadFileAsync(writeLease, NotificationsPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return new JsonObject();
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject ?? new JsonObject();
+        }
+        catch
+        {
+            return new JsonObject();
+        }
+    }
+
     private static async Task WriteRootAsync(FileSystemManager fs, JsonObject root)
     {
         NormalizeShape(root);
         await fs.WriteFileAtomicAsync(NotificationsPath, root.ToJsonString(JsonOpts));
+    }
+
+    private static async Task WriteRootAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        JsonObject root)
+    {
+        if (writeLease == null)
+        {
+            await WriteRootAsync(fs, root);
+            return;
+        }
+
+        NormalizeShape(root);
+        await fs.WriteFileAtomicAsync(writeLease, NotificationsPath, root.ToJsonString(JsonOpts));
     }
 
     private static void NormalizeShape(JsonObject root)

@@ -1,6 +1,8 @@
+using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -43,6 +45,7 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Contains("game_state/player/skills_passive.json", files.Keys);
         Assert.Contains("game_state/player/skill_mastery.json", files.Keys);
         Assert.Contains("lore/codex_entries.json", files.Keys);
+        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
 
         var currentLocation = files["game_state/world/current_location.json"];
         Assert.Equal("loc_life_001_start", currentLocation["locationId"]!.GetValue<string>());
@@ -50,48 +53,44 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.StartsWith("#[3]. Начало смертной жизни:", lastEventsDescription, StringComparison.Ordinal);
         Assert.DoesNotContain("#3 -", lastEventsDescription, StringComparison.Ordinal);
 
-        var faction = files["game_state/factions/faction_core.json"]!["factions"]!.AsArray()[0]!.AsObject();
-        Assert.Equal("faction_life_001_initial_context", faction["factionId"]!.GetValue<string>());
-        Assert.False(faction.ContainsKey("initialId"));
-        Assert.False(faction.ContainsKey("isNewFaction"));
+        Assert.False(currentLocation.ContainsKey("type"));
+        Assert.False(currentLocation.ContainsKey("locationType"));
+        Assert.False(currentLocation.ContainsKey("internalDifficultyProfile"));
+        Assert.False(currentLocation.ContainsKey("externalDifficultyProfile"));
+        var currentAdjacency = Assert.Single(currentLocation["adjacencyMap"]!.AsArray().OfType<JsonObject>());
+        Assert.False(currentAdjacency.ContainsKey("travelMode"));
+        Assert.False(currentAdjacency.ContainsKey("linkType"));
+        Assert.False(currentAdjacency.ContainsKey("estimatedInternalDifficultyProfile"));
+        Assert.False(currentAdjacency.ContainsKey("estimatedExternalDifficultyProfile"));
+
+        var worldMap = files["game_state/world/world_map.json"];
+        Assert.All(worldMap["newLocations"]!.AsArray().OfType<JsonObject>(), location =>
+        {
+            Assert.False(location.ContainsKey("type"));
+            Assert.False(location.ContainsKey("locationType"));
+        });
+        var worldMapLink = Assert.Single(worldMap["newLinks"]!.AsArray().OfType<JsonObject>());
+        Assert.False(worldMapLink.ContainsKey("travelMode"));
+        Assert.False(worldMapLink.ContainsKey("linkType"));
+        Assert.False(worldMapLink.ContainsKey("estimatedInternalDifficultyProfile"));
+        Assert.False(worldMapLink.ContainsKey("estimatedExternalDifficultyProfile"));
+
+        Assert.Empty(files["game_state/factions/faction_core.json"]!["factions"]!.AsArray());
 
         var factionResources = files["game_state/factions/faction_resources.json"];
-        var resourceEntry = Assert.Single(factionResources["entries"]!.AsArray().OfType<JsonObject>());
-        Assert.Equal("faction_life_001_initial_context", resourceEntry["factionId"]!.GetValue<string>());
-        Assert.Equal("Силы стартовой сцены", resourceEntry["name"]!.GetValue<string>());
-        Assert.NotNull(resourceEntry["metaResources"]);
-        Assert.NotNull(resourceEntry["strategicGoods"]);
+        Assert.Empty(factionResources["entries"]!.AsArray());
+        Assert.Empty(currentLocation["factionControl"]!.AsArray());
 
-        var quest = files["game_state/quests/regular_quests.json"]!["quests"]!.AsArray()[0]!.AsObject();
-        var detailsLog = quest["detailsLog"]!.AsArray();
-        Assert.Equal("#[3]. Первая цель новой жизни связала выбранные обстоятельства стартовой сцены.", detailsLog[0]!.GetValue<string>());
-        AssertPlayerFacingBootstrapTextIsClean(quest, "fresh mortal bootstrap quest");
+        Assert.Empty(files["game_state/quests/regular_quests.json"]!["quests"]!.AsArray());
 
         var inventory = files["game_state/inventory/items.json"];
-        var item = inventory["items"]!.AsArray().Single()!.AsObject();
-        Assert.Equal("item_life_001_opening_anchor", item["itemId"]!.GetValue<string>());
-        Assert.Equal("item_life_001_opening_anchor", item["existedId"]!.GetValue<string>());
-        Assert.Equal("Common", item["quality"]!.GetValue<string>());
-        Assert.Equal("100%", item["durability"]!.GetValue<string>());
-        Assert.False(item["isContainer"]!.GetValue<bool>());
-        Assert.False(item["isConsumption"]!.GetValue<bool>());
-        Assert.False(item["requiresTwoHands"]!.GetValue<bool>());
-        Assert.True(item.ContainsKey("equipmentSlot"));
-        Assert.True(item.ContainsKey("accessoryForSlot"));
-        Assert.True(item.ContainsKey("contentsPath"));
-        Assert.Null(item["equipmentSlot"]);
-        Assert.Null(item["accessoryForSlot"]);
-        Assert.Null(item["contentsPath"]);
-        Assert.NotEmpty(item["textContent"]!.AsArray());
+        Assert.Empty(inventory["items"]!.AsArray());
+        Assert.Empty(inventory["equipment"]!.AsObject());
+        Assert.False(inventory.ContainsKey("totalWeight"));
+        Assert.False(inventory.ContainsKey("maxWeight"));
 
         var experience = files["game_state/player/experience.json"];
-        Assert.Equal(1, experience["playerLevel"]!.GetValue<int>());
-        Assert.Equal(1, experience["level"]!.GetValue<int>());
-        Assert.Equal(0, experience["currentExperience"]!.GetValue<int>());
-        Assert.Equal(0, experience["experience"]!.GetValue<int>());
-        Assert.Equal(0, experience["totalExperience"]!.GetValue<int>());
-        Assert.Equal(100, experience["experienceForNextLevel"]!.GetValue<int>());
-        Assert.Equal(0, experience["experienceGained"]!.GetValue<int>());
+        Assert.Empty(experience);
 
         var activeSkills = files["game_state/player/skills_active.json"];
         Assert.Empty(activeSkills["activeSkillChanges"]!.AsArray());
@@ -105,12 +104,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Empty(skillMastery["skillMasteryChanges"]!.AsArray());
 
         var codexEntries = files["lore/codex_entries.json"]!["entries"]!.AsArray();
-        var currentWorldEntry = codexEntries
-            .OfType<JsonObject>()
-            .Single(entry => string.Equals(
-                entry["entryId"]?.GetValue<string>(),
-                "codex_life_001_world",
-                StringComparison.Ordinal));
+        var currentWorldEntry = Assert.Single(codexEntries.OfType<JsonObject>());
+        Assert.Equal("codex_life_001_world", currentWorldEntry["entryId"]!.GetValue<string>());
         Assert.StartsWith(
             "current_world/",
             currentWorldEntry["sourceFile"]!.GetValue<string>(),
@@ -118,7 +113,290 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
-    public void MortalBootstrapStateBuilder_AddsStarterExperienceBufferForPaidTrainingOrTradeStarts()
+    public void MortalBootstrapStateBuilder_UnstructuredProseDoesNotMaterializeMechanicsOrActors()
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 4,
+            characterDescription:
+                "A starship marine, knife fighter, cartographer, hunter, merchant apprentice and noble courier.",
+            worldDescription:
+                "A post-apocalyptic science-fiction station with shops, paid lessons, teachers and traders.",
+            startingCircumstances:
+                "A mentor offers training, a vendor offers goods, and a sealed letter lies beside a runic glove.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-26T00:00:00Z"));
+
+        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
+        Assert.Empty(files["game_state/inventory/items.json"]["items"]!.AsArray());
+        Assert.Empty(files["game_state/player/skills_active.json"]["activeSkillChanges"]!.AsArray());
+        Assert.Empty(files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray());
+        Assert.Empty(files["game_state/player/skill_mastery.json"]["skillMasteryChanges"]!.AsArray());
+
+        Assert.Empty(files["game_state/player/experience.json"]);
+    }
+
+    [Theory]
+    [InlineData("missing", true)]
+    [InlineData("empty-object", true)]
+    [InlineData("prose-only", true)]
+    [InlineData("wrong-domain", true)]
+    [InlineData("empty-values", true)]
+    [InlineData("wrong-values", true)]
+    [InlineData("bound", false)]
+    public async Task ValidateGameStateAsync_FirstBootstrapMechanicsRequireDomainBoundStructuredGmAuthority(
+        string authorityMode,
+        bool expectAuthorityIssues)
+    {
+        var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            incarnationNumber: 1,
+            turnNumber: 4,
+            characterDescription: "Навигатор исследовательской станции.",
+            worldDescription: "Научно-фантастическая орбитальная колония.",
+            startingCircumstances: "После аварии навигатор приходит в себя в центре связи.",
+            createdAtUtc: DateTimeOffset.Parse("2026-07-26T00:00:00Z"));
+
+        files["game_state/player/experience.json"]["playerLevel"] = 1;
+        files["game_state/player/experience.json"]["level"] = 1;
+        files["game_state/player/experience.json"]["currentExperience"] = 0;
+        files["game_state/player/experience.json"]["experience"] = 0;
+        files["game_state/player/experience.json"]["totalExperience"] = 0;
+        files["game_state/player/experience.json"]["experienceForNextLevel"] = 240;
+        files["game_state/player/experience.json"]["experienceGained"] = 0;
+        files["game_state/inventory/items.json"]["maxWeight"] = 35;
+        files["game_state/inventory/items.json"]["totalWeight"] = 0;
+
+        const string factionId = "faction_orbital_navigation";
+        var faction = new JsonObject
+        {
+            ["factionId"] = factionId,
+            ["name"] = "Навигаторы Кольца",
+            ["displayName"] = "Навигаторы Кольца",
+            ["description"] = "Служба дальней навигации орбитальной колонии.",
+            ["type"] = "navigation_service",
+            ["status"] = "active",
+            ["visibility"] = "known",
+            ["ranks"] = new JsonObject
+            {
+                ["entries"] = new JsonArray(),
+                ["hierarchySummary"] = "Служебная иерархия навигаторов."
+            },
+            ["rankBranches"] = new JsonArray(),
+            ["relations"] = new JsonArray(),
+            ["controlledTerritories"] = new JsonArray(),
+            ["projects"] = new JsonArray(),
+            ["chronicle"] = new JsonArray(),
+            ["customStates"] = new JsonArray()
+        };
+        faction["influence"] = 12;
+        faction["powerProfile"] = new JsonObject { ["orbitalReach"] = 4 };
+        files["game_state/factions/faction_core.json"]["factions"] = new JsonArray(faction);
+        files["game_state/factions/faction_resources.json"]["entries"] = new JsonArray(
+            new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["signalRelays"] = 2
+            });
+        files["game_state/world/current_location.json"]["factionControl"] = new JsonArray(
+            new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["controlType"] = "Network",
+                ["controlLevel"] = 12
+            });
+
+        JsonArray AuthorityEntries(string domain) =>
+            authorityMode switch
+            {
+                "missing" => new JsonArray(),
+                "empty-object" => new JsonArray(new JsonObject()),
+                "prose-only" => new JsonArray(
+                    new JsonObject { ["reason"] = $"Setting-defined {domain}." }),
+                "wrong-domain" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "lore/current_world/world_setting.json",
+                        ["values"] = new JsonObject { ["summary"] = "Unrelated prose." }
+                    }),
+                "empty-values" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = domain switch
+                        {
+                            "progression" => "game_state/player/experience.json",
+                            "carrying" => "game_state/inventory/items.json",
+                            "faction" => "game_state/factions/faction_core.json",
+                            _ => throw new ArgumentOutOfRangeException(nameof(domain), domain, null)
+                        },
+                        ["factionId"] = domain == "faction" ? factionId : null,
+                        ["values"] = new JsonObject()
+                    }),
+                "wrong-values" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = domain switch
+                        {
+                            "progression" => "game_state/player/experience.json",
+                            "carrying" => "game_state/inventory/items.json",
+                            "faction" => "game_state/factions/faction_core.json",
+                            _ => throw new ArgumentOutOfRangeException(nameof(domain), domain, null)
+                        },
+                        ["factionId"] = domain == "faction" ? factionId : null,
+                        ["values"] = domain switch
+                        {
+                            "progression" => new JsonObject { ["experienceForNextLevel"] = 999 },
+                            "carrying" => new JsonObject { ["maxWeight"] = 999 },
+                            "faction" => new JsonObject { ["influence"] = 999 },
+                            _ => throw new ArgumentOutOfRangeException(nameof(domain), domain, null)
+                        }
+                    }),
+                "bound" when domain == "progression" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/player/experience.json",
+                        ["values"] = new JsonObject
+                        {
+                            ["playerLevel"] = 1,
+                            ["level"] = 1,
+                            ["currentExperience"] = 0,
+                            ["experience"] = 0,
+                            ["totalExperience"] = 0,
+                            ["experienceForNextLevel"] = 240,
+                            ["experienceGained"] = 0
+                        },
+                        ["reason"] = "The orbital setting uses a 240-point first progression interval."
+                    }),
+                "bound" when domain == "carrying" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/inventory/items.json",
+                        ["values"] = new JsonObject
+                        {
+                            ["maxWeight"] = 35,
+                            ["totalWeight"] = 0
+                        },
+                        ["reason"] = "The current load system uses kilograms."
+                    }),
+                "bound" when domain == "faction" => new JsonArray(
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/factions/faction_core.json",
+                        ["factionId"] = factionId,
+                        ["values"] = new JsonObject
+                        {
+                            ["influence"] = 12,
+                            ["powerProfile"] = new JsonObject { ["orbitalReach"] = 4 }
+                        }
+                    },
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/factions/faction_resources.json",
+                        ["factionId"] = factionId,
+                        ["values"] = new JsonObject { ["signalRelays"] = 2 }
+                    },
+                    new JsonObject
+                    {
+                        ["canonicalPath"] = "game_state/world/current_location.json",
+                        ["factionId"] = factionId,
+                        ["values"] = new JsonObject
+                        {
+                            ["controlType"] = "Network",
+                            ["controlLevel"] = 12
+                        }
+                    }),
+                _ => throw new ArgumentOutOfRangeException(nameof(authorityMode), authorityMode, null)
+            };
+
+        foreach (var (path, node) in files)
+            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Нейтральная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/mortal_bootstrap_scaffold.json",
+            new JsonObject
+            {
+                ["requestId"] = "request_setting_authority",
+                ["turnNumber"] = 4,
+                ["structuredGmAuthority"] = new JsonObject
+                {
+                    ["playerSkills"] = new JsonArray(),
+                    ["playerProgression"] = AuthorityEntries("progression"),
+                    ["carryingRules"] = AuthorityEntries("carrying"),
+                    ["factionMechanics"] = AuthorityEntries("faction")
+                },
+                ["worldEventRequirements"] = new JsonObject
+                {
+                    ["minimumCount"] = 1,
+                    ["requiredEventIds"] = new JsonArray("world_event_life_001_opening")
+                }
+            }.ToJsonString());
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "sessionId": "session_setting_authority",
+          "requestId": "request_setting_authority",
+          "turnNumber": 4
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+        var expectedCodes = new[]
+        {
+            "mortal_bootstrap_progression_requires_structured_gm_authority",
+            "mortal_bootstrap_carrying_requires_structured_gm_authority",
+            "mortal_bootstrap_faction_mechanics_require_structured_gm_authority"
+        };
+
+        foreach (var code in expectedCodes)
+        {
+            if (expectAuthorityIssues)
+            {
+                Assert.Contains(issues, issue =>
+                    string.Equals(issue.Code, code, StringComparison.OrdinalIgnoreCase));
+            }
+            else
+            {
+                Assert.DoesNotContain(issues, issue =>
+                    string.Equals(issue.Code, code, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UnstructuredBootstrapProseDoesNotDeclareActorCapabilities()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Нейтральная Искра",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
+        {
+          "schemaVersion": 1,
+          "purpose": "fresh_mortal_world_bootstrap",
+          "playerAuthoredStart": {
+            "characterDescription": "A merchant apprentice wants to learn from a mentor.",
+            "worldDescription": "A science-fiction station.",
+            "startingCircumstances": "A teacher offers training while a trader sells goods."
+          }
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "mortal_bootstrap_requested_trade_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void MortalBootstrapStateBuilder_DoesNotInferResourcesFromPaidTrainingOrTradeProse()
     {
         var paidStartFiles = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -128,12 +406,9 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "За дверью ждёт наставница, которая продаёт первые уроки через витрину обучения, а рядом купец предлагает купить кинжал и бинты.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-06T02:00:00Z"));
 
-        var paidExperience = paidStartFiles["game_state/player/experience.json"];
-        Assert.Equal(25, paidExperience["currentExperience"]!.GetValue<int>());
-        Assert.Equal(25, paidExperience["experience"]!.GetValue<int>());
-        Assert.Equal(25, paidExperience["totalExperience"]!.GetValue<int>());
-        Assert.Equal(100, paidExperience["experienceForNextLevel"]!.GetValue<int>());
-        Assert.Equal(0, paidExperience["experienceGained"]!.GetValue<int>());
+        Assert.Empty(paidStartFiles["game_state/player/experience.json"]);
+        Assert.DoesNotContain("game_state/npcs/npc_core.json", paidStartFiles.Keys);
+        Assert.Empty(paidStartFiles["game_state/inventory/items.json"]["items"]!.AsArray());
 
         var plainStartFiles = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -143,14 +418,11 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "Мирон приходит в себя ночью в архивной башне после кражи запретной описи.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-06T02:00:00Z"));
 
-        var plainExperience = plainStartFiles["game_state/player/experience.json"];
-        Assert.Equal(0, plainExperience["currentExperience"]!.GetValue<int>());
-        Assert.Equal(0, plainExperience["experience"]!.GetValue<int>());
-        Assert.Equal(0, plainExperience["totalExperience"]!.GetValue<int>());
+        Assert.Empty(plainStartFiles["game_state/player/experience.json"]);
     }
 
     [Fact]
-    public async Task MortalBootstrapStateBuilder_MaterializesRequestedTeacherIntoBaseline()
+    public async Task MortalBootstrapStateBuilder_DoesNotMaterializeTeacherUntilGmDeclaresCapability()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -160,27 +432,7 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-06T01:00:00Z"));
 
-        var npcCore = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"]);
-        var sceneNpcs = Assert.IsType<JsonArray>(npcCore["NPCsInScene"]);
-        var teacher = Assert.Single(sceneNpcs.OfType<JsonObject>());
-        Assert.Equal("npc_life_001_start_teacher", teacher["npcId"]!.GetValue<string>());
-        Assert.Equal("Наставница семейного архива", teacher["name"]!.GetValue<string>());
-        Assert.Equal("loc_life_001_start", teacher["currentLocationId"]!.GetValue<string>());
-        Assert.Contains("витрин", teacher["summary"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
-        Assert.Equal(25, teacher["relationshipLevel"]!.GetValue<int>());
-        Assert.Equal("Нейтралитет", teacher["attitude"]!.GetValue<string>());
-
-        var teacherProfile = Assert.IsType<JsonObject>(teacher["teacherProfile"]);
-        Assert.True(teacherProfile["canTeach"]!.GetValue<bool>());
-        Assert.Equal(25, teacherProfile["relationshipLevel"]!.GetValue<int>());
-        Assert.Contains("чтению печатей", teacherProfile["summary"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
-
-        var taughtSkill = Assert.Single(teacherProfile["skills"]!.AsArray().OfType<JsonObject>());
-        Assert.Equal("skill_life_001_seal_reading", taughtSkill["skillId"]!.GetValue<string>());
-        Assert.Equal("Чтение печатей", taughtSkill["skillName"]!.GetValue<string>());
-        Assert.Equal("Чтение печатей", taughtSkill["displayName"]!.GetValue<string>());
-        Assert.Equal("passive_skill_mastery", taughtSkill["skillKind"]!.GetValue<string>());
-        Assert.Equal(2, taughtSkill["masteryLevel"]!.GetValue<int>());
+        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
 
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
@@ -203,22 +455,22 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "worldDescription": "Столица Этернии с городскими наставниками и витринами обучения.",
             "startingCircumstances": "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату."
           },
-          "trainingAnchorRequirements": {
-            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true."
+          "structuredGmAuthority": {
+            "actorCapabilities": [
+              { "capability": "canTeach", "required": true }
+            ]
           }
         }
         """);
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.DoesNotContain(issues, issue =>
+        Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(issues, issue =>
-            string.Equals(issue.Code, "npc_attitude_relationship_tier_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
-    public void MortalBootstrapStateBuilder_MaterializesLearnIntentAsStarterTeacher()
+    public void MortalBootstrapStateBuilder_DoesNotInferTeacherFromLearnIntent()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -228,19 +480,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "Утро в мастерской старого картографа у причала Соляных Верфей. Мастер Орт велит Каю сверить печати.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
 
-        var experience = files["game_state/player/experience.json"];
-        Assert.Equal(25, experience["currentExperience"]!.GetValue<int>());
-        Assert.Equal(25, experience["experience"]!.GetValue<int>());
-
-        var npcCore = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"]);
-        var sceneNpcs = Assert.IsType<JsonArray>(npcCore["NPCsInScene"]);
-        var teacher = Assert.Single(sceneNpcs.OfType<JsonObject>());
-        Assert.Equal("npc_life_001_start_teacher", teacher["npcId"]!.GetValue<string>());
-        Assert.Equal("loc_life_001_start", teacher["currentLocationId"]!.GetValue<string>());
-
-        var teacherProfile = Assert.IsType<JsonObject>(teacher["teacherProfile"]);
-        Assert.True(teacherProfile["canTeach"]!.GetValue<bool>());
-        Assert.NotEmpty(teacherProfile["skills"]!.AsArray());
+        Assert.Empty(files["game_state/player/experience.json"]);
+        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
     }
 
     [Fact]
@@ -292,7 +533,7 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
-    public void MortalBootstrapStateBuilder_MaterializesExplicitTrackerCompetencyAsPassiveSkill()
+    public void MortalBootstrapStateBuilder_DoesNotInferTrackerCompetencyFromCharacterProse()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -302,32 +543,13 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "Асурэн приходит в себя в дорожной харчевне у северных ворот.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-05T01:00:00Z"));
 
-        var passiveSkills = files["game_state/player/skills_passive.json"];
-        var skills = passiveSkills["passiveSkillChanges"]!.AsArray();
-        var tracking = Assert.Single(skills.OfType<JsonObject>(), skill =>
-            string.Equals(skill["skillName"]?.GetValue<string>(), "Чтение следов", StringComparison.Ordinal));
-
-        Assert.Equal("KnowledgeBased", tracking["type"]!.GetValue<string>());
-        Assert.Equal("Полевые навыки", tracking["group"]!.GetValue<string>());
-        Assert.Equal(1, tracking["masteryLevel"]!.GetValue<int>());
-        Assert.Equal(5, tracking["maxMasteryLevel"]!.GetValue<int>());
-        Assert.Contains("след", tracking["skillDescription"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Восприятие", tracking["playerStatBonus"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
-
-        var structuredBonuses = tracking["structuredBonuses"]!.AsArray();
-        var bonus = Assert.Single(structuredBonuses.OfType<JsonObject>());
-        Assert.Equal("Characteristic", bonus["bonusType"]!.GetValue<string>());
-        Assert.Equal("perception", bonus["target"]!.GetValue<string>());
-        Assert.Equal("Восприятие", bonus["targetDisplayName"]!.GetValue<string>());
-        Assert.Equal("Flat", bonus["valueType"]!.GetValue<string>());
-        Assert.Equal("Permanent", bonus["application"]!.GetValue<string>());
-        Assert.Equal(1, bonus["value"]!.GetValue<int>());
+        Assert.Empty(files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray());
         Assert.Empty(files["game_state/player/skills_active.json"]["activeSkillChanges"]!.AsArray());
         Assert.Empty(files["game_state/player/skill_mastery.json"]["skillMasteryChanges"]!.AsArray());
     }
 
     [Fact]
-    public async Task MortalBootstrapStateBuilder_MaterializesExplicitRenarCompetenciesNpcAndWorldEvent()
+    public void MortalBootstrapStateBuilder_PreservesNarrativeWorldEventWithoutInferringMechanics()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -337,89 +559,18 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "Картографическая мастерская «Медная стрелка» владельца Орта Веннера: пришёл курьер Речной гильдии, пропал землемер, на столе лежит запечатанный футляр карты Северной дамбы.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-11T10:59:27Z"));
 
-        var activeSkills = files["game_state/player/skills_active.json"]["activeSkillChanges"]!.AsArray();
-        var knife = Assert.Single(activeSkills.OfType<JsonObject>());
-        Assert.Equal("starter_knife_handling", knife["skillId"]!.GetValue<string>());
-        Assert.Equal("Обращение с ножом", knife["skillName"]!.GetValue<string>());
-        Assert.Equal("dexterity", knife["scalingCharacteristic"]!.GetValue<string>());
-        Assert.True(knife["combatEffect"]!["isActivatedEffect"]!.GetValue<bool>());
-
-        var passiveSkills = files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray();
-        Assert.Contains(passiveSkills.OfType<JsonObject>(), skill =>
-            string.Equals(skill["skillName"]?.GetValue<string>(), "Картография", StringComparison.Ordinal));
-        Assert.Contains(passiveSkills.OfType<JsonObject>(), skill =>
-            string.Equals(skill["skillName"]?.GetValue<string>(), "Курьерская выучка", StringComparison.Ordinal));
-
-        var mastery = Assert.Single(
-            files["game_state/player/skill_mastery.json"]["skillMasteryChanges"]!.AsArray().OfType<JsonObject>());
-        Assert.Equal("starter_knife_handling", mastery["skillId"]!.GetValue<string>());
-        Assert.Equal(1, mastery["newMasteryLevel"]!.GetValue<int>());
-
-        var npcCore = Assert.IsType<JsonObject>(files["game_state/npcs/npc_core.json"]);
-        var teacher = Assert.Single(npcCore["NPCsInScene"]!.AsArray().OfType<JsonObject>());
-        Assert.Equal("Орт Веннер", teacher["name"]!.GetValue<string>());
-        Assert.Equal("Мастер-картограф", teacher["role"]!.GetValue<string>());
-        Assert.True(teacher["teacherProfile"]!["canTeach"]!.GetValue<bool>());
-        var taughtSkill = Assert.Single(teacher["teacherProfile"]!["skills"]!.AsArray().OfType<JsonObject>());
-        Assert.Equal("Картография", taughtSkill["skillName"]!.GetValue<string>());
+        Assert.Empty(files["game_state/player/skills_active.json"]["activeSkillChanges"]!.AsArray());
+        Assert.Empty(files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray());
+        Assert.Empty(files["game_state/player/skill_mastery.json"]["skillMasteryChanges"]!.AsArray());
+        Assert.Empty(files["game_state/inventory/items.json"]["items"]!.AsArray());
+        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
 
         var worldEvents = files["game_state/world/world_events.json"]["worldEventsLog"]!.AsArray();
         var openingEvent = Assert.Single(worldEvents.OfType<JsonObject>());
         Assert.Equal("world_event_life_001_opening", openingEvent["eventId"]!.GetValue<string>());
-        Assert.Contains("землемер", openingEvent["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Картографическая мастерская", openingEvent["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Северной дамбы", openingEvent["description"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Equal("local", openingEvent["visibility"]!.GetValue<string>());
-
-        foreach (var (path, node) in files)
-            await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
-
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
-        {
-          "soulName": "Элиан Безмолвный",
-          "currentRealm": "Mortal World",
-          "currentIncarnation": 1
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/control/mortal_bootstrap_scaffold.json", """
-        {
-          "schemaVersion": 1,
-          "purpose": "fresh_mortal_world_bootstrap",
-          "requestId": "request_renar_bootstrap",
-          "turnNumber": 4,
-          "playerAuthoredStart": {
-            "characterDescription": "Ренар Тис, 24-летний ученик картографа и курьер, умеющий обращаться с ножом.",
-            "worldDescription": "Мрачное низкое фэнтези, речной город Кальдер.",
-            "startingCircumstances": "Мастерская владельца Орта Веннера: пропал землемер у Северной дамбы."
-          },
-          "starterCompetencyRequirements": [
-            { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" },
-            { "skillId": "starter_cartography", "skillName": "Картография", "skillKind": "passive" },
-            { "skillId": "starter_courier_training", "skillName": "Курьерская выучка", "skillKind": "passive" }
-          ],
-          "worldEventRequirements": {
-            "minimumCount": 1,
-            "requiredEventIds": ["world_event_life_001_opening"]
-          }
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
-        {
-          "sessionId": "session_renar_bootstrap",
-          "requestId": "request_renar_bootstrap",
-          "turnNumber": 4,
-          "status": "success"
-        }
-        """);
-
-        var issues = await _validator.ValidateGameStateAsync();
-        Assert.DoesNotContain(issues, issue =>
-            string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(issue.Code, "mortal_bootstrap_world_event_missing", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(issues, issue =>
-            issue.FilePath.Contains("game_state/player/skills_", StringComparison.OrdinalIgnoreCase) ||
-            issue.FilePath.Contains("game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase) ||
-            issue.FilePath.Contains("game_state/world/world_events.json", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -469,11 +620,16 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "worldDescription": "Мрачное низкое фэнтези, речной город Кальдер.",
             "startingCircumstances": "Мастерская владельца Орта Веннера: пропал землемер у Северной дамбы."
           },
-          "starterCompetencyRequirements": [
-            { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" },
-            { "skillId": "starter_cartography", "skillName": "Картография", "skillKind": "passive" },
-            { "skillId": "starter_courier_training", "skillName": "Курьерская выучка", "skillKind": "passive" }
-          ],
+          "structuredGmAuthority": {
+            "playerSkills": [
+              { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" },
+              { "skillId": "starter_cartography", "skillName": "Картография", "skillKind": "passive" },
+              { "skillId": "starter_courier_training", "skillName": "Курьерская выучка", "skillKind": "passive" }
+            ],
+            "actorCapabilities": [
+              { "capability": "canTeach", "required": true }
+            ]
+          },
           "worldEventRequirements": {
             "minimumCount": 1,
             "requiredEventIds": ["world_event_life_001_opening"]
@@ -518,9 +674,11 @@ public sealed class MortalBootstrapValidationTests : IDisposable
           "purpose": "fresh_mortal_world_bootstrap",
           "requestId": "request_bootstrap_turn_4",
           "turnNumber": 4,
-          "starterCompetencyRequirements": [
-            { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" }
-          ],
+          "structuredGmAuthority": {
+            "playerSkills": [
+              { "skillId": "starter_knife_handling", "skillName": "Обращение с ножом", "skillKind": "active" }
+            ]
+          },
           "worldEventRequirements": {
             "minimumCount": 1,
             "requiredEventIds": ["world_event_life_001_opening"]
@@ -550,7 +708,7 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
-    public void MortalBootstrapStateBuilder_StarterPassiveSkillTextDoesNotLeakOldCharacterName()
+    public void MortalBootstrapStateBuilder_DoesNotCreatePassiveSkillTextFromProse()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -560,18 +718,11 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "Лира просыпается в комнате над архивом Медных Линий.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
 
-        var passiveSkills = files["game_state/player/skills_passive.json"];
-        var tracking = Assert.Single(
-            passiveSkills["passiveSkillChanges"]!.AsArray().OfType<JsonObject>(),
-            skill => string.Equals(skill["skillName"]?.GetValue<string>(), "Чтение следов", StringComparison.Ordinal));
-
-        var description = tracking["skillDescription"]!.GetValue<string>();
-        Assert.Contains("след", description, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Асурэн", description, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray());
     }
 
     [Fact]
-    public async Task ValidateGameStateAsync_FreshMortalBootstrapStarterSkillsAreCanonical()
+    public async Task ValidateGameStateAsync_FreshMortalBootstrapEmptyClientSkillStateIsCanonical()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -848,6 +999,16 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             worldDescription: "Портовый город-государство с купеческими гильдиями, архивами и тайными культами.",
             startingCircumstances: "Эйра просыпается до рассвета в комнате при архиве; на столе лежит чужая опечатанная расписка.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
+        const string narrativeWithPlaceholderPhrase =
+            "Летописцы позже назовут этот эпизод стартовой сценой архивного расследования.";
+        files["game_state/world/current_location.json"]["description"] = narrativeWithPlaceholderPhrase;
+        files["game_state/factions/faction_core.json"]["factions"] = new JsonArray(
+            new JsonObject
+            {
+                ["factionId"] = "faction_life_001_initial_context",
+                ["name"] = "Силы стартовой сцены",
+                ["displayName"] = "Силы стартовой сцены"
+            });
 
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
@@ -911,6 +1072,37 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase) &&
             issue.FilePath.Contains("world_map.json", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(issue.Actual, "Путь из стартовой сцены", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".description", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actual, narrativeWithPlaceholderPhrase, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalBootstrapPlaceholderValidation_InspectsOnlyIdentityAndTitleFields()
+    {
+        const string narrativePhrase = "Летописцы называют эпизод стартовой сценой.";
+        const string rolePhrase = "Наставник стартовой сцены в театральной постановке";
+        using var document = JsonDocument.Parse($$"""
+        {
+          "name": "Стартовая сцена новой жизни",
+          "title": "Путь из стартовой сцены",
+          "description": "{{narrativePhrase}}",
+          "role": "{{rolePhrase}}"
+        }
+        """);
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateMortalBootstrapPlayerVisibleNamesInElement",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.NotNull(method);
+        method.Invoke(_validator, [document.RootElement, "fixture", null, issues]);
+
+        Assert.Contains(issues, issue => issue.FilePath == "fixture.name");
+        Assert.Contains(issues, issue => issue.FilePath == "fixture.title");
+        Assert.DoesNotContain(issues, issue => issue.FilePath == "fixture.description");
+        Assert.DoesNotContain(issues, issue => issue.FilePath == "fixture.role");
     }
 
     [Fact]
@@ -988,8 +1180,10 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "worldDescription": "Этерния: темное фэнтези с учителями навыков и витринами обучения.",
             "startingCircumstances": "За дверью ждёт наставница Селина Орвейн, которая может обучать магической диагностике, быстрым выпадам и этикету через витрину обучения."
           },
-          "trainingAnchorRequirements": {
-            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true."
+          "structuredGmAuthority": {
+            "actorCapabilities": [
+              { "capability": "canTeach", "required": true }
+            ]
           }
         }
         """);
@@ -1018,7 +1212,7 @@ public sealed class MortalBootstrapValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task ValidateGameStateAsync_MortalBootstrapLearnIntentAndMasterWithoutTeacherProfile_ReportsTrainingSurfaceIssue()
+    public async Task ValidateGameStateAsync_MortalBootstrapLearnIntentWithoutStructuredGmAuthority_DoesNotReportTrainingSurfaceIssue()
     {
         var files = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
             incarnationNumber: 1,
@@ -1051,10 +1245,6 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "characterDescription": "Кай Рен, молодой подмастерье картографа, хочет научиться защищаться ножом.",
             "worldDescription": "Портовый город с картографическими мастерскими, купеческими домами и уличными бандами.",
             "startingCircumstances": "Утро в мастерской старого картографа у причала Соляных Верфей. Мастер Орт велит Каю сверить печати."
-          },
-          "trainingAnchorRequirements": {
-            "trigger": "Apply when the player-authored start asks for a teacher, mentor, trainer, paid lesson, school, practice, обучение, тренировка, урок, наставник, or учитель.",
-            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include teacherProfile with canTeach=true."
           }
         }
         """);
@@ -1076,10 +1266,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue =>
-            issue.Severity == IssueSeverity.Error &&
-            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(issue.FilePath, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -1117,8 +1305,10 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "worldDescription": "Портовый город Астерн с лавками, архивами и купеческими гильдиями.",
             "startingCircumstances": "Рядом купец Дорн предлагает купить воск, чернила и простой талисман перед опасным поручением."
           },
-          "tradeAnchorRequirements": {
-            "requiredNpcShape": "The relevant NPC in NPCsInScene/UpdateNPCs must include tradeState.canTrade=true."
+          "structuredGmAuthority": {
+            "actorCapabilities": [
+              { "capability": "canTrade", "required": true }
+            ]
           }
         }
         """);

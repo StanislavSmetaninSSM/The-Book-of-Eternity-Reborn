@@ -2,6 +2,8 @@ namespace BookOfEternityClient.Services.GmWorkers;
 
 public static class GmWorkerContractValidator
 {
+    internal static StringComparer CanonicalPathComparer { get; } = StringComparer.OrdinalIgnoreCase;
+
     public static WorkerContractValidationResult ValidateProfile(WorkerBridgeProfile? profile)
     {
         var errors = new List<string>();
@@ -53,6 +55,18 @@ public static class GmWorkerContractValidator
         if (task.SchemaVersion != 1)
             errors.Add("schemaVersion must be 1.");
         ValidateId(task.TaskId, "taskId", errors);
+        if (string.IsNullOrWhiteSpace(task.SessionGeneration))
+        {
+            errors.Add("sessionGeneration is required.");
+        }
+        else if (!Guid.TryParseExact(task.SessionGeneration, "N", out var parsedGeneration) ||
+                 !string.Equals(
+                     task.SessionGeneration,
+                     parsedGeneration.ToString("N"),
+                     StringComparison.Ordinal))
+        {
+            errors.Add("sessionGeneration must be a canonical lowercase GUID in N format.");
+        }
         ValidateId(task.WorkerId, "workerId", errors);
         if (!string.Equals(task.WorkerId, profile.WorkerId, StringComparison.Ordinal))
             errors.Add("task.workerId must match profile.workerId.");
@@ -82,14 +96,37 @@ public static class GmWorkerContractValidator
             ValidatePath(issue.Path, "validationIssues.path", errors);
             RequireText(issue.Message, "validationIssues.message", errors);
         }
+        if (task.TaskType == WorkerTaskType.ValidationRepair &&
+            task.ValidationIssues.Any(issue => string.Equals(
+                issue.Code,
+                "npc_initial_id_collides_with_existing_permanent_id",
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            errors.Add("NPC identity collision repair is main GM only and must not be delegated to a worker.");
+        }
+
+        ValidateNoDuplicatePaths(
+            task.ContextFiles.Select(file => file.Path),
+            "contextFiles",
+            errors);
+        ValidateNoDuplicatePaths(task.AllowedProposalPaths, "allowedProposalPaths", errors);
 
         foreach (var file in task.ContextFiles)
         {
             ValidatePath(file.Path, "contextFiles.path", errors);
-            RequireText(file.Sha256, "contextFiles.sha256", errors);
+            if (task.TaskType == WorkerTaskType.ValidationRepair)
+            {
+                if (!IsSha256(file.Sha256) && !IsMissingHash(file.Sha256))
+                    errors.Add("contextFiles.sha256 must be an exact 64-character SHA-256 hex digest or 'missing'.");
+            }
+            else
+            {
+                RequireText(file.Sha256, "contextFiles.sha256", errors);
+            }
         }
 
         ValidateAfterlifeTaskPacket(task, errors);
+        ValidateMortalCharacteristicAuthorityTaskPacket(task, errors);
 
         foreach (var path in task.AllowedProposalPaths)
         {
@@ -128,6 +165,35 @@ public static class GmWorkerContractValidator
         return ToResult(errors);
     }
 
+    private static void ValidateMortalCharacteristicAuthorityTaskPacket(
+        WorkerTaskPacket task,
+        List<string> errors)
+    {
+        if (task.TaskType != WorkerTaskType.ValidationRepair ||
+            !task.ValidationIssues.Any(issue => string.Equals(
+                issue.Code,
+                "npc_characteristics_empty",
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        var authorityFiles = task.ContextFiles
+            .Where(file => file.Path.Equals(MortalCharacteristicAuthorityContract.StatePath, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (authorityFiles.Length != 1 || !IsSha256(authorityFiles[0].Sha256))
+        {
+            errors.Add(
+                $"Mortal characteristics repair must include exactly one hash-pinned read-only setting authority context: {MortalCharacteristicAuthorityContract.StatePath}.");
+        }
+
+        if (task.AllowedProposalPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, CanonicalPathComparer))
+        {
+            errors.Add(
+                $"Mortal characteristic authority is read-only and must not appear in allowedProposalPaths: {MortalCharacteristicAuthorityContract.StatePath}.");
+        }
+    }
+
     public static WorkerContractValidationResult ValidateProposal(
         WorkerProposal? proposal,
         WorkerTaskPacket task,
@@ -141,6 +207,8 @@ public static class GmWorkerContractValidator
         if (proposal.SchemaVersion != 1)
             errors.Add("schemaVersion must be 1.");
         ValidateId(proposal.ProposalId, "proposalId", errors);
+        if (GmWorkerProposalStore.IsReservedProposalId(proposal.ProposalId))
+            errors.Add("proposalId is reserved for the derived proposal inbox namespace.");
         ValidateId(proposal.TaskId, "taskId", errors);
         ValidateId(proposal.WorkerId, "workerId", errors);
         if (!string.Equals(proposal.TaskId, task.TaskId, StringComparison.Ordinal))
@@ -150,21 +218,112 @@ public static class GmWorkerContractValidator
         RequireText(proposal.Summary, "summary", errors);
         RequireText(proposal.CreatedAtUtc, "createdAtUtc", errors);
 
+        if (proposal.Status == WorkerProposalStatus.Unspecified ||
+            !Enum.IsDefined(proposal.Status))
+        {
+            errors.Add("proposal.status is required and must be an explicit supported status.");
+        }
+
         if (profile.Permissions.ProposalOnly && proposal.ChangedFiles.Count > 0)
             errors.Add("proposal-only worker proposals must not include changedFiles.");
+        if (proposal.Status != WorkerProposalStatus.Completed && proposal.ChangedFiles.Count > 0)
+            errors.Add("non-completed worker proposals must not include changedFiles.");
+        if (task.TaskType == WorkerTaskType.ValidationRepair &&
+            proposal.Status == WorkerProposalStatus.Completed &&
+            proposal.ChangedFiles.Count == 0)
+        {
+            errors.Add("completed validation-repair proposals must include at least one changedFiles item.");
+        }
+
+        var contextByPath = task.ContextFiles
+            .GroupBy(file => file.Path, CanonicalPathComparer)
+            .ToDictionary(group => group.Key, group => group.First(), CanonicalPathComparer);
+
+        foreach (var duplicatePath in proposal.ChangedFiles
+                     .GroupBy(file => file.Path, CanonicalPathComparer)
+                     .Where(group => group.Count() > 1)
+                     .Select(group => group.Key))
+        {
+            errors.Add($"changedFiles contains duplicate path: {duplicatePath}");
+        }
 
         foreach (var changedFile in proposal.ChangedFiles)
         {
             ValidatePath(changedFile.Path, "changedFiles.path", errors);
-            if (!task.AllowedProposalPaths.Contains(changedFile.Path, StringComparer.Ordinal))
+            if (changedFile.ChangeKind is not WorkerFileChangeKind.Add and
+                not WorkerFileChangeKind.Replace and
+                not WorkerFileChangeKind.Delete)
+            {
+                errors.Add("changedFiles.changeKind must be exactly Add, Replace, or Delete.");
+            }
+            if (!task.AllowedProposalPaths.Contains(changedFile.Path, CanonicalPathComparer))
                 errors.Add($"changedFiles contains a path outside task allowedProposalPaths: {changedFile.Path}");
             if (!profile.Permissions.ProposalOnly &&
                 !profile.Permissions.ProposalWritePaths.Any(pattern => PathMatches(pattern, changedFile.Path)))
                 errors.Add($"changedFiles contains a path outside profile write scope: {changedFile.Path}");
+
+            contextByPath.TryGetValue(changedFile.Path, out var contextFile);
+            if (contextFile == null)
+            {
+                errors.Add($"changedFiles path is not pinned by task.contextFiles: {changedFile.Path}.");
+            }
+            else
+            {
+                var beforeIsValid = IsSha256(changedFile.BeforeSha256) || IsMissingHash(changedFile.BeforeSha256);
+                if (!beforeIsValid)
+                {
+                    errors.Add(
+                        $"changedFiles.beforeSha256 must be an exact 64-character SHA-256 hex digest or 'missing' for {changedFile.Path}.");
+                }
+                else if (!string.Equals(
+                             changedFile.BeforeSha256,
+                             contextFile.Sha256,
+                             StringComparison.OrdinalIgnoreCase))
+                {
+                    errors.Add($"changedFiles.beforeSha256 must match task context for {changedFile.Path}.");
+                }
+            }
+
+            if (changedFile.ChangeKind == WorkerFileChangeKind.Add &&
+                contextFile != null &&
+                !IsMissingHash(contextFile.Sha256))
+            {
+                errors.Add($"changedFiles add requires a 'missing' task context for {changedFile.Path}.");
+            }
+            if (changedFile.ChangeKind is WorkerFileChangeKind.Replace or WorkerFileChangeKind.Delete &&
+                contextFile != null &&
+                IsMissingHash(contextFile.Sha256))
+            {
+                errors.Add(
+                    $"changedFiles {changedFile.ChangeKind.ToString().ToLowerInvariant()} requires an existing hashed task context for {changedFile.Path}.");
+            }
+
             if (changedFile.ChangeKind != WorkerFileChangeKind.Delete)
+            {
                 RequireText(changedFile.ContentRef, "changedFiles.contentRef", errors);
+                if (!IsSha256(changedFile.AfterSha256))
+                {
+                    errors.Add(
+                        $"changedFiles.afterSha256 must be an exact 64-character SHA-256 hex digest for {changedFile.Path}.");
+                }
+            }
+            else
+            {
+                if (!IsMissingHash(changedFile.AfterSha256))
+                    errors.Add($"changedFiles delete must use afterSha256 'missing' for {changedFile.Path}.");
+                if (!string.IsNullOrWhiteSpace(changedFile.ContentRef))
+                    errors.Add($"changedFiles delete must not include contentRef for {changedFile.Path}.");
+            }
             if (!string.IsNullOrWhiteSpace(changedFile.ContentRef))
+            {
                 ValidatePath(changedFile.ContentRef!, "changedFiles.contentRef", errors);
+                var expectedContentRef = $"worker_proposals/{proposal.ProposalId}/{changedFile.Path}";
+                if (!string.Equals(changedFile.ContentRef, expectedContentRef, StringComparison.Ordinal))
+                {
+                    errors.Add(
+                        $"changedFiles.contentRef must be bound to proposal {proposal.ProposalId}: {expectedContentRef}");
+                }
+            }
         }
 
         if (task.TaskType == WorkerTaskType.NarrativeDraft && string.IsNullOrWhiteSpace(proposal.DraftText))
@@ -192,13 +351,13 @@ public static class GmWorkerContractValidator
     {
         if (!IsSafeRelativePath(pattern, allowGlob: true) || !IsSafeRelativePath(path, allowGlob: false))
             return false;
-        if (string.Equals(pattern, path, StringComparison.Ordinal))
+        if (string.Equals(pattern, path, StringComparison.OrdinalIgnoreCase))
             return true;
         if (pattern.EndsWith("/**", StringComparison.Ordinal))
         {
             var prefix = pattern[..^3];
-            return string.Equals(prefix, path, StringComparison.Ordinal) ||
-                   path.StartsWith(prefix + "/", StringComparison.Ordinal);
+            return string.Equals(prefix, path, StringComparison.OrdinalIgnoreCase) ||
+                   path.StartsWith(prefix + "/", StringComparison.OrdinalIgnoreCase);
         }
 
         return false;
@@ -206,6 +365,12 @@ public static class GmWorkerContractValidator
 
     private static WorkerContractValidationResult ToResult(List<string> errors) =>
         errors.Count == 0 ? WorkerContractValidationResult.Success : WorkerContractValidationResult.Failure(errors);
+
+    private static bool IsSha256(string? value) =>
+        value is { Length: 64 } && value.All(Uri.IsHexDigit);
+
+    private static bool IsMissingHash(string? value) =>
+        string.Equals(value, "missing", StringComparison.OrdinalIgnoreCase);
 
     private static void ValidateId(string value, string fieldName, List<string> errors)
     {
@@ -236,6 +401,21 @@ public static class GmWorkerContractValidator
             errors.Add($"{fieldName} must be a safe relative path or /** pattern.");
     }
 
+    private static void ValidateNoDuplicatePaths(
+        IEnumerable<string> paths,
+        string fieldName,
+        List<string> errors)
+    {
+        foreach (var duplicatePath in paths
+                     .Where(path => !string.IsNullOrWhiteSpace(path))
+                     .GroupBy(path => path, CanonicalPathComparer)
+                     .Where(group => group.Count() > 1)
+                     .Select(group => group.Key))
+        {
+            errors.Add($"{fieldName} contains duplicate canonical path: {duplicatePath}");
+        }
+    }
+
     private static bool IsSafeRelativePath(string path, bool allowGlob)
     {
         if (string.IsNullOrWhiteSpace(path))
@@ -251,9 +431,13 @@ public static class GmWorkerContractValidator
         var segments = path.Split('/');
         if (segments.Any(segment => string.IsNullOrWhiteSpace(segment) || segment is "." or ".."))
             return false;
-        if (!allowGlob && segments.Any(segment => segment.Contains('*', StringComparison.Ordinal)))
+        if (!allowGlob && segments.Any(segment =>
+                segment.Contains('*', StringComparison.Ordinal) ||
+                segment.Contains('?', StringComparison.Ordinal)))
             return false;
-        if (allowGlob && segments.Any(segment => segment.Contains('*', StringComparison.Ordinal) && segment != "**"))
+        if (allowGlob && segments.Any(segment =>
+                segment.Contains('?', StringComparison.Ordinal) ||
+                (segment.Contains('*', StringComparison.Ordinal) && segment != "**")))
             return false;
 
         return true;
@@ -283,6 +467,20 @@ public static class GmWorkerContractValidator
 
     private static void ValidateAfterlifeTaskPacket(WorkerTaskPacket task, List<string> errors)
     {
+        if (task.TaskType == WorkerTaskType.ValidationRepair)
+        {
+            var repairPaths = task.ValidationIssues
+                .Select(issue => issue.Path)
+                .Concat(task.AllowedProposalPaths)
+                .ToArray();
+            if (repairPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) &&
+                repairPaths.Any(IsMortalWorldStatePath))
+            {
+                errors.Add(
+                    "Mixed Mortal World and afterlife validation repair batches are forbidden; dispatch separate realm-scoped tasks.");
+            }
+        }
+
         if (task.AfterlifeContract == null)
         {
             if (TaskLooksAfterlifeScoped(task))
@@ -291,17 +489,60 @@ public static class GmWorkerContractValidator
         }
 
         var contract = task.AfterlifeContract;
+        if (task.TaskType == WorkerTaskType.ValidationRepair)
+        {
+            var realmAuthorityFiles = task.ContextFiles
+                .Where(file => file.Path.Equals(AfterlifeRealmAuthorityContract.StatePath, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            if (realmAuthorityFiles.Length != 1 ||
+                !IsSha256(realmAuthorityFiles[0].Sha256))
+            {
+                errors.Add(
+                    $"afterlife validation-repair tasks must include exactly one hash-pinned read-only realm authority context: {AfterlifeRealmAuthorityContract.StatePath}.");
+            }
+
+            if (task.AllowedProposalPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, CanonicalPathComparer))
+            {
+                errors.Add(
+                    $"afterlife realm authority must not appear in allowedProposalPaths: {AfterlifeRealmAuthorityContract.StatePath}.");
+            }
+        }
         if (contract.RealmGate == WorkerAfterlifeRealmGate.None)
             errors.Add("afterlifeContract.realmGate must be ChaosSea, ShiningAbode, or ShiningAbodePendingBootstrap.");
         RequireText(contract.CurrentRealm, "afterlifeContract.currentRealm", errors);
 
         if (contract.AllowedAfterlifeSurfaces.Count == 0)
             errors.Add("afterlifeContract.allowedAfterlifeSurfaces must contain at least one exact afterlife state surface.");
+        ValidateNoDuplicatePaths(
+            contract.AllowedAfterlifeSurfaces,
+            "afterlifeContract.allowedAfterlifeSurfaces",
+            errors);
         foreach (var path in contract.AllowedAfterlifeSurfaces)
         {
-            ValidatePathOrPattern(path, "afterlifeContract.allowedAfterlifeSurfaces", errors);
+            if (path.Contains('*', StringComparison.Ordinal) ||
+                path.Contains('?', StringComparison.Ordinal))
+            {
+                errors.Add(
+                    $"afterlifeContract.allowedAfterlifeSurfaces must contain exact paths and must not contain wildcard patterns: {path}");
+            }
+            else
+            {
+                ValidatePath(path, "afterlifeContract.allowedAfterlifeSurfaces", errors);
+            }
             if (IsMortalWorldSubstitutePath(path))
                 errors.Add($"afterlifeContract.allowedAfterlifeSurfaces contains a Mortal World substitute path: {path}");
+            if (task.TaskType == WorkerTaskType.ValidationRepair &&
+                !AfterlifeRealmAuthorityContract.IsAfterlifeStatePath(path))
+                errors.Add($"afterlifeContract.allowedAfterlifeSurfaces contains a path outside canonical afterlife state: {path}");
+        }
+
+        foreach (var path in task.AllowedProposalPaths)
+        {
+            if (!contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, path)))
+            {
+                errors.Add(
+                    $"allowedProposalPaths contains a path outside afterlifeContract.allowedAfterlifeSurfaces: {path}");
+            }
         }
 
         foreach (var path in contract.ProgressionControlPaths)
@@ -499,11 +740,22 @@ public static class GmWorkerContractValidator
 
         if (proposal.AfterlifeProposal == null)
         {
+            if (task.TaskType == WorkerTaskType.ValidationRepair)
+                return;
             errors.Add("afterlife worker proposals must include afterlifeProposal.");
             return;
         }
 
         var contract = task.AfterlifeContract;
+        foreach (var changedFile in proposal.ChangedFiles)
+        {
+            if (!contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, changedFile.Path)))
+            {
+                errors.Add(
+                    $"changedFiles contains a path outside task.afterlifeContract.allowedAfterlifeSurfaces: {changedFile.Path}");
+            }
+        }
+
         var afterlife = proposal.AfterlifeProposal;
         if (afterlife.RealmGate != contract.RealmGate)
             errors.Add("afterlifeProposal.realmGate must match task.afterlifeContract.realmGate.");
@@ -1240,6 +1492,14 @@ public static class GmWorkerContractValidator
 
     private static bool TaskLooksAfterlifeScoped(WorkerTaskPacket task)
     {
+        if (task.TaskType == WorkerTaskType.ValidationRepair &&
+            (task.AllowedProposalPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) ||
+             task.ValidationIssues.Any(issue =>
+                 AfterlifeRealmAuthorityContract.IsAfterlifeStatePath(issue.Path))))
+        {
+            return true;
+        }
+
         var values = new List<string> { task.Instructions };
         values.AddRange(task.ContextFiles.Select(file => file.Path));
         values.AddRange(task.AcceptanceCriteria);
@@ -1271,13 +1531,22 @@ public static class GmWorkerContractValidator
     }
 
     private static bool IsMortalWorldSubstitutePath(string path) =>
-        path.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase);
+        IsMortalWorldStatePath(path);
+
+    internal static bool IsMortalWorldStatePath(string path)
+    {
+        var normalized = path.Replace('\\', '/');
+        return normalized.StartsWith("game_state/core/player_status.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("lore/current_world/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/quests/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/misc/", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static bool ContainsMortalWorldSubstituteText(string value)
     {

@@ -87,31 +87,64 @@ public static class StorageTransportMoveService
         string direction,
         string storageKey,
         string itemKey) =>
-        await MoveStorageItemCoreAsync(fs, direction, storageKey, itemKey, write: false);
+        await MoveStorageItemCoreAsync(fs, null, direction, storageKey, itemKey, write: false);
+
+    internal static async Task<StorageTransportMoveOutcome> ValidateStorageMoveAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string direction,
+        string storageKey,
+        string itemKey) =>
+        await MoveStorageItemCoreAsync(fs, writeLease, direction, storageKey, itemKey, write: false);
 
     public static async Task<StorageTransportMoveOutcome> MoveStorageItemAsync(
         FileSystemManager fs,
         string direction,
         string storageKey,
         string itemKey) =>
-        await MoveStorageItemCoreAsync(fs, direction, storageKey, itemKey, write: true);
+        await MoveStorageItemCoreAsync(fs, null, direction, storageKey, itemKey, write: true);
+
+    internal static async Task<StorageTransportMoveOutcome> MoveStorageItemAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string direction,
+        string storageKey,
+        string itemKey) =>
+        await MoveStorageItemCoreAsync(fs, writeLease, direction, storageKey, itemKey, write: true);
 
     public static async Task<StorageTransportMoveOutcome> ValidateVehicleMoveAsync(
         FileSystemManager fs,
         string direction,
         string vehicleKey,
         string itemKey) =>
-        await MoveVehicleItemCoreAsync(fs, direction, vehicleKey, itemKey, write: false);
+        await MoveVehicleItemCoreAsync(fs, null, direction, vehicleKey, itemKey, write: false);
+
+    internal static async Task<StorageTransportMoveOutcome> ValidateVehicleMoveAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string direction,
+        string vehicleKey,
+        string itemKey) =>
+        await MoveVehicleItemCoreAsync(fs, writeLease, direction, vehicleKey, itemKey, write: false);
 
     public static async Task<StorageTransportMoveOutcome> MoveVehicleItemAsync(
         FileSystemManager fs,
         string direction,
         string vehicleKey,
         string itemKey) =>
-        await MoveVehicleItemCoreAsync(fs, direction, vehicleKey, itemKey, write: true);
+        await MoveVehicleItemCoreAsync(fs, null, direction, vehicleKey, itemKey, write: true);
+
+    internal static async Task<StorageTransportMoveOutcome> MoveVehicleItemAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string direction,
+        string vehicleKey,
+        string itemKey) =>
+        await MoveVehicleItemCoreAsync(fs, writeLease, direction, vehicleKey, itemKey, write: true);
 
     private static async Task<StorageTransportMoveOutcome> MoveStorageItemCoreAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string direction,
         string storageKey,
         string itemKey,
@@ -124,10 +157,18 @@ public static class StorageTransportMoveService
         if (string.IsNullOrWhiteSpace(itemKey))
             return StorageTransportMoveOutcome.Failed("Выберите предмет.");
 
-        var inventoryRead = await ReadObjectAsync(fs, InventoryPath, "Инвентарь сейчас недоступен.");
+        var inventoryRead = await ReadObjectAsync(
+            fs,
+            writeLease,
+            InventoryPath,
+            "Инвентарь сейчас недоступен.");
         if (!inventoryRead.Success)
             return StorageTransportMoveOutcome.Failed(inventoryRead.Message);
-        var locationRead = await ReadObjectAsync(fs, CurrentLocationPath, "Текущая локация сейчас недоступна.");
+        var locationRead = await ReadObjectAsync(
+            fs,
+            writeLease,
+            CurrentLocationPath,
+            "Текущая локация сейчас недоступна.");
         if (!locationRead.Success)
             return StorageTransportMoveOutcome.Failed(locationRead.Message);
         if (locationRead.Root!["locationStorages"] is not JsonArray storagesArray)
@@ -162,8 +203,8 @@ public static class StorageTransportMoveService
                 var itemToMove = inventoryArray[item.Item!.Index]!;
                 inventoryArray.RemoveAt(item.Item.Index);
                 storageContents.Add(itemToMove);
-                await fs.WriteFileAtomicAsync(InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-                await fs.WriteFileAtomicAsync(CurrentLocationPath, locationRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await WriteAsync(fs, writeLease, InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await WriteAsync(fs, writeLease, CurrentLocationPath, locationRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             }
 
             return StorageTransportMoveOutcome.Completed(
@@ -185,8 +226,8 @@ public static class StorageTransportMoveService
             var itemToMove = storageContents[storageItem.Item!.Index]!;
             storageContents.RemoveAt(storageItem.Item.Index);
             playerInventory.Add(itemToMove);
-            await fs.WriteFileAtomicAsync(InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-            await fs.WriteFileAtomicAsync(CurrentLocationPath, locationRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            await WriteAsync(fs, writeLease, InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            await WriteAsync(fs, writeLease, CurrentLocationPath, locationRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         }
 
         return StorageTransportMoveOutcome.Completed(
@@ -197,6 +238,7 @@ public static class StorageTransportMoveService
 
     private static async Task<StorageTransportMoveOutcome> MoveVehicleItemCoreAsync(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
         string direction,
         string vehicleKey,
         string itemKey,
@@ -209,10 +251,18 @@ public static class StorageTransportMoveService
         if (string.IsNullOrWhiteSpace(itemKey))
             return StorageTransportMoveOutcome.Failed("Выберите предмет.");
 
-        var inventoryRead = await ReadObjectAsync(fs, InventoryPath, "Инвентарь сейчас недоступен.");
+        var inventoryRead = await ReadObjectAsync(
+            fs,
+            writeLease,
+            InventoryPath,
+            "Инвентарь сейчас недоступен.");
         if (!inventoryRead.Success)
             return StorageTransportMoveOutcome.Failed(inventoryRead.Message);
-        var vehiclesRead = await ReadNodeAsync(fs, VehiclesPath, "Транспорт сейчас недоступен.");
+        var vehiclesRead = await ReadNodeAsync(
+            fs,
+            writeLease,
+            VehiclesPath,
+            "Транспорт сейчас недоступен.");
         if (!vehiclesRead.Success)
             return StorageTransportMoveOutcome.Failed(vehiclesRead.Message);
         if (!TryGetVehiclesArray(vehiclesRead.Node, out var vehiclesArray))
@@ -247,8 +297,8 @@ public static class StorageTransportMoveService
                 var itemToMove = inventoryArray[item.Item!.Index]!;
                 inventoryArray.RemoveAt(item.Item.Index);
                 vehicleInventory.Add(itemToMove);
-                await fs.WriteFileAtomicAsync(InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-                await fs.WriteFileAtomicAsync(VehiclesPath, vehiclesRead.Node!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await WriteAsync(fs, writeLease, InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                await WriteAsync(fs, writeLease, VehiclesPath, vehiclesRead.Node!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             }
 
             return StorageTransportMoveOutcome.Completed(
@@ -270,8 +320,8 @@ public static class StorageTransportMoveService
             var itemToMove = vehicleInventory[vehicleItem.Item!.Index]!;
             vehicleInventory.RemoveAt(vehicleItem.Item.Index);
             playerInventory.Add(itemToMove);
-            await fs.WriteFileAtomicAsync(InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-            await fs.WriteFileAtomicAsync(VehiclesPath, vehiclesRead.Node!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            await WriteAsync(fs, writeLease, InventoryPath, inventoryRead.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            await WriteAsync(fs, writeLease, VehiclesPath, vehiclesRead.Node!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         }
 
         return StorageTransportMoveOutcome.Completed(
@@ -286,7 +336,16 @@ public static class StorageTransportMoveService
 
     private static async Task<JsonObjectRead> ReadObjectAsync(FileSystemManager fs, string path, string unavailableMessage)
     {
-        var nodeRead = await ReadNodeAsync(fs, path, unavailableMessage);
+        return await ReadObjectAsync(fs, writeLease: null, path, unavailableMessage);
+    }
+
+    private static async Task<JsonObjectRead> ReadObjectAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path,
+        string unavailableMessage)
+    {
+        var nodeRead = await ReadNodeAsync(fs, writeLease, path, unavailableMessage);
         if (!nodeRead.Success)
             return JsonObjectRead.Failed(nodeRead.Message);
 
@@ -297,7 +356,18 @@ public static class StorageTransportMoveService
 
     private static async Task<JsonNodeRead> ReadNodeAsync(FileSystemManager fs, string path, string unavailableMessage)
     {
-        var raw = await fs.ReadFileAsync(path);
+        return await ReadNodeAsync(fs, writeLease: null, path, unavailableMessage);
+    }
+
+    private static async Task<JsonNodeRead> ReadNodeAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path,
+        string unavailableMessage)
+    {
+        var raw = writeLease == null
+            ? await fs.ReadFileAsync(path)
+            : await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(raw))
             return JsonNodeRead.Failed(unavailableMessage);
 
@@ -636,6 +706,15 @@ public static class StorageTransportMoveService
 
     private static string FirstNonEmpty(params string[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
+
+    private static Task WriteAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        string path,
+        string content) =>
+        writeLease == null
+            ? fs.WriteFileAtomicAsync(path, content)
+            : fs.WriteFileAtomicAsync(writeLease, path, content);
 
     private sealed record JsonNodeRead(bool Success, JsonNode? Node, string Message)
     {

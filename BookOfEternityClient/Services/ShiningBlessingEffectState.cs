@@ -399,6 +399,56 @@ internal static class ShiningBlessingEffectState
         return true;
     }
 
+    internal static async Task<bool> ConsumeRelicRerollsAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        int currentTurnNumber,
+        int rerollsToConsume)
+    {
+        if (rerollsToConsume <= 0)
+            return true;
+
+        var raw = await fs.ReadFileAsync(writeLease, "game_state/meta/soul_state.json");
+        JsonObject? soulRoot;
+        try
+        {
+            soulRoot = string.IsNullOrWhiteSpace(raw)
+                ? null
+                : JsonNode.Parse(raw) as JsonObject;
+        }
+        catch
+        {
+            soulRoot = null;
+        }
+
+        if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
+            effectState["relicRefinementEntitlements"] is not JsonObject entitlements ||
+            !IsPendingRelicEntitlement(entitlements))
+        {
+            return false;
+        }
+
+        var rerollsRemaining = Math.Max(0, GetNodeInt(entitlements["rerolls"], 0));
+        if (rerollsRemaining < rerollsToConsume)
+            return false;
+
+        entitlements["rerolls"] = rerollsRemaining - rerollsToConsume;
+        entitlements["rerollsSpent"] = GetNodeInt(entitlements["rerollsSpent"], 0) + rerollsToConsume;
+        if (GetNodeInt(entitlements["rerolls"], 0) <= 0 &&
+            !GetNodeBool(entitlements["freeShape"]) &&
+            !GetNodeBool(entitlements["freeRetune"]))
+        {
+            MarkConsumed(entitlements, currentTurnNumber);
+        }
+
+        soulRoot[SoulStateProperty] = effectState;
+        await fs.WriteFileAtomicAsync(
+            writeLease,
+            "game_state/meta/soul_state.json",
+            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
+        return true;
+    }
+
     public static ShiningAbodeState.ResourceCost AdjustForgeCostForBlessingEntitlements(
         JsonObject? soulRoot,
         string? actionType,

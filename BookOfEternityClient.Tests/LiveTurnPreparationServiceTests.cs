@@ -80,7 +80,7 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
 
         foreach (var (logicalPath, snapshotPath) in manifest.Files)
         {
-            var content = await _fs.ReadFileAsync(snapshotPath);
+            var content = await _fs.ReadFileBytesAsync(snapshotPath);
             Assert.NotNull(content);
             Assert.True(manifest.SnapshotFileHashes.TryGetValue(logicalPath, out var expectedHash));
             Assert.Equal(expectedHash, PendingTurnSnapshotAuthority.ComputeSha256(content!));
@@ -182,6 +182,88 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts()
+    {
+        await WriteCanonicalAndGeneratedHarnessFilesAsync();
+        await using (var generationLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.GetOrCreateSessionGeneration(generationLease);
+
+        var preparationReachedPublication = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var releasePreparation = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var replacementContended = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var replacementFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                }
+            });
+        var service = new LiveTurnPreparationService(
+            _fs,
+            new LiveTurnPreparationServiceHooks
+            {
+                BeforePublicationAsync = async () =>
+                {
+                    preparationReachedPublication.TrySetResult();
+                    await releasePreparation.Task;
+                }
+            });
+
+        var preparationTask = service.PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "old-live-session",
+            RequestId = "old-live-request",
+            TurnNumber = 4,
+            PlayerAction = "Продолжить старый ход.",
+            PreGeneratedDices1d20 = new[] { 12, 7, 19 }
+        });
+        await preparationReachedPublication.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        var replacementTask = Task.Run(async () =>
+        {
+            await using var lifecycleLease = await replacementFs.AcquireSessionLifecycleLeaseAsync();
+            await using var replacementLease =
+                await replacementFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
+            replacementFs.RotateSessionGeneration(replacementLease);
+            replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.TurnRequestPath);
+            replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            replacementFs.DeleteFile(replacementLease, PendingTurnSnapshotAuthority.AuthorityPath);
+            replacementFs.DeleteDirectoryTree(
+                replacementLease,
+                LiveTurnPreparationService.PendingTurnSnapshotDirectory);
+            await replacementFs.WriteFileAtomicAsync(
+                replacementLease,
+                "game_state/core/replacement_marker.json",
+                """{"session":"replacement"}""");
+        });
+
+        await Task.WhenAny(replacementTask, replacementContended.Task)
+            .WaitAsync(TimeSpan.FromSeconds(10));
+        releasePreparation.TrySetResult();
+
+        var preparationFailure = await Record.ExceptionAsync(
+            () => preparationTask.WaitAsync(TimeSpan.FromSeconds(10)));
+        Assert.True(
+            preparationFailure is null or SessionReplacedException,
+            preparationFailure?.ToString());
+        await replacementTask.WaitAsync(TimeSpan.FromSeconds(10));
+
+        Assert.True(_fs.FileExists("game_state/core/replacement_marker.json"));
+        Assert.False(_fs.FileExists(LiveTurnPreparationService.TurnRequestPath));
+        Assert.False(_fs.FileExists(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+        Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        Assert.False(Directory.Exists(_fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotDirectory)));
+    }
+
+    [Fact]
     public void LauncherAndQuickstartDocumentPrepareTurnCommand()
     {
         var launcher = ReadRepoFile("BookOfEternityClient/Launcher/bookofeternity.ps1");
@@ -225,7 +307,7 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/control/gm_trajectory_ledger.jsonl", """{"turn":1}""");
         await _fs.WriteFileAtomicAsync("game_state/control/validation_repair_request.json", """{"issues":[]}""");
         await _fs.WriteFileAtomicAsync("game_state/control/terminal_protocol_failure_request.json", """{"failure":true}""");
-        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot/game_state/./meta/soul_state.json", """{"stale":true}""");
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", """{"stale":true}""");
     }
 
     private async Task WriteAfterlifeActiveConflictStateAsync()
@@ -342,18 +424,18 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile,
+            ReadRelativeFileBytes,
             out _,
             out failureCode);
 
-    private string? ReadRelativeFile(string relativePath)
+    private byte[]? ReadRelativeFileBytes(string relativePath)
     {
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
         var fullPath = _fs.ResolvePath(relativePath);
         return File.Exists(fullPath)
-            ? File.ReadAllText(fullPath, Encoding.UTF8)
+            ? File.ReadAllBytes(fullPath)
             : null;
     }
 

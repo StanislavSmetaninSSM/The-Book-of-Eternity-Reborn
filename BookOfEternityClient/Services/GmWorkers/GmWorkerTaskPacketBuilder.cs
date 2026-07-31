@@ -1,4 +1,6 @@
 using BookOfEternityClient.Services;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -10,7 +12,9 @@ public static class GmWorkerTaskPacketBuilder
         WorkerTurnReference sourceTurn,
         IReadOnlyList<ValidationIssue> validationIssues,
         IReadOnlyDictionary<string, string> contextFileHashes,
-        string createdAtUtc)
+        string createdAtUtc,
+        string sessionGeneration,
+        WorkerAfterlifeTaskContract? afterlifeContract = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -19,29 +23,111 @@ public static class GmWorkerTaskPacketBuilder
             throw new ArgumentException("Worker profile cannot handle validation-repair tasks.", nameof(profile));
         if (validationIssues.Count == 0)
             throw new ArgumentException("At least one validation issue is required.", nameof(validationIssues));
+        var duplicateContextHashPath = contextFileHashes.Keys
+            .GroupBy(path => path, GmWorkerContractValidator.CanonicalPathComparer)
+            .FirstOrDefault(group => group.Count() > 1)?.Key;
+        if (duplicateContextHashPath != null)
+        {
+            throw new ArgumentException(
+                $"contextFileHashes contains duplicate canonical path: {duplicateContextHashPath}",
+                nameof(contextFileHashes));
+        }
+
+        ValidateMortalContinuityDispatchPolicy(validationIssues);
+        ValidateRealmIsolationBeforeFiltering(validationIssues);
+
+        var requiresCharacteristicAuthority = validationIssues.Any(issue => string.Equals(
+            issue.Code,
+            "npc_characteristics_empty",
+            StringComparison.OrdinalIgnoreCase));
+        var requiresAfterlifeRealmAuthority = afterlifeContract != null;
+        if (requiresCharacteristicAuthority &&
+            (!TryGetPathHash(contextFileHashes, MortalCharacteristicAuthorityContract.StatePath, out var authorityHash) ||
+             string.IsNullOrWhiteSpace(authorityHash) ||
+             string.Equals(authorityHash, "missing", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException(
+                $"Characteristics repair requires hash-pinned setting authority at {MortalCharacteristicAuthorityContract.StatePath}.",
+                nameof(contextFileHashes));
+        }
+        if (requiresAfterlifeRealmAuthority &&
+            (!TryGetPathHash(contextFileHashes, AfterlifeRealmAuthorityContract.StatePath, out var realmAuthorityHash) ||
+             string.IsNullOrWhiteSpace(realmAuthorityHash) ||
+             string.Equals(realmAuthorityHash, "missing", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException(
+                $"Afterlife repair requires hash-pinned realm authority at {AfterlifeRealmAuthorityContract.StatePath}.",
+                nameof(contextFileHashes));
+        }
 
         var allowedPaths = validationIssues
-            .Select(issue => issue.FilePath.Replace('\\', '/'))
+            .Select(ResolveValidationTargetPath)
             .Where(GmWorkerContractValidator.IsSafeRelativePath)
             .Where(path => profile.Permissions.ProposalWritePaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, path)))
-            .Distinct(StringComparer.Ordinal)
-            .Order(StringComparer.Ordinal)
+            .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+            .Order(GmWorkerContractValidator.CanonicalPathComparer)
             .ToArray();
 
         if (allowedPaths.Length == 0)
             throw new ArgumentException("Validation issues do not map to any safe worker proposal path.", nameof(validationIssues));
+        if (requiresAfterlifeRealmAuthority &&
+            allowedPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, GmWorkerContractValidator.CanonicalPathComparer))
+        {
+            throw new ArgumentException(
+                $"Afterlife realm authority is read-only and cannot be a repair proposal target: {AfterlifeRealmAuthorityContract.StatePath}.",
+                nameof(validationIssues));
+        }
+        if (requiresCharacteristicAuthority &&
+            allowedPaths.Contains(MortalCharacteristicAuthorityContract.StatePath, GmWorkerContractValidator.CanonicalPathComparer))
+        {
+            throw new ArgumentException(
+                $"Mortal characteristic authority is read-only and cannot be a repair proposal target: {MortalCharacteristicAuthorityContract.StatePath}.",
+                nameof(validationIssues));
+        }
 
-        var contextFiles = allowedPaths
+        var contextPaths = allowedPaths.AsEnumerable();
+        if (requiresCharacteristicAuthority)
+            contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
+        if (requiresAfterlifeRealmAuthority)
+            contextPaths = contextPaths.Append(AfterlifeRealmAuthorityContract.StatePath);
+        var contextFiles = contextPaths
+            .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
+            .Order(GmWorkerContractValidator.CanonicalPathComparer)
             .Select(path => new WorkerFileReference
             {
                 Path = path,
-                Sha256 = contextFileHashes.TryGetValue(path, out var hash) ? hash : ""
+                Sha256 = TryGetPathHash(contextFileHashes, path, out var hash) ? hash : ""
             })
             .ToArray();
+        var acceptanceCriteria = new List<string>
+        {
+            "Return a worker-proposal-v1 JSON proposal.",
+            "Include changedFiles only for allowedProposalPaths.",
+            "Validation must pass after the apply gate applies proposed changes.",
+            "For actor materialization repair, preserve protected actor data and change only the exact actor/section coordinates carried by validationIssues.",
+            "For Mortal characteristics repair, use only keys from the hash-pinned read-only setting authority in game_state/misc/characteristics.json.",
+            "Every structured actor characteristic value must be a finite JSON number; strings, booleans, nulls, arrays, objects, NaN, infinity, and exponent overflow are invalid.",
+            "Keep session/request/turn metadata tied to sourceTurn."
+        };
+        var forbiddenActions = new List<string>
+        {
+            "Do not edit canonical game_session files directly.",
+            "Do not write outside allowedProposalPaths.",
+            "Do not rewrite untargeted actor fields, untargeted actors, or unrelated canonical root data.",
+            "Do not create terminal signals or validation ready files manually."
+        };
+        if (requiresAfterlifeRealmAuthority)
+        {
+            acceptanceCriteria.Add(
+                "For afterlife repair, obey the hash-pinned read-only realm authority in game_state/meta/soul_state.json.");
+            forbiddenActions.Add(
+                "Do not propose changes to game_state/meta/soul_state.json; it is read-only realm authority.");
+        }
 
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = WorkerTaskType.ValidationRepair,
@@ -52,26 +138,22 @@ public static class GmWorkerTaskPacketBuilder
             {
                 Code = string.IsNullOrWhiteSpace(issue.Code) ? "validation_issue" : issue.Code!,
                 Path = issue.FilePath.Replace('\\', '/'),
-                Message = issue.Message
+                Message = issue.Message,
+                Actor = issue.Actor,
+                Section = issue.Section,
+                Expected = issue.Expected,
+                Actual = issue.Actual
             }).ToArray(),
             ContextFiles = contextFiles,
+            AfterlifeContract = afterlifeContract,
             AllowedProposalPaths = allowedPaths,
-            AcceptanceCriteria =
-            [
-                "Return a worker-proposal-v1 JSON proposal.",
-                "Include changedFiles only for allowedProposalPaths.",
-                "Validation must pass after the apply gate applies proposed changes.",
-                "Keep session/request/turn metadata tied to sourceTurn."
-            ],
-            ForbiddenActions =
-            [
-                "Do not edit canonical game_session files directly.",
-                "Do not write outside allowedProposalPaths.",
-                "Do not create terminal signals or validation ready files manually."
-            ],
+            AcceptanceCriteria = acceptanceCriteria,
+            ForbiddenActions = forbiddenActions,
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal. Include changedFiles only for allowedProposalPaths. " +
-                "Do not edit canonical game_session files directly."
+                "Use validationIssues actor/section/expected/actual coordinates as the exact repair scope. " +
+                "Do not edit canonical game_session files directly." +
+                BuildAfterlifeInstructions(afterlifeContract, validationRepair: true)
         };
 
         var taskValidation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
@@ -81,13 +163,212 @@ public static class GmWorkerTaskPacketBuilder
         return task;
     }
 
+    private static bool TryGetPathHash(
+        IReadOnlyDictionary<string, string> contextFileHashes,
+        string path,
+        out string hash)
+    {
+        foreach (var entry in contextFileHashes)
+        {
+            if (!GmWorkerContractValidator.CanonicalPathComparer.Equals(entry.Key, path))
+                continue;
+
+            hash = entry.Value;
+            return true;
+        }
+
+        hash = string.Empty;
+        return false;
+    }
+
+    internal static string ResolveValidationTargetPath(ValidationIssue issue)
+    {
+        var actorMaterializationAuthority = ResolveActorMaterializationAuthorityPath(issue);
+        if (actorMaterializationAuthority != null)
+            return actorMaterializationAuthority;
+
+        var code = issue.Code ?? string.Empty;
+        var actor = issue.Actor ?? string.Empty;
+        var normalized = issue.FilePath.Replace('\\', '/');
+        var jsonlEnd = FindExtensionEnd(normalized, ".jsonl");
+        var jsonEnd = FindExtensionEnd(normalized, ".json");
+        var end = jsonlEnd >= 0 ? jsonlEnd : jsonEnd;
+        var filePath = end >= 0 ? normalized[..end] : normalized;
+        if (code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase) &&
+            GmWorkerContractValidator.IsSafeRelativePath(filePath))
+        {
+            return filePath;
+        }
+
+        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal) &&
+            code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase))
+        {
+            return "game_state/npcs/npc_core.json";
+        }
+
+        return filePath;
+    }
+
+    internal static string? ResolveActorMaterializationAuthorityPath(ValidationIssue issue)
+    {
+        var code = issue.Code ?? string.Empty;
+        if ((code is "npc_existing_inventory_resend_forbidden" or "npc_characteristics_empty") &&
+            issue.Actor?.StartsWith("mortal_npc:", StringComparison.Ordinal) == true)
+        {
+            return "game_state/npcs/npc_core.json";
+        }
+
+        if (!code.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var actor = issue.Actor ?? string.Empty;
+        if (actor.StartsWith("mortal_npc:", StringComparison.Ordinal))
+            return "game_state/npcs/npc_core.json";
+        if (code is "afterlife_actor_materialization_profile_missing" or
+            "afterlife_actor_materialization_profile_ambiguous")
+        {
+            return AfterlifeEntityProfileState.StatePath;
+        }
+
+        if (!string.Equals(
+                code,
+                "afterlife_actor_materialization_memory_missing",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (actor.StartsWith("guardian:", StringComparison.Ordinal))
+            return GuardianThoughtJournalState.StatePath;
+        if (actor.StartsWith("resident:", StringComparison.Ordinal))
+            return GuardianAbodeResidentState.StatePath;
+        if (actor.StartsWith("radiant_actor:", StringComparison.Ordinal) ||
+            actor.StartsWith("saref_agent:", StringComparison.Ordinal) ||
+            actor.Contains(':', StringComparison.Ordinal))
+        {
+            return AfterlifeEntityProfileState.StatePath;
+        }
+
+        return null;
+    }
+
+    private static void ValidateMortalContinuityDispatchPolicy(
+        IReadOnlyList<ValidationIssue> validationIssues)
+    {
+        if (validationIssues.Any(issue => IsMainGmOnlyNpcCoreAuthorityIssue(issue.Code)))
+        {
+            throw new ArgumentException(
+                "NPCCoreChanges and direct NPC core-authority repairs require the main GM rollback/repair path.",
+                nameof(validationIssues));
+        }
+
+        foreach (var issue in validationIssues)
+        {
+            if (!TryGetMortalContinuitySection(issue.Code, out var expectedSection))
+                continue;
+
+            var actor = issue.Actor ?? string.Empty;
+            if (!actor.StartsWith("mortal_npc:", StringComparison.Ordinal) ||
+                actor.Length == "mortal_npc:".Length ||
+                !string.Equals(issue.Section, expectedSection, StringComparison.Ordinal))
+            {
+                throw new ArgumentException(
+                    $"{issue.Code} requires exact Mortal actor and section metadata; use the main GM rollback/repair path.",
+                    nameof(validationIssues));
+            }
+        }
+
+        if (validationIssues.Any(issue => string.Equals(
+                issue.Code,
+                "npc_initial_id_collides_with_existing_permanent_id",
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException(
+                "NPC identity collisions require the main GM rollback/repair path.",
+                nameof(validationIssues));
+        }
+
+        if (validationIssues.Any(issue =>
+                string.Equals(
+                    issue.Code,
+                    "npc_existing_inventory_resend_forbidden",
+                    StringComparison.OrdinalIgnoreCase) &&
+                !IsExactInventorySnapshot(issue.Expected)))
+        {
+            throw new ArgumentException(
+                "Existing-NPC inventory repair without an exact validated pre-turn snapshot requires the main GM rollback/repair path.",
+                nameof(validationIssues));
+        }
+    }
+
+    private static bool IsMainGmOnlyNpcCoreAuthorityIssue(string? code) =>
+        code?.StartsWith("npc_core_changes_", StringComparison.OrdinalIgnoreCase) == true ||
+        string.Equals(
+            code,
+            "npc_existing_core_direct_mutation_forbidden",
+            StringComparison.OrdinalIgnoreCase);
+
+    private static void ValidateRealmIsolationBeforeFiltering(
+        IReadOnlyList<ValidationIssue> validationIssues)
+    {
+        var targetPaths = validationIssues
+            .Select(ResolveValidationTargetPath)
+            .ToArray();
+        if (targetPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) &&
+            targetPaths.Any(GmWorkerContractValidator.IsMortalWorldStatePath))
+        {
+            throw new ArgumentException(
+                "Mixed Mortal World and afterlife validation repair batches are forbidden; dispatch separate realm-scoped tasks.",
+                nameof(validationIssues));
+        }
+    }
+
+    private static bool TryGetMortalContinuitySection(string? code, out string section)
+    {
+        if (string.Equals(code, "npc_initial_id_collides_with_existing_permanent_id", StringComparison.OrdinalIgnoreCase))
+            section = "NPCIdentity";
+        else if (string.Equals(code, "npc_existing_inventory_resend_forbidden", StringComparison.OrdinalIgnoreCase))
+            section = "NPCInventory";
+        else if (string.Equals(code, "npc_characteristics_empty", StringComparison.OrdinalIgnoreCase))
+            section = "NPCCharacteristics";
+        else
+        {
+            section = string.Empty;
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool IsExactInventorySnapshot(string? expected)
+    {
+        if (string.IsNullOrWhiteSpace(expected))
+            return false;
+
+        try
+        {
+            return JsonNode.Parse(expected) is JsonArray;
+        }
+        catch (Exception exception) when (exception is JsonException or ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    private static int FindExtensionEnd(string path, string extension)
+    {
+        var index = path.IndexOf(extension, StringComparison.OrdinalIgnoreCase);
+        return index < 0 ? -1 : index + extension.Length;
+    }
+
     public static WorkerTaskPacket BuildNarrativeDraftTask(
         WorkerBridgeProfile profile,
         string taskId,
         WorkerTurnReference sourceTurn,
         WorkerDraftRequest draftRequest,
         IReadOnlyList<WorkerFileReference> contextFiles,
-        string createdAtUtc)
+        string createdAtUtc,
+        string sessionGeneration)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
@@ -100,6 +381,7 @@ public static class GmWorkerTaskPacketBuilder
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = WorkerTaskType.NarrativeDraft,
@@ -142,6 +424,7 @@ public static class GmWorkerTaskPacketBuilder
         IReadOnlyList<string> questions,
         IReadOnlyList<WorkerFileReference> contextFiles,
         string createdAtUtc,
+        string sessionGeneration,
         WorkerAfterlifeTaskContract? afterlifeContract = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
@@ -161,6 +444,7 @@ public static class GmWorkerTaskPacketBuilder
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = WorkerTaskType.Analysis,
@@ -207,6 +491,7 @@ public static class GmWorkerTaskPacketBuilder
         WorkerContentAuthoringRequest authoringRequest,
         IReadOnlyList<WorkerFileReference> contextFiles,
         string createdAtUtc,
+        string sessionGeneration,
         WorkerAfterlifeTaskContract? afterlifeContract = null,
         WorkerGuardianAbodeRequest? guardianAbodeRequest = null,
         WorkerSoulContentRequest? soulContentRequest = null)
@@ -236,6 +521,7 @@ public static class GmWorkerTaskPacketBuilder
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
+            SessionGeneration = sessionGeneration,
             WorkerId = profile.WorkerId,
             Role = profile.Role,
             TaskType = taskType,
@@ -324,7 +610,9 @@ public static class GmWorkerTaskPacketBuilder
         ]).ToArray();
     }
 
-    private static string BuildAfterlifeInstructions(WorkerAfterlifeTaskContract? afterlifeContract)
+    private static string BuildAfterlifeInstructions(
+        WorkerAfterlifeTaskContract? afterlifeContract,
+        bool validationRepair = false)
     {
         if (afterlifeContract == null)
             return "";
@@ -339,7 +627,10 @@ public static class GmWorkerTaskPacketBuilder
             $"- requiredReceipts: {FormatList(afterlifeContract.RequiredReceipts)}" + Environment.NewLine +
             $"- requiredReports: {FormatList(afterlifeContract.RequiredReports)}" + Environment.NewLine +
             $"- forbiddenMortalSubstitutes: {FormatList(afterlifeContract.ForbiddenMortalSubstitutes)}" + Environment.NewLine +
-            "Return afterlifeProposal when this contract is present. Use Afterlife_Contract_Matrix.md for exact state-surface meaning.";
+            (validationRepair
+                ? "For this bounded validation-repair task, changedFiles must stay inside allowedAfterlifeSurfaces and afterlifeProposal is optional. "
+                : "Return afterlifeProposal when this contract is present. ") +
+            "Use Afterlife_Contract_Matrix.md for exact state-surface meaning.";
     }
 
     private static IReadOnlyList<string> BuildGuardianAbodeAcceptanceCriteria(

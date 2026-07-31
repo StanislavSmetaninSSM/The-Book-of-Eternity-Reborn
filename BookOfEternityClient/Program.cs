@@ -8,12 +8,20 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
 
 // ═══════════════════════════════════════════════════
 // 📖 The Book of Eternity: Reborn - C# Client
 // ═══════════════════════════════════════════════════
+
+var workerProcessHostExitCode = await GmWorkerProcessHost.TryRunAsync(args);
+if (workerProcessHostExitCode.HasValue)
+{
+    Environment.ExitCode = workerProcessHostExitCode.Value;
+    return;
+}
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 // On Windows, use Unicode (UTF-16) for input to force ReadConsoleW (native Unicode API).

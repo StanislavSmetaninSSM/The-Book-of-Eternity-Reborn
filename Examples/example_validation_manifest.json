@@ -1,5 +1,43 @@
 {
   "version": 1,
+  "mortalActorMaterializationCoverage": [
+    {
+      "contractId": "mortal_actor_materialization_v1",
+      "file": "E_CLI_Step_Main.txt",
+      "statePath": "game_state/npcs/npc_core.json",
+      "responseSurface": "NPCsInScene[].materialization / UpdateNPCs[].materialization",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "First significant Mortal NPC carries a complete setting-neutral full object, 3-5 integer-valued personality traits, immutable exact identity envelope, structured capability truth, explicit section dispositions, and later changes use dedicated deltas or bounded NPCCoreChanges instead of prose or genre inference.",
+      "validationKind": "production-validator",
+      "validationRoute": "PromptDocumentationCoverageTests.MortalActorMaterializationWorkedExample_PassesProductionNpcContract -> ValidationService.ValidateResponse -> ValidateNpcContract -> ValidateNpcCoreObjectShape and ActorMaterializationContract.ValidateMortalNpc",
+      "coverageLimit": "Validates the extracted GameResponse-shaped NPCsInScene fragment through the production response validator; it does not claim StateDistributor or accepted-turn cross-file validation."
+    }
+  ],
+  "mortalNpcCoreChangesCoverage": [
+    {
+      "contractId": "mortal_npc_core_changes_v1",
+      "file": "E_CLI_Step_Main.txt",
+      "statePath": "game_state/npcs/npc_core.json",
+      "responseSurface": "NPCCoreChanges[]",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "Two focused ordinary-existing examples use exact permanent NPCId, non-empty reason, absolute profile/location/progression/setting-owned characteristic values, exact faction affiliation upserts, and locked/unrealized Fate Card definition add/remove groups.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "These snippets intentionally demonstrate bounded command payloads without inventing the validated pre-turn actor, location, faction, characteristic-authority, and locked Fate Card fixtures required for accepted-turn reduction. Production validator, reducer, mirror, and command-consumption coverage belongs to NpcCoreChangesTests.",
+      "coverageLimit": "Documentation tests parse the fragments, require the real GameResponse field, and enforce exact contract vocabulary; they do not claim accepted-turn reducer execution.",
+      "requiredText": [
+        "npc_liana_voss_permanent_01",
+        "location_orbital_archive_lab",
+        "\"field_observation\": 15",
+        "faction_orbital_research_union",
+        "fate_orbital_responsible_contact",
+        "fate_liana_obsolete_hypothesis"
+      ]
+    }
+  ],
   "trainingShowcaseCoverage": [
     {
       "contractId": "training_showcases_v1",
@@ -36,7 +74,7 @@
       "file": "E_CLI_GM_Worker_Validation_Repair.txt",
       "statePath": "game_state/control/gm_worker_audit.jsonl",
       "responseSurface": "worker-proposal-v1 / apply gate",
-      "description": "Hidden/background validation-repair worker profile, live validation failure dispatch, scoped task packet, proposal contentRef, apply gate validation, client-created validation_repair_ready signal, proposal-applied/validation-repair-ready-created audit events, fallback to legacy repair request, and no direct worker writes to canonical game_session files."
+      "description": "Hidden/background validation-repair worker profile, detached .worker_runtime execution snapshot with only pinned context, exact digest verification, create-only task reservation, complete proposal bundle publication through one atomic directory rename bound to the durable external session generation, one atomic cancellation/publication transition that leaves no applyable bundle when cancellation wins and preserves the complete durable bundle when publication wins, stale handoff invalidation on load/New Game, mandatory explicit proposal status whose omission is invalid, exact read-only setting and Soul authority, every game_state/meta target classified as afterlife, production ValidationService required by the apply gate with exact-byte rollback on full-state validation failure, one external canonical write lease through publication/validation/decision/save/load/recovery/refresh, durable interrupted-load and worker-apply recovery journals, timeout/cancellation-aware attach-before-launch hidden process host, parent-created private current-user named control/status pipe servers with unique endpoint names, endpoint-and-nonce-only host arguments, parent-side client PID authentication of the exact hidden host before the typed Launch payload, host-owned channels never passed to the configured worker, strict typed Ready/Release/Completed/OutputDrained frames, no worker-accessible marker files, a proposal applyable only after confirmed zero exit and confirmed process-tree termination, failed execution output that must not be imported, explicit OutputDrained acknowledgement after bounded output capture, supported Windows Job Object cancellation with fail-closed unsupported platforms, authoritative timeout/cancellation, bounded cleanup, and slot quarantine when complete-tree exit is unconfirmed, client-created validation_repair_ready signal, collision-safe shared UTC-millisecond plus GUID audit event IDs, proposal-applied/validation-repair-ready-created audit events, and fallback to legacy repair request."
     },
     {
       "contractId": "gm_worker_narrative_draft_v1",
@@ -90,6 +128,49 @@
   ],
   "afterlifeEntityProfileCoverage": [
     {
+      "contractId": "afterlife_actor_materialization_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityProfileUpdates[].materialization",
+      "realms": [
+        "Chaos Sea"
+      ],
+      "acceptedActorTypes": [
+        "guardian",
+        "resident",
+        "shining_resident",
+        "shining_faction_head",
+        "radiant_actor",
+        "saref_agent",
+        "system_actor",
+        "custom_afterlife_actor"
+      ],
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeDocumentationCoverageTests.AfterlifeActorMaterializationWorkedExample_PassesExecutableContract -> ValidationService.ValidateResponse + ActorMaterializationContract.ValidateAfterlifeProfile",
+      "coverageLimit": "Validates the extracted GameResponse-shaped Chaos Sea profile through the production response validator and the exact actor materialization contract; it does not claim accepted-turn cross-file binding or StateDistributor execution.",
+      "description": "First significant afterlife actor profile carries an immutable exact identity envelope, capability truth, complete section dispositions, actor-owned memory, real goals/quests/activity agency, exact current abode Guardian trade authority or secure/contested operational Shining head trade tier authority, and bounded repairs that preserve protected actor data. The first envelope on an existing profile revalidates actor-owned memory; a common-profile repair changes only the exact actor's gmThoughtsSummary. canTeach=true requires a positive teachable tier or cap. Physical resident removal requires the exact validated no-target departure_only request, departed_only receipt, and departure history chain. Shared player projections hide gmOnly, secret/non-player-visible, and system profiles unless explicit diagnostics are enabled."
+    },
+    {
+      "contractId": "afterlife_actor_materialization_shining_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityProfileUpdates[].materialization for an exact non-player Shining faction head",
+      "realms": [
+        "Shining Abode"
+      ],
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeDocumentationCoverageTests.ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract -> ValidationService.ValidateResponse + ValidateAcceptedTurnActorMaterializationCompletenessAsync -> ValidateAcceptedTurnAfterlifeActorProfileBindingsAsync -> ActorMaterializationContract.ValidateAfterlifeProfile",
+      "coverageLimit": "Validates the extracted profile against exact current and validated pre-turn Shining faction-head and trade authority through the production accepted-turn binding path; it does not claim StateDistributor or the complete accepted-turn lifecycle.",
+      "description": "A complete Shining Abode faction-head profile binds exact structured leadership authority, actor-owned memory, agency, progression history, and realm-local positive trade capability without title, prose, or genre inference."
+    },
+    {
+      "contractId": "afterlife_actor_profile_binding_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "guardian/resident/shining_resident/shining_faction_head/radiant_actor/saref_agent/system_actor/custom_afterlife_actor identity -> exact profiles actorType + actorId when source authority exists",
+      "description": "Source actors bind to exactly one complete profile without display-name, prose, role, or genre inference; actor newness comes only from the validated pre-turn baseline, first-envelope transitions use Guardian/resident dedicated journals or exact common-profile memory, and malformed current source authority is repair-blocking. Physical resident removal is allowed only for an exact validated no-target departure_only pending transfer with a departed_only receipt and referenced departure history. canTeach=true requires a positive teachable tier or cap. Shared console/browser views hide gmOnly, secret/non-player-visible, and system profiles unless explicit diagnostics are enabled; player_soul and vacant leadership remain explicit exceptions."
+    },
+    {
       "contractId": "afterlife_entity_profiles_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
@@ -127,7 +208,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "fateCards[] / afterlifeFateCardUnlocks",
-      "description": "Afterlife Fate Cards for Guardians and other afterlife actors: locked cards cannot grant effects, unlocks require evidence, appliedAtTurn, and guardian/player/political/combat/training effect arrays."
+      "description": "Afterlife Fate Cards for Guardians and other afterlife actors: locked cards cannot grant effects, unlocks require evidence, appliedAtTurn, and guardian/player/political/combat/training effect arrays. Shared Block 5 Combat Action effects embedded by afterlife items, relics, or inherited skills retain required percentage-string value and type-specific fields."
     },
     {
       "contractId": "afterlife_entity_auto_progression_v1",

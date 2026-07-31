@@ -155,7 +155,49 @@ public partial class CanonicalStateNormalizer
         if (string.Equals(currentJson, resultJson, StringComparison.Ordinal))
             return;
 
-        await _fs.WriteFileAtomicAsync(path, resultJson);
+        await WriteCanonicalFileAtomicAsync(path, resultJson);
+    }
+
+    private Task<string?> ReadCanonicalFileAsync(string path) =>
+        _writeLease == null
+            ? _fs.ReadFileAsync(path)
+            : _fs.ReadFileAsync(_writeLease, path);
+
+    private Task WriteCanonicalFileAtomicAsync(string path, string content) =>
+        _writeLease == null
+            ? _fs.WriteFileAtomicAsync(path, content)
+            : _fs.WriteFileAtomicAsync(_writeLease, path, content);
+
+    private bool CanonicalFileExists(string path) =>
+        _writeLease == null
+            ? _fs.FileExists(path)
+            : _fs.FileExists(_writeLease, path);
+
+    internal async Task<string?> ReadBackupTextAsync(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return null;
+
+        var candidate = path.Trim();
+        if (!Path.IsPathFullyQualified(candidate))
+            return await ReadCanonicalFileAsync(candidate.Replace('\\', '/'));
+
+        var absolutePath = Path.GetFullPath(candidate);
+        var relativePath = Path.GetRelativePath(
+            Path.GetFullPath(_fs.BasePath),
+            absolutePath);
+        if (!Path.IsPathRooted(relativePath) &&
+            !string.Equals(relativePath, "..", StringComparison.Ordinal) &&
+            !relativePath.StartsWith($"..{Path.DirectorySeparatorChar}", StringComparison.Ordinal) &&
+            !relativePath.StartsWith($"..{Path.AltDirectorySeparatorChar}", StringComparison.Ordinal))
+        {
+            return await ReadCanonicalFileAsync(relativePath.Replace('\\', '/'));
+        }
+
+        if (!File.Exists(absolutePath))
+            return null;
+
+        return await File.ReadAllTextAsync(absolutePath);
     }
 
     private static string? GetNodeString(JsonNode? node)

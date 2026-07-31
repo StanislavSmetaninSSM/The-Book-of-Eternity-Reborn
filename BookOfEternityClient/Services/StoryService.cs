@@ -55,13 +55,11 @@ public class StoryService
             };
 
             var line = JsonSerializer.Serialize(entry, JsonOpts);
-            var fullPath = _fs.ResolvePath(path);
-
-            var dir = Path.GetDirectoryName(fullPath);
-            if (dir != null && !Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            await File.AppendAllTextAsync(fullPath, line + "\n", Encoding.UTF8);
+            await _fs.AppendFileAtomicAsync(path, line + "\n");
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -88,13 +86,11 @@ public class StoryService
             };
 
             var line = JsonSerializer.Serialize(entry, JsonOpts);
-            var fullPath = _fs.ResolvePath(path);
-
-            var dir = Path.GetDirectoryName(fullPath);
-            if (dir != null && !Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            await File.AppendAllTextAsync(fullPath, line + "\n", Encoding.UTF8);
+            await _fs.AppendFileAtomicAsync(path, line + "\n");
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

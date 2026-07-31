@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -947,14 +948,28 @@ public partial class GameEngine
             pendingGuardianCreation = _systemGuardianLibraryService.BuildPendingGuardianCreationNode(selectedPreset, soulName);
         }
 
-        // Step 3: Enter the Chaos Sea — NO character/world description at this point
-        // The mortal world is NOT described at the start. Player enters it later through incarnation.
-        await InitializeChaosSea(soulName, soulFormDescription, pendingGuardianCreation, selectedSystemGuardianPreset);
-
-        // CRITICAL: Wait for the GM to describe the Guardian's abode before entering the loop
-        // Without this, the player sees a blank screen after starting a new game
-        if (!await WaitForGmResponse())
+        try
+        {
+            // Step 3: Enter the Chaos Sea — NO character/world description at this point.
+            // The same immutable generation owns bootstrap and the first GM response.
+            var sessionGeneration = await InitializeChaosSea(
+                soulName,
+                soulFormDescription,
+                pendingGuardianCreation,
+                selectedSystemGuardianPreset);
+            var initialTurnAccepted = await SessionOperationContext.RunBoundAsync(
+                _fs, sessionGeneration, WaitForGmResponse);
+            if (!initialTurnAccepted)
+                return;
+        }
+        catch (SessionReplacedException ex)
+        {
+            _logger.LogInformation(
+                ex,
+                "Начальная сессия была заменена во время GM repair; новая сессия сохранена без очистки и rollback старого запуска.");
+            await RebindRuntimeAfterSessionReplacementAsync();
             return;
+        }
 
         // Enter game loop in Chaos Sea phase
         await EnterGameLoop();
@@ -964,7 +979,7 @@ public partial class GameEngine
     /// Initialize a new game in the Chaos Sea (afterlife hub).
     /// No mortal character or world is created yet — that happens when the player incarnates.
     /// </summary>
-    private async Task InitializeChaosSea(
+    private async Task<string> InitializeChaosSea(
         string soulName,
         string soulFormDescription,
         JsonObject pendingGuardianCreation,
@@ -979,14 +994,18 @@ public partial class GameEngine
             pendingGuardianCreation["description"]?.GetValue<string>() ??
             "будущий Хранитель";
         var bootstrapAbodeName = selectedSystemGuardianPreset?.AbodeName ?? "первая Обитель Хранителя";
+        string sessionGeneration;
+        await using (var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync())
+            sessionGeneration = await _fs.ClearGameStateAsync(lifecycleLease);
+
+        await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        {
 
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots12)
             .SpinnerStyle(Style.Parse("cyan"))
             .Start(_loc.T("soul_awakens"), ctx =>
             {
-                // Clear old state
-                _fs.ClearGameState();
                 _afterlifeArchiveCandidateService.Clear();
 
                 // Initialize soul state — realm is Chaos Sea
@@ -1158,6 +1177,8 @@ public partial class GameEngine
         AnsiConsole.MarkupLine($"[green]🌊 {_loc.T("soul_awakens")}[/]");
         if (darenNewGameGrant?.Granted == true)
             AnsiConsole.MarkupLine($"[green]{Markup.Escape(darenNewGameGrant.PlayerMessage)}[/]");
+        });
+        return sessionGeneration;
     }
 
     private async Task WriteInitialGuardianProjectTrackerStateAsync()
@@ -1178,6 +1199,12 @@ public partial class GameEngine
     /// </summary>
     private async Task HandleIncarnation()
     {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        {
+        await InvokeSessionFinalizationCheckpointAsync(
+            SessionFinalizationCheckpoint.IncarnationOperationBound);
+        await _fs.VerifyCurrentSessionOperationAsync();
         SpectreConsoleSafe.Clear();
 
         // Soul Gates banner
@@ -1323,6 +1350,7 @@ public partial class GameEngine
         }
 
         await ProcessPlayerTurn(action);
+        });
     }
 
     private async Task<List<string>> CollectIncarnationBlockersAsync()
@@ -3076,6 +3104,15 @@ public partial class GameEngine
     /// Reads: output/narrative_response.json, output/interface_updates.json, output/debug_logs.json
     /// </summary>
 
+    private async Task<bool> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
+    {
+        if (!await _saveLoad.LoadGameAsync(saveFilePath))
+            return false;
+
+        await RebindRuntimeAfterSessionReplacementAsync();
+        return true;
+    }
+
     private async Task LoadGameFlow()
     {
         SpectreConsoleSafe.Clear();
@@ -3123,17 +3160,10 @@ public partial class GameEngine
 
         var saveInfo = allSaves[idx];
 
-        var success = await _saveLoad.LoadGameAsync(saveInfo.FileName);
+        var success = await LoadSelectedSaveAndRebindRuntimeAsync(saveInfo.FileName);
         if (success)
         {
             AnsiConsole.MarkupLine($"[green]{_loc.T("load_success")}[/]");
-
-            if (saveInfo.Metadata != null)
-            {
-                _gameLoop.SetSession(
-                    _stateManager.CurrentState.SessionId,
-                    saveInfo.Metadata.TurnNumber);
-            }
 
             await Task.Delay(1000);
 

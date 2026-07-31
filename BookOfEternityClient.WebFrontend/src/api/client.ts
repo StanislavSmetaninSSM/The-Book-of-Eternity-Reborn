@@ -28,6 +28,7 @@ import type {
   ExplorerPromptSessionSubmitRequest,
   ExplorerWebCommandRequest,
   LocalWebUiSessionStatus,
+  QteInteractionRequest,
   QtePracticeActionRequest,
   QtePracticeStartRequest,
   QtePracticeWebStateDto,
@@ -64,13 +65,13 @@ export interface BrowserApiClient {
   getQtePractice(): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
   startQtePractice(request: QtePracticeStartRequest): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
   resolveQtePracticeAction(request: QtePracticeActionRequest): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
-  retryQtePractice(): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
-  exitQtePractice(): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
+  retryQtePractice(request: QteInteractionRequest): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
+  exitQtePractice(request: QteInteractionRequest): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
   getDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
-  startDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
+  startDarenShowcase(request: QteInteractionRequest): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
   resolveDarenShowcaseAction(request: DarenShowcaseActionRequest): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
-  retryDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
-  exitDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
+  retryDarenShowcase(request: QteInteractionRequest): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
+  exitDarenShowcase(request: QteInteractionRequest): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
   submitPlayerAction(request: BrowserPlayerActionRequest): Promise<BrowserApiResult<BrowserPlayerActionResult>>;
   generateMedia(request: BrowserMediaGenerateRequest): Promise<BrowserApiResult<BrowserMediaGenerateResult>>;
 }
@@ -144,13 +145,13 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
     getQtePractice: () => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice'),
     startQtePractice: (request) => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/start', jsonInit('POST', request)),
     resolveQtePracticeAction: (request) => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/action', jsonInit('POST', request)),
-    retryQtePractice: () => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/retry', jsonInit('POST')),
-    exitQtePractice: () => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/exit', jsonInit('POST')),
+    retryQtePractice: (request) => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/retry', jsonInit('POST', request)),
+    exitQtePractice: (request) => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/exit', jsonInit('POST', request)),
     getDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren'),
-    startDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/start', jsonInit('POST')),
+    startDarenShowcase: (request) => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/start', jsonInit('POST', request)),
     resolveDarenShowcaseAction: (request) => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/action', jsonInit('POST', request)),
-    retryDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/retry', jsonInit('POST')),
-    exitDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/exit', jsonInit('POST')),
+    retryDarenShowcase: (request) => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/retry', jsonInit('POST', request)),
+    exitDarenShowcase: (request) => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/exit', jsonInit('POST', request)),
     submitPlayerAction: (request) => requestJson<BrowserPlayerActionResult>(fetcher, baseUrl, '/api/explorer/player-action', jsonInit('POST', request)),
     generateMedia: (request) => requestJson<BrowserMediaGenerateResult>(fetcher, baseUrl, '/api/media/generate', jsonInit('POST', request))
   };

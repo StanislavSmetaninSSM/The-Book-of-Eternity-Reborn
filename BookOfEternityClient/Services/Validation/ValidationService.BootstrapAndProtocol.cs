@@ -606,14 +606,21 @@ public partial class ValidationService
         }
 
         var validatedManifest = validatedLookup.Manifest;
+        var authorityPayload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync();
+        if (authorityPayload == null)
+            return;
 
         foreach (var (originalPath, snapshotPath) in validatedManifest.Files)
         {
             if (!validatedManifest.SnapshotFileHashes.TryGetValue(originalPath, out var expectedHash) || string.IsNullOrWhiteSpace(expectedHash))
                 continue;
 
-            var currentSnapshotContent = await _fs.ReadFileAsync(snapshotPath);
-            var actualHash = currentSnapshotContent == null ? string.Empty : ComputeSha256(currentSnapshotContent);
+            var currentSnapshotContent = await _fs.ReadFileBytesAsync(snapshotPath);
+            var actualHash = currentSnapshotContent == null
+                ? string.Empty
+                : PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(
+                    authorityPayload,
+                    currentSnapshotContent);
             if (!string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
             {
                 issues.Add(new ValidationIssue(

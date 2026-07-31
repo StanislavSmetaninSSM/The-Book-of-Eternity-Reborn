@@ -4,6 +4,136 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private async Task NormalizeNpcCoreChangesAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        var currentNode = await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath);
+        if (currentNode is not JsonObject currentRoot ||
+            !currentRoot.ContainsKey(NpcCoreChangesContract.PropertyName))
+        {
+            return;
+        }
+
+        var preTurnRoot = await ReadBackupObjectAsync(NpcCoreChangesContract.NpcCorePath, backups);
+        if (preTurnRoot == null)
+            return;
+
+        var result = CloneObject(currentRoot);
+        var authority = await ReadNpcCoreAuthorityAsync();
+        var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
+            result,
+            await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath),
+            await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath));
+        var evaluation = NpcCoreChangesContract.Evaluate(
+            result,
+            preTurnRoot,
+            authority,
+            ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
+            detectDirectMutations: true,
+            acceptedTurnAuthority);
+        if (!evaluation.CanApply)
+            return;
+
+        NpcCoreChangesContract.Apply(result, evaluation);
+        await WriteIfChangedAsync(NpcCoreChangesContract.NpcCorePath, currentNode, result);
+    }
+
+    private async Task<NpcCoreChangesContract.Authority> ReadNpcCoreAuthorityAsync()
+    {
+        var permanentLocationIds = new HashSet<string>(StringComparer.Ordinal);
+        var sameTurnLocationIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var path in new[]
+                 {
+                     "game_state/world/current_location.json",
+                     "game_state/world/world_map.json"
+                 })
+        {
+            CollectNpcLocationAuthority(
+                await ReadNodeAsync(path),
+                permanentLocationIds,
+                sameTurnLocationIds);
+        }
+
+        var factionNamesById = new Dictionary<string, string>(StringComparer.Ordinal);
+        CollectNpcFactionAuthority(
+            await ReadNodeAsync("game_state/factions/faction_core.json"),
+            factionNamesById);
+
+        var characteristicKeys = new HashSet<string>(StringComparer.Ordinal);
+        if (await ReadNodeAsync("game_state/misc/characteristics.json") is JsonObject characteristics)
+        {
+            foreach (var property in characteristics)
+            {
+                if (!property.Key.StartsWith("_", StringComparison.Ordinal) &&
+                    property.Value is JsonValue)
+                {
+                    characteristicKeys.Add(property.Key);
+                }
+            }
+        }
+
+        return new NpcCoreChangesContract.Authority(
+            permanentLocationIds,
+            sameTurnLocationIds,
+            factionNamesById,
+            characteristicKeys);
+    }
+
+    private static void CollectNpcLocationAuthority(
+        JsonNode? node,
+        HashSet<string> permanentIds,
+        HashSet<string> sameTurnIds)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+            {
+                var locationId = GetNodeString(obj["locationId"]);
+                var initialId = GetNodeString(obj["initialId"]);
+                if (!string.IsNullOrWhiteSpace(locationId))
+                    permanentIds.Add(locationId);
+                else if (!string.IsNullOrWhiteSpace(initialId))
+                    sameTurnIds.Add(initialId);
+
+                foreach (var property in obj)
+                    CollectNpcLocationAuthority(property.Value, permanentIds, sameTurnIds);
+                break;
+            }
+            case JsonArray array:
+                foreach (var item in array)
+                    CollectNpcLocationAuthority(item, permanentIds, sameTurnIds);
+                break;
+        }
+    }
+
+    private static void CollectNpcFactionAuthority(
+        JsonNode? node,
+        Dictionary<string, string> factionNamesById)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+            {
+                var factionId = GetNodeString(obj["factionId"]);
+                var factionName = FirstNonEmptyString(
+                    GetNodeString(obj["name"]),
+                    GetNodeString(obj["factionName"]));
+                if (!string.IsNullOrWhiteSpace(factionId) &&
+                    !string.IsNullOrWhiteSpace(factionName))
+                {
+                    factionNamesById.TryAdd(factionId, factionName);
+                }
+
+                foreach (var property in obj)
+                    CollectNpcFactionAuthority(property.Value, factionNamesById);
+                break;
+            }
+            case JsonArray array:
+                foreach (var item in array)
+                    CollectNpcFactionAuthority(item, factionNamesById);
+                break;
+        }
+    }
+
     private async Task NormalizeNpcJournalsAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/npcs/npc_journals.json";
@@ -133,8 +263,9 @@ public partial class CanonicalStateNormalizer
         if (currentNode is not JsonObject currentObj)
             return;
 
+        var previousObj = await ReadBackupObjectAsync(path, backups);
         var result = CloneObject(currentObj);
-        var changed = false;
+        var changed = PreserveHistoricalMortalMaterialization(result, previousObj);
 
         changed |= NormalizeMortalTeacherTrainingShowcasePatches(result);
 
@@ -158,6 +289,71 @@ public partial class CanonicalStateNormalizer
 
         if (changed)
             await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private static bool PreserveHistoricalMortalMaterialization(
+        JsonObject currentRoot,
+        JsonObject? previousRoot)
+    {
+        if (previousRoot == null ||
+            currentRoot[GuardianPolicyContracts.NpcCoreSceneSectionName] is not JsonArray currentActors)
+        {
+            return false;
+        }
+
+        var historicalEnvelopeByActorId = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var seenHistoricalActorIds = new HashSet<string>(StringComparer.Ordinal);
+        var ambiguousHistoricalActorIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var previousActor in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(previousRoot))
+        {
+            var actorId = ResolveMortalMaterializationIdentity(previousActor);
+            if (string.IsNullOrWhiteSpace(actorId))
+                continue;
+
+            if (!seenHistoricalActorIds.Add(actorId))
+                ambiguousHistoricalActorIds.Add(actorId);
+
+            if (previousActor[ActorMaterializationContract.PropertyName] is not JsonObject historicalEnvelope)
+                continue;
+
+            if (!historicalEnvelopeByActorId.TryAdd(actorId, historicalEnvelope))
+                ambiguousHistoricalActorIds.Add(actorId);
+        }
+
+        foreach (var actorId in ambiguousHistoricalActorIds)
+            historicalEnvelopeByActorId.Remove(actorId);
+
+        var seenCurrentActorIds = new HashSet<string>(StringComparer.Ordinal);
+        var ambiguousCurrentActorIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var currentActor in currentActors.OfType<JsonObject>())
+        {
+            var actorId = ResolveMortalMaterializationIdentity(currentActor);
+            if (!string.IsNullOrWhiteSpace(actorId) && !seenCurrentActorIds.Add(actorId))
+                ambiguousCurrentActorIds.Add(actorId);
+        }
+
+        var changed = false;
+        foreach (var currentActor in currentActors.OfType<JsonObject>())
+        {
+            if (!HasCompleteNpcCoreSurface(currentActor) ||
+                currentActor.ContainsKey(ActorMaterializationContract.PropertyName))
+            {
+                continue;
+            }
+
+            var actorId = ResolveMortalMaterializationIdentity(currentActor);
+            if (string.IsNullOrWhiteSpace(actorId) ||
+                ambiguousCurrentActorIds.Contains(actorId) ||
+                !historicalEnvelopeByActorId.TryGetValue(actorId, out var historicalEnvelope))
+            {
+                continue;
+            }
+
+            currentActor[ActorMaterializationContract.PropertyName] = historicalEnvelope.DeepClone();
+            changed = true;
+        }
+
+        return changed;
     }
 
     private static bool NormalizeMortalTeacherTrainingShowcasePatches(JsonObject root)
@@ -280,6 +476,46 @@ public partial class CanonicalStateNormalizer
         npc.ContainsKey("attitude") &&
         npc.ContainsKey("inventory") &&
         npc.ContainsKey("goals");
+
+    private static string? ResolveMortalMaterializationIdentity(JsonObject npc)
+    {
+        string? permanentId = null;
+        var hasNullPermanentAlias = false;
+        foreach (var fieldName in new[] { "NPCId", "npcId", "id" })
+        {
+            if (!npc.TryGetPropertyValue(fieldName, out var node))
+                continue;
+            if (node == null)
+            {
+                hasNullPermanentAlias = true;
+                continue;
+            }
+            if (node is not JsonValue value ||
+                !value.TryGetValue<string>(out var candidate) ||
+                string.IsNullOrWhiteSpace(candidate))
+            {
+                return null;
+            }
+
+            if (permanentId != null && !string.Equals(permanentId, candidate, StringComparison.Ordinal))
+                return null;
+
+            permanentId = candidate;
+        }
+
+        if (permanentId != null)
+            return hasNullPermanentAlias ? null : permanentId;
+
+        if (!npc.TryGetPropertyValue("initialId", out var initialIdNode) ||
+            initialIdNode is not JsonValue initialIdValue ||
+            !initialIdValue.TryGetValue<string>(out var initialId) ||
+            string.IsNullOrWhiteSpace(initialId))
+        {
+            return null;
+        }
+
+        return initialId;
+    }
 
     private static string? ResolveNpcPatchIdentity(JsonObject npc) =>
         GetNodeString(npc["NPCId"]) ??

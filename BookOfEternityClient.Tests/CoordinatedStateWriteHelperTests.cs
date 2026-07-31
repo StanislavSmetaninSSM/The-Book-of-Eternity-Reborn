@@ -26,30 +26,43 @@ public sealed class CoordinatedStateWriteHelperTests : IDisposable
         const string nextJson = "{\"value\":\"client-next\"}";
         const string concurrentJson = "{\"value\":\"gm-concurrent\"}";
         await _fs.WriteFileAtomicAsync(firstPath, previousJson);
-        Directory.CreateDirectory(_fs.ResolvePath(blockedPath));
 
-        var concurrentWriter = Task.Run(async () =>
-        {
-            for (var attempt = 0; attempt < 300; attempt++)
-            {
-                if (string.Equals(await _fs.ReadFileAsync(firstPath), nextJson, StringComparison.Ordinal))
+        var concurrentWriteObserved = false;
+        var exception = await Record.ExceptionAsync(
+            () => CoordinatedStateWriteHelper.TryCommitWithHookAsync(
+                _fs,
+                async write =>
                 {
-                    await _fs.WriteFileAtomicAsync(firstPath, concurrentJson);
-                    return;
-                }
+                    if (!string.Equals(
+                            write.Path,
+                            firstPath,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        return;
+                    }
 
-                await Task.Delay(5);
-            }
+                    concurrentWriteObserved = true;
+                    await File.WriteAllTextAsync(
+                        _fs.ResolvePath(firstPath),
+                        concurrentJson,
+                        new System.Text.UTF8Encoding(
+                            encoderShouldEmitUTF8Identifier: false));
+                    Directory.CreateDirectory(_fs.ResolvePath(blockedPath));
+                },
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    firstPath,
+                    previousJson,
+                    nextJson,
+                    true),
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    blockedPath,
+                    null,
+                    "{}",
+                    true)));
 
-            throw new TimeoutException("Первый coordinated write не был замечен тестовым конкурентным писателем.");
-        });
-
-        var exception = await Record.ExceptionAsync(() => CoordinatedStateWriteHelper.TryCommitAsync(
-            _fs,
-            new CoordinatedStateWriteHelper.PlannedWrite(firstPath, previousJson, nextJson, true),
-            new CoordinatedStateWriteHelper.PlannedWrite(blockedPath, null, "{}", true)));
-        await concurrentWriter;
-
+        Assert.True(
+            concurrentWriteObserved,
+            "Fault-injection hook did not observe the first coordinated write.");
         Assert.IsType<InvalidOperationException>(exception);
         Assert.Equal(concurrentJson, await _fs.ReadFileAsync(firstPath));
     }

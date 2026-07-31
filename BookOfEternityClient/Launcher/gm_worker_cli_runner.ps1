@@ -148,6 +148,9 @@ Worker runtime paths:
 - BOE_WORKER_TASK_PATH: $TaskPath
 - BOE_WORKER_PROPOSAL_PATH: $ProposalPath
 - BOE_WORKER_SESSION_PATH: $SessionPath
+- BOE_WORKER_SESSION_PATH is a detached execution snapshot under .worker_runtime, not the live canonical session. It contains only pinned task context.
+- Direct writes to copied game_state, lore, or other session files are discarded. Only the validated proposal and its declared contentRef bytes can be imported by the pool.
+- The pool verifies every declared contentRef digest, stages one complete proposal/content bundle, and publishes it atomically only if the exact task bytes still belong to the current session generation. Do not reuse a taskId or proposalId; identifiers are immutable and collisions are rejected.
 
 Output contract:
 - Write exactly one worker-proposal-v1 JSON object to BOE_WORKER_PROPOSAL_PATH.
@@ -157,9 +160,13 @@ Output contract:
 - If the task allows changedFiles, write proposed content under worker_proposals/<proposalId>/... and reference it with contentRef.
 - If the task is proposal-only, keep changedFiles empty and return draftText and/or findings.
 - If the task contains authoringRequest, keep changedFiles empty and return authoringProposal with structured created/updated entities, requiredLinks, validatorRisks, and gmReviewNotes.
-- If the task contains afterlifeContract, keep changedFiles empty and return afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks. Use only the listed afterlife surfaces; never substitute Mortal World state such as worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files.
+- If the task contains afterlifeContract and taskType is not validation-repair, keep changedFiles empty and return afterlifeProposal with realmGate, targetSurfaces, requiredReceipts, requiredReports, playerVisibleSummary, gmReviewNotes, and validatorRisks. Use only the listed afterlife surfaces; never substitute Mortal World state such as worldStateFlags, worldEventsLog, Mortal NPC relationships, Mortal combat HP/status, Mortal factions, or Mortal map files.
+- For validation-repair tasks, return only bounded changedFiles inside allowedProposalPaths. For every entry, changeKind is mandatory and must be exactly `add`, `replace`, or `delete`; never omit it or use zero/unspecified/unknown values. Every replace/add item requires path, beforeSha256, afterSha256, and a contentRef under worker_proposals/<proposalId>/<path>. When afterlifeContract is present, all changed files must also stay inside allowedAfterlifeSurfaces; afterlifeProposal is optional for this repair-only task.
+- Paths are compared by case-insensitive canonical Windows identity. Copy exact task paths, never add case aliases, and never use `*`, `?`, `**`, or another wildcard in allowedAfterlifeSurfaces. For validation-repair tasks, each afterlife surface is one exact path under game_state/meta/; lore/current_world/** and game_state/core/player_status.json are Mortal and can never be afterlife repair surfaces. Typed afterlife content tasks may use other exact task-provided control/report surfaces.
+- For an afterlife validation-repair task, game_state/meta/soul_state.json is hash-pinned read-only realm authority. Read it only from task context, keep its exact bytes unchanged, require its realm to match afterlifeContract, and remember that it must not appear in `changedFiles` or allowedProposalPaths.
 - If the task contains soulContentRequest, keep changedFiles empty and return soulContentProposal with safeSoulSummaries, progressionSuggestions, rewardNotes, nextLifePreparationHooks, forbiddenReadonlyFields, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. Treat soulName and soulFormDescription as player-owned readonly identity; do not overwrite them.
 - Leave schema validation, scope checks, and canonical application to the main GM apply gate.
+- The main apply gate holds one canonical write lease through final context checks, all writes, validation, read-only context revalidation, rollback, and its decision. Do not assume copied authority can be changed from this worker.
 
 Required worker-proposal-v1 JSON shape:
 {
@@ -186,18 +193,20 @@ Required worker-proposal-v1 JSON shape:
 
 Required-field rules:
 - Do not omit summary, status, changedFiles, findings, selfCheck, or createdAtUtc.
+- Status is mandatory; omission is invalid and must never default to completed.
 - Use exact taskId and workerId values from the WorkerTaskPacket below.
+- Only status completed proposals can enter the apply gate. Status failed, timed-out, or rejected must use changedFiles: [].
 - For proposal-only tasks, changedFiles must be [].
 - For narrative-draft tasks, draftText must contain the proposed prose.
 - For analysis tasks, findings should contain compact objects with kind and message.
 - For content-authoring tasks, authoringProposal is required and must contain domain, goal, createdEntities or updatedEntities, requiredLinks, validatorRisks, and gmReviewNotes.
-- For afterlifeContract tasks, afterlifeProposal is required and must match task.afterlifeContract.realmGate; targetSurfaces must be inside task.afterlifeContract.allowedAfterlifeSurfaces; requiredReceipts and requiredReports must include task.afterlifeContract values; playerVisibleSummary must not expose technical substitute warnings.
+- For afterlifeContract tasks whose taskType is not validation-repair, afterlifeProposal is required and must match task.afterlifeContract.realmGate; targetSurfaces must be inside task.afterlifeContract.allowedAfterlifeSurfaces; requiredReceipts and requiredReports must include task.afterlifeContract values; playerVisibleSummary must not expose technical substitute warnings.
 - For guardianAbodeRequest tasks, guardianAbodeProposal is required and must include guardianUpdates, abodeUpdates, projectSuggestions, powerReputationConsequences, tradeFavorHooks, dossierNotes, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. Use only Guardian/Abode/project/politics afterlife surfaces listed by afterlifeContract. Keep hidden Guardian facts GM-only and out of playerVisibleSummary. Do not model Guardians as Mortal NPCs or Abodes/Guardian politics as Mortal factions.
 - For soulContentRequest tasks, soulContentProposal is required and must include safeSoulSummaries, progressionSuggestions, rewardNotes, nextLifePreparationHooks, forbiddenReadonlyFields, requiredReceipts, requiredReports, validatorRisks, and gmReviewNotes. forbiddenReadonlyFields must include soulName and soulFormDescription. Do not model the soul as an ordinary Mortal character, Mortal inventory, item, or player state substitute.
 - For inventory-content tasks, each item proposal must include player-facing description, owner/storage or inventory link, and balance details such as value, price, quality, rarity, or balanceNote. Book/document items must link to readable content or explicitly flag that gap for main-GM review.
 - For skill-content tasks, each skill/effect proposal must include a detailed player-facing description, localized scaling details or noScalingReason, bonusExplanation for bonuses, and links to effects/status/combat/characteristic-check surfaces.
 - For npc-content tasks, each NPC proposal must include separate publicKnowledge, privateKnowledge, thoughtJournal, relationshipHooks, personalQuests, dialogueSeeds, detailSurfaces, and links to location plus faction/quest/relationship/thought/dialogue surfaces.
-- For validation-repair tasks that are allowed to propose files, every changedFiles item needs path, changeKind, and contentRef unless it is a delete.
+- For validation-repair tasks that are allowed to propose files, changeKind is mandatory and must be exactly `add`, `replace`, or `delete`. Every replace/add changedFiles item needs path, beforeSha256, afterSha256, and contentRef. The contentRef must be exactly worker_proposals/<proposalId>/<path>. Delete changes require path, changeKind, beforeSha256, afterSha256 exactly 'missing', and no contentRef.
 
 Raw WorkerTaskPacket JSON begins on the next line.
 BEGIN_WORKER_TASK_JSON

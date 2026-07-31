@@ -35,18 +35,75 @@ public sealed class LocalUiSessionLockServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task AcquireOrRefreshAsync_SameOwner_RefreshesHeartbeat()
+    public async Task AcquireOrRefreshAsync_SameOwnerWithoutLease_DoesNotRefreshHeartbeat()
     {
         var service = new LocalUiSessionLockService(_fs, _timeProvider);
-        await service.AcquireOrRefreshAsync(Owner("console-main"), "первое действие");
+        var first = await service.AcquireOrRefreshAsync(
+            Owner("console-main"),
+            "первое действие");
+        var originalBytes = await _fs.ReadFileBytesAsync(
+            LocalUiSessionLockService.LockPath);
         _timeProvider.Advance(TimeSpan.FromSeconds(30));
 
         var result = await service.AcquireOrRefreshAsync(Owner("console-main"), "второе действие");
 
-        Assert.True(result.Acquired, result.BlockerMessage);
+        Assert.True(first.Acquired, first.BlockerMessage);
+        Assert.False(result.Acquired);
+        Assert.Equal(
+            originalBytes,
+            await _fs.ReadFileBytesAsync(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task RefreshAsync_ExactLeaseRefreshesHeartbeat()
+    {
+        var service = new LocalUiSessionLockService(_fs, _timeProvider);
+        var acquired = await service.AcquireOrRefreshAsync(
+            Owner("console-main"),
+            "первое действие");
+        var lease = GetLease(acquired);
+        _timeProvider.Advance(TimeSpan.FromSeconds(30));
+
+        var refreshed = await RefreshAsync(
+            service,
+            lease,
+            "второе действие");
+
+        Assert.True(refreshed.Acquired, refreshed.BlockerMessage);
         var lockRoot = await ReadLockRootAsync();
-        Assert.Equal(_timeProvider.GetUtcNow().UtcDateTime.ToString("O"), lockRoot["heartbeatAtUtc"]!.GetValue<string>());
-        Assert.Equal("второе действие", lockRoot["lastOperation"]!.GetValue<string>());
+        Assert.Equal(
+            _timeProvider.GetUtcNow().UtcDateTime.ToString("O"),
+            lockRoot["heartbeatAtUtc"]!.GetValue<string>());
+        Assert.Equal(
+            "второе действие",
+            lockRoot["lastOperation"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task ReleaseAsync_OldSameOwnerLeaseDoesNotDeleteReplacementGenerationLock()
+    {
+        var service = new LocalUiSessionLockService(_fs, _timeProvider);
+        var owner = Owner("same-owner");
+        var oldAcquisition = await service.AcquireOrRefreshAsync(
+            owner,
+            "old generation");
+        var oldLease = GetLease(oldAcquisition);
+
+        await SessionReplacementTestHarness.RotateGenerationAsync(_fs);
+        var replacementAcquisition = await service.AcquireOrRefreshAsync(
+            owner,
+            "replacement generation");
+        Assert.True(
+            replacementAcquisition.Acquired,
+            replacementAcquisition.BlockerMessage);
+        var replacementBytes = await _fs.ReadFileBytesAsync(
+            LocalUiSessionLockService.LockPath);
+
+        await ReleaseAsync(service, oldLease, owner);
+
+        Assert.Equal(
+            replacementBytes,
+            await _fs.ReadFileBytesAsync(LocalUiSessionLockService.LockPath));
     }
 
     [Fact]
@@ -114,6 +171,54 @@ public sealed class LocalUiSessionLockServiceTests : IDisposable
         var json = await _fs.ReadFileAsync(LocalUiSessionLockService.LockPath);
         Assert.False(string.IsNullOrWhiteSpace(json));
         return JsonNode.Parse(json!)!.AsObject();
+    }
+
+    private static object? GetLease(LocalUiSessionLockResult result) =>
+        typeof(LocalUiSessionLockResult)
+            .GetProperty("Lease")
+            ?.GetValue(result);
+
+    private static async Task<LocalUiSessionLockResult> RefreshAsync(
+        LocalUiSessionLockService service,
+        object? lease,
+        string operationLabel)
+    {
+        var method = typeof(LocalUiSessionLockService)
+            .GetMethods()
+            .SingleOrDefault(candidate =>
+                string.Equals(candidate.Name, "RefreshAsync", StringComparison.Ordinal) &&
+                candidate.GetParameters().Length == 2);
+        Assert.NotNull(method);
+        Assert.NotNull(lease);
+        return await ((Task<LocalUiSessionLockResult>)method!.Invoke(
+            service,
+            [lease, operationLabel])!).WaitAsync(TimeSpan.FromSeconds(5));
+    }
+
+    private static async Task ReleaseAsync(
+        LocalUiSessionLockService service,
+        object? lease,
+        LocalUiSessionLockOwner fallbackOwner)
+    {
+        var leaseMethod = typeof(LocalUiSessionLockService)
+            .GetMethods()
+            .SingleOrDefault(candidate =>
+                string.Equals(
+                    candidate.Name,
+                    nameof(LocalUiSessionLockService.ReleaseAsync),
+                    StringComparison.Ordinal) &&
+                candidate.GetParameters().Length == 1 &&
+                candidate.GetParameters()[0].ParameterType.Name.Contains(
+                    "Lease",
+                    StringComparison.Ordinal));
+        var method = leaseMethod ?? typeof(LocalUiSessionLockService)
+            .GetMethod(
+                nameof(LocalUiSessionLockService.ReleaseAsync),
+                [typeof(LocalUiSessionLockOwner)])!;
+        await ((Task)method.Invoke(
+            service,
+            [leaseMethod == null ? fallbackOwner : lease])!).WaitAsync(
+                TimeSpan.FromSeconds(5));
     }
 
     private sealed class ManualTimeProvider(DateTimeOffset utcNow) : TimeProvider

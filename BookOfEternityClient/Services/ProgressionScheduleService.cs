@@ -661,6 +661,17 @@ public class ProgressionScheduleService
         return Task.CompletedTask;
     }
 
+    internal async Task<bool> DeleteTransientReportIfCurrentSessionAsync(
+        string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+            return false;
+
+        _fs.DeleteFile(writeLease, ReportPath);
+        return true;
+    }
+
     private void ValidateMortalOutcome(
         ProgressionControl control,
         ProgressionReportSnapshot reportSnapshot,

@@ -2,6 +2,8 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Security.Cryptography;
+using System.Text;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -9,6 +11,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmWorkerValidationRepairDelegatorTests
 {
     private const string WeatherPath = "game_state/world/weather.json";
+    private const string SoulStatePath = "game_state/meta/soul_state.json";
     private const string ReadyPath = "game_state/control/validation_repair_ready.json";
     private const string LatestTaskPath = "game_state/control/gm_worker_latest_validation_repair_task.json";
 
@@ -57,6 +60,9 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                 $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
                 New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
                 Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
                 $proposal = [ordered]@{
                     schemaVersion = 1
                     proposalId = $proposalId
@@ -67,8 +73,8 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                     changedFiles = @([ordered]@{
                         path = 'game_state/world/weather.json'
                         changeKind = 'replace'
-                        beforeSha256 = 'example-before'
-                        afterSha256 = 'example-after'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
                         contentRef = $contentRef
                     })
                     findings = @()
@@ -94,14 +100,19 @@ public sealed class GmWorkerValidationRepairDelegatorTests
             var latestTaskJson = await fs.ReadFileAsync(LatestTaskPath);
             var events = await audit.ReadEventsAsync();
 
-            Assert.Equal(GmWorkerValidationRepairOutcome.Applied, result.Outcome);
+            Assert.True(
+                result.Outcome == GmWorkerValidationRepairOutcome.Applied,
+                $"Expected Applied, got {result.Outcome}: " +
+                string.Join(" | ", result.ApplyDecision?.RejectionReasons ?? []));
             Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
             Assert.True(result.ReadySignalCreated);
             Assert.Equal("{\"after\":true}", await fs.ReadFileAsync(WeatherPath));
             Assert.Contains("\"sessionId\": \"test-session\"", readyJson);
             Assert.Contains("\"requestId\": \"test-request\"", readyJson);
             Assert.Contains("\"turnNumber\": 12", readyJson);
-            Assert.Contains("\"taskId\": \"worker_task_validation_repair_0002\"", latestTaskJson);
+            Assert.NotNull(result.Task);
+            Assert.StartsWith("worker_task_validation_repair_0002_", result.Task.TaskId, StringComparison.Ordinal);
+            Assert.Contains($"\"taskId\": \"{result.Task.TaskId}\"", latestTaskJson);
             Assert.Contains(events, e => e.EventType == "task-dispatched");
             Assert.Contains(events, e => e.EventType == "proposal-received");
             Assert.Contains(events, e => e.EventType == "proposal-applied");
@@ -144,6 +155,905 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     }
 
     [Fact]
+    public async Task TryRunAsync_RepeatedValidationCycleWithSameAttempt_UsesDistinctImmutableTaskIds()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-repeated-validation-repair-failure.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+
+            var first = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 1);
+            var second = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:01:00Z",
+                attempt: 1);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, first.Outcome);
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, second.Outcome);
+            Assert.Contains("exited with code 7", first.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("exited with code 7", second.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.NotNull(first.Task);
+            Assert.NotNull(second.Task);
+            Assert.StartsWith("worker_task_validation_repair_0001_", first.Task.TaskId, StringComparison.Ordinal);
+            Assert.StartsWith("worker_task_validation_repair_0001_", second.Task.TaskId, StringComparison.Ordinal);
+            Assert.NotEqual(first.Task.TaskId, second.Task.TaskId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_NonZeroWorkerWithValidProposal_DoesNotApplyOrPublishReady()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-validation-repair-proposal-then-failure.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_failed_delegator'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'This proposal must remain diagnostic because the worker fails.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    draftText = $null
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('worker exits non-zero after writing')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                exit 7
+                """);
+            var delegator = CreateDelegator(fs);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 31);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            Assert.Null(result.RunResult?.Proposal);
+            Assert.Null(result.ApplyDecision);
+            Assert.False(result.ReadySignalCreated);
+            Assert.False(fs.FileExists(ReadyPath));
+            Assert.Equal("{\"before\":true}", await fs.ReadFileAsync(WeatherPath));
+            Assert.Null(await new GmWorkerProposalStore(fs).ReadProposalAsync("worker_proposal_failed_delegator"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedAfterContextCapture_DoesNotRebindOrLaunchStaleTask()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            string capturedGeneration;
+            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+                capturedGeneration = fs.GetOrCreateSessionGeneration(lease);
+
+            var workerLaunchMarker = Path.Combine(root, "stale-task-worker-launched");
+            var profile = BuildProfile(
+                root,
+                "fake-stale-task-must-not-launch.ps1",
+                $"New-Item -ItemType File -Force -Path '{workerLaunchMarker.Replace("'", "''", StringComparison.Ordinal)}' | Out-Null; exit 7");
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTaskReservationAsync = async () =>
+                {
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+                }
+            };
+            var delegator = CreateDelegator(fs, poolHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 22);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.NotNull(result.Task);
+            Assert.Equal(capturedGeneration, result.Task.SessionGeneration);
+            Assert.Contains("session generation", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.False(File.Exists(workerLaunchMarker));
+            Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(result.Task.TaskId)));
+            Assert.False(Directory.Exists(Path.GetDirectoryName(
+                fs.ResolvePath(GmWorkerBridgePool.GetProposalInboxPath(result.Task.TaskId)))!));
+            Assert.False(fs.FileExists(LatestTaskPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedAfterReservation_DoesNotAuditOrLaunchStaleTask()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var workerLaunchMarker = Path.Combine(root, "post-reservation-stale-worker-launched");
+            var profile = BuildProfile(
+                root,
+                "fake-post-reservation-stale-worker.ps1",
+                $"New-Item -ItemType File -Force -Path '{workerLaunchMarker.Replace("'", "''", StringComparison.Ordinal)}' | Out-Null; exit 7");
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeTaskDispatchAuditAsync = async () =>
+                {
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+                }
+            };
+            var delegator = CreateDelegator(fs, poolHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 25);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.False(File.Exists(workerLaunchMarker));
+            Assert.Empty(await new GmWorkerAuditLog(fs).ReadEventsAsync());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_CallerBoundSessionAlreadyReplaced_DoesNotRebindOrLaunchWorker()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            string capturedGeneration;
+            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+                capturedGeneration = fs.GetOrCreateSessionGeneration(lease);
+            await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+
+            var workerLaunchMarker = Path.Combine(root, "caller-stale-task-worker-launched");
+            var profile = BuildProfile(
+                root,
+                "fake-caller-stale-task-must-not-launch.ps1",
+                $"New-Item -ItemType File -Force -Path '{workerLaunchMarker.Replace("'", "''", StringComparison.Ordinal)}' | Out-Null; exit 7");
+            var delegator = CreateDelegator(fs);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 23,
+                expectedSessionGeneration: capturedGeneration);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.False(File.Exists(workerLaunchMarker));
+            Assert.False(fs.FileExists(LatestTaskPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedWhileWorkerRuns_OverridesGenericWorkerFailure()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-session-rotated-worker-failure.ps1", "exit 7");
+            var hooks = new GmWorkerBridgePoolHooks
+            {
+                BeforeWorkerReleaseAsync = async () =>
+                {
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+                }
+            };
+            var delegator = CreateDelegator(fs, poolHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 24);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.NotNull(result.Task);
+            Assert.NotNull(result.RunResult);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_ApplyAcceptedButReadyWriteFails_ReturnsAppliedWithoutReady()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            Directory.CreateDirectory(fs.ResolvePath(ReadyPath));
+            var profile = BuildProfile(root, "fake-validation-repair-ready-fails.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_ready_write_fails'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Repair applies before ready publication fails.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('ready failure regression')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var delegator = CreateDelegator(fs);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 21);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.Applied, result.Outcome);
+            Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
+            Assert.False(result.ReadySignalCreated);
+            Assert.Contains("ready", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal("{\"after\":true}", await fs.ReadFileAsync(WeatherPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_SessionRotatedAfterAcceptedApply_DoesNotPublishReadyOrReportCurrentSessionApplied()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            var profile = BuildProfile(root, "fake-ready-generation-race.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_ready_generation_race'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Repair accepted before the session is replaced.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('ready generation race')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var hooks = new GmWorkerValidationRepairDelegatorHooks
+            {
+                BeforeReadyPublicationAsync = async () =>
+                {
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+                }
+            };
+            var delegator = CreateDelegator(fs, delegatorHooks: hooks);
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue()],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 23);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, result.Outcome);
+            Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
+            Assert.False(result.ReadySignalCreated);
+            Assert.Contains("session generation", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.False(fs.FileExists(ReadyPath));
+            Assert.False(fs.FileExists(LatestTaskPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_StaleBoundSessionDuringReadyPublication_ReturnsTypedReplacement()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            string expectedGeneration;
+            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                expectedGeneration = fs.GetOrCreateSessionGeneration(lease);
+            }
+
+            var profile = BuildProfile(root, "fake-bound-ready-generation-race.ps1", """
+                $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+                $proposalId = 'worker_proposal_bound_ready_generation_race'
+                $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
+                $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
+                New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
+                Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
+                $proposal = [ordered]@{
+                    schemaVersion = 1
+                    proposalId = $proposalId
+                    taskId = $task.taskId
+                    workerId = $task.workerId
+                    status = 'completed'
+                    summary = 'Repair accepted before a bound session is replaced.'
+                    changedFiles = @([ordered]@{
+                        path = 'game_state/world/weather.json'
+                        changeKind = 'replace'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
+                        contentRef = $contentRef
+                    })
+                    findings = @()
+                    selfCheck = [ordered]@{
+                        scopeReviewed = $true
+                        validationExpectedToPass = $true
+                        notes = @('bound ready generation race')
+                    }
+                    createdAtUtc = '2026-06-20T01:00:05Z'
+                }
+                $proposal | ConvertTo-Json -Depth 20 | Set-Content -Path $env:BOE_WORKER_PROPOSAL_PATH -Encoding UTF8
+                """);
+            var hooks = new GmWorkerValidationRepairDelegatorHooks
+            {
+                BeforeReadyPublicationAsync = async () =>
+                {
+                    await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+                }
+            };
+            var delegator = CreateDelegator(fs, delegatorHooks: hooks);
+            GmWorkerValidationRepairDispatchResult? capturedResult = null;
+
+            await Assert.ThrowsAsync<SessionReplacedException>(
+                () => SessionOperationContext.RunBoundAsync(
+                    fs,
+                    expectedGeneration,
+                    async () =>
+                    {
+                        capturedResult = await delegator.TryRunAsync(
+                            [profile],
+                            [MissingWeatherDescriptionIssue()],
+                            TurnReference(),
+                            "2026-06-20T01:00:00Z",
+                            attempt: 26);
+                    }));
+
+            Assert.NotNull(capturedResult);
+            Assert.Equal(GmWorkerValidationRepairOutcome.SessionReplaced, capturedResult.Outcome);
+            Assert.Equal(ApplyGateResult.Accepted, capturedResult.ApplyDecision?.Result);
+            Assert.False(capturedResult.ReadySignalCreated);
+            Assert.False(fs.FileExists(ReadyPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_CoordinateBearingActorIssue_HashesCanonicalContextFile()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(npcPath, "{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            var profile = BuildProfile(root, "fake-coordinate-repair-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.NPCsInScene[0].materialization.sections.inventory",
+                IssueSeverity.Error,
+                "Первичная материализация не объясняет секцию inventory.",
+                code: "actor_materialization_section_missing",
+                actor: "mortal_npc:npc_coordinate_target",
+                section: "inventory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 31);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var context = Assert.Single(Assert.IsType<WorkerTaskPacket>(result.Task).ContextFiles);
+            Assert.Equal(npcPath, context.Path);
+            Assert.Matches("^[0-9a-f]{64}$", context.Sha256);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_ContextHashUsesExactCanonicalBytesIncludingBom()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            var fs = CreateFileSystem(root);
+            byte[] utf8Bom = [0xef, 0xbb, 0xbf];
+            var jsonBytes = Encoding.UTF8.GetBytes("{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            var canonicalBytes = new byte[utf8Bom.Length + jsonBytes.Length];
+            utf8Bom.CopyTo(canonicalBytes, 0);
+            jsonBytes.CopyTo(canonicalBytes, utf8Bom.Length);
+            Directory.CreateDirectory(Path.GetDirectoryName(fs.ResolvePath(npcPath))!);
+            await File.WriteAllBytesAsync(fs.ResolvePath(npcPath), canonicalBytes);
+            var profile = BuildProfile(root, "fake-byte-hash-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.NPCsInScene[0].materialization.sections.inventory",
+                IssueSeverity.Error,
+                "Первичная материализация не объясняет секцию inventory.",
+                code: "actor_materialization_section_missing",
+                actor: "mortal_npc:npc_byte_hash_target",
+                section: "inventory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 311);
+
+            var context = Assert.Single(Assert.IsType<WorkerTaskPacket>(result.Task).ContextFiles);
+            var expectedSha256 = Convert.ToHexString(SHA256.HashData(canonicalBytes)).ToLowerInvariant();
+            Assert.Equal(expectedSha256, context.Sha256);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_CharacteristicsRepairPinsSettingAuthorityAsReadOnlyContext()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            const string authorityPath = "game_state/misc/characteristics.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(npcPath, "{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            await fs.WriteFileAtomicAsync(authorityPath, "{\"setting_defined_focus\":4}");
+            var profile = BuildProfile(root, "fake-characteristic-authority-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.UpdateNPCs[0].characteristics",
+                IssueSeverity.Error,
+                "Mortal characteristics are empty.",
+                code: "npc_characteristics_empty",
+                actor: "mortal_npc:npc_authority_target",
+                section: "NPCCharacteristics");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 312);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            Assert.Equal([npcPath], task.AllowedProposalPaths);
+            Assert.Contains(task.ContextFiles, file =>
+                file.Path == authorityPath && file.Sha256.Length == 64);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_CharacteristicsRepairWithoutSettingAuthorityFailsTaskBuild()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string npcPath = "game_state/npcs/npc_core.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(npcPath, "{\"UpdateNPCs\":[],\"NPCsInScene\":[]}");
+            var profile = BuildProfile(root, "fake-missing-characteristic-authority-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{npcPath}.UpdateNPCs[0].characteristics",
+                IssueSeverity.Error,
+                "Mortal characteristics are empty.",
+                code: "npc_characteristics_empty",
+                actor: "mortal_npc:npc_authority_target",
+                section: "NPCCharacteristics");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 313);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Contains("characteristics.json", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_AfterlifeActorRepair_BuildsRealmBoundTaskForCanonicalSource()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string guardianPath = "game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                "{\"currentRealm\":\"Chaos Sea\"}");
+            await fs.WriteFileAtomicAsync(
+                guardianPath,
+                "{\"entries\":[]}");
+            var profile = BuildProfile(root, "fake-afterlife-repair-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                "game_state/meta/guardians.json.guardians[0]",
+                IssueSeverity.Error,
+                "Первичная материализация Хранителя не инициализировала память.",
+                code: "afterlife_actor_materialization_memory_missing",
+                actor: "guardian:guardian_repair_target",
+                section: "ActorMemory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 32);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            var afterlife = Assert.IsType<WorkerAfterlifeTaskContract>(task.AfterlifeContract);
+            Assert.Equal(WorkerAfterlifeRealmGate.ChaosSea, afterlife.RealmGate);
+            Assert.Equal("Chaos Sea", afterlife.CurrentRealm);
+            Assert.Equal([guardianPath], afterlife.AllowedAfterlifeSurfaces);
+            Assert.Contains(task.ContextFiles, context =>
+                context.Path == guardianPath &&
+                System.Text.RegularExpressions.Regex.IsMatch(context.Sha256, "^[0-9a-f]{64}$"));
+            Assert.Contains(task.ContextFiles, context =>
+                context.Path == SoulStatePath &&
+                System.Text.RegularExpressions.Regex.IsMatch(context.Sha256, "^[0-9a-f]{64}$"));
+            Assert.DoesNotContain(SoulStatePath, task.AllowedProposalPaths);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("not-json")]
+    [InlineData("[]")]
+    [InlineData("{}")]
+    [InlineData("{\"currentRealm\":7}")]
+    [InlineData("{\"currentRealm\":\"Mortal World\"}")]
+    [InlineData("{\"currentRealm\":\"Chaos Sea\",\"currentRealm\":\"Shining Abode\"}")]
+    public async Task TryRunAsync_AfterlifeActorRepair_InvalidRealmAuthorityFailsTaskBuild(
+        string? soulStateJson)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string guardianPath = "game_state/meta/guardian_thought_journal.json";
+            var fs = CreateFileSystem(root);
+            if (soulStateJson != null)
+                await fs.WriteFileAtomicAsync(SoulStatePath, soulStateJson);
+            await fs.WriteFileAtomicAsync(guardianPath, "{\"entries\":[]}");
+            var profile = BuildProfile(root, "fake-invalid-realm-authority-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                "game_state/meta/guardians.json.guardians[0]",
+                IssueSeverity.Error,
+                "Guardian memory is missing.",
+                code: "afterlife_actor_materialization_memory_missing",
+                actor: "guardian:guardian_invalid_realm_authority",
+                section: "ActorMemory");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 322);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Null(result.Task);
+            Assert.Contains(SoulStatePath, result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_UnscopedAfterlifeBindingAuthorityIssue_RemainsRealmBound()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(
+                "game_state/meta/soul_state.json",
+                "{\"currentRealm\":\"Shining Abode\"}");
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                "{\"schemaVersion\":1,\"factions\":[],\"shiningPoliticalActors\":[]}");
+            var profile = BuildProfile(root, "fake-unscoped-afterlife-binding-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Текущая canonical authority сущностей посмертия повреждена.",
+                code: "afterlife_actor_binding_current_authority_unusable",
+                section: "ActorMaterialization");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 321);
+
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            var afterlife = Assert.IsType<WorkerAfterlifeTaskContract>(task.AfterlifeContract);
+            Assert.Equal(WorkerAfterlifeRealmGate.ShiningAbode, afterlife.RealmGate);
+            Assert.Equal([ShiningAbodeState.StatePath], afterlife.AllowedAfterlifeSurfaces);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_NonActorAfterlifeRepair_BuildsRealmBoundTaskForCanonicalSource()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string targetPath = "game_state/meta/shining_abode_state.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(SoulStatePath, "{\"currentRealm\":\"Shining Abode\"}");
+            await fs.WriteFileAtomicAsync(targetPath, "{\"treasury\":{}}");
+            var profile = BuildProfile(root, "fake-non-actor-afterlife-repair-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{targetPath}.treasury",
+                IssueSeverity.Error,
+                "Shining treasury client-owned state changed.",
+                code: "shining_treasury_client_owned_modified",
+                section: "ShiningAbode");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 323);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.WorkerFailed, result.Outcome);
+            var task = Assert.IsType<WorkerTaskPacket>(result.Task);
+            var afterlife = Assert.IsType<WorkerAfterlifeTaskContract>(task.AfterlifeContract);
+            Assert.Equal(WorkerAfterlifeRealmGate.ShiningAbode, afterlife.RealmGate);
+            Assert.Equal([targetPath], afterlife.AllowedAfterlifeSurfaces);
+            Assert.Contains(task.ContextFiles, context =>
+                context.Path == SoulStatePath &&
+                System.Text.RegularExpressions.Regex.IsMatch(context.Sha256, "^[0-9a-f]{64}$"));
+            Assert.DoesNotContain(SoulStatePath, task.AllowedProposalPaths);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("not-json")]
+    public async Task TryRunAsync_NonActorAfterlifeRepair_InvalidRealmAuthorityFailsTaskBuild(
+        string? soulStateJson)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string targetPath = "game_state/meta/shining_abode_state.json";
+            var fs = CreateFileSystem(root);
+            if (soulStateJson != null)
+                await fs.WriteFileAtomicAsync(SoulStatePath, soulStateJson);
+            await fs.WriteFileAtomicAsync(targetPath, "{\"treasury\":{}}");
+            var profile = BuildProfile(root, "fake-non-actor-invalid-realm-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var issue = new ValidationIssue(
+                $"{targetPath}.treasury",
+                IssueSeverity.Error,
+                "Shining treasury client-owned state changed.",
+                code: "shining_treasury_client_owned_modified",
+                section: "ShiningAbode");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [issue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 324);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Null(result.Task);
+            Assert.Contains(SoulStatePath, result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task TryRunAsync_MixedMortalAndNonActorAfterlifeRepair_FailsTaskBuildClosed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string shiningPath = "game_state/meta/shining_abode_state.json";
+            var fs = CreateFileSystem(root);
+            await fs.WriteFileAtomicAsync(SoulStatePath, "{\"currentRealm\":\"Shining Abode\"}");
+            await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
+            await fs.WriteFileAtomicAsync(shiningPath, "{\"treasury\":{}}");
+            var profile = BuildProfile(root, "fake-mixed-non-actor-afterlife-worker.ps1", "exit 7");
+            var delegator = CreateDelegator(fs);
+            var shiningIssue = new ValidationIssue(
+                $"{shiningPath}.treasury",
+                IssueSeverity.Error,
+                "Shining treasury client-owned state changed.",
+                code: "shining_treasury_client_owned_modified",
+                section: "ShiningAbode");
+
+            var result = await delegator.TryRunAsync(
+                [profile],
+                [MissingWeatherDescriptionIssue(), shiningIssue],
+                TurnReference(),
+                "2026-06-20T01:00:00Z",
+                attempt: 325);
+
+            Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, result.Outcome);
+            Assert.Null(result.Task);
+            Assert.Contains("mixed", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Mortal", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("afterlife", result.FallbackReason, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task TryRunAsync_ApplyGateValidationFails_RollsBackAndLeavesLegacyRepairLoopWaiting()
     {
         var root = CreateTempRoot();
@@ -158,6 +1068,9 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                 $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
                 New-Item -ItemType Directory -Path (Split-Path $contentPath) -Force | Out-Null
                 Set-Content -Path $contentPath -Value '{"after":true}' -Encoding UTF8 -NoNewline
+                $sha = [System.Security.Cryptography.SHA256]::Create()
+                try { $afterSha256 = ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes($contentPath)))).Replace('-', '').ToLowerInvariant() }
+                finally { $sha.Dispose() }
                 $proposal = [ordered]@{
                     schemaVersion = 1
                     proposalId = $proposalId
@@ -168,8 +1081,8 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                     changedFiles = @([ordered]@{
                         path = 'game_state/world/weather.json'
                         changeKind = 'replace'
-                        beforeSha256 = 'example-before'
-                        afterSha256 = 'example-after'
+                        beforeSha256 = $task.contextFiles[0].sha256
+                        afterSha256 = $afterSha256
                         contentRef = $contentRef
                     })
                     findings = @()
@@ -196,7 +1109,10 @@ public sealed class GmWorkerValidationRepairDelegatorTests
                 attempt: 4);
 
             Assert.Equal(GmWorkerValidationRepairOutcome.ApplyRejected, result.Outcome);
-            Assert.Equal(ApplyGateResult.ValidationFailed, result.ApplyDecision?.Result);
+            Assert.True(
+                result.ApplyDecision?.Result == ApplyGateResult.ValidationFailed,
+                $"Expected ValidationFailed, got {result.ApplyDecision?.Result}: " +
+                string.Join(" | ", result.ApplyDecision?.RejectionReasons ?? []));
             Assert.False(result.ReadySignalCreated);
             Assert.False(fs.FileExists(ReadyPath));
             Assert.Equal("{\"before\":true}", await fs.ReadFileAsync(WeatherPath));
@@ -210,14 +1126,17 @@ public sealed class GmWorkerValidationRepairDelegatorTests
     private static GmWorkerValidationRepairDelegator CreateDelegator(
         FileSystemManager fs,
         Func<Task<IReadOnlyList<ValidationIssue>>>? validate = null,
-        GmWorkerAuditLog? audit = null)
+        GmWorkerAuditLog? audit = null,
+        GmWorkerBridgePoolHooks? poolHooks = null,
+        GmWorkerValidationRepairDelegatorHooks? delegatorHooks = null)
     {
         audit ??= new GmWorkerAuditLog(fs);
         return new GmWorkerValidationRepairDelegator(
             fs,
-            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
+            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit, poolHooks),
             new GmWorkerApplyGate(fs, validate ?? (() => Task.FromResult<IReadOnlyList<ValidationIssue>>([])), audit),
-            audit);
+            audit,
+            delegatorHooks);
     }
 
     private static WorkerBridgeProfile BuildProfile(string root, string fileName, string script)

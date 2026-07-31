@@ -1,14 +1,44 @@
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class AfterlifeDocumentationCoverageTests
 {
+    [Fact]
+    public void AfterlifeRepairDocs_PinRealmAuthorityAndRetainOutputFreshnessChain()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var source in new[] { matrix, examples })
+        {
+            Assert.Contains("hash-pinned read-only realm authority", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("game_state/meta/soul_state.json", source, StringComparison.Ordinal);
+            Assert.Contains("must not appear in `changedFiles`", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("strictly newer", source, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("original canonical target set", source, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void SharedCombatActionEffectValueContract_IsDocumentedForAfterlifeAuthors()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        Assert.Contains("shared Block 5 Combat Action effect", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("shared Block 5 Combat Action effect", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("value=10%", examples, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public void AfterlifePendingControlSurfaceInventoryIsMachineReadable()
     {
@@ -3894,6 +3924,319 @@ public sealed class AfterlifeDocumentationCoverageTests
                  })
         {
             Assert.Contains(requiredSection, bible, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void AfterlifeActorMaterializationContract_IsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        foreach (var text in new[] { matrix, examples, daemon })
+        {
+            foreach (var requiredText in new[]
+                     {
+                         "Actor Materialization v1",
+                         "materializationId",
+                         "materializedAtTurn",
+                         "actorType",
+                         "actorId",
+                         "capabilities",
+                         "sections",
+                         "populated",
+                         "empty_by_design",
+                         "actor-owned memory",
+                         "exact actorType:actorId"
+                     })
+            {
+                Assert.Contains(requiredText, text, StringComparison.OrdinalIgnoreCase);
+            }
+
+            Assert.Contains(
+                "first envelope on an existing profile",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                "only the exact actor's gmThoughtsSummary",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Guardian thought journal", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("resident thought journal", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("Guardian", matrix, StringComparison.Ordinal);
+        Assert.Contains("resident", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("radiant_actor", matrix, StringComparison.Ordinal);
+        Assert.Contains("saref_agent", matrix, StringComparison.Ordinal);
+        Assert.Contains("non-vacant Shining", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player_soul", matrix, StringComparison.Ordinal);
+        Assert.Contains("authoritative trade evidence is unavailable", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("canTrade=false", matrix, StringComparison.Ordinal);
+        Assert.Contains("authoritative trade evidence is unavailable", daemon, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("canTrade=false", daemon, StringComparison.Ordinal);
+        foreach (var text in new[] { matrix, examples, daemon })
+        {
+            Assert.Contains("promoted into significant structured play", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("exact current abode", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("trade tier", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("secure or contested", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("goals", text, StringComparison.Ordinal);
+            Assert.Contains("personalQuests", text, StringComparison.Ordinal);
+            Assert.Contains("currentActivity", text, StringComparison.Ordinal);
+            Assert.Contains("completedActivities", text, StringComparison.Ordinal);
+            Assert.Contains("progressionStrategy or a mask alone", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("protected actor data", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("never substitutes", text, StringComparison.OrdinalIgnoreCase);
+        }
+        Assert.Contains("malformed current source authority", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn baseline", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("malformed current source authority", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn baseline", examples, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("AFTERLIFE ACTOR MATERIALIZATION V1", examples, StringComparison.Ordinal);
+        Assert.Contains("\"relationships\": { \"state\": \"populated\" }", examples, StringComparison.Ordinal);
+        Assert.Contains("\"state\": \"empty_by_design\"", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_actor_materialization_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("afterlife_actor_profile_binding_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("exact current abode", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("trade tier", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("protected actor data", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("malformed current source authority", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("validated pre-turn baseline", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("first envelope on an existing profile", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("exact actor's gmThoughtsSummary", manifest, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void T155_AfterlifeActorLifecycleTeachingVisibilityAndAcceptedTypes_AreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        var acceptedActorTypes = new[]
+        {
+            "guardian",
+            "resident",
+            "shining_resident",
+            "shining_faction_head",
+            "radiant_actor",
+            "saref_agent",
+            "system_actor",
+            "custom_afterlife_actor"
+        };
+        foreach (var actorType in acceptedActorTypes)
+        {
+            Assert.Contains(actorType, matrix, StringComparison.Ordinal);
+            Assert.Contains(actorType, examples, StringComparison.Ordinal);
+            Assert.Contains(actorType, manifest, StringComparison.Ordinal);
+        }
+
+        foreach (var text in new[] { matrix, examples, manifest })
+        {
+            Assert.Contains("departure_only", text, StringComparison.Ordinal);
+            Assert.Contains("departed_only", text, StringComparison.Ordinal);
+            Assert.Contains("positive teachable tier or cap", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("gmOnly", text, StringComparison.Ordinal);
+            Assert.Contains("system profiles", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("explicit diagnostics", text, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void AfterlifeActorMaterializationWorkedExample_PassesExecutableContract()
+    {
+        var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
+            string.Equals(candidate.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase) &&
+            candidate.RawText.Contains("mat_guardian_mirror_turn_23", StringComparison.Ordinal));
+        using var document = JsonDocument.Parse(snippet.RawText);
+        var profile = document.RootElement.GetProperty("afterlifeEntityProfileUpdates")[0];
+
+        var runtimeIssues = ValidateResponseWithRuntimeValidator(document.RootElement);
+
+        var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            profile,
+            "Examples/E_CLI_Afterlife_Turns.txt.afterlifeEntityProfileUpdates[0]",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+
+        Assert.DoesNotContain(runtimeIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Empty(issues);
+    }
+
+    [Fact]
+    public async Task ShiningFactionHeadMaterializationWorkedExample_PassesExecutableContract()
+    {
+        var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>
+            string.Equals(candidate.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase) &&
+            candidate.RawText.Contains("mat_radiant_archive_head_turn_24", StringComparison.Ordinal));
+        using var document = JsonDocument.Parse(snippet.RawText);
+        var profile = Assert.Single(document.RootElement.GetProperty("afterlifeEntityProfileUpdates").EnumerateArray());
+
+        var runtimeIssues = ValidateResponseWithRuntimeValidator(document.RootElement);
+        var acceptedTurnIssues = await ValidateShiningExampleAcceptedTurnBindingAsync(profile);
+
+        Assert.Equal("Shining Abode", profile.GetProperty("realm").GetString());
+        Assert.DoesNotContain(runtimeIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.DoesNotContain(acceptedTurnIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Actor, "radiant_actor:radiant_archive_head", StringComparison.Ordinal));
+    }
+
+    private static async Task<List<ValidationIssue>> ValidateShiningExampleAcceptedTurnBindingAsync(
+        JsonElement profile)
+    {
+        var rootPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "boe-test-artifacts",
+            "afterlife-doc-shining-binding-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            Directory.CreateDirectory(rootPath);
+            var fs = new FileSystemManager(rootPath, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            var profileNode = JsonNode.Parse(profile.GetRawText()) ??
+                              throw new InvalidOperationException("Shining profile example is empty.");
+            var currentProfiles = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profileNode)
+            }.ToJsonString();
+            var preTurnProfiles = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray()
+            }.ToJsonString();
+            var currentShining = BuildShiningExampleAuthority(
+                ShiningAbodeState.LeadershipStateSecure,
+                includeTradeAuthority: true);
+            var preTurnShining = BuildShiningExampleAuthority(
+                ShiningAbodeState.LeadershipStateVacant,
+                includeTradeAuthority: false);
+
+            await fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, currentProfiles);
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, currentShining);
+            await WriteShiningExampleSnapshotAsync(
+                fs,
+                (AfterlifeEntityProfileState.StatePath, preTurnProfiles),
+                (ShiningAbodeState.StatePath, preTurnShining));
+
+            var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+            var method = typeof(ValidationService).GetMethod(
+                "ValidateAcceptedTurnActorMaterializationCompletenessAsync",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(method);
+            var issues = new List<ValidationIssue>();
+            await Assert.IsAssignableFrom<Task>(method.Invoke(validator, new object[] { issues }));
+            return issues;
+        }
+        finally
+        {
+            if (Directory.Exists(rootPath))
+                Directory.Delete(rootPath, recursive: true);
+        }
+    }
+
+    private static string BuildShiningExampleAuthority(
+        string leadershipState,
+        bool includeTradeAuthority)
+    {
+        var isVacant = string.Equals(
+            leadershipState,
+            ShiningAbodeState.LeadershipStateVacant,
+            StringComparison.Ordinal);
+        return new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["factions"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_first_light_archive",
+                ["factionStrength"] = includeTradeAuthority ? 50 : 0,
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+                },
+                ["leadership"] = new JsonObject
+                {
+                    ["leadershipState"] = leadershipState,
+                    ["headActorType"] = isVacant ? null : "radiant_actor",
+                    ["headActorId"] = isVacant ? null : "radiant_archive_head"
+                }
+            }),
+            ["shiningPoliticalActors"] = new JsonArray()
+        }.ToJsonString();
+    }
+
+    private static async Task WriteShiningExampleSnapshotAsync(
+        FileSystemManager fs,
+        params (string Path, string Json)[] snapshotFiles)
+    {
+        const string sessionId = "session_shining_materialization_example";
+        const string requestId = "request_shining_materialization_example";
+        const int turnNumber = 24;
+        const string playerAction = "Проверить полномочия главы Архива Первого Света.";
+        await fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
+        {
+          "sessionId": "{{sessionId}}",
+          "requestId": "{{requestId}}",
+          "turnNumber": {{turnNumber}},
+          "playerAction": {{JsonSerializer.Serialize(playerAction)}}
+        }
+        """);
+
+        var files = new JsonObject();
+        var snapshotHashes = new JsonObject();
+        var rollbackBaselineFiles = new JsonArray();
+        foreach (var (path, json) in snapshotFiles)
+        {
+            var snapshotPath = $"game_state/control/pending_turn_snapshot/{path}";
+            await fs.WriteFileAtomicAsync(snapshotPath, json);
+            files[path] = snapshotPath;
+            snapshotHashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(json);
+            rollbackBaselineFiles.Add(path);
+        }
+
+        var manifest = new JsonObject
+        {
+            ["sessionId"] = sessionId,
+            ["requestId"] = requestId,
+            ["turnNumber"] = turnNumber,
+            ["requestTimestamp"] = "2026-07-26T00:00:00Z",
+            ["playerAction"] = playerAction,
+            ["files"] = files,
+            ["snapshotFileHashes"] = snapshotHashes,
+            ["clientOwnedValidationHashes"] = new JsonObject(),
+            ["rollbackBackups"] = new JsonObject(),
+            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
+            ["sourceLabel"] = "Shining faction-head worked example",
+            ["manifestPayloadHash"] = string.Empty
+        };
+        manifest["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fs);
+    }
+
+    private static List<ValidationIssue> ValidateResponseWithRuntimeValidator(JsonElement response)
+    {
+        var rootPath = Path.Combine(Path.GetTempPath(), "boe-afterlife-doc-runtime-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            Directory.CreateDirectory(rootPath);
+            var fs = new FileSystemManager(rootPath, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            return new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateResponse(response);
+        }
+        finally
+        {
+            if (Directory.Exists(rootPath))
+                Directory.Delete(rootPath, recursive: true);
         }
     }
 

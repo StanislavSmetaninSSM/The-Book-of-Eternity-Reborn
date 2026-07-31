@@ -84,7 +84,7 @@
                 MORTAL WORLD ONLY:
                 currentPoiseChange, currentEnergyChange, currentHealthChange, experienceGained, moneyChange,
                 statsIncreased, statsDecreased, activeSkillChanges, passiveSkillChanges, skillMasteryChanges,
-                UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges,
+                UpdateInventory, UpdateNPCs, NPCsInScene, NPCCoreChanges, UpdateQuests, worldEventsLog, factionDataChanges,
                 currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
 
                 AFTERLIFE REALMS ONLY (Chaos Sea / Shining Abode):
@@ -390,8 +390,36 @@
                 If neither specific dialogue nor general suggestions are applicable (rare), this should be null or an empty array.",
                 
                 "UpdateNPCs": "(array of npc_objects or null) 
-                This command is used to report new NPCs or fundamental changes to existing NPCs (e.g., name, race, core history) for which no dedicated event array exists. 
+                Complete-object carrier used only for a genuinely new durable NPC or a true legacy promotion that adds its first materialization envelope and repeats an exact semantically unchanged validated pre-turn inventory snapshot. It is not an ordinary-existing patch or unchanged background channel.
                 Structure defined in InstructionBlock '19'.",
+
+                "NPCCoreChanges": "(array of bounded_npc_core_change_objects or null)
+                Mortal-only non-carrier command for supported ordinary-existing core mutations. It maps to game_state/npcs/npc_core.json, targets one exact existing permanent NPCId, requires a non-empty reason and at least one non-empty mutation group, and uses absolute resulting values.
+                Structure: {
+                    'NPCId': 'exact_existing_permanent_npc_id',
+                    'reason': 'non-empty in-world and mechanical justification',
+                    'profile': {
+                        'worldview': 'optional absolute replacement',
+                        'race': 'optional absolute replacement',
+                        'history': 'optional absolute replacement'
+                    },
+                    'location': {
+                        'currentLocationId': 'known_permanent_location_id_or_null',
+                        'initialLocationId': 'exact_same_turn_location_initial_id_or_null'
+                    },
+                    'progression': {
+                        'level': 'non-negative integer',
+                        'experience': 'non-negative integer',
+                        'experienceForNextLevel': 'non-negative integer',
+                        'progressionType': 'absolute resulting value',
+                        'lastPlayerXPValueOnSync': 'non-negative integer when synchronization is required'
+                    },
+                    'characteristicValues': { 'setting_defined_characteristic_key': 'finite numeric absolute result' },
+                    'factionAffiliationsToUpsert': [ 'complete affiliation objects with exact faction identity' ],
+                    'fateCardsToAdd': [ 'complete new initially locked Fate Card objects' ],
+                    'fateCardIdsToRemove': [ 'validated pre-turn locked/unrealized Fate Card ids' ]
+                }.
+                Unknown members, identity/name/materialization/inventory/equipment/skills/relationships/journals/goals/quests/activities/masks/custom-state/trade/teacher fields, and arbitrary JSON paths are forbidden. Use the existing dedicated command for those domains. Unlocking remains NPCFateCardUnlocks.",
                 
                 "interNPCRelationshipChanges": "(array of inter_npc_relationship_change_objects or null) 
                 MANDATORY ATOMIC COMMAND. Used to create or update the relationship status FROM one NPC TO another.
@@ -439,7 +467,7 @@
                     'changeReason': 'string' 
                 }.",
 
-                "NPCsInScene": "(array of complete npc_objects or null) Full NPC objects for all named NPCs currently present in the active scene/context.",
+                "NPCsInScene": "(array of complete npc_objects or null) Canonical full objects for named NPCs physically present in the active scene/context. A historical actor may remain here only as retained scene state with every actor-owned field semantically unchanged from validated pre-turn authority; presence is not an ordinary mutation command. Use the exact dedicated command or bounded NPCCoreChanges for supported changes.",
 
                 "NPCGoalUpdates": "(array of npc_goal_update_objects or null)
                 The atomic command to update an NPC's short-term goals, long-term goals and strategic plans. 

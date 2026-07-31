@@ -35,7 +35,12 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
             null!,
             null!,
             NullLogger<QteSceneService>.Instance);
-        _web = new QteWebInteractionService(_fs, qte);
+        _web = new QteWebInteractionService(
+            _fs,
+            qte,
+            new BrowserLocalWriteCoordinator(
+                _fs,
+                new LocalUiSessionLockService(_fs)));
     }
 
     [Fact]
@@ -56,7 +61,12 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
     [Fact]
     public async Task PracticeBrowserAttempt_ProjectsMiniGameAndCompletesWithLocalFeedbackOnly()
     {
-        var started = await _web.StartPracticeAttemptAsync(new QtePracticeStartRequest("MashInput", "normal"));
+        var catalog = await _web.BuildPracticeStateAsync();
+        var started = await _web.StartPracticeAttemptAsync(
+            new QtePracticeStartRequest(
+                "MashInput",
+                "normal",
+                catalog.InteractionToken));
         Assert.NotNull(started.ActiveScene);
         var action = Assert.Single(started.ActiveScene!.CurrentChapter!.Actions);
         var config = Assert.IsAssignableFrom<JsonObject>(action.CheckConfig);
@@ -67,7 +77,11 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
         Assert.Equal("MashInput", config["kind"]!.GetValue<string>());
         Assert.Contains("submitAction", started.AvailableOperations);
 
-        var completed = await _web.ResolvePracticeActionAsync(new QtePracticeActionRequest(action.ActionId, "success"));
+        var completed = await _web.ResolvePracticeActionAsync(
+            new QtePracticeActionRequest(
+                action.ActionId,
+                "success",
+                started.InteractionToken));
 
         Assert.Equal("Completed", completed.State);
         Assert.Null(completed.ActiveScene);
@@ -85,6 +99,7 @@ public sealed class QtePracticeWebInteractionTests : IDisposable
     private Dictionary<string, string> SnapshotFiles() =>
         Directory.EnumerateFiles(_rootPath, "*", SearchOption.AllDirectories)
             .Select(path => (Path: Path.GetRelativePath(_rootPath, path).Replace('\\', '/'), Contents: File.ReadAllText(path)))
+            .Where(item => !item.Path.StartsWith(".boe_runtime/", StringComparison.OrdinalIgnoreCase))
             .OrderBy(item => item.Path, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(item => item.Path, item => item.Contents, StringComparer.OrdinalIgnoreCase);
 

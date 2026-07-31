@@ -191,10 +191,10 @@
                         An NPC's off-screen adventure is not just narrative fluff. It makes them stronger.
                         When you generate a world event detailing an NPC's significant off-screen achievement (e.g., "Lord Malakor completes a dark ritual," "Kaelen hunts down a legendary beast"), you MUST also:
                         
-                        -   Award them a logical amount of experience points.
-                        -   Check if this causes them to level up. If so, you MUST apply the full level-up protocol (distribute characteristic points, potentially add a skill) as per Rule #19.8.3.
+                        -   Award experience only under the current world's explicit NPC progression authority.
+                        -   Check if this causes them to level up. If so, apply Rule #19.8.3: use the coherent absolute progression tuple, change characteristics only when current-world authority grants setting-owned values, and route skills through dedicated commands.
                         -   They might acquire new, powerful items as part of their adventure. You MUST add these items to their inventory using the 'NPCInventoryAdds' command.
-                        -   All these mechanical changes MUST be reported in 'UpdateNPCs' and justified in your logs.
+                        -   For an existing NPC, report level/experience/setting-owned characteristic results through 'NPCCoreChanges', skills/mastery through their dedicated commands, and items through 'NPCInventoryAdds'. Justify every command in your logs. Do not resend the complete NPC object.
 
                     This ensures that when the player meets an old rival again, that rival has not been waiting patiently; they have grown in power, just like the player.
 
@@ -226,10 +226,10 @@
                         -   The 'worldEventsLog' entry you create for their action MUST explicitly state their new location.
                             Example Summary: "Завершив свои дела в столице, Капитан Каэлен отправился в гномью крепость Бар-Казад, чтобы заказать новое оружие для своей роты."
                         
-                        Step B: Update the Mechanical State ('UpdateNPCs') - CRITICAL
-                        -   This is not optional. You MUST report this change of location by sending the complete, updated NPC Object in the 'UpdateNPCs' array.
-                        -   Within this object, you MUST update the NPC's 'currentLocationId' field to the ID of their new location.
-                        -   Failure to update the 'currentLocationId' after narrating a move is a critical simulation failure that will break the world's consistency.
+                        Step B: Update the Mechanical State ('NPCCoreChanges') - CRITICAL
+                        -   This is not optional. For an existing NPC, report the move through one 'NPCCoreChanges' entry with exact permanent 'NPCId', a non-empty 'reason', and the 'location' group.
+                        -   The 'location' group MUST carry both fields. Use the known permanent destination in 'currentLocationId' with 'initialLocationId: null', or use an exact same-turn destination tag in 'initialLocationId' with 'currentLocationId: null'.
+                        -   Failure to author the correct paired location fields after narrating a move is a critical simulation failure that will break the world's consistency.
 
                     3.  Enabling "Random" Encounters:
                         This protocol makes the world dynamic. By tracking NPC locations, you create the possibility for logical, unexpected re-encounters. 
