@@ -1,5 +1,6 @@
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = "Lane")]
 param(
+    [Parameter(ParameterSetName = "Lane")]
     [ValidateSet(
         "Fast",
         "Focused",
@@ -12,29 +13,34 @@ param(
     )]
     [string]$Lane = "Fast",
 
+    [Parameter(ParameterSetName = "Lane")]
     [string]$Filter,
 
+    [Parameter(ParameterSetName = "Lane")]
     [ValidateRange(0, 120)]
     [int]$TimeoutMinutes = 0,
 
+    [Parameter(ParameterSetName = "Lane")]
     [ValidateRange(1, 8)]
     [Alias("GuardianParallelism")]
     [int]$Parallelism = 4,
 
+    [Parameter(ParameterSetName = "Lane")]
     [switch]$NoBuild,
 
+    [Parameter(ParameterSetName = "Lane")]
     [switch]$PlanOnly,
 
     [ValidateSet(
-        "None",
         "NpmStartup",
         "ResultDirectory",
-        "TrxSummary"
+        "TrxSummary",
+        "OwnedPostStartFailure"
     )]
-    [Parameter(DontShow)]
-    [string]$SelfTest = "None",
+    [Parameter(Mandatory, ParameterSetName = "SelfTest", DontShow)]
+    [string]$SelfTest,
 
-    [Parameter(DontShow)]
+    [Parameter(ParameterSetName = "SelfTest", DontShow)]
     [string]$SelfTestTrxDirectory
 )
 
@@ -88,13 +94,19 @@ $laneDefinitions = @{
     }
 }
 
-$effectiveLane = if ($Lane -eq "Complete") { "PreMerge" } else { $Lane }
-$laneDefinition = $laneDefinitions[$effectiveLane]
-$effectiveTimeoutMinutes = if ($TimeoutMinutes -gt 0) {
-    $TimeoutMinutes
-}
-else {
-    [int]$laneDefinition.TimeoutMinutes
+$isSelfTest = $PSCmdlet.ParameterSetName -eq "SelfTest"
+$effectiveLane = $null
+$laneDefinition = $null
+$effectiveTimeoutMinutes = $null
+if (-not $isSelfTest) {
+    $effectiveLane = if ($Lane -eq "Complete") { "PreMerge" } else { $Lane }
+    $laneDefinition = $laneDefinitions[$effectiveLane]
+    $effectiveTimeoutMinutes = if ($TimeoutMinutes -gt 0) {
+        $TimeoutMinutes
+    }
+    else {
+        [int]$laneDefinition.TimeoutMinutes
+    }
 }
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
@@ -102,6 +114,11 @@ $fastTestProject = Join-Path $repoRoot "BookOfEternityClient.Tests\BookOfEternit
 $integrationTestProject = Join-Path $repoRoot "BookOfEternityClient.IntegrationTests\BookOfEternityClient.IntegrationTests.csproj"
 
 function New-UniqueResultDirectory {
+    param(
+        [Parameter(Mandatory)]
+        [string]$RunLabel
+    )
+
     $resultRoot = Join-Path $repoRoot "TestResults\test-lanes"
     [void][System.IO.Directory]::CreateDirectory($resultRoot)
 
@@ -111,7 +128,7 @@ function New-UniqueResultDirectory {
             $runStamp,
             $PID,
             [Guid]::NewGuid().ToString("N"),
-            $Lane.ToLowerInvariant()
+            $RunLabel.ToLowerInvariant()
         )
         $candidate = Join-Path $resultRoot $uniqueName
         try {
@@ -129,19 +146,35 @@ function New-UniqueResultDirectory {
     }
 }
 
-$resultDirectory = New-UniqueResultDirectory
+$resultLabel = if ($isSelfTest) { "fast" } else { $Lane }
+$resultDirectory = New-UniqueResultDirectory -RunLabel $resultLabel
 $logPath = Join-Path $resultDirectory "dotnet-test.log"
 
-Set-Content -LiteralPath $logPath -Value @(
-    "RequestedLane: $Lane"
-    "EffectiveLane: $effectiveLane"
-    "Filter: <pending validation>"
-    "TimeoutMinutes: $effectiveTimeoutMinutes"
-    "StartedUtc: $([DateTime]::UtcNow.ToString("O"))"
-)
+$logHeader = if ($isSelfTest) {
+    @(
+        "SelfTest: $SelfTest"
+        "StartedUtc: $([DateTime]::UtcNow.ToString("O"))"
+    )
+}
+else {
+    @(
+        "RequestedLane: $Lane"
+        "EffectiveLane: $effectiveLane"
+        "Filter: <pending validation>"
+        "TimeoutMinutes: $effectiveTimeoutMinutes"
+        "StartedUtc: $([DateTime]::UtcNow.ToString("O"))"
+    )
+}
+Set-Content -LiteralPath $logPath -Value $logHeader
 
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-$deadlineUtc = [DateTime]::UtcNow.AddMinutes($effectiveTimeoutMinutes)
+$deadlineDuration = if ($isSelfTest) {
+    [TimeSpan]::FromSeconds(30)
+}
+else {
+    [TimeSpan]::FromMinutes($effectiveTimeoutMinutes)
+}
+$deadlineUtc = [DateTime]::UtcNow.Add($deadlineDuration)
 $allRuns = [System.Collections.Generic.List[object]]::new()
 $timedOut = $false
 $cleanupSucceeded = $true
@@ -149,6 +182,7 @@ $exitCode = 0
 $failureMessage = $null
 $laneFilter = $null
 $trxSummaryOverride = $null
+$lastPostStartCleanup = $null
 
 function Get-ProjectDisplayPath {
     param(
@@ -202,32 +236,71 @@ function Start-OwnedProcess {
 
     $process = [System.Diagnostics.Process]::new()
     $process.StartInfo = $startInfo
-    if (-not $process.Start()) {
+    try {
+        $started = $process.Start()
+    }
+    catch {
+        $process.Dispose()
+        throw
+    }
+    if (-not $started) {
         $process.Dispose()
         throw "Failed to start '$FileName' for owned process '$Name'."
     }
 
-    Add-Content -LiteralPath $logPath -Value (
-        "Owned process '$Name': FileName=$FileName; " +
-        "UseShellExecute=$($startInfo.UseShellExecute); " +
-        "CreateNoWindow=$($startInfo.CreateNoWindow); " +
-        "RedirectStandardOutput=$($startInfo.RedirectStandardOutput); " +
-        "RedirectStandardError=$($startInfo.RedirectStandardError)")
-
-    $run = [pscustomobject]@{
-        Name = $Name
-        FileName = $FileName
-        Process = $process
-        StandardOutput = $process.StandardOutput.ReadToEndAsync()
-        StandardError = $process.StandardError.ReadToEndAsync()
-        Finalized = $false
-        ExitCode = $null
-        StandardOutputText = $null
-        StandardErrorText = $null
-        Quiet = $Quiet.IsPresent
+    $run = $null
+    try {
+        $run = [pscustomobject]@{
+            Name = $Name
+            FileName = $FileName
+            Process = $process
+            StandardOutput = $null
+            StandardError = $null
+            Finalized = $false
+            ExitCode = $null
+            StandardOutputText = $null
+            StandardErrorText = $null
+            Quiet = $Quiet.IsPresent
+        }
+        [void]$allRuns.Add($run)
+        $run.StandardOutput = $process.StandardOutput.ReadToEndAsync()
+        $run.StandardError = $process.StandardError.ReadToEndAsync()
+        Add-Content -LiteralPath $logPath -Value (
+            "Owned process '$Name': FileName=$FileName; " +
+            "UseShellExecute=$($startInfo.UseShellExecute); " +
+            "CreateNoWindow=$($startInfo.CreateNoWindow); " +
+            "RedirectStandardOutput=$($startInfo.RedirectStandardOutput); " +
+            "RedirectStandardError=$($startInfo.RedirectStandardError)")
+        return $run
     }
-    [void]$allRuns.Add($run)
-    return $run
+    catch {
+        $initializationError = $_
+        $killed = $false
+        $disposed = $false
+        try {
+            if ($process.HasExited) {
+                $killed = $true
+            }
+            else {
+                $process.Kill($true)
+                $killed = $process.WaitForExit(10000)
+            }
+        }
+        catch {
+            $killed = $false
+        }
+        finally {
+            [void]$allRuns.Remove($run)
+            $process.Dispose()
+            $disposed = $true
+            $script:lastPostStartCleanup = [pscustomobject]@{
+                Killed = $killed
+                Disposed = $disposed
+                Registered = $allRuns.Contains($run)
+            }
+        }
+        throw $initializationError
+    }
 }
 
 function Complete-OwnedProcess {
@@ -989,12 +1062,12 @@ function Get-TrxSummary {
                 if ([string]::IsNullOrWhiteSpace($testId)) {
                     continue
                 }
-                $storage = if ($storageByTestId.ContainsKey($testId)) {
-                    $storageByTestId[$testId]
+                if (-not $storageByTestId.ContainsKey($testId)) {
+                    throw (
+                        "UnitTestResult testId '$testId' in '$($trxFile.Name)' " +
+                        "has no UnitTest storage mapping.")
                 }
-                else {
-                    "<unknown-storage>"
-                }
+                $storage = $storageByTestId[$testId]
                 $key = "$storage::$testId"
                 if ($seenInTrx.Add($key)) {
                     [void]$testOccurrences.Add([pscustomobject]@{
@@ -1028,21 +1101,7 @@ function Get-TrxSummary {
 }
 
 try {
-    if ($Lane -eq "Focused" -and [string]::IsNullOrWhiteSpace($Filter)) {
-        throw "Lane Focused requires -Filter with a VSTest filter expression."
-    }
-    if ($Lane -ne "Focused" -and -not [string]::IsNullOrWhiteSpace($Filter)) {
-        throw "-Filter is supported only with -Lane Focused."
-    }
-    if ($TimeoutMinutes -gt [int]$laneDefinition.TimeoutMinutes) {
-        throw "Lane '$Lane' has a hard limit of $($laneDefinition.TimeoutMinutes) minute(s)."
-    }
-
-    $laneFilter = if ($Lane -eq "Focused") { $Filter } else { $laneDefinition.Filter }
-    Add-Content -LiteralPath $logPath -Value (
-        "ValidatedFilter: $(if ([string]::IsNullOrWhiteSpace($laneFilter)) { "<none>" } else { $laneFilter })")
-
-    if ($SelfTest -ne "None") {
+    if ($isSelfTest) {
         switch ($SelfTest) {
             "NpmStartup" {
                 $npmCommandPath = Resolve-NpmCommandPath
@@ -1066,19 +1125,70 @@ try {
                     $exitCode = 1
                     throw "TRX parsing failed: $($trxSummaryOverride.ParseErrors -join '; ')"
                 }
-                if ($effectiveLane -eq "PreMerge" -and
-                    $trxSummaryOverride.DuplicateTests.Count -ne 0) {
+                if ($trxSummaryOverride.DuplicateTests.Count -ne 0) {
                     $exitCode = 1
-                    throw "PreMerge produced duplicate TRX test IDs: $($trxSummaryOverride.DuplicateTests -join ', ')"
+                    throw "TRX summary self-test found duplicate TRX test IDs: $($trxSummaryOverride.DuplicateTests -join ', ')"
                 }
             }
             "ResultDirectory" {
                 Add-Content -LiteralPath $logPath -Value (
                     "Result-directory self-test: $resultDirectory")
             }
+            "OwnedPostStartFailure" {
+                $pwshCommand = @(
+                    Get-Command -Name "pwsh" -CommandType Application -ErrorAction Stop
+                )[0]
+                $savedLogPath = $logPath
+                try {
+                    $logPath = $resultDirectory
+                    [void](Start-OwnedProcess `
+                        -Name "Post-start-failure-probe" `
+                        -FileName $pwshCommand.Path `
+                        -Arguments @(
+                            "-NoProfile",
+                            "-Command",
+                            "Start-Sleep -Seconds 30"
+                        ) `
+                        -Quiet)
+                }
+                catch {
+                    Add-Content -LiteralPath $savedLogPath -Value (
+                        "Expected post-start failure: $($_.Exception.Message)")
+                }
+                finally {
+                    $logPath = $savedLogPath
+                }
+
+                if ($null -eq $lastPostStartCleanup) {
+                    throw "Post-start failure probe did not exercise initialization cleanup."
+                }
+                if (-not $lastPostStartCleanup.Killed -or
+                    -not $lastPostStartCleanup.Disposed -or
+                    $lastPostStartCleanup.Registered) {
+                    throw "Post-start failure probe did not clean up the owned process."
+                }
+                Write-Host (
+                    "Post-start cleanup: killed=$($lastPostStartCleanup.Killed) " +
+                    "disposed=$($lastPostStartCleanup.Disposed) " +
+                    "registered=$($lastPostStartCleanup.Registered)")
+            }
         }
     }
     else {
+        if ($Lane -eq "Focused" -and [string]::IsNullOrWhiteSpace($Filter)) {
+            throw "Lane Focused requires -Filter with a VSTest filter expression."
+        }
+        if ($Lane -ne "Focused" -and -not [string]::IsNullOrWhiteSpace($Filter)) {
+            throw "-Filter is supported only with -Lane Focused."
+        }
+        if ($TimeoutMinutes -gt [int]$laneDefinition.TimeoutMinutes) {
+            throw "Lane '$Lane' has a hard limit of $($laneDefinition.TimeoutMinutes) minute(s)."
+        }
+
+        $laneFilter = if ($Lane -eq "Focused") { $Filter } else { $laneDefinition.Filter }
+        Add-Content -LiteralPath $logPath -Value (
+            "ValidatedFilter: $(if ([string]::IsNullOrWhiteSpace($laneFilter)) { "<none>" } else { $laneFilter })")
+
         if (-not $PlanOnly) {
         if ($effectiveLane -in @("E2E", "PreMerge")) {
             $npmCommandPath = Resolve-NpmCommandPath
@@ -1251,41 +1361,77 @@ $trxSummary = if ($null -ne $trxSummaryOverride) {
 else {
     Get-TrxSummary
 }
-$summary = [ordered]@{
-    RequestedLane = $Lane
-    EffectiveLane = $effectiveLane
-    TimeoutMinutes = $effectiveTimeoutMinutes
-    WallTime = $stopwatch.Elapsed.ToString()
-    ExitCode = $exitCode
-    TimedOut = $timedOut
-    OwnedTreeCleanupSucceeded = $cleanupSucceeded
-    Tests = [ordered]@{
-        Total = $trxSummary.Total
-        Executed = $trxSummary.Executed
-        Passed = $trxSummary.Passed
-        Failed = $trxSummary.Failed
+$summary = if ($isSelfTest) {
+    [ordered]@{
+        SelfTest = $SelfTest
+        WallTime = $stopwatch.Elapsed.ToString()
+        ExitCode = $exitCode
+        TimedOut = $timedOut
+        OwnedTreeCleanupSucceeded = $cleanupSucceeded
+        Tests = [ordered]@{
+            Total = $trxSummary.Total
+            Executed = $trxSummary.Executed
+            Passed = $trxSummary.Passed
+            Failed = $trxSummary.Failed
+        }
+        DuplicateTests = @($trxSummary.DuplicateTests)
     }
-    DuplicateTests = @($trxSummary.DuplicateTests)
 }
+else {
+    [ordered]@{
+        RequestedLane = $Lane
+        EffectiveLane = $effectiveLane
+        TimeoutMinutes = $effectiveTimeoutMinutes
+        WallTime = $stopwatch.Elapsed.ToString()
+        ExitCode = $exitCode
+        TimedOut = $timedOut
+        OwnedTreeCleanupSucceeded = $cleanupSucceeded
+        Tests = [ordered]@{
+            Total = $trxSummary.Total
+            Executed = $trxSummary.Executed
+            Passed = $trxSummary.Passed
+            Failed = $trxSummary.Failed
+        }
+        DuplicateTests = @($trxSummary.DuplicateTests)
+    }
+}
+$summaryFileName = if ($isSelfTest) { "self-test-summary.json" } else { "summary.json" }
 $summary | ConvertTo-Json -Depth 4 |
-    Set-Content -LiteralPath (Join-Path $resultDirectory "summary.json")
+    Set-Content -LiteralPath (Join-Path $resultDirectory $summaryFileName)
 
-$summaryLines = @(
-    ""
-    "Lane result"
-    "  Requested lane: $Lane"
-    "  Effective lane: $effectiveLane"
-    "  Filter: $(if ([string]::IsNullOrWhiteSpace($laneFilter)) { "<none>" } else { $laneFilter })"
-    "  Timeout: $effectiveTimeoutMinutes minute(s)"
-    "  Wall time: $($stopwatch.Elapsed)"
-    "  Exit code: $exitCode"
-    "  Timed out: $timedOut"
-    "  Owned-tree cleanup: $(if ($cleanupSucceeded) { "complete" } else { "failed" })"
-    "  Tests: total=$($trxSummary.Total), executed=$($trxSummary.Executed), passed=$($trxSummary.Passed), failed=$($trxSummary.Failed)"
-    "  Duplicate test IDs: $($trxSummary.DuplicateTests.Count)"
-    "  Results: $resultDirectory"
-    "  Log: $logPath"
-)
+$summaryLines = if ($isSelfTest) {
+    @(
+        ""
+        "Self-test result"
+        "  Self-test: $SelfTest"
+        "  Wall time: $($stopwatch.Elapsed)"
+        "  Exit code: $exitCode"
+        "  Timed out: $timedOut"
+        "  Owned-tree cleanup: $(if ($cleanupSucceeded) { "complete" } else { "failed" })"
+        "  Tests: total=$($trxSummary.Total), executed=$($trxSummary.Executed), passed=$($trxSummary.Passed), failed=$($trxSummary.Failed)"
+        "  Duplicate test IDs: $($trxSummary.DuplicateTests.Count)"
+        "  Self-test results: $resultDirectory"
+        "  Log: $logPath"
+    )
+}
+else {
+    @(
+        ""
+        "Lane result"
+        "  Requested lane: $Lane"
+        "  Effective lane: $effectiveLane"
+        "  Filter: $(if ([string]::IsNullOrWhiteSpace($laneFilter)) { "<none>" } else { $laneFilter })"
+        "  Timeout: $effectiveTimeoutMinutes minute(s)"
+        "  Wall time: $($stopwatch.Elapsed)"
+        "  Exit code: $exitCode"
+        "  Timed out: $timedOut"
+        "  Owned-tree cleanup: $(if ($cleanupSucceeded) { "complete" } else { "failed" })"
+        "  Tests: total=$($trxSummary.Total), executed=$($trxSummary.Executed), passed=$($trxSummary.Passed), failed=$($trxSummary.Failed)"
+        "  Duplicate test IDs: $($trxSummary.DuplicateTests.Count)"
+        "  Results: $resultDirectory"
+        "  Log: $logPath"
+    )
+}
 if (-not [string]::IsNullOrWhiteSpace($failureMessage)) {
     $summaryLines += "  Failure: $failureMessage"
 }

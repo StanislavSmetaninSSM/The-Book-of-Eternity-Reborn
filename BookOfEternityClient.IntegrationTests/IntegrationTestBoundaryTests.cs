@@ -223,6 +223,7 @@ public sealed class IntegrationTestBoundaryTests
             "GetAttribute(\"testId\")",
             "GetAttribute(\"storage\")",
             "$seenInTrx",
+            "has no UnitTest storage mapping",
             "Group-Object Key",
             "Select-Object -ExpandProperty TestId",
             "Where-Object Count -gt 1",
@@ -264,7 +265,9 @@ public sealed class IntegrationTestBoundaryTests
                 $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
                 $"stderr:{Environment.NewLine}{probe.StandardError}");
             using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
-                Path.Combine(ResultDirectoryFrom(probe.StandardOutput), "summary.json")));
+                Path.Combine(
+                    ResultDirectoryFrom(probe.StandardOutput),
+                    "self-test-summary.json")));
             var duplicateTests = summary.RootElement.GetProperty("DuplicateTests");
             Assert.Equal(JsonValueKind.Array, duplicateTests.ValueKind);
             Assert.Empty(duplicateTests.EnumerateArray());
@@ -296,12 +299,77 @@ public sealed class IntegrationTestBoundaryTests
                 probe.StandardOutput,
                 StringComparison.Ordinal);
             using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
-                Path.Combine(ResultDirectoryFrom(probe.StandardOutput), "summary.json")));
+                Path.Combine(
+                    ResultDirectoryFrom(probe.StandardOutput),
+                    "self-test-summary.json")));
             var duplicateTests = summary.RootElement.GetProperty("DuplicateTests");
             Assert.Equal(JsonValueKind.Array, duplicateTests.ValueKind);
             Assert.Equal(
                 "shared-id",
                 Assert.Single(duplicateTests.EnumerateArray()).GetString());
+        }
+        finally
+        {
+            Directory.Delete(fixtureDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_SameTestIdInDifferentAssembliesIsNotDuplicate()
+    {
+        var fixtureDirectory = CreateTrxFixtureDirectory();
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(fixtureDirectory, "fast-descriptor.trx"),
+                SyntheticTrx("shared-id", "fast-tests.dll", resultCount: 1));
+            await File.WriteAllTextAsync(
+                Path.Combine(fixtureDirectory, "integration-descriptor.trx"),
+                SyntheticTrx("shared-id", "integration-tests.dll", resultCount: 1));
+
+            var probe = await RunCSharpRunnerTrxSelfTestAsync(fixtureDirectory);
+
+            Assert.True(
+                probe.ExitCode == 0,
+                $"Assembly-scoped probe failed.{Environment.NewLine}" +
+                $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+                $"stderr:{Environment.NewLine}{probe.StandardError}");
+            using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
+                Path.Combine(
+                    ResultDirectoryFrom(probe.StandardOutput),
+                    "self-test-summary.json")));
+            Assert.Empty(
+                summary.RootElement
+                    .GetProperty("DuplicateTests")
+                    .EnumerateArray());
+        }
+        finally
+        {
+            Directory.Delete(fixtureDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_MissingStorageMappingFailsClosed()
+    {
+        var fixtureDirectory = CreateTrxFixtureDirectory();
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(fixtureDirectory, "missing-storage.trx"),
+                SyntheticTrx("unmapped-id", storage: null, resultCount: 1));
+
+            var probe = await RunCSharpRunnerTrxSelfTestAsync(fixtureDirectory);
+
+            Assert.Equal(1, probe.ExitCode);
+            Assert.Contains(
+                "has no UnitTest storage mapping",
+                probe.StandardOutput,
+                StringComparison.Ordinal);
+            Assert.DoesNotContain(
+                "duplicate TRX test IDs",
+                probe.StandardOutput,
+                StringComparison.Ordinal);
         }
         finally
         {
@@ -1364,11 +1432,6 @@ public sealed class IntegrationTestBoundaryTests
             "-NoProfile",
             "-File",
             Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1"),
-            "-Lane",
-            "PreMerge",
-            "-TimeoutMinutes",
-            "1",
-            "-NoBuild",
             "-SelfTest",
             "TrxSummary",
             "-SelfTestTrxDirectory",
@@ -1411,17 +1474,18 @@ public sealed class IntegrationTestBoundaryTests
 
     private static string SyntheticTrx(
         string testId,
-        string storage,
+        string? storage,
         int resultCount)
     {
         var results = string.Concat(Enumerable.Range(1, resultCount).Select(index =>
             $"""<UnitTestResult testId="{testId}" executionId="execution-{index}" />"""));
+        var storageAttribute = storage is null ? string.Empty : $" storage=\"{storage}\"";
         return $$"""
             <?xml version="1.0" encoding="utf-8"?>
             <TestRun>
               <Results>{{results}}</Results>
               <TestDefinitions>
-                <UnitTest id="{{testId}}" storage="{{storage}}" />
+                <UnitTest id="{{testId}}"{{storageAttribute}} />
               </TestDefinitions>
               <ResultSummary>
                 <Counters total="{{resultCount}}" executed="{{resultCount}}" passed="{{resultCount}}" failed="0" />
@@ -1434,7 +1498,7 @@ public sealed class IntegrationTestBoundaryTests
     {
         var match = Regex.Match(
             standardOutput,
-            @"(?m)^  Results: (?<path>.+?)\r?$");
+            @"(?m)^  Self-test results: (?<path>.+?)\r?$");
         Assert.True(match.Success, standardOutput);
         return match.Groups["path"].Value;
     }

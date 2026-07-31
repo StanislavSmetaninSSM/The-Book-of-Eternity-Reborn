@@ -55,6 +55,10 @@ public sealed class FastTestBoundaryTests
 
         var requiredTokens = new[]
         {
+            "[CmdletBinding(DefaultParameterSetName = \"Lane\")]",
+            "ParameterSetName = \"Lane\"",
+            "ParameterSetName = \"SelfTest\"",
+            "$PSCmdlet.ParameterSetName",
             "test-results.trx",
             "dotnet-test.log",
             "Stopwatch",
@@ -95,6 +99,24 @@ public sealed class FastTestBoundaryTests
         };
         Assert.All(forbiddenBroadProcessCommands, command =>
             Assert.DoesNotContain(command, source, StringComparison.OrdinalIgnoreCase));
+
+        var registerIndex = source.IndexOf(
+            "[void]$allRuns.Add($run)",
+            StringComparison.Ordinal);
+        var standardOutputDrainIndex = source.IndexOf(
+            "$process.StandardOutput.ReadToEndAsync()",
+            StringComparison.Ordinal);
+        var standardErrorDrainIndex = source.IndexOf(
+            "$process.StandardError.ReadToEndAsync()",
+            StringComparison.Ordinal);
+        var postStartLogIndex = source.IndexOf(
+            "Owned process '$Name': FileName=$FileName;",
+            StringComparison.Ordinal);
+        Assert.True(registerIndex >= 0, source);
+        Assert.True(standardOutputDrainIndex > registerIndex, source);
+        Assert.True(standardErrorDrainIndex > standardOutputDrainIndex, source);
+        Assert.True(postStartLogIndex > standardErrorDrainIndex, source);
+        Assert.Contains("[void]$allRuns.Remove($run)", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -149,6 +171,43 @@ public sealed class FastTestBoundaryTests
                 @"-\d+-[0-9a-f]{32}-fast$",
                 Path.GetFileName(resultDirectory));
         });
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_SelfTestCannotCombineWithRealLaneOrPlanOnly()
+    {
+        var realLaneCombination = await RunCSharpRunnerAsync(
+            "-Lane",
+            "PreMerge",
+            "-SelfTest",
+            "ResultDirectory");
+        var planOnlyCombination = await RunCSharpRunnerAsync(
+            "-PlanOnly",
+            "-SelfTest",
+            "NpmStartup");
+
+        AssertRejectedParameterSet(realLaneCombination);
+        AssertRejectedParameterSet(planOnlyCombination);
+        Assert.DoesNotContain(
+            "Npm-startup-probe",
+            planOnlyCombination.StandardOutput + planOnlyCombination.StandardError,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_PostStartLoggingFailureKillsAndDisposesOwnedProcess()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("OwnedPostStartFailure");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"Owned-process cleanup probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+        Assert.Contains(
+            "Post-start cleanup: killed=True disposed=True registered=False",
+            probe.StandardOutput,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -455,7 +514,11 @@ public sealed class FastTestBoundaryTests
     }
 
     private static async Task<RunnerSelfTestResult> RunCSharpRunnerSelfTestAsync(
-        string selfTest)
+        string selfTest) =>
+        await RunCSharpRunnerAsync("-SelfTest", selfTest);
+
+    private static async Task<RunnerSelfTestResult> RunCSharpRunnerAsync(
+        params string[] arguments)
     {
         var startInfo = new ProcessStartInfo("pwsh")
         {
@@ -469,15 +532,8 @@ public sealed class FastTestBoundaryTests
         {
             "-NoProfile",
             "-File",
-            Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1"),
-            "-Lane",
-            "Fast",
-            "-TimeoutMinutes",
-            "1",
-            "-NoBuild",
-            "-SelfTest",
-            selfTest
-        })
+            Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1")
+        }.Concat(arguments))
         {
             startInfo.ArgumentList.Add(argument);
         }
@@ -496,7 +552,8 @@ public sealed class FastTestBoundaryTests
             process.Kill(entireProcessTree: true);
             await process.WaitForExitAsync();
             throw new TimeoutException(
-                $"PowerShell runner self-test '{selfTest}' exceeded 30 seconds.");
+                $"PowerShell runner invocation exceeded 30 seconds: " +
+                string.Join(" ", arguments));
         }
 
         return new RunnerSelfTestResult(
@@ -505,11 +562,24 @@ public sealed class FastTestBoundaryTests
             await standardError);
     }
 
+    private static void AssertRejectedParameterSet(RunnerSelfTestResult result)
+    {
+        Assert.NotEqual(0, result.ExitCode);
+        Assert.Contains(
+            "Parameter set cannot be resolved",
+            result.StandardError,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Lane result", result.StandardOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Requested lane:", result.StandardOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Effective lane:", result.StandardOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Results:", result.StandardOutput, StringComparison.Ordinal);
+    }
+
     private static string ResultDirectoryFrom(string standardOutput)
     {
         var match = Regex.Match(
             standardOutput,
-            @"(?m)^  Results: (?<path>.+?)\r?$");
+            @"(?m)^  Self-test results: (?<path>.+?)\r?$");
         Assert.True(match.Success, standardOutput);
         return match.Groups["path"].Value;
     }
