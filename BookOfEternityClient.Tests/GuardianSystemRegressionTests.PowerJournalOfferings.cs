@@ -12,7 +12,8 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class GuardianSystemRegressionTests
-{    [Fact]
+{
+    [Fact]
     public async Task ValidateGameState_GuardianPowerEvents_NonPoliticalOfferingDoesNotRequireCurrentTrackerAuthority()
     {
         await WriteRawAsync("game_state/meta/guardians.json", """
@@ -85,7 +86,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_missing_current_tracker_authority", StringComparison.OrdinalIgnoreCase));
@@ -111,7 +112,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_missing_validated_preturn_journal_snapshot", StringComparison.OrdinalIgnoreCase));
@@ -199,7 +200,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_missing_current_tracker_authority", StringComparison.OrdinalIgnoreCase));
@@ -277,7 +278,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_missing_current_tracker_authority", StringComparison.OrdinalIgnoreCase));
@@ -405,7 +406,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             issue.FilePath.EndsWith("game_state/meta/guardians.json.guardianPowerEvents", StringComparison.OrdinalIgnoreCase) &&
@@ -493,7 +494,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             issue.FilePath.EndsWith("game_state/meta/abode_power_journal.json", StringComparison.OrdinalIgnoreCase) &&
@@ -601,7 +602,7 @@ public sealed partial class GuardianSystemRegressionTests
             trackerJson);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             issue.FilePath.EndsWith("game_state/meta/abode_power_journal.json", StringComparison.OrdinalIgnoreCase) &&
@@ -683,7 +684,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_reason_type_source_surface_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -764,7 +765,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_offering_invalid_type", StringComparison.OrdinalIgnoreCase));
@@ -825,7 +826,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_offering_delta_formula_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -885,7 +886,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_offering_relic_invalid_rarity", StringComparison.OrdinalIgnoreCase));
@@ -978,7 +979,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_duplicate_entry_id", StringComparison.OrdinalIgnoreCase));
@@ -1110,7 +1111,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_duplicate_raw_event_id", StringComparison.OrdinalIgnoreCase));
@@ -1266,7 +1267,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_raw_event_id_conflicts_with_validated_preturn_journal", StringComparison.OrdinalIgnoreCase));
@@ -1391,7 +1392,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_duplicate_raw_resonance_for_same_life", StringComparison.OrdinalIgnoreCase));
@@ -1420,7 +1421,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_soul_relic_invalid_rarity", StringComparison.OrdinalIgnoreCase));
@@ -1504,7 +1505,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase) &&
@@ -1602,7 +1603,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_power_event_reason_type_source_surface_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -2629,7 +2630,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_invalid_validated_snapshot_guardians", StringComparison.OrdinalIgnoreCase));
@@ -2758,7 +2759,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_guardians", StringComparison.OrdinalIgnoreCase));
@@ -3811,24 +3812,20 @@ public sealed partial class GuardianSystemRegressionTests
         if (root["activeGuardian"] is not JsonObject activeGuardian ||
             activeGuardian["abode"] is not JsonObject abode)
             return;
-
         var abodeId = abode["abodeId"]?.GetValue<string>();
         if (string.IsNullOrWhiteSpace(abodeId))
             return;
-
         if (root["chaosSeaNavigation"] is not JsonObject navigation)
         {
             navigation = new JsonObject();
             root["chaosSeaNavigation"] = navigation;
         }
-
         navigation["currentAbodeId"] ??= abodeId;
         if (navigation["discoveredAbodes"] is not JsonArray discoveredAbodes)
         {
             discoveredAbodes = new JsonArray();
             navigation["discoveredAbodes"] = discoveredAbodes;
         }
-
         if (!discoveredAbodes.Any(node => string.Equals(node?.GetValue<string>(), abodeId, StringComparison.OrdinalIgnoreCase)))
             discoveredAbodes.Add(abodeId);
     }
@@ -3838,33 +3835,24 @@ public sealed partial class GuardianSystemRegressionTests
         var sessionId = "test-session";
         var requestId = "test-request";
         var turnNumber = 12;
-
         var turnRequestPath = _fs.ResolvePath("input/turn_request.json");
         if (File.Exists(turnRequestPath))
         {
             var turnRequestJson = File.ReadAllText(turnRequestPath);
-            if (!string.IsNullOrWhiteSpace(turnRequestJson) &&
-                JsonNode.Parse(turnRequestJson) is JsonObject turnRequest)
+            if (!string.IsNullOrWhiteSpace(turnRequestJson) && JsonNode.Parse(turnRequestJson) is JsonObject turnRequest)
             {
                 sessionId = turnRequest["sessionId"]?.GetValue<string>() ?? sessionId;
                 requestId = turnRequest["requestId"]?.GetValue<string>() ?? requestId;
                 turnNumber = turnRequest["turnNumber"]?.GetValue<int>() ?? turnNumber;
             }
         }
-
         return new JsonObject
         {
-            ["sessionId"] = sessionId,
-            ["requestId"] = requestId,
-            ["turnNumber"] = turnNumber,
-            ["requestTimestamp"] = "2026-03-24T00:00:00Z",
-            ["playerAction"] = "guardian-regression-test",
-            ["files"] = new JsonObject(),
-            ["snapshotFileHashes"] = new JsonObject(),
-            ["clientOwnedValidationHashes"] = new JsonObject(),
-            ["rollbackBackups"] = new JsonObject(),
-            ["rollbackBaselineFiles"] = new JsonArray(),
-            ["sourceLabel"] = "guardian-system-regression-tests",
+            ["sessionId"] = sessionId, ["requestId"] = requestId, ["turnNumber"] = turnNumber,
+            ["requestTimestamp"] = "2026-03-24T00:00:00Z", ["playerAction"] = "guardian-regression-test",
+            ["files"] = new JsonObject(), ["snapshotFileHashes"] = new JsonObject(),
+            ["clientOwnedValidationHashes"] = new JsonObject(), ["rollbackBackups"] = new JsonObject(),
+            ["rollbackBaselineFiles"] = new JsonArray(), ["sourceLabel"] = "guardian-system-regression-tests",
             ["manifestPayloadHash"] = string.Empty
         };
     }
@@ -3884,8 +3872,7 @@ public sealed partial class GuardianSystemRegressionTests
     private static string ComputeSha256(string content)
     {
         using var sha = SHA256.Create();
-        var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(content));
-        return Convert.ToHexString(bytes);
+        return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
     }
 
     private async Task<JsonObject> ReadObjectAsync(string path)
@@ -3901,25 +3888,19 @@ public sealed partial class GuardianSystemRegressionTests
     {
         var raw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         Assert.False(string.IsNullOrWhiteSpace(raw));
-        var snapshotRoot = BuildValidatedPreTurnGuardiansSnapshotRoot(raw!);
-        await WritePreTurnTrackedFileAsync(
-            "game_state/meta/guardians.json",
-            backupPath,
-            snapshotRoot.ToJsonString());
+        await WritePreTurnTrackedFileAsync("game_state/meta/guardians.json", backupPath,
+            BuildValidatedPreTurnGuardiansSnapshotRoot(raw!).ToJsonString());
     }
 
     private async Task WriteCurrentGuardiansNormalizerBackupAsync(string backupPath)
     {
         var raw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         Assert.False(string.IsNullOrWhiteSpace(raw));
-
         var guardiansRoot = JsonNode.Parse(raw!) as JsonObject;
         Assert.NotNull(guardiansRoot);
-
         guardiansRoot!.Remove("UpdateGuardians");
         guardiansRoot.Remove("guardianPowerEvents");
         guardiansRoot.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
-
         await _fs.WriteFileAtomicAsync(backupPath, guardiansRoot.ToJsonString(new JsonSerializerOptions
         {
             WriteIndented = true,
@@ -3927,18 +3908,8 @@ public sealed partial class GuardianSystemRegressionTests
         }));
     }
 
-    private async Task EnsureReadableCurrentGuardianProjectTrackerAsync(string? currentTrackerJson = null)
-    {
-        await _fs.WriteFileAtomicAsync(
-            GuardianProjectState.TrackerPath,
-            currentTrackerJson ?? """
-            {
-              "activeProjects": [],
-              "completedProjects": [],
-              "temporaryProjectModifiers": []
-            }
-            """);
-    }
+    private Task EnsureReadableCurrentGuardianProjectTrackerAsync(string? currentTrackerJson = null) =>
+        _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, currentTrackerJson ?? EmptyGuardianProjectTrackerJson);
 
     [Fact]
     public async Task AcceptedTurnDonateToGuardian_UsesMaterializedSnapshotUpdateGuardiansForPreTurnReputation()
@@ -4384,7 +4355,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_expected_power_gain_missing", StringComparison.OrdinalIgnoreCase));
@@ -4569,7 +4540,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_expected_power_gain_missing", StringComparison.OrdinalIgnoreCase));
@@ -4761,7 +4732,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.PowerJournalOfferings);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_expected_power_gain_missing", StringComparison.OrdinalIgnoreCase));

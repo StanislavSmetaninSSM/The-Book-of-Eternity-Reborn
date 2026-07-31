@@ -27,7 +27,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         AssertContainsIssueCodes(issues, "directly_addressed_actor_missing_from_scope");
     }
@@ -46,7 +46,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "directly_addressed_actor_missing_from_scope");
     }
@@ -113,7 +113,7 @@ public sealed partial class GuardianSystemRegressionTests
             guardianState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "directly_addressed_actor_missing_from_scope", StringComparison.OrdinalIgnoreCase) &&
@@ -141,7 +141,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "directly_addressed_actor_missing_from_scope", StringComparison.OrdinalIgnoreCase) &&
@@ -234,7 +234,7 @@ public sealed partial class GuardianSystemRegressionTests
             "NPCJournals[].journalEntries[]");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "mortal_npc_relevant_actor_missing_thought_journal_delta", StringComparison.OrdinalIgnoreCase) &&
@@ -301,7 +301,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "directly_addressed_actor_missing_from_scope", StringComparison.OrdinalIgnoreCase) &&
@@ -323,7 +323,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(
             issues,
@@ -366,7 +366,7 @@ public sealed partial class GuardianSystemRegressionTests
             debugRoot.ToJsonString());
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "missing_actor_block");
     }
@@ -395,7 +395,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(
             issues,
@@ -431,7 +431,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "actor_brain_missing_distinct_strategy_options");
     }
@@ -460,7 +460,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "actor_brain_missing_strategy_tradeoffs");
     }
@@ -489,7 +489,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "actor_brain_missing_strategy_tradeoffs");
     }
@@ -509,7 +509,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "guardian_relevant_actor_missing_thought_journal_delta");
     }
@@ -538,7 +538,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertDoesNotContainIssueCodes(
             issues,
@@ -573,7 +573,7 @@ public sealed partial class GuardianSystemRegressionTests
             "Архив Элиары");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "actor_thought_journal_not_first_person");
     }
@@ -602,7 +602,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "actor_brain_state_changes_missing_actual_journal_surface");
     }
@@ -636,7 +636,7 @@ public sealed partial class GuardianSystemRegressionTests
             "Архив Элиары");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertDoesNotContainIssueCodes(issues, "guardian_relevant_actor_missing_thought_journal_delta");
     }
@@ -670,7 +670,7 @@ public sealed partial class GuardianSystemRegressionTests
             "Архив Элиары");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Guardian);
 
         AssertContainsIssueCodes(issues, "guardian_relevant_actor_missing_thought_journal_delta");
     }
@@ -735,7 +735,7 @@ public sealed partial class GuardianSystemRegressionTests
         await WriteFullActorBrainDebugLogAsync("Иветта", "Коридор поместья Вальмонт");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         AssertContainsIssueCodes(issues, "mortal_npc_relevant_actor_missing_thought_journal_delta");
     }
@@ -765,7 +765,7 @@ public sealed partial class GuardianSystemRegressionTests
         ResetValidatedPreTurnSnapshot();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         AssertContainsIssueCodes(issues, "actor_memory_invalid_validated_snapshot_context");
     }
@@ -813,7 +813,7 @@ public sealed partial class GuardianSystemRegressionTests
             "game_state/npcs/npc_journals.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "actor_memory_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase) &&
@@ -848,7 +848,7 @@ public sealed partial class GuardianSystemRegressionTests
             "game_state/npcs/npc_journals.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         AssertDoesNotContainIssueCodes(
             issues,
@@ -910,7 +910,7 @@ public sealed partial class GuardianSystemRegressionTests
         await WriteFullActorBrainDebugLogAsync("Лиора", "Сад нитей Обители");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeResident);
 
         AssertContainsIssueCodes(issues, "afterlife_resident_relevant_actor_missing_thought_journal_delta");
     }
@@ -937,7 +937,7 @@ public sealed partial class GuardianSystemRegressionTests
             "Shining Abode");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeResident);
 
         AssertContainsIssueCodes(issues, "afterlife_resident_relevant_actor_missing_thought_journal_delta");
     }
@@ -989,7 +989,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareMortalNpcActorBrainJournalFixtureAsync(currentJournal, previousJournal);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         AssertDoesNotContainIssueCodes(
             issues,
@@ -1038,7 +1038,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareMortalNpcActorBrainJournalFixtureAsync(replacementJournal, previousJournal);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         AssertContainsIssueCodes(issues, "mortal_npc_relevant_actor_missing_thought_journal_delta");
     }
@@ -1089,7 +1089,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareMortalNpcActorBrainJournalFixtureAsync(rewrittenJournal, previousJournal);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.MortalNpc);
 
         AssertContainsIssueCodes(issues, "mortal_npc_relevant_actor_missing_thought_journal_delta");
     }
@@ -1133,7 +1133,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareAfterlifeResidentActorBrainJournalFixtureAsync(currentJournal, previousJournal);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeResident);
 
         AssertDoesNotContainIssueCodes(
             issues,
@@ -1171,7 +1171,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareAfterlifeResidentActorBrainJournalFixtureAsync(replacementJournal, previousJournal);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeResident);
 
         AssertContainsIssueCodes(issues, "afterlife_resident_relevant_actor_missing_thought_journal_delta");
     }
@@ -1204,7 +1204,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareAfterlifeEntityActorBrainFixtureAsync(unchangedProfileState, unchangedProfileState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         AssertContainsIssueCodes(issues, "afterlife_entity_relevant_actor_missing_memory_ledger_delta");
     }
@@ -1249,7 +1249,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "structured_afterlife_entity_update_out_of_scope", StringComparison.OrdinalIgnoreCase) &&
@@ -1302,7 +1302,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeResident);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "structured_resident_update_out_of_scope", StringComparison.OrdinalIgnoreCase) &&
@@ -1381,7 +1381,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         AssertContainsIssueCodes(
             issues,
@@ -1444,7 +1444,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareAfterlifeEntityActorBrainFixtureAsync(currentProfileState, previousProfileState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         AssertDoesNotContainIssueCodes(issues, "afterlife_entity_relevant_actor_missing_memory_ledger_delta");
     }
@@ -1479,7 +1479,7 @@ public sealed partial class GuardianSystemRegressionTests
             """{ "profiles": [] }""");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         AssertDoesNotContainIssueCodes(issues, "afterlife_entity_relevant_actor_missing_memory_ledger_delta");
     }
@@ -1533,7 +1533,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareAfterlifeEntityActorBrainFixtureAsync(rewrittenProfileState, previousProfileState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         AssertContainsIssueCodes(issues, "afterlife_entity_relevant_actor_missing_memory_ledger_delta");
     }
@@ -1594,7 +1594,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareAfterlifeEntityActorBrainFixtureAsync(currentProfileState, previousProfileState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         AssertContainsIssueCodes(issues, "afterlife_entity_relevant_actor_missing_memory_ledger_delta");
     }
@@ -1622,7 +1622,7 @@ public sealed partial class GuardianSystemRegressionTests
             "неизвестная canonical surface");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.AfterlifeEntity);
 
         AssertContainsIssueCodes(issues, "afterlife_relevant_actor_missing_canonical_memory_owner");
     }
@@ -1651,7 +1651,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareShiningFactionActorBrainFixtureAsync(unchangedFactionState, unchangedFactionState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.ShiningFaction);
 
         AssertContainsIssueCodes(issues, "shining_faction_relevant_actor_missing_strategic_memory_delta");
     }
@@ -1697,7 +1697,7 @@ public sealed partial class GuardianSystemRegressionTests
         await PrepareShiningFactionActorBrainFixtureAsync(currentFactionState, previousFactionState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.ShiningFaction);
 
         AssertContainsIssueCodes(issues, "shining_faction_relevant_actor_missing_strategic_memory_delta");
     }
@@ -1766,7 +1766,7 @@ public sealed partial class GuardianSystemRegressionTests
             "shiningFactionChronicleUpdates");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.ShiningFaction);
 
         AssertDoesNotContainIssueCodes(issues, "shining_faction_relevant_actor_missing_strategic_memory_delta");
     }
@@ -1797,7 +1797,7 @@ public sealed partial class GuardianSystemRegressionTests
             """{ "availability": "active", "factions": [] }""");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         AssertDoesNotContainIssueCodes(issues, "shining_faction_relevant_actor_missing_strategic_memory_delta");
     }
@@ -1827,7 +1827,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.ShiningFaction);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("actor_brain_missing_", StringComparison.OrdinalIgnoreCase) == true &&
@@ -1872,7 +1872,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "structured_shining_actor_update_out_of_scope", StringComparison.OrdinalIgnoreCase) &&
@@ -1922,7 +1922,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "structured_shining_actor_update_out_of_scope", StringComparison.OrdinalIgnoreCase) &&
@@ -1971,7 +1971,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         AssertContainsIssueCodes(
             issues,
@@ -2023,7 +2023,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "structured_shining_actor_update_out_of_scope", StringComparison.OrdinalIgnoreCase));
@@ -2072,7 +2072,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnReasoningAsync();
+        var issues = await validator.ValidateAcceptedTurnReasoningAsync(GuardianReasoningProfiles.Core);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "structured_shining_faction_update_out_of_scope", StringComparison.OrdinalIgnoreCase) &&

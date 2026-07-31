@@ -92,6 +92,8 @@ public partial class ValidationService
             await ValidateWorldQuestCombatFactionStateFiles(issues);
         if (phases.Includes(GameStateValidationPhase.MetaMiscStateFiles))
             await ValidateMetaMiscStateFiles(issues);
+        else if (phases.Includes(GameStateValidationPhase.GuardianProjectStateFiles))
+            await ValidateGuardianProjectStateFilesAsync(issues);
         if (phases.Includes(GameStateValidationPhase.AcceptedTurnActorMaterializationCompleteness))
             await ValidateAcceptedTurnActorMaterializationCompletenessAsync(issues);
         if (phases.Includes(GameStateValidationPhase.AfterlifeSpiritualConflictState))

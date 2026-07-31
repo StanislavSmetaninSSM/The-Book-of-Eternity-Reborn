@@ -12,7 +12,8 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class GuardianSystemRegressionTests
-{    [Fact]
+{
+    [Fact]
     public async Task GuardianTradeValidation_OrphanConventionalSnapshotCopyDoesNotCreateStrictEvidence()
     {
         await WriteRawAsync(
@@ -30,7 +31,7 @@ public sealed partial class GuardianSystemRegressionTests
             syncPendingSnapshotAuthority: false);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidents);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -107,7 +108,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidents);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "memory_gates_legacy_not_replaced", StringComparison.OrdinalIgnoreCase));
@@ -774,7 +775,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "rival_arc_bonus_clue_unknown_source_project", StringComparison.OrdinalIgnoreCase) ||
@@ -819,7 +820,7 @@ public sealed partial class GuardianSystemRegressionTests
         await _fs.WriteFileAtomicAsync(RivalSoulArcService.StatePath, "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -839,7 +840,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -852,7 +853,7 @@ public sealed partial class GuardianSystemRegressionTests
         _fs.DeleteFile("game_state/world/world_events.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -871,7 +872,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -925,7 +926,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -974,7 +975,7 @@ public sealed partial class GuardianSystemRegressionTests
         _fs.DeleteFile("game_state/world/world_events.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1027,7 +1028,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1081,7 +1082,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1094,7 +1095,7 @@ public sealed partial class GuardianSystemRegressionTests
         await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
@@ -1108,7 +1109,7 @@ public sealed partial class GuardianSystemRegressionTests
         await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", "{\"foo\":");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
@@ -1122,7 +1123,7 @@ public sealed partial class GuardianSystemRegressionTests
         await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", "{\"worldEventsLog\":[{\"foo\":");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
@@ -1141,7 +1142,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1158,7 +1159,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1176,7 +1177,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1194,7 +1195,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1262,7 +1263,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "rival_arc_bonus_clue_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase) ||
@@ -1307,7 +1308,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "rival_arc_bonus_clue_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase) ||
@@ -1327,7 +1328,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "rival_arc_bonus_clue_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase) ||
@@ -1363,7 +1364,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1397,7 +1398,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1412,7 +1413,7 @@ public sealed partial class GuardianSystemRegressionTests
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1450,7 +1451,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "companion_echo_unknown_source_resident_id", StringComparison.OrdinalIgnoreCase));
@@ -1485,7 +1486,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1520,7 +1521,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1554,7 +1555,7 @@ public sealed partial class GuardianSystemRegressionTests
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1586,7 +1587,7 @@ public sealed partial class GuardianSystemRegressionTests
         _fs.DeleteFile("game_state/meta/soul_state.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1612,7 +1613,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "manifested_companion_unknown_source_relic_id", StringComparison.OrdinalIgnoreCase));
@@ -1631,7 +1632,7 @@ public sealed partial class GuardianSystemRegressionTests
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1648,7 +1649,7 @@ public sealed partial class GuardianSystemRegressionTests
         _fs.DeleteFile("game_state/meta/soul_state.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
@@ -1673,7 +1674,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1714,7 +1715,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1742,7 +1743,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1765,7 +1766,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1812,7 +1813,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.FilePath, "game_state/world/world_events.json", StringComparison.OrdinalIgnoreCase));
@@ -1829,7 +1830,7 @@ public sealed partial class GuardianSystemRegressionTests
         _fs.DeleteFile("game_state/world/world_events.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -1864,7 +1865,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsNpcContract);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_npc_state", StringComparison.OrdinalIgnoreCase));
@@ -1898,7 +1899,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsNpcContract);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_npc_state", StringComparison.OrdinalIgnoreCase));
@@ -1929,7 +1930,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyCurrentStateCaseAsync("game_state/npcs/npc_core.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertContainsIssueCodes(issues, "afterlife_resident_invalid_current_npc_state");
         AssertDoesNotContainIssueCodes(
@@ -1960,7 +1961,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyCurrentStateCaseAsync("game_state/npcs/npc_core.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertDoesNotContainIssueCodes(issues, "afterlife_resident_invalid_current_npc_state");
         AssertDoesNotContainIssueCodes(
@@ -2000,7 +2001,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertDoesNotContainIssueCodes(
             issues,
@@ -2046,7 +2047,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertDoesNotContainIssueCodes(
             issues,
@@ -2088,7 +2089,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsNpcContract);
 
         AssertContainsIssueCodes(issues, "npc_contract_missing_allowed_top_level_key");
         AssertDoesNotContainIssueCodes(
@@ -2131,7 +2132,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertContainsIssueCodes(issues, "afterlife_resident_invalid_current_resident_state");
         AssertDoesNotContainIssueCodes(
@@ -2149,7 +2150,7 @@ public sealed partial class GuardianSystemRegressionTests
         await WriteRawAsync(GuardianAbodeResidentState.StatePath, "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_resident_state", StringComparison.OrdinalIgnoreCase));
@@ -2166,7 +2167,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyCurrentStateCaseAsync("game_state/quests/soul_quests.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertContainsIssueCodes(issues, "soul_quest_invalid_current_state");
         AssertDoesNotContainIssueCodes(
@@ -2196,7 +2197,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyCurrentStateCaseAsync("game_state/quests/soul_quests.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertContainsIssueCodes(issues, "soul_quest_invalid_current_state");
         AssertDoesNotContainIssueCodes(issues, "soul_quest_unknown_rival_arc_id");
@@ -2232,7 +2233,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "world_event_rival_arc_missing_visibility", StringComparison.OrdinalIgnoreCase));
@@ -2272,7 +2273,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -2325,7 +2326,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyCurrentStateCaseAsync("game_state/world/world_events.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertContainsIssueCodes(issues, "rival_arc_world_event_invalid_current_state");
         AssertDoesNotContainIssueCodes(issues, "rival_arc_hostile_direct_target_needs_two_visible_signals");
@@ -2352,7 +2353,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyCurrentStateCaseAsync("game_state/world/world_events.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertContainsIssueCodes(issues, "rival_arc_world_event_invalid_current_state");
         AssertDoesNotContainIssueCodes(
@@ -2394,7 +2395,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         if (expectOwnerIssue)
             AssertContainsIssueCodes(issues, "rival_arc_invalid_current_state");
@@ -2442,7 +2443,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         if (expectOwnerIssue)
             AssertContainsIssueCodes(issues, "rival_arc_invalid_current_state");
@@ -2470,7 +2471,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         if (expectOwnerIssue)
             AssertContainsIssueCodes(issues, "rival_arc_bonus_clue_invalid_current_soul_state");
@@ -2492,7 +2493,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertDoesNotContainIssueCodes(
             issues,
@@ -2513,7 +2514,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         if (expectOwnerIssue)
         {
@@ -2536,7 +2537,7 @@ public sealed partial class GuardianSystemRegressionTests
         await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         AssertDoesNotContainIssueCodes(issues, "afterlife_resident_invalid_current_soul_state");
     }
@@ -2562,7 +2563,7 @@ public sealed partial class GuardianSystemRegressionTests
         _fs.DeleteFile("game_state/quests/soul_quests.json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "soul_quest_invalid_current_state", StringComparison.OrdinalIgnoreCase));
@@ -2600,7 +2601,7 @@ public sealed partial class GuardianSystemRegressionTests
         _fs.DeleteFile(GuardianAbodeResidentState.StatePath);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_resident_state", StringComparison.OrdinalIgnoreCase));
@@ -2623,7 +2624,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.RivalResidentsCrossReferences);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));

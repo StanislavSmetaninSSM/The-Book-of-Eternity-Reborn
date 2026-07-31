@@ -152,6 +152,39 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
         Assert.DoesNotContain(issues, issue => issue.FilePath == unselectedPath);
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardianProjectTargetedSelection_RunsProjectRulesWithoutMetaMiscDuplication()
+    {
+        await _fileSystem.WriteFileAtomicAsync(
+            GuardianProjectState.TrackerPath,
+            "{\"startGuardianProjects\":{}}");
+
+        var targetedIssues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.GuardianProjectStateFiles);
+        var combinedIssues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.MetaMiscStateFiles |
+            GameStateValidationPhase.GuardianProjectStateFiles);
+
+        Assert.Contains(targetedIssues, issue =>
+            issue.FilePath == GuardianProjectState.TrackerPath);
+        Assert.Equal(
+            combinedIssues.Count(issue => issue.FilePath == GuardianProjectState.TrackerPath),
+            combinedIssues
+                .Where(issue => issue.FilePath == GuardianProjectState.TrackerPath)
+                .DistinctBy(issue => (issue.Code, issue.Message, issue.Expected, issue.Actual))
+                .Count());
+    }
+
+    [Fact]
+    public void AcceptedTurnReasoningSelection_RequiresCoreAndRejectsUnknownScopes()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new AcceptedTurnReasoningValidationSelection(
+            AcceptedTurnReasoningValidationScope.GuardianMusing));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new AcceptedTurnReasoningValidationSelection(
+            (AcceptedTurnReasoningValidationScope)(1 << 7) |
+            AcceptedTurnReasoningValidationScope.Core));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

@@ -12,6 +12,18 @@ namespace BookOfEternityClient.Tests;
 public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 {
     private static readonly int[] AuthoritativeConflictDice = { 5, 18, 14, 9, 11, 7, 20, 1, 13, 6, 16, 8, 12, 4, 10, 15, 3, 17, 2, 19 };
+    private static readonly GameStateValidationSelection CoreValidationSelection = new(
+        GameStateValidationPhase.AfterlifeSpiritualConflictState);
+    private static readonly GameStateValidationSelection ContextValidationSelection = new(
+        GameStateValidationPhase.AfterlifeSpiritualConflictState |
+        GameStateValidationPhase.MetaMiscStateFiles |
+        GameStateValidationPhase.RealmSegregation,
+        new[]
+        {
+            "game_state/control/incarnation_trigger.json",
+            "game_state/meta/soul_state.json",
+            AfterlifeSpiritualConflictState.StatePath
+        });
 
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -27,13 +39,25 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         _validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
     }
 
+    private Task<List<ValidationIssue>> ValidateCoreAsync() =>
+        _validator.ValidateGameStateAsync(CoreValidationSelection);
+
+    private Task<List<ValidationIssue>> ValidateWithContextAsync() =>
+        _validator.ValidateGameStateAsync(ContextValidationSelection);
+
+    private Task<List<ValidationIssue>> ValidateAfterlifeSpiritualConflictAsync() =>
+        ValidateCoreAsync();
+
+    private Task<List<ValidationIssue>> ValidateAfterlifeSpiritualConflictWithContextAsync() =>
+        ValidateWithContextAsync();
+
     [Fact]
     public async Task ValidateGameStateAsync_NoEffectExchange_AllowsIdenticalBeforeAfter()
     {
         await WriteSoulStateAsync();
         await WriteConflictStateAsync("no_effect");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_no_state_delta", StringComparison.OrdinalIgnoreCase));
@@ -47,7 +71,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync();
         await WriteConflictStateAsync("success");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_no_state_delta", StringComparison.OrdinalIgnoreCase));
@@ -68,7 +92,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_dice_audit", StringComparison.OrdinalIgnoreCase));
@@ -90,7 +114,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase));
@@ -112,7 +136,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_advantage_selected_die_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -134,7 +158,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -161,7 +185,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -178,7 +202,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         root.Remove("lastInvalidUpdateAtUtc");
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -191,7 +215,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync();
         await WriteActiveConflictWithCombatConditionsAsync(BuildValidCombatCondition().ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -204,7 +228,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync();
         await WriteActiveConflictWithCombatConditionsAsync(BuildCanonicalCombatCondition().ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -222,7 +246,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_condition_missing_required_field", StringComparison.OrdinalIgnoreCase) &&
@@ -241,7 +265,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         condition["mechanicalAxis"] = "strength";
         await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_condition_invalid_kind", StringComparison.OrdinalIgnoreCase));
@@ -262,7 +286,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         };
         await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_condition_missing_counterplay", StringComparison.OrdinalIgnoreCase));
@@ -285,7 +309,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         };
         await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_condition_illegal_control_payoff", StringComparison.OrdinalIgnoreCase));
@@ -312,7 +336,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await SetActiveCombatConditionsAsync(BuildValidCombatCondition().ToJsonString());
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_condition_roll_source_missing_active_condition", StringComparison.OrdinalIgnoreCase));
@@ -346,7 +370,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await SetActiveCombatConditionsAsync(consumed.ToJsonString());
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_condition_roll_source_missing_active_condition", StringComparison.OrdinalIgnoreCase));
@@ -382,7 +406,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await SetActiveCombatConditionsAsync(BuildValidCombatCondition().ToJsonString());
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_condition_roll_source_missing_active_condition", StringComparison.OrdinalIgnoreCase));
@@ -400,7 +424,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         mutateCondition(condition);
         await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase) &&
@@ -427,7 +451,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_roll_count_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -453,7 +477,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -476,7 +500,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_disadvantage_selected_die_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -502,7 +526,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -529,7 +553,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -556,7 +580,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code is not null &&
@@ -579,7 +603,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_cancelled_roll_uses_extra_dice", StringComparison.OrdinalIgnoreCase));
@@ -601,7 +625,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_missing_critical_result", StringComparison.OrdinalIgnoreCase) ||
@@ -646,7 +670,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_missing_effect_note", StringComparison.OrdinalIgnoreCase));
@@ -690,7 +714,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -717,7 +741,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_tier_too_low", StringComparison.OrdinalIgnoreCase));
@@ -744,7 +768,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """, playerOutcome: "lost", resolutionKind: "player_loss");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_missing_victory_proof", StringComparison.OrdinalIgnoreCase));
@@ -771,7 +795,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """, playerOutcome: "lost", resolutionKind: "player_loss");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_player_soul_dissipation_missing_game_over", StringComparison.OrdinalIgnoreCase));
@@ -798,7 +822,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """, playerOutcome: "lost", resolutionKind: "player_loss");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_player_soul_dissipation_game_over_message_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -825,7 +849,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_conflict_soul_dissipation", StringComparison.OrdinalIgnoreCase) == true ||
@@ -853,7 +877,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """, playerOutcome: "lost", resolutionKind: "player_loss");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_conflict_soul_dissipation", StringComparison.OrdinalIgnoreCase) == true ||
@@ -867,7 +891,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 0, targetEnlightenmentTier: 1, oppositionDissipationTier: 3);
         await WriteResolvedConflictWithoutSoulDissipationAsync(playerOutcome: "lost", resolutionKind: "player_loss");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_player_soul_dissipation_unlinked_game_over", StringComparison.OrdinalIgnoreCase));
@@ -903,7 +927,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "pre-turn soul dissipation authority",
             "Душа проигрывает конфликт.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_tier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -944,7 +968,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "pre-turn soul stability authority",
             "Душа проигрывает конфликт.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_target_coefficient_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -979,7 +1003,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
@@ -1009,7 +1033,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_missing_position_modifier", StringComparison.OrdinalIgnoreCase));
@@ -1038,7 +1062,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_before_position", StringComparison.OrdinalIgnoreCase));
@@ -1068,7 +1092,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_before_position", StringComparison.OrdinalIgnoreCase) ||
@@ -1098,7 +1122,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_missing_opposition_strain_delta", StringComparison.OrdinalIgnoreCase));
@@ -1128,7 +1152,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_missing_opposition_strain_delta", StringComparison.OrdinalIgnoreCase));
@@ -1158,7 +1182,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_missing_opposition_strain_delta", StringComparison.OrdinalIgnoreCase));
@@ -1186,7 +1210,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_missing_opposition_strain_delta", StringComparison.OrdinalIgnoreCase));
@@ -1219,7 +1243,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
@@ -1258,7 +1282,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
@@ -1289,7 +1313,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier_for_contested", StringComparison.OrdinalIgnoreCase));
@@ -1320,7 +1344,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_missing_position_modifier", StringComparison.OrdinalIgnoreCase) ||
@@ -1354,7 +1378,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier", StringComparison.OrdinalIgnoreCase));
@@ -1386,7 +1410,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_invalid_position_modifier_total", StringComparison.OrdinalIgnoreCase));
@@ -1418,7 +1442,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier", StringComparison.OrdinalIgnoreCase));
@@ -1450,7 +1474,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier_side", StringComparison.OrdinalIgnoreCase));
@@ -1483,7 +1507,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_invalid_position_modifier_total", StringComparison.OrdinalIgnoreCase));
@@ -1515,7 +1539,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier_side", StringComparison.OrdinalIgnoreCase));
@@ -1546,7 +1570,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_missing_position_modifier", StringComparison.OrdinalIgnoreCase) ||
@@ -1583,7 +1607,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -1618,7 +1642,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -1652,7 +1676,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -1689,7 +1713,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -1723,7 +1747,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -1739,7 +1763,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             finalAmount: 30));
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -1762,7 +1786,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             preTurnShiningJson: BuildShiningStateJson(lightSparks: 5),
             preTurnConflictJson: BuildActiveConflictRootJson(realm: "Shining Abode"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -1779,7 +1803,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             AfterlifeSpiritualConflictState.RewardCurrencyLightSparks,
             finalAmount: 30));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_wrong_currency", StringComparison.OrdinalIgnoreCase));
@@ -1798,7 +1822,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             startingConflictPosition: "opposition_dominant",
             riskMultiplierPercent: 150));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_amount_over_cap", StringComparison.OrdinalIgnoreCase));
@@ -1811,7 +1835,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteResolvedConflictRewardStateAsync(rewardAuditJson: null);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_conflict_reward_", StringComparison.OrdinalIgnoreCase) == true);
@@ -1840,7 +1864,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             playerOutcome: playerOutcome,
             voluntary: string.Equals(playerOutcome, "voluntary_withdrawal", StringComparison.OrdinalIgnoreCase));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_not_allowed", StringComparison.OrdinalIgnoreCase));
@@ -1856,7 +1880,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             finalAmount: 30));
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1873,7 +1897,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             resolvedAtTurn: 0));
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_turn_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1890,7 +1914,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             resolvedAtTurn: 1));
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1923,7 +1947,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_difficulty_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1958,7 +1982,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_difficulty_modifier_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -1979,7 +2003,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             diceAuditJson: BuildHardDifficultyPlayerSuccessDiceAuditJson());
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_difficulty_multiplier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1999,7 +2023,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             diceAuditJson: BuildHardDifficultyPlayerSuccessDiceAuditJson());
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_final_amount_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -2025,7 +2049,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             preTurnShiningJson: BuildShiningStateJson(lightSparks: 5),
             preTurnConflictJson: BuildActiveConflictRootJson(realm: "Shining Abode"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2050,7 +2074,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             preTurnShiningJson: BuildShiningStateJson(lightSparks: 5),
             preTurnConflictJson: BuildActiveConflictRootJson(realm: "Shining Abode"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2069,7 +2093,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             proofResolvedAtTurn: null);
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2088,7 +2112,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             proofResolvedAtTurn: null);
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -2117,7 +2141,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             preTurnShiningJson: BuildShiningStateJson(lightSparks: 5),
             preTurnConflictJson: BuildActiveConflictRootJson(realm: "Shining Abode"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2140,7 +2164,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             proofResolvedAtTurn: 7);
         await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_reward_starting_position_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2163,7 +2187,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_incoming_action", StringComparison.OrdinalIgnoreCase));
@@ -2193,7 +2217,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2223,7 +2247,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю конфликт с уже существующим старым exchangeLog.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2252,7 +2276,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """, addDefaultMatchupAudit: false);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2286,7 +2310,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2320,7 +2344,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю конфликт с уже существующим no-effect exchangeLog.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2353,7 +2377,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2386,7 +2410,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase) ||
@@ -2421,7 +2445,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю конфликт с уже существующим contested surrender exchangeLog.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2461,7 +2485,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_invalid_risk_profile", StringComparison.OrdinalIgnoreCase));
@@ -2502,7 +2526,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2543,7 +2567,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2585,7 +2609,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2646,7 +2670,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -2690,7 +2714,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2732,7 +2756,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2772,7 +2796,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2806,7 +2830,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2843,7 +2867,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -2880,7 +2904,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_matrix_violation", StringComparison.OrdinalIgnoreCase));
@@ -2917,7 +2941,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_matrix_violation", StringComparison.OrdinalIgnoreCase));
@@ -2953,7 +2977,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         {{duplicateExchange}}
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -2987,7 +3011,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_deals_opposition_strain", StringComparison.OrdinalIgnoreCase));
@@ -3023,7 +3047,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_worsens_player_strain", StringComparison.OrdinalIgnoreCase));
@@ -3057,7 +3081,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_deals_opposition_strain", StringComparison.OrdinalIgnoreCase) ||
@@ -3094,7 +3118,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_missing_tempo_advantage", StringComparison.OrdinalIgnoreCase));
@@ -3177,7 +3201,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_tempo_advantage_not_consumed", StringComparison.OrdinalIgnoreCase));
@@ -3273,7 +3297,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_tempo_advantage_not_consumed", StringComparison.OrdinalIgnoreCase) ||
@@ -3308,7 +3332,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_missing_mitigation_floor", StringComparison.OrdinalIgnoreCase));
@@ -3338,7 +3362,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_changes_position", StringComparison.OrdinalIgnoreCase));
@@ -3390,7 +3414,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_operation_restricted_by_control", StringComparison.OrdinalIgnoreCase));
@@ -3420,7 +3444,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultActionCostAudit: false);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -3467,7 +3491,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -3502,7 +3526,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
@@ -3559,7 +3583,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase) ||
@@ -3602,7 +3626,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_cost_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -3653,7 +3677,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -3717,7 +3741,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_not_learned", StringComparison.OrdinalIgnoreCase));
@@ -3795,7 +3819,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_not_learned", StringComparison.OrdinalIgnoreCase) ||
@@ -3867,7 +3891,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
@@ -3935,7 +3959,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_base_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -4019,7 +4043,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_base_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -4119,7 +4143,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_audit_ambiguous", StringComparison.OrdinalIgnoreCase));
@@ -4202,7 +4226,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
@@ -4279,7 +4303,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_base_operation_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -4369,7 +4393,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
@@ -4460,7 +4484,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -4566,7 +4590,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_cost_binding_ambiguous", StringComparison.OrdinalIgnoreCase));
@@ -4651,7 +4675,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -4738,7 +4762,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_owner_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -4813,7 +4837,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
@@ -4879,7 +4903,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_special_art_authority_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -4927,7 +4951,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_points_insufficient", StringComparison.OrdinalIgnoreCase));
@@ -4968,7 +4992,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, syncRootActionEconomyToLastAudit: false);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_economy_delta_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -5007,7 +5031,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         rootOppositionActionCurrentOverride: 2);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_economy_unaudited_delta", StringComparison.OrdinalIgnoreCase));
@@ -5059,7 +5083,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         rootPlayerActionCurrentOverride: 1);
         await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_cost_audit_unexpected", StringComparison.OrdinalIgnoreCase));
@@ -5101,7 +5125,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_cost_sequence_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -5156,7 +5180,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """, addDefaultMatchupAudit: false);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_recovery_exceeds_max", StringComparison.OrdinalIgnoreCase));
@@ -5193,7 +5217,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_invalid_target_operation", StringComparison.OrdinalIgnoreCase));
@@ -5230,7 +5254,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_invalid_target_operation", StringComparison.OrdinalIgnoreCase));
@@ -5267,7 +5291,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_invalid_target_operation", StringComparison.OrdinalIgnoreCase));
@@ -5304,7 +5328,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_invalid_target_operation", StringComparison.OrdinalIgnoreCase));
@@ -5340,7 +5364,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_invalid_target_operation", StringComparison.OrdinalIgnoreCase));
@@ -5377,7 +5401,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_invalid_target_operation", StringComparison.OrdinalIgnoreCase));
@@ -5412,7 +5436,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """, addDefaultMatchupAudit: false);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_invalid_target_operation", StringComparison.OrdinalIgnoreCase));
@@ -5446,7 +5470,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_setback_without_downside", StringComparison.OrdinalIgnoreCase));
@@ -5475,7 +5499,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_maneuver_changes_strain", StringComparison.OrdinalIgnoreCase));
@@ -5496,7 +5520,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_maneuver_missing_position_shift", StringComparison.OrdinalIgnoreCase));
@@ -5520,7 +5544,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
@@ -5544,7 +5568,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
@@ -5572,7 +5596,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WriteValidatedConflictSnapshotFromCurrentAsync("Legacy binding history remains canonical after loading a save.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
@@ -5607,7 +5631,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
@@ -5643,7 +5667,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
@@ -5679,7 +5703,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
@@ -5719,7 +5743,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_force_binding_without_strong_leverage", StringComparison.OrdinalIgnoreCase));
@@ -5755,7 +5779,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_force_binding_without_broad_control_payoff", StringComparison.OrdinalIgnoreCase));
@@ -5783,7 +5807,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
@@ -5827,7 +5851,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_state_invalid_restricted_operation", StringComparison.OrdinalIgnoreCase));
@@ -5871,7 +5895,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_source_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -5915,7 +5939,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_state_invalid_source_operation", StringComparison.OrdinalIgnoreCase));
@@ -5961,7 +5985,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_state_invalid_source_operation", StringComparison.OrdinalIgnoreCase));
@@ -6014,7 +6038,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_source_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -6052,7 +6076,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6086,7 +6110,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6141,7 +6165,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6196,7 +6220,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6234,7 +6258,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6284,7 +6308,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6322,7 +6346,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
@@ -6356,7 +6380,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_step_too_large", StringComparison.OrdinalIgnoreCase));
@@ -6397,7 +6421,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_under_opposition_control", StringComparison.OrdinalIgnoreCase));
@@ -6438,7 +6462,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_control_step_too_large", StringComparison.OrdinalIgnoreCase));
@@ -6487,7 +6511,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase) ||
@@ -6524,7 +6548,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
@@ -6559,7 +6583,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
@@ -6580,7 +6604,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_without_binding", StringComparison.OrdinalIgnoreCase));
@@ -6621,7 +6645,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
@@ -6664,7 +6688,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
@@ -6691,7 +6715,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_without_binding", StringComparison.OrdinalIgnoreCase) ||
@@ -6733,7 +6757,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_without_binding", StringComparison.OrdinalIgnoreCase));
@@ -6776,7 +6800,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
@@ -6817,7 +6841,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
@@ -6862,7 +6886,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6900,7 +6924,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6934,7 +6958,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -6970,7 +6994,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
@@ -7022,7 +7046,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_source_operation_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -7057,7 +7081,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
@@ -7097,7 +7121,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -7153,7 +7177,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
@@ -7192,7 +7216,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_creates_fresh_control", StringComparison.OrdinalIgnoreCase));
@@ -7231,7 +7255,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
@@ -7278,7 +7302,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_maneuver_blocked_by_control", StringComparison.OrdinalIgnoreCase));
@@ -7326,7 +7350,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7375,7 +7399,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -7430,7 +7454,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -7478,7 +7502,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -7545,7 +7569,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7592,7 +7616,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7622,7 +7646,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         currentActive["controlState"] = null;
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7653,7 +7677,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         currentActive["controlState"] = null;
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7682,7 +7706,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7724,7 +7748,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7793,7 +7817,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -7859,7 +7883,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
@@ -7896,7 +7920,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_maneuver_blocked_by_control", StringComparison.OrdinalIgnoreCase));
@@ -7941,7 +7965,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_maneuver_blocked_by_control", StringComparison.OrdinalIgnoreCase));
@@ -7985,7 +8009,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_maneuver_changes_control", StringComparison.OrdinalIgnoreCase));
@@ -8031,7 +8055,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_maneuver_changes_control", StringComparison.OrdinalIgnoreCase));
@@ -8074,7 +8098,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
@@ -8116,7 +8140,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
@@ -8161,7 +8185,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
@@ -8203,7 +8227,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
@@ -8251,7 +8275,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -8299,7 +8323,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -8343,7 +8367,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
@@ -8389,7 +8413,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_creates_fresh_control", StringComparison.OrdinalIgnoreCase));
@@ -8470,7 +8494,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """)));
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_counter_creates_fresh_control", StringComparison.OrdinalIgnoreCase));
@@ -8491,7 +8515,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
@@ -8513,7 +8537,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_champion_coordination_without_champion", StringComparison.OrdinalIgnoreCase));
@@ -8535,7 +8559,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_champion_coordination_without_champion", StringComparison.OrdinalIgnoreCase));
@@ -8558,7 +8582,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -8580,7 +8604,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -8604,7 +8628,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -8632,7 +8656,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -8660,7 +8684,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -8683,7 +8707,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -8712,7 +8736,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WriteValidatedConflictSnapshotFromCurrentAsync("Я делаю следующий ход после старого conflict log.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -8736,7 +8760,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю ход с уже существующим exchange log.");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -8852,7 +8876,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase) &&
@@ -8895,7 +8919,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -8919,7 +8943,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
@@ -8942,7 +8966,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
@@ -8965,7 +8989,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
@@ -9036,7 +9060,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -9072,7 +9096,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -9098,7 +9122,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -9124,7 +9148,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -9144,7 +9168,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_no_effect_has_state_delta", StringComparison.OrdinalIgnoreCase));
@@ -9172,7 +9196,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_resolution_missing_dice_audit", StringComparison.OrdinalIgnoreCase));
@@ -9198,7 +9222,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_no_state_delta", StringComparison.OrdinalIgnoreCase));
@@ -9228,7 +9252,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_no_state_delta", StringComparison.OrdinalIgnoreCase));
@@ -9260,7 +9284,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_no_effect_has_state_delta", StringComparison.OrdinalIgnoreCase));
@@ -9279,7 +9303,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_before", StringComparison.OrdinalIgnoreCase));
@@ -9298,7 +9322,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_after", StringComparison.OrdinalIgnoreCase));
@@ -9318,7 +9342,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_countered_missing_incoming_action", StringComparison.OrdinalIgnoreCase));
@@ -9342,7 +9366,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_countered_missing_incoming_action", StringComparison.OrdinalIgnoreCase));
@@ -9354,7 +9378,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync();
         await WriteConflictStateWithRawPlayerSupportersAsync("""[ "guardian_x" ]""");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_invalid_supporter_item", StringComparison.OrdinalIgnoreCase));
@@ -9366,7 +9390,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync();
         await WriteConflictStateWithRawPlayerSupportersAsync("""[ {} ]""");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_missing_required_string", StringComparison.OrdinalIgnoreCase) &&
@@ -9387,7 +9411,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         lead.Remove("artAuthoritySource");
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_missing_actor_art_snapshot", StringComparison.OrdinalIgnoreCase) &&
@@ -9411,7 +9435,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_payload", StringComparison.OrdinalIgnoreCase));
@@ -9454,7 +9478,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         Assert.Equal("player_advantaged", projected["activeConflict"]?["conflictPosition"]?.GetValue<string>());
         var exchangeLog = Assert.IsType<JsonArray>(projected["activeConflict"]?["exchangeLog"]);
         Assert.Single(exchangeLog);
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_state_unprojected_update", StringComparison.OrdinalIgnoreCase));
     }
@@ -9516,7 +9540,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var supporter = (JsonObject)projected["activeConflict"]!["oppositionSide"]!["supporters"]![0]!;
         Assert.Equal("safety_anchor", supporter["supportRole"]!.GetValue<string>());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_missing_required_string", StringComparison.OrdinalIgnoreCase) &&
             issue.FilePath.EndsWith(".oppositionSide.supporters[0].supportRole", StringComparison.OrdinalIgnoreCase));
@@ -9677,7 +9701,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         Assert.Contains(exchangeLog, entry =>
             string.Equals(entry?["exchangeId"]?.GetValue<string>(), "exchange_distributor_projection_001", StringComparison.OrdinalIgnoreCase));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictAsync();
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_state_unprojected_update", StringComparison.OrdinalIgnoreCase));
     }
@@ -9765,7 +9789,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_combat_profile_invalid_spirit_focus_tier", StringComparison.OrdinalIgnoreCase));
@@ -11543,7 +11567,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", preTurnSoul),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
@@ -11556,7 +11580,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync("Chaos Sea");
         await WriteConflictStateAsync("no_effect");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_during_shining_bootstrap", StringComparison.OrdinalIgnoreCase));
@@ -11568,7 +11592,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync("Chaos Sea");
         await WriteConflictStateAsync("no_effect", "Shining Abode");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_realm_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -11580,7 +11604,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync("Сияющая Обитель");
         await WriteConflictStateAsync("no_effect", "Море Хаоса");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_realm_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -11592,7 +11616,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync("Море Хаоса");
         await WriteConflictStateAsync("no_effect", "Chaos Sea");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_realm_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -11625,7 +11649,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", preTurnSoul),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_realm_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -11666,7 +11690,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict),
             (ShiningAbodeState.StatePath, preTurnShining));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_realm_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -11708,7 +11732,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict),
             (ShiningAbodeState.StatePath, preTurnShining));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_during_sealed_shining_abode", StringComparison.OrdinalIgnoreCase));
@@ -11750,7 +11774,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict),
             (ShiningAbodeState.StatePath, preTurnShining));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_realm_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -11767,7 +11791,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteConflictStateAsync("no_effect");
         await WriteValidPreparedIncarnationPackageAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_during_shining_bootstrap", StringComparison.OrdinalIgnoreCase));
@@ -11780,7 +11804,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteConflictStateAsync("no_effect", "Shining Abode");
         await WriteShiningAvailabilityAsync(ShiningAbodeState.AvailabilitySealedUntilNextAscension);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_during_sealed_shining_abode", StringComparison.OrdinalIgnoreCase));
@@ -11793,7 +11817,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteConflictStateAsync("no_effect", "Shining Abode");
         await WriteShiningAvailabilityAsync(ShiningAbodeState.AvailabilityActive);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_during_sealed_shining_abode", StringComparison.OrdinalIgnoreCase));
@@ -11812,7 +11836,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_during_shining_bootstrap", StringComparison.OrdinalIgnoreCase));
@@ -11832,7 +11856,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         active["resolutionState"] = terminalState;
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_terminal_active_conflict", StringComparison.OrdinalIgnoreCase));
@@ -11850,7 +11874,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         active["resolutionState"] = "ready_to_resolve";
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_terminal_active_conflict", StringComparison.OrdinalIgnoreCase));
@@ -11949,7 +11973,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", soul),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_missing_validated_tracked_baseline", StringComparison.OrdinalIgnoreCase) &&
@@ -11962,7 +11986,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteSoulStateAsync();
         await WritePreTurnActiveConflictSnapshotAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -11981,7 +12005,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -11996,7 +12020,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             AfterlifeSpiritualConflictState.StatePath,
             BuildActiveConflictRootJson("afterlife_conflict_other_001"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -12024,7 +12048,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -12049,7 +12073,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -12073,7 +12097,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -12097,7 +12121,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -12122,7 +12146,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
@@ -12162,7 +12186,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", soul),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "incarnation_trigger_active_spiritual_conflict", StringComparison.OrdinalIgnoreCase));
@@ -12300,7 +12324,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/guardians.json", guardians),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "forced_incarnation_missing_player_action_provocation_evidence", StringComparison.OrdinalIgnoreCase));
@@ -12604,7 +12628,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", soul),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "forced_incarnation_missing_player_action_provocation_evidence", StringComparison.OrdinalIgnoreCase));
@@ -12679,7 +12703,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", soul),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "forced_incarnation_missing_player_action_provocation_evidence", StringComparison.OrdinalIgnoreCase));
@@ -12754,7 +12778,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", soul),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "forced_incarnation_missing_player_action_provocation_evidence", StringComparison.OrdinalIgnoreCase));
@@ -12809,7 +12833,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/soul_state.json", soul),
             (AfterlifeSpiritualConflictState.StatePath, conflict));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await ValidateAfterlifeSpiritualConflictWithContextAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "forced_incarnation_missing_player_action_provocation_evidence", StringComparison.OrdinalIgnoreCase));
@@ -12934,7 +12958,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ("game_state/meta/guardians.json", preTurnGuardians),
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
 
-        return await _validator.ValidateGameStateAsync();
+        return await ValidateAfterlifeSpiritualConflictWithContextAsync();
     }
 
     private static string BuildForcedIncarnationGuardiansJson(

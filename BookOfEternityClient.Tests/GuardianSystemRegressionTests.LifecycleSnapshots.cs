@@ -12,7 +12,8 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class GuardianSystemRegressionTests
-{    [Fact]
+{
+    [Fact]
     public async Task TriggerLifeEndTurnRewardValidation_ValidRecordLifeCompletionStillRaisesPrematureRewardIssues()
     {
         await WritePreTurnTrackedFileAsync(
@@ -75,7 +76,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "life_trigger_turn_awarded_ink_feathers", StringComparison.OrdinalIgnoreCase));
@@ -141,7 +142,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "life_trigger_turn_reward_delta_unreadable", StringComparison.OrdinalIgnoreCase));
@@ -193,7 +194,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "life_transition_record_without_trigger_life_end", StringComparison.OrdinalIgnoreCase));
@@ -229,7 +230,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "life_transition_record_without_trigger_life_end", StringComparison.OrdinalIgnoreCase));
@@ -277,7 +278,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "life_transition_invalid_realm", StringComparison.OrdinalIgnoreCase));
@@ -327,7 +328,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "life_transition_current_realm_switched_same_turn", StringComparison.OrdinalIgnoreCase));
@@ -396,7 +397,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "life_trigger_turn_missing_realm_authority", StringComparison.OrdinalIgnoreCase));
@@ -449,7 +450,7 @@ public sealed partial class GuardianSystemRegressionTests
         }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase));
@@ -489,7 +490,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "ascension_invalid_validated_snapshot_realm", StringComparison.OrdinalIgnoreCase));
@@ -529,7 +530,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "ascension_requires_max_enlightenment", StringComparison.OrdinalIgnoreCase));
@@ -562,7 +563,7 @@ public sealed partial class GuardianSystemRegressionTests
         }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase));
@@ -576,7 +577,7 @@ public sealed partial class GuardianSystemRegressionTests
         await WriteRawAsync("game_state/control/pending_turn_snapshot.json", "{ not valid json");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) &&
@@ -611,7 +612,7 @@ public sealed partial class GuardianSystemRegressionTests
             }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) &&
@@ -646,7 +647,7 @@ public sealed partial class GuardianSystemRegressionTests
             syncPendingSnapshotAuthority: false);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) &&
@@ -693,7 +694,7 @@ public sealed partial class GuardianSystemRegressionTests
         }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase));
@@ -763,7 +764,7 @@ public sealed partial class GuardianSystemRegressionTests
         """, syncPendingSnapshotAuthority: false);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.LifecycleSnapshots);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_missing_validated_world_lore_baseline", StringComparison.OrdinalIgnoreCase) &&

@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed partial class GuardianSystemRegressionTests : IDisposable
 {
     private const string EmptyGuardianProjectTrackerJson =
@@ -19,12 +20,31 @@ public sealed partial class GuardianSystemRegressionTests : IDisposable
     private const string EmptyGuardianPowerJournalJson =
         "{\n  \"entries\": []\n}";
 
+    private static readonly Lazy<GuardianFixtureSnapshot> FixtureSnapshot =
+        new(CreateFixtureSnapshot, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+    private static int _fixtureSnapshotBuildCount;
+
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
 
     public GuardianSystemRegressionTests()
     {
-        _rootPath = Path.Combine(Path.GetTempPath(), "boe-guardian-system-regressions-" + Guid.NewGuid().ToString("N"));
+        _rootPath = Path.Combine(
+            Path.GetTempPath(),
+            "boe-guardian-system-regressions-" + Guid.NewGuid().ToString("N"));
+        FixtureSnapshot.Value.Materialize(_rootPath);
+
+        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+    }
+
+    internal static int FixtureSnapshotBuildCount =>
+        System.Threading.Volatile.Read(ref _fixtureSnapshotBuildCount);
+
+    internal string FixtureRootPath => _rootPath;
+
+    private GuardianSystemRegressionTests(string rootPath)
+    {
+        _rootPath = rootPath;
         Directory.CreateDirectory(_rootPath);
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _rootPath);
 
@@ -1476,6 +1496,32 @@ public sealed partial class GuardianSystemRegressionTests : IDisposable
         GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
     }
 
+    private static GuardianFixtureSnapshot CreateFixtureSnapshot()
+    {
+        System.Threading.Interlocked.Increment(ref _fixtureSnapshotBuildCount);
+        var preparationRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-guardian-system-template-" + Guid.NewGuid().ToString("N"));
+
+        try
+        {
+            using var preparedFixture = new GuardianSystemRegressionTests(preparationRoot);
+            return GuardianFixtureSnapshot.Capture(preparationRoot);
+        }
+        finally
+        {
+            try
+            {
+                if (Directory.Exists(preparationRoot))
+                    Directory.Delete(preparationRoot, recursive: true);
+            }
+            catch
+            {
+                // The per-test fixture cleanup remains authoritative if a scanner briefly holds a file.
+            }
+        }
+    }
+
     public void Dispose()
     {
         try
@@ -1505,4 +1551,50 @@ public sealed partial class GuardianSystemRegressionTests : IDisposable
         if (!File.Exists(_fs.ResolvePath(path)))
             _fs.WriteFileAtomicAsync(path, json).GetAwaiter().GetResult();
     }
+
+    private sealed class GuardianFixtureSnapshot
+    {
+        private readonly string[] _directories;
+        private readonly FixtureFile[] _files;
+
+        private GuardianFixtureSnapshot(string[] directories, FixtureFile[] files)
+        {
+            _directories = directories;
+            _files = files;
+        }
+
+        public static GuardianFixtureSnapshot Capture(string rootPath)
+        {
+            var directories = Directory
+                .EnumerateDirectories(rootPath, "*", SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(rootPath, path))
+                .OrderBy(path => path.Length)
+                .ToArray();
+            var files = Directory
+                .EnumerateFiles(rootPath, "*", SearchOption.AllDirectories)
+                .Select(path => new FixtureFile(
+                    Path.GetRelativePath(rootPath, path),
+                    File.ReadAllBytes(path)))
+                .ToArray();
+
+            return new GuardianFixtureSnapshot(directories, files);
+        }
+
+        public void Materialize(string rootPath)
+        {
+            Directory.CreateDirectory(rootPath);
+            foreach (var relativeDirectory in _directories)
+                Directory.CreateDirectory(Path.Combine(rootPath, relativeDirectory));
+
+            foreach (var file in _files)
+            {
+                var destinationPath = Path.Combine(rootPath, file.RelativePath);
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+                File.WriteAllBytes(destinationPath, file.Content);
+            }
+        }
+
+        private sealed record FixtureFile(string RelativePath, byte[] Content);
+    }
+
 }

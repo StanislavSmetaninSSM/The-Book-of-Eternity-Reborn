@@ -31,8 +31,9 @@ internal enum GameStateValidationPhase : uint
     ClientOwnedControlFiles = 1u << 24,
     RealmSegregation = 1u << 25,
     RivalAndResidentCrossReferences = 1u << 26,
+    GuardianProjectStateFiles = 1u << 27,
     All = (1u << 26) - 1,
-    Selectable = All | RivalAndResidentCrossReferences
+    Selectable = All | RivalAndResidentCrossReferences | GuardianProjectStateFiles
 }
 
 internal static class GameStateValidationPhaseRules

@@ -64,7 +64,7 @@ public sealed partial class GuardianSystemRegressionTests
         DeletePendingTurnSurfaces();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.IdleValidation);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_inventory_missing_current_tracker_authority", StringComparison.OrdinalIgnoreCase));
@@ -102,7 +102,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.IdleValidation);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_npc_boundary_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase));

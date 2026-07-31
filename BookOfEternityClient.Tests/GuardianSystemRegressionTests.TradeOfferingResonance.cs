@@ -153,7 +153,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
@@ -305,7 +305,7 @@ public sealed partial class GuardianSystemRegressionTests
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         var priceIssues = issues
             .Where(issue => string.Equals(issue.Code, "guardian_trade_inventory_price_mismatch", StringComparison.OrdinalIgnoreCase))
@@ -452,7 +452,7 @@ public sealed partial class GuardianSystemRegressionTests
             NormalizeGuardianStateJson(preTurnGuardiansWithActiveJson));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         var mirrorIssue = Assert.Single(
             issues,
@@ -563,7 +563,7 @@ public sealed partial class GuardianSystemRegressionTests
             }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
@@ -615,7 +615,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -663,7 +663,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
@@ -730,7 +730,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -792,7 +792,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_invalid_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -868,7 +868,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         var missingGuardianIssue = Assert.Single(
             issues,
@@ -939,7 +939,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
@@ -1008,7 +1008,7 @@ public sealed partial class GuardianSystemRegressionTests
         await RemoveTrackedSnapshotEntryFromCurrentPendingTurnSnapshotAsync(GuardianTradeRequestState.PendingRequestPath);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
@@ -1089,7 +1089,7 @@ public sealed partial class GuardianSystemRegressionTests
             }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
@@ -1162,7 +1162,7 @@ public sealed partial class GuardianSystemRegressionTests
             "{\n  \"files\": {\n");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_invalid_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -1226,7 +1226,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_fields", StringComparison.OrdinalIgnoreCase));
@@ -1293,7 +1293,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_wrong_realm", StringComparison.OrdinalIgnoreCase));
@@ -1339,7 +1339,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -1450,7 +1450,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_missing_matching_power_event", StringComparison.OrdinalIgnoreCase));
@@ -1535,7 +1535,7 @@ public sealed partial class GuardianSystemRegressionTests
             guardiansJson);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_wrong_realm", StringComparison.OrdinalIgnoreCase));
@@ -1629,7 +1629,7 @@ public sealed partial class GuardianSystemRegressionTests
         await RemoveTrackedSnapshotEntryFromCurrentPendingTurnSnapshotAsync(GuardianAbodeOfferingState.PendingRequestPath);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
@@ -1739,7 +1739,7 @@ public sealed partial class GuardianSystemRegressionTests
             }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
@@ -1841,7 +1841,7 @@ public sealed partial class GuardianSystemRegressionTests
             "{\n  \"files\": {\n");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_invalid_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -1895,7 +1895,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_invalid_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -1989,7 +1989,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_invalid_type", StringComparison.OrdinalIgnoreCase));
@@ -2169,7 +2169,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_invalid_current_journal_proof", StringComparison.OrdinalIgnoreCase));
@@ -2345,7 +2345,7 @@ public sealed partial class GuardianSystemRegressionTests
             "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
         var issueCodes = string.Join(", ", issues.Select(issue => issue.Code));
 
         Assert.True(
@@ -3662,7 +3662,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
@@ -3863,7 +3863,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
@@ -4054,7 +4054,7 @@ public sealed partial class GuardianSystemRegressionTests
             """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_offering_soul_relic_missing_preturn_ownership", StringComparison.OrdinalIgnoreCase));
@@ -4193,7 +4193,7 @@ public sealed partial class GuardianSystemRegressionTests
             preTurnGuardiansJson);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
@@ -4269,7 +4269,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "archive_consultation_request_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
@@ -4408,7 +4408,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) ||
@@ -4516,7 +4516,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
@@ -4639,7 +4639,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
@@ -4770,7 +4770,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_duplicate_for_same_life", StringComparison.OrdinalIgnoreCase));
@@ -4945,7 +4945,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_duplicate_for_same_life", StringComparison.OrdinalIgnoreCase));
@@ -5088,7 +5088,7 @@ public sealed partial class GuardianSystemRegressionTests
             }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_duplicate_for_same_life", StringComparison.OrdinalIgnoreCase));
@@ -5237,7 +5237,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
@@ -5332,7 +5332,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_journal", StringComparison.OrdinalIgnoreCase));
@@ -5437,7 +5437,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_journal", StringComparison.OrdinalIgnoreCase));
@@ -5530,7 +5530,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
@@ -5704,7 +5704,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
         var issueCodes = string.Join(", ", issues.Select(issue => issue.Code));
 
         Assert.True(
@@ -5859,7 +5859,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_tracker", StringComparison.OrdinalIgnoreCase));
@@ -6007,7 +6007,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_tracker", StringComparison.OrdinalIgnoreCase));
@@ -6115,7 +6115,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_guardians", StringComparison.OrdinalIgnoreCase) ||
@@ -6245,7 +6245,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_tracker", StringComparison.OrdinalIgnoreCase));
@@ -6396,7 +6396,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_guardians", StringComparison.OrdinalIgnoreCase));
@@ -6512,7 +6512,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_tracker", StringComparison.OrdinalIgnoreCase) ||
@@ -6630,7 +6630,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_tracker_authority", StringComparison.OrdinalIgnoreCase));
@@ -6766,7 +6766,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_guardian_authority", StringComparison.OrdinalIgnoreCase));
@@ -6885,7 +6885,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_guardian_authority", StringComparison.OrdinalIgnoreCase) ||
@@ -6969,7 +6969,7 @@ public sealed partial class GuardianSystemRegressionTests
         await WriteRawAsync(GuardianPowerEventState.JournalPath, "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
@@ -7040,7 +7040,7 @@ public sealed partial class GuardianSystemRegressionTests
         await WriteRawAsync(GuardianPowerEventState.JournalPath, "{");
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
@@ -7120,7 +7120,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
@@ -7223,7 +7223,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_current_journal", StringComparison.OrdinalIgnoreCase));
@@ -9437,7 +9437,7 @@ public sealed partial class GuardianSystemRegressionTests
         """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_invalid_validated_snapshot_guardians", StringComparison.OrdinalIgnoreCase));
@@ -10226,7 +10226,7 @@ public sealed partial class GuardianSystemRegressionTests
             }));
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(GuardianValidationProfiles.TradeOfferingResonance);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "incarnation_trigger_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
