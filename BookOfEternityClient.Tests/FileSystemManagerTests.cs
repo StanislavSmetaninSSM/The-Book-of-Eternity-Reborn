@@ -947,6 +947,72 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task CanonicalWriter_RecoversInterruptedWorkerDeleteBeforeWriting()
+    {
+        const string trackedPath =
+            "game_state/world/worker-delete-recovery.json";
+        const string triggerPath =
+            "game_state/world/worker-delete-recovery-trigger.json";
+        byte[] baseline = [0x12, 0x34];
+        await _fs.WriteFileAtomicBytesAsync(trackedPath, baseline);
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            transactionId);
+        var beforeRoot = Path.Combine(transactionRoot, "before");
+        Directory.CreateDirectory(beforeRoot);
+        await File.WriteAllBytesAsync(
+            Path.Combine(beforeRoot, "0000.bin"),
+            baseline);
+        await File.WriteAllTextAsync(
+            Path.Combine(transactionRoot, "manifest.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                entries = new[]
+                {
+                    new
+                    {
+                        path = trackedPath,
+                        baselineExists = true,
+                        beforeImage = "before/0000.bin",
+                        beforeSha256 = Sha256(baseline),
+                        appliedSha256 = "missing"
+                    }
+                }
+            }));
+        var activeJournalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            "active.json");
+        await File.WriteAllTextAsync(
+            activeJournalPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = false
+            }));
+        File.Delete(_fs.ResolvePath(trackedPath));
+
+        await _fs.WriteFileAtomicBytesAsync(triggerPath, [0x56]);
+
+        Assert.Equal(
+            baseline,
+            await _fs.ReadFileBytesAsync(trackedPath));
+        Assert.Equal(
+            [0x56],
+            await _fs.ReadFileBytesAsync(triggerPath));
+        Assert.False(File.Exists(activeJournalPath));
+        Assert.False(Directory.Exists(transactionRoot));
+    }
+
+    [Fact]
     public async Task WorkerRecovery_BeforeImageLinkAddedAfterInitialValidationFailsAndRetainsEvidence()
     {
         if (!OperatingSystem.IsWindows())

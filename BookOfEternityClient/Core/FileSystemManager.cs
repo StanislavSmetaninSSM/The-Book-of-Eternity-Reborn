@@ -821,8 +821,11 @@ public class FileSystemManager
         bool allowMissingCurrent)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        var allowedHashes = NormalizeOwnedMutationHashes(
-            allowedCurrentSha256s);
+        ArgumentNullException.ThrowIfNull(allowedCurrentSha256s);
+        var allowedHashes =
+            allowMissingCurrent && allowedCurrentSha256s.Count == 0
+                ? new HashSet<string>(StringComparer.Ordinal)
+                : NormalizeOwnedMutationHashes(allowedCurrentSha256s);
         await WriteFileAtomicBytesCoreAsync(
             relativePath,
             content,
@@ -3004,12 +3007,19 @@ public class FileSystemManager
                 }
                 else
                 {
+                    var appliedDestinationMissing = string.Equals(
+                        entry.AppliedSha256,
+                        "missing",
+                        StringComparison.OrdinalIgnoreCase);
                     await WriteFileAtomicBytesIfCurrentOwnedAsync(
                         writeLease,
                         entry.Path,
                         baseline,
-                        [entry.AppliedSha256],
-                        allowMissingCurrent: false);
+                        appliedDestinationMissing
+                            ? []
+                            : [entry.AppliedSha256],
+                        allowMissingCurrent:
+                            appliedDestinationMissing);
                 }
             }
             catch (Exception ex)
