@@ -243,7 +243,8 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardianRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SystemGuardianLibrary);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
@@ -423,7 +424,8 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardianRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, root.ToJsonString());
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        var issues = await validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SystemGuardianLibrary);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);

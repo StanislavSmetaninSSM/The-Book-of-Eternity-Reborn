@@ -272,7 +272,8 @@ public sealed class MathAssistantContractValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "math_request_evaluation_failed", StringComparison.OrdinalIgnoreCase));

@@ -37,7 +37,8 @@ public sealed class WeatherValidationTests : IDisposable
 
         await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", root.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Weather);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "weather_direct_state_missing_required_fields", StringComparison.OrdinalIgnoreCase) &&

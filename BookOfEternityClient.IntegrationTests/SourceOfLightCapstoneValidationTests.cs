@@ -39,7 +39,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.DoesNotContain(issues, IsSourceOfLightIssue);
     }
@@ -67,7 +68,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
             });
         await WriteVerifiedProgressionReportAsync(shiningAbodeCyclesProcessed: 1);
 
-        var issuesBeforeCleanup = await _validator.ValidateGameStateAsync();
+        var issuesBeforeCleanup = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.DoesNotContain(issuesBeforeCleanup, IsSourceOfLightIssue);
         Assert.True(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
@@ -90,7 +92,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         if (Directory.Exists(snapshotDirectory))
             Directory.Delete(snapshotDirectory, recursive: true);
 
-        var issuesAfterCleanup = await _validator.ValidateGameStateAsync();
+        var issuesAfterCleanup = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
         Assert.DoesNotContain(issuesAfterCleanup, IsSourceOfLightIssue);
     }
 
@@ -108,7 +111,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_missing_incarnated_light_relic", StringComparison.OrdinalIgnoreCase));
@@ -135,7 +139,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.DoesNotContain(issues, IsSourceOfLightIssue);
     }
@@ -155,7 +160,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_missing_completed_marker", StringComparison.OrdinalIgnoreCase));
@@ -175,7 +181,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_missing_completed_marker", StringComparison.OrdinalIgnoreCase) ||
@@ -200,7 +207,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_missing_completed_marker", StringComparison.OrdinalIgnoreCase));
@@ -224,7 +232,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
@@ -244,7 +253,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
@@ -273,7 +283,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
             });
         await WriteVerifiedProgressionReportAsync(shiningAbodeCyclesProcessed: 1);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_radiance_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -313,7 +324,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
             });
         await WriteVerifiedProgressionReportAsync(shiningAbodeCyclesProcessed: 1);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase) &&
@@ -335,7 +347,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(currentSoul, currentShining, request);
         await WriteValidatedSnapshotManifestAsync(request, preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_relic_not_stored_on_closure", StringComparison.OrdinalIgnoreCase));
@@ -352,7 +365,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase));
@@ -413,7 +427,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase) &&
@@ -440,7 +455,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase));
@@ -462,7 +478,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase));
@@ -475,7 +492,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(CreatePreTurnSoulRoot(), CreatePreTurnShiningRoot(), request);
         await _fs.WriteFileAtomicAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "{ malformed");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase));
@@ -491,7 +509,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         await WriteStateRootsAsync(soulRoot, shiningRoot);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.DoesNotContain(issues, IsSourceOfLightIssue);
     }
@@ -509,7 +528,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteStateRootsAsync(currentSoul, currentShining);
         await WriteValidatedSnapshotManifestWithoutSourcePendingAsync(preTurnSoul, preTurnShining);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_missing_validated_pending_request", StringComparison.OrdinalIgnoreCase));
@@ -526,7 +546,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         await WriteStateRootsAsync(soulRoot, shiningRoot);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_relic_missing_characteristic_bonus", StringComparison.OrdinalIgnoreCase));
@@ -545,7 +566,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         await WriteStateRootsAsync(soulRoot, shiningRoot);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_closure_tuple_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -594,7 +616,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         await WriteCurrentStateAsync(soulRoot, shiningRoot, pendingRequest);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_duplicate_reward_state", StringComparison.OrdinalIgnoreCase));
@@ -612,7 +635,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
         await WriteCurrentStateAsync(soulRoot, shiningRoot, pendingRequest);
         await WriteValidatedSnapshotManifestAsync(pendingRequest, soulRoot, shiningRoot);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_duplicate_reward_state", StringComparison.OrdinalIgnoreCase));
@@ -631,7 +655,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         await WriteCurrentStateAsync(soulRoot, shiningRoot, request);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_duplicate_reward_state", StringComparison.OrdinalIgnoreCase));
@@ -651,7 +676,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         await WriteStateRootsAsync(soulRoot, shiningRoot);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_closure_tuple_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -670,7 +696,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         await WriteStateRootsAsync(soulRoot, shiningRoot);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_closure_tuple_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -689,7 +716,8 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
             "game_state/meta/soul_state.json",
             soulRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SourceOfLight);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_duplicate_incarnated_light_relic", StringComparison.OrdinalIgnoreCase));

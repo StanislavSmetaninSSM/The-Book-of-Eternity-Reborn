@@ -31,7 +31,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
             "Письмо с площади",
             "\"textContent\": [\"Лира просит встретиться у фонтана до рассвета.\"],"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.DoesNotContain(issues, IsReadableDocumentIssue);
     }
@@ -44,7 +45,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
             "Письмо с техническим якорем",
             "\"textContent\": [\"#[5]. Осмотр: на бумаге видны следы соли.\"],"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "inventory_text_content_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
@@ -72,7 +74,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "inventory_text_content_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
@@ -89,7 +92,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
             "\"textContent\": [\"На первой странице виден знак старого владельца.\"],",
             "\"journalEntries\": [\"#[4]. Предмет найден на столе у окна.\"],"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "item_journal_entry_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
@@ -117,7 +121,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "item_journal_entry_turn_anchor_player_facing", StringComparison.OrdinalIgnoreCase) &&
@@ -133,7 +138,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
             "Письмо без текста",
             "\"textContent\": null,"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.Contains(issues, issue =>
             IsReadableDocumentIssue(issue) &&
@@ -152,7 +158,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
                   "unreadableReason": "Письмо запечатано неизвестной печатью.",
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.DoesNotContain(issues, IsReadableDocumentIssue);
     }
@@ -178,7 +185,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.DoesNotContain(issues, IsReadableDocumentIssue);
     }
@@ -208,7 +216,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.DoesNotContain(issues, IsReadableDocumentIssue);
     }
@@ -234,7 +243,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.Contains(issues, issue =>
             IsReadableDocumentIssue(issue) &&
@@ -256,7 +266,8 @@ public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
             }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ReadableDocument);
 
         Assert.DoesNotContain(issues, IsReadableDocumentIssue);
     }

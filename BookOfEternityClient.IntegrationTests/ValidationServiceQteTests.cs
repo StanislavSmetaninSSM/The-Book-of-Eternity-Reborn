@@ -111,7 +111,8 @@ public sealed class ValidationServiceQteTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync($"{QteNormalizerBackupDirectory}/stale_backup.json", "{ invalid backup json");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Qte);
 
         Assert.DoesNotContain(issues, issue =>
             issue.FilePath.StartsWith(QteNormalizerBackupDirectory + "/", StringComparison.OrdinalIgnoreCase));

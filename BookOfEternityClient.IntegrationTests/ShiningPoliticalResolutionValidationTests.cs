@@ -742,7 +742,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ShiningState);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_founding_duplicate_request_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -855,7 +856,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ShiningState);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_realignment_duplicate_request_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -901,7 +903,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             }
         });
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ShiningState);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_duplicate_request_id", StringComparison.OrdinalIgnoreCase));
     }
@@ -920,7 +923,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
 
         await SeedCurrentStateAsync(shiningRoot, CreateBaseResidentRoot());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.ShiningState);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "shining_leadership_missing_head_binding", StringComparison.OrdinalIgnoreCase) ||

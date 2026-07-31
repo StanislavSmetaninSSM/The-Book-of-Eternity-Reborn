@@ -27,7 +27,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     [Fact]
     public async Task ValidateGameStateAsync_MissingSarefState_AllowsLegacySave()
     {
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_", StringComparison.OrdinalIgnoreCase) == true);
@@ -38,7 +39,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, SarefMainStoryState.SerializeDefaultRoot());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_", StringComparison.OrdinalIgnoreCase) == true);
@@ -57,7 +59,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState());
         await _fs.WriteFileAtomicAsync("game_state/control/pending_saref_wings_infiltration.json", BuildValidSarefWingsPendingRequest());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_wings_pending_wrong_realm", StringComparison.OrdinalIgnoreCase));
@@ -68,7 +71,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     {
         await SeedShiningWingsPendingAcceptedTurnAsync(BuildSarefWingsRouteState());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_wings_pending_missing_closure", StringComparison.OrdinalIgnoreCase));
@@ -95,7 +99,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
 
         await SeedShiningWingsPendingAcceptedTurnAsync(storyRoot.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "saref_wings_pending_missing_closure", StringComparison.OrdinalIgnoreCase));
@@ -110,7 +115,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           }
         """, revealStage: "wings_revealed"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_wings_revealed_missing_faction_id", StringComparison.OrdinalIgnoreCase));
@@ -138,7 +144,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_wings_faction_missing_shining_actor", StringComparison.OrdinalIgnoreCase));
@@ -165,7 +172,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           }
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_wings_agents_need_mixed_archetypes", StringComparison.OrdinalIgnoreCase));
@@ -202,7 +210,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           }
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_wings_agent", StringComparison.OrdinalIgnoreCase) == true ||
@@ -266,7 +275,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_invalid_reveal_stage", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_duplicate_guardian_questline", StringComparison.OrdinalIgnoreCase));
@@ -301,7 +311,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_no_spoiler_stage_has_revealed_content", StringComparison.OrdinalIgnoreCase));
@@ -328,7 +339,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_wings_stage_without_unlock_route", StringComparison.OrdinalIgnoreCase));
@@ -391,7 +403,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_", StringComparison.OrdinalIgnoreCase) == true);
@@ -443,7 +456,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_questline_out_of_order", StringComparison.OrdinalIgnoreCase));
@@ -496,7 +510,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_revelation_without_questline_completion", StringComparison.OrdinalIgnoreCase));
@@ -529,7 +544,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_missing_role", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_missing_boundaries", StringComparison.OrdinalIgnoreCase));
@@ -544,7 +560,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(includeMemoryProof: false));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_quest_four_missing_memory_scene_proof", StringComparison.OrdinalIgnoreCase));
@@ -555,7 +572,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(includeMemoryProof: true));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_quest_four_missing_memory_scene_proof", StringComparison.OrdinalIgnoreCase));
@@ -566,7 +584,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(includeMemoryProof: true));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_memory_scene", StringComparison.OrdinalIgnoreCase) == true ||
@@ -585,7 +604,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             .Replace("\"questId\": \"azalia_saref_q4\"", "\"questId\": \"myriel_saref_q4\"", StringComparison.Ordinal);
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(mismatchedProof));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_memory_scene_proof_guardian_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -614,7 +634,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         """;
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(proofWithPhysicalTransfer));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_physical_mortal_item_evidence", StringComparison.OrdinalIgnoreCase));
@@ -648,7 +669,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             ("game_state/quests/regular_quests.json", preTurnRegularQuests),
             (SarefMainStoryState.StatePath, SarefMainStoryState.SerializeDefaultRoot()));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
@@ -770,7 +792,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_physical_mortal_item_evidence", StringComparison.OrdinalIgnoreCase));
@@ -809,7 +832,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_advantage_", StringComparison.OrdinalIgnoreCase) == true ||
@@ -842,7 +866,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_unknown_advantage_usage", StringComparison.OrdinalIgnoreCase));
@@ -875,7 +900,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_advantage_usage_unauthorized_state", StringComparison.OrdinalIgnoreCase));
@@ -907,7 +933,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_advantage_usage_inapplicable_scene", StringComparison.OrdinalIgnoreCase));
@@ -930,7 +957,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "sarefAdvantageUses": []
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_spent_advantage_missing_audit", StringComparison.OrdinalIgnoreCase));
@@ -985,7 +1013,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_defeat_invalid_outcome_type", StringComparison.OrdinalIgnoreCase));
@@ -1010,7 +1039,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_defeat_forced_oath_missing_oath_state", StringComparison.OrdinalIgnoreCase));
@@ -1032,7 +1062,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_defeat_soul_dissipation_missing_proof", StringComparison.OrdinalIgnoreCase));
@@ -1059,7 +1090,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         ]
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_defeat_unknown_mitigation_advantage", StringComparison.OrdinalIgnoreCase));
@@ -1107,7 +1139,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_defeat_", StringComparison.OrdinalIgnoreCase) == true);
@@ -1157,7 +1190,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             SarefMainStoryState.StatePath,
             BuildSarefFinalConfrontationState("null", revealStage: "completed"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_completed_without_final_confrontation", StringComparison.OrdinalIgnoreCase));
@@ -1181,7 +1215,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_final_confrontation_offscreen", StringComparison.OrdinalIgnoreCase));
@@ -1205,7 +1240,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_final_deep_victory_insufficient_guardians", StringComparison.OrdinalIgnoreCase));
@@ -1228,7 +1264,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_final_hybrid_missing_components", StringComparison.OrdinalIgnoreCase));
@@ -1253,7 +1290,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_final_unknown_advantage_use", StringComparison.OrdinalIgnoreCase));
@@ -1278,7 +1316,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         """));
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningWingsFactionState("active"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_final_wings_lifecycle_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1320,7 +1359,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 """));
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningWingsFactionState("dissolved"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_final_", StringComparison.OrdinalIgnoreCase) == true);
@@ -1453,7 +1493,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 }
                 """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_ending_deal_missing_oath_cost", StringComparison.OrdinalIgnoreCase));
@@ -1469,7 +1510,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 endingsPayload: BuildSarefDealEndingPayload(),
                 playerOathStatePayload: BuildSarefOathboundPayload()));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oathbound_agenda_missing", StringComparison.OrdinalIgnoreCase));
@@ -1492,7 +1534,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 """,
                 postStoryAgendaPayload: BuildSarefOathboundAgendaPayload()));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oathbound_left_without_oath_break", StringComparison.OrdinalIgnoreCase));
@@ -1558,7 +1601,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 """,
                 postStoryAgendaPayload: BuildSarefOathboundAgendaPayload()));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oath_break_missing_arc", StringComparison.OrdinalIgnoreCase));
@@ -1592,7 +1636,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 }
                 """)));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oath_break_missing_proof", StringComparison.OrdinalIgnoreCase));
@@ -1611,7 +1656,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 playerOathStatePayload: BuildSarefBrokenOathPayload(),
                 postStoryAgendaPayload: BuildSarefOathboundAgendaWithOathBreakPayload(BuildValidSarefOathBreakArcPayload(advantageUseId: "missing_use"))));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oath_break_unknown_advantage_use", StringComparison.OrdinalIgnoreCase));
@@ -1629,7 +1675,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 playerOathStatePayload: BuildSarefBrokenOathPayload(),
                 postStoryAgendaPayload: BuildSarefOathboundAgendaWithOathBreakPayload(BuildValidSarefOathBreakArcPayload())));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_oath_break_", StringComparison.OrdinalIgnoreCase) == true ||
@@ -1656,7 +1703,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 }
                 """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oath_break_romance_missing_tragedy", StringComparison.OrdinalIgnoreCase));
@@ -1686,7 +1734,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 """)));
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningSarefAgendaState(includeCampaign: false));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oathbound_assignment_campaign_missing", StringComparison.OrdinalIgnoreCase));
@@ -1704,7 +1753,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 postStoryAgendaPayload: BuildSarefOathboundAgendaPayload(dominationScenePayload: "null")));
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningSarefAgendaState(rivalLifecycleState: "dissolved", includeCampaign: true, campaignStatus: "completed"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_oathbound_domination_scene_missing", StringComparison.OrdinalIgnoreCase));
@@ -1729,7 +1779,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 """)));
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningSarefAgendaState(rivalLifecycleState: "dissolved", includeCampaign: true, campaignStatus: "completed"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_oathbound_", StringComparison.OrdinalIgnoreCase) == true);
@@ -1761,7 +1812,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 ]
                 """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_ending_victory_missing_protection", StringComparison.OrdinalIgnoreCase));
@@ -1795,7 +1847,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 ]
                 """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_ending_final_mismatch", StringComparison.OrdinalIgnoreCase));
@@ -1853,7 +1906,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
                 """));
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningWingsFactionState("dissolved"));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.SarefStory);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_ending_", StringComparison.OrdinalIgnoreCase) == true);

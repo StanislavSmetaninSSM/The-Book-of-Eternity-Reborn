@@ -344,7 +344,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
         var expectedCodes = new[]
         {
             "mortal_bootstrap_progression_requires_structured_gm_authority",
@@ -389,7 +390,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase) ||
@@ -464,7 +466,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
@@ -521,7 +524,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             sourceActorSnapshotHash: "test-snapshot-hash",
             reason: "missing_showcase");
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.FilePath, LocalUiSessionLockService.LockPath, StringComparison.OrdinalIgnoreCase) &&
@@ -646,7 +650,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) &&
@@ -701,7 +706,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         { "worldEventsLog": [] }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_explicit_competency_missing", StringComparison.OrdinalIgnoreCase) ||
@@ -744,7 +750,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             issue.FilePath is not null &&
@@ -781,7 +788,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         var biomeIssue = Assert.Single(issues, issue =>
             string.Equals(issue.FilePath, "game_state/world/current_location.json.biome", StringComparison.OrdinalIgnoreCase));
@@ -838,7 +846,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             }
         }.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.Contains(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
@@ -933,7 +942,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         await WriteValidatedSnapshotManifestAsync(("lore/codex_entries.json", preTurnCodex));
         await _fs.WriteFileAtomicAsync("lore/codex_entries.json", currentCodex);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "codex_related_entry_unknown_target", StringComparison.OrdinalIgnoreCase) &&
@@ -984,7 +994,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_reused_previous_world_lore", StringComparison.OrdinalIgnoreCase));
@@ -1056,7 +1067,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.Contains(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
@@ -1140,7 +1152,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_placeholder_player_visible_name", StringComparison.OrdinalIgnoreCase));
@@ -1204,7 +1217,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             includeSnapshotFilesAsRollbackBaseline: false,
             bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.Contains(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
@@ -1265,7 +1279,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             includeSnapshotFilesAsRollbackBaseline: false,
             bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_requested_teacher_missing", StringComparison.OrdinalIgnoreCase));
@@ -1329,7 +1344,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             includeSnapshotFilesAsRollbackBaseline: false,
             bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.Contains(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
@@ -1390,7 +1406,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             includeSnapshotFilesAsRollbackBaseline: false,
             bootstrapLoreFiles.Select(path => (Path: path, Json: files[path].ToJsonString())).ToArray());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "mortal_bootstrap_requested_trade_missing", StringComparison.OrdinalIgnoreCase));
@@ -1466,7 +1483,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MortalBootstrap);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&

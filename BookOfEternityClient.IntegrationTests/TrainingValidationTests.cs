@@ -30,7 +30,8 @@ public sealed class TrainingValidationTests : IDisposable
         var expectedHash = TrainingService.ComputeSourceSnapshotHash(
             BuildAfterlifeMentorProfile(sourceActorSnapshotHash: null, sourceCap: 4, includeShowcase: false));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         var issue = Assert.Single(issues, issue =>
             string.Equals(issue.Code, "training_showcase_stale_source_actor_snapshot", StringComparison.OrdinalIgnoreCase) &&
@@ -46,7 +47,8 @@ public sealed class TrainingValidationTests : IDisposable
         var snapshotHash = TrainingService.ComputeSourceSnapshotHash(mentorWithoutShowcase);
         await WriteAfterlifeMentorProfileAsync(sourceActorSnapshotHash: snapshotHash, sourceCap: 6);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "training_showcase_source_cap_exceeds_actor_cap", StringComparison.OrdinalIgnoreCase) &&
@@ -62,7 +64,8 @@ public sealed class TrainingValidationTests : IDisposable
         showcase["sourceActorId"] = "missing_guardian";
         await WriteAfterlifeMentorProfileObjectAsync(mentor);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "training_showcase_wrong_realm", StringComparison.OrdinalIgnoreCase) &&
@@ -99,7 +102,8 @@ public sealed class TrainingValidationTests : IDisposable
         };
         await WriteAfterlifeMentorProfileObjectAsync(mentor);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "training_showcase_source_cannot_teach", StringComparison.OrdinalIgnoreCase));
@@ -119,7 +123,8 @@ public sealed class TrainingValidationTests : IDisposable
         };
         await WriteAfterlifeMentorProfileObjectAsync(mentor);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "training_showcase_zero_cost", StringComparison.OrdinalIgnoreCase));
@@ -143,7 +148,8 @@ public sealed class TrainingValidationTests : IDisposable
         });
         await WriteAfterlifeMentorProfileObjectAsync(mentor);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "training_showcase_duplicate_offer_id", StringComparison.OrdinalIgnoreCase) &&
@@ -155,7 +161,8 @@ public sealed class TrainingValidationTests : IDisposable
     {
         await WriteMortalTeacherWithReceiptAsync(moneySpent: 999, experiencePercent: 15);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "training_purchase_receipt_resource_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -239,7 +246,8 @@ public sealed class TrainingValidationTests : IDisposable
                 }
             }.ToJsonString());
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "training_purchase_receipt_offer_mismatch", StringComparison.OrdinalIgnoreCase) &&
@@ -251,7 +259,8 @@ public sealed class TrainingValidationTests : IDisposable
     {
         await WriteMortalTeacherWithStaleShowcaseAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
@@ -266,7 +275,8 @@ public sealed class TrainingValidationTests : IDisposable
     {
         await WriteMortalTeacherWithHistoricalReceiptAfterTeacherChangeAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.DoesNotContain(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
@@ -284,7 +294,8 @@ public sealed class TrainingValidationTests : IDisposable
     {
         await WriteMortalInitialIdTeacherWithReceiptAsync();
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "npc_contract_unknown_top_level_key", StringComparison.OrdinalIgnoreCase) &&
@@ -317,7 +328,8 @@ public sealed class TrainingValidationTests : IDisposable
             }
             """);
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.Training);
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "training_skill_evolution_missing_details", StringComparison.OrdinalIgnoreCase) &&

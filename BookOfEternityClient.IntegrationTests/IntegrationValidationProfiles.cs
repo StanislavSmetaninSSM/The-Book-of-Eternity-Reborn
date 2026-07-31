@@ -98,6 +98,7 @@ internal static class IntegrationValidationProfiles
         GameStateValidationPhase.MortalBootstrapContentAnchors |
         GameStateValidationPhase.CrossReferences |
         GameStateValidationPhase.SoulStateConsistency |
+        GameStateValidationPhase.TrainingShowcases |
         GameStateValidationPhase.PlayerStateFiles |
         GameStateValidationPhase.NpcStateFiles |
         GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
@@ -126,6 +127,9 @@ internal static class IntegrationValidationProfiles
     internal static readonly GameStateValidationSelection ReadableDocument = Select(
         GameStateValidationPhase.JsonIntegrity |
         GameStateValidationPhase.RequiredFields |
+        GameStateValidationPhase.CrossReferences |
+        GameStateValidationPhase.PlayerStateFiles |
+        GameStateValidationPhase.NpcStateFiles |
         GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
         GameStateValidationPhase.MetaMiscStateFiles);
 

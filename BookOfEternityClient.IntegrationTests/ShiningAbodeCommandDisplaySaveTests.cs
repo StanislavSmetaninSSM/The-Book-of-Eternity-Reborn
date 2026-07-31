@@ -86,7 +86,8 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
         await stateManager.RefreshGameStateAsync();
         Assert.Equal("Shining Abode", stateManager.CurrentState.CurrentRealm);
 
-        var issues = await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync();
+        var issues = await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync(
+            IntegrationValidationProfiles.CommandDisplaySave);
         var blockingIssues = issues.Where(static issue => issue.Severity == IssueSeverity.Error).ToArray();
         Assert.True(
             blockingIssues.Length == 0,

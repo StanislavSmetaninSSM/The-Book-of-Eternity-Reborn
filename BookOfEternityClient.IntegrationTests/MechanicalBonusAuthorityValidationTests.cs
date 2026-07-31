@@ -34,7 +34,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             "structuredBonuses": [],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -53,7 +54,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             "structuredBonuses": [],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -82,7 +84,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -105,7 +108,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -134,7 +138,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -163,7 +168,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -192,7 +198,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -220,7 +227,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -249,7 +257,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -274,7 +283,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -298,7 +308,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -323,7 +334,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -348,7 +360,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -391,7 +404,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -426,7 +440,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -445,7 +460,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             "customProperties": [{}],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -464,7 +480,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             "structuredBonuses": [],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -483,7 +500,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             "structuredBonuses": [],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -503,7 +521,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             """,
             isConsumption: true));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.Contains(issues, issue =>
             IsMissingAuthorityIssue(issue) &&
@@ -531,7 +550,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.DoesNotContain(issues, IsMissingAuthorityIssue);
     }
@@ -557,7 +577,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.DoesNotContain(issues, IsMissingAuthorityIssue);
     }
@@ -583,7 +604,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             ],
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.DoesNotContain(issues, IsMissingAuthorityIssue);
     }
@@ -600,7 +622,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             "mechanicalSummaryAuthority": "NarrativeOnly",
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.DoesNotContain(issues, IsMissingAuthorityIssue);
     }
@@ -618,7 +641,8 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             "mechanicalSummaryUnresolvedReason": "Руны запечатаны, эффект станет ясен после ритуала распознавания.",
             """));
 
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.MechanicalBonus);
 
         Assert.DoesNotContain(issues, IsMissingAuthorityIssue);
     }

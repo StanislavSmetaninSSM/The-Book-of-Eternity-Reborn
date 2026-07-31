@@ -178,7 +178,8 @@ public sealed class ShiningStateValidationTests
             await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fs);
 
             var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
-            var issues = await validator.ValidateGameStateAsync();
+            var issues = await validator.ValidateGameStateAsync(
+                IntegrationValidationProfiles.ShiningState);
 
             Assert.Contains(
                 issues,

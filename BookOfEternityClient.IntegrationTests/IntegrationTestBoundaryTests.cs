@@ -9,6 +9,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class IntegrationTestBoundaryTests
 {
+    private const int BroadValidationSentinelBudget = 8;
+    private const int ReviewedBroadValidationCallCount = 7;
     private const int GuardianFullValidationSentinelBudget = 8;
     private const string FastTestsDirectory = "BookOfEternityClient.Tests";
     private const string IntegrationTestsDirectory = "BookOfEternityClient.IntegrationTests";
@@ -66,6 +68,36 @@ public sealed class IntegrationTestBoundaryTests
             ["CanonicalStateNormalizerTests.GuardianProjects.cs"] = "CanonicalGuardian",
             ["CanonicalStateNormalizerTests.Inventory.cs"] = "CanonicalInventory",
             ["CanonicalStateNormalizerTests.Npcs.cs"] = "CanonicalNpc"
+        };
+
+    private static readonly IReadOnlyDictionary<string, string> MortalShiningStoryAndMiscScopedSources =
+        new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["ChaosSeaCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
+            ["MathAssistantContractValidationTests.cs"] = "ReadableDocument",
+            ["MechanicalBonusAuthorityValidationTests.cs"] = "MechanicalBonus",
+            ["MortalBootstrapValidationTests.cs"] = "MortalBootstrap",
+            ["MortalCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
+            ["ReadableDocumentAuthorityValidationTests.cs"] = "ReadableDocument",
+            ["SarefMainStoryStateValidationTests.cs"] = "SarefStory",
+            ["ShiningAbodeCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
+            ["ShiningPoliticalResolutionValidationTests.cs"] = "ShiningState",
+            ["ShiningStateValidationTests.cs"] = "ShiningState",
+            ["SourceOfLightCapstoneValidationTests.cs"] = "SourceOfLight",
+            ["SystemGuardianLibraryServiceTests.cs"] = "SystemGuardianLibrary",
+            ["TrainingValidationTests.cs"] = "Training",
+            ["ValidationServiceQteTests.cs"] = "Qte",
+            ["WeatherValidationTests.cs"] = "Weather"
+        };
+
+    private static readonly IReadOnlyDictionary<string, int> ReviewedBroadValidationCallManifest =
+        new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            [$"{TestSupportDirectory}/ValidatorFixtureHarness.cs"] = 2,
+            [$"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs"] = 1,
+            [$"{IntegrationTestsDirectory}/ExampleDocumentationValidationTests.cs"] = 1,
+            [$"{IntegrationTestsDirectory}/FileSystemExampleFixtureIntegrityTests.cs"] = 2,
+            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 1
         };
 
     private static readonly string[] GuardianPartialSources =
@@ -216,6 +248,92 @@ public sealed class IntegrationTestBoundaryTests
             "Guardian, NPC, and canonical validation source violations:" +
             Environment.NewLine +
             string.Join(Environment.NewLine, violations));
+    }
+
+    [Fact]
+    public void MortalShiningStoryAndMiscValidationSources_UseScopedProfiles()
+    {
+        var violations = ActorAndAfterlifeScopedProfileViolations(
+            MortalShiningStoryAndMiscScopedSources.Select(mapping => (
+                FileName: mapping.Key,
+                ProfileName: mapping.Value,
+                Source: File.ReadAllText(
+                    SourcePath(IntegrationTestsDirectory, mapping.Key)))));
+
+        Assert.True(
+            violations.Length == 0,
+            "Mortal, Shining, story, and miscellaneous validation source violations:" +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, violations));
+    }
+
+    [Fact]
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest()
+    {
+        var callSites = EnumerateIntegrationAndSupportSources()
+            .SelectMany(candidate =>
+                ParameterlessValidationCallLocations(candidate.Path, candidate.Source))
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        var violations = BroadValidationCallManifestViolations(callSites);
+
+        Assert.True(
+            violations.Length == 0,
+            BroadValidationCallManifestFailure(callSites, violations));
+    }
+
+    [Fact]
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsSameTotalPerFileDrift()
+    {
+        var callSites = ReviewedBroadValidationCallLocations().ToList();
+        callSites.Remove($"{TestSupportDirectory}/ValidatorFixtureHarness.cs:1");
+        callSites.Add(
+            $"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs:2");
+
+        var violations = BroadValidationCallManifestViolations(callSites);
+
+        Assert.Contains(
+            violations,
+            violation =>
+                violation.Contains(
+                    $"{TestSupportDirectory}/ValidatorFixtureHarness.cs: expected 2, found 1",
+                    StringComparison.Ordinal) &&
+                violation.Contains(
+                    $"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs: expected 1, found 2",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsEighthUnreviewedCall()
+    {
+        var callSites = ReviewedBroadValidationCallLocations()
+            .Append($"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs:42")
+            .ToArray();
+        var violations = BroadValidationCallManifestViolations(callSites);
+        var message = BroadValidationCallManifestFailure(callSites, violations);
+
+        Assert.Contains(
+            violations,
+            violation =>
+                violation.Contains(
+                    "observed 8 reaches sentinel budget 8",
+                    StringComparison.Ordinal));
+        Assert.Contains(
+            $"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs: expected 0, found 1",
+            message,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Broad-validation sentinel budget is 8",
+            message,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Expected reviewed call sites: 7",
+            message,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Replace repeated calls with IntegrationValidationProfiles or a narrower state-file selection.",
+            message,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -788,14 +906,129 @@ public sealed class IntegrationTestBoundaryTests
     {
         foreach (var directory in new[] { IntegrationTestsDirectory, TestSupportDirectory })
         {
+            var sourceRoot = SourcePath(directory);
             foreach (var path in Directory.EnumerateFiles(
-                         SourcePath(directory),
+                         sourceRoot,
                          "*.cs",
-                         SearchOption.AllDirectories))
+                         SearchOption.AllDirectories)
+                     .Where(path => !IsGeneratedBuildSource(sourceRoot, path)))
             {
                 yield return (Path.GetFullPath(path), File.ReadAllText(path));
             }
         }
+    }
+
+    private static bool IsGeneratedBuildSource(string sourceRoot, string path)
+    {
+        var segments = Path.GetRelativePath(sourceRoot, path)
+            .Split(
+                [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                StringSplitOptions.RemoveEmptyEntries);
+
+        return segments.Any(segment =>
+            string.Equals(segment, "bin", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(segment, "obj", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static IEnumerable<string> ParameterlessValidationCallLocations(
+        string path,
+        string source)
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var normalizedRelativePath = Path
+            .GetRelativePath(TestRepoPaths.RepoRoot, path)
+            .Replace(Path.DirectorySeparatorChar, '/')
+            .Replace(Path.AltDirectorySeparatorChar, '/');
+        var root = CSharpSyntaxTree.ParseText(source).GetRoot();
+
+        return root
+            .DescendantNodes()
+            .OfType<InvocationExpressionSyntax>()
+            .Where(invocation =>
+                invocation.ArgumentList.Arguments.Count == 0 &&
+                string.Equals(
+                    InvokedMemberName(invocation),
+                    methodName,
+                    StringComparison.Ordinal))
+            .Select(invocation =>
+                $"{normalizedRelativePath}:{LineNumber(invocation)}")
+            .ToArray();
+    }
+
+    private static IEnumerable<string> ReviewedBroadValidationCallLocations()
+    {
+        return ReviewedBroadValidationCallManifest
+            .OrderBy(mapping => mapping.Key, StringComparer.Ordinal)
+            .SelectMany(mapping =>
+                Enumerable.Range(1, mapping.Value)
+                    .Select(line => $"{mapping.Key}:{line}"));
+    }
+
+    private static string[] BroadValidationCallManifestViolations(
+        IEnumerable<string> callSites)
+    {
+        var callSiteArray = callSites.ToArray();
+        var observedCounts = callSiteArray
+            .Select(callSite =>
+            {
+                var lineSeparator = callSite.LastIndexOf(':');
+                return lineSeparator >= 0
+                    ? callSite[..lineSeparator]
+                    : callSite;
+            })
+            .GroupBy(path => path, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
+        var paths = ReviewedBroadValidationCallManifest.Keys
+            .Concat(observedCounts.Keys)
+            .Distinct(StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        var countDrift = paths
+            .Select(path => (
+                Path: path,
+                Expected: ReviewedBroadValidationCallManifest.GetValueOrDefault(path),
+                Found: observedCounts.GetValueOrDefault(path)))
+            .Where(count => count.Expected != count.Found)
+            .Select(count =>
+                $"{count.Path}: expected {count.Expected}, found {count.Found}")
+            .ToArray();
+        var violations = new List<string>();
+
+        if (ReviewedBroadValidationCallManifest.Count != 5 ||
+            ReviewedBroadValidationCallManifest.Values.Sum() !=
+            ReviewedBroadValidationCallCount)
+        {
+            violations.Add(
+                "Reviewed broad-validation manifest must contain exactly " +
+                $"5 files and {ReviewedBroadValidationCallCount} call sites.");
+        }
+
+        if (callSiteArray.Length >= BroadValidationSentinelBudget)
+        {
+            violations.Add(
+                $"observed {callSiteArray.Length} reaches sentinel budget " +
+                $"{BroadValidationSentinelBudget}");
+        }
+
+        if (countDrift.Length > 0)
+            violations.Add(string.Join(Environment.NewLine, countDrift));
+
+        return violations.ToArray();
+    }
+
+    private static string BroadValidationCallManifestFailure(
+        IReadOnlyCollection<string> callSites,
+        IReadOnlyCollection<string> violations)
+    {
+        return string.Join(
+            Environment.NewLine,
+            $"Broad-validation sentinel budget is {BroadValidationSentinelBudget}",
+            $"Expected reviewed call sites: {ReviewedBroadValidationCallCount}",
+            "Replace repeated calls with IntegrationValidationProfiles or a narrower state-file selection.",
+            "Manifest violations:",
+            string.Join(Environment.NewLine, violations),
+            "Observed zero-argument call sites:",
+            string.Join(Environment.NewLine, callSites.Order(StringComparer.Ordinal)));
     }
 
     private static string SourcePath(params string[] relativeParts) =>
@@ -805,6 +1038,14 @@ public sealed class IntegrationTestBoundaryTests
     private static int LineNumber(string source, int characterIndex)
     {
         return source.AsSpan(0, characterIndex).Count('\n') + 1;
+    }
+
+    private static int LineNumber(InvocationExpressionSyntax syntax)
+    {
+        return syntax.GetLocation()
+            .GetLineSpan()
+            .StartLinePosition
+            .Line + 1;
     }
 
     private static string[] ActorAndAfterlifeScopedProfileViolations(

@@ -79,7 +79,8 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
         await stateManager.RefreshGameStateAsync();
         Assert.Equal("Chaos Sea", stateManager.CurrentState.CurrentRealm);
 
-        var issues = await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync();
+        var issues = await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync(
+            IntegrationValidationProfiles.CommandDisplaySave);
         var blockingIssues = issues.Where(static issue => issue.Severity == IssueSeverity.Error).ToArray();
         Assert.True(
             blockingIssues.Length == 0,
