@@ -161,6 +161,85 @@ public sealed class IntegrationTestBoundaryTests
     ];
 
     [Fact]
+    public void CSharpLaneRunner_DefinesNonOverlappingProjectRoutedPreMergeSchedule()
+    {
+        var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
+        var source = File.ReadAllText(runnerPath);
+        var normalized = Regex.Replace(source, @"\s+", " ");
+
+        var lanes = new[]
+        {
+            "Fast",
+            "Focused",
+            "FullValidation",
+            "RegressionIntegration",
+            "ProcessIntegration",
+            "E2E",
+            "Complete",
+            "PreMerge"
+        };
+        Assert.All(lanes, lane =>
+            Assert.Contains($"\"{lane}\"", source, StringComparison.Ordinal));
+
+        var diagnosticDefinitions = new[]
+        {
+            "FullValidation = @{ Project = \"Integration\" " +
+            "Filter = \"Category=FullValidation\" TimeoutMinutes = 15 }",
+            "RegressionIntegration = @{ Project = \"Integration\" " +
+            "Filter = \"Category=RegressionIntegration\" TimeoutMinutes = 15 }",
+            "ProcessIntegration = @{ Project = \"Integration\" " +
+            "Filter = \"Category=ProcessIntegration\" TimeoutMinutes = 15 }",
+            "E2E = @{ Project = \"Integration\" " +
+            "Filter = \"Category=E2E\" TimeoutMinutes = 15 }",
+            "PreMerge = @{ Project = \"Both\" Filter = $null TimeoutMinutes = 15 }"
+        };
+        Assert.All(diagnosticDefinitions, definition =>
+            Assert.Contains(definition, normalized, StringComparison.Ordinal));
+
+        var requiredTokens = new[]
+        {
+            "$effectiveLane = if ($Lane -eq \"Complete\") { \"PreMerge\" } else { $Lane }",
+            "if ($TimeoutMinutes -gt [int]$laneDefinition.TimeoutMinutes)",
+            "hard limit of $($laneDefinition.TimeoutMinutes) minute(s)",
+            "Category=FullValidation",
+            "Category=RegressionIntegration",
+            "Category=ProcessIntegration",
+            "Category=E2E",
+            "Category!=ProcessIntegration&Category!=E2E",
+            "Category=ProcessIntegration&Category!=E2E",
+            "$PreMergeParallelism = 4",
+            "$PreMergeFastParallelismLimit = 2",
+            "Build-Fast",
+            "Build-Integration",
+            "Frontend-verify",
+            "-FileName \"npm.cmd\"",
+            "@(\"run\", \"verify\", \"--prefix\", " +
+            "\"BookOfEternityClient.WebFrontend\")",
+            "Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost",
+            "//*[local-name()='UnitTestResult']",
+            "GetAttribute(\"testId\")",
+            "Where-Object Count -gt 1",
+            "DuplicateTests",
+            "summary.json",
+            "ConvertTo-Json -Depth 4",
+            "6560"
+        };
+        Assert.All(requiredTokens, token =>
+            Assert.Contains(token, source, StringComparison.Ordinal));
+
+        Assert.Equal(1, Regex.Matches(source, @"\$deadlineUtc\s*=").Count);
+
+        var forbiddenBroadProcessCommands = new[]
+        {
+            "Get-" + "Process",
+            "Stop-" + "Process",
+            "task" + "kill"
+        };
+        Assert.All(forbiddenBroadProcessCommands, command =>
+            Assert.DoesNotContain(command, source, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void IntegrationValidationProfiles_AreNonEmptyAndSelectable()
     {
         var profiles = typeof(IntegrationValidationProfiles)

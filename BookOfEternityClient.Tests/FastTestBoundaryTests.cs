@@ -26,6 +26,67 @@ public sealed class FastTestBoundaryTests
     ];
 
     [Fact]
+    public void CSharpLaneRunner_RoutesFastWorkToFastProjectWithBoundedOwnedProcesses()
+    {
+        var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
+        var source = File.ReadAllText(runnerPath);
+        var normalized = Regex.Replace(source, @"\s+", " ");
+
+        Assert.Contains(
+            "Fast = @{ Project = \"Fast\" Filter = $null TimeoutMinutes = 5 }",
+            normalized,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Focused = @{ Project = \"Fast\" Filter = $null TimeoutMinutes = 5 }",
+            normalized,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$fastTestProject = Join-Path $repoRoot " +
+            "\"BookOfEternityClient.Tests\\BookOfEternityClient.Tests.csproj\"",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$integrationTestProject = Join-Path $repoRoot " +
+            "\"BookOfEternityClient.IntegrationTests\\" +
+            "BookOfEternityClient.IntegrationTests.csproj\"",
+            source,
+            StringComparison.Ordinal);
+
+        var requiredTokens = new[]
+        {
+            "test-results.trx",
+            "dotnet-test.log",
+            "Stopwatch",
+            "WaitForExit",
+            "Kill($true)",
+            "ArgumentList.Add",
+            "[string]$FileName = \"dotnet\"",
+            "$startInfo.FileName = $FileName",
+            "$fastTestProject",
+            "$integrationTestProject",
+            "summary.json",
+            "DuplicateTests"
+        };
+        Assert.All(requiredTokens, token =>
+            Assert.Contains(token, source, StringComparison.Ordinal));
+
+        Assert.DoesNotContain(
+            "Category!=FullValidation&Category!=ProcessIntegration&" +
+            "Category!=E2E&Category!=RegressionIntegration",
+            source,
+            StringComparison.Ordinal);
+
+        var forbiddenBroadProcessCommands = new[]
+        {
+            "Get-" + "Process",
+            "Stop-" + "Process",
+            "task" + "kill"
+        };
+        Assert.All(forbiddenBroadProcessCommands, command =>
+            Assert.DoesNotContain(command, source, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void FastSources_ContainNoIntegrationCategoriesOrBroadValidationCalls()
     {
         var fastRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.Tests");
