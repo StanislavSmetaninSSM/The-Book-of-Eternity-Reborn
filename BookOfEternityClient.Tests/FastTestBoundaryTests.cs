@@ -15,6 +15,71 @@ public sealed class FastTestBoundaryTests
     private const string TestSupportDirectory = "BookOfEternityClient.TestSupport";
     private const string TestSupportProjectFile = "BookOfEternityClient.TestSupport.csproj";
 
+    private static readonly string[] ReviewedHeavySources =
+    [
+        "AfterlifeSpiritualConflictValidationTests.cs",
+        "GameEngineTurnLifecycleTests.cs",
+        "GuardianSystemRegressionTests.cs",
+        "FileSystemManagerTests.cs",
+        "ConsoleE2ESmokeTests.cs",
+        "LocalWebUiBuiltFrontendSmokeTests.cs"
+    ];
+
+    [Fact]
+    public void FastSources_ContainNoIntegrationCategoriesOrBroadValidationCalls()
+    {
+        var fastRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.Tests");
+        var broadCall = new Regex(
+            @"\.ValidateGameState" + @"Async\s*\(\s*\)",
+            RegexOptions.CultureInvariant);
+        var forbiddenCategories = new[]
+        {
+            "FullValidation",
+            "RegressionIntegration",
+            "ProcessIntegration",
+            "E2E"
+        };
+
+        var violations = Directory.EnumerateFiles(fastRoot, "*.cs", SearchOption.AllDirectories)
+            .Select(path => (Path: path, Source: File.ReadAllText(path)))
+            .SelectMany(candidate =>
+                forbiddenCategories
+                    .Where(category => candidate.Source.Contains(
+                        $"[Trait(\"Category\", \"{category}\")]",
+                        StringComparison.Ordinal))
+                    .Select(category => $"{candidate.Path}: {category}")
+                    .Concat(
+                        broadCall.IsMatch(candidate.Source)
+                            ? new[] { $"{candidate.Path}: parameterless full validation" }
+                            : Array.Empty<string>()))
+            .ToArray();
+
+        Assert.Empty(violations);
+    }
+
+    [Fact]
+    public void ReviewedHeavySources_ExistOnlyUnderIntegrationTests()
+    {
+        var fastRoot = Path.Combine(TestRepoPaths.RepoRoot, FastTestsDirectory);
+        var integrationRoot = Path.Combine(TestRepoPaths.RepoRoot, IntegrationTestsDirectory);
+        var supportRoot = Path.Combine(TestRepoPaths.RepoRoot, TestSupportDirectory);
+
+        foreach (var fileName in ReviewedHeavySources)
+        {
+            var matches = new[] { fastRoot, integrationRoot, supportRoot }
+                .SelectMany(root => Directory.EnumerateFiles(
+                    root,
+                    fileName,
+                    SearchOption.AllDirectories))
+                .Select(Path.GetFullPath)
+                .Order(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+            var expectedIntegrationPath = Path.GetFullPath(Path.Combine(integrationRoot, fileName));
+
+            Assert.Equal(new[] { expectedIntegrationPath }, matches);
+        }
+    }
+
     [Fact]
     public void TestProjectTopology_SeparatesFastIntegrationAndSupportAssemblies()
     {
