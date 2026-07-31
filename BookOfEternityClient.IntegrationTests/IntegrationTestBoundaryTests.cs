@@ -1,3 +1,5 @@
+using BookOfEternityClient.Services;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -87,6 +89,62 @@ public sealed class IntegrationTestBoundaryTests
     [
         Path.Combine("Services", "ValidationService.cs")
     ];
+
+    [Fact]
+    public void IntegrationValidationProfiles_AreNonEmptyAndSelectable()
+    {
+        var profiles = typeof(IntegrationValidationProfiles)
+            .GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            .Where(field => field.FieldType == typeof(GameStateValidationSelection))
+            .OrderBy(field => field.Name, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+        [
+            "ActorMaterialization",
+            "AfterlifeActiveThreat",
+            "AfterlifeArchive",
+            "AfterlifeChronicle",
+            "AfterlifeConflict",
+            "AfterlifeEntityProfile",
+            "AfterlifeGlobalFlag",
+            "AfterlifeRealm",
+            "AfterlifeStory",
+            "CanonicalGuardian",
+            "CanonicalInventory",
+            "CanonicalNpc",
+            "CommandDisplaySave",
+            "FactionState",
+            "GuardianArchiveTrade",
+            "GuardianPolicy",
+            "MechanicalBonus",
+            "MortalBootstrap",
+            "NpcState",
+            "PlayerGuardian",
+            "Qte",
+            "QuestReward",
+            "ReadableDocument",
+            "RealmSemantics",
+            "SarefStory",
+            "ShiningState",
+            "SoulIdentity",
+            "SourceOfLight",
+            "SystemGuardianLibrary",
+            "Training",
+            "Weather"
+        ],
+        profiles.Select(field => field.Name));
+
+        Assert.NotEmpty(profiles);
+        Assert.All(profiles, field =>
+        {
+            var profile = (GameStateValidationSelection)field.GetValue(null)!;
+            Assert.NotEqual(GameStateValidationPhase.None, profile.Phases);
+            Assert.Equal(
+                GameStateValidationPhase.None,
+                profile.Phases & ~GameStateValidationPhase.Selectable);
+        });
+    }
 
     [Fact]
     public void IntegrationAndSupportBroadValidationSources_AreExplicitlyCategorized()
