@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Xunit;
@@ -75,6 +76,8 @@ public sealed class FastTestBoundaryTests
             "$npmCommandPath = Resolve-NpmCommandPath",
             "-FileName $npmCommandPath",
             "New-UniqueResultDirectory",
+            "$initialCleanupSucceeded",
+            "FinalizerRetried",
             "$PID",
             "[Guid]::NewGuid()"
         };
@@ -208,6 +211,38 @@ public sealed class FastTestBoundaryTests
             "Post-start cleanup: killed=True disposed=True registered=False",
             probe.StandardOutput,
             StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_FailedInitialCleanupIsRetriedAndReportedWithoutOrphaning()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("OwnedPostStartCleanupRetry");
+
+        Assert.Equal(1, probe.ExitCode);
+        var retryEvidence = Regex.Match(
+            probe.StandardOutput,
+            @"Post-start retry: pid=(?<pid>\d+) registered=True " +
+            @"finalizerRetried=True finalCleanupSucceeded=False " +
+            @"processExited=True disposed=True errorsPreserved=True");
+        Assert.True(retryEvidence.Success, probe.StandardOutput);
+        var processId = int.Parse(retryEvidence.Groups["pid"].Value);
+
+        using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
+            Path.Combine(
+                ResultDirectoryFrom(probe.StandardOutput),
+                "self-test-summary.json")));
+        Assert.False(
+            summary.RootElement
+                .GetProperty("OwnedTreeCleanupSucceeded")
+                .GetBoolean());
+        var cleanup = summary.RootElement.GetProperty("PostStartCleanup");
+        Assert.Equal(processId, cleanup.GetProperty("ProcessId").GetInt32());
+        Assert.True(cleanup.GetProperty("RegisteredAfterInitialFailure").GetBoolean());
+        Assert.True(cleanup.GetProperty("FinalizerRetried").GetBoolean());
+        Assert.False(cleanup.GetProperty("FinalCleanupSucceeded").GetBoolean());
+        Assert.True(cleanup.GetProperty("ProcessExited").GetBoolean());
+        Assert.True(cleanup.GetProperty("Disposed").GetBoolean());
+        Assert.True(cleanup.GetProperty("ErrorsPreserved").GetBoolean());
     }
 
     [Fact]

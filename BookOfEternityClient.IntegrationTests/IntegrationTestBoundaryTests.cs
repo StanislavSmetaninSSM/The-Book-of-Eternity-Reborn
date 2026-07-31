@@ -227,6 +227,8 @@ public sealed class IntegrationTestBoundaryTests
             "Group-Object Key",
             "Select-Object -ExpandProperty TestId",
             "Where-Object Count -gt 1",
+            "$initialCleanupSucceeded",
+            "FinalizerRetried",
             "DuplicateTests",
             "summary.json",
             "ConvertTo-Json -Depth 4",

@@ -35,7 +35,8 @@ param(
         "NpmStartup",
         "ResultDirectory",
         "TrxSummary",
-        "OwnedPostStartFailure"
+        "OwnedPostStartFailure",
+        "OwnedPostStartCleanupRetry"
     )]
     [Parameter(Mandatory, ParameterSetName = "SelfTest", DontShow)]
     [string]$SelfTest,
@@ -219,7 +220,9 @@ function Start-OwnedProcess {
 
         [string]$FileName = "dotnet",
 
-        [switch]$Quiet
+        [switch]$Quiet,
+
+        [switch]$SimulateInitialCleanupFailure
     )
 
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
@@ -261,6 +264,7 @@ function Start-OwnedProcess {
             StandardOutputText = $null
             StandardErrorText = $null
             Quiet = $Quiet.IsPresent
+            PostStartInitializationFailed = $false
         }
         [void]$allRuns.Add($run)
         $run.StandardOutput = $process.StandardOutput.ReadToEndAsync()
@@ -275,29 +279,58 @@ function Start-OwnedProcess {
     }
     catch {
         $initializationError = $_
+        $run.PostStartInitializationFailed = $true
+        $processId = $process.Id
         $killed = $false
         $disposed = $false
+        $initialCleanupSucceeded = $false
+        $initialCleanupError = $null
         try {
+            if ($SimulateInitialCleanupFailure) {
+                throw [InvalidOperationException]::new(
+                    "Simulated initial cleanup failure.")
+            }
             if ($process.HasExited) {
-                $killed = $true
+                $initialCleanupSucceeded = $true
             }
             else {
                 $process.Kill($true)
-                $killed = $process.WaitForExit(10000)
+                $killed = $true
+                $initialCleanupSucceeded =
+                    $process.WaitForExit(10000) -and $process.HasExited
+            }
+            if (-not $initialCleanupSucceeded) {
+                throw [TimeoutException]::new(
+                    "Initial owned-process cleanup did not confirm process exit.")
             }
         }
         catch {
-            $killed = $false
+            $initialCleanupError = $_
         }
-        finally {
+        if ($initialCleanupSucceeded) {
             [void]$allRuns.Remove($run)
             $process.Dispose()
             $disposed = $true
-            $script:lastPostStartCleanup = [pscustomobject]@{
-                Killed = $killed
-                Disposed = $disposed
-                Registered = $allRuns.Contains($run)
-            }
+        }
+        $script:lastPostStartCleanup = [pscustomobject]@{
+            Run = $run
+            ProcessId = $processId
+            Killed = $killed
+            InitialCleanupSucceeded = $initialCleanupSucceeded
+            Disposed = $disposed
+            Registered = $allRuns.Contains($run)
+            FinalizerRetried = $false
+            FinalCleanupSucceeded = $null
+            ProcessExited = $initialCleanupSucceeded
+            ErrorsPreserved = $null
+        }
+        if ($null -ne $initialCleanupError) {
+            throw [AggregateException]::new(
+                "Owned process initialization and initial cleanup both failed.",
+                [Exception[]]@(
+                    $initializationError.Exception,
+                    $initialCleanupError.Exception
+                ))
         }
         throw $initializationError
     }
@@ -1172,6 +1205,60 @@ try {
                     "disposed=$($lastPostStartCleanup.Disposed) " +
                     "registered=$($lastPostStartCleanup.Registered)")
             }
+            "OwnedPostStartCleanupRetry" {
+                $pwshCommand = @(
+                    Get-Command -Name "pwsh" -CommandType Application -ErrorAction Stop
+                )[0]
+                $savedLogPath = $logPath
+                $caughtFailure = $null
+                try {
+                    $logPath = $resultDirectory
+                    [void](Start-OwnedProcess `
+                        -Name "Post-start-cleanup-retry-probe" `
+                        -FileName $pwshCommand.Path `
+                        -Arguments @(
+                            "-NoProfile",
+                            "-Command",
+                            "Start-Sleep -Seconds 30"
+                        ) `
+                        -Quiet `
+                        -SimulateInitialCleanupFailure)
+                }
+                catch {
+                    $caughtFailure = $_
+                    Add-Content -LiteralPath $savedLogPath -Value @(
+                        "Expected combined post-start failure:"
+                        $_.Exception.ToString()
+                    )
+                }
+                finally {
+                    $logPath = $savedLogPath
+                }
+
+                if ($null -eq $lastPostStartCleanup -or
+                    $null -eq $caughtFailure) {
+                    throw "Post-start cleanup-retry probe did not exercise the failure path."
+                }
+                $aggregateFailure = $caughtFailure.Exception -as [AggregateException]
+                $lastPostStartCleanup.ErrorsPreserved =
+                    $null -ne $aggregateFailure -and
+                    $aggregateFailure.InnerExceptions.Count -eq 2 -and
+                    -not [string]::IsNullOrWhiteSpace(
+                        $aggregateFailure.InnerExceptions[0].Message) -and
+                    $aggregateFailure.InnerExceptions[1].Message -eq
+                        "Simulated initial cleanup failure."
+                if ($lastPostStartCleanup.InitialCleanupSucceeded -or
+                    -not $lastPostStartCleanup.Registered -or
+                    $lastPostStartCleanup.Disposed -or
+                    -not $lastPostStartCleanup.ErrorsPreserved) {
+                    throw "Failed initial cleanup was not retained for finalizer retry."
+                }
+
+                $lastPostStartCleanup.Run.StandardOutput =
+                    [System.Threading.Tasks.Task]::FromException[string](
+                        [InvalidOperationException]::new(
+                            "Simulated finalization failure."))
+            }
         }
     }
     else {
@@ -1327,9 +1414,20 @@ catch {
 }
 finally {
     foreach ($run in $allRuns) {
+        $runCleanupSucceeded = $true
+        $processExited = $false
+        $disposed = $false
+        $isPostStartRetry =
+            $run.PostStartInitializationFailed -and
+            $null -ne $lastPostStartCleanup -and
+            [object]::ReferenceEquals($lastPostStartCleanup.Run, $run)
+        if ($isPostStartRetry) {
+            $lastPostStartCleanup.FinalizerRetried = $true
+        }
         try {
             if (-not $run.Process.HasExited) {
                 if (-not (Stop-OwnedProcess -Run $run)) {
+                    $runCleanupSucceeded = $false
                     $cleanupSucceeded = $false
                 }
             }
@@ -1337,14 +1435,34 @@ finally {
             if ($run.Process.HasExited -and -not $run.Finalized) {
                 Complete-OwnedProcess -Run $run
             }
+            if (-not $run.Process.HasExited) {
+                $runCleanupSucceeded = $false
+                $cleanupSucceeded = $false
+            }
         }
         catch {
+            $runCleanupSucceeded = $false
             $cleanupSucceeded = $false
             Add-Content -LiteralPath $logPath -Value (
                 "Finalization error for $($run.Name): $($_.Exception.Message)")
         }
         finally {
+            try {
+                $processExited = $run.Process.HasExited
+            }
+            catch {
+                $processExited = $false
+                $runCleanupSucceeded = $false
+                $cleanupSucceeded = $false
+            }
             $run.Process.Dispose()
+            $disposed = $true
+            if ($isPostStartRetry) {
+                $lastPostStartCleanup.FinalCleanupSucceeded =
+                    $runCleanupSucceeded -and $processExited
+                $lastPostStartCleanup.ProcessExited = $processExited
+                $lastPostStartCleanup.Disposed = $disposed
+            }
         }
     }
 
@@ -1361,6 +1479,30 @@ $trxSummary = if ($null -ne $trxSummaryOverride) {
 else {
     Get-TrxSummary
 }
+$postStartCleanupSummary = if ($null -eq $lastPostStartCleanup) {
+    $null
+}
+else {
+    [ordered]@{
+        ProcessId = $lastPostStartCleanup.ProcessId
+        InitialCleanupSucceeded = $lastPostStartCleanup.InitialCleanupSucceeded
+        RegisteredAfterInitialFailure =
+            -not $lastPostStartCleanup.InitialCleanupSucceeded -and
+            $lastPostStartCleanup.Registered
+        FinalizerRetried = $lastPostStartCleanup.FinalizerRetried
+        FinalCleanupSucceeded = if (
+            $null -eq $lastPostStartCleanup.FinalCleanupSucceeded
+        ) {
+            $lastPostStartCleanup.InitialCleanupSucceeded
+        }
+        else {
+            $lastPostStartCleanup.FinalCleanupSucceeded
+        }
+        ProcessExited = $lastPostStartCleanup.ProcessExited
+        Disposed = $lastPostStartCleanup.Disposed
+        ErrorsPreserved = [bool]$lastPostStartCleanup.ErrorsPreserved
+    }
+}
 $summary = if ($isSelfTest) {
     [ordered]@{
         SelfTest = $SelfTest
@@ -1375,6 +1517,7 @@ $summary = if ($isSelfTest) {
             Failed = $trxSummary.Failed
         }
         DuplicateTests = @($trxSummary.DuplicateTests)
+        PostStartCleanup = $postStartCleanupSummary
     }
 }
 else {
@@ -1431,6 +1574,19 @@ else {
         "  Results: $resultDirectory"
         "  Log: $logPath"
     )
+}
+if ($isSelfTest -and
+    $SelfTest -eq "OwnedPostStartCleanupRetry" -and
+    $null -ne $postStartCleanupSummary) {
+    $summaryLines += (
+        "  Post-start retry: " +
+        "pid=$($postStartCleanupSummary.ProcessId) " +
+        "registered=$($postStartCleanupSummary.RegisteredAfterInitialFailure) " +
+        "finalizerRetried=$($postStartCleanupSummary.FinalizerRetried) " +
+        "finalCleanupSucceeded=$($postStartCleanupSummary.FinalCleanupSucceeded) " +
+        "processExited=$($postStartCleanupSummary.ProcessExited) " +
+        "disposed=$($postStartCleanupSummary.Disposed) " +
+        "errorsPreserved=$($postStartCleanupSummary.ErrorsPreserved)")
 }
 if (-not [string]::IsNullOrWhiteSpace($failureMessage)) {
     $summaryLines += "  Failure: $failureMessage"
