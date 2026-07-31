@@ -164,7 +164,7 @@ public sealed class BrowserGenerationFencingSourceTests
             "Services",
             "LocalInteractionScopeService.cs"));
         var testResolverSource = File.ReadAllText(SourcePath(
-            "BookOfEternityClient.Tests",
+            "BookOfEternityClient.TestSupport",
             "SequenceLocalInteractionScopeResolver.cs"));
 
         Assert.DoesNotContain(
