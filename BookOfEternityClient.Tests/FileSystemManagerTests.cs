@@ -1159,6 +1159,117 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.False(Directory.Exists(transactionRoot));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task WorkerRecovery_ForeignRewriteAtMutationBoundaryPreservesForeignBytesAndEvidence(
+        bool baselineExists)
+    {
+        const string trackedPath =
+            "game_state/world/worker-recovery-foreign-boundary.json";
+        const string triggerPath =
+            "game_state/world/worker-recovery-foreign-boundary-trigger.json";
+        byte[] baseline = [0x21, 0x32];
+        byte[] applied = [0x43, 0x54];
+        byte[] foreign = [0x65, 0x76];
+        if (baselineExists)
+            await _fs.WriteFileAtomicBytesAsync(trackedPath, baseline);
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            transactionId);
+        var beforeRoot = Path.Combine(transactionRoot, "before");
+        Directory.CreateDirectory(beforeRoot);
+        var beforeImage = baselineExists
+            ? "before/0000.bin"
+            : null;
+        if (baselineExists)
+        {
+            await File.WriteAllBytesAsync(
+                Path.Combine(beforeRoot, "0000.bin"),
+                baseline);
+        }
+
+        await File.WriteAllTextAsync(
+            Path.Combine(transactionRoot, "manifest.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                entries = new[]
+                {
+                    new
+                    {
+                        path = trackedPath,
+                        baselineExists,
+                        beforeImage,
+                        beforeSha256 = baselineExists
+                            ? Sha256(baseline)
+                            : "missing",
+                        appliedSha256 = Sha256(applied)
+                    }
+                }
+            }));
+        var activeJournalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            "active.json");
+        await File.WriteAllTextAsync(
+            activeJournalPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = false
+            }));
+        await File.WriteAllBytesAsync(
+            _fs.ResolvePath(trackedPath),
+            applied);
+
+        var foreignWriteInjected = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationBoundaryAsync = async path =>
+            {
+                if (foreignWriteInjected ||
+                    !path.Equals(
+                        trackedPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                foreignWriteInjected = true;
+                await File.WriteAllBytesAsync(
+                    _fs.ResolvePath(trackedPath),
+                    foreign);
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                triggerPath,
+                [0x77]));
+
+        Assert.True(foreignWriteInjected);
+        Assert.Equal(
+            foreign,
+            await File.ReadAllBytesAsync(
+                raceFs.ResolvePath(trackedPath)));
+        Assert.True(File.Exists(activeJournalPath));
+        Assert.True(Directory.Exists(transactionRoot));
+        Assert.False(File.Exists(raceFs.ResolvePath(triggerPath)));
+    }
+
     [Fact]
     public async Task CanonicalWriter_CompletesEveryRecoverableRollbackEntryBeforeFailingClosed()
     {

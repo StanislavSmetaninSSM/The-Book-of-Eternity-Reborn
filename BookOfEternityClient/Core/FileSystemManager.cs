@@ -2996,9 +2996,21 @@ public class FileSystemManager
                 }
 
                 if (baseline == null)
-                    DeleteFileCore(entry.Path);
+                {
+                    await DeleteFileIfCurrentOwnedAsync(
+                        writeLease,
+                        entry.Path,
+                        [entry.AppliedSha256]);
+                }
                 else
-                    await WriteFileAtomicBytesCoreAsync(entry.Path, baseline);
+                {
+                    await WriteFileAtomicBytesIfCurrentOwnedAsync(
+                        writeLease,
+                        entry.Path,
+                        baseline,
+                        [entry.AppliedSha256],
+                        allowMissingCurrent: false);
+                }
             }
             catch (Exception ex)
             {
