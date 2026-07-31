@@ -579,7 +579,7 @@ public sealed class GmWorkerBridgePool
                     processCleanupFailure ??= ex;
                 }
             }
-            if (workspace != null)
+            if (workspace != null && processCleanupFailure == null)
             {
                 try
                 {
@@ -596,6 +596,15 @@ public sealed class GmWorkerBridgePool
                         cleanupException.Message,
                         [cleanupException.GetType().Name]);
                 }
+            }
+            else if (workspace != null)
+            {
+                await RecordTerminalEventAsync(
+                    "workspace-cleanup-deferred",
+                    profile,
+                    task,
+                    "Detached worker workspace was retained because process-tree termination could not be confirmed.",
+                    [workspace.GameSessionPath]);
             }
 
             if (processCleanupFailure != null)

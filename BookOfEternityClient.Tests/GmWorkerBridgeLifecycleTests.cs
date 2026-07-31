@@ -2029,11 +2029,21 @@ public sealed class GmWorkerBridgeLifecycleTests
                     TimeoutSeconds = profile.TimeoutSeconds
                 });
             var secondTask = firstTask with { TaskId = secondTaskId };
+            var workspaceCleanupCalls = 0;
+            string? retainedWorkspacePath = null;
             var firstPool = new GmWorkerBridgePool(
                 fs,
                 new GmWorkerProposalStore(fs),
                 new GmWorkerAuditLog(fs),
-                hooks: null,
+                new GmWorkerBridgePoolHooks
+                {
+                    BeforeWorkspaceCleanupAsync = workspacePath =>
+                    {
+                        retainedWorkspacePath = workspacePath;
+                        Interlocked.Increment(ref workspaceCleanupCalls);
+                        return Task.CompletedTask;
+                    }
+                },
                 processTreeFactory);
             using var firstCancellation = new CancellationTokenSource();
 
@@ -2044,6 +2054,11 @@ public sealed class GmWorkerBridgeLifecycleTests
 
             Assert.True(processTreeFactory.DisposeCalled);
             Assert.True(processTreeFactory.HasLiveProcess);
+            Assert.Equal(0, Volatile.Read(ref workspaceCleanupCalls));
+            Assert.Null(retainedWorkspacePath);
+            var runtimeRoot = GmWorkerExecutionWorkspace.ResolveRuntimeRoot(fs.BasePath);
+            Assert.True(Directory.Exists(runtimeRoot));
+            Assert.NotEmpty(Directory.EnumerateDirectories(runtimeRoot));
             using var secondCancellation = new CancellationTokenSource(TimeSpan.FromSeconds(1));
             var secondRun = new GmWorkerBridgePool(fs).RunTaskAsync(
                 profile,
