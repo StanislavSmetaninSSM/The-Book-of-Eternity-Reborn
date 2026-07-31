@@ -1407,22 +1407,61 @@ git commit -m "perf: scope actor and afterlife integration validation (#1505)"
 
 - [ ] **Step 1: Add a RED guard for these fourteen mapped sources**
 
-Use the same no-argument regex and exact profile-token assertion as Task 9.
+Reuse Task 9's Roslyn per-invocation structural helper and exact
+single-profile assertion. Do not regress this guard to regex or raw token
+presence.
 
 - [ ] **Step 2: Replace all parameterless calls using the table**
 
 Preserve the existing GuardianSystemRegression profiles; this task changes only the listed non-regression and canonical-normalizer sources.
 
-- [ ] **Step 3: Run the migrated classes in two bounded focused batches**
+- [ ] **Step 3: Run the migrated classes in evidence-backed bounded partitions**
 
-Run:
+The original seven-class Guardian command hit its 300,000 ms owner deadline,
+and the 58-case `GuardianArchiveAndTradeRequestValidationTests` class also
+exceeded 300,000 ms alone. Discovery showed that this serial class, rather than
+the other six classes, owns the critical path.
 
-```powershell
-dotnet test BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore --filter "FullyQualifiedName~GuardianArchiveAndTradeRequestValidationTests|FullyQualifiedName~GuardianPolicyKernelTests|FullyQualifiedName~GuardianTradeServiceTests|FullyQualifiedName~ChaosSeaGuardianPoliticsStateTests|FullyQualifiedName~ChaosSeaPendingRequestHygieneTests|FullyQualifiedName~PlayerGuardianFoundationValidationTests|FullyQualifiedName~QuestRewardAuthorityValidationTests" --verbosity minimal
-dotnet test BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-build --no-restore --filter "FullyQualifiedName~NpcCoreChangesTests|FullyQualifiedName~NpcStateFileValidationTests|FullyQualifiedName~NpcTradeRequestValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests" --verbosity minimal
+Generate two deterministic method filters from the 58 distinct discovered
+archive FQNs. Balance the 57 validation-bearing methods into 29-case shards
+with validation-call weights 29 and 28. Before execution, assert:
+
+```text
+archive discovery = 58
+shard A cases = 29
+shard B cases = 29
+union = 58
+intersection = 0
+missing = 0
+extra = 0
 ```
 
-Execute each command with a separate 300,000 ms owning-process deadline. Expected: both batches pass within their bounds.
+Run archive shard A and archive shard B separately, each through its own
+300,000 ms owning-process deadline. Then run the remaining six Guardian
+classes together through another 300,000 ms owning-process deadline:
+
+```powershell
+dotnet test BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore --filter "FullyQualifiedName~GuardianPolicyKernelTests|FullyQualifiedName~GuardianTradeServiceTests|FullyQualifiedName~ChaosSeaGuardianPoliticsStateTests|FullyQualifiedName~ChaosSeaPendingRequestHygieneTests|FullyQualifiedName~PlayerGuardianFoundationValidationTests|FullyQualifiedName~QuestRewardAuthorityValidationTests" --verbosity minimal
+```
+
+Do not force the two archive shards through one shared five-minute wall. The
+measured max-two concurrent attempt completed shard A in 264,555 ms but left
+shard B unfinished at the 300,000 ms wall; the same shard B passed alone in
+263,668 ms. Task 13 owns global scheduling and will reuse generalized balanced
+descriptors.
+
+For the NPC/canonical group, list tests before execution. Run the three NPC
+classes together with `--no-build --no-restore` under one 300,000 ms owner
+deadline. Partition `CanonicalStateNormalizerTests` by distinct method FQN,
+grouping theory cases under their method name, and balance the 208 discovered
+cases into two 104-case shards. Assert the method-filter union is complete and
+the intersection is empty, then run each canonical shard separately with
+`--no-build --no-restore` and an independent 300,000 ms owning-process
+deadline.
+
+Every owner wrapper must use `ProcessStartInfo.ArgumentList`, asynchronous
+stdout/stderr drains, a `WaitForExit` deadline, `Kill(true)` on timeout, and an
+owner/descendant cleanup audit. Never overlap these independent deadline runs.
 
 - [ ] **Step 4: Run the new scoped-source guard GREEN**
 
