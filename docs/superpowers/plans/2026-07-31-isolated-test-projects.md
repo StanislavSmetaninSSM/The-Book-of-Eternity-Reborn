@@ -237,8 +237,8 @@ pwsh -NoProfile -File scripts/test-csharp.ps1 `
   -Filter "FullyQualifiedName~AcceptedTurnReasoning"
 ```
 
-Expected: the GuardianProject subset passes 36/36 and the accepted-turn-reasoning
-subset passes 88/88, with each command below three minutes.
+Expected: the GuardianProject subset passes 86/86 and the accepted-turn-reasoning
+subset passes 89/89, with each command below three minutes.
 
 A temporary two-collection diagnostic established useful but sublinear scaling:
 127/127 passed in 2:49 wall versus 4:14 combined standalone wall. Keep that result
