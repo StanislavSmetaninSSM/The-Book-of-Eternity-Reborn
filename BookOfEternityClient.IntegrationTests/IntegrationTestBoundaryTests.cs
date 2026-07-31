@@ -166,30 +166,80 @@ public sealed class IntegrationTestBoundaryTests
     [Fact]
     public void ActorAndAfterlifeValidationSources_UseScopedProfiles()
     {
-        var broadValidationCall = "ValidateGameStateAsync" + "()";
-        var violations = new List<string>();
-
-        foreach (var (fileName, profileName) in ActorAndAfterlifeScopedSources)
-        {
-            var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName));
-            var profileReference = $"IntegrationValidationProfiles.{profileName}";
-
-            if (source.Contains(broadValidationCall, StringComparison.Ordinal))
-            {
-                violations.Add($"{fileName}: contains parameterless {broadValidationCall}");
-            }
-
-            if (!source.Contains(profileReference, StringComparison.Ordinal))
-            {
-                violations.Add($"{fileName}: missing {profileReference}");
-            }
-        }
+        var violations = ActorAndAfterlifeScopedProfileViolations(
+            ActorAndAfterlifeScopedSources.Select(mapping => (
+                FileName: mapping.Key,
+                ProfileName: mapping.Value,
+                Source: File.ReadAllText(
+                    SourcePath(IntegrationTestsDirectory, mapping.Key)))));
 
         Assert.True(
-            violations.Count == 0,
+            violations.Length == 0,
             "Actor and afterlife validation source violations:" +
             Environment.NewLine +
             string.Join(Environment.NewLine, violations));
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsWhitespaceOnlyArgument()
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var source = $"await validator.{methodName} ({Environment.NewLine}    );";
+
+        var violation = Assert.Single(ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("Whitespace.cs", "Expected", source)
+        ]));
+
+        Assert.Contains("<empty>", violation, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsWrongProfile()
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var profileType = "IntegrationValidation" + "Profiles";
+        var source = $"await validator.{methodName}({profileType}.Wrong);";
+
+        var violation = Assert.Single(ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("Wrong.cs", "Expected", source)
+        ]));
+
+        Assert.Contains($"{profileType}.Expected", violation, StringComparison.Ordinal);
+        Assert.Contains($"{profileType}.Wrong", violation, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsMixedProfiles()
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var profileType = "IntegrationValidation" + "Profiles";
+        var source =
+            $"await validator.{methodName}({profileType}.Expected);" +
+            Environment.NewLine +
+            $"await validator.{methodName}({profileType}.Wrong);";
+
+        var violation = Assert.Single(ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("Mixed.cs", "Expected", source)
+        ]));
+
+        Assert.Contains($"{profileType}.Wrong", violation, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ActorAndAfterlifeValidationSources_UseScopedProfiles_RejectsCommentOnlyProfileToken()
+    {
+        var profileType = "IntegrationValidation" + "Profiles";
+        var source = $"// {profileType}.Expected";
+
+        var violation = Assert.Single(ActorAndAfterlifeScopedProfileViolations(
+        [
+            ("CommentOnly.cs", "Expected", source)
+        ]));
+
+        Assert.Contains("no member-call", violation, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -649,6 +699,47 @@ public sealed class IntegrationTestBoundaryTests
     private static int LineNumber(string source, int characterIndex)
     {
         return source.AsSpan(0, characterIndex).Count('\n') + 1;
+    }
+
+    private static string[] ActorAndAfterlifeScopedProfileViolations(
+        IEnumerable<(string FileName, string ProfileName, string Source)> sources)
+    {
+        var methodName = "ValidateGameState" + "Async";
+        var profileType = "IntegrationValidation" + "Profiles";
+        var invocation = new Regex(
+            @"\." + Regex.Escape(methodName) + @"\s*\((?<argument>[^)]*)\)",
+            RegexOptions.CultureInvariant);
+        var violations = new List<string>();
+
+        foreach (var (fileName, profileName, source) in sources)
+        {
+            var expectedArgument = $"{profileType}.{profileName}";
+            var matches = invocation.Matches(source);
+
+            if (matches.Count == 0)
+            {
+                violations.Add(
+                    $"{fileName}: contains no member-call to {methodName}");
+                continue;
+            }
+
+            foreach (Match match in matches)
+            {
+                var argument = match.Groups["argument"].Value.Trim();
+
+                if (string.Equals(argument, expectedArgument, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                var displayedArgument = argument.Length == 0 ? "<empty>" : argument;
+                violations.Add(
+                    $"{fileName}:{LineNumber(source, match.Index)}: expected " +
+                    $"{expectedArgument}; found {displayedArgument}");
+            }
+        }
+
+        return violations.ToArray();
     }
 
     private static void AssertGuardianBroadCallBudget(
