@@ -8,6 +8,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class GmMemorySearchToolTests : IDisposable
 {
     private readonly string _rootPath;

@@ -6,6 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class FileSystemExampleFixtureIntegrityTests
 {
     [Fact]

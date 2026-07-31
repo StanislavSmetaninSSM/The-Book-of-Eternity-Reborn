@@ -27,6 +27,7 @@ public sealed class GameEngineTurnLifecycleCollection
 }
 
 [Collection(GameEngineTurnLifecycleCollection.CollectionName)]
+[Trait("Category", "RegressionIntegration")]
 public sealed class GameEngineTurnLifecycleTests : IDisposable
 {
     private sealed class PendingTurnSnapshotManifestPayload

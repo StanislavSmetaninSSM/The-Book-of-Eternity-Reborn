@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class NpcCoreChangesTests : IDisposable
 {
     private const string NpcCorePath = "game_state/npcs/npc_core.json";

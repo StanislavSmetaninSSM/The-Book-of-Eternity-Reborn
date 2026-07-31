@@ -5,6 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class ReadableDocumentAuthorityValidationTests : IDisposable
 {
     private const string IssueCode = "readable_document_missing_detail_authority";

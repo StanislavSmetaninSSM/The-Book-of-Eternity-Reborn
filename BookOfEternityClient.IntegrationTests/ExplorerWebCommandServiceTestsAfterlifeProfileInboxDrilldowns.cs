@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldowns : IDisposable
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)

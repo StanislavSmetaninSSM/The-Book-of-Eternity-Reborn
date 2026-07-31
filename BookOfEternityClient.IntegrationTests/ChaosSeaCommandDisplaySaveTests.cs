@@ -13,6 +13,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
 {
     private const string SaveFileName = "chaos_sea_command_display_fixture.zip";

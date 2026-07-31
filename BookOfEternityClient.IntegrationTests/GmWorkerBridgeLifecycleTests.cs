@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class GmWorkerBridgeLifecycleTests
 {
     [Fact]

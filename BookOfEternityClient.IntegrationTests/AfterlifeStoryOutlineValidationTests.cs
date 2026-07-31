@@ -5,6 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class AfterlifeStoryOutlineValidationTests : IDisposable
 {
     private readonly string _rootPath;

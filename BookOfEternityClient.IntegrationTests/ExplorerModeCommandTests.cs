@@ -12,6 +12,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed partial class ExplorerModeCommandTests : IDisposable
 {
     private readonly string _rootPath;

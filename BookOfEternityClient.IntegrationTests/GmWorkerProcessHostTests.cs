@@ -6,6 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class GmWorkerProcessHostTests
 {
     private const string LaunchNonce = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";

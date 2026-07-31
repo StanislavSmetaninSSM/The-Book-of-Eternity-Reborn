@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class FactionIdentityValidationTests : IDisposable
 {
     private const string FactionInitialId = "temp-faction-merchant-guild-eternia";

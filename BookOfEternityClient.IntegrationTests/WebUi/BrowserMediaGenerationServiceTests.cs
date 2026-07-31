@@ -9,6 +9,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class BrowserMediaGenerationServiceTests : IDisposable
 {
     private readonly string _rootPath;

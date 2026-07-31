@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class FileSystemManagerTests : IDisposable
 {
     private readonly string _rootPath;

@@ -10,6 +10,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class PlayerGuardianFoundationValidationTests : IDisposable
 {
     private readonly string _rootPath;

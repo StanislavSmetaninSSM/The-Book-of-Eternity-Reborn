@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class NpcStateFileValidationTests : IDisposable
 {
     private readonly string _rootPath;

@@ -5,6 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
 {
     private const string MissingAuthorityIssueCode = "inventory_mechanical_summary_missing_structured_authority";

@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
 {
     private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-browser-command-presentation-" + Guid.NewGuid().ToString("N"));

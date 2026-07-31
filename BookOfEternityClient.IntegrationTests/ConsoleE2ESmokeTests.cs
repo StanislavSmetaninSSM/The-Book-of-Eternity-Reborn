@@ -6,6 +6,8 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
+[Trait("Category", "E2E")]
 public sealed class ConsoleE2ESmokeTests : IDisposable
 {
 #if DEBUG

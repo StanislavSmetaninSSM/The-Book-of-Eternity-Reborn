@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class ImageServiceTests
 {
     [Fact]

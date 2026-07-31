@@ -5,6 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class QuestRewardAuthorityValidationTests : IDisposable
 {
     private const string MissingItemAuthorityCode = "quest_reward_item_missing_detail_authority";

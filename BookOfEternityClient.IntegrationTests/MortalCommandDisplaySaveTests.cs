@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class MortalCommandDisplaySaveTests : IDisposable
 {
     private const string SaveFileName = "mortal_world_command_display_fixture.zip";

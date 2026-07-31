@@ -6,6 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class ValidationServiceQteTests : IDisposable
 {
     private const string QteNormalizerBackupDirectory = "game_state/control/qte_normalizer_backups";

@@ -8,6 +8,8 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
+[Trait("Category", "E2E")]
 public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
 {
     private readonly string _rootPath;

@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class BrowserQteGenerationFencingTests : IDisposable
 {
     private readonly string _rootPath;

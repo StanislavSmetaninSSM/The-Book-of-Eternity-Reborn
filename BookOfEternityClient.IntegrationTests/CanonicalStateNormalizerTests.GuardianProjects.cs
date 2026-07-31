@@ -10,6 +10,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed partial class CanonicalStateNormalizerTests : IDisposable
 {
     [Fact]

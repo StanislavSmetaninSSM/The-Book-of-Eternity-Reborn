@@ -12,6 +12,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "FullValidation")]
 public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
 {
     private const string SaveFileName = "shining_abode_command_display_fixture.zip";

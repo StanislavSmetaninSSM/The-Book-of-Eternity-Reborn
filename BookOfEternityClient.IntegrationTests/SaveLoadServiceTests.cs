@@ -12,6 +12,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class SaveLoadServiceTests : IDisposable
 {
     private readonly string _rootPath;
