@@ -85,6 +85,22 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CombinedCrossReferenceSelection_DoesNotDuplicateRivalResidentIssues()
+    {
+        await _fileSystem.WriteFileAtomicAsync(
+            "game_state/world/rival_soul_arcs.json",
+            "{");
+
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.CrossReferences |
+            GameStateValidationPhase.RivalAndResidentCrossReferences);
+
+        Assert.Single(
+            issues,
+            issue => issue.Code == "rival_arc_invalid_current_state");
+    }
+
+    [Fact]
     [Trait("Category", "FullValidation")]
     public async Task ValidateGameStateAsync_ExplicitAll_MatchesPublicFacade()
     {

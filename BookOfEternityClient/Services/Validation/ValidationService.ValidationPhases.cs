@@ -69,7 +69,8 @@ public partial class ValidationService
             await ValidateMortalBootstrapContentAnchorsAsync(issues);
         if (phases.Includes(GameStateValidationPhase.CrossReferences))
             await ValidateCrossReferences(issues);
-        if (phases.Includes(GameStateValidationPhase.RivalAndResidentCrossReferences))
+        if (phases.Includes(GameStateValidationPhase.RivalAndResidentCrossReferences) &&
+            !phases.Includes(GameStateValidationPhase.CrossReferences))
             await ValidateRivalAndResidentCrossReferencesAsync(issues);
         if (phases.Includes(GameStateValidationPhase.SoulStateConsistency))
             await ValidateSoulStateConsistency(issues);
