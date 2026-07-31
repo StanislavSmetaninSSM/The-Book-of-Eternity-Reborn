@@ -655,6 +655,56 @@ Phase 44 remains client-owned harness work. It changes no GM-authored Mortal or
 afterlife state, command, pending/control contract, gameplay mechanic, prompt,
 or worked example.
 
+## Phase 45 implementation strategy
+
+The final Phase 44 whole-branch review confirmed eleven remaining contract
+gaps. Three are direct transaction races: planned browser bytes were treated as
+published ownership, worker recovery separated comparison from mutation, and a
+load-staging file could gain a hard link before its directory was published.
+Worker workspaces also used pathname checks and could be cleaned after an
+unconfirmed process-tree stop. Save archives lacked trusted expanded-data
+budgets and accepted NTFS alternate-stream syntax.
+
+The actor review found that historical afterlife full carriers bypassed
+dedicated deltas, deliberate-empty dispositions did not require a physically
+present empty surface, afterlife first materialization omitted presentation,
+Actor Brain, and location authority, and a new Mortal `UpdateNPCs` actor could
+have no location. Existing Guardian/resident/equipment/trade helpers also
+retained genre/prose keyword inference forbidden by FR-021, FR-025, and FR-057.
+Finally, browser QTE mutation converted missing current-turn authority to zero.
+
+Phase 45 closes these gaps through existing shared primitives rather than new
+pathname checks:
+
+1. split browser mutation intent from a durable physical publication/deletion
+   receipt and recover only an exact identity-plus-digest owned object;
+2. retain stable worker runtime/workspace/session authority for the workspace
+   lifetime and hand an unconfirmed process tree to one quarantined cleanup
+   owner until death is proven;
+3. retain validated single-link load-staging handles through directory
+   publication and recheck their exact identity/digest at the linearization
+   point;
+4. enforce trusted save metadata/manifest/soul/entry/count/aggregate/ratio
+   limits and reject alternate-stream path segments before buffering;
+5. prohibit historical afterlife full replacement, require exact empty
+   surfaces, and require structured afterlife presentation, Actor Brain, and
+   location authority plus one Mortal initial-location authority;
+6. remove legacy prose/type keyword inference and keep missing structured
+   authority neutral;
+7. persist the accepted source turn in the QTE offer/runtime instead of
+   depending on an active `turn_request.json`, validate it strictly, and bind
+   worker recovery comparison to the retained mutation handle;
+8. reproduce each finding with deterministic RED/GREEN tests, synchronize GM
+   prompts/docs/examples for actor-contract changes, and repeat the complete
+   verification and independent review gates.
+
+The storage, QTE, and worker portions are client-owned harness changes. The
+actor completeness and no-inference portions change GM-authored Mortal and
+afterlife contracts, so both prompt families, worked examples, manifests,
+Afterlife Contract Matrix, and documentation/source guards must be checked and
+updated in the same phase. Save resource bounds are additionally tracked by
+GitHub issue #1501 and may close with this integration.
+
 ## Complexity Tracking
 
 No constitution violations require an exception.

@@ -1412,6 +1412,83 @@ later acquisition or observation leaves a successful survivor holding every
 predecessor cancelled before activation. Successor notification bounds retained
 state at cancellation time without treating a pending acquisition as inactive.
 
+### Decision 137: Publication intent and ownership receipt are separate
+
+**Decision**: Browser rollback persists intent before mutation, then persists
+the exact physical identity and digest only after successful publication.
+Recovery requires the receipt. Deletion uses reversible physical authority or a
+durable completion receipt rather than interpreting absence as ownership.
+
+**Rationale**: Desired bytes can be recreated by a foreign writer. A hash known
+before publication proves intent, not who created the current file.
+
+### Decision 138: Worker runtime state is a retained physical capability
+
+**Decision**: A worker workspace owns stable runtime/workspace/session directory
+handles for its lifetime. Unconfirmed process-tree shutdown transfers all
+process and workspace owners to a quarantined reaper; it never releases the
+owner and deletes by path.
+
+**Rationale**: Path validation before a later read/write/delete does not prevent
+a junction swap, and cleanup is unsafe while a descendant process may still be
+using the workspace.
+
+### Decision 139: Load staging remains single-link through publication
+
+**Decision**: Open and validate every staged regular file, retain those handles
+through the staging-directory move, and repeat identity, link-count, length,
+and digest validation before commit.
+
+**Rationale**: Initial create-only validation does not prevent a later hard
+link from turning an external alias into canonical authority.
+
+### Decision 140: Save archive budgets are trusted client authority
+
+**Decision**: Apply fixed client-owned count, metadata, manifest, soul-state,
+per-entry, aggregate-expanded-byte, and compression-ratio limits before
+buffering or extraction. Reject `:` in every archive path segment.
+
+**Rationale**: Manifest values are untrusted and integrity hashes do not bound
+memory/disk cost or prevent NTFS alternate streams.
+
+### Decision 141: Historical actors use deltas, deliberate emptiness stays explicit
+
+**Decision**: Existing afterlife profiles cannot be replaced through the full
+carrier. Every `empty_by_design` section retains an explicit canonical empty
+surface; dedicated commands remain the only historical mutation authority.
+
+**Rationale**: Omission and emptiness are different states, and full resends
+would bypass domain-specific validation and continuity.
+
+### Decision 142: Actor Brain and location are first-materialization authority
+
+**Decision**: New afterlife actors provide structured presentation,
+personality, motivation, worldview, realm/location, goals/plan, and memory.
+New Mortal `UpdateNPCs` actors provide one exact initial location source.
+
+**Rationale**: Identity plus currencies/arts is not a usable actor, and a
+persistent actor without location cannot participate in world or brain rules.
+
+### Decision 143: Missing structured legacy authority stays neutral
+
+**Decision**: Remove prose, archetype, item-type, and genre keyword fallbacks
+from Guardian/resident roles, relationships, equipment, consumption, trade,
+teaching, and related mechanics.
+
+**Rationale**: The Mortal setting is arbitrary and afterlife mechanics already
+have structured state. Narrative words are not deterministic authority.
+
+### Decision 144: QTE carries its accepted source-turn authority
+
+**Decision**: A GM-authored QTE offer persists the strict positive turn that
+created it. Browser accept/decline use that value; active actions use the
+positive `acceptedAtTurn` already stored in runtime.
+
+**Rationale**: `input/turn_request.json` is an active-GM-turn marker and the
+browser coordinator correctly blocks local writes while it exists. Depending
+on that file makes the mutation protocol self-contradictory, while turn zero
+binds to neither a current request nor a valid historical turn.
+
 ## Existing integration findings
 
 - Mortal `ValidateNpcCoreObjectShape` already requires broad field presence but permits empty arrays.

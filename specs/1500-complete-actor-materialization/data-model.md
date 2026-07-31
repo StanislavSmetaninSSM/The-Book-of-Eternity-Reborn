@@ -836,3 +836,48 @@ around the inactive predecessor and registers with the retained replacement.
 Re-registration iterates until it reaches a live replacement or absence;
 compaction remains a fallback for caller-side observations. Pending and active
 nodes are never removed by either path.
+
+## Phase 45 authority additions
+
+### Canonical publication receipt
+
+A browser rollback entry has separate intended and published states. Published
+state contains an exact physical `FileIdentity`, SHA-256 digest, and completion
+kind (`write` or `delete`). Only published state may authorize recovery.
+
+### Retained worker workspace
+
+A detached worker workspace owns stable runtime-root, workspace-root, and
+game-session directory capabilities. Reads and writes resolve descendants
+relative to those capabilities. An unconfirmed process-tree cleanup transfers
+the process tree, process, host launch, and workspace to one quarantined owner
+until termination is confirmed.
+
+### Load-staging file authority set
+
+The load transaction retains one authority record per staged file: normalized
+relative path, opened physical identity, SHA-256 digest, byte length, and live
+handle. Every record must still be a single-link regular file immediately
+before and after directory publication.
+
+### Save archive budget
+
+Archive validation tracks trusted maximum entry count, metadata bytes, manifest
+bytes, soul-state bytes, per-entry expanded bytes, aggregate expanded bytes,
+and compression ratio. Counters are checked before allocation and during every
+bounded streaming copy. Archive path segments containing `:` are invalid.
+
+### Complete afterlife actor authority
+
+New common afterlife profiles expose structured appearance/profile summary,
+personality, motivation, worldview, current realm/location, goals/plan, and
+actor-owned memory, or bind to an exact documented type-specific authority
+carrying those values. Every governed deliberate-empty surface remains present
+as an empty array/object/null according to its canonical shape.
+
+### QTE source-turn authority
+
+A GM-authored QTE offer carries positive integer `sourceTurnNumber`. On
+acceptance it becomes runtime `acceptedAtTurn`; all later browser actions use
+that retained value. The browser never needs to keep an active GM turn request
+open to resolve a QTE.

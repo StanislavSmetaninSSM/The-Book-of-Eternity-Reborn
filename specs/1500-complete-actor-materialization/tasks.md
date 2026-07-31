@@ -500,3 +500,20 @@
   - Evidence: four isolated lifecycle/QTE/worker tests failed at `SaveGameAsync` because their synthetic sessions had no `game_state/meta/soul_state.json`. Each fixture now declares a Mortal realm before saving, and the exact four-test regression group passes `4/4`.
 - [ ] T241 Run the complete Phase 44 focused/broad/full verification, Release build, frontend verification, scoped formatting, clean-checkout verification, `git diff --check`, Spec Kit analysis, and fresh independent `gpt-5.6-sol`/max reviews with no Critical or Important finding before closing T238 and all inherited integration gates.
   - Prompt/docs rationale: Phase 44 changes only client-owned physical rollback authority and ambient lease bookkeeping. It adds no GM-authored Mortal or afterlife state, command, action, response, pending/control schema, receipt, scheduler, gameplay rule, prompt, or worked example; Mortal/afterlife prompts, examples, manifests, and the Afterlife Contract Matrix require no update.
+
+## Phase 45 - Final whole-branch review closure
+
+Follow-up tracking: GitHub issue #1502 owns T246-T253 after the verified
+baseline merge. Issue #1500 remains open until these tasks and dependency
+#1501 satisfy their acceptance criteria.
+
+- [x] T245 Reconcile the final Phase 44 whole-branch reviews as FR-121 through FR-131, SC-036, Decisions 137 through 144, and corresponding plan/data-model changes before additional production edits.
+  - Review evidence: three independent `gpt-5.6-sol`/max reviews compared merge base `9a1490146b7cecad6101af1f166bde614050a6a3` through `56be2f54` and confirmed browser publication-receipt, worker workspace/process ownership, load hard-link, save bounds/ADS, historical afterlife carrier, deliberate-empty surface, afterlife Actor Brain/location, Mortal location, legacy keyword inference, QTE turn, and worker-recovery boundary gaps.
+- [ ] T246 Complete and verify the existing RED/GREEN fixes for strict browser QTE current-turn authority, retained-handle worker-apply recovery, and workspace retention after unconfirmed process-tree cleanup.
+- [ ] T247 Add deterministic RED/GREEN publication-receipt regressions and require exact identity-plus-digest ownership for browser rollback writes and deletions, including byte-identical foreign recreation.
+- [ ] T248 Replace pathname worker workspace operations with retained physical authority and add one quarantined cleanup owner that preserves process/workspace ownership until confirmed death and then cleans at most once.
+- [ ] T249 Retain load-staging file authority through publication; implement #1501 trusted save-archive limits and alternate-stream rejection; preserve Mortal, Chaos Sea, Shining Abode, and legacy compatibility.
+- [ ] T250 Reject historical afterlife full-carrier mutation, require explicit empty surfaces, require structured afterlife presentation/Actor Brain/location authority, and require one initial location authority for new Mortal `UpdateNPCs`.
+- [ ] T251 Remove confirmed Guardian/resident/equipment/trade prose and genre keyword inference, keep missing structured legacy authority neutral, and extend behavioral/source guards.
+- [ ] T252 Synchronize Mortal and afterlife prompts, documentation, worked examples, manifests, Afterlife Contract Matrix, and source/documentation guards for the Phase 45 actor-contract changes; record client-owned no-update rationale for storage/QTE/archive limits.
+- [ ] T253 Run focused RED/GREEN suites, mandatory afterlife documentation, complete C# and frontend verification, Release build, scoped formatting, static parsing, clean-checkout verification, `git diff --check`, Spec Kit analysis, and fresh independent `gpt-5.6-sol`/max exact-diff reviews with no Critical or Important finding. Commit, push, merge the PR into `main`, close #1500 and #1501 when their acceptance criteria are proven, and close every inherited integration gate.
