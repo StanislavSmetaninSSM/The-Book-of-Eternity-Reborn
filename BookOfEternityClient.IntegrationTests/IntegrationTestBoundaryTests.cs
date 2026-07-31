@@ -779,6 +779,32 @@ public sealed class IntegrationTestBoundaryTests
             StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void GameEngineLifeTransitionReplacementTest_UsesCheckpointInsteadOfPolling()
+    {
+        var sourcePath = SourcePath(
+            IntegrationTestsDirectory,
+            "GameEngineTurnLifecycleTests.cs");
+        var root = CSharpSyntaxTree.ParseText(File.ReadAllText(sourcePath)).GetRoot();
+        var method = Assert.Single(
+            root.DescendantNodes()
+                .OfType<MethodDeclarationSyntax>(),
+            candidate =>
+                candidate.Identifier.ValueText ==
+                "CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement");
+        var methodBody = Assert.IsType<BlockSyntax>(method.Body);
+        var methodBodySource = methodBody.ToFullString();
+
+        Assert.DoesNotContain(
+            "while (DateTime.UtcNow < deadline)",
+            methodBodySource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "await Task.Delay(50);",
+            methodBodySource,
+            StringComparison.Ordinal);
+    }
+
     private static void AssertExactCategoryManifest(
         IReadOnlyDictionary<string, string[]> expected,
         string[] classifiedTraits,

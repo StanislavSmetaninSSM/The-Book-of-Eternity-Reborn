@@ -7776,8 +7776,28 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
+                    if (checkpoint == SessionFinalizationCheckpoint.LifeEvaluationRequestDispatchedBeforeWait)
+                    {
+                        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+                        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+                        using var requestDoc = JsonDocument.Parse(requestJson);
+                        var requestRoot = requestDoc.RootElement;
+                        Assert.Contains(
+                            "Оценка Жизни",
+                            requestRoot.GetProperty("playerAction").GetString(),
+                            StringComparison.Ordinal);
+                        await WriteAcceptedLifeEvaluationResponseAsync(
+                            requestRoot.GetProperty("sessionId").GetString(),
+                            requestRoot.GetProperty("requestId").GetString(),
+                            requestRoot.GetProperty("turnNumber").GetInt32());
                         return;
+                    }
+
+                    if (checkpoint !=
+                        SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
+                    {
+                        return;
+                    }
 
                     rawValidationReached.TrySetResult();
                     await releaseOldFinalizer.Task;
@@ -7789,27 +7809,6 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "LoadValidatedPendingTurnSnapshotContextAsync",
             manifest,
             true);
-        var responder = Task.Run(async () =>
-        {
-            var deadline = DateTime.UtcNow.AddSeconds(30);
-            while (DateTime.UtcNow < deadline)
-            {
-                var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
-                if (!string.IsNullOrWhiteSpace(requestJson) &&
-                    requestJson.Contains("Оценка Жизни", StringComparison.Ordinal))
-                {
-                    using var requestDoc = JsonDocument.Parse(requestJson);
-                    var requestRoot = requestDoc.RootElement;
-                    await WriteAcceptedLifeEvaluationResponseAsync(
-                        requestRoot.GetProperty("sessionId").GetString(),
-                        requestRoot.GetProperty("requestId").GetString(),
-                        requestRoot.GetProperty("turnNumber").GetInt32());
-                    return;
-                }
-
-                await Task.Delay(50);
-            }
-        });
 
         var oldTransition = InvokePrivateTaskAsync(
             engine,
@@ -7835,7 +7834,6 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         await Assert.ThrowsAsync<SessionReplacedException>(
             () => oldTransition.WaitAsync(TimeSpan.FromSeconds(5)));
-        await responder.WaitAsync(TimeSpan.FromSeconds(5));
         Assert.Contains(
             "replacement-session",
             await _fs.ReadFileAsync("input/turn_request.json"),

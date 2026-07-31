@@ -21,6 +21,7 @@ internal enum SessionFinalizationCheckpoint
     LateTerminalAndIdleOperationBound,
     IncarnationOperationBound,
     AcceptedOutcomeValidatedBeforeMaterialization,
+    LifeEvaluationRequestDispatchedBeforeWait,
     RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites
 }
 
