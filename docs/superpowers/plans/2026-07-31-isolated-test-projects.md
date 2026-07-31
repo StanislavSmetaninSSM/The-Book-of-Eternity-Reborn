@@ -219,7 +219,7 @@ dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-re
 
 Expected: all guards pass; direct Guardian broad calls are zero; two Guardian instances receive different writable roots; the prepared snapshot build count is one.
 
-- [ ] **Step 2: Record the bounded Guardian two-way scaling control**
+- [ ] **Step 2: Run the stable bounded Guardian profile controls**
 
 Run:
 
@@ -228,12 +228,22 @@ pwsh -NoProfile -File scripts/test-csharp.ps1 `
   -Lane Focused `
   -NoBuild `
   -TimeoutMinutes 3 `
-  -Filter "FullyQualifiedName~GuardianSystemRegressionTestsProjectsPower|FullyQualifiedName~GuardianSystemRegressionTestsPowerJournalOfferings"
+  -Filter "FullyQualifiedName~GuardianProject"
+
+pwsh -NoProfile -File scripts/test-csharp.ps1 `
+  -Lane Focused `
+  -NoBuild `
+  -TimeoutMinutes 3 `
+  -Filter "FullyQualifiedName~AcceptedTurnReasoning"
 ```
 
-Expected: 127/127 cases pass below three minutes. Record the wall time and both
-class durations. This control proves useful two-way scaling without assuming that
-the complete filesystem-heavy Guardian workload scales inside one testhost.
+Expected: the GuardianProject subset passes 36/36 and the accepted-turn-reasoning
+subset passes 88/88, with each command below three minutes.
+
+A temporary two-collection diagnostic established useful but sublinear scaling:
+127/127 passed in 2:49 wall versus 4:14 combined standalone wall. Keep that result
+in the Task 2 report, but do not keep the temporary class/collection split; it
+conflicts with the approved method-level sharder.
 
 Do not require the complete Guardian filter to finish below five minutes at this
 intermediate point. Guardian is explicitly moved to IntegrationTests by Task 6 and
@@ -249,7 +259,7 @@ Run:
 pwsh -NoProfile -File scripts/test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeSpiritualConflictValidationTests" -TimeoutMinutes 5
 ```
 
-Expected: 358 class cases pass; together with its focused source guard, the recorded control remains 359/359 and below five minutes.
+Expected: all 359 class cases pass below five minutes.
 
 - [ ] **Step 4: Verify scoped assertions execute their owning phase**
 
