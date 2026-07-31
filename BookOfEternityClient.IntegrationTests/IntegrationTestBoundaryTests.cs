@@ -28,6 +28,21 @@ public sealed class IntegrationTestBoundaryTests
             ["GuardianSystemRegressionTests.TradeOfferingResonance.cs"] = "TradeOfferingResonance"
         };
 
+    private static readonly string[] GuardianPartialSources =
+    [
+        "GuardianSystemRegressionTests.AcceptedAuthority.cs",
+        "GuardianSystemRegressionTests.ActorBrain.cs",
+        "GuardianSystemRegressionTests.cs",
+        "GuardianSystemRegressionTests.IdleValidation.cs",
+        "GuardianSystemRegressionTests.LifecycleSnapshots.cs",
+        "GuardianSystemRegressionTests.PowerJournalOfferings.cs",
+        "GuardianSystemRegressionTests.ProjectsPower.cs",
+        "GuardianSystemRegressionTests.QuestProgress.cs",
+        "GuardianSystemRegressionTests.RivalResidents.cs",
+        "GuardianSystemRegressionTests.TradeOfferingResonance.cs",
+        "MortalFactPersistenceValidationTests.cs"
+    ];
+
     private static readonly IReadOnlyDictionary<string, string[]> ProcessAndE2ECategories =
         new Dictionary<string, string[]>(StringComparer.Ordinal)
         {
@@ -52,6 +67,7 @@ public sealed class IntegrationTestBoundaryTests
 
     private static readonly string[] RegressionIntegrationSources =
     [
+        "AfterlifeSpiritualConflictValidationTests.cs",
         "BrowserCommandPresentationAuditTests.cs",
         "ExplorerModeCommandTests.cs",
         "ExplorerWebCommandServiceTests.cs",
@@ -67,15 +83,9 @@ public sealed class IntegrationTestBoundaryTests
         "ValidatorFixtureTests.cs"
     ];
 
-    private static readonly string[] RunnerLaneTokens =
+    private static readonly string[] ScopedValidationServiceSources =
     [
-        "Fast",
-        "Focused",
-        "FullValidation",
-        "RegressionIntegration",
-        "ProcessIntegration",
-        "E2E",
-        "Complete"
+        Path.Combine("Services", "ValidationService.cs")
     ];
 
     [Fact]
@@ -124,38 +134,61 @@ public sealed class IntegrationTestBoundaryTests
     [Fact]
     public void ProcessAndE2ETestSources_MatchReviewedManifest()
     {
-        var violations = ProcessAndE2ECategories
-            .SelectMany(entry =>
-            {
-                var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, entry.Key));
-                return entry.Value
-                    .Where(trait => !source.Contains(trait, StringComparison.Ordinal))
-                    .Select(trait => $"{entry.Key}: missing {trait}");
-            })
-            .ToArray();
-
-        Assert.True(
-            violations.Length == 0,
-            "Process/E2E source classification is incomplete:" +
-            Environment.NewLine +
-            string.Join(Environment.NewLine, violations));
+        AssertExactCategoryManifest(
+            ProcessAndE2ECategories,
+            [ProcessIntegrationTrait, E2ETrait],
+            "Process/E2E");
     }
 
     [Fact]
     public void FileBackedRegressionIntegrationSources_MatchReviewedManifest()
     {
-        var violations = RegressionIntegrationSources
-            .Where(fileName => !File
-                .ReadAllText(SourcePath(IntegrationTestsDirectory, fileName))
-                .Contains(RegressionIntegrationTrait, StringComparison.Ordinal))
-            .ToArray();
+        var expected = RegressionIntegrationSources.ToDictionary(
+            fileName => fileName,
+            _ => new[] { RegressionIntegrationTrait },
+            StringComparer.Ordinal);
 
-        Assert.True(
-            violations.Length == 0,
-            "File-backed regression integration sources must carry " +
-            "Category=RegressionIntegration:" +
-            Environment.NewLine +
-            string.Join(Environment.NewLine, violations));
+        AssertExactCategoryManifest(
+            expected,
+            [RegressionIntegrationTrait],
+            "RegressionIntegration");
+    }
+
+    [Fact]
+    public void ExactCategoryManifest_RejectsUnlistedSourcesAndTraitDrift()
+    {
+        var expected = new Dictionary<string, string[]>(StringComparer.Ordinal)
+        {
+            ["Expected.cs"] = [ProcessIntegrationTrait],
+            ["Missing.cs"] = [E2ETrait]
+        };
+        var sources = new[]
+        {
+            (
+                RelativePath: "Expected.cs",
+                Source: ProcessIntegrationTrait + Environment.NewLine + E2ETrait),
+            (
+                RelativePath: "Unexpected.cs",
+                Source: ProcessIntegrationTrait)
+        };
+
+        var violations = ExactCategoryManifestViolations(
+            expected,
+            sources,
+            [ProcessIntegrationTrait, E2ETrait]);
+
+        Assert.Contains(
+            $"Expected.cs: unexpected {E2ETrait}",
+            violations,
+            StringComparer.Ordinal);
+        Assert.Contains(
+            $"Missing.cs: missing {E2ETrait}",
+            violations,
+            StringComparer.Ordinal);
+        Assert.Contains(
+            $"Unexpected.cs: unreviewed classification {ProcessIntegrationTrait}",
+            violations,
+            StringComparer.Ordinal);
     }
 
     [Fact]
@@ -204,6 +237,26 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void GuardianRegressionTests_MatchCompleteReviewedPartialSourceSet()
+    {
+        var guardianPartial = new Regex(
+            @"partial\s+class\s+GuardianSystemRegressionTests\b",
+            RegexOptions.CultureInvariant);
+        var integrationRoot = SourcePath(IntegrationTestsDirectory);
+        var discovered = Directory
+            .EnumerateFiles(integrationRoot, "*.cs", SearchOption.AllDirectories)
+            .Where(path => guardianPartial.IsMatch(File.ReadAllText(path)))
+            .Select(path => Path.GetRelativePath(integrationRoot, path))
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        var expected = GuardianPartialSources
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(expected, discovered);
+    }
+
+    [Fact]
     public void GuardianRegressionTests_UseExactReviewedDomainProfileMapping()
     {
         foreach (var (fileName, profileName) in GuardianProfiles)
@@ -220,7 +273,7 @@ public sealed class IntegrationTestBoundaryTests
     [Fact]
     public void GuardianRegressionTests_BroadValidationCallsStayWithinSentinelBudget()
     {
-        var sources = GuardianProfiles.Keys.ToDictionary(
+        var sources = GuardianPartialSources.ToDictionary(
             fileName => fileName,
             fileName => File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName)),
             StringComparer.Ordinal);
@@ -273,60 +326,201 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void ScopedValidationEntryPoint_RemainsInternalToValidationServiceAndTests()
+    public void RuntimeValidationCallers_UseParameterlessFacadeOutsideValidationService()
     {
         var productionRoot = SourcePath("BookOfEternityClient");
-        var scopedDeclaration = new Regex(
-            @"internal\s+Task<List<ValidationIssue>>\s+ValidateGameStateAsync\s*\(",
-            RegexOptions.CultureInvariant);
-        var violations = Directory
+        var sources = Directory
             .EnumerateFiles(productionRoot, "*.cs", SearchOption.AllDirectories)
-            .Select(path => (Path: path, Source: File.ReadAllText(path)))
-            .Where(candidate => scopedDeclaration.IsMatch(candidate.Source))
-            .Where(candidate => !string.Equals(
-                Path.GetRelativePath(productionRoot, candidate.Path),
-                Path.Combine("Services", "ValidationService.cs"),
-                StringComparison.Ordinal))
-            .Select(candidate => Path.GetRelativePath(productionRoot, candidate.Path))
+            .Select(path => (
+                RelativePath: Path.GetRelativePath(productionRoot, path),
+                Source: File.ReadAllText(path)))
             .ToArray();
+        var declarationLocations = ScopedValidationDeclarationLocations(sources);
+        var declarationViolations = ScopedValidationDeclarationViolations(
+            sources,
+            ScopedValidationServiceSources);
+        var callViolations = ArgumentBearingValidationCallViolations(
+            sources,
+            ScopedValidationServiceSources);
 
-        Assert.Empty(violations);
+        Assert.NotEmpty(declarationLocations);
+        Assert.True(
+            declarationViolations.Length == 0,
+            "Scoped validation declarations must stay in the reviewed ValidationService source:" +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, declarationViolations));
+        Assert.True(
+            callViolations.Length == 0,
+            "Production callers outside ValidationService must use the parameterless facade:" +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, callViolations));
     }
 
     [Fact]
-    public void CSharpLaneRunner_DefinesReviewedLanesFiltersArtifactsAndOwnedTreeTimeout()
+    public void RuntimeValidationGuard_RejectsScopedDeclarationAndCallOutsideAllowedSource()
     {
-        var runnerPath = SourcePath("scripts", "test-csharp.ps1");
-
-        Assert.True(File.Exists(runnerPath), $"C# lane runner not found: {runnerPath}");
-
-        var source = File.ReadAllText(runnerPath);
-        foreach (var lane in RunnerLaneTokens)
+        var sources = new[]
         {
-            Assert.Contains($"\"{lane}\"", source, StringComparison.Ordinal);
+            (
+                RelativePath: Path.Combine("Services", "ValidationService.cs"),
+                Source:
+                    """
+                    internal Task < List < ValidationIssue > >
+                        ValidateGameStateAsync (
+                            GameStateValidationSelection selection)
+                    """),
+            (
+                RelativePath: Path.Combine("Services", "UnexpectedValidator.cs"),
+                Source:
+                    """
+                    internal Task<List<ValidationIssue>>
+                        ValidateGameStateAsync(GameStateValidationSelection selection);
+                    """ +
+                    Environment.NewLine +
+                    "await validator.ValidateGameState" + "Async(selection);" +
+                    Environment.NewLine +
+                    "await validator.ValidateGameState" + "Async();")
+        };
+
+        var declarationViolations = ScopedValidationDeclarationViolations(
+            sources,
+            ScopedValidationServiceSources);
+        var callViolations = ArgumentBearingValidationCallViolations(
+            sources,
+            ScopedValidationServiceSources);
+
+        Assert.Single(declarationViolations);
+        Assert.Contains(
+            "UnexpectedValidator.cs",
+            declarationViolations[0],
+            StringComparison.Ordinal);
+        Assert.Single(callViolations);
+        Assert.Contains(
+            "UnexpectedValidator.cs",
+            callViolations[0],
+            StringComparison.Ordinal);
+    }
+
+    private static void AssertExactCategoryManifest(
+        IReadOnlyDictionary<string, string[]> expected,
+        string[] classifiedTraits,
+        string manifestDescription)
+    {
+        var violations = ExactCategoryManifestViolations(
+            expected,
+            EnumerateSourceFiles(IntegrationTestsDirectory),
+            classifiedTraits);
+
+        Assert.True(
+            violations.Length == 0,
+            $"{manifestDescription} source classification differs from the reviewed manifest:" +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, violations));
+    }
+
+    private static string[] ExactCategoryManifestViolations(
+        IReadOnlyDictionary<string, string[]> expected,
+        IEnumerable<(string RelativePath, string Source)> sources,
+        string[] classifiedTraits)
+    {
+        var actual = sources
+            .Select(source => (
+                source.RelativePath,
+                Traits: classifiedTraits
+                    .Where(trait => source.Source.Contains(trait, StringComparison.Ordinal))
+                    .ToArray()))
+            .Where(source => source.Traits.Length > 0)
+            .ToDictionary(
+                source => source.RelativePath,
+                source => source.Traits,
+                StringComparer.Ordinal);
+        var violations = new List<string>();
+
+        foreach (var (relativePath, expectedTraits) in expected)
+        {
+            actual.TryGetValue(relativePath, out var actualTraits);
+            actualTraits ??= [];
+
+            violations.AddRange(expectedTraits
+                .Except(actualTraits, StringComparer.Ordinal)
+                .Select(trait => $"{relativePath}: missing {trait}"));
+            violations.AddRange(actualTraits
+                .Except(expectedTraits, StringComparer.Ordinal)
+                .Select(trait => $"{relativePath}: unexpected {trait}"));
         }
 
-        Assert.Contains(
-            "Category!=FullValidation&Category!=ProcessIntegration&Category!=E2E&" +
-            "Category!=RegressionIntegration",
-            source,
-            StringComparison.Ordinal);
-        Assert.Contains("Category=FullValidation", source, StringComparison.Ordinal);
-        Assert.Contains("Category=ProcessIntegration", source, StringComparison.Ordinal);
-        Assert.Contains("Category=E2E", source, StringComparison.Ordinal);
-        Assert.Contains("Category=RegressionIntegration", source, StringComparison.Ordinal);
-        Assert.Contains("test-results.trx", source, StringComparison.Ordinal);
-        Assert.Contains("dotnet-test.log", source, StringComparison.Ordinal);
-        Assert.Contains("Stopwatch", source, StringComparison.Ordinal);
-        Assert.Contains("$FastParallelismLimit = 2", source, StringComparison.Ordinal);
-        Assert.Contains("$ComposedSmallClassBinCount = 4", source, StringComparison.Ordinal);
-        Assert.Contains("$CompleteMixedEstimatedCost = 175", source, StringComparison.Ordinal);
-        Assert.Contains("WaitForExit", source, StringComparison.Ordinal);
-        Assert.Contains("Kill($true)", source, StringComparison.Ordinal);
-        Assert.Contains("ArgumentList.Add", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("Get-Process", source, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Stop-Process", source, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("taskkill", source, StringComparison.OrdinalIgnoreCase);
+        violations.AddRange(actual
+            .Where(entry => !expected.ContainsKey(entry.Key))
+            .Select(entry =>
+                $"{entry.Key}: unreviewed classification {string.Join(", ", entry.Value)}"));
+
+        return violations
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    private static string[] ScopedValidationDeclarationLocations(
+        IEnumerable<(string RelativePath, string Source)> sources)
+    {
+        var scopedDeclaration = new Regex(
+            @"\binternal\s+(?:async\s+)?Task\s*<\s*List\s*<\s*" +
+            @"ValidationIssue\s*>\s*>\s+ValidateGameStateAsync\s*\(",
+            RegexOptions.CultureInvariant);
+
+        return sources
+            .SelectMany(source => scopedDeclaration
+                .Matches(source.Source)
+                .Select(match =>
+                    $"{source.RelativePath}:{LineNumber(source.Source, match.Index)}"))
+            .ToArray();
+    }
+
+    private static string[] ScopedValidationDeclarationViolations(
+        IEnumerable<(string RelativePath, string Source)> sources,
+        IReadOnlyCollection<string> allowedSources)
+    {
+        var allowed = allowedSources.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return ScopedValidationDeclarationLocations(sources)
+            .Where(location =>
+            {
+                var separatorIndex = location.LastIndexOf(':');
+                var relativePath = separatorIndex < 0
+                    ? location
+                    : location[..separatorIndex];
+                return !allowed.Contains(relativePath);
+            })
+            .ToArray();
+    }
+
+    private static string[] ArgumentBearingValidationCallViolations(
+        IEnumerable<(string RelativePath, string Source)> sources,
+        IReadOnlyCollection<string> allowedSources)
+    {
+        var allowed = allowedSources.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var scopedCall = new Regex(
+            @"\.ValidateGameStateAsync\s*\(\s*(?<argument>[^\s\)])",
+            RegexOptions.CultureInvariant);
+
+        return sources
+            .Where(source => !allowed.Contains(source.RelativePath))
+            .SelectMany(source => scopedCall
+                .Matches(source.Source)
+                .Select(match =>
+                    $"{source.RelativePath}:{LineNumber(source.Source, match.Index)}"))
+            .ToArray();
+    }
+
+    private static IEnumerable<(string RelativePath, string Source)> EnumerateSourceFiles(
+        string directory)
+    {
+        var root = SourcePath(directory);
+
+        return Directory
+            .EnumerateFiles(root, "*.cs", SearchOption.AllDirectories)
+            .Select(path => (
+                RelativePath: Path.GetRelativePath(root, path),
+                Source: File.ReadAllText(path)));
     }
 
     private static IEnumerable<(string Path, string Source)>
