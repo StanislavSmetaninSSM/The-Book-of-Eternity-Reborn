@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Xunit;
@@ -65,11 +66,21 @@ public sealed class FastTestBoundaryTests
             "$fastTestProject",
             "$integrationTestProject",
             "summary.json",
-            "DuplicateTests"
+            "DuplicateTests",
+            "Get-Command -Name \"npm.cmd\" -CommandType Application",
+            "$npmCommandPath = Resolve-NpmCommandPath",
+            "-FileName $npmCommandPath",
+            "New-UniqueResultDirectory",
+            "$PID",
+            "[Guid]::NewGuid()"
         };
         Assert.All(requiredTokens, token =>
             Assert.Contains(token, source, StringComparison.Ordinal));
 
+        Assert.DoesNotContain(
+            "-FileName \"npm.cmd\"",
+            source,
+            StringComparison.Ordinal);
         Assert.DoesNotContain(
             "Category!=FullValidation&Category!=ProcessIntegration&" +
             "Category!=E2E&Category!=RegressionIntegration",
@@ -84,6 +95,60 @@ public sealed class FastTestBoundaryTests
         };
         Assert.All(forbiddenBroadProcessCommands, command =>
             Assert.DoesNotContain(command, source, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_AbsoluteNpmApplicationStartsWithOwnedProcessSettings()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("NpmStartup");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"npm startup probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+
+        var resultDirectory = ResultDirectoryFrom(probe.StandardOutput);
+        var log = await File.ReadAllTextAsync(
+            Path.Combine(resultDirectory, "dotnet-test.log"));
+        var startup = Regex.Match(
+            log,
+            @"Owned process 'Npm-startup-probe': FileName=(?<path>.+?); " +
+            @"UseShellExecute=False; CreateNoWindow=True; " +
+            @"RedirectStandardOutput=True; RedirectStandardError=True");
+
+        Assert.True(startup.Success, log);
+        var executablePath = startup.Groups["path"].Value;
+        Assert.True(Path.IsPathFullyQualified(executablePath), executablePath);
+        Assert.True(File.Exists(executablePath), executablePath);
+        Assert.EndsWith("npm.cmd", executablePath, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_ConcurrentSameLaneRunsCreateDistinctResultDirectories()
+    {
+        var probes = await Task.WhenAll(
+            RunCSharpRunnerSelfTestAsync("ResultDirectory"),
+            RunCSharpRunnerSelfTestAsync("ResultDirectory"));
+
+        Assert.All(probes, probe =>
+            Assert.True(
+                probe.ExitCode == 0,
+                $"Result-directory probe failed.{Environment.NewLine}" +
+                $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+                $"stderr:{Environment.NewLine}{probe.StandardError}"));
+
+        var resultDirectories = probes
+            .Select(probe => ResultDirectoryFrom(probe.StandardOutput))
+            .ToArray();
+        Assert.Equal(2, resultDirectories.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+        Assert.All(resultDirectories, resultDirectory =>
+        {
+            Assert.True(Directory.Exists(resultDirectory), resultDirectory);
+            Assert.Matches(
+                @"-\d+-[0-9a-f]{32}-fast$",
+                Path.GetFileName(resultDirectory));
+        });
     }
 
     [Fact]
@@ -388,4 +453,69 @@ public sealed class FastTestBoundaryTests
             paths.Contains(forbiddenPath, StringComparer.OrdinalIgnoreCase),
             $"{failureDescription}: '{forbiddenPath}'. Parsed paths: {string.Join(", ", paths)}");
     }
+
+    private static async Task<RunnerSelfTestResult> RunCSharpRunnerSelfTestAsync(
+        string selfTest)
+    {
+        var startInfo = new ProcessStartInfo("pwsh")
+        {
+            WorkingDirectory = TestRepoPaths.RepoRoot,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
+        foreach (var argument in new[]
+        {
+            "-NoProfile",
+            "-File",
+            Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1"),
+            "-Lane",
+            "Fast",
+            "-TimeoutMinutes",
+            "1",
+            "-NoBuild",
+            "-SelfTest",
+            selfTest
+        })
+        {
+            startInfo.ArgumentList.Add(argument);
+        }
+
+        using var process = Process.Start(startInfo) ??
+            throw new InvalidOperationException("PowerShell runner self-test did not start.");
+        var standardOutput = process.StandardOutput.ReadToEndAsync();
+        var standardError = process.StandardError.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            process.Kill(entireProcessTree: true);
+            await process.WaitForExitAsync();
+            throw new TimeoutException(
+                $"PowerShell runner self-test '{selfTest}' exceeded 30 seconds.");
+        }
+
+        return new RunnerSelfTestResult(
+            process.ExitCode,
+            await standardOutput,
+            await standardError);
+    }
+
+    private static string ResultDirectoryFrom(string standardOutput)
+    {
+        var match = Regex.Match(
+            standardOutput,
+            @"(?m)^  Results: (?<path>.+?)\r?$");
+        Assert.True(match.Success, standardOutput);
+        return match.Groups["path"].Value;
+    }
+
+    private sealed record RunnerSelfTestResult(
+        int ExitCode,
+        string StandardOutput,
+        string StandardError);
 }

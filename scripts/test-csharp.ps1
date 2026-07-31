@@ -23,7 +23,19 @@ param(
 
     [switch]$NoBuild,
 
-    [switch]$PlanOnly
+    [switch]$PlanOnly,
+
+    [ValidateSet(
+        "None",
+        "NpmStartup",
+        "ResultDirectory",
+        "TrxSummary"
+    )]
+    [Parameter(DontShow)]
+    [string]$SelfTest = "None",
+
+    [Parameter(DontShow)]
+    [string]$SelfTestTrxDirectory
 )
 
 Set-StrictMode -Version Latest
@@ -88,11 +100,38 @@ else {
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $fastTestProject = Join-Path $repoRoot "BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj"
 $integrationTestProject = Join-Path $repoRoot "BookOfEternityClient.IntegrationTests\BookOfEternityClient.IntegrationTests.csproj"
-$runStamp = Get-Date -Format "yyyyMMdd-HHmmss-fff"
-$resultDirectory = Join-Path $repoRoot "TestResults\test-lanes\$runStamp-$($Lane.ToLowerInvariant())"
+
+function New-UniqueResultDirectory {
+    $resultRoot = Join-Path $repoRoot "TestResults\test-lanes"
+    [void][System.IO.Directory]::CreateDirectory($resultRoot)
+
+    for ($attempt = 1; $attempt -le 5; $attempt++) {
+        $runStamp = Get-Date -Format "yyyyMMdd-HHmmss-fff"
+        $uniqueName = "{0}-{1}-{2}-{3}" -f @(
+            $runStamp,
+            $PID,
+            [Guid]::NewGuid().ToString("N"),
+            $Lane.ToLowerInvariant()
+        )
+        $candidate = Join-Path $resultRoot $uniqueName
+        try {
+            $created = New-Item `
+                -ItemType Directory `
+                -Path $candidate `
+                -ErrorAction Stop
+            return $created.FullName
+        }
+        catch [System.IO.IOException] {
+            if ($attempt -eq 5) {
+                throw "Could not create a unique result directory after $attempt attempts."
+            }
+        }
+    }
+}
+
+$resultDirectory = New-UniqueResultDirectory
 $logPath = Join-Path $resultDirectory "dotnet-test.log"
 
-New-Item -ItemType Directory -Force -Path $resultDirectory | Out-Null
 Set-Content -LiteralPath $logPath -Value @(
     "RequestedLane: $Lane"
     "EffectiveLane: $effectiveLane"
@@ -109,6 +148,7 @@ $cleanupSucceeded = $true
 $exitCode = 0
 $failureMessage = $null
 $laneFilter = $null
+$trxSummaryOverride = $null
 
 function Get-ProjectDisplayPath {
     param(
@@ -118,6 +158,21 @@ function Get-ProjectDisplayPath {
 
     return [System.IO.Path]::GetRelativePath($repoRoot, $ProjectPath).
         Replace([System.IO.Path]::DirectorySeparatorChar, '/')
+}
+
+function Resolve-NpmCommandPath {
+    $npmCommands = @(
+        Get-Command -Name "npm.cmd" -CommandType Application -ErrorAction Stop
+    )
+    foreach ($npmCommand in $npmCommands) {
+        $candidate = $npmCommand.Path
+        if ([System.IO.Path]::IsPathFullyQualified($candidate) -and
+            (Test-Path -LiteralPath $candidate -PathType Leaf)) {
+            return [System.IO.Path]::GetFullPath($candidate)
+        }
+    }
+
+    throw "Could not resolve npm.cmd to an absolute application path."
 }
 
 function Start-OwnedProcess {
@@ -151,6 +206,13 @@ function Start-OwnedProcess {
         $process.Dispose()
         throw "Failed to start '$FileName' for owned process '$Name'."
     }
+
+    Add-Content -LiteralPath $logPath -Value (
+        "Owned process '$Name': FileName=$FileName; " +
+        "UseShellExecute=$($startInfo.UseShellExecute); " +
+        "CreateNoWindow=$($startInfo.CreateNoWindow); " +
+        "RedirectStandardOutput=$($startInfo.RedirectStandardOutput); " +
+        "RedirectStandardError=$($startInfo.RedirectStandardError)")
 
     $run = [pscustomobject]@{
         Name = $Name
@@ -875,17 +937,21 @@ function Invoke-DescriptorBatch {
 }
 
 function Get-TrxSummary {
+    param(
+        [string]$TrxDirectory = $resultDirectory
+    )
+
     $counters = @{
         Total = 0
         Executed = 0
         Passed = 0
         Failed = 0
     }
-    $testIds = [System.Collections.Generic.List[string]]::new()
+    $testOccurrences = [System.Collections.Generic.List[object]]::new()
     $parseErrors = [System.Collections.Generic.List[string]]::new()
 
     foreach ($trxFile in @(
-        Get-ChildItem -LiteralPath $resultDirectory -Filter "*.trx" -File
+        Get-ChildItem -LiteralPath $TrxDirectory -Filter "*.trx" -File
     )) {
         try {
             [xml]$trx = Get-Content -LiteralPath $trxFile.FullName -Raw
@@ -897,12 +963,45 @@ function Get-TrxSummary {
                 }
             }
 
+            $storageByTestId = [System.Collections.Generic.Dictionary[string, string]]::new(
+                [StringComparer]::Ordinal)
+            foreach ($unitTest in @(
+                $trx.SelectNodes("//*[local-name()='UnitTest']")
+            )) {
+                $testId = $unitTest.GetAttribute("id")
+                $storage = $unitTest.GetAttribute("storage")
+                if ([string]::IsNullOrWhiteSpace($testId) -or
+                    [string]::IsNullOrWhiteSpace($storage) -or
+                    $storageByTestId.ContainsKey($testId)) {
+                    continue
+                }
+                $storageByTestId.Add(
+                    $testId,
+                    [System.IO.Path]::GetFileName($storage).ToLowerInvariant())
+            }
+
+            $seenInTrx = [System.Collections.Generic.HashSet[string]]::new(
+                [StringComparer]::Ordinal)
             foreach ($result in @(
                 $trx.SelectNodes("//*[local-name()='UnitTestResult']")
             )) {
                 $testId = $result.GetAttribute("testId")
-                if (-not [string]::IsNullOrWhiteSpace($testId)) {
-                    [void]$testIds.Add($testId)
+                if ([string]::IsNullOrWhiteSpace($testId)) {
+                    continue
+                }
+                $storage = if ($storageByTestId.ContainsKey($testId)) {
+                    $storageByTestId[$testId]
+                }
+                else {
+                    "<unknown-storage>"
+                }
+                $key = "$storage::$testId"
+                if ($seenInTrx.Add($key)) {
+                    [void]$testOccurrences.Add([pscustomobject]@{
+                        Key = $key
+                        TestId = $testId
+                        TrxFile = $trxFile.Name
+                    })
                 }
             }
         }
@@ -912,10 +1011,11 @@ function Get-TrxSummary {
     }
 
     $duplicateTests = @(
-        $testIds |
-            Group-Object |
+        $testOccurrences |
+            Group-Object Key |
             Where-Object Count -gt 1 |
-            Select-Object -ExpandProperty Name
+            ForEach-Object { $_.Group[0] } |
+            Select-Object -ExpandProperty TestId -Unique
     )
     return [pscustomobject]@{
         Total = $counters.Total
@@ -942,11 +1042,49 @@ try {
     Add-Content -LiteralPath $logPath -Value (
         "ValidatedFilter: $(if ([string]::IsNullOrWhiteSpace($laneFilter)) { "<none>" } else { $laneFilter })")
 
-    if (-not $PlanOnly) {
+    if ($SelfTest -ne "None") {
+        switch ($SelfTest) {
+            "NpmStartup" {
+                $npmCommandPath = Resolve-NpmCommandPath
+                $npmProbe = Start-OwnedProcess `
+                    -Name "Npm-startup-probe" `
+                    -FileName $npmCommandPath `
+                    -Arguments @("--version")
+                Invoke-OwnedPhase `
+                    -Run $npmProbe `
+                    -TimeoutMessage "npm startup probe exceeded the lane deadline." `
+                    -FailureDescription "npm startup probe"
+            }
+            "TrxSummary" {
+                if ([string]::IsNullOrWhiteSpace($SelfTestTrxDirectory) -or
+                    -not (Test-Path -LiteralPath $SelfTestTrxDirectory -PathType Container)) {
+                    throw "TrxSummary self-test requires an existing -SelfTestTrxDirectory."
+                }
+                $trxSummaryOverride = Get-TrxSummary `
+                    -TrxDirectory ([System.IO.Path]::GetFullPath($SelfTestTrxDirectory))
+                if ($trxSummaryOverride.ParseErrors.Count -ne 0) {
+                    $exitCode = 1
+                    throw "TRX parsing failed: $($trxSummaryOverride.ParseErrors -join '; ')"
+                }
+                if ($effectiveLane -eq "PreMerge" -and
+                    $trxSummaryOverride.DuplicateTests.Count -ne 0) {
+                    $exitCode = 1
+                    throw "PreMerge produced duplicate TRX test IDs: $($trxSummaryOverride.DuplicateTests -join ', ')"
+                }
+            }
+            "ResultDirectory" {
+                Add-Content -LiteralPath $logPath -Value (
+                    "Result-directory self-test: $resultDirectory")
+            }
+        }
+    }
+    else {
+        if (-not $PlanOnly) {
         if ($effectiveLane -in @("E2E", "PreMerge")) {
+            $npmCommandPath = Resolve-NpmCommandPath
             $frontendRun = Start-OwnedProcess `
                 -Name "Frontend-verify" `
-                -FileName "npm.cmd" `
+                -FileName $npmCommandPath `
                 -Arguments @("run", "verify", "--prefix", "BookOfEternityClient.WebFrontend")
             Invoke-OwnedPhase `
                 -Run $frontendRun `
@@ -1069,6 +1207,7 @@ try {
             throw "PreMerge discovered $($runSummary.Total) cases; expected at least the 6,560-case baseline."
         }
     }
+    }
 }
 catch {
     if ($exitCode -eq 0) {
@@ -1106,7 +1245,12 @@ finally {
     $stopwatch.Stop()
 }
 
-$trxSummary = Get-TrxSummary
+$trxSummary = if ($null -ne $trxSummaryOverride) {
+    $trxSummaryOverride
+}
+else {
+    Get-TrxSummary
+}
 $summary = [ordered]@{
     RequestedLane = $Lane
     EffectiveLane = $effectiveLane

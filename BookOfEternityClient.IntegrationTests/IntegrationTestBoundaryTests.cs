@@ -1,8 +1,10 @@
 using BookOfEternityClient.Services;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Text.Json;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -212,12 +214,17 @@ public sealed class IntegrationTestBoundaryTests
             "Build-Fast",
             "Build-Integration",
             "Frontend-verify",
-            "-FileName \"npm.cmd\"",
+            "-FileName $npmCommandPath",
             "@(\"run\", \"verify\", \"--prefix\", " +
             "\"BookOfEternityClient.WebFrontend\")",
             "Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost",
             "//*[local-name()='UnitTestResult']",
+            "//*[local-name()='UnitTest']",
             "GetAttribute(\"testId\")",
+            "GetAttribute(\"storage\")",
+            "$seenInTrx",
+            "Group-Object Key",
+            "Select-Object -ExpandProperty TestId",
             "Where-Object Count -gt 1",
             "DuplicateTests",
             "summary.json",
@@ -227,7 +234,7 @@ public sealed class IntegrationTestBoundaryTests
         Assert.All(requiredTokens, token =>
             Assert.Contains(token, source, StringComparison.Ordinal));
 
-        Assert.Equal(1, Regex.Matches(source, @"\$deadlineUtc\s*=").Count);
+        Assert.Single(Regex.Matches(source, @"\$deadlineUtc\s*="));
 
         var forbiddenBroadProcessCommands = new[]
         {
@@ -237,6 +244,69 @@ public sealed class IntegrationTestBoundaryTests
         };
         Assert.All(forbiddenBroadProcessCommands, command =>
             Assert.DoesNotContain(command, source, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_RepeatedTheoryRowsWithinOneTrxAreNotDuplicates()
+    {
+        var fixtureDirectory = CreateTrxFixtureDirectory();
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(fixtureDirectory, "theory.trx"),
+                SyntheticTrx("theory-id", "integration-tests.dll", resultCount: 2));
+
+            var probe = await RunCSharpRunnerTrxSelfTestAsync(fixtureDirectory);
+
+            Assert.True(
+                probe.ExitCode == 0,
+                $"Theory-row probe failed.{Environment.NewLine}" +
+                $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+                $"stderr:{Environment.NewLine}{probe.StandardError}");
+            using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
+                Path.Combine(ResultDirectoryFrom(probe.StandardOutput), "summary.json")));
+            var duplicateTests = summary.RootElement.GetProperty("DuplicateTests");
+            Assert.Equal(JsonValueKind.Array, duplicateTests.ValueKind);
+            Assert.Empty(duplicateTests.EnumerateArray());
+        }
+        finally
+        {
+            Directory.Delete(fixtureDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_SameTestIdAcrossDescriptorTrxFilesIsDuplicate()
+    {
+        var fixtureDirectory = CreateTrxFixtureDirectory();
+        try
+        {
+            await File.WriteAllTextAsync(
+                Path.Combine(fixtureDirectory, "descriptor-01.trx"),
+                SyntheticTrx("shared-id", "integration-tests.dll", resultCount: 1));
+            await File.WriteAllTextAsync(
+                Path.Combine(fixtureDirectory, "descriptor-02.trx"),
+                SyntheticTrx("shared-id", "integration-tests.dll", resultCount: 1));
+
+            var probe = await RunCSharpRunnerTrxSelfTestAsync(fixtureDirectory);
+
+            Assert.Equal(1, probe.ExitCode);
+            Assert.Contains(
+                "duplicate TRX test IDs: shared-id",
+                probe.StandardOutput,
+                StringComparison.Ordinal);
+            using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
+                Path.Combine(ResultDirectoryFrom(probe.StandardOutput), "summary.json")));
+            var duplicateTests = summary.RootElement.GetProperty("DuplicateTests");
+            Assert.Equal(JsonValueKind.Array, duplicateTests.ValueKind);
+            Assert.Equal(
+                "shared-id",
+                Assert.Single(duplicateTests.EnumerateArray()).GetString());
+        }
+        finally
+        {
+            Directory.Delete(fixtureDirectory, recursive: true);
+        }
     }
 
     [Fact]
@@ -1277,4 +1347,100 @@ public sealed class IntegrationTestBoundaryTests
             Environment.NewLine +
             string.Join(Environment.NewLine, uncategorizedSources));
     }
+
+    private static async Task<RunnerSelfTestResult> RunCSharpRunnerTrxSelfTestAsync(
+        string trxDirectory)
+    {
+        var startInfo = new ProcessStartInfo("pwsh")
+        {
+            WorkingDirectory = TestRepoPaths.RepoRoot,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
+        foreach (var argument in new[]
+        {
+            "-NoProfile",
+            "-File",
+            Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1"),
+            "-Lane",
+            "PreMerge",
+            "-TimeoutMinutes",
+            "1",
+            "-NoBuild",
+            "-SelfTest",
+            "TrxSummary",
+            "-SelfTestTrxDirectory",
+            trxDirectory
+        })
+        {
+            startInfo.ArgumentList.Add(argument);
+        }
+
+        using var process = Process.Start(startInfo) ??
+            throw new InvalidOperationException("PowerShell runner TRX self-test did not start.");
+        var standardOutput = process.StandardOutput.ReadToEndAsync();
+        var standardError = process.StandardError.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            process.Kill(entireProcessTree: true);
+            await process.WaitForExitAsync();
+            throw new TimeoutException("PowerShell runner TRX self-test exceeded 30 seconds.");
+        }
+
+        return new RunnerSelfTestResult(
+            process.ExitCode,
+            await standardOutput,
+            await standardError);
+    }
+
+    private static string CreateTrxFixtureDirectory()
+    {
+        var path = Path.Combine(
+            Path.GetTempPath(),
+            "boe-runner-trx-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(path);
+        return path;
+    }
+
+    private static string SyntheticTrx(
+        string testId,
+        string storage,
+        int resultCount)
+    {
+        var results = string.Concat(Enumerable.Range(1, resultCount).Select(index =>
+            $"""<UnitTestResult testId="{testId}" executionId="execution-{index}" />"""));
+        return $$"""
+            <?xml version="1.0" encoding="utf-8"?>
+            <TestRun>
+              <Results>{{results}}</Results>
+              <TestDefinitions>
+                <UnitTest id="{{testId}}" storage="{{storage}}" />
+              </TestDefinitions>
+              <ResultSummary>
+                <Counters total="{{resultCount}}" executed="{{resultCount}}" passed="{{resultCount}}" failed="0" />
+              </ResultSummary>
+            </TestRun>
+            """;
+    }
+
+    private static string ResultDirectoryFrom(string standardOutput)
+    {
+        var match = Regex.Match(
+            standardOutput,
+            @"(?m)^  Results: (?<path>.+?)\r?$");
+        Assert.True(match.Success, standardOutput);
+        return match.Groups["path"].Value;
+    }
+
+    private sealed record RunnerSelfTestResult(
+        int ExitCode,
+        string StandardOutput,
+        string StandardError);
 }
