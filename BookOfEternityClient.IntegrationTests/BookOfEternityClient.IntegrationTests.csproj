@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <AssemblyName>BookOfEternityClient.IntegrationTests</AssemblyName>
+    <RootNamespace>BookOfEternityClient.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,5 +29,4 @@
     <ProjectReference Include="..\BookOfEternityClient\BookOfEternityClient.csproj" />
     <ProjectReference Include="..\BookOfEternityClient.TestSupport\BookOfEternityClient.TestSupport.csproj" />
   </ItemGroup>
-
 </Project>
