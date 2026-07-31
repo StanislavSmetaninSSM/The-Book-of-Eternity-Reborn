@@ -1785,7 +1785,7 @@ $preMergeExclusiveSelections = @(
 )
 ```
 
-Run Fast plus non-process Integration through balanced descriptors with total external parallelism four. Then run ProcessIntegration and E2E one at a time. All phases check the original `$deadlineUtc`; no phase creates a new deadline.
+Run Fast plus non-process Integration through balanced descriptors with total external parallelism four, while allowing at most two simultaneously active descriptors whose `ProjectPath` is `$fastTestProject`. Then run ProcessIntegration and E2E one at a time. All phases check the original `$deadlineUtc`; no phase creates a new deadline.
 
 - [ ] **Step 6: Run the frontend prerequisite before PreMerge/E2E builds**
 
