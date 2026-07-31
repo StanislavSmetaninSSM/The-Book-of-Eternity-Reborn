@@ -15,7 +15,15 @@ public partial class ValidationService
     /// Run all validations on the current game state. Returns list of issues found.
     /// </summary>
     public Task<List<ValidationIssue>> ValidateGameStateAsync()
-        => ValidateGameStateInternalAsync();
+        => ValidateGameStateInternalAsync(GameStateValidationSelection.All);
+
+    internal Task<List<ValidationIssue>> ValidateGameStateAsync(
+        GameStateValidationPhase phases)
+        => ValidateGameStateInternalAsync(new GameStateValidationSelection(phases));
+
+    internal Task<List<ValidationIssue>> ValidateGameStateAsync(
+        GameStateValidationSelection selection)
+        => ValidateGameStateInternalAsync(selection);
 
     /// <summary>
     /// Validate a single GM response before distributing to files.

@@ -7663,6 +7663,9 @@ public partial class ValidationService
     private async Task ValidateFlexibleStateFile(string filePath, HashSet<string>? allowedKeys,
         List<ValidationIssue> issues, Action<JsonElement, string, List<ValidationIssue>> validator)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
@@ -7755,6 +7758,9 @@ public partial class ValidationService
 
     private async Task ValidateStrictTopLevelObjectFileAsync(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json))
             return;

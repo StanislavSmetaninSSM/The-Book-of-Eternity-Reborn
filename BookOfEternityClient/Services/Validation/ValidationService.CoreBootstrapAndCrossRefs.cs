@@ -58,6 +58,18 @@ public partial class ValidationService
         await ValidateVehicleCrossReferencesAsync(issues, knownVehicleIds, knownLocationIds);
     }
 
+    private async Task ValidateRivalAndResidentCrossReferencesAsync(
+        List<ValidationIssue> issues)
+    {
+        var knownGuardianIds = await ReadKnownGuardianIdsAsync();
+        var knownSystemGuardianPresetIds = await ReadKnownSystemGuardianPresetIdsAsync();
+        await ValidateRivalSoulArcCrossReferencesAsync(
+            issues,
+            knownGuardianIds,
+            knownSystemGuardianPresetIds);
+        await ValidateResidentCrossReferencesWhenRivalArcPassSkippedAsync(issues);
+    }
+
 
     private async Task ValidateSoulStateConsistency(List<ValidationIssue> issues)
     {
