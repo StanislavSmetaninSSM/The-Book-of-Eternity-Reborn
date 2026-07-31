@@ -993,7 +993,11 @@ LocalWebUiBuiltFrontendSmokeTests.cs
 4. parse `partial class <name>` and assert every name occurs under exactly one of the two test roots;
 5. verify all Guardian profile partials call their reviewed profile;
 6. verify afterlife spiritual-conflict calls no parameterless full validation;
-7. verify `scripts/test-csharp.ps1` contains `Fast`, `Focused`, `FullValidation`, `RegressionIntegration`, `ProcessIntegration`, `E2E`, `PreMerge`, and `Complete`.
+7. verify `scripts/test-csharp.ps1` contains the currently implemented lanes `Fast`, `Focused`, `FullValidation`, `RegressionIntegration`, `ProcessIntegration`, `E2E`, and `Complete`.
+
+`PreMerge` is intentionally introduced and guarded together in Task 13, whose
+first step captures the runner-guard RED before the project-aware routing is
+implemented.
 
 Use the exact process/E2E manifest already present in the old guard and update its root from `BookOfEternityClient.Tests` to `BookOfEternityClient.IntegrationTests`.
 
