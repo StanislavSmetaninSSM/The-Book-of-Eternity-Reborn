@@ -52,6 +52,7 @@ $PreMergeParallelism = 4
 $PreMergeFastParallelismLimit = 2
 $ComposedSmallClassBinCount = 4
 $LargeClassCaseTarget = 120
+$OwnedCleanupPassLimit = 2
 
 if ($PSVersionTable.PSVersion.Major -lt 7) {
     throw "scripts/test-csharp.ps1 requires PowerShell 7 or newer."
@@ -265,6 +266,8 @@ function Start-OwnedProcess {
             StandardErrorText = $null
             Quiet = $Quiet.IsPresent
             PostStartInitializationFailed = $false
+            SimulateFinalizerStopFailureOnce = $false
+            FinalizerStopFailureInjected = $false
         }
         [void]$allRuns.Add($run)
         $run.StandardOutput = $process.StandardOutput.ReadToEndAsync()
@@ -320,9 +323,14 @@ function Start-OwnedProcess {
             Disposed = $disposed
             Registered = $allRuns.Contains($run)
             FinalizerRetried = $false
+            CleanupPasses = 0
+            StopAttempts = 0
+            FirstStopFailed = $false
             FinalCleanupSucceeded = $null
             ProcessExited = $initialCleanupSucceeded
             ErrorsPreserved = $null
+            FinalizerErrors = @()
+            RegisteredAfterFinalCleanup = $allRuns.Contains($run)
         }
         if ($null -ne $initialCleanupError) {
             throw [AggregateException]::new(
@@ -374,10 +382,17 @@ function Complete-OwnedProcess {
 function Stop-OwnedProcess {
     param(
         [Parameter(Mandatory)]
-        [object]$Run
+        [object]$Run,
+
+        [switch]$SimulateFailureBeforeKill
     )
 
     try {
+        if ($SimulateFailureBeforeKill) {
+            Add-Content -LiteralPath $logPath -Value (
+                "Simulated one-shot finalizer Stop failure before Kill for $($Run.Name).")
+            return $false
+        }
         if (-not $Run.Process.HasExited) {
             $Run.Process.Kill($true)
             if (-not $Run.Process.WaitForExit(10000)) {
@@ -390,6 +405,22 @@ function Stop-OwnedProcess {
         Add-Content -LiteralPath $logPath -Value (
             "Cleanup error for $($Run.Name): $($_.Exception.Message)")
         return $false
+    }
+}
+
+function Get-OwnedCleanupDisposition {
+    param(
+        [Parameter(Mandatory)]
+        [bool]$ProcessExited,
+
+        [Parameter(Mandatory)]
+        [bool]$FinalizationSucceeded
+    )
+
+    return [pscustomobject]@{
+        CleanupSucceeded = $ProcessExited -and $FinalizationSucceeded
+        RemoveFromRegistry = $ProcessExited
+        DisposeHandle = $ProcessExited
     }
 }
 
@@ -1254,10 +1285,8 @@ try {
                     throw "Failed initial cleanup was not retained for finalizer retry."
                 }
 
-                $lastPostStartCleanup.Run.StandardOutput =
-                    [System.Threading.Tasks.Task]::FromException[string](
-                        [InvalidOperationException]::new(
-                            "Simulated finalization failure."))
+                $lastPostStartCleanup.Run.SimulateFinalizerStopFailureOnce =
+                    $true
             }
         }
     }
@@ -1413,10 +1442,15 @@ catch {
     $failureMessage = $_.Exception.Message
 }
 finally {
-    foreach ($run in $allRuns) {
-        $runCleanupSucceeded = $true
+    foreach ($run in @($allRuns)) {
+        $ownedProcessId = $run.Process.Id
         $processExited = $false
+        $finalizationSucceeded = $true
         $disposed = $false
+        $cleanupPasses = 0
+        $stopAttempts = 0
+        $firstStopFailed = $false
+        $finalizerErrors = [System.Collections.Generic.List[string]]::new()
         $isPostStartRetry =
             $run.PostStartInitializationFailed -and
             $null -ne $lastPostStartCleanup -and
@@ -1424,45 +1458,122 @@ finally {
         if ($isPostStartRetry) {
             $lastPostStartCleanup.FinalizerRetried = $true
         }
-        try {
-            if (-not $run.Process.HasExited) {
-                if (-not (Stop-OwnedProcess -Run $run)) {
-                    $runCleanupSucceeded = $false
-                    $cleanupSucceeded = $false
-                }
-            }
 
-            if ($run.Process.HasExited -and -not $run.Finalized) {
-                Complete-OwnedProcess -Run $run
-            }
-            if (-not $run.Process.HasExited) {
-                $runCleanupSucceeded = $false
-                $cleanupSucceeded = $false
-            }
-        }
-        catch {
-            $runCleanupSucceeded = $false
-            $cleanupSucceeded = $false
-            Add-Content -LiteralPath $logPath -Value (
-                "Finalization error for $($run.Name): $($_.Exception.Message)")
-        }
-        finally {
+        for (
+            $cleanupPass = 1;
+            $cleanupPass -le $OwnedCleanupPassLimit;
+            $cleanupPass++
+        ) {
+            $cleanupPasses = $cleanupPass
             try {
                 $processExited = $run.Process.HasExited
             }
             catch {
                 $processExited = $false
-                $runCleanupSucceeded = $false
-                $cleanupSucceeded = $false
+                [void]$finalizerErrors.Add(
+                    "Pass ${cleanupPass} exit check failed: $($_.Exception.Message)")
             }
-            $run.Process.Dispose()
-            $disposed = $true
-            if ($isPostStartRetry) {
-                $lastPostStartCleanup.FinalCleanupSucceeded =
-                    $runCleanupSucceeded -and $processExited
-                $lastPostStartCleanup.ProcessExited = $processExited
-                $lastPostStartCleanup.Disposed = $disposed
+
+            if (-not $processExited) {
+                $stopAttempts++
+                $simulateStopFailure =
+                    $run.SimulateFinalizerStopFailureOnce -and
+                    -not $run.FinalizerStopFailureInjected
+                if ($simulateStopFailure) {
+                    $run.FinalizerStopFailureInjected = $true
+                }
+                $stopSucceeded = Stop-OwnedProcess `
+                    -Run $run `
+                    -SimulateFailureBeforeKill:$simulateStopFailure
+                if (-not $stopSucceeded) {
+                    if ($stopAttempts -eq 1) {
+                        $firstStopFailed = $true
+                    }
+                    [void]$finalizerErrors.Add(
+                        "Cleanup pass ${cleanupPass} did not confirm exit.")
+                }
+                try {
+                    $processExited = $run.Process.HasExited
+                }
+                catch {
+                    $processExited = $false
+                    [void]$finalizerErrors.Add(
+                        "Pass ${cleanupPass} post-stop exit check failed: $($_.Exception.Message)")
+                }
             }
+
+            if (-not $processExited) {
+                continue
+            }
+
+            if (-not $run.Finalized) {
+                try {
+                    Complete-OwnedProcess -Run $run
+                }
+                catch {
+                    $finalizationSucceeded = $false
+                    [void]$finalizerErrors.Add(
+                        "Finalization failed: $($_.Exception.Message)")
+                    Add-Content -LiteralPath $logPath -Value (
+                        "Finalization error for $($run.Name): $($_.Exception.Message)")
+                }
+            }
+            break
+        }
+
+        try {
+            $processExited = $run.Process.HasExited
+        }
+        catch {
+            $processExited = $false
+            [void]$finalizerErrors.Add(
+                "Final exit check failed: $($_.Exception.Message)")
+        }
+        if ($finalizerErrors.Count -ne 0) {
+            Add-Content -LiteralPath $logPath -Value (
+                "Owned cleanup diagnostics: name=$($run.Name); " +
+                "pid=$ownedProcessId; errors=$($finalizerErrors -join ' | ')")
+        }
+
+        $disposition = Get-OwnedCleanupDisposition `
+            -ProcessExited $processExited `
+            -FinalizationSucceeded $finalizationSucceeded
+        if ($disposition.DisposeHandle) {
+            try {
+                $run.Process.Dispose()
+                $disposed = $true
+                if ($disposition.RemoveFromRegistry) {
+                    [void]$allRuns.Remove($run)
+                }
+            }
+            catch {
+                $disposed = $false
+                $disposition.CleanupSucceeded = $false
+                [void]$finalizerErrors.Add(
+                    "Dispose failed after confirmed exit: $($_.Exception.Message)")
+            }
+        }
+        else {
+            Add-Content -LiteralPath $logPath -Value (
+                "Live owned process retained after bounded cleanup retries: " +
+                "name=$($run.Name); pid=$ownedProcessId; " +
+                "passes=$OwnedCleanupPassLimit.")
+        }
+
+        if (-not $disposition.CleanupSucceeded) {
+            $cleanupSucceeded = $false
+        }
+        if ($isPostStartRetry) {
+            $lastPostStartCleanup.CleanupPasses = $cleanupPasses
+            $lastPostStartCleanup.StopAttempts = $stopAttempts
+            $lastPostStartCleanup.FirstStopFailed = $firstStopFailed
+            $lastPostStartCleanup.FinalCleanupSucceeded =
+                $disposition.CleanupSucceeded
+            $lastPostStartCleanup.ProcessExited = $processExited
+            $lastPostStartCleanup.Disposed = $disposed
+            $lastPostStartCleanup.FinalizerErrors = @($finalizerErrors)
+            $lastPostStartCleanup.RegisteredAfterFinalCleanup =
+                $allRuns.Contains($run)
         }
     }
 
@@ -1490,6 +1601,9 @@ else {
             -not $lastPostStartCleanup.InitialCleanupSucceeded -and
             $lastPostStartCleanup.Registered
         FinalizerRetried = $lastPostStartCleanup.FinalizerRetried
+        CleanupPasses = $lastPostStartCleanup.CleanupPasses
+        StopAttempts = $lastPostStartCleanup.StopAttempts
+        FirstStopFailed = $lastPostStartCleanup.FirstStopFailed
         FinalCleanupSucceeded = if (
             $null -eq $lastPostStartCleanup.FinalCleanupSucceeded
         ) {
@@ -1500,7 +1614,10 @@ else {
         }
         ProcessExited = $lastPostStartCleanup.ProcessExited
         Disposed = $lastPostStartCleanup.Disposed
+        RegisteredAfterFinalCleanup =
+            $lastPostStartCleanup.RegisteredAfterFinalCleanup
         ErrorsPreserved = [bool]$lastPostStartCleanup.ErrorsPreserved
+        FinalizerErrors = @($lastPostStartCleanup.FinalizerErrors)
     }
 }
 $summary = if ($isSelfTest) {
@@ -1583,9 +1700,13 @@ if ($isSelfTest -and
         "pid=$($postStartCleanupSummary.ProcessId) " +
         "registered=$($postStartCleanupSummary.RegisteredAfterInitialFailure) " +
         "finalizerRetried=$($postStartCleanupSummary.FinalizerRetried) " +
+        "cleanupPasses=$($postStartCleanupSummary.CleanupPasses) " +
+        "stopAttempts=$($postStartCleanupSummary.StopAttempts) " +
+        "firstStopFailed=$($postStartCleanupSummary.FirstStopFailed) " +
         "finalCleanupSucceeded=$($postStartCleanupSummary.FinalCleanupSucceeded) " +
         "processExited=$($postStartCleanupSummary.ProcessExited) " +
         "disposed=$($postStartCleanupSummary.Disposed) " +
+        "registeredAfterFinalCleanup=$($postStartCleanupSummary.RegisteredAfterFinalCleanup) " +
         "errorsPreserved=$($postStartCleanupSummary.ErrorsPreserved)")
 }
 if (-not [string]::IsNullOrWhiteSpace($failureMessage)) {

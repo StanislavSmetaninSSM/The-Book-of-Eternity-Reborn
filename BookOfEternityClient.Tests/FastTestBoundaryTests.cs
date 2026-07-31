@@ -78,6 +78,10 @@ public sealed class FastTestBoundaryTests
             "New-UniqueResultDirectory",
             "$initialCleanupSucceeded",
             "FinalizerRetried",
+            "$OwnedCleanupPassLimit = 2",
+            "Get-OwnedCleanupDisposition",
+            "Live owned process retained after bounded cleanup retries",
+            "Owned cleanup diagnostics",
             "$PID",
             "[Guid]::NewGuid()"
         };
@@ -218,12 +222,14 @@ public sealed class FastTestBoundaryTests
     {
         var probe = await RunCSharpRunnerSelfTestAsync("OwnedPostStartCleanupRetry");
 
-        Assert.Equal(1, probe.ExitCode);
+        Assert.Equal(0, probe.ExitCode);
         var retryEvidence = Regex.Match(
             probe.StandardOutput,
             @"Post-start retry: pid=(?<pid>\d+) registered=True " +
-            @"finalizerRetried=True finalCleanupSucceeded=False " +
-            @"processExited=True disposed=True errorsPreserved=True");
+            @"finalizerRetried=True cleanupPasses=2 stopAttempts=2 " +
+            @"firstStopFailed=True finalCleanupSucceeded=True " +
+            @"processExited=True disposed=True registeredAfterFinalCleanup=False " +
+            @"errorsPreserved=True");
         Assert.True(retryEvidence.Success, probe.StandardOutput);
         var processId = int.Parse(retryEvidence.Groups["pid"].Value);
 
@@ -231,7 +237,7 @@ public sealed class FastTestBoundaryTests
             Path.Combine(
                 ResultDirectoryFrom(probe.StandardOutput),
                 "self-test-summary.json")));
-        Assert.False(
+        Assert.True(
             summary.RootElement
                 .GetProperty("OwnedTreeCleanupSucceeded")
                 .GetBoolean());
@@ -239,10 +245,65 @@ public sealed class FastTestBoundaryTests
         Assert.Equal(processId, cleanup.GetProperty("ProcessId").GetInt32());
         Assert.True(cleanup.GetProperty("RegisteredAfterInitialFailure").GetBoolean());
         Assert.True(cleanup.GetProperty("FinalizerRetried").GetBoolean());
-        Assert.False(cleanup.GetProperty("FinalCleanupSucceeded").GetBoolean());
+        Assert.Equal(2, cleanup.GetProperty("CleanupPasses").GetInt32());
+        Assert.Equal(2, cleanup.GetProperty("StopAttempts").GetInt32());
+        Assert.True(cleanup.GetProperty("FirstStopFailed").GetBoolean());
+        Assert.True(cleanup.GetProperty("FinalCleanupSucceeded").GetBoolean());
         Assert.True(cleanup.GetProperty("ProcessExited").GetBoolean());
         Assert.True(cleanup.GetProperty("Disposed").GetBoolean());
+        Assert.False(cleanup.GetProperty("RegisteredAfterFinalCleanup").GetBoolean());
         Assert.True(cleanup.GetProperty("ErrorsPreserved").GetBoolean());
+        Assert.True(
+            await WaitForExactProcessExitAsync(processId, TimeSpan.FromSeconds(2)),
+            $"Owned child PID {processId} still exists after the runner exited.");
+    }
+
+    [Fact]
+    public void CSharpLaneRunner_AllRetriesExhaustedDispositionRetainsLiveRun()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "scripts",
+            "test-csharp.ps1"));
+        var dispositionStart = source.IndexOf(
+            "function Get-OwnedCleanupDisposition",
+            StringComparison.Ordinal);
+        Assert.True(dispositionStart >= 0, source);
+        var nextFunction = source.IndexOf(
+            "function ",
+            dispositionStart + 1,
+            StringComparison.Ordinal);
+        Assert.True(nextFunction > dispositionStart, source);
+        var disposition = source[dispositionStart..nextFunction];
+
+        Assert.Contains(
+            "RemoveFromRegistry = $ProcessExited",
+            disposition,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "DisposeHandle = $ProcessExited",
+            disposition,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "CleanupSucceeded = $ProcessExited -and $FinalizationSucceeded",
+            disposition,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$OwnedCleanupPassLimit = 2",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Live owned process retained after bounded cleanup retries",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$disposition = Get-OwnedCleanupDisposition",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "if ($disposition.DisposeHandle)",
+            source,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -551,6 +612,33 @@ public sealed class FastTestBoundaryTests
     private static async Task<RunnerSelfTestResult> RunCSharpRunnerSelfTestAsync(
         string selfTest) =>
         await RunCSharpRunnerAsync("-SelfTest", selfTest);
+
+    private static async Task<bool> WaitForExactProcessExitAsync(
+        int processId,
+        TimeSpan timeout)
+    {
+        var deadline = Stopwatch.GetTimestamp() +
+            (long)(timeout.TotalSeconds * Stopwatch.Frequency);
+        while (Stopwatch.GetTimestamp() < deadline)
+        {
+            try
+            {
+                using var process = Process.GetProcessById(processId);
+                if (process.HasExited)
+                {
+                    return true;
+                }
+            }
+            catch (ArgumentException)
+            {
+                return true;
+            }
+
+            await Task.Delay(25);
+        }
+
+        return false;
+    }
 
     private static async Task<RunnerSelfTestResult> RunCSharpRunnerAsync(
         params string[] arguments)
