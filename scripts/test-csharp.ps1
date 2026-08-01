@@ -39,7 +39,8 @@ param(
         "TrxSummary",
         "OwnedPostStartFailure",
         "OwnedPostStartCleanupRetry",
-        "OwnedExitedRootDescendant"
+        "OwnedExitedRootDescendant",
+        "OwnedBatchExitedRootDescendant"
     )]
     [Parameter(Mandatory, ParameterSetName = "SelfTest", DontShow)]
     [string]$SelfTest,
@@ -414,6 +415,56 @@ namespace BookOfEternity.Testing
 '@
 }
 
+$ownedProcessLauncherPath = $null
+$ownedProcessLauncherCommandPath = $null
+if ($IsWindows) {
+    $ownedProcessLauncherCommandPath = @(
+        Get-Command -Name "pwsh" -CommandType Application -ErrorAction Stop
+    )[0].Path
+    $ownedProcessLauncherPath = Join-Path `
+        $resultDirectory `
+        "owned-process-launcher.ps1"
+    Set-Content `
+        -LiteralPath $ownedProcessLauncherPath `
+        -Encoding utf8NoBOM `
+        -Value @'
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory)]
+    [string]$LaunchGateName,
+
+    [Parameter(Mandatory)]
+    [string]$PayloadPath
+)
+
+$ErrorActionPreference = "Stop"
+$launchGate =
+    [System.Threading.EventWaitHandle]::OpenExisting($LaunchGateName)
+try {
+    if (-not $launchGate.WaitOne(30000)) {
+        throw "Owned process launch gate timed out."
+    }
+
+    $payload = Get-Content -LiteralPath $PayloadPath -Raw | ConvertFrom-Json
+    & ([string]$payload.FileName) @($payload.Arguments)
+    $targetExitCode = if ($null -eq $LASTEXITCODE) {
+        0
+    }
+    else {
+        [int]$LASTEXITCODE
+    }
+    exit $targetExitCode
+}
+catch {
+    [Console]::Error.WriteLine($_.Exception.ToString())
+    exit 1
+}
+finally {
+    $launchGate.Dispose()
+}
+'@
+}
+
 function Get-ProjectDisplayPath {
     param(
         [Parameter(Mandatory)]
@@ -483,6 +534,10 @@ function Close-OwnedProcessContainment {
         $Run.JobHandle.Dispose()
         $Run.JobHandle = $null
     }
+    if ($null -ne $Run.LaunchGate) {
+        $Run.LaunchGate.Dispose()
+        $Run.LaunchGate = $null
+    }
 }
 
 function Start-OwnedProcess {
@@ -500,28 +555,64 @@ function Start-OwnedProcess {
         [switch]$SimulateInitialCleanupFailure
     )
 
+    $jobHandle = New-OwnedProcessContainment
+    $launchGate = $null
+    $payloadPath = $null
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
-    $startInfo.FileName = $FileName
     $startInfo.WorkingDirectory = $repoRoot
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
-
-    foreach ($argument in $Arguments) {
-        [void]$startInfo.ArgumentList.Add($argument)
-    }
-
-    $jobHandle = New-OwnedProcessContainment
     $process = [System.Diagnostics.Process]::new()
-    $process.StartInfo = $startInfo
     $started = $false
     try {
+        if ($null -ne $jobHandle) {
+            $launchToken = [Guid]::NewGuid().ToString("N")
+            $payloadPath = Join-Path `
+                $resultDirectory `
+                "owned-process-$launchToken.json"
+            [ordered]@{
+                FileName = $FileName
+                Arguments = @($Arguments)
+            } |
+                ConvertTo-Json -Compress -Depth 3 |
+                Set-Content `
+                    -LiteralPath $payloadPath `
+                    -Encoding utf8NoBOM
+            $launchGateName =
+                "Local\BookOfEternity.TestRunner.$PID.$launchToken"
+            $launchGate = [System.Threading.EventWaitHandle]::new(
+                $false,
+                [System.Threading.EventResetMode]::ManualReset,
+                $launchGateName)
+            $startInfo.FileName = $ownedProcessLauncherCommandPath
+            foreach ($argument in @(
+                "-NoProfile",
+                "-File",
+                $ownedProcessLauncherPath,
+                "-LaunchGateName",
+                $launchGateName,
+                "-PayloadPath",
+                $payloadPath
+            )) {
+                [void]$startInfo.ArgumentList.Add($argument)
+            }
+        }
+        else {
+            $startInfo.FileName = $FileName
+            foreach ($argument in $Arguments) {
+                [void]$startInfo.ArgumentList.Add($argument)
+            }
+        }
+
+        $process.StartInfo = $startInfo
         $started = $process.Start()
         if ($started -and $null -ne $jobHandle) {
             Add-OwnedProcessToContainment `
                 -JobHandle $jobHandle `
                 -Process $process
+            [void]$launchGate.Set()
         }
     }
     catch {
@@ -538,12 +629,18 @@ function Start-OwnedProcess {
         if ($null -ne $jobHandle) {
             $jobHandle.Dispose()
         }
+        if ($null -ne $launchGate) {
+            $launchGate.Dispose()
+        }
         $process.Dispose()
         throw
     }
     if (-not $started) {
         if ($null -ne $jobHandle) {
             $jobHandle.Dispose()
+        }
+        if ($null -ne $launchGate) {
+            $launchGate.Dispose()
         }
         $process.Dispose()
         throw "Failed to start '$FileName' for owned process '$Name'."
@@ -556,6 +653,7 @@ function Start-OwnedProcess {
             FileName = $FileName
             Process = $process
             JobHandle = $jobHandle
+            LaunchGate = $launchGate
             StandardOutput = $null
             StandardError = $null
             Finalized = $false
@@ -566,6 +664,7 @@ function Start-OwnedProcess {
             PostStartInitializationFailed = $false
             SimulateFinalizerStopFailureOnce = $false
             FinalizerStopFailureInjected = $false
+            ContainmentObservedNonEmptyAfterRootExit = $false
         }
         [void]$allRuns.Add($run)
         $run.StandardOutput = $process.StandardOutput.ReadToEndAsync()
@@ -575,7 +674,8 @@ function Start-OwnedProcess {
             "UseShellExecute=$($startInfo.UseShellExecute); " +
             "CreateNoWindow=$($startInfo.CreateNoWindow); " +
             "RedirectStandardOutput=$($startInfo.RedirectStandardOutput); " +
-            "RedirectStandardError=$($startInfo.RedirectStandardError)")
+            "RedirectStandardError=$($startInfo.RedirectStandardError); " +
+            "LauncherFileName=$($startInfo.FileName)")
         return $run
     }
     catch {
@@ -757,11 +857,13 @@ function Wait-ForOwnedProcess {
         [void]$Run.Process.WaitForExit(250)
     }
 
-    if (-not (Test-OwnedProcessContainmentEmpty -Run $Run) -and
-        -not (Stop-OwnedProcess -Run $Run)) {
-        throw (
-            "Owned process '$($Run.Name)' exited while its contained " +
-            "descendants could not be stopped.")
+    if (-not (Test-OwnedProcessContainmentEmpty -Run $Run)) {
+        $Run.ContainmentObservedNonEmptyAfterRootExit = $true
+        if (-not (Stop-OwnedProcess -Run $Run)) {
+            throw (
+                "Owned process '$($Run.Name)' exited while its contained " +
+                "descendants could not be stopped.")
+        }
     }
     Complete-OwnedProcess -Run $Run
     return $true
@@ -1374,9 +1476,14 @@ function Invoke-DescriptorBatch {
             }
 
             [void]$pending.Remove($descriptor)
-            $run = Start-OwnedProcess `
-                -Name $descriptor.Name `
-                -Arguments $descriptor.Arguments
+            $startParameters = @{
+                Name = $descriptor.Name
+                Arguments = $descriptor.Arguments
+            }
+            if ($null -ne $descriptor.PSObject.Properties["FileName"]) {
+                $startParameters.FileName = $descriptor.FileName
+            }
+            $run = Start-OwnedProcess @startParameters
             [void]$active.Add([pscustomobject]@{
                 Descriptor = $descriptor
                 Run = $run
@@ -1390,7 +1497,10 @@ function Invoke-DescriptorBatch {
         }
 
         foreach ($entry in $completed) {
-            Complete-OwnedProcess -Run $entry.Run
+            if (-not (Wait-ForOwnedProcess -Run $entry.Run)) {
+                $script:timedOut = $true
+                throw "Lane '$Lane' exceeded its $effectiveTimeoutMinutes minute timeout."
+            }
             [void]$active.Remove($entry)
             if ($entry.Run.ExitCode -ne 0) {
                 $script:exitCode = $entry.Run.ExitCode
@@ -1488,6 +1598,119 @@ function Get-TrxSummary {
         Failed = $counters.Failed
         DuplicateTests = @($duplicateTests)
         ParseErrors = @($parseErrors)
+    }
+}
+
+function New-ExitedRootDescendantProbe {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name,
+
+        [switch]$RedirectDescendantOutput
+    )
+
+    $pwshCommand = @(
+        Get-Command -Name "pwsh" -CommandType Application -ErrorAction Stop
+    )[0]
+    $probeToken = [Guid]::NewGuid().ToString("N")
+    $descendantPidPath = Join-Path `
+        $resultDirectory `
+        "$Name-$probeToken-descendant.pid"
+    $descendantOutputPath = Join-Path `
+        $resultDirectory `
+        "$Name-$probeToken-descendant.stdout.log"
+    $descendantErrorPath = Join-Path `
+        $resultDirectory `
+        "$Name-$probeToken-descendant.stderr.log"
+    $descendantScriptPath = Join-Path `
+        $resultDirectory `
+        "$Name-$probeToken-descendant-sleep.ps1"
+    $rootScriptPath = Join-Path `
+        $resultDirectory `
+        "$Name-$probeToken-exited-root.ps1"
+    Set-Content -LiteralPath $descendantScriptPath -Value @'
+Start-Sleep -Seconds 30
+'@
+    Set-Content -LiteralPath $rootScriptPath -Value @'
+param(
+    [Parameter(Mandatory)]
+    [string]$PwshPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantScriptPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantPidPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantOutputPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantErrorPath,
+
+    [switch]$RedirectDescendantOutput
+)
+
+$startParameters = @{
+    FilePath = $PwshPath
+    ArgumentList = @("-NoProfile", "-File", "`"$DescendantScriptPath`"")
+    PassThru = $true
+    WindowStyle = "Hidden"
+}
+if ($RedirectDescendantOutput) {
+    $startParameters.RedirectStandardOutput = $DescendantOutputPath
+    $startParameters.RedirectStandardError = $DescendantErrorPath
+}
+$child = Start-Process @startParameters
+Set-Content -LiteralPath $DescendantPidPath -Value $child.Id
+'@
+
+    $arguments = [System.Collections.Generic.List[string]]::new()
+    foreach ($argument in @(
+        "-NoProfile",
+        "-File",
+        $rootScriptPath,
+        "-PwshPath",
+        $pwshCommand.Path,
+        "-DescendantScriptPath",
+        $descendantScriptPath,
+        "-DescendantPidPath",
+        $descendantPidPath,
+        "-DescendantOutputPath",
+        $descendantOutputPath,
+        "-DescendantErrorPath",
+        $descendantErrorPath
+    )) {
+        [void]$arguments.Add($argument)
+    }
+    if ($RedirectDescendantOutput) {
+        [void]$arguments.Add("-RedirectDescendantOutput")
+    }
+
+    return [pscustomobject]@{
+        PwshPath = $pwshCommand.Path
+        Arguments = @($arguments)
+        DescendantPidPath = $descendantPidPath
+    }
+}
+
+function Test-ExactProcessAlive {
+    param(
+        [Parameter(Mandatory)]
+        [int]$ProcessId
+    )
+
+    try {
+        $process = [System.Diagnostics.Process]::GetProcessById($ProcessId)
+        try {
+            return -not $process.HasExited
+        }
+        finally {
+            $process.Dispose()
+        }
+    }
+    catch [ArgumentException] {
+        return $false
     }
 }
 
@@ -1620,89 +1843,31 @@ try {
                     throw "OwnedExitedRootDescendant requires Windows Job Objects."
                 }
 
-                $pwshCommand = @(
-                    Get-Command -Name "pwsh" -CommandType Application -ErrorAction Stop
-                )[0]
-                $descendantPidPath = Join-Path $resultDirectory "descendant.pid"
-                $descendantOutputPath = Join-Path $resultDirectory "descendant.stdout.log"
-                $descendantErrorPath = Join-Path $resultDirectory "descendant.stderr.log"
-                $descendantScriptPath = Join-Path $resultDirectory "descendant-sleep.ps1"
-                $rootScriptPath = Join-Path $resultDirectory "exited-root-probe.ps1"
-                Set-Content -LiteralPath $descendantScriptPath -Value @'
-Start-Sleep -Seconds 30
-'@
-                Set-Content -LiteralPath $rootScriptPath -Value @'
-param(
-    [Parameter(Mandatory)]
-    [string]$PwshPath,
-
-    [Parameter(Mandatory)]
-    [string]$DescendantScriptPath,
-
-    [Parameter(Mandatory)]
-    [string]$DescendantPidPath,
-
-    [Parameter(Mandatory)]
-    [string]$DescendantOutputPath,
-
-    [Parameter(Mandatory)]
-    [string]$DescendantErrorPath
-)
-
-Start-Sleep -Milliseconds 750
-$child = Start-Process `
-    -FilePath $PwshPath `
-    -ArgumentList @("-NoProfile", "-File", "`"$DescendantScriptPath`"") `
-    -PassThru `
-    -WindowStyle Hidden `
-    -RedirectStandardOutput $DescendantOutputPath `
-    -RedirectStandardError $DescendantErrorPath
-Set-Content -LiteralPath $DescendantPidPath -Value $child.Id
-'@
+                $probe = New-ExitedRootDescendantProbe `
+                    -Name "direct" `
+                    -RedirectDescendantOutput
 
                 $rootProbe = Start-OwnedProcess `
                     -Name "Exited-root-descendant-probe" `
-                    -FileName $pwshCommand.Path `
-                    -Arguments @(
-                        "-NoProfile",
-                        "-File",
-                        $rootScriptPath,
-                        "-PwshPath",
-                        $pwshCommand.Path,
-                        "-DescendantScriptPath",
-                        $descendantScriptPath,
-                        "-DescendantPidPath",
-                        $descendantPidPath,
-                        "-DescendantOutputPath",
-                        $descendantOutputPath,
-                        "-DescendantErrorPath",
-                        $descendantErrorPath
-                    ) `
+                    -FileName $probe.PwshPath `
+                    -Arguments $probe.Arguments `
                     -Quiet
 
                 while (-not $rootProbe.Process.HasExited -or
-                    -not (Test-Path -LiteralPath $descendantPidPath -PathType Leaf)) {
+                    -not (Test-Path `
+                        -LiteralPath $probe.DescendantPidPath `
+                        -PathType Leaf)) {
                     if ([DateTime]::UtcNow -ge $deadlineUtc) {
                         throw "Exited-root descendant probe exceeded the lane deadline."
                     }
                     [void]$rootProbe.Process.WaitForExit(25)
                 }
                 $descendantPid = [int](
-                    Get-Content -LiteralPath $descendantPidPath -Raw).Trim()
-                $descendantObservedAlive = $false
-                try {
-                    $descendantProcess =
-                        [System.Diagnostics.Process]::GetProcessById($descendantPid)
-                    try {
-                        $descendantObservedAlive = -not $descendantProcess.HasExited
-                    }
-                    finally {
-                        $descendantProcess.Dispose()
-                    }
-                }
-                catch [ArgumentException] {
-                    $descendantObservedAlive = $false
-                }
+                    Get-Content `
+                        -LiteralPath $probe.DescendantPidPath `
+                        -Raw).Trim()
+                $descendantObservedAlive =
+                    Test-ExactProcessAlive -ProcessId $descendantPid
 
                 if (-not $rootProbe.Process.HasExited -or
                     -not $descendantObservedAlive) {
@@ -1717,6 +1882,54 @@ Set-Content -LiteralPath $DescendantPidPath -Value $child.Id
                 }
                 Write-Host (
                     "Exited-root descendant: pid=$descendantPid " +
+                    "rootExited=True observedAlive=True")
+            }
+            "OwnedBatchExitedRootDescendant" {
+                if (-not $IsWindows) {
+                    throw (
+                        "OwnedBatchExitedRootDescendant requires Windows Job Objects.")
+                }
+
+                $probe = New-ExitedRootDescendantProbe -Name "batch"
+                $descriptorName = "Batch-exited-root-descendant-probe"
+                $descriptor = [pscustomobject]@{
+                    Name = $descriptorName
+                    ProjectPath = $integrationTestProject
+                    FileName = $probe.PwshPath
+                    Arguments = $probe.Arguments
+                }
+                Invoke-DescriptorBatch `
+                    -Descriptors @($descriptor) `
+                    -MaximumParallelism 1
+
+                $batchRun = @(
+                    $allRuns |
+                        Where-Object Name -eq $descriptorName
+                ) | Select-Object -First 1
+                if ($null -eq $batchRun -or
+                    -not $batchRun.Process.HasExited -or
+                    -not $batchRun.ContainmentObservedNonEmptyAfterRootExit) {
+                    throw (
+                        "Parallel batch did not observe the required " +
+                        "root-exited/child-live containment state.")
+                }
+                if (-not (Test-Path `
+                    -LiteralPath $probe.DescendantPidPath `
+                    -PathType Leaf)) {
+                    throw "Parallel batch descendant did not publish its PID."
+                }
+                $descendantPid = [int](
+                    Get-Content `
+                        -LiteralPath $probe.DescendantPidPath `
+                        -Raw).Trim()
+                $script:lastExitedRootDescendant = [pscustomobject]@{
+                    ProcessId = $descendantPid
+                    RootExitedBeforeCleanup = $batchRun.Process.HasExited
+                    ObservedAliveBeforeCleanup =
+                        $batchRun.ContainmentObservedNonEmptyAfterRootExit
+                }
+                Write-Host (
+                    "Batch exited-root descendant: pid=$descendantPid " +
                     "rootExited=True observedAlive=True")
             }
         }

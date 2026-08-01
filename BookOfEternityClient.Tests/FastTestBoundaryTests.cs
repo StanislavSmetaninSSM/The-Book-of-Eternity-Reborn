@@ -87,6 +87,10 @@ public sealed class FastTestBoundaryTests
             "JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE",
             "TerminateJobObject",
             "QueryInformationJobObject",
+            "EventWaitHandle",
+            "owned-process-launcher.ps1",
+            "$launchGate.Set()",
+            "Wait-ForOwnedProcess -Run $entry.Run",
             "ContainmentEmpty",
             "Live owned process retained after bounded cleanup retries",
             "Owned cleanup diagnostics",
@@ -100,6 +104,27 @@ public sealed class FastTestBoundaryTests
             "-FileName \"npm.cmd\"",
             source,
             StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Start-Sleep -Milliseconds 750",
+            source,
+            StringComparison.Ordinal);
+
+        var processStart = source.IndexOf(
+            "$started = $process.Start()",
+            StringComparison.Ordinal);
+        var containmentAssignment = source.IndexOf(
+            "Add-OwnedProcessToContainment",
+            processStart,
+            StringComparison.Ordinal);
+        var launchRelease = source.IndexOf(
+            "$launchGate.Set()",
+            containmentAssignment,
+            StringComparison.Ordinal);
+        Assert.True(
+            processStart >= 0 &&
+            containmentAssignment > processStart &&
+            launchRelease > containmentAssignment,
+            "The owned target must remain gated until its launcher is inside containment.");
         Assert.DoesNotContain(
             "Category!=FullValidation&Category!=ProcessIntegration&" +
             "Category!=E2E&Category!=RegressionIntegration",
@@ -293,6 +318,36 @@ public sealed class FastTestBoundaryTests
         Assert.True(
             await WaitForExactProcessExitAsync(processId, TimeSpan.FromSeconds(2)),
             $"Owned descendant PID {processId} still exists after its root and runner exited.");
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_ParallelBatchCannotBlockOnExitedRootDescendant()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync(
+            "OwnedBatchExitedRootDescendant");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"Parallel-batch cleanup probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+
+        using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
+            Path.Combine(
+                ResultDirectoryFrom(probe.StandardOutput),
+                "self-test-summary.json")));
+        Assert.True(
+            summary.RootElement
+                .GetProperty("OwnedTreeCleanupSucceeded")
+                .GetBoolean());
+        var containment = summary.RootElement.GetProperty("ExitedRootDescendant");
+        var processId = containment.GetProperty("ProcessId").GetInt32();
+        Assert.True(containment.GetProperty("RootExitedBeforeCleanup").GetBoolean());
+        Assert.True(containment.GetProperty("ObservedAliveBeforeCleanup").GetBoolean());
+        Assert.True(containment.GetProperty("ExitedAfterCleanup").GetBoolean());
+        Assert.True(
+            await WaitForExactProcessExitAsync(processId, TimeSpan.FromSeconds(2)),
+            $"Batch-owned descendant PID {processId} still exists after cleanup.");
     }
 
     [Fact]

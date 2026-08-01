@@ -57,6 +57,23 @@ public sealed class FullValidationEquivalenceTests : IDisposable
         Assert.DoesNotContain(publicIssues, issue => issue.Severity == IssueSeverity.Error);
     }
 
+    [Fact]
+    public void Snapshot_CapturesEveryPublicValidationIssueProperty()
+    {
+        var issueProperties = typeof(ValidationIssue)
+            .GetProperties()
+            .Select(property => property.Name)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        var snapshotProperties = typeof(ValidationIssueSnapshot)
+            .GetProperties()
+            .Select(property => property.Name)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(issueProperties, snapshotProperties);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))
@@ -66,10 +83,16 @@ public sealed class FullValidationEquivalenceTests : IDisposable
     private static ValidationIssueSnapshot[] Snapshot(
         IEnumerable<ValidationIssue> issues) =>
         issues.Select(issue => new ValidationIssueSnapshot(
-                issue.Severity,
-                issue.Code,
                 issue.FilePath,
-                issue.Message))
+                issue.Severity,
+                issue.Message,
+                issue.Category,
+                issue.Code,
+                issue.Actor,
+                issue.Section,
+                issue.Expected,
+                issue.Actual,
+                issue.RepairHint))
             .ToArray();
 
     private static void CopyDirectory(string sourceDirectory, string destinationDirectory)
@@ -93,8 +116,14 @@ public sealed class FullValidationEquivalenceTests : IDisposable
     }
 
     private sealed record ValidationIssueSnapshot(
-        IssueSeverity Severity,
-        string? Code,
         string FilePath,
-        string Message);
+        IssueSeverity Severity,
+        string Message,
+        IssueCategory Category,
+        string? Code,
+        string? Actor,
+        string? Section,
+        string? Expected,
+        string? Actual,
+        string? RepairHint);
 }
