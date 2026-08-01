@@ -1609,6 +1609,7 @@ public sealed class LocalWebUiHostTests : IDisposable
           "declineHint": "Можно отказаться от QTE и оставить сцену обычной проверке.",
           "cinematicJustification": "Редкая кинематографичная сцена.",
           "startChapterId": "start",
+          "sourceTurnNumber": 12,
           "chapters": [
             {
               "chapterId": "start",
