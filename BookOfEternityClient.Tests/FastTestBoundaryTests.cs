@@ -84,6 +84,10 @@ public sealed class FastTestBoundaryTests
             "FinalizerRetried",
             "$OwnedCleanupPassLimit = 2",
             "Get-OwnedCleanupDisposition",
+            "JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE",
+            "TerminateJobObject",
+            "QueryInformationJobObject",
+            "ContainmentEmpty",
             "Live owned process retained after bounded cleanup retries",
             "Owned cleanup diagnostics",
             "$PID",
@@ -263,6 +267,35 @@ public sealed class FastTestBoundaryTests
     }
 
     [Fact]
+    public async Task CSharpLaneRunner_ExitedRootCannotConcealOwnedDescendant()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("OwnedExitedRootDescendant");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"Exited-root cleanup probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+
+        using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
+            Path.Combine(
+                ResultDirectoryFrom(probe.StandardOutput),
+                "self-test-summary.json")));
+        Assert.True(
+            summary.RootElement
+                .GetProperty("OwnedTreeCleanupSucceeded")
+                .GetBoolean());
+        var containment = summary.RootElement.GetProperty("ExitedRootDescendant");
+        var processId = containment.GetProperty("ProcessId").GetInt32();
+        Assert.True(containment.GetProperty("RootExitedBeforeCleanup").GetBoolean());
+        Assert.True(containment.GetProperty("ObservedAliveBeforeCleanup").GetBoolean());
+        Assert.True(containment.GetProperty("ExitedAfterCleanup").GetBoolean());
+        Assert.True(
+            await WaitForExactProcessExitAsync(processId, TimeSpan.FromSeconds(2)),
+            $"Owned descendant PID {processId} still exists after its root and runner exited.");
+    }
+
+    [Fact]
     public void CSharpLaneRunner_AllRetriesExhaustedDispositionRetainsLiveRun()
     {
         var source = File.ReadAllText(Path.Combine(
@@ -281,15 +314,16 @@ public sealed class FastTestBoundaryTests
         var disposition = source[dispositionStart..nextFunction];
 
         Assert.Contains(
-            "RemoveFromRegistry = $ProcessExited",
+            "RemoveFromRegistry = $ProcessExited -and $ContainmentEmpty",
             disposition,
             StringComparison.Ordinal);
         Assert.Contains(
-            "DisposeHandle = $ProcessExited",
+            "DisposeHandle = $ProcessExited -and $ContainmentEmpty",
             disposition,
             StringComparison.Ordinal);
         Assert.Contains(
-            "CleanupSucceeded = $ProcessExited -and $FinalizationSucceeded",
+            "CleanupSucceeded = $ProcessExited -and $ContainmentEmpty -and " +
+            "$FinalizationSucceeded",
             disposition,
             StringComparison.Ordinal);
         Assert.Contains(

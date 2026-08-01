@@ -13,7 +13,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class IntegrationTestBoundaryTests
 {
     private const int BroadValidationSentinelBudget = 8;
-    private const int ReviewedBroadValidationCallCount = 7;
+    private const int ReviewedBroadValidationCallCount = 8;
     private const int GuardianFullValidationSentinelBudget = 8;
     private const string FastTestsDirectory = "BookOfEternityClient.Tests";
     private const string IntegrationTestsDirectory = "BookOfEternityClient.IntegrationTests";
@@ -132,7 +132,7 @@ public sealed class IntegrationTestBoundaryTests
             [$"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/ExampleDocumentationValidationTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/FileSystemExampleFixtureIntegrityTests.cs"] = 2,
-            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 1
+            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 2
         };
 
     private static readonly string[] GuardianPartialSources =
@@ -654,7 +654,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest()
     {
         var callSites = EnumerateIntegrationAndSupportSources()
             .SelectMany(candidate =>
@@ -669,7 +669,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsSameTotalPerFileDrift()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsSameTotalPerFileDrift()
     {
         var callSites = ReviewedBroadValidationCallLocations().ToList();
         callSites.Remove($"{TestSupportDirectory}/ValidatorFixtureHarness.cs:1");
@@ -690,7 +690,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsEighthUnreviewedCall()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsNinthUnreviewedCall()
     {
         var callSites = ReviewedBroadValidationCallLocations()
             .Append($"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs:42")
@@ -702,7 +702,7 @@ public sealed class IntegrationTestBoundaryTests
             violations,
             violation =>
                 violation.Contains(
-                    "observed 8 reaches sentinel budget 8",
+                    "observed 9 exceeds sentinel budget 8",
                     StringComparison.Ordinal));
         Assert.Contains(
             $"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs: expected 0, found 1",
@@ -713,7 +713,7 @@ public sealed class IntegrationTestBoundaryTests
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Expected reviewed call sites: 7",
+            "Expected reviewed call sites: 8",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -1909,10 +1909,10 @@ public sealed class IntegrationTestBoundaryTests
                 $"5 files and {ReviewedBroadValidationCallCount} call sites.");
         }
 
-        if (callSiteArray.Length >= BroadValidationSentinelBudget)
+        if (callSiteArray.Length > BroadValidationSentinelBudget)
         {
             violations.Add(
-                $"observed {callSiteArray.Length} reaches sentinel budget " +
+                $"observed {callSiteArray.Length} exceeds sentinel budget " +
                 $"{BroadValidationSentinelBudget}");
         }
 

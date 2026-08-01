@@ -38,7 +38,8 @@ param(
         "ResultDirectory",
         "TrxSummary",
         "OwnedPostStartFailure",
-        "OwnedPostStartCleanupRetry"
+        "OwnedPostStartCleanupRetry",
+        "OwnedExitedRootDescendant"
     )]
     [Parameter(Mandatory, ParameterSetName = "SelfTest", DontShow)]
     [string]$SelfTest,
@@ -211,6 +212,207 @@ $failureMessage = $null
 $laneFilter = $null
 $trxSummaryOverride = $null
 $lastPostStartCleanup = $null
+$lastExitedRootDescendant = $null
+
+if ($IsWindows -and
+    $null -eq ("BookOfEternity.Testing.OwnedProcessJob" -as [type])) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+
+namespace BookOfEternity.Testing
+{
+    public sealed class SafeJobHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        private SafeJobHandle() : base(ownsHandle: true)
+        {
+        }
+
+        protected override bool ReleaseHandle() => CloseHandle(handle);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CloseHandle(IntPtr handle);
+    }
+
+    public static class OwnedProcessJob
+    {
+        private const uint JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000;
+        private const int JobObjectBasicAccountingInformationClass = 1;
+        private const int JobObjectExtendedLimitInformationClass = 9;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct JobObjectBasicLimitInformation
+        {
+            public long PerProcessUserTimeLimit;
+            public long PerJobUserTimeLimit;
+            public uint LimitFlags;
+            public UIntPtr MinimumWorkingSetSize;
+            public UIntPtr MaximumWorkingSetSize;
+            public uint ActiveProcessLimit;
+            public UIntPtr Affinity;
+            public uint PriorityClass;
+            public uint SchedulingClass;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct IoCounters
+        {
+            public ulong ReadOperationCount;
+            public ulong WriteOperationCount;
+            public ulong OtherOperationCount;
+            public ulong ReadTransferCount;
+            public ulong WriteTransferCount;
+            public ulong OtherTransferCount;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct JobObjectExtendedLimitInformation
+        {
+            public JobObjectBasicLimitInformation BasicLimitInformation;
+            public IoCounters IoInfo;
+            public UIntPtr ProcessMemoryLimit;
+            public UIntPtr JobMemoryLimit;
+            public UIntPtr PeakProcessMemoryUsed;
+            public UIntPtr PeakJobMemoryUsed;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct JobObjectBasicAccountingInformation
+        {
+            public long TotalUserTime;
+            public long TotalKernelTime;
+            public long ThisPeriodTotalUserTime;
+            public long ThisPeriodTotalKernelTime;
+            public uint TotalPageFaultCount;
+            public uint TotalProcesses;
+            public uint ActiveProcesses;
+            public uint TotalTerminatedProcesses;
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern SafeJobHandle CreateJobObject(
+            IntPtr jobAttributes,
+            string name);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetInformationJobObject(
+            SafeJobHandle job,
+            int informationClass,
+            IntPtr information,
+            uint informationLength);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool AssignProcessToJobObject(
+            SafeJobHandle job,
+            IntPtr process);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool QueryInformationJobObject(
+            SafeJobHandle job,
+            int informationClass,
+            out JobObjectBasicAccountingInformation information,
+            uint informationLength,
+            IntPtr returnLength);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool TerminateJobObject(
+            SafeJobHandle job,
+            uint exitCode);
+
+        public static SafeJobHandle CreateKillOnClose()
+        {
+            var job = CreateJobObject(IntPtr.Zero, null);
+            if (job.IsInvalid)
+            {
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error(),
+                    "CreateJobObject failed.");
+            }
+
+            var limits = new JobObjectExtendedLimitInformation
+            {
+                BasicLimitInformation =
+                {
+                    LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+                }
+            };
+            var length = Marshal.SizeOf<JobObjectExtendedLimitInformation>();
+            var buffer = Marshal.AllocHGlobal(length);
+            try
+            {
+                Marshal.StructureToPtr(limits, buffer, fDeleteOld: false);
+                if (!SetInformationJobObject(
+                    job,
+                    JobObjectExtendedLimitInformationClass,
+                    buffer,
+                    checked((uint)length)))
+                {
+                    throw new Win32Exception(
+                        Marshal.GetLastWin32Error(),
+                        "SetInformationJobObject failed.");
+                }
+            }
+            catch
+            {
+                job.Dispose();
+                throw;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
+
+            return job;
+        }
+
+        public static void Assign(SafeJobHandle job, Process process)
+        {
+            if (!AssignProcessToJobObject(job, process.Handle))
+            {
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error(),
+                    $"AssignProcessToJobObject failed for PID {process.Id}.");
+            }
+        }
+
+        public static uint GetActiveProcessCount(SafeJobHandle job)
+        {
+            if (!QueryInformationJobObject(
+                job,
+                JobObjectBasicAccountingInformationClass,
+                out var information,
+                checked((uint)Marshal.SizeOf<JobObjectBasicAccountingInformation>()),
+                IntPtr.Zero))
+            {
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error(),
+                    "QueryInformationJobObject failed.");
+            }
+
+            return information.ActiveProcesses;
+        }
+
+        public static void Terminate(SafeJobHandle job)
+        {
+            if (!TerminateJobObject(job, 1))
+            {
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error(),
+                    "TerminateJobObject failed.");
+            }
+        }
+    }
+}
+'@
+}
 
 function Get-ProjectDisplayPath {
     param(
@@ -235,6 +437,52 @@ function Resolve-NpmCommandPath {
     }
 
     throw "Could not resolve npm.cmd to an absolute application path."
+}
+
+function New-OwnedProcessContainment {
+    if (-not $IsWindows) {
+        return $null
+    }
+
+    return [BookOfEternity.Testing.OwnedProcessJob]::CreateKillOnClose()
+}
+
+function Add-OwnedProcessToContainment {
+    param(
+        [Parameter(Mandatory)]
+        [object]$JobHandle,
+
+        [Parameter(Mandatory)]
+        [System.Diagnostics.Process]$Process
+    )
+
+    [BookOfEternity.Testing.OwnedProcessJob]::Assign($JobHandle, $Process)
+}
+
+function Test-OwnedProcessContainmentEmpty {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Run
+    )
+
+    if ($null -eq $Run.JobHandle) {
+        return $Run.Process.HasExited
+    }
+
+    return [BookOfEternity.Testing.OwnedProcessJob]::GetActiveProcessCount(
+        $Run.JobHandle) -eq 0
+}
+
+function Close-OwnedProcessContainment {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Run
+    )
+
+    if ($null -ne $Run.JobHandle) {
+        $Run.JobHandle.Dispose()
+        $Run.JobHandle = $null
+    }
 }
 
 function Start-OwnedProcess {
@@ -264,16 +512,39 @@ function Start-OwnedProcess {
         [void]$startInfo.ArgumentList.Add($argument)
     }
 
+    $jobHandle = New-OwnedProcessContainment
     $process = [System.Diagnostics.Process]::new()
     $process.StartInfo = $startInfo
+    $started = $false
     try {
         $started = $process.Start()
+        if ($started -and $null -ne $jobHandle) {
+            Add-OwnedProcessToContainment `
+                -JobHandle $jobHandle `
+                -Process $process
+        }
     }
     catch {
+        if ($started -and -not $process.HasExited) {
+            try {
+                $process.Kill($true)
+                [void]$process.WaitForExit(10000)
+            }
+            catch {
+                # Closing a successfully assigned kill-on-close job is the
+                # remaining exact-ownership cleanup path.
+            }
+        }
+        if ($null -ne $jobHandle) {
+            $jobHandle.Dispose()
+        }
         $process.Dispose()
         throw
     }
     if (-not $started) {
+        if ($null -ne $jobHandle) {
+            $jobHandle.Dispose()
+        }
         $process.Dispose()
         throw "Failed to start '$FileName' for owned process '$Name'."
     }
@@ -284,6 +555,7 @@ function Start-OwnedProcess {
             Name = $Name
             FileName = $FileName
             Process = $process
+            JobHandle = $jobHandle
             StandardOutput = $null
             StandardError = $null
             Finalized = $false
@@ -319,15 +591,11 @@ function Start-OwnedProcess {
                 throw [InvalidOperationException]::new(
                     "Simulated initial cleanup failure.")
             }
-            if ($process.HasExited) {
-                $initialCleanupSucceeded = $true
-            }
-            else {
-                $process.Kill($true)
-                $killed = $true
-                $initialCleanupSucceeded =
-                    $process.WaitForExit(10000) -and $process.HasExited
-            }
+            $hadActiveProcess =
+                -not $process.HasExited -or
+                -not (Test-OwnedProcessContainmentEmpty -Run $run)
+            $initialCleanupSucceeded = Stop-OwnedProcess -Run $run
+            $killed = $hadActiveProcess -and $initialCleanupSucceeded
             if (-not $initialCleanupSucceeded) {
                 throw [TimeoutException]::new(
                     "Initial owned-process cleanup did not confirm process exit.")
@@ -338,6 +606,7 @@ function Start-OwnedProcess {
         }
         if ($initialCleanupSucceeded) {
             [void]$allRuns.Remove($run)
+            Close-OwnedProcessContainment -Run $run
             $process.Dispose()
             $disposed = $true
         }
@@ -419,13 +688,35 @@ function Stop-OwnedProcess {
                 "Simulated one-shot finalizer Stop failure before Kill for $($Run.Name).")
             return $false
         }
-        if (-not $Run.Process.HasExited) {
+
+        if ($null -ne $Run.JobHandle) {
+            $activeProcesses =
+                [BookOfEternity.Testing.OwnedProcessJob]::GetActiveProcessCount(
+                    $Run.JobHandle)
+            if ($activeProcesses -gt 0) {
+                [BookOfEternity.Testing.OwnedProcessJob]::Terminate(
+                    $Run.JobHandle)
+            }
+
+            $containmentDeadline = [DateTime]::UtcNow.AddSeconds(10)
+            while (-not (Test-OwnedProcessContainmentEmpty -Run $Run)) {
+                if ([DateTime]::UtcNow -ge $containmentDeadline) {
+                    return $false
+                }
+                Start-Sleep -Milliseconds 25
+            }
+        }
+        elseif (-not $Run.Process.HasExited) {
             $Run.Process.Kill($true)
+        }
+
+        if (-not $Run.Process.HasExited) {
             if (-not $Run.Process.WaitForExit(10000)) {
                 return $false
             }
         }
-        return $Run.Process.HasExited
+        return $Run.Process.HasExited -and
+            (Test-OwnedProcessContainmentEmpty -Run $Run)
     }
     catch {
         Add-Content -LiteralPath $logPath -Value (
@@ -440,13 +731,16 @@ function Get-OwnedCleanupDisposition {
         [bool]$ProcessExited,
 
         [Parameter(Mandatory)]
+        [bool]$ContainmentEmpty,
+
+        [Parameter(Mandatory)]
         [bool]$FinalizationSucceeded
     )
 
     return [pscustomobject]@{
-        CleanupSucceeded = $ProcessExited -and $FinalizationSucceeded
-        RemoveFromRegistry = $ProcessExited
-        DisposeHandle = $ProcessExited
+        CleanupSucceeded = $ProcessExited -and $ContainmentEmpty -and $FinalizationSucceeded
+        RemoveFromRegistry = $ProcessExited -and $ContainmentEmpty
+        DisposeHandle = $ProcessExited -and $ContainmentEmpty
     }
 }
 
@@ -463,6 +757,12 @@ function Wait-ForOwnedProcess {
         [void]$Run.Process.WaitForExit(250)
     }
 
+    if (-not (Test-OwnedProcessContainmentEmpty -Run $Run) -and
+        -not (Stop-OwnedProcess -Run $Run)) {
+        throw (
+            "Owned process '$($Run.Name)' exited while its contained " +
+            "descendants could not be stopped.")
+    }
     Complete-OwnedProcess -Run $Run
     return $true
 }
@@ -1315,6 +1615,110 @@ try {
                 $lastPostStartCleanup.Run.SimulateFinalizerStopFailureOnce =
                     $true
             }
+            "OwnedExitedRootDescendant" {
+                if (-not $IsWindows) {
+                    throw "OwnedExitedRootDescendant requires Windows Job Objects."
+                }
+
+                $pwshCommand = @(
+                    Get-Command -Name "pwsh" -CommandType Application -ErrorAction Stop
+                )[0]
+                $descendantPidPath = Join-Path $resultDirectory "descendant.pid"
+                $descendantOutputPath = Join-Path $resultDirectory "descendant.stdout.log"
+                $descendantErrorPath = Join-Path $resultDirectory "descendant.stderr.log"
+                $descendantScriptPath = Join-Path $resultDirectory "descendant-sleep.ps1"
+                $rootScriptPath = Join-Path $resultDirectory "exited-root-probe.ps1"
+                Set-Content -LiteralPath $descendantScriptPath -Value @'
+Start-Sleep -Seconds 30
+'@
+                Set-Content -LiteralPath $rootScriptPath -Value @'
+param(
+    [Parameter(Mandatory)]
+    [string]$PwshPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantScriptPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantPidPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantOutputPath,
+
+    [Parameter(Mandatory)]
+    [string]$DescendantErrorPath
+)
+
+Start-Sleep -Milliseconds 750
+$child = Start-Process `
+    -FilePath $PwshPath `
+    -ArgumentList @("-NoProfile", "-File", "`"$DescendantScriptPath`"") `
+    -PassThru `
+    -WindowStyle Hidden `
+    -RedirectStandardOutput $DescendantOutputPath `
+    -RedirectStandardError $DescendantErrorPath
+Set-Content -LiteralPath $DescendantPidPath -Value $child.Id
+'@
+
+                $rootProbe = Start-OwnedProcess `
+                    -Name "Exited-root-descendant-probe" `
+                    -FileName $pwshCommand.Path `
+                    -Arguments @(
+                        "-NoProfile",
+                        "-File",
+                        $rootScriptPath,
+                        "-PwshPath",
+                        $pwshCommand.Path,
+                        "-DescendantScriptPath",
+                        $descendantScriptPath,
+                        "-DescendantPidPath",
+                        $descendantPidPath,
+                        "-DescendantOutputPath",
+                        $descendantOutputPath,
+                        "-DescendantErrorPath",
+                        $descendantErrorPath
+                    ) `
+                    -Quiet
+
+                while (-not $rootProbe.Process.HasExited -or
+                    -not (Test-Path -LiteralPath $descendantPidPath -PathType Leaf)) {
+                    if ([DateTime]::UtcNow -ge $deadlineUtc) {
+                        throw "Exited-root descendant probe exceeded the lane deadline."
+                    }
+                    [void]$rootProbe.Process.WaitForExit(25)
+                }
+                $descendantPid = [int](
+                    Get-Content -LiteralPath $descendantPidPath -Raw).Trim()
+                $descendantObservedAlive = $false
+                try {
+                    $descendantProcess =
+                        [System.Diagnostics.Process]::GetProcessById($descendantPid)
+                    try {
+                        $descendantObservedAlive = -not $descendantProcess.HasExited
+                    }
+                    finally {
+                        $descendantProcess.Dispose()
+                    }
+                }
+                catch [ArgumentException] {
+                    $descendantObservedAlive = $false
+                }
+
+                if (-not $rootProbe.Process.HasExited -or
+                    -not $descendantObservedAlive) {
+                    throw (
+                        "Exited-root descendant probe did not establish the " +
+                        "required root-exited/child-live precondition.")
+                }
+                $script:lastExitedRootDescendant = [pscustomobject]@{
+                    ProcessId = $descendantPid
+                    RootExitedBeforeCleanup = $rootProbe.Process.HasExited
+                    ObservedAliveBeforeCleanup = $descendantObservedAlive
+                }
+                Write-Host (
+                    "Exited-root descendant: pid=$descendantPid " +
+                    "rootExited=True observedAlive=True")
+            }
         }
     }
     else {
@@ -1490,6 +1894,7 @@ finally {
     foreach ($run in @($allRuns)) {
         $ownedProcessId = $run.Process.Id
         $processExited = $false
+        $containmentEmpty = $false
         $finalizationSucceeded = $true
         $disposed = $false
         $cleanupPasses = 0
@@ -1518,8 +1923,17 @@ finally {
                 [void]$finalizerErrors.Add(
                     "Pass ${cleanupPass} exit check failed: $($_.Exception.Message)")
             }
+            try {
+                $containmentEmpty =
+                    Test-OwnedProcessContainmentEmpty -Run $run
+            }
+            catch {
+                $containmentEmpty = $false
+                [void]$finalizerErrors.Add(
+                    "Pass ${cleanupPass} containment check failed: $($_.Exception.Message)")
+            }
 
-            if (-not $processExited) {
+            if (-not $processExited -or -not $containmentEmpty) {
                 $stopAttempts++
                 $simulateStopFailure =
                     $run.SimulateFinalizerStopFailureOnce -and
@@ -1545,9 +1959,19 @@ finally {
                     [void]$finalizerErrors.Add(
                         "Pass ${cleanupPass} post-stop exit check failed: $($_.Exception.Message)")
                 }
+                try {
+                    $containmentEmpty =
+                        Test-OwnedProcessContainmentEmpty -Run $run
+                }
+                catch {
+                    $containmentEmpty = $false
+                    [void]$finalizerErrors.Add(
+                        "Pass ${cleanupPass} post-stop containment check failed: " +
+                        $_.Exception.Message)
+                }
             }
 
-            if (-not $processExited) {
+            if (-not $processExited -or -not $containmentEmpty) {
                 continue
             }
 
@@ -1574,6 +1998,15 @@ finally {
             [void]$finalizerErrors.Add(
                 "Final exit check failed: $($_.Exception.Message)")
         }
+        try {
+            $containmentEmpty =
+                Test-OwnedProcessContainmentEmpty -Run $run
+        }
+        catch {
+            $containmentEmpty = $false
+            [void]$finalizerErrors.Add(
+                "Final containment check failed: $($_.Exception.Message)")
+        }
         if ($finalizerErrors.Count -ne 0) {
             Add-Content -LiteralPath $logPath -Value (
                 "Owned cleanup diagnostics: name=$($run.Name); " +
@@ -1582,9 +2015,11 @@ finally {
 
         $disposition = Get-OwnedCleanupDisposition `
             -ProcessExited $processExited `
+            -ContainmentEmpty $containmentEmpty `
             -FinalizationSucceeded $finalizationSucceeded
         if ($disposition.DisposeHandle) {
             try {
+                Close-OwnedProcessContainment -Run $run
                 $run.Process.Dispose()
                 $disposed = $true
                 if ($disposition.RemoveFromRegistry) {
@@ -1602,6 +2037,7 @@ finally {
             Add-Content -LiteralPath $logPath -Value (
                 "Live owned process retained after bounded cleanup retries: " +
                 "name=$($run.Name); pid=$ownedProcessId; " +
+                "containmentEmpty=$containmentEmpty; " +
                 "passes=$OwnedCleanupPassLimit.")
         }
 
@@ -1665,6 +2101,42 @@ else {
         FinalizerErrors = @($lastPostStartCleanup.FinalizerErrors)
     }
 }
+$exitedRootDescendantSummary = if ($null -eq $lastExitedRootDescendant) {
+    $null
+}
+else {
+    $descendantExited = $true
+    try {
+        $descendantProcess = [System.Diagnostics.Process]::GetProcessById(
+            $lastExitedRootDescendant.ProcessId)
+        try {
+            $descendantExited = $descendantProcess.HasExited
+        }
+        finally {
+            $descendantProcess.Dispose()
+        }
+    }
+    catch [ArgumentException] {
+        $descendantExited = $true
+    }
+
+    if (-not $descendantExited) {
+        $cleanupSucceeded = $false
+        if ($exitCode -eq 0) {
+            $exitCode = 1
+            $failureMessage =
+                "Exited-root descendant remained alive after owned containment cleanup."
+        }
+    }
+    [ordered]@{
+        ProcessId = $lastExitedRootDescendant.ProcessId
+        RootExitedBeforeCleanup =
+            $lastExitedRootDescendant.RootExitedBeforeCleanup
+        ObservedAliveBeforeCleanup =
+            $lastExitedRootDescendant.ObservedAliveBeforeCleanup
+        ExitedAfterCleanup = $descendantExited
+    }
+}
 $summary = if ($isSelfTest) {
     [ordered]@{
         SelfTest = $SelfTest
@@ -1680,6 +2152,7 @@ $summary = if ($isSelfTest) {
         }
         DuplicateTests = @($trxSummary.DuplicateTests)
         PostStartCleanup = $postStartCleanupSummary
+        ExitedRootDescendant = $exitedRootDescendantSummary
     }
 }
 else {
