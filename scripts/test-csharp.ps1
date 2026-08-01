@@ -56,6 +56,11 @@ $LargeClassCaseTarget = 120
 $OwnedCleanupPassLimit = 2
 $PreMergeMinimumCases = 4666
 $DeepValidationMinimumCases = 1950
+$externallySerializedClasses =
+    [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+[void]$externallySerializedClasses.Add(
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests"
+)
 $coreIntegrationFilter =
     "Category!=FullValidation&Category!=DeepValidation&" +
     "Category!=ProcessIntegration&Category!=E2E"
@@ -747,6 +752,25 @@ function New-SelectionRuns {
     $runIndex = 0
 
     foreach ($classGroup in $baseClassGroups | Where-Object Count -gt $LargeClassCaseTarget) {
+        if ($externallySerializedClasses.Contains($classGroup.Name)) {
+            $runIndex++
+            $selectionFilter = "FullyQualifiedName~$($classGroup.Name)."
+            $testFilter = Join-TestFilter `
+                -SelectionFilter $selectionFilter `
+                -CategoryFilter $Selection.Filter
+            [void]$descriptors.Add((
+                New-RunDescriptor `
+                    -Phase $Phase `
+                    -Name "$($Selection.Name)-Base-$($classGroup.Name.Split('.')[-1])-$($runIndex.ToString('D2'))" `
+                    -ProjectPath $Selection.ProjectPath `
+                    -TestFilter $testFilter `
+                    -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
+                    -EstimatedCases $classGroup.Count `
+                    -EstimatedCost $classGroup.Count
+            ))
+            continue
+        }
+
         $methodItems = @(
             $classGroup.Group |
                 Group-Object MethodName |

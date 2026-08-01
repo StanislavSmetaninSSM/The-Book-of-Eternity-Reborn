@@ -185,6 +185,170 @@ public sealed class IntegrationTestBoundaryTests
     ];
 
     [Fact]
+    public void CSharpLaneRunner_PreservesExternalSerializationForGameEngineTurnLifecycleTests()
+    {
+        const string lifecycleClassName =
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests";
+        var lifecycleSourcePath = SourcePath(
+            IntegrationTestsDirectory,
+            "GameEngineTurnLifecycleTests.cs");
+        var lifecycleRoot = CSharpSyntaxTree
+            .ParseText(File.ReadAllText(lifecycleSourcePath))
+            .GetRoot();
+
+        var collectionDefinition = Assert.Single(
+            lifecycleRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            declaration =>
+                declaration.Identifier.ValueText == "GameEngineTurnLifecycleCollection");
+        var collectionDefinitionAttribute = Assert.Single(
+            collectionDefinition.AttributeLists
+                .SelectMany(attributeList => attributeList.Attributes),
+            attribute => attribute.Name.ToString() == "CollectionDefinition");
+        Assert.NotNull(collectionDefinitionAttribute.ArgumentList);
+        Assert.Contains(
+            collectionDefinitionAttribute.ArgumentList!.Arguments,
+            argument =>
+                argument.Expression.ToString() == "CollectionName");
+        Assert.Contains(
+            collectionDefinitionAttribute.ArgumentList.Arguments,
+            argument =>
+                argument.NameEquals?.Name.Identifier.ValueText == "DisableParallelization" &&
+                argument.Expression.IsKind(SyntaxKind.TrueLiteralExpression));
+
+        var lifecycleTests = Assert.Single(
+            lifecycleRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            declaration => declaration.Identifier.ValueText == "GameEngineTurnLifecycleTests");
+        var collectionAttribute = Assert.Single(
+            lifecycleTests.AttributeLists.SelectMany(attributeList => attributeList.Attributes),
+            attribute => attribute.Name.ToString() == "Collection");
+        Assert.NotNull(collectionAttribute.ArgumentList);
+        Assert.Contains(
+            collectionAttribute.ArgumentList!.Arguments,
+            argument =>
+                argument.Expression.ToString() ==
+                "GameEngineTurnLifecycleCollection.CollectionName");
+
+        var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
+        var runnerSource = File.ReadAllText(runnerPath);
+        var externalSerializationEntries = Regex.Matches(
+            runnerSource,
+            @"\$externallySerializedClasses\.Add\(\s*""(?<class>[^""]+)""\s*\)");
+        var externalSerializationEntry = Assert.Single(externalSerializationEntries);
+        Assert.Equal(
+            lifecycleClassName,
+            externalSerializationEntry.Groups["class"].Value);
+
+        var selectionRunsMatch = Regex.Match(
+            runnerSource,
+            @"(?ms)^function New-SelectionRuns \{\s*(?<body>.*?)^function New-TestRuns \{");
+        Assert.True(
+            selectionRunsMatch.Success,
+            "Expected to find the complete New-SelectionRuns function.");
+        var selectionRuns = Regex.Replace(
+            selectionRunsMatch.Groups["body"].Value.Replace("`", ""),
+            @"\s+",
+            " ");
+        const string externalBranchStart =
+            "if ($externallySerializedClasses.Contains($classGroup.Name)) {";
+        var externalBranchIndex = selectionRuns.IndexOf(
+            externalBranchStart,
+            StringComparison.Ordinal);
+        Assert.True(
+            externalBranchIndex >= 0,
+            "Balanced large-class planning must branch on the external-serialization set.");
+
+        var methodBinningIndex = selectionRuns.IndexOf(
+            "$methodItems = @(",
+            externalBranchIndex,
+            StringComparison.Ordinal);
+        Assert.True(
+            methodBinningIndex > externalBranchIndex,
+            "The externally serialized branch must precede ordinary method binning.");
+        var continueIndex = selectionRuns.IndexOf(
+            "continue",
+            externalBranchIndex,
+            StringComparison.Ordinal);
+        Assert.True(
+            continueIndex > externalBranchIndex && continueIndex < methodBinningIndex,
+            "The externally serialized branch must skip ordinary method binning.");
+
+        var externalBranch = selectionRuns.Substring(
+            externalBranchIndex,
+            continueIndex + "continue".Length - externalBranchIndex);
+        Assert.Single(Regex.Matches(externalBranch, @"\bNew-RunDescriptor\b"));
+        Assert.Contains(
+            "$selectionFilter = \"FullyQualifiedName~$($classGroup.Name).\"",
+            externalBranch,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "Join-TestFilter -SelectionFilter $selectionFilter " +
+            "-CategoryFilter $Selection.Filter",
+            externalBranch,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "-EstimatedCases $classGroup.Count",
+            externalBranch,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "-EstimatedCost $classGroup.Count",
+            externalBranch,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Group-Object MethodName",
+            externalBranch,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "-join \"|\"",
+            externalBranch,
+            StringComparison.Ordinal);
+
+        var ordinaryMethodBinPath = selectionRuns[methodBinningIndex..];
+        Assert.Contains(
+            "Group-Object MethodName",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "New-BalancedBins -Items $methodItems -BinCount $binCount",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$selectionFilter = ($bin.Items | ForEach-Object Selection) -join \"|\"",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "-EstimatedCases $bin.Weight",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "-EstimatedCost $bin.Weight",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+
+        var normalizedRunner = Regex.Replace(runnerSource.Replace("`", ""), @"\s+", " ");
+        var preservedTokens = new[]
+        {
+            "$PreMergeParallelism = 4",
+            "$PreMergeFastParallelismLimit = 2",
+            "$PreMergeMinimumCases = 4666",
+            "$DeepValidationMinimumCases = 1950",
+            "$coreIntegrationFilter = " +
+            "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
+            "\"Category!=ProcessIntegration&Category!=E2E\"",
+            "$deepValidationFilter = " +
+            "\"(Category=FullValidation|Category=DeepValidation)&\" + " +
+            "\"Category!=ProcessIntegration&Category!=E2E\"",
+            "Filter = \"Category=ProcessIntegration&Category!=E2E\"",
+            "Filter = \"Category=E2E\"",
+            "-Phase \"Parallel\" -Balanced",
+            "foreach ($phase in @(\"ProcessIntegration\", \"E2E\"))"
+        };
+        Assert.All(
+            preservedTokens,
+            token => Assert.Contains(token, normalizedRunner, StringComparison.Ordinal));
+        Assert.Single(Regex.Matches(runnerSource, @"\$deadlineUtc\s*="));
+    }
+
+    [Fact]
     public void CSharpLaneRunner_DefinesNonOverlappingProjectRoutedPreMergeSchedule()
     {
         var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
