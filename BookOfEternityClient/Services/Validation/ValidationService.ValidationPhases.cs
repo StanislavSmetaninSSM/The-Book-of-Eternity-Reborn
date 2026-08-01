@@ -5,57 +5,125 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
-    private async Task<List<ValidationIssue>> ValidateGameStateInternalAsync()
+    private readonly AsyncLocal<GameStateValidationSelection?> _activeGameStateValidationSelection = new();
+
+    private async Task<List<ValidationIssue>> ValidateGameStateInternalAsync(
+        GameStateValidationSelection selection)
     {
-        _knownCanonicalFactionIdsCache = null;
-        _knownCanonicalFactionNamesCache = null;
+        ArgumentNullException.ThrowIfNull(selection);
+        var previousSelection = _activeGameStateValidationSelection.Value;
+        var previousGuardianPolicyContext =
+            _gameStateValidationGuardianPolicyContextCache.Value;
+        var previousGuardianProjectTrackerPolicyContext =
+            _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value;
+        _activeGameStateValidationSelection.Value = selection;
+        _gameStateValidationGuardianPolicyContextCache.Value = null;
+        _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value = null;
 
-        var issues = new List<ValidationIssue>();
+        try
+        {
+            _knownCanonicalFactionIdsCache = null;
+            _knownCanonicalFactionNamesCache = null;
 
-        await RunCoreValidationPhasesAsync(issues);
-        await RunActorAndStateValidationPhasesAsync(issues);
-        await RunLifecycleValidationPhasesAsync(issues);
+            var issues = new List<ValidationIssue>();
+            var phases = selection.Phases;
 
-        LogValidationErrors(issues);
-        return issues;
+            await RunCoreValidationPhasesAsync(phases, issues);
+            await RunActorAndStateValidationPhasesAsync(phases, issues);
+            await RunLifecycleValidationPhasesAsync(phases, issues);
+
+            LogValidationErrors(issues);
+            return issues;
+        }
+        finally
+        {
+            _gameStateValidationGuardianPolicyContextCache.Value =
+                previousGuardianPolicyContext;
+            _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value =
+                previousGuardianProjectTrackerPolicyContext;
+            _activeGameStateValidationSelection.Value = previousSelection;
+        }
     }
 
-    private async Task RunCoreValidationPhasesAsync(List<ValidationIssue> issues)
+    private bool IsGameStateValidationInProgress
+        => _activeGameStateValidationSelection.Value != null;
+
+    private bool ShouldValidateStateFile(string relativePath)
+        => _activeGameStateValidationSelection.Value?.IncludesStateFile(relativePath) ?? true;
+
+    private async Task RunCoreValidationPhasesAsync(
+        GameStateValidationPhase phases,
+        List<ValidationIssue> issues)
     {
-        await ValidateJsonIntegrity(issues);
-        ValidateRequiredFiles(issues);
-        await ValidateRequiredFields(issues);
-        await ValidateLoreBootstrapRequiredFilesAsync(issues);
-        await ValidateMortalBootstrapPlayerVisibleNamesAsync(issues);
-        await ValidateMortalBootstrapContentAnchorsAsync(issues);
-        await ValidateCrossReferences(issues);
-        await ValidateSoulStateConsistency(issues);
+        if (phases.Includes(GameStateValidationPhase.JsonIntegrity))
+            await ValidateJsonIntegrity(issues);
+        if (phases.Includes(GameStateValidationPhase.RequiredFiles))
+            ValidateRequiredFiles(issues);
+        if (phases.Includes(GameStateValidationPhase.RequiredFields))
+            await ValidateRequiredFields(issues);
+        if (phases.Includes(GameStateValidationPhase.LoreBootstrapRequiredFiles))
+            await ValidateLoreBootstrapRequiredFilesAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.MortalBootstrapPlayerVisibleNames))
+            await ValidateMortalBootstrapPlayerVisibleNamesAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.MortalBootstrapContentAnchors))
+            await ValidateMortalBootstrapContentAnchorsAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.CrossReferences))
+            await ValidateCrossReferences(issues);
+        if (phases.Includes(GameStateValidationPhase.RivalAndResidentCrossReferences) &&
+            !phases.Includes(GameStateValidationPhase.CrossReferences))
+            await ValidateRivalAndResidentCrossReferencesAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.SoulStateConsistency))
+            await ValidateSoulStateConsistency(issues);
     }
 
-    private async Task RunActorAndStateValidationPhasesAsync(List<ValidationIssue> issues)
+    private async Task RunActorAndStateValidationPhasesAsync(
+        GameStateValidationPhase phases,
+        List<ValidationIssue> issues)
     {
-        await ValidatePlayerStateFiles(issues);
-        await ValidateNpcStateFiles(issues);
-        await ValidateSkillContractConsistencyAsync(issues);
-        await ValidateTrainingShowcasesAsync(issues);
-        await ValidateWorldQuestCombatFactionStateFiles(issues);
-        await ValidateMetaMiscStateFiles(issues);
-        await ValidateAcceptedTurnActorMaterializationCompletenessAsync(issues);
-        await ValidateAfterlifeSpiritualConflictStateAsync(issues);
-        await ValidateSourceOfLightCapstoneGlobalStateAsync(issues);
-        await ValidateShiningLeadershipHeadReferencesAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.PlayerStateFiles))
+            await ValidatePlayerStateFiles(issues);
+        if (phases.Includes(GameStateValidationPhase.NpcStateFiles))
+            await ValidateNpcStateFiles(issues);
+        if (phases.Includes(GameStateValidationPhase.SkillContractConsistency))
+            await ValidateSkillContractConsistencyAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.TrainingShowcases))
+            await ValidateTrainingShowcasesAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.WorldQuestCombatFactionStateFiles))
+            await ValidateWorldQuestCombatFactionStateFiles(issues);
+        if (phases.Includes(GameStateValidationPhase.MetaMiscStateFiles))
+            await ValidateMetaMiscStateFiles(issues);
+        else if (phases.Includes(GameStateValidationPhase.GuardianProjectStateFiles))
+            await ValidateGuardianProjectStateFilesAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.AcceptedTurnActorMaterializationCompleteness))
+            await ValidateAcceptedTurnActorMaterializationCompletenessAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.AfterlifeSpiritualConflictState))
+            await ValidateAfterlifeSpiritualConflictStateAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.SourceOfLightCapstoneGlobalState))
+            await ValidateSourceOfLightCapstoneGlobalStateAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.ShiningLeadershipHeadReferences))
+            await ValidateShiningLeadershipHeadReferencesAsync(issues);
     }
 
-    private async Task RunLifecycleValidationPhasesAsync(List<ValidationIssue> issues)
+    private async Task RunLifecycleValidationPhasesAsync(
+        GameStateValidationPhase phases,
+        List<ValidationIssue> issues)
     {
-        await ValidateLifeEvaluationRewardCycleAsync(issues);
-        await ValidateNoLifeEvaluationRewardsOnTriggerTurnAsync(issues);
-        await ValidateGuardianResonancePowerEventsAsync(issues);
-        await ValidateShiningTreasuryClientOwnedStateAsync(issues);
-        await ValidateAfterlifeActiveThreatPreTurnContinuityAsync(issues);
-        await ValidateAfterlifeGlobalFlagPreTurnContinuityAsync(issues);
-        await ValidateClientOwnedControlFilesAsync(issues);
-        await ValidateRealmSegregationAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.LifeEvaluationRewardCycle))
+            await ValidateLifeEvaluationRewardCycleAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.NoLifeEvaluationRewardsOnTriggerTurn))
+            await ValidateNoLifeEvaluationRewardsOnTriggerTurnAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.GuardianResonancePowerEvents))
+            await ValidateGuardianResonancePowerEventsAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.ShiningTreasuryClientOwnedState))
+            await ValidateShiningTreasuryClientOwnedStateAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.AfterlifeActiveThreatPreTurnContinuity))
+            await ValidateAfterlifeActiveThreatPreTurnContinuityAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.AfterlifeGlobalFlagPreTurnContinuity))
+            await ValidateAfterlifeGlobalFlagPreTurnContinuityAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.ClientOwnedControlFiles))
+            await ValidateClientOwnedControlFilesAsync(issues);
+        if (phases.Includes(GameStateValidationPhase.RealmSegregation))
+            await ValidateRealmSegregationAsync(issues);
     }
 
     private void LogValidationErrors(List<ValidationIssue> issues)

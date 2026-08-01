@@ -551,22 +551,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues, ValidateMetaMiscContract);
         await ValidateStrictTopLevelObjectFileAsync(GuardianPowerEventState.JournalPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues);
-        await ValidateFlexibleStateFile(GuardianProjectState.TrackerPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "startGuardianProjects", "guardianProjectUpdates", "completeGuardianProjects",
-                "activeProjects", "completedProjects", "temporaryProjectModifiers"
-            }, issues, ValidateMetaMiscContract);
-        await ValidateStrictTopLevelObjectFileAsync(GuardianProjectState.TrackerPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "startGuardianProjects", "guardianProjectUpdates", "completeGuardianProjects",
-                "activeProjects", "completedProjects", "temporaryProjectModifiers"
-            }, issues);
-        await ValidateFlexibleStateFile(GuardianProjectState.JournalPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues, ValidateMetaMiscContract);
-        await ValidateStrictTopLevelObjectFileAsync(GuardianProjectState.JournalPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues);
+        await ValidateGuardianProjectStateFilesAsync(issues);
         await ValidateFlexibleStateFile("game_state/meta/player_behavior.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -798,6 +783,26 @@ public partial class ValidationService
             }, issues);
         // Client-owned world setup surfaces are validated via mutation checks instead of GM repair-loop shape errors.
         await ValidateLifecycleControlContextAsync(issues);
+    }
+
+    private async Task ValidateGuardianProjectStateFilesAsync(List<ValidationIssue> issues)
+    {
+        await ValidateFlexibleStateFile(GuardianProjectState.TrackerPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "startGuardianProjects", "guardianProjectUpdates", "completeGuardianProjects",
+                "activeProjects", "completedProjects", "temporaryProjectModifiers"
+            }, issues, ValidateMetaMiscContract);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianProjectState.TrackerPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "startGuardianProjects", "guardianProjectUpdates", "completeGuardianProjects",
+                "activeProjects", "completedProjects", "temporaryProjectModifiers"
+            }, issues);
+        await ValidateFlexibleStateFile(GuardianProjectState.JournalPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues, ValidateMetaMiscContract);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianProjectState.JournalPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues);
     }
 
     private void ValidateLifeTransitionControlFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -7663,6 +7668,9 @@ public partial class ValidationService
     private async Task ValidateFlexibleStateFile(string filePath, HashSet<string>? allowedKeys,
         List<ValidationIssue> issues, Action<JsonElement, string, List<ValidationIssue>> validator)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
@@ -7755,6 +7763,9 @@ public partial class ValidationService
 
     private async Task ValidateStrictTopLevelObjectFileAsync(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
     {
+        if (!ShouldValidateStateFile(filePath))
+            return;
+
         var json = await _fs.ReadFileAsync(filePath);
         if (string.IsNullOrWhiteSpace(json))
             return;

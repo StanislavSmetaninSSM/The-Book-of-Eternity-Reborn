@@ -7547,8 +7547,10 @@ public partial class ValidationService
     /// Strict post-turn validation for GM reasoning blocks in debug_logs.json.
     /// Used for accepted-turn enforcement, not for generic offline state validation.
     /// </summary>
-    private async Task<List<ValidationIssue>> ValidateAcceptedTurnReasoningInternalAsync()
+    private async Task<List<ValidationIssue>> ValidateAcceptedTurnReasoningInternalAsync(
+        AcceptedTurnReasoningValidationSelection selection)
     {
+        ArgumentNullException.ThrowIfNull(selection);
         var issues = new List<ValidationIssue>();
         await ValidateAcceptedTurnTransientOutputFreshnessAsync(
             "output/debug_logs.json",
@@ -7984,41 +7986,29 @@ public partial class ValidationService
                 issues);
         }
 
-        await ValidateRelevantGuardianMusingDeltasAsync(
-            normalizedThoughts,
-            actorsRequiringDecisionAudit,
-            explicitTargetActorIds,
-            guardianIdentityContext,
-            actorMemorySnapshotContext,
-            issues);
-        await ValidateRelevantMortalNpcThoughtJournalDeltasAsync(
-            normalizedThoughts,
-            actorsRequiringDecisionAudit,
-            explicitTargetActorIds,
-            actorMemorySnapshotContext,
-            issues);
-        await ValidateRelevantAfterlifeResidentThoughtJournalDeltasAsync(
-            normalizedThoughts,
-            actorsRequiringDecisionAudit,
-            explicitTargetActorIds,
-            actorMemorySnapshotContext,
-            issues);
-        await ValidateRelevantAfterlifeEntityMemoryLedgerDeltasAsync(
-            normalizedThoughts,
-            actorsRequiringDecisionAudit,
-            explicitTargetActorIds,
-            actorMemorySnapshotContext,
-            issues);
-        await ValidateRelevantShiningFactionMemoryDeltasAsync(
-            normalizedThoughts,
-            actorsRequiringDecisionAudit,
-            explicitTargetActorIds,
-            actorMemorySnapshotContext,
-            issues);
-        await ValidateRelevantAfterlifeActorsHaveCanonicalMemoryOwnersAsync(
-            actorsRequiringDecisionAudit,
-            actorMemorySnapshotContext,
-            issues);
+        if (selection.Includes(AcceptedTurnReasoningValidationScope.GuardianMusing))
+            await ValidateRelevantGuardianMusingDeltasAsync(
+                normalizedThoughts, actorsRequiringDecisionAudit, explicitTargetActorIds,
+                guardianIdentityContext, actorMemorySnapshotContext, issues);
+        if (selection.Includes(AcceptedTurnReasoningValidationScope.MortalNpcJournal))
+            await ValidateRelevantMortalNpcThoughtJournalDeltasAsync(
+                normalizedThoughts, actorsRequiringDecisionAudit, explicitTargetActorIds,
+                actorMemorySnapshotContext, issues);
+        if (selection.Includes(AcceptedTurnReasoningValidationScope.AfterlifeResidentJournal))
+            await ValidateRelevantAfterlifeResidentThoughtJournalDeltasAsync(
+                normalizedThoughts, actorsRequiringDecisionAudit, explicitTargetActorIds,
+                actorMemorySnapshotContext, issues);
+        if (selection.Includes(AcceptedTurnReasoningValidationScope.AfterlifeEntityLedger))
+            await ValidateRelevantAfterlifeEntityMemoryLedgerDeltasAsync(
+                normalizedThoughts, actorsRequiringDecisionAudit, explicitTargetActorIds,
+                actorMemorySnapshotContext, issues);
+        if (selection.Includes(AcceptedTurnReasoningValidationScope.ShiningFactionMemory))
+            await ValidateRelevantShiningFactionMemoryDeltasAsync(
+                normalizedThoughts, actorsRequiringDecisionAudit, explicitTargetActorIds,
+                actorMemorySnapshotContext, issues);
+        if (selection.Includes(AcceptedTurnReasoningValidationScope.AfterlifeMemoryOwner))
+            await ValidateRelevantAfterlifeActorsHaveCanonicalMemoryOwnersAsync(
+                actorsRequiringDecisionAudit, actorMemorySnapshotContext, issues);
 
         return issues;
     }

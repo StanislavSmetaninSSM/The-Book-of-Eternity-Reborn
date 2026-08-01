@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookOfEternityClient\BookOfEternityClient.csproj" />
+    <ProjectReference Include="..\BookOfEternityClient.TestSupport\BookOfEternityClient.TestSupport.csproj" />
   </ItemGroup>
 
 </Project>

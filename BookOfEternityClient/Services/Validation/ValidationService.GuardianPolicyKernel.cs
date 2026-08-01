@@ -6,6 +6,10 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     private GuardianPolicyContext? _guardianPolicyContextInProgress;
+    private readonly AsyncLocal<GuardianPolicyContext?>
+        _gameStateValidationGuardianPolicyContextCache = new();
+    private readonly AsyncLocal<GuardianProjectTrackerPolicyContext?>
+        _gameStateValidationGuardianProjectTrackerPolicyContextCache = new();
 
     private enum GuardianTrackedSnapshotFileStatus
     {
@@ -189,16 +193,35 @@ public partial class ValidationService
 
     private async Task<GuardianPolicyContext> ResolveGuardianPolicyContextAsync()
     {
+        if (IsGameStateValidationInProgress &&
+            _gameStateValidationGuardianPolicyContextCache.Value is { } cachedContext)
+        {
+            return cachedContext;
+        }
+
         var currentJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var preTurnResolution = await ResolveValidatedGuardianTrackedSnapshotFileAsync("game_state/meta/guardians.json");
-        return BuildGuardianPolicyContext(currentJson, preTurnResolution);
+        var context = BuildGuardianPolicyContext(currentJson, preTurnResolution);
+        if (IsGameStateValidationInProgress)
+            _gameStateValidationGuardianPolicyContextCache.Value = context;
+        return context;
     }
 
     private GuardianPolicyContext ResolveGuardianPolicyContextSync()
     {
+        if (IsGameStateValidationInProgress &&
+            _guardianPolicyContextInProgress == null &&
+            _gameStateValidationGuardianPolicyContextCache.Value is { } cachedContext)
+        {
+            return cachedContext;
+        }
+
         var currentJson = ReadCurrentTrackedFileSync("game_state/meta/guardians.json");
         var preTurnResolution = ResolveValidatedGuardianTrackedSnapshotFileSync("game_state/meta/guardians.json");
-        return BuildGuardianPolicyContext(currentJson, preTurnResolution);
+        var context = BuildGuardianPolicyContext(currentJson, preTurnResolution);
+        if (IsGameStateValidationInProgress && _guardianPolicyContextInProgress == null)
+            _gameStateValidationGuardianPolicyContextCache.Value = context;
+        return context;
     }
 
     private GuardianPolicyContext BuildGuardianPolicyContext(
@@ -1700,6 +1723,13 @@ public partial class ValidationService
 
     private async Task<GuardianProjectTrackerPolicyContext> ResolveGuardianProjectTrackerPolicyContextAsync()
     {
+        if (IsGameStateValidationInProgress &&
+            _guardianPolicyContextInProgress == null &&
+            _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value is { } cachedContext)
+        {
+            return cachedContext;
+        }
+
         var currentJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var preTurnResolution = await ResolveValidatedGuardianTrackedSnapshotFileAsync(GuardianProjectState.TrackerPath);
         if (_guardianPolicyContextInProgress != null)
@@ -1709,11 +1739,24 @@ public partial class ValidationService
         }
 
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
-        return BuildGuardianProjectTrackerPolicyContext(currentJson, preTurnResolution, guardianPolicyContext);
+        var context = BuildGuardianProjectTrackerPolicyContext(
+            currentJson,
+            preTurnResolution,
+            guardianPolicyContext);
+        if (IsGameStateValidationInProgress)
+            _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value = context;
+        return context;
     }
 
     private GuardianProjectTrackerPolicyContext ResolveGuardianProjectTrackerPolicyContextSync()
     {
+        if (IsGameStateValidationInProgress &&
+            _guardianPolicyContextInProgress == null &&
+            _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value is { } cachedContext)
+        {
+            return cachedContext;
+        }
+
         var currentJson = ReadCurrentTrackedFileSync(GuardianProjectState.TrackerPath);
         var preTurnResolution = ResolveValidatedGuardianTrackedSnapshotFileSync(GuardianProjectState.TrackerPath);
         if (_guardianPolicyContextInProgress != null)
@@ -1723,7 +1766,13 @@ public partial class ValidationService
         }
 
         var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        return BuildGuardianProjectTrackerPolicyContext(currentJson, preTurnResolution, guardianPolicyContext);
+        var context = BuildGuardianProjectTrackerPolicyContext(
+            currentJson,
+            preTurnResolution,
+            guardianPolicyContext);
+        if (IsGameStateValidationInProgress)
+            _gameStateValidationGuardianProjectTrackerPolicyContextCache.Value = context;
+        return context;
     }
 
     private GuardianProjectTrackerPolicyContext BuildGuardianProjectTrackerPolicyContext(

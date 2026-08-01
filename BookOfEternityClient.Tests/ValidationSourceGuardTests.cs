@@ -129,7 +129,7 @@ public sealed class ValidationSourceGuardTests
     {
         var source = File.ReadAllText(Path.Combine(
             TestRepoPaths.RepoRoot,
-            "BookOfEternityClient.Tests",
+            "BookOfEternityClient.IntegrationTests",
             "NpcCoreChangesTests.cs"));
 
         Assert.DoesNotContain("MortalBootstrapStateBuilder", source, StringComparison.Ordinal);

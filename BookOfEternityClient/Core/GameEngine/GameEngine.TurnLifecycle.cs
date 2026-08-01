@@ -2095,6 +2095,8 @@ public partial class GameEngine
             await _fs.WriteFileAtomicAsync("input/turn_request.json",
                 JsonSerializer.Serialize(evalRequest, JsonOpts));
             requestDispatched = true;
+            await InvokeSessionFinalizationCheckpointAsync(
+                SessionFinalizationCheckpoint.LifeEvaluationRequestDispatchedBeforeWait);
 
             // Visual transition to Chaos Sea
             GameInterface.RenderRealmTransition(true, _inputSource);
