@@ -1416,10 +1416,12 @@ try {
             $effectiveParallelism = if ($effectiveLane -eq "Fast") {
                 [Math]::Min($Parallelism, $FastParallelismLimit)
             }
+            elseif ($effectiveLane -eq "DeepValidation") {
+                [Math]::Min($Parallelism, $PreMergeParallelism)
+            }
             elseif ($effectiveLane -in @(
                 "FullValidation",
-                "RegressionIntegration",
-                "DeepValidation"
+                "RegressionIntegration"
             )) {
                 $Parallelism
             }

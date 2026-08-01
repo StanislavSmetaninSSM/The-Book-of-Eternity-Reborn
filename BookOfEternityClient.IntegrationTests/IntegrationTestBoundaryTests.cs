@@ -235,7 +235,9 @@ public sealed class IntegrationTestBoundaryTests
             "$isComposedCoverageLane = $effectiveLane -in @( " +
             "\"PreMerge\", \"DeepValidation\" )",
             "if ($isComposedCoverageLane -and " +
-            "$runSummary.DuplicateTests.Count -ne 0)"
+            "$runSummary.DuplicateTests.Count -ne 0)",
+            "elseif ($effectiveLane -eq \"DeepValidation\") { " +
+            "[Math]::Min($Parallelism, $PreMergeParallelism) }"
         };
         Assert.All(normalizedRequiredTokens, token =>
             Assert.Contains(token, normalized, StringComparison.Ordinal));
