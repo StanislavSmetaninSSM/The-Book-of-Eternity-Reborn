@@ -78,21 +78,19 @@ to every PreMerge run.
 
 During implementation, run the smallest relevant Focused filter first and one
 Fast control at a meaningful checkpoint. Do not run every lane after every
-edit. At final verification, run two consecutive Fast controls and one
-PreMerge control:
+edit. Immediately before merge, run one PreMerge control:
 
 ```powershell
-.\scripts\test-csharp.ps1
-.\scripts\test-csharp.ps1
 .\scripts\test-csharp.ps1 -Lane PreMerge
 ```
 
-Do not serially run all slow diagnostic lanes before a green PreMerge. If a
-bounded control fails, inspect its summary, log, and TRX evidence, then run only
-the smallest diagnostic lane or focused filter needed to identify the cause.
-Run LifecycleIntegration or DeepValidation when the changed boundary requires
-it, when diagnosing a related failure, or for an explicitly requested
-exhaustive control.
+Do not repeat Fast immediately before PreMerge solely as a ritual: PreMerge
+already includes the complete fast project. Do not serially run all slow
+diagnostic lanes before a green PreMerge. If a bounded control fails, inspect
+its summary, log, and TRX evidence, then run only the smallest diagnostic lane
+or focused filter needed to identify the cause. Run LifecycleIntegration or
+DeepValidation when the changed boundary requires it, when diagnosing a
+related failure, or for an explicitly requested exhaustive control.
 
 `Focused` is the only lane that accepts `-Filter`. Use `-NoBuild` only after a
 fresh successful build. `-PlanOnly` inspects a composed schedule without

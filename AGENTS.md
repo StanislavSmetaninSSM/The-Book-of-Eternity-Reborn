@@ -6,6 +6,23 @@ Do not implement project changes without a tracked task.
 
 Before editing code, tests, prompts, documentation, examples, or game contracts, first ensure there is an explicit task for the work. If the user asks to implement something and no task exists, create or request a task record before making repository changes. Small exploratory reads, reviews, and planning may happen without a task, but implementation work must be tied to a task.
 
+## C# test execution policy
+
+Use PowerShell 7 and `.\scripts\test-csharp.ps1` as the normal bounded entry
+point for C# verification. Read `docs/testing.md` for lane selection, limits,
+result artifacts, and failure diagnosis.
+
+- During implementation, run the smallest relevant `Focused` selection, then
+  one `Fast` control at a meaningful checkpoint.
+- Immediately before merge, run one `PreMerge` control. Do not add duplicate
+  Fast runs immediately before it because PreMerge already includes the full
+  fast project.
+- Run `DeepValidation`, `LifecycleIntegration`, or another diagnostic lane
+  only for a related boundary change, failure diagnosis, or an explicitly
+  requested exhaustive control.
+- Do not use an unbounded full-solution or full-suite `dotnet test` command as
+  an ordinary verification step.
+
 ## Spec Kit and Hermes/Codex orchestration guardrail
 
 GitHub Issues remain the task tracker for lifecycle, comments, triage, and closure.
@@ -99,7 +116,7 @@ Before finishing that change, check whether these files also need updates:
 - `Examples/E_CLI_Afterlife_Turns.txt`
 - `Examples/example_validation_manifest.json`
 - `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs`
-- `BookOfEternityClient.Tests/ExampleDocumentationValidationTests.cs`
+- `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - daemon/launcher prompt entrypoints if the GM must be forced to read new guidance
 
 If an explicit afterlife contract registry is added later, update it together with the matrix, examples, and manifest. Do not leave a code-only afterlife contract unless it is intentionally client-owned and documented as not GM-authored.
@@ -107,8 +124,12 @@ If an explicit afterlife contract registry is added later, update it together wi
 Minimum verification for documentation-sensitive afterlife changes:
 
 ```powershell
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"
+.\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests"
+.\scripts\test-csharp.ps1 -Lane FullValidation
 ```
+
+Run `FullValidation` here only when the documentation/examples boundary is
+affected; it remains a conditional diagnostic lane.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
