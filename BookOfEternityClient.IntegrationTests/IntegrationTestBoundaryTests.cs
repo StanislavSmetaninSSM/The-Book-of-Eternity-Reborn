@@ -27,6 +27,34 @@ public sealed class IntegrationTestBoundaryTests
     private const string E2ETrait = "[Trait(\"Category\", \"E2E\")]";
     private const string RegressionIntegrationTrait =
         "[Trait(\"Category\", \"RegressionIntegration\")]";
+    private const string LifecycleIntegrationTrait =
+        "[Trait(\"Category\", \"LifecycleIntegration\")]";
+
+    private static readonly IReadOnlyDictionary<string, string[]>
+        GameEngineLifecycleSentinelCategories =
+            new Dictionary<string, string[]>(StringComparer.Ordinal)
+            {
+                ["CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart"] =
+                    ["PreMergeSentinel"],
+                ["CollectAcceptedTurnRawStateIssuesAsync_DirectNpcCoreMutation_IsRejectedBeforeNormalization"] =
+                    ["PreMergeSentinel"],
+                ["RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState"] =
+                    ["PreMergeSentinel"],
+                ["WriteValidationRepairRequestAsync_GuardianScopeErrors_AddsConcreteHarnessRepairPacket"] =
+                    ["PreMergeSentinel"],
+                ["ProcessPlayerTurn_UnresolvedRealm_DoesNotCreatePendingDiceState"] =
+                    ["PreMergeSentinel"],
+                ["CleanupAcceptedTurnTerminalArtifactsAsync_WithoutIncarnationTrigger_RemovesTerminalContext"] =
+                    ["PreMergeSentinel"],
+                ["ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes"] =
+                    ["PreMergeSentinel"],
+                ["TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_ResetsEnlightenmentAndPreservesInkFeathers"] =
+                    ["PreMergeSentinel"],
+                ["CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"] =
+                    ["PreMergeSentinel"],
+                ["RestorePreTurnBackup_BrowserDirectGachaPreservesExactPreSpendSoulBytes"] =
+                    ["PreMergeSentinel"]
+            };
 
     private static readonly IReadOnlyDictionary<string, string> GuardianProfiles =
         new Dictionary<string, string>(StringComparer.Ordinal)
@@ -152,7 +180,6 @@ public sealed class IntegrationTestBoundaryTests
         "ExplorerWebCommandServiceTests.cs",
         "ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldowns.cs",
         "ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs",
-        "GameEngineTurnLifecycleTests.cs",
         "GuardianSystemRegressionTests.cs",
         "LocalWebUiHostTests.cs"
     ];
@@ -185,10 +212,8 @@ public sealed class IntegrationTestBoundaryTests
     ];
 
     [Fact]
-    public void CSharpLaneRunner_PreservesExternalSerializationForGameEngineTurnLifecycleTests()
+    public void CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge()
     {
-        const string lifecycleClassName =
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests";
         var lifecycleSourcePath = SourcePath(
             IntegrationTestsDirectory,
             "GameEngineTurnLifecycleTests.cs");
@@ -228,192 +253,44 @@ public sealed class IntegrationTestBoundaryTests
                 argument.Expression.ToString() ==
                 "GameEngineTurnLifecycleCollection.CollectionName");
 
-        var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
+        var runnerPath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "scripts",
+            "test-csharp.ps1");
         var runnerSource = File.ReadAllText(runnerPath);
-        var externalSerializationEntries = Regex.Matches(
-            runnerSource,
-            @"\$externallySerializedClasses\.Add\(\s*""(?<class>[^""]+)""\s*\)");
-        var externalSerializationEntry = Assert.Single(externalSerializationEntries);
-        Assert.Equal(
-            lifecycleClassName,
-            externalSerializationEntry.Groups["class"].Value);
-
-        var descriptorMatch = Regex.Match(
-            runnerSource,
-            @"(?ms)^function New-RunDescriptor \{\s*(?<body>.*?)^function New-SelectionRuns \{");
-        Assert.True(
-            descriptorMatch.Success,
-            "Expected to find the complete New-RunDescriptor function.");
-        var descriptorSource = Regex.Replace(
-            descriptorMatch.Groups["body"].Value.Replace("`", ""),
+        var normalizedRunner = Regex.Replace(
+            runnerSource.Replace("`", ""),
             @"\s+",
             " ");
-        Assert.Contains(
-            "[AllowNull()] [string]$SerialGroup = $null",
-            descriptorSource,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "SerialGroup = $SerialGroup",
-            descriptorSource,
-            StringComparison.Ordinal);
 
-        var selectionRunsMatch = Regex.Match(
-            runnerSource,
-            @"(?ms)^function New-SelectionRuns \{\s*(?<body>.*?)^function New-TestRuns \{");
-        Assert.True(
-            selectionRunsMatch.Success,
-            "Expected to find the complete New-SelectionRuns function.");
-        var selectionRuns = Regex.Replace(
-            selectionRunsMatch.Groups["body"].Value.Replace("`", ""),
-            @"\s+",
-            " ");
-        var largeClassLoopIndex = selectionRuns.IndexOf(
-            "foreach ($classGroup in $baseClassGroups | " +
-            "Where-Object Count -gt $LargeClassCaseTarget) {",
-            StringComparison.Ordinal);
-        Assert.True(
-            largeClassLoopIndex >= 0,
-            "Expected balanced planning to retain its large-class loop.");
-
-        var serialGroupIndex = selectionRuns.IndexOf(
-            "$serialGroup = if ($externallySerializedClasses.Contains($classGroup.Name)) " +
-            "{ $classGroup.Name } else { $null }",
-            largeClassLoopIndex,
-            StringComparison.Ordinal);
-        var methodBinningIndex = selectionRuns.IndexOf(
-            "$methodItems = @(",
-            largeClassLoopIndex,
-            StringComparison.Ordinal);
-        Assert.True(
-            serialGroupIndex > largeClassLoopIndex &&
-            methodBinningIndex > serialGroupIndex,
-            "Every large class must derive its optional serial group before method binning.");
-
-        var ordinaryMethodBinPath = selectionRuns[methodBinningIndex..];
-        Assert.Contains(
-            "Group-Object MethodName",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$binCount = [Math]::Ceiling($classGroup.Count / $LargeClassCaseTarget)",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "New-BalancedBins -Items $methodItems -BinCount $binCount",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$selectionFilter = ($bin.Items | ForEach-Object Selection) -join \"|\"",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "Join-TestFilter -SelectionFilter $selectionFilter " +
-            "-CategoryFilter $Selection.Filter",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$estimatedCost = if ($null -eq $serialGroup) " +
-            "{ $bin.Weight } else { $classGroup.Count }",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "-EstimatedCases $bin.Weight",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "-EstimatedCost $estimatedCost",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "-SerialGroup $serialGroup",
-            ordinaryMethodBinPath,
-            StringComparison.Ordinal);
-
-        var schedulerMatch = Regex.Match(
-            runnerSource,
-            @"(?ms)^function Invoke-DescriptorBatch \{\s*(?<body>.*?)^function Get-TrxSummary \{");
-        Assert.True(
-            schedulerMatch.Success,
-            "Expected to find the complete Invoke-DescriptorBatch function.");
-        var schedulerSource = Regex.Replace(
-            schedulerMatch.Groups["body"].Value.Replace("`", ""),
-            @"\s+",
-            " ");
-        Assert.Contains(
-            "$activeSerialGroups = " +
-            "[System.Collections.Generic.HashSet[string]]::new(" +
-            "[System.StringComparer]::Ordinal)",
-            schedulerSource,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$serialGroup = $activeRun.Descriptor.SerialGroup",
-            schedulerSource,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "if (-not [string]::IsNullOrWhiteSpace($serialGroup)) " +
-            "{ [void]$activeSerialGroups.Add($serialGroup) }",
-            schedulerSource,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "[string]::IsNullOrWhiteSpace($_.SerialGroup) -or " +
-            "-not $activeSerialGroups.Contains($_.SerialGroup)",
-            schedulerSource,
-            StringComparison.Ordinal);
-        var schedulingLoopIndex = schedulerSource.IndexOf(
-            "while ($pending.Count -gt 0 -and $active.Count -lt $MaximumParallelism) {",
-            StringComparison.Ordinal);
-        var activeSerialGroupsIndex = schedulerSource.IndexOf(
-            "$activeSerialGroups =",
-            schedulingLoopIndex,
-            StringComparison.Ordinal);
-        var pendingSelectionIndex = schedulerSource.IndexOf(
-            "$descriptor = $pending |",
-            activeSerialGroupsIndex,
-            StringComparison.Ordinal);
-        var pendingSelectionEndIndex = schedulerSource.IndexOf(
-            "Select-Object -First 1",
-            pendingSelectionIndex,
-            StringComparison.Ordinal);
-        Assert.True(
-            schedulingLoopIndex >= 0 &&
-            activeSerialGroupsIndex > schedulingLoopIndex &&
-            pendingSelectionIndex > activeSerialGroupsIndex &&
-            pendingSelectionEndIndex > pendingSelectionIndex,
-            "Active serial groups must be recomputed before every pending selection.");
-        var pendingEligibility = schedulerSource.Substring(
-            pendingSelectionIndex,
-            pendingSelectionEndIndex - pendingSelectionIndex);
-        Assert.Contains(
-            ") -and ( [string]::IsNullOrWhiteSpace($_.SerialGroup) -or " +
-            "-not $activeSerialGroups.Contains($_.SerialGroup) )",
-            pendingEligibility,
-            StringComparison.Ordinal);
-
-        var normalizedRunner = Regex.Replace(runnerSource.Replace("`", ""), @"\s+", " ");
-        var preservedTokens = new[]
+        var requiredTokens = new[]
         {
-            "$PreMergeParallelism = 4",
-            "$PreMergeFastParallelismLimit = 2",
-            "$PreMergeMinimumCases = 4666",
-            "$DeepValidationMinimumCases = 1950",
+            "\"LifecycleIntegration\"",
+            "$LifecycleIntegrationMinimumCases = 186",
             "$coreIntegrationFilter = " +
-            "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
-            "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "$deepValidationFilter = " +
-            "\"(Category=FullValidation|Category=DeepValidation)&\" + " +
-            "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "Filter = \"Category=ProcessIntegration&Category!=E2E\"",
-            "Filter = \"Category=E2E\"",
-            "-Phase \"Parallel\" -Balanced",
-            "foreach ($phase in @(\"ProcessIntegration\", \"E2E\"))",
-            "$MaximumFastParallelism -eq 0 -or",
-            "Select-Object Phase, Name, Project, Filter, " +
-            "EstimatedCases, EstimatedCost, SerialGroup"
+                "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
+                "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
+                "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)\"",
+            "$lifecycleIntegrationFilter = " +
+                "\"Category=LifecycleIntegration&\" + " +
+                "\"Category!=ProcessIntegration&Category!=E2E\"",
+            "LifecycleIntegration = @{ Project = \"Integration\" " +
+                "Filter = $lifecycleIntegrationFilter TimeoutMinutes = 10 }",
+            "\"LifecycleIntegration\" { $LifecycleIntegrationMinimumCases }",
+            "elseif ($effectiveLane -eq \"LifecycleIntegration\") { 1 }"
         };
         Assert.All(
-            preservedTokens,
+            requiredTokens,
             token => Assert.Contains(token, normalizedRunner, StringComparison.Ordinal));
-        Assert.Single(Regex.Matches(runnerSource, @"\$deadlineUtc\s*="));
+
+        Assert.DoesNotContain(
+            "$externallySerializedClasses",
+            runnerSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "SerialGroup",
+            runnerSource,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -430,6 +307,7 @@ public sealed class IntegrationTestBoundaryTests
             "FullValidation",
             "RegressionIntegration",
             "DeepValidation",
+            "LifecycleIntegration",
             "ProcessIntegration",
             "E2E",
             "Complete",
@@ -446,6 +324,8 @@ public sealed class IntegrationTestBoundaryTests
             "Filter = \"Category=RegressionIntegration\" TimeoutMinutes = 15 }",
             "DeepValidation = @{ Project = \"Integration\" " +
             "Filter = $deepValidationFilter TimeoutMinutes = 15 }",
+            "LifecycleIntegration = @{ Project = \"Integration\" " +
+            "Filter = $lifecycleIntegrationFilter TimeoutMinutes = 10 }",
             "ProcessIntegration = @{ Project = \"Integration\" " +
             "Filter = \"Category=ProcessIntegration\" TimeoutMinutes = 15 }",
             "E2E = @{ Project = \"Integration\" " +
@@ -459,12 +339,18 @@ public sealed class IntegrationTestBoundaryTests
         {
             "$coreIntegrationFilter = " +
             "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
-            "\"Category!=ProcessIntegration&Category!=E2E\"",
+            "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
+            "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)\"",
             "$deepValidationFilter = " +
             "\"(Category=FullValidation|Category=DeepValidation)&\" + " +
+            "\"Category!=LifecycleIntegration&\" + " +
             "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "$PreMergeMinimumCases = 4666",
+            "$lifecycleIntegrationFilter = " +
+            "\"Category=LifecycleIntegration&\" + " +
+            "\"Category!=ProcessIntegration&Category!=E2E\"",
+            "$PreMergeMinimumCases = 4490",
             "$DeepValidationMinimumCases = 1950",
+            "$LifecycleIntegrationMinimumCases = 186",
             "$isComposedCoverageLane = $effectiveLane -in @( " +
             "\"PreMerge\", \"DeepValidation\" )",
             "if ($isComposedCoverageLane -and " +
@@ -1035,6 +921,28 @@ public sealed class IntegrationTestBoundaryTests
             RegressionIntegrationCategories,
             [RegressionIntegrationTrait, DeepValidationTrait],
             "RegressionIntegration/DeepValidation");
+
+        AssertExactCategoryManifest(
+            new Dictionary<string, string[]>(StringComparer.Ordinal)
+            {
+                ["GameEngineTurnLifecycleTests.cs"] = [LifecycleIntegrationTrait]
+            },
+            [LifecycleIntegrationTrait],
+            "LifecycleIntegration");
+
+        Assert.Equal(
+            ["LifecycleIntegration"],
+            CategoryTraits("GameEngineTurnLifecycleTests.cs"));
+
+        var actualLifecycleMethodCategories =
+            MethodCategoryTraits("GameEngineTurnLifecycleTests.cs");
+        Assert.Equal(
+            GameEngineLifecycleSentinelCategories.Keys.Order(StringComparer.Ordinal),
+            actualLifecycleMethodCategories.Keys.Order(StringComparer.Ordinal));
+        foreach (var (methodName, categories) in GameEngineLifecycleSentinelCategories)
+        {
+            Assert.Equal(categories, actualLifecycleMethodCategories[methodName]);
+        }
 
         Assert.Equal(
             ["PreMergeSentinel"],
@@ -1739,6 +1647,24 @@ public sealed class IntegrationTestBoundaryTests
             string.Join(Environment.NewLine, violations));
     }
 
+    private static IReadOnlyDictionary<string, string[]> MethodCategoryTraits(
+        string fileName)
+    {
+        var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName));
+        var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
+
+        return root.DescendantNodes()
+            .OfType<MethodDeclarationSyntax>()
+            .Select(method => (
+                Name: method.Identifier.ValueText,
+                Traits: CategoryTraits(method)))
+            .Where(method => method.Traits.Length > 0)
+            .ToDictionary(
+                method => method.Name,
+                method => method.Traits,
+                StringComparer.Ordinal);
+    }
+
     private static string[] CategoryTraits(
         string fileName,
         string? methodName = null)
@@ -1754,6 +1680,11 @@ public sealed class IntegrationTestBoundaryTests
                 root.DescendantNodes().OfType<MethodDeclarationSyntax>(),
                 method => method.Identifier.ValueText == methodName);
 
+        return CategoryTraits(node);
+    }
+
+    private static string[] CategoryTraits(MemberDeclarationSyntax node)
+    {
         return node.AttributeLists
             .SelectMany(list => list.Attributes)
             .Where(attribute =>

@@ -9,6 +9,7 @@ param(
         "DeepValidation",
         "ProcessIntegration",
         "E2E",
+        "LifecycleIntegration",
         "Complete",
         "PreMerge"
     )]
@@ -54,18 +55,19 @@ $PreMergeFastParallelismLimit = 2
 $ComposedSmallClassBinCount = 4
 $LargeClassCaseTarget = 120
 $OwnedCleanupPassLimit = 2
-$PreMergeMinimumCases = 4666
+$PreMergeMinimumCases = 4490
 $DeepValidationMinimumCases = 1950
-$externallySerializedClasses =
-    [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-[void]$externallySerializedClasses.Add(
-    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests"
-)
+$LifecycleIntegrationMinimumCases = 186
 $coreIntegrationFilter =
     "Category!=FullValidation&Category!=DeepValidation&" +
-    "Category!=ProcessIntegration&Category!=E2E"
+    "Category!=ProcessIntegration&Category!=E2E&" +
+    "(Category!=LifecycleIntegration|Category=PreMergeSentinel)"
 $deepValidationFilter =
     "(Category=FullValidation|Category=DeepValidation)&" +
+    "Category!=LifecycleIntegration&" +
+    "Category!=ProcessIntegration&Category!=E2E"
+$lifecycleIntegrationFilter =
+    "Category=LifecycleIntegration&" +
     "Category!=ProcessIntegration&Category!=E2E"
 
 if ($PSVersionTable.PSVersion.Major -lt 7) {
@@ -97,6 +99,11 @@ $laneDefinitions = @{
         Project = "Integration"
         Filter = $deepValidationFilter
         TimeoutMinutes = 15
+    }
+    LifecycleIntegration = @{
+        Project = "Integration"
+        Filter = $lifecycleIntegrationFilter
+        TimeoutMinutes = 10
     }
     ProcessIntegration = @{
         Project = "Integration"
@@ -693,10 +700,7 @@ function New-RunDescriptor {
         [int]$EstimatedCases,
 
         [Parameter(Mandatory)]
-        [int]$EstimatedCost,
-
-        [AllowNull()]
-        [string]$SerialGroup = $null
+        [int]$EstimatedCost
     )
 
     return [pscustomobject]@{
@@ -707,7 +711,6 @@ function New-RunDescriptor {
         Filter = $TestFilter
         EstimatedCases = $EstimatedCases
         EstimatedCost = $EstimatedCost
-        SerialGroup = $SerialGroup
         Arguments = New-TestArguments `
             -ProjectPath $ProjectPath `
             -TrxFileName $TrxFileName `
@@ -756,12 +759,6 @@ function New-SelectionRuns {
     $runIndex = 0
 
     foreach ($classGroup in $baseClassGroups | Where-Object Count -gt $LargeClassCaseTarget) {
-        $serialGroup = if ($externallySerializedClasses.Contains($classGroup.Name)) {
-            $classGroup.Name
-        }
-        else {
-            $null
-        }
         $methodItems = @(
             $classGroup.Group |
                 Group-Object MethodName |
@@ -779,12 +776,6 @@ function New-SelectionRuns {
             $testFilter = Join-TestFilter `
                 -SelectionFilter $selectionFilter `
                 -CategoryFilter $Selection.Filter
-            $estimatedCost = if ($null -eq $serialGroup) {
-                $bin.Weight
-            }
-            else {
-                $classGroup.Count
-            }
             [void]$descriptors.Add((
                 New-RunDescriptor `
                     -Phase $Phase `
@@ -793,8 +784,7 @@ function New-SelectionRuns {
                     -TestFilter $testFilter `
                     -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
                     -EstimatedCases $bin.Weight `
-                    -EstimatedCost $estimatedCost `
-                    -SerialGroup $serialGroup
+                    -EstimatedCost $bin.Weight
             ))
         }
     }
@@ -1070,26 +1060,13 @@ function Invoke-DescriptorBatch {
                             $fastTestProject)
                     }
             ).Count
-            $activeSerialGroups =
-                [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-            foreach ($activeRun in $active) {
-                $serialGroup = $activeRun.Descriptor.SerialGroup
-                if (-not [string]::IsNullOrWhiteSpace($serialGroup)) {
-                    [void]$activeSerialGroups.Add($serialGroup)
-                }
-            }
             $descriptor = $pending |
                 Where-Object {
-                    (
-                        $MaximumFastParallelism -eq 0 -or
+                    $MaximumFastParallelism -eq 0 -or
                         -not [StringComparer]::OrdinalIgnoreCase.Equals(
                             $_.ProjectPath,
                             $fastTestProject) -or
                         $activeFastCount -lt $MaximumFastParallelism
-                    ) -and (
-                        [string]::IsNullOrWhiteSpace($_.SerialGroup) -or
-                        -not $activeSerialGroups.Contains($_.SerialGroup)
-                    )
                 } |
                 Select-Object -First 1
             if ($null -eq $descriptor) {
@@ -1420,7 +1397,7 @@ try {
     if ($PlanOnly) {
         $planRows = @(
             $testRuns |
-                Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost, SerialGroup
+                Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost
         )
         $planLines = [System.Collections.Generic.List[string]]::new()
         [void]$planLines.Add("PLAN-BEGIN EffectiveLane=$effectiveLane")
@@ -1453,6 +1430,9 @@ try {
             }
             elseif ($effectiveLane -eq "DeepValidation") {
                 [Math]::Min($Parallelism, $PreMergeParallelism)
+            }
+            elseif ($effectiveLane -eq "LifecycleIntegration") {
+                1
             }
             elseif ($effectiveLane -in @(
                 "FullValidation",
@@ -1489,6 +1469,7 @@ try {
         $minimumCases = switch ($effectiveLane) {
             "PreMerge" { $PreMergeMinimumCases }
             "DeepValidation" { $DeepValidationMinimumCases }
+            "LifecycleIntegration" { $LifecycleIntegrationMinimumCases }
             default { 0 }
         }
         if ($minimumCases -gt 0 -and $runSummary.Total -lt $minimumCases) {

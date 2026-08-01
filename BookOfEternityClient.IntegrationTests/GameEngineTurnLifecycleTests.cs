@@ -27,7 +27,7 @@ public sealed class GameEngineTurnLifecycleCollection
 }
 
 [Collection(GameEngineTurnLifecycleCollection.CollectionName)]
-[Trait("Category", "RegressionIntegration")]
+[Trait("Category", "LifecycleIntegration")]
 public sealed class GameEngineTurnLifecycleTests : IDisposable
 {
     private sealed class PendingTurnSnapshotManifestPayload
@@ -104,6 +104,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart()
     {
         await WriteJsonAsync("game_state/player/experience.json", new
@@ -226,6 +227,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task CollectAcceptedTurnRawStateIssuesAsync_DirectNpcCoreMutation_IsRejectedBeforeNormalization()
     {
         const string npcCorePath = "game_state/npcs/npc_core.json";
@@ -947,6 +949,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState()
     {
         await _fs.ClearGameStateAsync();
@@ -2106,6 +2109,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task WriteValidationRepairRequestAsync_GuardianScopeErrors_AddsConcreteHarnessRepairPacket()
     {
         var engine = CreateGameEngine();
@@ -5379,6 +5383,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ProcessPlayerTurn_UnresolvedRealm_DoesNotCreatePendingDiceState()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
@@ -6634,6 +6639,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task CleanupAcceptedTurnTerminalArtifactsAsync_WithoutIncarnationTrigger_RemovesTerminalContext()
     {
         const string sessionId = "session-normal-cleanup";
@@ -6875,6 +6881,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
@@ -7013,6 +7020,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_ResetsEnlightenmentAndPreservesInkFeathers()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
@@ -8749,6 +8757,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task RestorePreTurnBackup_BrowserDirectGachaPreservesExactPreSpendSoulBytes()
     {
         const string soulStatePath = "game_state/meta/soul_state.json";
@@ -8907,6 +8916,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes()
     {
         const string trackedPath = "lore/codex_entries.json";
