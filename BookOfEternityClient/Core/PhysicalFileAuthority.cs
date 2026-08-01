@@ -312,6 +312,167 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    internal static StableDirectory EnsureStableDirectory(
+        StableDirectory rootAuthority,
+        string targetPath,
+        string authorityName)
+    {
+        ArgumentNullException.ThrowIfNull(rootAuthority);
+        var root = rootAuthority.FullPath.TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var target = Path.GetFullPath(targetPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        if (!IsSameOrDescendant(target, root))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} directory is outside its retained physical root.");
+        }
+
+        var current = ReopenRetainedDirectory(
+            rootAuthority,
+            authorityName);
+        if (PathsEqual(root, target))
+            return current;
+
+        try
+        {
+            var relative = Path.GetRelativePath(root, target);
+            foreach (var segment in relative.Split(
+                         [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                         StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (segment is "." or "..")
+                {
+                    throw new InvalidDataException(
+                        $"{authorityName} directory traversal is forbidden.");
+                }
+
+                var childPath = Path.Combine(
+                    current.FullPath,
+                    segment);
+                Directory.CreateDirectory(childPath);
+                var child = OpenStableDirectory(
+                    childPath,
+                    authorityName);
+                current.Dispose();
+                current = child;
+            }
+
+            return current;
+        }
+        catch
+        {
+            current.Dispose();
+            throw;
+        }
+    }
+
+    internal static StableDirectory OpenExistingStableDirectory(
+        StableDirectory rootAuthority,
+        string targetPath,
+        string authorityName)
+    {
+        ArgumentNullException.ThrowIfNull(rootAuthority);
+        var root = rootAuthority.FullPath.TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        var target = Path.GetFullPath(targetPath).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        if (!IsSameOrDescendant(target, root))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} directory is outside its retained physical root.");
+        }
+
+        var current = ReopenRetainedDirectory(
+            rootAuthority,
+            authorityName);
+        if (PathsEqual(root, target))
+            return current;
+
+        try
+        {
+            var relative = Path.GetRelativePath(root, target);
+            foreach (var segment in relative.Split(
+                         [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+                         StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (segment is "." or "..")
+                {
+                    throw new InvalidDataException(
+                        $"{authorityName} directory traversal is forbidden.");
+                }
+
+                var child = OpenStableDirectory(
+                    Path.Combine(
+                        current.FullPath,
+                        segment),
+                    authorityName);
+                current.Dispose();
+                current = child;
+            }
+
+            return current;
+        }
+        catch
+        {
+            current.Dispose();
+            throw;
+        }
+    }
+
+    internal static StableDirectory CreateStableChildDirectory(
+        StableDirectory parent,
+        string expectedPath,
+        string authorityName,
+        bool requireNew)
+    {
+        ArgumentNullException.ThrowIfNull(parent);
+        EnsureDirectChild(parent, expectedPath, authorityName);
+        var normalizedPath = Path.GetFullPath(expectedPath);
+        var existing = ProbeNamespaceEntry(
+            parent,
+            normalizedPath,
+            authorityName);
+        if (existing != NamespaceEntryKind.Missing)
+        {
+            if (!requireNew &&
+                existing == NamespaceEntryKind.Directory)
+            {
+                return OpenStableDirectory(
+                    normalizedPath,
+                    authorityName);
+            }
+
+            throw new InvalidDataException(
+                $"{authorityName} directory already exists or has the wrong kind.");
+        }
+
+        if (requireNew &&
+            OperatingSystem.IsWindows())
+        {
+            if (!CreateDirectory(
+                    ToWindowsExtendedPath(normalizedPath),
+                    IntPtr.Zero))
+            {
+                throw CreateIoException(
+                    $"Could not create {authorityName} directory.",
+                    Marshal.GetLastWin32Error());
+            }
+        }
+        else
+        {
+            Directory.CreateDirectory(normalizedPath);
+        }
+
+        return OpenStableDirectory(
+            normalizedPath,
+            authorityName);
+    }
+
     internal static StableDirectory OpenStableDirectory(
         string expectedPath,
         string authorityName,
@@ -1173,6 +1334,30 @@ internal static class PhysicalFileAuthority
             requireSingleFileLinks: requireSingleFileLinks);
     }
 
+    internal static bool TryDeleteDirectoryTree(
+        StableDirectory parent,
+        string expectedPath,
+        string authorityName,
+        FileIdentity expectedIdentity,
+        bool requireSingleFileLinks = true)
+    {
+        ArgumentNullException.ThrowIfNull(parent);
+        ArgumentNullException.ThrowIfNull(expectedIdentity);
+        if (!TryDeleteEntry(
+                parent,
+                Path.GetFullPath(expectedPath),
+                authorityName,
+                requirePhysicalDirectory: true,
+                requireSingleFileLinks: requireSingleFileLinks,
+                expectedIdentity: expectedIdentity))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} retained directory disappeared before cleanup.");
+        }
+
+        return true;
+    }
+
     internal static bool TryDeleteEmptyDirectory(
         StableDirectory parent,
         string expectedPath,
@@ -1344,7 +1529,8 @@ internal static class PhysicalFileAuthority
         string expectedPath,
         string authorityName,
         bool requirePhysicalDirectory = false,
-        bool requireSingleFileLinks = true)
+        bool requireSingleFileLinks = true,
+        FileIdentity? expectedIdentity = null)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -1401,6 +1587,26 @@ internal static class PhysicalFileAuthority
                 attributeTag = GetAttributeTag(handle, authorityName);
                 var actualDirectory =
                     (attributeTag.FileAttributes & FileAttributes.Directory) != 0;
+                if (expectedIdentity != null)
+                {
+                    var actualIdentity =
+                        CaptureFileIdentity(
+                            handle,
+                            authorityName);
+                    if (actualIdentity.VolumeSerialNumber !=
+                        expectedIdentity.VolumeSerialNumber ||
+                        actualIdentity.FileIdLow !=
+                        expectedIdentity.FileIdLow ||
+                        actualIdentity.FileIdHigh !=
+                        expectedIdentity.FileIdHigh ||
+                        actualIdentity.IsDirectory !=
+                        expectedIdentity.IsDirectory)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} retained directory identity changed before cleanup.");
+                    }
+                }
+
                 if (actualDirectory == expectedDirectory)
                     break;
             }
@@ -1591,6 +1797,58 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    private static StableDirectory ReopenRetainedDirectory(
+        StableDirectory retained,
+        string authorityName)
+    {
+        var reopened = OpenStableDirectory(
+            retained.FullPath,
+            authorityName);
+        if (!OperatingSystem.IsWindows())
+            return reopened;
+
+        try
+        {
+            var retainedHandle = retained.Handle;
+            if (retainedHandle == null ||
+                retainedHandle.IsInvalid ||
+                retainedHandle.IsClosed)
+            {
+                throw new ObjectDisposedException(
+                    nameof(StableDirectory),
+                    $"{authorityName} retained directory authority is closed.");
+            }
+
+            var reopenedHandle = reopened.Handle
+                ?? throw new ObjectDisposedException(
+                    nameof(StableDirectory),
+                    $"{authorityName} reopened directory authority is closed.");
+            var expected = CaptureFileIdentity(
+                retainedHandle,
+                authorityName);
+            var actual = CaptureFileIdentity(
+                reopenedHandle,
+                authorityName);
+            if (!expected.IsDirectory ||
+                !actual.IsDirectory ||
+                actual.VolumeSerialNumber !=
+                expected.VolumeSerialNumber ||
+                actual.FileIdLow != expected.FileIdLow ||
+                actual.FileIdHigh != expected.FileIdHigh)
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} retained physical root identity changed.");
+            }
+
+            return reopened;
+        }
+        catch
+        {
+            reopened.Dispose();
+            throw;
+        }
+    }
+
     private static bool IsSameOrDescendant(
         string candidatePath,
         string rootPath)
@@ -1688,6 +1946,16 @@ internal static class PhysicalFileAuthority
         uint dwCreationDisposition,
         uint dwFlagsAndAttributes,
         IntPtr hTemplateFile);
+
+    [DllImport(
+        "kernel32.dll",
+        EntryPoint = "CreateDirectoryW",
+        CharSet = CharSet.Unicode,
+        SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CreateDirectory(
+        string lpPathName,
+        IntPtr lpSecurityAttributes);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool SetFileInformationByHandle(

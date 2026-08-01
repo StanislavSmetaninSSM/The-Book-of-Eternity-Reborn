@@ -471,7 +471,15 @@ before and cover the ownership handshake. Platforms without an equivalent
 queryable kernel complete-tree boundary fail closed before worker release.
 Complete-tree and unattached-host termination confirmation are bounded; timeout
 and cancellation remain authoritative, while every cleanup uncertainty
-quarantines capacity for the remainder of the process lifetime.
+transfers the complete owner to one fixed-capacity reaper entry. The last fixed
+backoff repeats while ownership remains uncertain; confirmed death and
+process-tree authority disposal permit exactly-once workspace cleanup and slot
+release, while permanently unconfirmed owners remain bounded by admission
+capacity. Release also requires one stable-id terminal audit event. Its
+generation-bound canonical append is idempotent; a replaced generation uses the
+retained runtime-root capability to publish a create-only
+`.worker_runtime/quarantine-audit/<eventId>.json` receipt. I/O uncertainty
+retains the same owner and slot for a later pass.
 
 **Rationale**: Worker-visible markers let descendants forge readiness or success.
 Attaching after direct launch leaves a child-escape race, beginning timeout after
@@ -1427,7 +1435,10 @@ before publication proves intent, not who created the current file.
 **Decision**: A worker workspace owns stable runtime/workspace/session directory
 handles for its lifetime. Unconfirmed process-tree shutdown transfers all
 process and workspace owners to a quarantined reaper; it never releases the
-owner and deletes by path.
+owner and deletes by path. The owner retains one stable terminal audit identity.
+It releases only after an idempotent generation-bound canonical append or, when
+that generation was replaced, a create-only receipt under the retained
+`.worker_runtime/quarantine-audit` authority is durable.
 
 **Rationale**: Path validation before a later read/write/delete does not prevent
 a junction swap, and cleanup is unsafe while a descendant process may still be

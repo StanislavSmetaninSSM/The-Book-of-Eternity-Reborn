@@ -115,7 +115,14 @@ internal sealed class WindowsJobProcessTree : IGmWorkerProcessTree
         lock (_sync)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            return _stopTask ??= StopCoreAsync();
+            if (_stopTask == null ||
+                _stopTask.IsFaulted ||
+                _stopTask.IsCanceled)
+            {
+                _stopTask = StopCoreAsync();
+            }
+
+            return _stopTask;
         }
     }
 
@@ -126,7 +133,14 @@ internal sealed class WindowsJobProcessTree : IGmWorkerProcessTree
         {
             if (_disposed)
                 return;
-            stopTask = _stopTask ??= StopCoreAsync();
+            if (_stopTask == null ||
+                _stopTask.IsFaulted ||
+                _stopTask.IsCanceled)
+            {
+                _stopTask = StopCoreAsync();
+            }
+
+            stopTask = _stopTask;
         }
 
         try

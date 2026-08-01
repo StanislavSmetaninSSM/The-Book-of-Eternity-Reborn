@@ -433,7 +433,16 @@ and query the complete Windows Job before slot release. Complete-tree and
 unattached-host termination confirmation have bounded deadlines. Timeout or
 cancellation remains the authoritative task result even if cleanup fails; any
 failure to confirm stop or dispose process-tree authority quarantines the slot
-for the remaining client process lifetime.
+and transfers the complete process/workspace owner to one fixed-capacity reaper
+entry. Bounded retries retain that entry while cleanup is uncertain. Once death
+and process-tree authority disposal are confirmed, the reaper cleans the
+workspace exactly once and releases the slot; a permanently unconfirmed owner
+continues to consume only its bounded entry. Slot release additionally requires
+one stable-id terminal audit receipt. The canonical generation-bound append is
+idempotent; if that generation was replaced, the retained runtime-root authority
+publishes a create-only
+`.worker_runtime/quarantine-audit/<eventId>.json` receipt. Audit uncertainty
+retains the entry and slot.
 An observed timeout remains the execution result even when malformed proposal
 bytes also exist. Built-in backup, restore, game-state clear, and current-world
 lore clear participate in the canonical write lease. Save reads and
@@ -851,7 +860,10 @@ A detached worker workspace owns stable runtime-root, workspace-root, and
 game-session directory capabilities. Reads and writes resolve descendants
 relative to those capabilities. An unconfirmed process-tree cleanup transfers
 the process tree, process, host launch, and workspace to one quarantined owner
-until termination is confirmed.
+until termination is confirmed. That owner also retains one stable terminal
+audit identity and runtime-root capability until either the generation-bound
+canonical audit append or the create-only replacement-generation receipt under
+`.worker_runtime/quarantine-audit` is durable.
 
 ### Load-staging file authority set
 

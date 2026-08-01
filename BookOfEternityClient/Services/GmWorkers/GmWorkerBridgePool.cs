@@ -16,6 +16,7 @@ internal sealed class GmWorkerBridgePoolHooks
     internal Func<Task>? BeforeProcessTreeAttachAsync { get; init; }
     internal Func<Task>? BeforeWorkerReleaseAsync { get; init; }
     internal Func<string, Task>? BeforeWorkspaceCleanupAsync { get; init; }
+    internal Func<string, Task>? AfterQuarantineAuditTempCreatedAsync { get; init; }
     internal CancellationToken TimeoutSignal { get; init; }
 }
 
@@ -222,6 +223,7 @@ public sealed class GmWorkerBridgePool
     private readonly GmWorkerAuditLog? _auditLog;
     private readonly GmWorkerBridgePoolHooks? _hooks;
     private readonly IGmWorkerProcessTreeFactory _processTreeFactory;
+    private readonly GmWorkerQuarantineReaper _quarantineReaper;
     private static readonly ConcurrentDictionary<string, WorkerConcurrencyGate> WorkerConcurrencyGates =
         new(StringComparer.OrdinalIgnoreCase);
 
@@ -229,7 +231,13 @@ public sealed class GmWorkerBridgePool
         FileSystemManager fs,
         GmWorkerProposalStore? proposalStore = null,
         GmWorkerAuditLog? auditLog = null)
-        : this(fs, proposalStore, auditLog, hooks: null, GmWorkerProcessTreeFactory.Instance)
+        : this(
+            fs,
+            proposalStore,
+            auditLog,
+            hooks: null,
+            GmWorkerProcessTreeFactory.Instance,
+            GmWorkerQuarantineReaper.Shared)
     {
     }
 
@@ -238,7 +246,13 @@ public sealed class GmWorkerBridgePool
         GmWorkerProposalStore? proposalStore,
         GmWorkerAuditLog? auditLog,
         GmWorkerBridgePoolHooks? hooks)
-        : this(fs, proposalStore, auditLog, hooks, GmWorkerProcessTreeFactory.Instance)
+        : this(
+            fs,
+            proposalStore,
+            auditLog,
+            hooks,
+            GmWorkerProcessTreeFactory.Instance,
+            GmWorkerQuarantineReaper.Shared)
     {
     }
 
@@ -248,12 +262,30 @@ public sealed class GmWorkerBridgePool
         GmWorkerAuditLog? auditLog,
         GmWorkerBridgePoolHooks? hooks,
         IGmWorkerProcessTreeFactory processTreeFactory)
+        : this(
+            fs,
+            proposalStore,
+            auditLog,
+            hooks,
+            processTreeFactory,
+            GmWorkerQuarantineReaper.Shared)
+    {
+    }
+
+    internal GmWorkerBridgePool(
+        FileSystemManager fs,
+        GmWorkerProposalStore? proposalStore,
+        GmWorkerAuditLog? auditLog,
+        GmWorkerBridgePoolHooks? hooks,
+        IGmWorkerProcessTreeFactory processTreeFactory,
+        GmWorkerQuarantineReaper quarantineReaper)
     {
         _fs = fs;
         _proposalStore = proposalStore ?? new GmWorkerProposalStore(fs);
         _auditLog = auditLog;
         _hooks = hooks;
         _processTreeFactory = processTreeFactory;
+        _quarantineReaper = quarantineReaper;
     }
 
     public static WorkerRoutingResult SelectWorkerForTask(
@@ -341,6 +373,21 @@ public sealed class GmWorkerBridgePool
         }
 
         using var workerSlot = slotAcquisition.Lease;
+        using var quarantineReservation =
+            _quarantineReaper.TryReserve();
+        if (quarantineReservation == null)
+        {
+            var status = Track(
+                WorkerBridgeState.Failed,
+                ready: false,
+                "Worker quarantine capacity is exhausted; no additional worker can start safely.");
+            return new GmWorkerTaskRunResult
+            {
+                Status = status,
+                StatusHistory = statusHistory.ToArray()
+            };
+        }
+
         var timeout = TimeSpan.FromSeconds(Math.Max(1, profile.TimeoutSeconds));
         using var timeoutCancellation = CancellationTokenSource.CreateLinkedTokenSource(
             _hooks?.TimeoutSignal ?? CancellationToken.None);
@@ -505,7 +552,8 @@ public sealed class GmWorkerBridgePool
             executionCleanupCompleted = true;
 
             completionWaitCancellation.Cancel();
-            Exception? processCleanupFailure = null;
+            var deathConfirmed = !processStarted;
+            Exception? processAuthorityFailure = null;
             if (processStarted)
             {
                 try
@@ -514,27 +562,99 @@ public sealed class GmWorkerBridgePool
                         await processTree.StopAndWaitAsync();
                     else if (process != null)
                         await StopUnattachedProcessTreeAsync(process);
+                    deathConfirmed = true;
                 }
                 catch (Exception ex)
                 {
-                    workerSlot.Quarantine();
-                    processCleanupFailure = ex;
+                    processAuthorityFailure = ex;
                 }
             }
 
-            if (processTree != null)
+            if (processAuthorityFailure == null &&
+                processTree != null)
             {
                 try
                 {
                     await processTree.DisposeAsync();
+                    processTree = null;
                 }
                 catch (Exception ex)
                 {
-                    workerSlot.Quarantine();
-                    processCleanupFailure ??= ex;
+                    processAuthorityFailure = ex;
                 }
             }
 
+            if (processAuthorityFailure != null)
+            {
+                ObserveFault(workerCompletionTask);
+                ObserveFault(outputCaptureTask);
+                ObserveFault(errorCaptureTask);
+
+                if (workspace != null)
+                {
+                    await RecordTerminalEventAsync(
+                        "workspace-cleanup-deferred",
+                        profile,
+                        task,
+                        "Detached worker workspace was retained because process-tree authority cleanup could not be confirmed.",
+                        [workspace.GameSessionPath]);
+                }
+
+                await RecordTerminalEventAsync(
+                    "process-tree-cleanup-unconfirmed",
+                    profile,
+                    task,
+                    processAuthorityFailure.Message,
+                    [processAuthorityFailure.GetType().Name]);
+
+                var retainedSlot = workerSlot.TransferOwnership();
+                var retainedWorkspacePath =
+                    workspace?.GameSessionPath;
+                var cleanupConfirmedAuditEvent = CreateTerminalEvent(
+                    "process-tree-cleanup-confirmed",
+                    profile,
+                    task,
+                    "A quarantined worker process tree was later confirmed stopped and its retained workspace was cleaned.",
+                    retainedWorkspacePath == null
+                        ? []
+                        : [retainedWorkspacePath]);
+                var quarantineOwner = new GmWorkerQuarantinedExecution(
+                    $"{profile.WorkerId}/{task.TaskId}/{launchedProcessId?.ToString() ?? "unattached"}",
+                    deathConfirmed,
+                    processTree,
+                    process,
+                    processHostLaunch,
+                    workspace,
+                    retainedSlot,
+                    workerCompletionTask,
+                    outputCaptureTask,
+                    errorCaptureTask,
+                    _hooks?.BeforeWorkspaceCleanupAsync,
+                    task.SessionGeneration,
+                    cleanupConfirmedAuditEvent,
+                    () => RecordRequiredTerminalEventOnceAsync(
+                        task.SessionGeneration,
+                        cleanupConfirmedAuditEvent),
+                    failure => RecordTerminalEventAsync(
+                        "process-tree-cleanup-retry-failed",
+                        profile,
+                        task,
+                        failure.Message,
+                        [failure.GetType().Name]));
+
+                processTree = null;
+                process = null;
+                processHostLaunch = null;
+                workspace = null;
+                processStarted = false;
+                workerCompletionTask = null;
+                outputCaptureTask = null;
+                errorCaptureTask = null;
+                quarantineReservation.Transfer(quarantineOwner);
+                return;
+            }
+
+            Exception? processCleanupFailure = null;
             if (workerCompletionTask != null)
             {
                 try
@@ -579,7 +699,7 @@ public sealed class GmWorkerBridgePool
                     processCleanupFailure ??= ex;
                 }
             }
-            if (workspace != null && processCleanupFailure == null)
+            if (workspace != null)
             {
                 try
                 {
@@ -597,20 +717,11 @@ public sealed class GmWorkerBridgePool
                         [cleanupException.GetType().Name]);
                 }
             }
-            else if (workspace != null)
-            {
-                await RecordTerminalEventAsync(
-                    "workspace-cleanup-deferred",
-                    profile,
-                    task,
-                    "Detached worker workspace was retained because process-tree termination could not be confirmed.",
-                    [workspace.GameSessionPath]);
-            }
 
             if (processCleanupFailure != null)
             {
                 await RecordTerminalEventAsync(
-                    "process-tree-cleanup-unconfirmed",
+                    "process-tree-cleanup-failed",
                     profile,
                     task,
                     processCleanupFailure.Message,
@@ -704,10 +815,19 @@ public sealed class GmWorkerBridgePool
 
         try
         {
+            var workspaceHooks =
+                _hooks?.AfterQuarantineAuditTempCreatedAsync == null
+                    ? null
+                    : new GmWorkerExecutionWorkspaceHooks
+                    {
+                        AfterQuarantineAuditTempCreatedAsync =
+                            _hooks.AfterQuarantineAuditTempCreatedAsync
+                    };
             workspace = await GmWorkerExecutionWorkspace.CreateAsync(
                 _fs,
                 task,
-                lifecycleCancellation.Token);
+                lifecycleCancellation.Token,
+                workspaceHooks);
             Track(WorkerBridgeState.Starting, ready: false);
             var workerStartInfo = CreateWorkerStartInfo(profile, workspace.GameSessionPath);
             workerStartInfo.Environment[TaskPathEnvironmentVariable] = workspace.TaskPath;
@@ -1298,11 +1418,16 @@ public sealed class GmWorkerBridgePool
     {
         private WorkerConcurrencyGate? _gate = gate;
 
-        internal void Quarantine()
+        internal IDisposable TransferOwnership()
         {
-            // Retain the acquired semaphore and reference count permanently. Releasing either
-            // would permit another worker to start while the prior process tree is unconfirmed.
-            Interlocked.Exchange(ref _gate, null);
+            var ownedGate = Interlocked.Exchange(
+                ref _gate,
+                null)
+                ?? throw new InvalidOperationException(
+                    "Worker slot ownership was already released or transferred.");
+            return new WorkerSlotOwnership(
+                key,
+                ownedGate);
         }
 
         public void Dispose()
@@ -1310,6 +1435,27 @@ public sealed class GmWorkerBridgePool
             var ownedGate = Interlocked.Exchange(ref _gate, null);
             if (ownedGate != null)
                 ReleaseWorkerSlotReference(key, ownedGate, releaseSemaphore: true);
+        }
+    }
+
+    private sealed class WorkerSlotOwnership(
+        string key,
+        WorkerConcurrencyGate gate) : IDisposable
+    {
+        private WorkerConcurrencyGate? _gate = gate;
+
+        public void Dispose()
+        {
+            var ownedGate = Interlocked.Exchange(
+                ref _gate,
+                null);
+            if (ownedGate != null)
+            {
+                ReleaseWorkerSlotReference(
+                    key,
+                    ownedGate,
+                    releaseSemaphore: true);
+            }
         }
     }
 
@@ -1375,21 +1521,12 @@ public sealed class GmWorkerBridgePool
         {
             _ = await _auditLog.AppendEventIfCurrentSessionAsync(
                 task.SessionGeneration,
-                new WorkerAuditEvent
-                {
-                    EventId = GmWorkerAuditEventIdGenerator.Create(),
-                    EventType = eventType,
-                    WorkerId = profile.WorkerId,
-                    TaskId = task.TaskId,
-                    TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
-                    Summary = summary,
-                    Details = details.Count == 0
-                        ? new Dictionary<string, IReadOnlyList<string>>()
-                        : new Dictionary<string, IReadOnlyList<string>>
-                        {
-                            ["details"] = details
-                        }
-                },
+                CreateTerminalEvent(
+                    eventType,
+                    profile,
+                    task,
+                    summary,
+                    details),
                 cancellationToken);
         }
         catch (Exception)
@@ -1397,6 +1534,45 @@ public sealed class GmWorkerBridgePool
             // Terminal telemetry is subordinate to the already-decided worker outcome.
         }
     }
+
+    private async Task<GmWorkerAuditAppendDisposition>
+        RecordRequiredTerminalEventOnceAsync(
+            string sessionGeneration,
+            WorkerAuditEvent auditEvent)
+    {
+        if (_auditLog == null)
+        {
+            return GmWorkerAuditAppendDisposition
+                .CanonicalAuditUnavailable;
+        }
+
+        return await _auditLog
+            .AppendRequiredEventOnceIfCurrentSessionAsync(
+                sessionGeneration,
+                auditEvent);
+    }
+
+    private static WorkerAuditEvent CreateTerminalEvent(
+        string eventType,
+        WorkerBridgeProfile profile,
+        WorkerTaskPacket task,
+        string summary,
+        IReadOnlyList<string> details) =>
+        new()
+        {
+            EventId = GmWorkerAuditEventIdGenerator.Create(),
+            EventType = eventType,
+            WorkerId = profile.WorkerId,
+            TaskId = task.TaskId,
+            TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
+            Summary = summary,
+            Details = details.Count == 0
+                ? new Dictionary<string, IReadOnlyList<string>>()
+                : new Dictionary<string, IReadOnlyList<string>>
+                {
+                    ["details"] = details
+                }
+        };
 
     internal static async Task StopUnattachedProcessTreeAsync(
         Process process,

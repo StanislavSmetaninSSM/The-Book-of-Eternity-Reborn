@@ -680,7 +680,10 @@ pathname checks:
    receipt and recover only an exact identity-plus-digest owned object;
 2. retain stable worker runtime/workspace/session authority for the workspace
    lifetime and hand an unconfirmed process tree to one quarantined cleanup
-   owner until death is proven;
+   owner until death is proven; release it only after one stable-id terminal
+   audit is durably appended to the bound generation or published create-only
+   under retained `.worker_runtime/quarantine-audit` authority after generation
+   replacement;
 3. retain validated single-link load-staging handles through directory
    publication and recheck their exact identity/digest at the linearization
    point;

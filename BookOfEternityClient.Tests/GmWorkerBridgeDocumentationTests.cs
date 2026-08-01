@@ -409,10 +409,12 @@ public sealed class GmWorkerBridgeDocumentationTests
         var applyGate = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs");
         var contractValidator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs");
         var executionWorkspace = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
+        var auditLog = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs");
         var fileSystemManager = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.cs");
         var stateManager = ReadRepoFile("BookOfEternityClient/Core/StateManager.cs");
         var processHost = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs");
         var processTree = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs");
+        var quarantineReaper = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs");
         var repairDelegator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs");
         var saveLoadService = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.cs");
 
@@ -461,6 +463,10 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("fail closed before worker release", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("timeout and cancellation remain authoritative", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("cleanup uncertainty quarantines the worker slot", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("fixed-capacity reaper", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("workspace exactly once", normalizedSource, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(".worker_runtime/quarantine-audit/<eventId>.json", normalizedSource, StringComparison.Ordinal);
+            Assert.Contains("stable-id", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("unattached-host cleanup is bounded", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("external durable journal under `.boe_runtime/worker-apply-transactions`", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("every canonical writer recovers an interrupted worker apply transaction", normalizedSource, StringComparison.OrdinalIgnoreCase);
@@ -477,6 +483,9 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("parent-side client PID authentication", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("explicit `OutputDrained` acknowledgement", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Windows Job Object is the supported complete descendant boundary", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("fixed-capacity reaper", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("clean exactly once", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(".worker_runtime/quarantine-audit/<eventId>.json", normalizedAfterlifeMatrix, StringComparison.Ordinal);
         Assert.Contains("external durable journal under `.boe_runtime/worker-apply-transactions`", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("changes no Chaos Sea or Shining Abode pending/control file", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("one atomic transition", normalizedAfterlifeMatrix, StringComparison.OrdinalIgnoreCase);
@@ -498,6 +507,7 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("private current-user named control/status", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("parent-side client PID authentication", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("OutputDrained", normalizedSource, StringComparison.Ordinal);
+            Assert.Contains(".worker_runtime/quarantine-audit", normalizedSource, StringComparison.Ordinal);
             Assert.DoesNotContain("PGID anchor", normalizedSource, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("Unix process-group fallback", normalizedSource, StringComparison.OrdinalIgnoreCase);
         }
@@ -508,6 +518,15 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("worker-apply recovery journals", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("fail-closed unsupported platforms", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Unix process-group", manifest, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("fixed-capacity reaper", mainGmPrompt, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("fixed-capacity reaper", mainGmPromptGenerator, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(".worker_runtime/quarantine-audit/<eventId>.json", mainGmPrompt, StringComparison.Ordinal);
+        Assert.Contains(".worker_runtime/quarantine-audit/<eventId>.json", mainGmPromptGenerator, StringComparison.Ordinal);
+        Assert.Contains("fixed-capacity reaper", featureDataModel, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("fixed-capacity reaper", featureResearch, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("fixed-capacity reaper", featureQuickstart, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("fixed-capacity quarantine owner", featureSpec, StringComparison.OrdinalIgnoreCase);
 
         foreach (var source in new[] { guide, contract, repair, afterlifeMatrix })
         {
@@ -564,7 +583,14 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("WaitUntilReadyAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("processHostLaunch.ReleaseAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("WaitForWorkerCompletionAsync", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("workerSlot.Quarantine()", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("workerSlot.TransferOwnership()", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("quarantineReservation.Transfer", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerQuarantineReaper", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("AppendRequiredEventOnceIfCurrentSessionAsync", auditLog, StringComparison.Ordinal);
+        Assert.Contains("QuarantineAuditDirectoryName", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("RenameOpenedObjectRelative", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("DefaultCapacity", quarantineReaper, StringComparison.Ordinal);
+        Assert.Contains("DefaultRetrySchedule", quarantineReaper, StringComparison.Ordinal);
         Assert.Contains("process-tree-cleanup-unconfirmed", bridgePool, StringComparison.Ordinal);
         Assert.Contains("StopUnattachedProcessTreeAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("--gm-worker-process-host", processHost, StringComparison.Ordinal);
@@ -590,9 +616,13 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("CommitWorkerApplyTransaction", applyGate, StringComparison.Ordinal);
         Assert.Contains("RecoverInterruptedWorkerApplyTransactionAsync", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("committed journal makes cleanup retryable without revoking accepted canonical bytes", fileSystemManager, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("SearchOption.TopDirectoryOnly", executionWorkspace, StringComparison.Ordinal);
-        Assert.Contains("FileAttributes.ReparsePoint", executionWorkspace, StringComparison.Ordinal);
-        Assert.Contains("Directory.Delete(path, recursive: false)", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("PhysicalFileAuthority.StableDirectory", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("OpenExistingStableDirectory", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("CreateNewWritableFile", executionWorkspace, StringComparison.Ordinal);
+        Assert.Contains("TryDeleteDirectoryTree", executionWorkspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.WriteAllBytesAsync", executionWorkspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("new FileStream(", executionWorkspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Delete(", executionWorkspace, StringComparison.Ordinal);
         Assert.DoesNotContain("SearchOption.AllDirectories", executionWorkspace, StringComparison.Ordinal);
         Assert.DoesNotContain("Directory.Delete(workspaceRoot, recursive: true)", executionWorkspace, StringComparison.Ordinal);
         foreach (var methodName in new[]

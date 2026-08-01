@@ -65,6 +65,9 @@ public sealed class GmWorkerBridgeSourceGuardTests
     {
         var validator = ReadClientFile("Services/GmWorkers/GmWorkerContractValidator.cs");
         var workspace = ReadClientFile("Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
+        var bridgePool = ReadClientFile("Services/GmWorkers/GmWorkerBridgePool.cs");
+        var reaper = ReadClientFile("Services/GmWorkers/GmWorkerQuarantineReaper.cs");
+        var auditLog = ReadClientFile("Services/GmWorkers/GmWorkerAuditLog.cs");
 
         Assert.Contains("CanonicalPathComparer { get; } = StringComparer.OrdinalIgnoreCase", validator, StringComparison.Ordinal);
         Assert.Contains("must not contain wildcard patterns", validator, StringComparison.Ordinal);
@@ -74,11 +77,30 @@ public sealed class GmWorkerBridgeSourceGuardTests
             validator,
             StringComparison.Ordinal);
 
-        Assert.Contains("SearchOption.TopDirectoryOnly", workspace, StringComparison.Ordinal);
-        Assert.Contains("FileAttributes.ReparsePoint", workspace, StringComparison.Ordinal);
-        Assert.Contains("Directory.Delete(path, recursive: false)", workspace, StringComparison.Ordinal);
+        Assert.Contains("PhysicalFileAuthority.StableDirectory", workspace, StringComparison.Ordinal);
+        Assert.Contains("OpenExistingStableDirectory", workspace, StringComparison.Ordinal);
+        Assert.Contains("CreateNewWritableFile", workspace, StringComparison.Ordinal);
+        Assert.Contains("TryDeleteDirectoryTree", workspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.WriteAllBytesAsync", workspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("new FileStream(", workspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Delete(", workspace, StringComparison.Ordinal);
+        Assert.DoesNotContain("requireSingleFileLinks: false", workspace, StringComparison.Ordinal);
         Assert.DoesNotContain("SearchOption.AllDirectories", workspace, StringComparison.Ordinal);
         Assert.DoesNotContain("Directory.Delete(workspaceRoot, recursive: true)", workspace, StringComparison.Ordinal);
+        Assert.Contains("QuarantineAuditDirectoryName", workspace, StringComparison.Ordinal);
+        Assert.Contains("RenameOpenedObjectRelative", workspace, StringComparison.Ordinal);
+        Assert.Contains("requestDeleteAccess: true", workspace, StringComparison.Ordinal);
+
+        Assert.Contains("GmWorkerQuarantineReaper", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("RecordRequiredTerminalEventOnceAsync", bridgePool, StringComparison.Ordinal);
+        Assert.DoesNotContain("Retain the acquired semaphore and reference count permanently", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("AppendRequiredEventOnceIfCurrentSessionAsync", auditLog, StringComparison.Ordinal);
+        Assert.Contains("suppressFailure: false", auditLog, StringComparison.Ordinal);
+        Assert.Contains("DefaultCapacity", reaper, StringComparison.Ordinal);
+        Assert.Contains("DefaultRetrySchedule", reaper, StringComparison.Ordinal);
+        Assert.Contains("Interlocked.CompareExchange", reaper, StringComparison.Ordinal);
+        Assert.Contains("ConfirmDeathAsync", reaper, StringComparison.Ordinal);
+        Assert.Contains("DrainConfirmedAsync", reaper, StringComparison.Ordinal);
     }
 
     private static string ReadClientFile(string relativePath)

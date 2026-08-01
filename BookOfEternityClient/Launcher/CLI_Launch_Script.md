@@ -87,8 +87,15 @@ worker-accessible marker files; unsupported platforms fail closed before worker
 release. A proposal becomes applyable only after confirmed zero exit and
 confirmed process-tree termination. Timeout, cancellation, nonzero exit, missing
 exit code, or cleanup uncertainty is diagnostic-only; execution output must not
-be imported as a worker proposal. Cleanup uncertainty quarantines the worker
-slot. Canonical writers recover
+be imported as a worker proposal. Cleanup uncertainty transfers the complete
+process/workspace owner into a fixed-capacity reaper. Bounded retries retain
+that slot until process-tree death and authority disposal are confirmed, clean
+the workspace exactly once, and only then release the slot. Before release, the
+reaper durably records one stable-id `process-tree-cleanup-confirmed` event
+through an idempotent generation-bound canonical append; after generation
+replacement it uses a create-only retained
+`.worker_runtime/quarantine-audit/<eventId>.json` receipt. An uncertain audit
+write retains the same entry and slot for retry. Canonical writers recover
 an interrupted load and the durable `.boe_runtime/worker-apply-transactions`
 journal after lease acquisition or fail closed; state refresh holds the same
 lease across its complete read/modify/write.

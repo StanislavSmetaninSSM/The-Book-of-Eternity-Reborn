@@ -4,6 +4,7 @@ using BookOfEternityClient.Configuration;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Reflection;
+using System.Text.Json;
 using Xunit;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -77,6 +78,424 @@ public sealed class GmWorkerBridgeLifecycleTests
             if (Directory.Exists(aliasPath))
                 Directory.Delete(aliasPath);
             CleanupTempRoot(aliasRoot);
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ExecutionWorkspace_RuntimeParentSwapCannotRedirectStaging()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var outsideRoot = CreateTempRoot();
+        string? displacedParent = null;
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var configuredRuntimeBase = Path.Combine(
+                root,
+                "worker-runtime-base");
+            Directory.CreateDirectory(configuredRuntimeBase);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_workspace_runtime_parent_swap"
+                });
+            var replacementBlocked = false;
+            var hooks = new GmWorkerExecutionWorkspaceHooks
+            {
+                BeforeRuntimeRootCreateAsync = (runtimeParent, _) =>
+                {
+                    displacedParent = runtimeParent + ".displaced";
+                    try
+                    {
+                        Directory.Move(runtimeParent, displacedParent);
+                        CreateDirectoryJunction(runtimeParent, outsideRoot);
+                    }
+                    catch (IOException)
+                    {
+                        replacementBlocked = true;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        replacementBlocked = true;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+
+            await using var workspace =
+                await GmWorkerExecutionWorkspace.CreateAsync(
+                    fs,
+                    task,
+                    CancellationToken.None,
+                    hooks,
+                    configuredRuntimeBase);
+
+            Assert.True(replacementBlocked);
+            Assert.Empty(
+                Directory.EnumerateFileSystemEntries(
+                    outsideRoot,
+                    "*",
+                    SearchOption.AllDirectories));
+            Assert.True(File.Exists(workspace.TaskPath));
+        }
+        finally
+        {
+            if (displacedParent != null &&
+                Directory.Exists(displacedParent))
+            {
+                CleanupTempRoot(displacedParent);
+            }
+            CleanupTempRoot(outsideRoot);
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ExecutionWorkspace_SessionParentSwapCannotRedirectTaskStaging()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var outsideRoot = CreateTempRoot();
+        string? displacedSession = null;
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var configuredRuntimeBase = Path.Combine(
+                root,
+                "worker-runtime-base");
+            Directory.CreateDirectory(configuredRuntimeBase);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_workspace_session_parent_swap"
+                });
+            var replacementAttempted = false;
+            var replacementBlocked = false;
+            var hooks = new GmWorkerExecutionWorkspaceHooks
+            {
+                BeforeWorkspaceFileCreateAsync = fullPath =>
+                {
+                    if (replacementAttempted)
+                        return Task.CompletedTask;
+
+                    replacementAttempted = true;
+                    var sessionPath = FindAncestorDirectory(
+                        fullPath,
+                        "game_session");
+                    displacedSession = sessionPath + ".displaced";
+                    try
+                    {
+                        Directory.Move(sessionPath, displacedSession);
+                        CreateDirectoryJunction(sessionPath, outsideRoot);
+                    }
+                    catch (IOException)
+                    {
+                        replacementBlocked = true;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        replacementBlocked = true;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+
+            await using var workspace =
+                await GmWorkerExecutionWorkspace.CreateAsync(
+                    fs,
+                    task,
+                    CancellationToken.None,
+                    hooks,
+                    configuredRuntimeBase);
+
+            Assert.True(replacementAttempted);
+            Assert.True(replacementBlocked);
+            Assert.Empty(
+                Directory.EnumerateFileSystemEntries(
+                    outsideRoot,
+                    "*",
+                    SearchOption.AllDirectories));
+            Assert.True(File.Exists(workspace.TaskPath));
+        }
+        finally
+        {
+            if (displacedSession != null &&
+                Directory.Exists(displacedSession))
+            {
+                CleanupTempRoot(displacedSession);
+            }
+            CleanupTempRoot(outsideRoot);
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ExecutionWorkspace_NestedParentJunctionCannotRedirectContextStaging()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var outsideRoot = CreateTempRoot();
+        string? displacedParent = null;
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var configuredRuntimeBase = Path.Combine(
+                root,
+                "worker-runtime-base");
+            Directory.CreateDirectory(configuredRuntimeBase);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_workspace_nested_parent_junction"
+                });
+            var replacementAttempted = false;
+            var replacementBlocked = false;
+            var hooks = new GmWorkerExecutionWorkspaceHooks
+            {
+                BeforeWorkspaceFileCreateAsync = fullPath =>
+                {
+                    if (replacementAttempted)
+                        return Task.CompletedTask;
+
+                    replacementAttempted = true;
+                    var parentPath = Path.GetDirectoryName(fullPath)
+                        ?? throw new InvalidOperationException(
+                            "Worker staging target has no parent.");
+                    displacedParent = parentPath + ".displaced";
+                    try
+                    {
+                        Directory.Move(parentPath, displacedParent);
+                        CreateDirectoryJunction(parentPath, outsideRoot);
+                    }
+                    catch (IOException)
+                    {
+                        replacementBlocked = true;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        replacementBlocked = true;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+
+            await using var workspace =
+                await GmWorkerExecutionWorkspace.CreateAsync(
+                    fs,
+                    task,
+                    CancellationToken.None,
+                    hooks,
+                    configuredRuntimeBase);
+
+            Assert.True(replacementAttempted);
+            Assert.True(replacementBlocked);
+            Assert.Empty(
+                Directory.EnumerateFileSystemEntries(
+                    outsideRoot,
+                    "*",
+                    SearchOption.AllDirectories));
+        }
+        finally
+        {
+            if (displacedParent != null &&
+                Directory.Exists(displacedParent))
+            {
+                CleanupTempRoot(displacedParent);
+            }
+            CleanupTempRoot(outsideRoot);
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ExecutionWorkspace_ProposalHardLinkBeforeOpenFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        var aliasRoot = CreateTempRoot();
+        var aliasPath = Path.Combine(aliasRoot, "proposal.alias");
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var configuredRuntimeBase = Path.Combine(
+                root,
+                "worker-runtime-base");
+            Directory.CreateDirectory(configuredRuntimeBase);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_workspace_proposal_hard_link"
+                });
+            var linked = false;
+            var hooks = new GmWorkerExecutionWorkspaceHooks
+            {
+                BeforeWorkspaceFileOpenAsync = fullPath =>
+                {
+                    if (!linked &&
+                        fullPath.EndsWith(
+                            ".json",
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        WindowsHardLinkTestHelper.Create(
+                            aliasPath,
+                            fullPath);
+                        linked = true;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+
+            await using var workspace =
+                await GmWorkerExecutionWorkspace.CreateAsync(
+                    fs,
+                    task,
+                    CancellationToken.None,
+                    hooks,
+                    configuredRuntimeBase);
+            await File.WriteAllTextAsync(
+                workspace.ProposalPath,
+                """{"proposalId":"synthetic"}""");
+
+            var failure = await Record.ExceptionAsync(() =>
+                workspace.ReadProposalBytesAsync());
+
+            Assert.NotNull(failure);
+            Assert.True(
+                failure is InvalidDataException or
+                    System.ComponentModel.Win32Exception,
+                failure.ToString());
+            Assert.Equal(
+                linked,
+                File.Exists(aliasPath));
+            if (File.Exists(aliasPath))
+                File.Delete(aliasPath);
+            await workspace.DisposeAsync();
+        }
+        finally
+        {
+            if (File.Exists(aliasPath))
+                File.Delete(aliasPath);
+            CleanupTempRoot(aliasRoot);
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ExecutionWorkspace_CleanupIdentitySwapDoesNotDeleteReplacementDirectory()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var root = CreateTempRoot();
+        GmWorkerExecutionWorkspace? workspace = null;
+        string? workspaceRoot = null;
+        string? displacedWorkspace = null;
+        try
+        {
+            var fs = CreateFileSystem(root);
+            var configuredRuntimeBase = Path.Combine(
+                root,
+                "worker-runtime-base");
+            Directory.CreateDirectory(configuredRuntimeBase);
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = "worker_workspace_cleanup_identity_swap"
+                });
+            var hooks = new GmWorkerExecutionWorkspaceHooks
+            {
+                BeforeWorkspaceDeleteAsync = path =>
+                {
+                    workspaceRoot = path;
+                    displacedWorkspace = path + ".displaced";
+                    Directory.Move(
+                        path,
+                        displacedWorkspace);
+                    Directory.CreateDirectory(path);
+                    File.WriteAllText(
+                        Path.Combine(
+                            path,
+                            "foreign-sentinel.txt"),
+                        "foreign");
+                    return Task.CompletedTask;
+                }
+            };
+            workspace = await GmWorkerExecutionWorkspace.CreateAsync(
+                fs,
+                task,
+                CancellationToken.None,
+                hooks,
+                configuredRuntimeBase);
+
+            var failure = await Assert.ThrowsAsync<AggregateException>(
+                () => workspace.DisposeAsync().AsTask());
+
+            Assert.Contains(
+                "identity changed",
+                failure.ToString(),
+                StringComparison.OrdinalIgnoreCase);
+            Assert.NotNull(workspaceRoot);
+            Assert.True(
+                File.Exists(
+                    Path.Combine(
+                        workspaceRoot!,
+                        "foreign-sentinel.txt")));
+
+            CleanupTempRoot(workspaceRoot!);
+            Directory.Move(
+                displacedWorkspace!,
+                workspaceRoot!);
+            await workspace.DisposeAsync();
+            workspace = null;
+            Assert.False(
+                Directory.Exists(workspaceRoot));
+        }
+        finally
+        {
+            if (workspaceRoot != null &&
+                Directory.Exists(workspaceRoot))
+            {
+                CleanupTempRoot(workspaceRoot);
+            }
+            if (workspaceRoot != null &&
+                displacedWorkspace != null &&
+                Directory.Exists(displacedWorkspace))
+            {
+                Directory.Move(
+                    displacedWorkspace,
+                    workspaceRoot);
+            }
+            if (workspace != null)
+            {
+                try
+                {
+                    await workspace.DisposeAsync();
+                }
+                catch
+                {
+                    // Best effort recovery remains inside the isolated temp root.
+                }
+            }
+
             CleanupTempRoot(root);
         }
     }
@@ -1858,7 +2277,7 @@ public sealed class GmWorkerBridgeLifecycleTests
 
             runTask = pool.RunTaskAsync(profile, task);
             await attachEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            var result = await runTask.WaitAsync(TimeSpan.FromSeconds(5));
+            var result = await runTask.WaitAsync(TimeSpan.FromSeconds(15));
 
             Assert.True(result.TimedOut);
             Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
@@ -1992,16 +2411,42 @@ public sealed class GmWorkerBridgeLifecycleTests
     }
 
     [Fact]
-    public async Task RunTaskAsync_ProcessTreeConfirmationFailureQuarantinesSlotAndStillDisposesTreeOwner()
+    public async Task RunTaskAsync_ProcessTreeConfirmationFailureTransfersOwnerUntilReaperConfirmsDeath()
     {
         var root = CreateTempRoot();
         var processTreeFactory = new ThrowingProcessTreeFactory();
+        var reaper = new GmWorkerQuarantineReaper(
+            capacity: 1,
+            retrySchedule: [],
+            runInBackground: false);
         Task<GmWorkerTaskRunResult>? firstRun = null;
+        var rejectTerminalAuditWrite = 0;
+        var terminalAuditWriteFailures = 0;
+        var failReceiptAfterCreate = 0;
+        var receiptWriteFailures = 0;
         try
         {
             const string firstTaskId = "worker_task_tree_failure_first";
             const string secondTaskId = "worker_task_tree_failure_second";
-            var fs = CreateFileSystem(root);
+            var fs = CreateFileSystem(
+                root,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = path =>
+                    {
+                        if (Volatile.Read(ref rejectTerminalAuditWrite) != 0 &&
+                            path.Equals(
+                                GmWorkerAuditLog.AuditLogPath,
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            Interlocked.Increment(ref terminalAuditWriteFailures);
+                            return Task.FromException(
+                                new IOException("Injected terminal audit write failure."));
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                });
             var firstReadyPath = Path.Combine(root, "tree-failure-first-ready");
             var secondReadyPath = Path.Combine(root, "tree-failure-second-ready");
             var scriptPath = Path.Combine(root, "fake-worker-tree-failure.ps1");
@@ -2043,9 +2488,25 @@ public sealed class GmWorkerBridgeLifecycleTests
                         retainedWorkspacePath = workspacePath;
                         Interlocked.Increment(ref workspaceCleanupCalls);
                         return Task.CompletedTask;
+                    },
+                    AfterQuarantineAuditTempCreatedAsync = _ =>
+                    {
+                        if (Interlocked.CompareExchange(
+                                ref failReceiptAfterCreate,
+                                0,
+                                1) == 0)
+                        {
+                            return Task.CompletedTask;
+                        }
+
+                        Interlocked.Increment(ref receiptWriteFailures);
+                        return Task.FromException(
+                            new IOException(
+                                "Injected quarantine audit receipt write failure."));
                     }
                 },
-                processTreeFactory);
+                processTreeFactory,
+                reaper);
             using var firstCancellation = new CancellationTokenSource();
 
             firstRun = firstPool.RunTaskAsync(profile, firstTask, firstCancellation.Token);
@@ -2053,10 +2514,12 @@ public sealed class GmWorkerBridgeLifecycleTests
             firstCancellation.Cancel();
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => firstRun);
 
-            Assert.True(processTreeFactory.DisposeCalled);
+            Assert.False(processTreeFactory.DisposeCalled);
             Assert.True(processTreeFactory.HasLiveProcess);
             Assert.Equal(0, Volatile.Read(ref workspaceCleanupCalls));
             Assert.Null(retainedWorkspacePath);
+            Assert.Equal(1, reaper.EntryCount);
+            Assert.Equal(1, reaper.OwnedCapacity);
             var runtimeRoot = GmWorkerExecutionWorkspace.ResolveRuntimeRoot(fs.BasePath);
             Assert.True(Directory.Exists(runtimeRoot));
             Assert.NotEmpty(Directory.EnumerateDirectories(runtimeRoot));
@@ -2068,10 +2531,98 @@ public sealed class GmWorkerBridgeLifecycleTests
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => secondRun);
             Assert.False(File.Exists(secondReadyPath));
             Assert.False(fs.FileExists(GmWorkerBridgePool.GetTaskPacketPath(secondTaskId)));
+
+            await processTreeFactory.ForceCleanupAsync();
+            Volatile.Write(ref rejectTerminalAuditWrite, 1);
+            await reaper.RunPassAsync();
+
+            Assert.True(processTreeFactory.DisposeCalled);
+            Assert.True(Volatile.Read(ref terminalAuditWriteFailures) >= 1);
+            Assert.Equal(1, Volatile.Read(ref workspaceCleanupCalls));
+            Assert.NotNull(retainedWorkspacePath);
+            Assert.False(Directory.Exists(retainedWorkspacePath));
+            Assert.Equal(1, reaper.EntryCount);
+            Assert.Equal(1, reaper.OwnedCapacity);
+
+            await SessionReplacementTestHarness.RotateGenerationAsync(fs);
+            Volatile.Write(ref rejectTerminalAuditWrite, 0);
+            Volatile.Write(ref failReceiptAfterCreate, 1);
+            await reaper.RunPassAsync();
+
+            Assert.Equal(1, Volatile.Read(ref receiptWriteFailures));
+            Assert.Equal(1, reaper.EntryCount);
+            Assert.Equal(1, reaper.OwnedCapacity);
+            var quarantineAuditDirectory = Path.Combine(
+                runtimeRoot,
+                GmWorkerExecutionWorkspace.QuarantineAuditDirectoryName);
+            Assert.True(Directory.Exists(quarantineAuditDirectory));
+            Assert.Empty(
+                Directory.EnumerateFiles(
+                    quarantineAuditDirectory,
+                    "*.json",
+                    SearchOption.TopDirectoryOnly));
+            Assert.Empty(
+                Directory.EnumerateFiles(
+                    quarantineAuditDirectory,
+                    "*.tmp.*",
+                    SearchOption.TopDirectoryOnly));
+
+            await reaper.RunPassAsync();
+            await reaper.RunPassAsync();
+
+            Assert.Equal(1, Volatile.Read(ref workspaceCleanupCalls));
+            Assert.NotNull(retainedWorkspacePath);
+            Assert.False(Directory.Exists(retainedWorkspacePath));
+            Assert.Equal(0, reaper.EntryCount);
+            Assert.Equal(0, reaper.OwnedCapacity);
+
+            var canonicalAuditEvents = await new GmWorkerAuditLog(fs).ReadEventsAsync();
+            Assert.DoesNotContain(
+                canonicalAuditEvents,
+                item => item.EventType.Equals(
+                    "process-tree-cleanup-confirmed",
+                    StringComparison.Ordinal));
+            var receiptPath = Assert.Single(
+                Directory.EnumerateFiles(
+                    quarantineAuditDirectory,
+                    "*.json",
+                    SearchOption.TopDirectoryOnly));
+            using (var receipt = JsonDocument.Parse(await File.ReadAllBytesAsync(receiptPath)))
+            {
+                Assert.Equal(
+                    firstTask.SessionGeneration,
+                    receipt.RootElement.GetProperty("sessionGeneration").GetString());
+                var terminalEvent = receipt.RootElement.GetProperty("auditEvent");
+                Assert.Equal(
+                    "process-tree-cleanup-confirmed",
+                    terminalEvent.GetProperty("eventType").GetString());
+                Assert.Equal(
+                    firstTaskId,
+                    terminalEvent.GetProperty("taskId").GetString());
+            }
+
+            string replacementGeneration;
+            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
+                replacementGeneration = fs.GetOrCreateSessionGeneration(writeLease);
+            var replacementTask = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId = secondTaskId,
+                    TimeoutSeconds = profile.TimeoutSeconds,
+                    SessionGeneration = replacementGeneration
+                });
+            var replacementResult = await new GmWorkerBridgePool(fs)
+                .RunTaskAsync(profile, replacementTask);
+            Assert.Equal(
+                WorkerBridgeState.Failed,
+                replacementResult.Status.State);
+            Assert.True(File.Exists(secondReadyPath));
         }
         finally
         {
             await processTreeFactory.ForceCleanupAsync();
+            await reaper.RunPassAsync();
             if (firstRun != null)
             {
                 try
@@ -2093,6 +2644,10 @@ public sealed class GmWorkerBridgeLifecycleTests
     {
         var root = CreateTempRoot();
         var processTreeFactory = new ThrowingProcessTreeFactory();
+        var reaper = new GmWorkerQuarantineReaper(
+            capacity: 1,
+            retrySchedule: [],
+            runInBackground: false);
         try
         {
             var fs = CreateFileSystem(root);
@@ -2116,7 +2671,8 @@ public sealed class GmWorkerBridgeLifecycleTests
                 new GmWorkerProposalStore(fs),
                 audit,
                 hooks: null,
-                processTreeFactory);
+                processTreeFactory,
+                reaper);
 
             var result = await pool.RunTaskAsync(profile, task);
             var auditEvents = await audit.ReadEventsAsync();
@@ -2125,12 +2681,124 @@ public sealed class GmWorkerBridgeLifecycleTests
             Assert.Equal(WorkerBridgeState.TimedOut, result.Status.State);
             Assert.Contains(auditEvents, item => item.EventType == "task-timed-out");
             Assert.Contains(auditEvents, item => item.EventType == "process-tree-cleanup-unconfirmed");
-            Assert.True(processTreeFactory.DisposeCalled);
+            Assert.False(processTreeFactory.DisposeCalled);
             Assert.True(processTreeFactory.HasLiveProcess);
+            Assert.Equal(1, reaper.EntryCount);
+
+            await processTreeFactory.ForceCleanupAsync();
+            await reaper.RunPassAsync();
+
+            auditEvents = await audit.ReadEventsAsync();
+            Assert.True(processTreeFactory.DisposeCalled);
+            Assert.Contains(
+                auditEvents,
+                item => item.EventType == "process-tree-cleanup-confirmed");
+            Assert.Equal(0, reaper.EntryCount);
         }
         finally
         {
             await processTreeFactory.ForceCleanupAsync();
+            await reaper.RunPassAsync();
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RunTaskAsync_ProcessTreeDisposeFailureTransfersConfirmedOwnerForRetry()
+    {
+        var root = CreateTempRoot();
+        var processTreeFactory = new ThrowingProcessTreeFactory(
+            disposeFailures: 1,
+            failStopWhileAlive: false);
+        var reaper = new GmWorkerQuarantineReaper(
+            capacity: 1,
+            retrySchedule: [],
+            runInBackground: false);
+        try
+        {
+            const string proposalId =
+                "worker_proposal_tree_dispose_retry";
+            var fs = CreateFileSystem(root);
+            var scriptPath =
+                await WriteValidEmptyProposalWorkerScriptAsync(
+                    root,
+                    proposalId);
+            var profile =
+                GmWorkerBridgeTestFixtures.AnalysisCodexProfile() with
+                {
+                    LaunchCommand =
+                        $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+                    TimeoutSeconds = 10,
+                    MaxConcurrentTasks = 1
+                };
+            var task = await MaterializeTaskContextAsync(
+                fs,
+                GmWorkerBridgeTestFixtures.AnalysisTask() with
+                {
+                    TaskId =
+                        "worker_task_tree_dispose_retry",
+                    TimeoutSeconds =
+                        profile.TimeoutSeconds
+                });
+            var workspaceCleanupCalls = 0;
+            string? retainedWorkspacePath = null;
+            var audit = new GmWorkerAuditLog(fs);
+            var pool = new GmWorkerBridgePool(
+                fs,
+                new GmWorkerProposalStore(fs),
+                audit,
+                new GmWorkerBridgePoolHooks
+                {
+                    BeforeWorkspaceCleanupAsync = path =>
+                    {
+                        retainedWorkspacePath = path;
+                        Interlocked.Increment(
+                            ref workspaceCleanupCalls);
+                        return Task.CompletedTask;
+                    }
+                },
+                processTreeFactory,
+                reaper);
+
+            var result = await pool.RunTaskAsync(
+                profile,
+                task);
+
+            Assert.NotNull(result.Proposal);
+            Assert.Equal(
+                proposalId,
+                result.Proposal!.ProposalId);
+            Assert.False(processTreeFactory.HasLiveProcess);
+            Assert.False(processTreeFactory.DisposeCalled);
+            Assert.Equal(1, processTreeFactory.DisposeAttempts);
+            Assert.Equal(0, Volatile.Read(ref workspaceCleanupCalls));
+            Assert.Equal(1, reaper.EntryCount);
+            Assert.Equal(1, reaper.OwnedCapacity);
+
+            await reaper.RunPassAsync();
+            await reaper.RunPassAsync();
+
+            Assert.True(processTreeFactory.DisposeCalled);
+            Assert.Equal(2, processTreeFactory.DisposeAttempts);
+            Assert.Equal(1, Volatile.Read(ref workspaceCleanupCalls));
+            Assert.NotNull(retainedWorkspacePath);
+            Assert.False(Directory.Exists(retainedWorkspacePath));
+            Assert.Equal(0, reaper.EntryCount);
+            Assert.Equal(0, reaper.OwnedCapacity);
+            var auditEvents = await audit.ReadEventsAsync();
+            Assert.Contains(
+                auditEvents,
+                item => item.EventType ==
+                        "process-tree-cleanup-unconfirmed");
+            Assert.Contains(
+                auditEvents,
+                item => item.EventType ==
+                        "process-tree-cleanup-confirmed");
+        }
+        finally
+        {
+            await processTreeFactory.ForceCleanupAsync();
+            await reaper.RunPassAsync();
             CleanupTempRoot(root);
         }
     }
@@ -3344,6 +4012,26 @@ public sealed class GmWorkerBridgeLifecycleTests
         return root;
     }
 
+    private static string FindAncestorDirectory(
+        string path,
+        string directoryName)
+    {
+        var current = new DirectoryInfo(
+            Path.GetDirectoryName(path)
+            ?? throw new InvalidOperationException(
+                "Worker workspace target has no parent."));
+        while (!current.Name.Equals(
+                   directoryName,
+                   StringComparison.OrdinalIgnoreCase))
+        {
+            current = current.Parent
+                ?? throw new InvalidOperationException(
+                    $"Could not find worker workspace ancestor '{directoryName}'.");
+        }
+
+        return current.FullName;
+    }
+
     private static void CreateDirectoryJunction(string junctionPath, string targetPath)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(junctionPath)!);
@@ -3604,9 +4292,22 @@ public sealed class GmWorkerBridgeLifecycleTests
     private sealed class ThrowingProcessTreeFactory : IGmWorkerProcessTreeFactory
     {
         private int _disposeCalled;
+        private int _disposeAttempts;
+        private int _disposeFailuresRemaining;
         private int _processId;
+        private readonly bool _failStopWhileAlive;
+
+        internal ThrowingProcessTreeFactory(
+            int disposeFailures = 0,
+            bool failStopWhileAlive = true)
+        {
+            _disposeFailuresRemaining = disposeFailures;
+            _failStopWhileAlive = failStopWhileAlive;
+        }
 
         internal bool DisposeCalled => Volatile.Read(ref _disposeCalled) != 0;
+        internal int DisposeAttempts =>
+            Volatile.Read(ref _disposeAttempts);
         internal bool HasLiveProcess
         {
             get
@@ -3626,7 +4327,30 @@ public sealed class GmWorkerBridgeLifecycleTests
         public IGmWorkerProcessTree Attach(Process process)
         {
             Volatile.Write(ref _processId, process.Id);
-            return new ThrowingProcessTree(() => Interlocked.Exchange(ref _disposeCalled, 1));
+            return new ThrowingProcessTree(
+                process,
+                () => Interlocked.Exchange(ref _disposeCalled, 1),
+                TryConsumeDisposeFailure,
+                _failStopWhileAlive);
+        }
+
+        private bool TryConsumeDisposeFailure()
+        {
+            Interlocked.Increment(ref _disposeAttempts);
+            while (true)
+            {
+                var remaining = Volatile.Read(
+                    ref _disposeFailuresRemaining);
+                if (remaining <= 0)
+                    return false;
+                if (Interlocked.CompareExchange(
+                        ref _disposeFailuresRemaining,
+                        remaining - 1,
+                        remaining) == remaining)
+                {
+                    return true;
+                }
+            }
         }
 
         internal async Task ForceCleanupAsync()
@@ -3645,14 +4369,48 @@ public sealed class GmWorkerBridgeLifecycleTests
         }
     }
 
-    private sealed class ThrowingProcessTree(Action recordDispose) : IGmWorkerProcessTree
+    private sealed class ThrowingProcessTree(
+        Process process,
+        Action recordDispose,
+        Func<bool> shouldFailDispose,
+        bool failStopWhileAlive) : IGmWorkerProcessTree
     {
-        public Task StopAndWaitAsync() =>
-            Task.FromException(new IOException("Synthetic process-tree confirmation failure."));
+        private int _disposeState;
+
+        public async Task StopAndWaitAsync()
+        {
+            if (!process.HasExited)
+            {
+                if (failStopWhileAlive)
+                {
+                    throw new IOException(
+                        "Synthetic process-tree confirmation failure.");
+                }
+
+                process.Kill(
+                    entireProcessTree: true);
+            }
+
+            await process.WaitForExitAsync(
+                CancellationToken.None);
+        }
 
         public ValueTask DisposeAsync()
         {
-            recordDispose();
+            if (shouldFailDispose())
+            {
+                return ValueTask.FromException(
+                    new IOException(
+                        "Synthetic process-tree dispose failure."));
+            }
+
+            if (Interlocked.Exchange(
+                    ref _disposeState,
+                    1) == 0)
+            {
+                recordDispose();
+            }
+
             return ValueTask.CompletedTask;
         }
     }

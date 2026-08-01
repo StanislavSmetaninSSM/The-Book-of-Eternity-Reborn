@@ -50,4 +50,125 @@ public sealed class GmWorkerProcessTreeTests
         Assert.Contains("unattached", error.Message, StringComparison.OrdinalIgnoreCase);
         await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
     }
+
+    [Fact]
+    public async Task QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce()
+    {
+        var owner = new FakeQuarantineOwner
+        {
+            HoldConfirmation = true
+        };
+        var reaper = new GmWorkerQuarantineReaper(
+            capacity: 1,
+            retrySchedule: [],
+            runInBackground: false);
+        using var reservation = Assert.IsType<GmWorkerQuarantineReservation>(
+            reaper.TryReserve());
+        reservation.Transfer(owner);
+
+        var firstPass = reaper.RunPassAsync();
+        await owner.ConfirmationStarted.WaitAsync(
+            TimeSpan.FromSeconds(5));
+        var secondPass = reaper.RunPassAsync();
+        var drainPass = reaper.DrainConfirmedAsync();
+        owner.ReleaseConfirmation();
+        await Task.WhenAll(
+            firstPass,
+            secondPass,
+            drainPass);
+
+        Assert.Equal(1, owner.ConfirmationCalls);
+        Assert.Equal(1, owner.CleanupCalls);
+        Assert.Equal(0, reaper.EntryCount);
+        Assert.Equal(0, reaper.OwnedCapacity);
+        using var replacement = Assert.IsType<GmWorkerQuarantineReservation>(
+            reaper.TryReserve());
+    }
+
+    [Fact]
+    public async Task QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath()
+    {
+        var owner = new FakeQuarantineOwner
+        {
+            DeathConfirmed = false,
+            HoldConfirmation = true
+        };
+        var reaper = new GmWorkerQuarantineReaper(
+            capacity: 1,
+            retrySchedule: [],
+            runInBackground: false);
+        using var reservation = Assert.IsType<GmWorkerQuarantineReservation>(
+            reaper.TryReserve());
+        reservation.Transfer(owner);
+
+        var firstPass = reaper.RunPassAsync();
+        await owner.ConfirmationStarted.WaitAsync(
+            TimeSpan.FromSeconds(5));
+        var overlappingPass = reaper.RunPassAsync();
+        owner.ReleaseConfirmation();
+        await Task.WhenAll(
+            firstPass,
+            overlappingPass);
+
+        Assert.Equal(1, owner.ConfirmationCalls);
+        Assert.Equal(0, owner.CleanupCalls);
+        Assert.Equal(1, reaper.EntryCount);
+        Assert.Equal(1, reaper.OwnedCapacity);
+        Assert.Null(reaper.TryReserve());
+
+        owner.DeathConfirmed = true;
+        await reaper.RunPassAsync();
+        await reaper.RunPassAsync();
+
+        Assert.Equal(2, owner.ConfirmationCalls);
+        Assert.Equal(1, owner.CleanupCalls);
+        Assert.Equal(0, reaper.EntryCount);
+        Assert.Equal(0, reaper.OwnedCapacity);
+    }
+
+    private sealed class FakeQuarantineOwner : IGmWorkerQuarantineOwner
+    {
+        private int _confirmationCalls;
+        private int _cleanupCalls;
+        private readonly TaskCompletionSource _confirmationStarted =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource _releaseConfirmation =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        internal bool DeathConfirmed { get; set; } = true;
+        internal bool HoldConfirmation { get; set; }
+        internal Task ConfirmationStarted =>
+            _confirmationStarted.Task;
+        internal int ConfirmationCalls =>
+            Volatile.Read(ref _confirmationCalls);
+        internal int CleanupCalls =>
+            Volatile.Read(ref _cleanupCalls);
+
+        public string Identity => "fake-quarantine-owner";
+
+        internal void ReleaseConfirmation() =>
+            _releaseConfirmation.TrySetResult();
+
+        public async Task ConfirmDeathAsync()
+        {
+            Interlocked.Increment(ref _confirmationCalls);
+            _confirmationStarted.TrySetResult();
+            if (HoldConfirmation)
+                await _releaseConfirmation.Task;
+            if (!DeathConfirmed)
+            {
+                throw new TimeoutException(
+                    "Synthetic process-tree death remains unconfirmed.");
+            }
+        }
+
+        public Task CleanupConfirmedAsync()
+        {
+            Interlocked.Increment(ref _cleanupCalls);
+            return Task.CompletedTask;
+        }
+
+        public Task RecordReaperFailureAsync(Exception failure) =>
+            Task.CompletedTask;
+    }
 }
