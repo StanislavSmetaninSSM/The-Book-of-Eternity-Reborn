@@ -11,7 +11,6 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-[Trait("Category", "FullValidation")]
 public sealed class MortalCommandDisplaySaveTests : IDisposable
 {
     private const string SaveFileName = "mortal_world_command_display_fixture.zip";
@@ -21,6 +20,7 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
     private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-mortal-command-save-" + Guid.NewGuid().ToString("N"));
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task NamedMortalCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable()
     {
         var sourceArchive = GetSourceArchivePath();
@@ -72,6 +72,7 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
 
     [Theory]
     [MemberData(nameof(CoveredMortalCommandInvocations))]
+    [Trait("Category", "FullValidation")]
     public async Task LoadedMortalCommandDisplaySave_RendersCoveredCommandInBrowserAndConsole(
         string commandId,
         string command)
@@ -92,6 +93,7 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
 
     [Theory]
     [MemberData(nameof(MortalWorldNewsFixtureInvocations))]
+    [Trait("Category", "FullValidation")]
     public async Task LoadedMortalCommandDisplaySave_WorldNewsLocalizesVisibilityEnums(
         string command,
         string expectedText,

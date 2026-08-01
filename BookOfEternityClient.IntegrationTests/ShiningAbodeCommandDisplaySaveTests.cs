@@ -12,7 +12,6 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-[Trait("Category", "FullValidation")]
 public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
 {
     private const string SaveFileName = "shining_abode_command_display_fixture.zip";
@@ -23,6 +22,7 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
     private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-shining-abode-command-save-" + Guid.NewGuid().ToString("N"));
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task NamedShiningAbodeCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable()
     {
         var sourceArchive = GetSourceArchivePath();
@@ -101,6 +101,7 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
 
     [Theory]
     [MemberData(nameof(CoveredShiningAbodeCommandInvocations))]
+    [Trait("Category", "FullValidation")]
     public async Task LoadedShiningAbodeCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole(
         string commandId,
         string command)
@@ -121,6 +122,7 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
 
     [Theory]
     [MemberData(nameof(ShiningAbodeDetailInvocations))]
+    [Trait("Category", "FullValidation")]
     public async Task LoadedShiningAbodeCommandDisplaySave_RendersRepresentativeDetailTargets(
         string commandId,
         string command,

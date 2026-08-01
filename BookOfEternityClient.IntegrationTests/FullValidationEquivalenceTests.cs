@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-[Trait("Category", "FullValidation")]
+[Trait("Category", "PreMergeSentinel")]
 public sealed class FullValidationEquivalenceTests : IDisposable
 {
     private readonly string _rootPath;

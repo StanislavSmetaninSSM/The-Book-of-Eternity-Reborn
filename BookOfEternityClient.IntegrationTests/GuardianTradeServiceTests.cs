@@ -7,7 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-[Trait("Category", "FullValidation")]
+[Trait("Category", "PreMergeSentinel")]
 public sealed class GuardianTradeServiceTests : IDisposable
 {
     private readonly string _rootPath;

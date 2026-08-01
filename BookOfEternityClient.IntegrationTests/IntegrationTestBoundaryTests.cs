@@ -18,6 +18,10 @@ public sealed class IntegrationTestBoundaryTests
     private const string IntegrationTestsDirectory = "BookOfEternityClient.IntegrationTests";
     private const string TestSupportDirectory = "BookOfEternityClient.TestSupport";
     private const string FullValidationTrait = "[Trait(\"Category\", \"FullValidation\")]";
+    private const string DeepValidationTrait =
+        "[Trait(\"Category\", \"DeepValidation\")]";
+    private const string PreMergeSentinelTrait =
+        "[Trait(\"Category\", \"PreMergeSentinel\")]";
     private const string ProcessIntegrationTrait = "[Trait(\"Category\", \"ProcessIntegration\")]";
     private const string E2ETrait = "[Trait(\"Category\", \"E2E\")]";
     private const string RegressionIntegrationTrait =
@@ -150,6 +154,23 @@ public sealed class IntegrationTestBoundaryTests
         "GameEngineTurnLifecycleTests.cs",
         "GuardianSystemRegressionTests.cs",
         "LocalWebUiHostTests.cs"
+    ];
+
+    private static readonly IReadOnlyDictionary<string, string[]>
+        RegressionIntegrationCategories =
+            RegressionIntegrationSources.ToDictionary(
+                fileName => fileName,
+                fileName => string.Equals(
+                    fileName,
+                    "GuardianSystemRegressionTests.cs",
+                    StringComparison.Ordinal)
+                        ? new[] { RegressionIntegrationTrait, DeepValidationTrait }
+                        : new[] { RegressionIntegrationTrait },
+                StringComparer.Ordinal);
+
+    private static readonly string[] BroadValidationPreMergeSentinelSources =
+    [
+        "FullValidationEquivalenceTests.cs"
     ];
 
     private static readonly string[] IndirectFullValidationSources =
@@ -696,11 +717,15 @@ public sealed class IntegrationTestBoundaryTests
             @"\.ValidateGameState" + @"Async\s*\(\s*\)",
             RegexOptions.CultureInvariant);
         var supportHarnessPath = SourcePath(TestSupportDirectory, "ValidatorFixtureHarness.cs");
+        var broadSentinelPaths = BroadValidationPreMergeSentinelSources
+            .Select(fileName => SourcePath(IntegrationTestsDirectory, fileName))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var uncategorized = EnumerateIntegrationAndSupportSources()
             .Where(candidate => !string.Equals(
                 candidate.Path,
                 supportHarnessPath,
                 StringComparison.OrdinalIgnoreCase))
+            .Where(candidate => !broadSentinelPaths.Contains(candidate.Path))
             .Where(candidate => broadCall.IsMatch(candidate.Source))
             .Where(candidate => !candidate.Source.Contains(
                 FullValidationTrait,
@@ -714,6 +739,12 @@ public sealed class IntegrationTestBoundaryTests
             "Direct full-validation integration sources must carry Category=FullValidation:" +
             Environment.NewLine +
             string.Join(Environment.NewLine, uncategorized));
+
+        Assert.All(BroadValidationPreMergeSentinelSources, fileName =>
+            Assert.Contains(
+                PreMergeSentinelTrait,
+                File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName)),
+                StringComparison.Ordinal));
     }
 
     [Fact]
@@ -744,15 +775,64 @@ public sealed class IntegrationTestBoundaryTests
     [Fact]
     public void FileBackedRegressionIntegrationSources_MatchReviewedManifest()
     {
-        var expected = RegressionIntegrationSources.ToDictionary(
-            fileName => fileName,
-            _ => new[] { RegressionIntegrationTrait },
-            StringComparer.Ordinal);
-
         AssertExactCategoryManifest(
-            expected,
-            [RegressionIntegrationTrait],
-            "RegressionIntegration");
+            RegressionIntegrationCategories,
+            [RegressionIntegrationTrait, DeepValidationTrait],
+            "RegressionIntegration/DeepValidation");
+
+        Assert.Equal(
+            ["PreMergeSentinel"],
+            CategoryTraits("FullValidationEquivalenceTests.cs"));
+        Assert.Equal(
+            ["PreMergeSentinel"],
+            CategoryTraits("GuardianTradeServiceTests.cs"));
+        Assert.Equal(
+            ["DeepValidation", "RegressionIntegration"],
+            CategoryTraits("GuardianSystemRegressionTests.cs"));
+
+        var commandDisplayCategories =
+            new Dictionary<string, IReadOnlyDictionary<string, string[]>>(StringComparer.Ordinal)
+            {
+                ["MortalCommandDisplaySaveTests.cs"] =
+                    new Dictionary<string, string[]>(StringComparer.Ordinal)
+                    {
+                        ["NamedMortalCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable"] =
+                            ["PreMergeSentinel"],
+                        ["LoadedMortalCommandDisplaySave_RendersCoveredCommandInBrowserAndConsole"] =
+                            ["FullValidation"],
+                        ["LoadedMortalCommandDisplaySave_WorldNewsLocalizesVisibilityEnums"] =
+                            ["FullValidation"]
+                    },
+                ["ChaosSeaCommandDisplaySaveTests.cs"] =
+                    new Dictionary<string, string[]>(StringComparer.Ordinal)
+                    {
+                        ["NamedChaosSeaCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable"] =
+                            ["PreMergeSentinel"],
+                        ["NamedChaosSeaCommandDisplaySave_HasCleanAcceptedTurnBaselineForLiveE2E"] =
+                            ["PreMergeSentinel"],
+                        ["LoadedChaosSeaCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole"] =
+                            ["FullValidation"],
+                        ["LoadedChaosSeaCommandDisplaySave_RendersRepresentativeDetailTargets"] =
+                            ["FullValidation"]
+                    },
+                ["ShiningAbodeCommandDisplaySaveTests.cs"] =
+                    new Dictionary<string, string[]>(StringComparer.Ordinal)
+                    {
+                        ["NamedShiningAbodeCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable"] =
+                            ["PreMergeSentinel"],
+                        ["LoadedShiningAbodeCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole"] =
+                            ["FullValidation"],
+                        ["LoadedShiningAbodeCommandDisplaySave_RendersRepresentativeDetailTargets"] =
+                            ["FullValidation"]
+                    }
+            };
+
+        foreach (var (fileName, methodManifest) in commandDisplayCategories)
+        {
+            Assert.Empty(CategoryTraits(fileName));
+            foreach (var (methodName, categories) in methodManifest)
+                Assert.Equal(categories, CategoryTraits(fileName, methodName));
+        }
     }
 
     [Fact]
@@ -1043,6 +1123,38 @@ public sealed class IntegrationTestBoundaryTests
             $"{manifestDescription} source classification differs from the reviewed manifest:" +
             Environment.NewLine +
             string.Join(Environment.NewLine, violations));
+    }
+
+    private static string[] CategoryTraits(
+        string fileName,
+        string? methodName = null)
+    {
+        var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName));
+        var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
+        MemberDeclarationSyntax node = methodName is null
+            ? Assert.Single(
+                root.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+                declaration => declaration.Identifier.ValueText ==
+                    Path.GetFileNameWithoutExtension(fileName))
+            : Assert.Single(
+                root.DescendantNodes().OfType<MethodDeclarationSyntax>(),
+                method => method.Identifier.ValueText == methodName);
+
+        return node.AttributeLists
+            .SelectMany(list => list.Attributes)
+            .Where(attribute =>
+                attribute.Name.ToString() is "Trait" or "TraitAttribute")
+            .Select(attribute => attribute.ArgumentList?.Arguments
+                .Select(argument => argument.Expression)
+                .OfType<LiteralExpressionSyntax>()
+                .Select(literal => literal.Token.ValueText)
+                .ToArray() ?? [])
+            .Where(arguments =>
+                arguments.Length == 2 &&
+                arguments[0] == "Category")
+            .Select(arguments => arguments[1])
+            .Order(StringComparer.Ordinal)
+            .ToArray();
     }
 
     private static string[] ExactCategoryManifestViolations(

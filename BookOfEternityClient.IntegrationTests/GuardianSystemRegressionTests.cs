@@ -12,6 +12,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
+[Trait("Category", "DeepValidation")]
 public sealed partial class GuardianSystemRegressionTests : IDisposable
 {
     private const string EmptyGuardianProjectTrackerJson =

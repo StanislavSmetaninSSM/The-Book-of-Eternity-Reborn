@@ -13,7 +13,6 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-[Trait("Category", "FullValidation")]
 public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
 {
     private const string SaveFileName = "chaos_sea_command_display_fixture.zip";
@@ -24,6 +23,7 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
     private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-chaos-sea-command-save-" + Guid.NewGuid().ToString("N"));
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task NamedChaosSeaCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable()
     {
         var sourceArchive = GetSourceArchivePath();
@@ -123,6 +123,7 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public void NamedChaosSeaCommandDisplaySave_HasCleanAcceptedTurnBaselineForLiveE2E()
     {
         var sourceArchive = GetSourceArchivePath();
@@ -167,6 +168,7 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
 
     [Theory]
     [MemberData(nameof(CoveredChaosSeaCommandInvocations))]
+    [Trait("Category", "FullValidation")]
     public async Task LoadedChaosSeaCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole(
         string commandId,
         string command)
@@ -187,6 +189,7 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
 
     [Theory]
     [MemberData(nameof(ChaosSeaDetailInvocations))]
+    [Trait("Category", "FullValidation")]
     public async Task LoadedChaosSeaCommandDisplaySave_RendersRepresentativeDetailTargets(
         string commandId,
         string command,
