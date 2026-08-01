@@ -1048,6 +1048,42 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void CommandDisplayPreparedTemplateContract_FalseNegative_RejectsTransitiveConstructorAccess()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "            LazyThreadSafetyMode.ExecutionAndPublication);",
+            "            LazyThreadSafetyMode.ExecutionAndPublication);" +
+            Environment.NewLine +
+            "        _ = IsPreparedSourceLoadedAsync();",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "Prepared fixture constructor must not access _templateRoot.Value.",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_FalseNegative_RejectsTransitiveInitializeAsyncAccess()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "public Task InitializeAsync() => Task.CompletedTask;",
+            "public Task InitializeAsync() => IsPreparedSourceLoadedAsync();",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "Prepared fixture InitializeAsync must not access _templateRoot.Value.",
+            violations);
+    }
+
+    [Fact]
     public void CommandDisplayPreparedTemplateContract_RejectsCloneIntoTemplateRoot()
     {
         var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
@@ -1061,6 +1097,44 @@ public sealed class IntegrationTestBoundaryTests
 
         Assert.Contains(
             "ClonePreparedTemplateAsync must copy into its case-root parameter.",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_FalseNegative_RejectsAdditionalCloneCopy()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "CopyDirectory(preparedTemplate.RootPath, caseRoot);",
+            "CopyDirectory(preparedTemplate.RootPath, caseRoot);" +
+            Environment.NewLine +
+            "        CopyDirectory(preparedTemplate.RootPath, _templateRootPath);",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "ClonePreparedTemplateAsync must match the exact write-safe method shape.",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_FalseNegative_RejectsAdditionalCloneObjectCreation()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "CopyDirectory(preparedTemplate.RootPath, caseRoot);",
+            "using var stream = new FileStream(_templateRootPath, FileMode.Create);" +
+            Environment.NewLine +
+            "        CopyDirectory(preparedTemplate.RootPath, caseRoot);",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "ClonePreparedTemplateAsync must match the exact write-safe method shape.",
             violations);
     }
 
@@ -1718,7 +1792,7 @@ public sealed class IntegrationTestBoundaryTests
         }
 
         var constructor = fixture.Members.OfType<ConstructorDeclarationSyntax>().SingleOrDefault();
-        if (constructor is null || AccessesPreparedTemplateValue(constructor))
+        if (!PreparedFixtureConstructorHasExactShape(constructor))
         {
             violations.Add(
                 "Prepared fixture constructor must not access _templateRoot.Value.");
@@ -1726,7 +1800,7 @@ public sealed class IntegrationTestBoundaryTests
 
         var initialize = fixture.Members.OfType<MethodDeclarationSyntax>().SingleOrDefault(
             static method => method.Identifier.ValueText == "InitializeAsync");
-        if (initialize is null || AccessesPreparedTemplateValue(initialize))
+        if (!PreparedFixtureInitializeHasExactShape(initialize))
         {
             violations.Add(
                 "Prepared fixture InitializeAsync must not access _templateRoot.Value.");
@@ -1748,6 +1822,70 @@ public sealed class IntegrationTestBoundaryTests
         {
             violations.Add(
                 "ClonePreparedTemplateAsync must copy into its case-root parameter.");
+        }
+
+        var exactCloneShape = false;
+        if (clone?.Body is { Statements.Count: 3 } cloneBody &&
+            string.Equals(caseRootParameter, "caseRoot", StringComparison.Ordinal))
+        {
+            var localStatement = cloneBody.Statements[0] as LocalDeclarationStatementSyntax;
+            var preparedTemplateVariable =
+                localStatement?.Declaration.Variables.SingleOrDefault();
+            var readsPreparedTemplate =
+                preparedTemplateVariable?.Identifier.ValueText == "preparedTemplate" &&
+                preparedTemplateVariable.Initializer?.Value is AwaitExpressionSyntax
+                {
+                    Expression: MemberAccessExpressionSyntax
+                    {
+                        Expression: IdentifierNameSyntax { Identifier.ValueText: "_templateRoot" },
+                        Name.Identifier.ValueText: "Value"
+                    }
+                };
+
+            var failureGuard = cloneBody.Statements[1] as IfStatementSyntax;
+            var failureThrow = failureGuard?.Statement as ThrowStatementSyntax;
+            var objectCreations = clone.DescendantNodes()
+                .OfType<ObjectCreationExpressionSyntax>()
+                .ToArray();
+            var createsOnlyFailureException =
+                failureGuard?.Condition.ToString() == "!preparedTemplate.SourceLoaded" &&
+                objectCreations.Length == 1 &&
+                objectCreations[0].Type.ToString() == "InvalidOperationException" &&
+                failureThrow?.Expression == objectCreations[0];
+
+            var copyStatement = cloneBody.Statements[2] as ExpressionStatementSyntax;
+            var invocations = clone.DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
+                .ToArray();
+            var copyInvocation = invocations.SingleOrDefault();
+            var performsOnlyAllowedCopy =
+                invocations.Length == 1 &&
+                copyStatement?.Expression == copyInvocation &&
+                copyInvocation?.Expression is IdentifierNameSyntax
+                {
+                    Identifier.ValueText: "CopyDirectory"
+                } &&
+                copyInvocation.ArgumentList.Arguments.Count == 2 &&
+                copyInvocation.ArgumentList.Arguments[0].Expression is MemberAccessExpressionSyntax
+                {
+                    Expression: IdentifierNameSyntax { Identifier.ValueText: "preparedTemplate" },
+                    Name.Identifier.ValueText: "RootPath"
+                } &&
+                copyInvocation.ArgumentList.Arguments[1].Expression is IdentifierNameSyntax
+                {
+                    Identifier.ValueText: "caseRoot"
+                };
+
+            exactCloneShape =
+                readsPreparedTemplate &&
+                createsOnlyFailureException &&
+                performsOnlyAllowedCopy;
+        }
+
+        if (!exactCloneShape)
+        {
+            violations.Add(
+                "ClonePreparedTemplateAsync must match the exact write-safe method shape.");
         }
 
         foreach (var (fileName, source) in testSources)
@@ -1855,12 +1993,53 @@ public sealed class IntegrationTestBoundaryTests
         return violations;
     }
 
-    private static bool AccessesPreparedTemplateValue(SyntaxNode node) =>
-        node.DescendantNodesAndSelf()
-            .OfType<MemberAccessExpressionSyntax>()
-            .Any(static member =>
-                member.Expression is IdentifierNameSyntax { Identifier.ValueText: "_templateRoot" } &&
-                member.Name.Identifier.ValueText == "Value");
+    private static bool PreparedFixtureConstructorHasExactShape(
+        ConstructorDeclarationSyntax? constructor)
+    {
+        if (constructor?.Body is not { Statements.Count: 4 } body ||
+            constructor.ExpressionBody is not null ||
+            constructor.Initializer is not null ||
+            constructor.Modifiers.Count != 1 ||
+            !constructor.Modifiers.Any(SyntaxKind.ProtectedKeyword) ||
+            constructor.ParameterList.Parameters.Count != 2 ||
+            constructor.ParameterList.Parameters[0].Type?.ToString() != "string" ||
+            constructor.ParameterList.Parameters[0].Identifier.ValueText != "saveFileName" ||
+            constructor.ParameterList.Parameters[1].Type?.ToString() != "string" ||
+            constructor.ParameterList.Parameters[1].Identifier.ValueText != "templateRootPrefix")
+        {
+            return false;
+        }
+
+        var assignments = body.Statements
+            .Select(static statement =>
+                (statement as ExpressionStatementSyntax)?.Expression as AssignmentExpressionSyntax)
+            .ToArray();
+        if (assignments.Any(static assignment => assignment is null))
+            return false;
+
+        return assignments[0]!.Left.ToString() == "_saveFileName" &&
+            assignments[0]!.Right.ToString() == "saveFileName" &&
+            assignments[1]!.Left.ToString() == "_saveRelativePath" &&
+            assignments[1]!.Right.NormalizeWhitespace().ToFullString() ==
+                "\"saves/manual_saves/\" + saveFileName" &&
+            assignments[2]!.Left.ToString() == "_templateRootPath" &&
+            assignments[2]!.Right.NormalizeWhitespace().ToFullString() ==
+                "Path.Combine(Path.GetTempPath(), templateRootPrefix + Guid.NewGuid().ToString(\"N\"))" &&
+            assignments[3]!.Left.ToString() == "_templateRoot" &&
+            assignments[3]!.Right.NormalizeWhitespace().ToFullString() ==
+                "new Lazy<Task<PreparedTemplate>>(PrepareTemplateAsync, LazyThreadSafetyMode.ExecutionAndPublication)";
+    }
+
+    private static bool PreparedFixtureInitializeHasExactShape(
+        MethodDeclarationSyntax? initialize) =>
+        initialize is not null &&
+        initialize.ReturnType.ToString() == "Task" &&
+        initialize.Modifiers.Count == 1 &&
+        initialize.Modifiers.Any(SyntaxKind.PublicKeyword) &&
+        initialize.ParameterList.Parameters.Count == 0 &&
+        initialize.Body is null &&
+        initialize.ExpressionBody?.Expression.NormalizeWhitespace().ToFullString() ==
+            "Task.CompletedTask";
 
     private static string? CommandDisplayInvokedMemberName(InvocationExpressionSyntax invocation) =>
         invocation.Expression switch
