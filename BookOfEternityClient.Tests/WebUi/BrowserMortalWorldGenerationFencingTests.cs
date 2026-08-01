@@ -135,8 +135,9 @@ public sealed class BrowserMortalWorldGenerationFencingTests : IDisposable
     [Fact]
     public async Task StatDistribution_WithHeldCanonicalLease_DoesNotReacquireTheLease()
     {
-        var fs = CreateFileSystem(
-            new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously));
+        var canonicalWriteLockContended = new TaskCompletionSource(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var fs = CreateFileSystem(canonicalWriteLockContended);
         await fs.WriteFileAtomicAsync(
             "game_state/player/stat_points.json",
             """{ "unspentStatPoints": 1 }""");
@@ -156,8 +157,11 @@ public sealed class BrowserMortalWorldGenerationFencingTests : IDisposable
                     "/distribute",
                     Answers(("stat_strength", "1")),
                     Owner("held-lease"))
-                .WaitAsync(TimeSpan.FromSeconds(2)));
+                .WaitAsync(TimeSpan.FromSeconds(5)));
 
+        Assert.False(
+            canonicalWriteLockContended.Task.IsCompleted,
+            "Held-lease stat distribution must not contend for or reacquire the canonical write lease.");
         Assert.True(result.Success, result.Message);
         var final = JsonNode.Parse(
             (await fs.ReadFileAsync(writeLease, "game_state/misc/characteristics.json"))!)!
