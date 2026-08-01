@@ -70,11 +70,12 @@ dotnet build BookOfEternityClient.IntegrationTests\BookOfEternityClient.Integrat
 ```
 
 The diagnostic lanes are not serial final gates. Run focused controls during
-implementation, two consecutive Fast controls at final verification, and one
-PreMerge control. Do not serially run all diagnostic lanes before PreMerge
-unless a focused failure requires diagnosis. `Complete` is a temporary alias
-for `PreMerge`. LifecycleIntegration and DeepValidation are conditional and
-explicit; this branch runs each once because their category boundaries change.
+implementation, one Fast control at a meaningful checkpoint, and one PreMerge
+control immediately before merge. Do not repeat Fast immediately before
+PreMerge or serially run all diagnostic lanes unless a focused failure requires
+diagnosis. `Complete` is a temporary alias for `PreMerge`.
+LifecycleIntegration and DeepValidation are conditional and explicit; this
+branch ran each once because their category boundaries changed.
 
 ## Constitution Check
 

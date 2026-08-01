@@ -47,9 +47,9 @@ complete lifecycle class while retaining exactly ten reviewed
 ## Recommended Workflow
 
 Run the smallest relevant Focused control during implementation and one Fast
-control at a meaningful checkpoint. At final verification, run two consecutive
-Fast controls and one PreMerge control. Do not serially run all diagnostic
-lanes before PreMerge unless a focused failure requires diagnosis.
+control at a meaningful checkpoint. Immediately before merge, run one PreMerge
+control. Do not repeat Fast immediately before PreMerge or serially run all
+diagnostic lanes unless a focused failure requires diagnosis.
 LifecycleIntegration and DeepValidation are conditional and explicit; use them
 for changes to those boundaries, related diagnosis, or an explicitly requested
 exhaustive control.
@@ -58,9 +58,10 @@ exhaustive control.
 # During implementation
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
 
-# Final verification
+# Meaningful checkpoint
 .\scripts\test-csharp.ps1
-.\scripts\test-csharp.ps1
+
+# Immediately before merge
 .\scripts\test-csharp.ps1 -Lane PreMerge
 ```
 
