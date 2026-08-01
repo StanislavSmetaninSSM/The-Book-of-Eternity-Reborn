@@ -289,6 +289,10 @@ public sealed class ChaosSeaCommandDisplaySaveTests :
 
     private async Task<ExplorerCommandResult> ExecuteFromLoadedSaveAsync(string command)
     {
+        var sourceArchive = GetSourceArchivePath();
+        Assert.True(File.Exists(sourceArchive), $"Missing reusable Chaos Sea command display save: {sourceArchive}");
+        Assert.True(await _fixture.IsPreparedSourceLoadedAsync());
+
         var loadRoot = CreateIsolatedRoot();
         await _fixture.ClonePreparedTemplateAsync(loadRoot);
         var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);

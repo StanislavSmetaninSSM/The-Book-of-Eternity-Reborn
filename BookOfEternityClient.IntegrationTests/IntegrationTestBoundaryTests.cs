@@ -1,4 +1,5 @@
 using BookOfEternityClient.Services;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Diagnostics;
@@ -869,13 +870,19 @@ public sealed class IntegrationTestBoundaryTests
 
         var preparedFixtureSource = File.ReadAllText(preparedFixturePath);
         var preparedFixtureRoot = CSharpSyntaxTree.ParseText(preparedFixtureSource).GetCompilationUnitRoot();
+        Assert.Empty(PreparedCommandDisplayContractViolations(
+            preparedFixtureSource,
+            CommandDisplayTestSources()));
         var preparedFixtureClass = Assert.Single(
             preparedFixtureRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
             static declaration => declaration.Identifier.ValueText == "PreparedCommandDisplaySaveFixture");
+        Assert.DoesNotContain(
+            preparedFixtureClass.Members.OfType<FieldDeclarationSyntax>(),
+            static field => !field.Modifiers.Any(SyntaxKind.ReadOnlyKeyword));
 
         var lazyTemplateField = Assert.Single(
             preparedFixtureClass.Members.OfType<FieldDeclarationSyntax>(),
-            static field => field.Declaration.Type.ToString() == "Lazy<Task<string>>");
+            static field => field.Declaration.Type.ToString() == "Lazy<Task<PreparedTemplate>>");
         Assert.Equal("_templateRoot", Assert.Single(lazyTemplateField.Declaration.Variables).Identifier.ValueText);
         Assert.Contains("PrepareTemplateAsync", preparedFixtureClass.ToString(), StringComparison.Ordinal);
         Assert.Contains("ExecutionAndPublication", preparedFixtureClass.ToString(), StringComparison.Ordinal);
@@ -1001,6 +1008,117 @@ public sealed class IntegrationTestBoundaryTests
             Assert.DoesNotContain(".LoadGameAsync(", executionBody, StringComparison.Ordinal);
             Assert.DoesNotContain("CopyCleanCheckoutDependencies", executionBody, StringComparison.Ordinal);
             Assert.DoesNotContain("File.Copy(", executionBody, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_RejectsEagerConstructorAccess()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "            LazyThreadSafetyMode.ExecutionAndPublication);",
+            "            LazyThreadSafetyMode.ExecutionAndPublication);" +
+            Environment.NewLine +
+            "        _ = _templateRoot.Value;",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "Prepared fixture constructor must not access _templateRoot.Value.",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_RejectsEagerInitializeAsyncAccess()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "public Task InitializeAsync() => Task.CompletedTask;",
+            "public Task InitializeAsync() => _templateRoot.Value;",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "Prepared fixture InitializeAsync must not access _templateRoot.Value.",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_RejectsCloneIntoTemplateRoot()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "CopyDirectory(preparedTemplate.RootPath, caseRoot);",
+            "CopyDirectory(preparedTemplate.RootPath, _templateRootPath);",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "ClonePreparedTemplateAsync must copy into its case-root parameter.",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_RejectsSharedExecutionRoot()
+    {
+        var sources = CommandDisplayTestSources();
+        sources["MortalCommandDisplaySaveTests.cs"] =
+            sources["MortalCommandDisplaySaveTests.cs"].Replace(
+                "var loadRoot = CreateIsolatedRoot();",
+                "var loadRoot = _rootPath;",
+                StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            PreparedCommandDisplayFixtureSource(),
+            sources);
+
+        Assert.Contains(
+            "MortalCommandDisplaySaveTests.cs: exhaustive helper must obtain its case root from CreateIsolatedRoot.",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_RejectsNonUniqueCreatedRoot()
+    {
+        var sources = CommandDisplayTestSources();
+        sources["MortalCommandDisplaySaveTests.cs"] =
+            sources["MortalCommandDisplaySaveTests.cs"].Replace(
+                "var root = Path.Combine(_rootPath, Guid.NewGuid().ToString(\"N\"));",
+                "var root = Path.Combine(_rootPath, \"shared\");",
+                StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            PreparedCommandDisplayFixtureSource(),
+            sources);
+
+        Assert.Contains(
+            "MortalCommandDisplaySaveTests.cs: CreateIsolatedRoot must include a per-call Guid.NewGuid().",
+            violations);
+    }
+
+    [Fact]
+    public void CommandDisplayPreparedTemplateContract_RequiresSourceAndPreparedLoadAssertions()
+    {
+        foreach (var source in CommandDisplayTestSources().Values)
+        {
+            var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
+            var executionHelper = Assert.Single(
+                root.DescendantNodes().OfType<MethodDeclarationSyntax>(),
+                static method => method.Identifier.ValueText == "ExecuteFromLoadedSaveAsync");
+            var assertions = executionHelper.DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
+                .Where(static invocation => invocation.Expression.ToString() == "Assert.True")
+                .Select(static invocation => invocation.ArgumentList.Arguments.First().Expression.ToString())
+                .ToArray();
+
+            Assert.Contains("File.Exists(sourceArchive)", assertions);
+            Assert.Contains("await _fixture.IsPreparedSourceLoadedAsync()", assertions);
         }
     }
 
@@ -1564,6 +1682,194 @@ public sealed class IntegrationTestBoundaryTests
     private static string SourcePath(params string[] relativeParts) =>
         Path.GetFullPath(Path.Combine(
             new[] { TestRepoPaths.RepoRoot }.Concat(relativeParts).ToArray()));
+
+    private static string PreparedCommandDisplayFixtureSource() =>
+        File.ReadAllText(SourcePath(
+            IntegrationTestsDirectory,
+            "PreparedCommandDisplaySaveFixture.cs"));
+
+    private static Dictionary<string, string> CommandDisplayTestSources() =>
+        new(
+            new[]
+            {
+                "MortalCommandDisplaySaveTests.cs",
+                "ChaosSeaCommandDisplaySaveTests.cs",
+                "ShiningAbodeCommandDisplaySaveTests.cs"
+            }.ToDictionary(
+                static fileName => fileName,
+                static fileName => File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName)),
+                StringComparer.Ordinal),
+            StringComparer.Ordinal);
+
+    private static IReadOnlyList<string> PreparedCommandDisplayContractViolations(
+        string fixtureSource,
+        IReadOnlyDictionary<string, string> testSources)
+    {
+        var violations = new List<string>();
+        var fixtureRoot = CSharpSyntaxTree.ParseText(fixtureSource).GetCompilationUnitRoot();
+        var fixture = fixtureRoot.DescendantNodes()
+            .OfType<ClassDeclarationSyntax>()
+            .SingleOrDefault(static declaration =>
+                declaration.Identifier.ValueText == "PreparedCommandDisplaySaveFixture");
+        if (fixture is null)
+        {
+            violations.Add("PreparedCommandDisplaySaveFixture declaration is missing.");
+            return violations;
+        }
+
+        var constructor = fixture.Members.OfType<ConstructorDeclarationSyntax>().SingleOrDefault();
+        if (constructor is null || AccessesPreparedTemplateValue(constructor))
+        {
+            violations.Add(
+                "Prepared fixture constructor must not access _templateRoot.Value.");
+        }
+
+        var initialize = fixture.Members.OfType<MethodDeclarationSyntax>().SingleOrDefault(
+            static method => method.Identifier.ValueText == "InitializeAsync");
+        if (initialize is null || AccessesPreparedTemplateValue(initialize))
+        {
+            violations.Add(
+                "Prepared fixture InitializeAsync must not access _templateRoot.Value.");
+        }
+
+        var clone = fixture.Members.OfType<MethodDeclarationSyntax>().SingleOrDefault(
+            static method => method.Identifier.ValueText == "ClonePreparedTemplateAsync");
+        var caseRootParameter = clone?.ParameterList.Parameters.SingleOrDefault()?.Identifier.ValueText;
+        var copiesIntoCaseRoot = clone is not null &&
+            !string.IsNullOrWhiteSpace(caseRootParameter) &&
+            clone.DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
+                .Any(invocation =>
+                    CommandDisplayInvokedMemberName(invocation) == "CopyDirectory" &&
+                    invocation.ArgumentList.Arguments.Count == 2 &&
+                    invocation.ArgumentList.Arguments[1].Expression is IdentifierNameSyntax destination &&
+                    destination.Identifier.ValueText == caseRootParameter);
+        if (!copiesIntoCaseRoot)
+        {
+            violations.Add(
+                "ClonePreparedTemplateAsync must copy into its case-root parameter.");
+        }
+
+        foreach (var (fileName, source) in testSources)
+        {
+            var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
+            var testClass = root.DescendantNodes()
+                .OfType<ClassDeclarationSyntax>()
+                .SingleOrDefault(declaration =>
+                    declaration.Identifier.ValueText == Path.GetFileNameWithoutExtension(fileName));
+            if (testClass is null)
+            {
+                violations.Add($"{fileName}: test class declaration is missing.");
+                continue;
+            }
+
+            var createRoot = testClass.Members.OfType<MethodDeclarationSyntax>().SingleOrDefault(
+                static method => method.Identifier.ValueText == "CreateIsolatedRoot");
+            var rootVariable = createRoot?.DescendantNodes()
+                .OfType<VariableDeclaratorSyntax>()
+                .SingleOrDefault(static variable => variable.Identifier.ValueText == "root");
+            var rootInitializer = rootVariable?.Initializer?.Value;
+            var usesOwnerRoot = rootInitializer is InvocationExpressionSyntax pathCombine &&
+                CommandDisplayInvokedMemberName(pathCombine) == "Combine" &&
+                pathCombine.ArgumentList.Arguments.Count >= 2 &&
+                pathCombine.ArgumentList.Arguments[0].Expression is IdentifierNameSyntax ownerRoot &&
+                ownerRoot.Identifier.ValueText == "_rootPath";
+            var createsPerCallGuid = rootInitializer?.DescendantNodesAndSelf()
+                .OfType<InvocationExpressionSyntax>()
+                .Any(invocation =>
+                    invocation.Expression is MemberAccessExpressionSyntax
+                    {
+                        Expression: IdentifierNameSyntax { Identifier.ValueText: "Guid" },
+                        Name.Identifier.ValueText: "NewGuid"
+                    }) == true;
+            var createsOwnedDirectory = createRoot?.DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
+                .Any(invocation =>
+                    invocation.Expression.ToString() == "Directory.CreateDirectory" &&
+                    invocation.ArgumentList.Arguments.Count == 1 &&
+                    invocation.ArgumentList.Arguments[0].Expression is IdentifierNameSyntax directory &&
+                    directory.Identifier.ValueText == "root") == true;
+            var returnsOwnedRoot = createRoot?.DescendantNodes()
+                .OfType<ReturnStatementSyntax>()
+                .Any(static statement =>
+                    statement.Expression is IdentifierNameSyntax { Identifier.ValueText: "root" }) == true;
+
+            if (!usesOwnerRoot)
+            {
+                violations.Add(
+                    $"{fileName}: CreateIsolatedRoot must place the case root under the instance-owned root.");
+            }
+
+            if (!createsPerCallGuid)
+            {
+                violations.Add(
+                    $"{fileName}: CreateIsolatedRoot must include a per-call Guid.NewGuid().");
+            }
+
+            if (!createsOwnedDirectory || !returnsOwnedRoot)
+            {
+                violations.Add(
+                    $"{fileName}: CreateIsolatedRoot must create and return the same owned root.");
+            }
+
+            var execution = testClass.Members.OfType<MethodDeclarationSyntax>().SingleOrDefault(
+                static method => method.Identifier.ValueText == "ExecuteFromLoadedSaveAsync");
+            var loadRootVariable = execution?.DescendantNodes()
+                .OfType<VariableDeclaratorSyntax>()
+                .SingleOrDefault(static variable => variable.Identifier.ValueText == "loadRoot");
+            var obtainsUniqueRoot = loadRootVariable?.Initializer?.Value is InvocationExpressionSyntax createCall &&
+                CommandDisplayInvokedMemberName(createCall) == "CreateIsolatedRoot" &&
+                createCall.ArgumentList.Arguments.Count == 0;
+            if (!obtainsUniqueRoot)
+            {
+                violations.Add(
+                    $"{fileName}: exhaustive helper must obtain its case root from CreateIsolatedRoot.");
+            }
+
+            var clonesIntoUniqueRoot = execution?.DescendantNodes()
+                .OfType<InvocationExpressionSyntax>()
+                .Any(invocation =>
+                    invocation.Expression.ToString() == "_fixture.ClonePreparedTemplateAsync" &&
+                    invocation.ArgumentList.Arguments.Count == 1 &&
+                    invocation.ArgumentList.Arguments[0].Expression is IdentifierNameSyntax cloneRoot &&
+                    cloneRoot.Identifier.ValueText == "loadRoot") == true;
+            if (!clonesIntoUniqueRoot)
+            {
+                violations.Add(
+                    $"{fileName}: exhaustive helper must clone into its unique case root.");
+            }
+
+            var fileSystemUsesUniqueRoot = execution?.DescendantNodes()
+                .OfType<ObjectCreationExpressionSyntax>()
+                .Any(creation =>
+                    creation.Type.ToString() == "FileSystemManager" &&
+                    creation.ArgumentList?.Arguments.FirstOrDefault()?.Expression is IdentifierNameSyntax fsRoot &&
+                    fsRoot.Identifier.ValueText == "loadRoot") == true;
+            if (!fileSystemUsesUniqueRoot)
+            {
+                violations.Add(
+                    $"{fileName}: per-case FileSystemManager must use the unique case root.");
+            }
+        }
+
+        return violations;
+    }
+
+    private static bool AccessesPreparedTemplateValue(SyntaxNode node) =>
+        node.DescendantNodesAndSelf()
+            .OfType<MemberAccessExpressionSyntax>()
+            .Any(static member =>
+                member.Expression is IdentifierNameSyntax { Identifier.ValueText: "_templateRoot" } &&
+                member.Name.Identifier.ValueText == "Value");
+
+    private static string? CommandDisplayInvokedMemberName(InvocationExpressionSyntax invocation) =>
+        invocation.Expression switch
+        {
+            IdentifierNameSyntax identifier => identifier.Identifier.ValueText,
+            MemberAccessExpressionSyntax memberAccess => memberAccess.Name.Identifier.ValueText,
+            MemberBindingExpressionSyntax memberBinding => memberBinding.Name.Identifier.ValueText,
+            _ => null
+        };
 
     private static int LineNumber(string source, int characterIndex)
     {

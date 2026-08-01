@@ -11,7 +11,7 @@ public abstract class PreparedCommandDisplaySaveFixture : IAsyncLifetime
     private readonly string _saveFileName;
     private readonly string _saveRelativePath;
     private readonly string _templateRootPath;
-    private readonly Lazy<Task<string>> _templateRoot;
+    private readonly Lazy<Task<PreparedTemplate>> _templateRoot;
 
     protected PreparedCommandDisplaySaveFixture(string saveFileName, string templateRootPrefix)
     {
@@ -20,17 +20,26 @@ public abstract class PreparedCommandDisplaySaveFixture : IAsyncLifetime
         _templateRootPath = Path.Combine(
             Path.GetTempPath(),
             templateRootPrefix + Guid.NewGuid().ToString("N"));
-        _templateRoot = new Lazy<Task<string>>(
+        _templateRoot = new Lazy<Task<PreparedTemplate>>(
             PrepareTemplateAsync,
             LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
 
+    public async Task<bool> IsPreparedSourceLoadedAsync()
+    {
+        var preparedTemplate = await _templateRoot.Value;
+        return preparedTemplate.SourceLoaded;
+    }
+
     public async Task ClonePreparedTemplateAsync(string caseRoot)
     {
-        var templateRoot = await _templateRoot.Value;
-        CopyDirectory(templateRoot, caseRoot);
+        var preparedTemplate = await _templateRoot.Value;
+        if (!preparedTemplate.SourceLoaded)
+            throw new InvalidOperationException($"Could not prepare command-display save '{_saveFileName}'.");
+
+        CopyDirectory(preparedTemplate.RootPath, caseRoot);
     }
 
     public async Task DisposeAsync()
@@ -48,7 +57,7 @@ public abstract class PreparedCommandDisplaySaveFixture : IAsyncLifetime
         }
     }
 
-    private async Task<string> PrepareTemplateAsync()
+    private async Task<PreparedTemplate> PrepareTemplateAsync()
     {
         Directory.CreateDirectory(_templateRootPath);
 
@@ -82,12 +91,13 @@ public abstract class PreparedCommandDisplaySaveFixture : IAsyncLifetime
                 fileSystem,
                 stateManager,
                 NullLogger<SaveLoadService>.Instance);
-            if (!await saveLoad.LoadGameAsync(savePath))
-                throw new InvalidOperationException($"Could not prepare command-display save '{_saveFileName}'.");
+            var sourceLoaded = await saveLoad.LoadGameAsync(savePath);
+            if (!sourceLoaded)
+                return new PreparedTemplate(_templateRootPath, SourceLoaded: false);
 
             await stateManager.LoadSettingsAsync();
             await stateManager.RefreshGameStateAsync();
-            return _templateRootPath;
+            return new PreparedTemplate(_templateRootPath, SourceLoaded: true);
         }
         catch
         {
@@ -132,6 +142,8 @@ public abstract class PreparedCommandDisplaySaveFixture : IAsyncLifetime
         if (Directory.Exists(candidate))
             Directory.Delete(candidate, recursive: true);
     }
+
+    private sealed record PreparedTemplate(string RootPath, bool SourceLoaded);
 }
 
 public sealed class MortalPreparedCommandDisplaySaveFixture : PreparedCommandDisplaySaveFixture
