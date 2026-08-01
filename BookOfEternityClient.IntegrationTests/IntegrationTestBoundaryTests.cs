@@ -196,6 +196,7 @@ public sealed class IntegrationTestBoundaryTests
             "Focused",
             "FullValidation",
             "RegressionIntegration",
+            "DeepValidation",
             "ProcessIntegration",
             "E2E",
             "Complete",
@@ -210,6 +211,8 @@ public sealed class IntegrationTestBoundaryTests
             "Filter = \"Category=FullValidation\" TimeoutMinutes = 15 }",
             "RegressionIntegration = @{ Project = \"Integration\" " +
             "Filter = \"Category=RegressionIntegration\" TimeoutMinutes = 15 }",
+            "DeepValidation = @{ Project = \"Integration\" " +
+            "Filter = $deepValidationFilter TimeoutMinutes = 15 }",
             "ProcessIntegration = @{ Project = \"Integration\" " +
             "Filter = \"Category=ProcessIntegration\" TimeoutMinutes = 15 }",
             "E2E = @{ Project = \"Integration\" " +
@@ -218,6 +221,24 @@ public sealed class IntegrationTestBoundaryTests
         };
         Assert.All(diagnosticDefinitions, definition =>
             Assert.Contains(definition, normalized, StringComparison.Ordinal));
+
+        var normalizedRequiredTokens = new[]
+        {
+            "$coreIntegrationFilter = " +
+            "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
+            "\"Category!=ProcessIntegration&Category!=E2E\"",
+            "$deepValidationFilter = " +
+            "\"(Category=FullValidation|Category=DeepValidation)&\" + " +
+            "\"Category!=ProcessIntegration&Category!=E2E\"",
+            "$PreMergeMinimumCases = 4666",
+            "$DeepValidationMinimumCases = 1950",
+            "$isComposedCoverageLane = $effectiveLane -in @( " +
+            "\"PreMerge\", \"DeepValidation\" )",
+            "if ($isComposedCoverageLane -and " +
+            "$runSummary.DuplicateTests.Count -ne 0)"
+        };
+        Assert.All(normalizedRequiredTokens, token =>
+            Assert.Contains(token, normalized, StringComparison.Ordinal));
 
         var requiredTokens = new[]
         {
@@ -256,11 +277,11 @@ public sealed class IntegrationTestBoundaryTests
             "Owned cleanup diagnostics",
             "DuplicateTests",
             "summary.json",
-            "ConvertTo-Json -Depth 4",
-            "6560"
+            "ConvertTo-Json -Depth 4"
         };
         Assert.All(requiredTokens, token =>
             Assert.Contains(token, source, StringComparison.Ordinal));
+        Assert.DoesNotContain("6560", source, StringComparison.Ordinal);
 
         Assert.Single(Regex.Matches(source, @"\$deadlineUtc\s*="));
 

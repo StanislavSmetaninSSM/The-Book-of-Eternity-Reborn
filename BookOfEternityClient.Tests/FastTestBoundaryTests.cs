@@ -43,6 +43,10 @@ public sealed class FastTestBoundaryTests
             normalized,
             StringComparison.Ordinal);
         Assert.Contains(
+            "\"RegressionIntegration\", \"DeepValidation\", \"ProcessIntegration\"",
+            normalized,
+            StringComparison.Ordinal);
+        Assert.Contains(
             "$fastTestProject = Join-Path $repoRoot " +
             "\"BookOfEternityClient.Tests\\BookOfEternityClient.Tests.csproj\"",
             source,

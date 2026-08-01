@@ -6,6 +6,7 @@ param(
         "Focused",
         "FullValidation",
         "RegressionIntegration",
+        "DeepValidation",
         "ProcessIntegration",
         "E2E",
         "Complete",
@@ -53,6 +54,14 @@ $PreMergeFastParallelismLimit = 2
 $ComposedSmallClassBinCount = 4
 $LargeClassCaseTarget = 120
 $OwnedCleanupPassLimit = 2
+$PreMergeMinimumCases = 4666
+$DeepValidationMinimumCases = 1950
+$coreIntegrationFilter =
+    "Category!=FullValidation&Category!=DeepValidation&" +
+    "Category!=ProcessIntegration&Category!=E2E"
+$deepValidationFilter =
+    "(Category=FullValidation|Category=DeepValidation)&" +
+    "Category!=ProcessIntegration&Category!=E2E"
 
 if ($PSVersionTable.PSVersion.Major -lt 7) {
     throw "scripts/test-csharp.ps1 requires PowerShell 7 or newer."
@@ -77,6 +86,11 @@ $laneDefinitions = @{
     RegressionIntegration = @{
         Project = "Integration"
         Filter = "Category=RegressionIntegration"
+        TimeoutMinutes = 15
+    }
+    DeepValidation = @{
+        Project = "Integration"
+        Filter = $deepValidationFilter
         TimeoutMinutes = 15
     }
     ProcessIntegration = @{
@@ -936,7 +950,7 @@ function New-TestRuns {
             [pscustomobject]@{
                 Name = "Integration"
                 ProjectPath = $integrationTestProject
-                Filter = "Category!=ProcessIntegration&Category!=E2E"
+                Filter = $coreIntegrationFilter
             }
         )
         $preMergeExclusiveSelections = @(
@@ -989,7 +1003,8 @@ function New-TestRuns {
     $balanced = $effectiveLane -in @(
         "Fast",
         "FullValidation",
-        "RegressionIntegration"
+        "RegressionIntegration",
+        "DeepValidation"
     )
     return @(
         New-SelectionRuns `
@@ -1403,7 +1418,8 @@ try {
             }
             elseif ($effectiveLane -in @(
                 "FullValidation",
-                "RegressionIntegration"
+                "RegressionIntegration",
+                "DeepValidation"
             )) {
                 $Parallelism
             }
@@ -1424,13 +1440,24 @@ try {
             $exitCode = 1
             throw "Lane '$Lane' produced no discovered test results."
         }
-        if ($effectiveLane -eq "PreMerge" -and $runSummary.DuplicateTests.Count -ne 0) {
+        $isComposedCoverageLane = $effectiveLane -in @(
+            "PreMerge",
+            "DeepValidation"
+        )
+        if ($isComposedCoverageLane -and $runSummary.DuplicateTests.Count -ne 0) {
             $exitCode = 1
-            throw "PreMerge produced duplicate TRX test IDs: $($runSummary.DuplicateTests -join ', ')"
+            throw "$effectiveLane produced duplicate TRX test IDs: " +
+                "$($runSummary.DuplicateTests -join ', ')"
         }
-        if ($effectiveLane -eq "PreMerge" -and $runSummary.Total -lt 6560) {
+        $minimumCases = switch ($effectiveLane) {
+            "PreMerge" { $PreMergeMinimumCases }
+            "DeepValidation" { $DeepValidationMinimumCases }
+            default { 0 }
+        }
+        if ($minimumCases -gt 0 -and $runSummary.Total -lt $minimumCases) {
             $exitCode = 1
-            throw "PreMerge discovered $($runSummary.Total) cases; expected at least the 6,560-case baseline."
+            throw "$effectiveLane produced $($runSummary.Total) cases; " +
+                "expected at least the $minimumCases-case reviewed baseline."
         }
     }
     }
