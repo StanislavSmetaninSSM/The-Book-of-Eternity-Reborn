@@ -370,11 +370,24 @@ public sealed class IntegrationTestBoundaryTests
             "$descriptor = $pending |",
             activeSerialGroupsIndex,
             StringComparison.Ordinal);
+        var pendingSelectionEndIndex = schedulerSource.IndexOf(
+            "Select-Object -First 1",
+            pendingSelectionIndex,
+            StringComparison.Ordinal);
         Assert.True(
             schedulingLoopIndex >= 0 &&
             activeSerialGroupsIndex > schedulingLoopIndex &&
-            pendingSelectionIndex > activeSerialGroupsIndex,
+            pendingSelectionIndex > activeSerialGroupsIndex &&
+            pendingSelectionEndIndex > pendingSelectionIndex,
             "Active serial groups must be recomputed before every pending selection.");
+        var pendingEligibility = schedulerSource.Substring(
+            pendingSelectionIndex,
+            pendingSelectionEndIndex - pendingSelectionIndex);
+        Assert.Contains(
+            ") -and ( [string]::IsNullOrWhiteSpace($_.SerialGroup) -or " +
+            "-not $activeSerialGroups.Contains($_.SerialGroup) )",
+            pendingEligibility,
+            StringComparison.Ordinal);
 
         var normalizedRunner = Regex.Replace(runnerSource.Replace("`", ""), @"\s+", " ");
         var preservedTokens = new[]
