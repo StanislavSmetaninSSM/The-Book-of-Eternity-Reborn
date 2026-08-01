@@ -693,7 +693,10 @@ function New-RunDescriptor {
         [int]$EstimatedCases,
 
         [Parameter(Mandatory)]
-        [int]$EstimatedCost
+        [int]$EstimatedCost,
+
+        [AllowNull()]
+        [string]$SerialGroup = $null
     )
 
     return [pscustomobject]@{
@@ -704,6 +707,7 @@ function New-RunDescriptor {
         Filter = $TestFilter
         EstimatedCases = $EstimatedCases
         EstimatedCost = $EstimatedCost
+        SerialGroup = $SerialGroup
         Arguments = New-TestArguments `
             -ProjectPath $ProjectPath `
             -TrxFileName $TrxFileName `
@@ -752,25 +756,12 @@ function New-SelectionRuns {
     $runIndex = 0
 
     foreach ($classGroup in $baseClassGroups | Where-Object Count -gt $LargeClassCaseTarget) {
-        if ($externallySerializedClasses.Contains($classGroup.Name)) {
-            $runIndex++
-            $selectionFilter = "FullyQualifiedName~$($classGroup.Name)."
-            $testFilter = Join-TestFilter `
-                -SelectionFilter $selectionFilter `
-                -CategoryFilter $Selection.Filter
-            [void]$descriptors.Add((
-                New-RunDescriptor `
-                    -Phase $Phase `
-                    -Name "$($Selection.Name)-Base-$($classGroup.Name.Split('.')[-1])-$($runIndex.ToString('D2'))" `
-                    -ProjectPath $Selection.ProjectPath `
-                    -TestFilter $testFilter `
-                    -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
-                    -EstimatedCases $classGroup.Count `
-                    -EstimatedCost $classGroup.Count
-            ))
-            continue
+        $serialGroup = if ($externallySerializedClasses.Contains($classGroup.Name)) {
+            $classGroup.Name
         }
-
+        else {
+            $null
+        }
         $methodItems = @(
             $classGroup.Group |
                 Group-Object MethodName |
@@ -788,6 +779,12 @@ function New-SelectionRuns {
             $testFilter = Join-TestFilter `
                 -SelectionFilter $selectionFilter `
                 -CategoryFilter $Selection.Filter
+            $estimatedCost = if ($null -eq $serialGroup) {
+                $bin.Weight
+            }
+            else {
+                $classGroup.Count
+            }
             [void]$descriptors.Add((
                 New-RunDescriptor `
                     -Phase $Phase `
@@ -796,7 +793,8 @@ function New-SelectionRuns {
                     -TestFilter $testFilter `
                     -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
                     -EstimatedCases $bin.Weight `
-                    -EstimatedCost $bin.Weight
+                    -EstimatedCost $estimatedCost `
+                    -SerialGroup $serialGroup
             ))
         }
     }
@@ -1072,13 +1070,26 @@ function Invoke-DescriptorBatch {
                             $fastTestProject)
                     }
             ).Count
+            $activeSerialGroups =
+                [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            foreach ($activeRun in $active) {
+                $serialGroup = $activeRun.Descriptor.SerialGroup
+                if (-not [string]::IsNullOrWhiteSpace($serialGroup)) {
+                    [void]$activeSerialGroups.Add($serialGroup)
+                }
+            }
             $descriptor = $pending |
                 Where-Object {
-                    $MaximumFastParallelism -eq 0 -or
-                    -not [StringComparer]::OrdinalIgnoreCase.Equals(
-                        $_.ProjectPath,
-                        $fastTestProject) -or
-                    $activeFastCount -lt $MaximumFastParallelism
+                    (
+                        $MaximumFastParallelism -eq 0 -or
+                        -not [StringComparer]::OrdinalIgnoreCase.Equals(
+                            $_.ProjectPath,
+                            $fastTestProject) -or
+                        $activeFastCount -lt $MaximumFastParallelism
+                    ) -and (
+                        [string]::IsNullOrWhiteSpace($_.SerialGroup) -or
+                        -not $activeSerialGroups.Contains($_.SerialGroup)
+                    )
                 } |
                 Select-Object -First 1
             if ($null -eq $descriptor) {
@@ -1409,7 +1420,7 @@ try {
     if ($PlanOnly) {
         $planRows = @(
             $testRuns |
-                Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost
+                Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost, SerialGroup
         )
         $planLines = [System.Collections.Generic.List[string]]::new()
         [void]$planLines.Add("PLAN-BEGIN EffectiveLane=$effectiveLane")

@@ -238,6 +238,25 @@ public sealed class IntegrationTestBoundaryTests
             lifecycleClassName,
             externalSerializationEntry.Groups["class"].Value);
 
+        var descriptorMatch = Regex.Match(
+            runnerSource,
+            @"(?ms)^function New-RunDescriptor \{\s*(?<body>.*?)^function New-SelectionRuns \{");
+        Assert.True(
+            descriptorMatch.Success,
+            "Expected to find the complete New-RunDescriptor function.");
+        var descriptorSource = Regex.Replace(
+            descriptorMatch.Groups["body"].Value.Replace("`", ""),
+            @"\s+",
+            " ");
+        Assert.Contains(
+            "[AllowNull()] [string]$SerialGroup = $null",
+            descriptorSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "SerialGroup = $SerialGroup",
+            descriptorSource,
+            StringComparison.Ordinal);
+
         var selectionRunsMatch = Regex.Match(
             runnerSource,
             @"(?ms)^function New-SelectionRuns \{\s*(?<body>.*?)^function New-TestRuns \{");
@@ -248,63 +267,35 @@ public sealed class IntegrationTestBoundaryTests
             selectionRunsMatch.Groups["body"].Value.Replace("`", ""),
             @"\s+",
             " ");
-        const string externalBranchStart =
-            "if ($externallySerializedClasses.Contains($classGroup.Name)) {";
-        var externalBranchIndex = selectionRuns.IndexOf(
-            externalBranchStart,
+        var largeClassLoopIndex = selectionRuns.IndexOf(
+            "foreach ($classGroup in $baseClassGroups | " +
+            "Where-Object Count -gt $LargeClassCaseTarget) {",
             StringComparison.Ordinal);
         Assert.True(
-            externalBranchIndex >= 0,
-            "Balanced large-class planning must branch on the external-serialization set.");
+            largeClassLoopIndex >= 0,
+            "Expected balanced planning to retain its large-class loop.");
 
+        var serialGroupIndex = selectionRuns.IndexOf(
+            "$serialGroup = if ($externallySerializedClasses.Contains($classGroup.Name)) " +
+            "{ $classGroup.Name } else { $null }",
+            largeClassLoopIndex,
+            StringComparison.Ordinal);
         var methodBinningIndex = selectionRuns.IndexOf(
             "$methodItems = @(",
-            externalBranchIndex,
+            largeClassLoopIndex,
             StringComparison.Ordinal);
         Assert.True(
-            methodBinningIndex > externalBranchIndex,
-            "The externally serialized branch must precede ordinary method binning.");
-        var continueIndex = selectionRuns.IndexOf(
-            "continue",
-            externalBranchIndex,
-            StringComparison.Ordinal);
-        Assert.True(
-            continueIndex > externalBranchIndex && continueIndex < methodBinningIndex,
-            "The externally serialized branch must skip ordinary method binning.");
-
-        var externalBranch = selectionRuns.Substring(
-            externalBranchIndex,
-            continueIndex + "continue".Length - externalBranchIndex);
-        Assert.Single(Regex.Matches(externalBranch, @"\bNew-RunDescriptor\b"));
-        Assert.Contains(
-            "$selectionFilter = \"FullyQualifiedName~$($classGroup.Name).\"",
-            externalBranch,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "Join-TestFilter -SelectionFilter $selectionFilter " +
-            "-CategoryFilter $Selection.Filter",
-            externalBranch,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "-EstimatedCases $classGroup.Count",
-            externalBranch,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "-EstimatedCost $classGroup.Count",
-            externalBranch,
-            StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "Group-Object MethodName",
-            externalBranch,
-            StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "-join \"|\"",
-            externalBranch,
-            StringComparison.Ordinal);
+            serialGroupIndex > largeClassLoopIndex &&
+            methodBinningIndex > serialGroupIndex,
+            "Every large class must derive its optional serial group before method binning.");
 
         var ordinaryMethodBinPath = selectionRuns[methodBinningIndex..];
         Assert.Contains(
             "Group-Object MethodName",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$binCount = [Math]::Ceiling($classGroup.Count / $LargeClassCaseTarget)",
             ordinaryMethodBinPath,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -316,13 +307,74 @@ public sealed class IntegrationTestBoundaryTests
             ordinaryMethodBinPath,
             StringComparison.Ordinal);
         Assert.Contains(
+            "Join-TestFilter -SelectionFilter $selectionFilter " +
+            "-CategoryFilter $Selection.Filter",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$estimatedCost = if ($null -eq $serialGroup) " +
+            "{ $bin.Weight } else { $classGroup.Count }",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+        Assert.Contains(
             "-EstimatedCases $bin.Weight",
             ordinaryMethodBinPath,
             StringComparison.Ordinal);
         Assert.Contains(
-            "-EstimatedCost $bin.Weight",
+            "-EstimatedCost $estimatedCost",
             ordinaryMethodBinPath,
             StringComparison.Ordinal);
+        Assert.Contains(
+            "-SerialGroup $serialGroup",
+            ordinaryMethodBinPath,
+            StringComparison.Ordinal);
+
+        var schedulerMatch = Regex.Match(
+            runnerSource,
+            @"(?ms)^function Invoke-DescriptorBatch \{\s*(?<body>.*?)^function Get-TrxSummary \{");
+        Assert.True(
+            schedulerMatch.Success,
+            "Expected to find the complete Invoke-DescriptorBatch function.");
+        var schedulerSource = Regex.Replace(
+            schedulerMatch.Groups["body"].Value.Replace("`", ""),
+            @"\s+",
+            " ");
+        Assert.Contains(
+            "$activeSerialGroups = " +
+            "[System.Collections.Generic.HashSet[string]]::new(" +
+            "[System.StringComparer]::Ordinal)",
+            schedulerSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$serialGroup = $activeRun.Descriptor.SerialGroup",
+            schedulerSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "if (-not [string]::IsNullOrWhiteSpace($serialGroup)) " +
+            "{ [void]$activeSerialGroups.Add($serialGroup) }",
+            schedulerSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "[string]::IsNullOrWhiteSpace($_.SerialGroup) -or " +
+            "-not $activeSerialGroups.Contains($_.SerialGroup)",
+            schedulerSource,
+            StringComparison.Ordinal);
+        var schedulingLoopIndex = schedulerSource.IndexOf(
+            "while ($pending.Count -gt 0 -and $active.Count -lt $MaximumParallelism) {",
+            StringComparison.Ordinal);
+        var activeSerialGroupsIndex = schedulerSource.IndexOf(
+            "$activeSerialGroups =",
+            schedulingLoopIndex,
+            StringComparison.Ordinal);
+        var pendingSelectionIndex = schedulerSource.IndexOf(
+            "$descriptor = $pending |",
+            activeSerialGroupsIndex,
+            StringComparison.Ordinal);
+        Assert.True(
+            schedulingLoopIndex >= 0 &&
+            activeSerialGroupsIndex > schedulingLoopIndex &&
+            pendingSelectionIndex > activeSerialGroupsIndex,
+            "Active serial groups must be recomputed before every pending selection.");
 
         var normalizedRunner = Regex.Replace(runnerSource.Replace("`", ""), @"\s+", " ");
         var preservedTokens = new[]
@@ -340,7 +392,10 @@ public sealed class IntegrationTestBoundaryTests
             "Filter = \"Category=ProcessIntegration&Category!=E2E\"",
             "Filter = \"Category=E2E\"",
             "-Phase \"Parallel\" -Balanced",
-            "foreach ($phase in @(\"ProcessIntegration\", \"E2E\"))"
+            "foreach ($phase in @(\"ProcessIntegration\", \"E2E\"))",
+            "$MaximumFastParallelism -eq 0 -or",
+            "Select-Object Phase, Name, Project, Filter, " +
+            "EstimatedCases, EstimatedCost, SerialGroup"
         };
         Assert.All(
             preservedTokens,
