@@ -125,10 +125,11 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - [x] T033 Build the production solution, fast project, and integration project
   sequentially with zero warnings and errors.
 - [x] T034 Run two consecutive Fast controls below the five-minute hard limit
-  and retain separate summaries (`2585/2585` in `4:21.152` and `3:16.237`).
+  and retain separate post-review summaries (`2587/2587` in `2:59.057` and
+  `2:28.905`).
 - [x] T035 Run LifecycleIntegration once (`186/186` in `5:31.972`), retain the
-  unchanged DeepValidation control (`2142/2142` in `14:15.857`), and run exactly
-  one PreMerge control (`4518/4518` in `14:16.500`). Require
+  unchanged DeepValidation control (`2142/2142` in `14:15.857`), and retain the
+  final post-review PreMerge control (`4522/4522` in `12:12.687`). Require
   LifecycleIntegration below ten minutes, DeepValidation and PreMerge below 15
   minutes, floors of 186/1,950/4,490, completed ProcessIntegration and E2E,
   exact ten lifecycle sentinels in PreMerge, no failures or duplicate IDs, and
@@ -136,7 +137,7 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - [x] T036 Re-index Serena to a green health-check, run final acceptance/diff
   checks, fill fresh evidence into all artifacts, and commit exactly the seven
   documentation/spec files.
-- [ ] T037 Complete independent branch review and resolve every Critical or
+- [x] T037 Complete independent branch review and resolve every Critical or
   Important finding with fresh bounded evidence.
 - [ ] T038 Push, merge the issue-linked PR into `main`, verify local/remote
   hashes, and close #1505 only after all acceptance criteria pass.
@@ -149,9 +150,9 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - T020–T022 independently protect production equivalence.
 - T023–T028 depend on stable category/profile names and the project split.
 - T029–T031 depend on source/project guards and runner implementation.
-- T032–T038 are final gates; T034 is exactly two Fast runs and T035 contains
-  the sole LifecycleIntegration and PreMerge runs plus retained unchanged
-  DeepValidation evidence.
+- T032–T038 are final gates; T034 is exactly two post-review Fast runs and T035
+  contains the final post-review PreMerge run plus retained unchanged
+  LifecycleIntegration and DeepValidation evidence.
 
 ## Notes
 

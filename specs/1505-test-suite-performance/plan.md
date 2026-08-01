@@ -197,8 +197,10 @@ guide as the stable local interface.
    and known process/E2E entry points.
 5. Implement `scripts/test-csharp.ps1` with explicit project routing, hard
    five-/fifteen-minute caps, one deadline, timestamp/PID/GUID result
-   directories, JSON/TRX/log output, cross-descriptor duplicate detection, and
-   `Process.Kill(true)` only for exact owned process trees.
+   directories, JSON/TRX/log output, cross-descriptor duplicate detection,
+   a gated Windows launcher assigned to kill-on-close Job Object containment
+   before target release, exact owned-tree verification after root exit, and
+   `Process.Kill(true)` only as an uncontained-live-root fallback.
 6. Test plan construction, executable process lifecycle, TRX aggregation, and
    source/project guards without launching an actual full suite.
 

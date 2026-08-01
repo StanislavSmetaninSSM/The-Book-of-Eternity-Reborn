@@ -27,10 +27,10 @@
 - The roughly 9-second avoidable delta multiplied by 295 sequential broad calls predicts about 44 minutes, matching the observed 40–60 minute full-suite duration.
 - A sampled live Agent Console process smoke test takes about 3 seconds. Process-host tests and repeated 47-file fixture copies are secondary contributors, but are not the primary measured multiplier.
 
-Accepted final evidence records Fast at `2585/2585` in `4:21.152` and
-`3:16.237`, LifecycleIntegration at `186/186` in `5:31.972`, retained
-DeepValidation at `2142/2142` in `14:15.857`, and PreMerge at `4518/4518` in
-`14:16.500`. Every control exited successfully with no failures, duplicate
+Accepted final evidence records Fast at `2587/2587` in `2:59.057` and
+`2:28.905`, LifecycleIntegration at `186/186` in `5:31.972`, retained
+DeepValidation at `2142/2142` in `14:15.857`, and PreMerge at `4522/4522` in
+`12:12.687`. Every control exited successfully with no failures, duplicate
 IDs, timeout, cleanup failure, or remaining owned process. PreMerge met the
 mandatory below-15-minute ceiling but not the preferred below-ten-minute
 target.
@@ -139,7 +139,12 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   LifecycleIntegration overlaps PreMerge only through the exact reviewed
   ten-method `PreMergeSentinel` manifest.
 - Splitting the partial guardian class must preserve isolated temporary roots and must not introduce shared mutable fixture state, file collisions, or nondeterministic parallel failures.
-- External process tests must use ownership-aware cleanup. A timeout must terminate only the run's owned process tree and must not target unrelated developer processes.
+- External process tests must use ownership-aware cleanup. On Windows, a
+  target must remain behind a launch gate until its launcher belongs to a
+  dedicated kill-on-close Job Object; the target and inherited descendants
+  must remain contained even if an intermediate root exits first. A timeout
+  must terminate only the run's owned process tree and must not target
+  unrelated developer processes.
 - Performance evidence must distinguish `dotnet test` startup wall time from runner-reported test duration and use the same build configuration for comparisons.
 
 ## Requirements

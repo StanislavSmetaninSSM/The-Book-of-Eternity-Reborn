@@ -7,9 +7,13 @@ command is the ordinary fast feedback control:
 .\scripts\test-csharp.ps1
 ```
 
-The runner owns only the process trees it starts. It writes logs, TRX files,
-and `summary.json` below `TestResults/test-lanes/`, enforces one lane-wide
-deadline, and reports cleanup failures as non-zero evidence.
+The runner owns only the process trees it starts. On Windows, each target
+starts behind a gated launcher: the launcher enters a dedicated kill-on-close
+Job Object before the gate opens, so the target and its descendants inherit
+exact containment even when an intermediate root exits first. The runner
+writes logs, TRX files, and `summary.json` below `TestResults/test-lanes/`,
+enforces one lane-wide deadline, and reports cleanup failures as non-zero
+evidence.
 
 ## Commands
 
@@ -129,8 +133,10 @@ The directory contains `dotnet-test.log`, one or more `.trx` files, and
 wall time, exit code, timeout state, owned-tree cleanup result, test counters,
 and cross-descriptor duplicate test IDs. Skipped tests are `Total - Executed`.
 
-On failure or timeout the runner stops scheduling work and uses
-`Process.Kill(true)` only on exact process roots it created. It never
+On failure or timeout the runner stops scheduling work. On Windows it
+terminates only the dedicated Job Objects it created and verifies that every
+containment is empty; the fallback for an uncontained root uses
+`Process.Kill(true)` only while that exact owned root is alive. It never
 enumerates or kills processes by name. A timeout returns exit code 124; any
 failed descriptor, TRX parse error, duplicate composed-lane test ID, or
 incomplete owned-tree cleanup is non-zero evidence.
@@ -141,11 +147,11 @@ The accepted controls on the baseline Windows machine are:
 
 | Control | Result | Tests | Runner wall | Result directory |
 |---|---|---:|---:|---|
-| Fast 1 | `PASS` | `2585/2585` | `4:21.152` | `20260801-180837-789-31004-7619904f0c9e49ba8d1716bec5a682f2-fast` |
-| Fast 2 | `PASS` | `2585/2585` | `3:16.237` | `20260801-181321-123-18724-6adc52d358924335aaaaadf784f6ce9e-fast` |
+| Fast 1 | `PASS` | `2587/2587` | `2:59.057` | `20260801-195606-147-20340-c486827ab39b4cdf914e0c72bc8fde60-fast` |
+| Fast 2 | `PASS` | `2587/2587` | `2:28.905` | `20260801-195915-638-5272-2d2fa823c35b48f08be4368f1a96dd16-fast` |
 | LifecycleIntegration | `PASS` | `186/186` | `5:31.972` | `20260801-181656-093-3652-2665d79ca44447b685df3a20ddee9ca9-lifecycleintegration` |
 | DeepValidation (retained) | `PASS` | `2142/2142` | `14:15.857` | `20260801-125643-609-35532-e202ce76a0004beda7e59ab8c0fe72f8-deepvalidation` |
-| PreMerge | `PASS` | `4518/4518` | `14:16.500` | `20260801-182302-896-28696-51cbcbdce4604dd48780a69819761273-premerge` |
+| PreMerge | `PASS` | `4522/4522` | `12:12.687` | `20260801-200153-781-36812-b84a1ae9818741b9a67590fa9b40711e-premerge` |
 
 The DeepValidation result was retained rather than repeated after PlanOnly
 proved its 23-descriptor/1,950-case selection remained unchanged and excluded
@@ -158,7 +164,7 @@ single 15-minute deadline and 4,490-result floor. Every accepted control
 reported exit `0`, no failures, no duplicate IDs, no timeout, complete
 owned-tree cleanup, and zero remaining owned processes. PreMerge did not meet
 the preferred below-ten-minute target; its accepted runner time was
-`14:16.500`.
+`12:12.687`.
 
 ## Rejected All-Inclusive Evidence
 

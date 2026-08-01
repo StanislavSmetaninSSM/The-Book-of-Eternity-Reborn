@@ -85,11 +85,11 @@ seconds, at least 6.7 times faster than the approximately 20-second baseline.
 
 | Control | Result | Tests | Runner wall | Result directory |
 |---|---|---:|---:|---|
-| Fast 1 | `PASS` | `2585/2585` | `4:21.152` | `20260801-180837-789-31004-7619904f0c9e49ba8d1716bec5a682f2-fast` |
-| Fast 2 | `PASS` | `2585/2585` | `3:16.237` | `20260801-181321-123-18724-6adc52d358924335aaaaadf784f6ce9e-fast` |
+| Fast 1 | `PASS` | `2587/2587` | `2:59.057` | `20260801-195606-147-20340-c486827ab39b4cdf914e0c72bc8fde60-fast` |
+| Fast 2 | `PASS` | `2587/2587` | `2:28.905` | `20260801-195915-638-5272-2d2fa823c35b48f08be4368f1a96dd16-fast` |
 | LifecycleIntegration | `PASS` | `186/186` | `5:31.972` | `20260801-181656-093-3652-2665d79ca44447b685df3a20ddee9ca9-lifecycleintegration` |
 | DeepValidation (retained) | `PASS` | `2142/2142` | `14:15.857` | `20260801-125643-609-35532-e202ce76a0004beda7e59ab8c0fe72f8-deepvalidation` |
-| PreMerge | `PASS` | `4518/4518` | `14:16.500` | `20260801-182302-896-28696-51cbcbdce4604dd48780a69819761273-premerge` |
+| PreMerge | `PASS` | `4522/4522` | `12:12.687` | `20260801-200153-781-36812-b84a1ae9818741b9a67590fa9b40711e-premerge` |
 
 Each run writes `.trx`, `dotnet-test.log`, and `summary.json` files below its
 unique `TestResults/test-lanes/` result directory. A failed descriptor, timeout,

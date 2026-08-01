@@ -31,12 +31,12 @@ tests. The build configuration is not the cause.
 | Fixed benchmark, three runs | about 3 seconds each |
 | Fixed benchmark median speedup | at least 6.7x |
 | Fast external concurrency | 2 test hosts |
-| Reviewed broad-validation manifest | 7 direct call sites (budget: 8) |
-| Fast control 1 | `2585/2585`, `4:21.152`, PASS |
-| Fast control 2 | `2585/2585`, `3:16.237`, PASS |
+| Reviewed broad-validation manifest | 8 direct call sites (budget: 8) |
+| Fast control 1 | `2587/2587`, `2:59.057`, PASS |
+| Fast control 2 | `2587/2587`, `2:28.905`, PASS |
 | LifecycleIntegration control | `186/186`, `5:31.972`, PASS |
 | DeepValidation control (retained) | `2142/2142`, `14:15.857`, PASS |
-| PreMerge control | `4518/4518`, `14:16.500`, PASS |
+| PreMerge control | `4522/4522`, `12:12.687`, PASS |
 
 The benchmark wall times were 7.92, 7.32, and 7.64 seconds; runner-reported
 test duration rounded to 3 seconds in all three runs. Attempts with four and six
@@ -182,15 +182,19 @@ class ownership, and source classification.
 **Decision**: Add `scripts/test-csharp.ps1` as the stable local entry point.
 It routes lanes to explicit project paths, writes a timestamped log,
 `summary.json`, and one or more TRX files, enforces one global deadline, and
-calls `.Kill($true)` only on the process roots it started.
+uses exact ownership containment for the process roots it started.
 
 **Rationale**: Raw `dotnet test` has no suite-wide wall-clock timeout and an
 agent/tool timeout does not reliably document or clean the owned child tree.
 
 **Safety boundary**: The script never enumerates and kills processes by name.
-It owns only the root process objects it creates and their operating-system
-process trees. Normal test completion remains responsible for its own
-resources; the script records an error if a root cannot be confirmed exited.
+On Windows every target starts behind a named-event gate. The launcher enters
+a dedicated kill-on-close Job Object before the gate opens, so the target and
+its inherited descendants remain observable and terminable after an
+intermediate root exits. Direct and parallel-batch executable self-tests
+establish the root-exited/child-live precondition and verify exact-PID
+descendant cleanup before output streams are drained. The script records an
+error unless both the launcher has exited and its containment is empty.
 
 PreMerge uses one 15-minute deadline across frontend verification, both
 test-project builds, discovery, tests, and cleanup. Its non-overlapping
@@ -222,7 +226,8 @@ requested exhaustive control.
 
 Final executable evidence accepted two Fast controls, one
 LifecycleIntegration control, the retained DeepValidation control, and one
-PreMerge control. PlanOnly independently reported PreMerge `22/4503`,
+PreMerge control. After the final review tests were added, PlanOnly
+independently reported PreMerge `22/4507`,
 LifecycleIntegration `1/186`, and unchanged DeepValidation `23/1950`. The
 retained DeepValidation executable result was not repeated because the
 selection was unchanged and still contained no lifecycle test.
@@ -230,7 +235,7 @@ selection was unchanged and still contained no lifecycle test.
 Every accepted control exited `0`, reported zero failures and duplicate IDs,
 did not time out, completed exact-owned-tree cleanup, and left zero owned
 processes. PreMerge included ProcessIntegration `440/440`, E2E `15/15`, and
-exactly ten lifecycle sentinels. Its `14:16.500` runner time meets the mandatory
+exactly ten lifecycle sentinels. Its `12:12.687` runner time meets the mandatory
 below-15-minute ceiling but not the preferred below-ten-minute target.
 
 The rejected all-inclusive attempt is retained as historical capacity evidence:
