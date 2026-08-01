@@ -2828,6 +2828,109 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task IdentityBoundWrite_ByteIdenticalForeignReplacementIsRejected()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/identity-bound-write.json";
+        byte[] ownedBytes = [0x11, 0x22, 0x33, 0x44];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, ownedBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        PhysicalFileAuthority.FileIdentity expectedIdentity;
+        string expectedSha256;
+        using (var owned = new FileStream(
+                   destinationPath,
+                   FileMode.Open,
+                   FileAccess.Read,
+                   FileShare.ReadWrite | FileShare.Delete))
+        {
+            expectedIdentity =
+                PhysicalFileAuthority.CaptureFileIdentity(
+                    owned.SafeFileHandle,
+                    "Identity-bound write test");
+            expectedSha256 =
+                PhysicalFileAuthority.ComputeOpenedFileSha256(
+                    owned.SafeFileHandle,
+                    "Identity-bound write test");
+        }
+
+        var foreignPath = destinationPath + ".foreign";
+        await File.WriteAllBytesAsync(foreignPath, ownedBytes);
+        File.Delete(destinationPath);
+        File.Move(foreignPath, destinationPath);
+        var foreignIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        await using var writeLease =
+            await _fs.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            _fs.WriteFileAtomicBytesIfCurrentAuthorityAsync(
+                writeLease,
+                relativePath,
+                [0x55, 0x66],
+                expectedIdentity,
+                expectedSha256));
+
+        Assert.Equal(ownedBytes, await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(
+            foreignIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+    }
+
+    [Fact]
+    public async Task IdentityBoundDelete_ByteIdenticalForeignReplacementIsRejected()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        const string relativePath =
+            "game_state/world/identity-bound-delete.json";
+        byte[] ownedBytes = [0x71, 0x82, 0x93, 0xA4];
+        await _fs.WriteFileAtomicBytesAsync(relativePath, ownedBytes);
+        var destinationPath = _fs.ResolvePath(relativePath);
+        PhysicalFileAuthority.FileIdentity expectedIdentity;
+        string expectedSha256;
+        using (var owned = new FileStream(
+                   destinationPath,
+                   FileMode.Open,
+                   FileAccess.Read,
+                   FileShare.ReadWrite | FileShare.Delete))
+        {
+            expectedIdentity =
+                PhysicalFileAuthority.CaptureFileIdentity(
+                    owned.SafeFileHandle,
+                    "Identity-bound delete test");
+            expectedSha256 =
+                PhysicalFileAuthority.ComputeOpenedFileSha256(
+                    owned.SafeFileHandle,
+                    "Identity-bound delete test");
+        }
+
+        var foreignPath = destinationPath + ".foreign";
+        await File.WriteAllBytesAsync(foreignPath, ownedBytes);
+        File.Delete(destinationPath);
+        File.Move(foreignPath, destinationPath);
+        var foreignIdentity =
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        await using var writeLease =
+            await _fs.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            _fs.DeleteFileIfCurrentAuthorityAsync(
+                writeLease,
+                relativePath,
+                expectedIdentity,
+                expectedSha256));
+
+        Assert.Equal(ownedBytes, await File.ReadAllBytesAsync(destinationPath));
+        Assert.Equal(
+            foreignIdentity,
+            WindowsHardLinkTestHelper.CaptureIdentity(destinationPath));
+    }
+
+    [Fact]
     public async Task AtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes()
     {
         if (!OperatingSystem.IsWindows())

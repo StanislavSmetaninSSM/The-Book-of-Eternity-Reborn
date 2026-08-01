@@ -684,6 +684,13 @@ public sealed class BrowserGenerationFencingSourceTests
             canonicalWrite.IndexOf(
                 "WriteFileAtomicBytesCoreAsync(",
                 StringComparison.Ordinal));
+        Assert.True(
+            canonicalWrite.IndexOf(
+                "WriteFileAtomicBytesCoreAsync(",
+                StringComparison.Ordinal) <
+            canonicalWrite.IndexOf(
+                "RecordCanonicalMutationPublicationAsync(",
+                StringComparison.Ordinal));
         var compareExchange = ExtractMethod(
             fileSystemSource,
             "CompareExchangeFileBytesAsync",
@@ -694,6 +701,13 @@ public sealed class BrowserGenerationFencingSourceTests
                 StringComparison.Ordinal) <
             compareExchange.IndexOf(
                 "DeleteFileCore(",
+                StringComparison.Ordinal));
+        Assert.True(
+            compareExchange.IndexOf(
+                "DeleteFileCore(",
+                StringComparison.Ordinal) <
+            compareExchange.IndexOf(
+                "RecordCanonicalMutationPublicationAsync(",
                 StringComparison.Ordinal));
         var canonicalDelete = ExtractMethod(
             fileSystemSource,
@@ -706,33 +720,48 @@ public sealed class BrowserGenerationFencingSourceTests
             canonicalDelete.IndexOf(
                 "DeleteFileCore(",
                 StringComparison.Ordinal));
+        Assert.True(
+            canonicalDelete.IndexOf(
+                "DeleteFileCore(",
+                StringComparison.Ordinal) <
+            canonicalDelete.IndexOf(
+                "RecordCanonicalMutationPublicationAsync(",
+                StringComparison.Ordinal));
 
         Assert.Contains(
-            "SchemaVersion: 5",
+            "SchemaVersion: CurrentBrowserWriteManifestSchemaVersion",
             rollbackSource,
             StringComparison.Ordinal);
         Assert.Contains(
-            "PublishedSha256s",
+            "BrowserWriteMutationIntent",
             rollbackSource,
             StringComparison.Ordinal);
         Assert.Contains(
-            "DeletionIntended",
+            "BrowserWritePublicationReceipt",
             rollbackSource,
             StringComparison.Ordinal);
-        Assert.Contains(
-            "WriteFileAtomicBytesIfCurrentOwnedAsync(",
+        var restoreEntry = ExtractMethod(
             rollbackSource,
+            "RestoreBrowserWriteEntryAsync",
+            "internal static async Task");
+        Assert.Contains(
+            "receipt.PhysicalIdentity",
+            restoreEntry,
             StringComparison.Ordinal);
         Assert.Contains(
-            "DeleteFileIfCurrentOwnedAsync(",
-            rollbackSource,
+            "WriteFileAtomicBytesIfCurrentAuthorityAsync(",
+            restoreEntry,
             StringComparison.Ordinal);
         Assert.DoesNotContain(
-            "IsTransactionOwnedPostImage(entry, current)",
-            rollbackSource,
+            "PublishedSha256s",
+            restoreEntry,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "DeletionIntended",
+            restoreEntry,
             StringComparison.Ordinal);
         Assert.Contains(
-            "allowedDestinationSha256s",
+            "expectedDestinationIdentity",
             reversiblePublicationSource,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -741,6 +770,10 @@ public sealed class BrowserGenerationFencingSourceTests
             StringComparison.Ordinal);
         Assert.Contains(
             "denyConcurrentWrites",
+            physicalAuthoritySource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "EnsureExactOpenedFileAuthority",
             physicalAuthoritySource,
             StringComparison.Ordinal);
 

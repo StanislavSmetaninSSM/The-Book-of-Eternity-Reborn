@@ -390,12 +390,29 @@ internal static class ReversibleFilePublication
         CancellationToken cancellationToken,
         Func<string, Task>? beforeAbsenceFinalValidation = null,
         IReadOnlySet<string>? allowedDestinationSha256s = null,
-        bool allowMissingDestination = false)
+        bool allowMissingDestination = false,
+        PhysicalFileAuthority.FileIdentity? expectedDestinationIdentity = null,
+        string? expectedDestinationSha256 = null)
     {
         if (!OperatingSystem.IsWindows())
         {
             throw new PlatformNotSupportedException(
                 "Reversible opened-handle file replacement is available only on Windows.");
+        }
+        if ((expectedDestinationIdentity == null) !=
+            string.IsNullOrWhiteSpace(expectedDestinationSha256) ||
+            expectedDestinationIdentity is
+            {
+                IsDirectory: true
+            } or
+            {
+                NumberOfLinks: not 1
+            } ||
+            expectedDestinationSha256 is { } expectedHash &&
+            !IsSha256(expectedHash))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} expected destination authority is incomplete.");
         }
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -426,7 +443,8 @@ internal static class ReversibleFilePublication
                 authorityName,
                 cancellationToken,
                 denyConcurrentWrites:
-                    allowedDestinationSha256s != null);
+                    allowedDestinationSha256s != null ||
+                    expectedDestinationIdentity != null);
             var destinationIdentity = destinationHandle == null
                 ? null
                 : PhysicalFileAuthority.CaptureFileIdentity(
@@ -441,6 +459,21 @@ internal static class ReversibleFilePublication
                 : PhysicalFileAuthority.ComputeOpenedFileSha256(
                     destinationHandle,
                     authorityName + " prior destination");
+            if (expectedDestinationIdentity != null)
+            {
+                if (destinationIdentity == null ||
+                    !SameObject(
+                        destinationIdentity,
+                        expectedDestinationIdentity) ||
+                    !string.Equals(
+                        destinationSha256,
+                        expectedDestinationSha256,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidDataException(
+                        $"{authorityName} destination does not match exact physical publication authority.");
+                }
+            }
             if (allowedDestinationSha256s != null)
             {
                 if (destinationSha256 == null)

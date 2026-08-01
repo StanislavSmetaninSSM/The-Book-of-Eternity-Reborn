@@ -67,11 +67,26 @@ internal sealed record CanonicalWorkerApplyTransaction(
     string TransactionId,
     string TransactionRoot);
 
+internal enum CanonicalMutationOperation
+{
+    Write,
+    Delete
+}
+
+internal sealed record CanonicalMutationPublication(
+    CanonicalMutationOperation Operation,
+    PhysicalFileAuthority.FileIdentity PhysicalIdentity,
+    string Sha256);
+
 internal interface ICanonicalMutationIntentRecorder
 {
     Task RecordMutationIntentAsync(
         string relativePath,
         byte[]? desiredContent);
+
+    Task RecordMutationPublicationAsync(
+        string relativePath,
+        CanonicalMutationPublication publication);
 }
 
 /// <summary>
@@ -706,7 +721,12 @@ public class FileSystemManager
             writeLease,
             relativePath,
             content);
-        await WriteFileAtomicBytesCoreAsync(relativePath, content);
+        var publication =
+            await WriteFileAtomicBytesCoreAsync(relativePath, content);
+        await RecordCanonicalMutationPublicationAsync(
+            writeLease,
+            relativePath,
+            publication);
     }
 
     public async Task AppendFileAtomicAsync(string relativePath, string content)
@@ -746,7 +766,14 @@ public class FileSystemManager
             writeLease,
             relativePath,
             nextContent);
-        await WriteFileAtomicBytesCoreAsync(relativePath, nextContent, cancellationToken);
+        var publication = await WriteFileAtomicBytesCoreAsync(
+            relativePath,
+            nextContent,
+            cancellationToken);
+        await RecordCanonicalMutationPublicationAsync(
+            writeLease,
+            relativePath,
+            publication);
     }
 
     internal async Task<bool> AppendFileAtomicIfCurrentSessionAsync(
@@ -805,10 +832,23 @@ public class FileSystemManager
             writeLease,
             relativePath,
             desiredContent);
+        CanonicalMutationPublication? publication;
         if (desiredContent == null)
-            DeleteFileCore(relativePath);
+            publication = DeleteFileCore(
+                relativePath,
+                capturePublication: writeLease.MutationIntentRecorder != null);
         else
-            await WriteFileAtomicBytesCoreAsync(relativePath, desiredContent);
+            publication =
+                await WriteFileAtomicBytesCoreAsync(
+                    relativePath,
+                    desiredContent);
+        if (publication != null)
+        {
+            await RecordCanonicalMutationPublicationAsync(
+                writeLease,
+                relativePath,
+                publication);
+        }
 
         return CanonicalFileMutationResult.Applied;
     }
@@ -834,17 +874,49 @@ public class FileSystemManager
             allowMissingCurrent);
     }
 
-    private Task WriteFileAtomicBytesCoreAsync(string relativePath, byte[] content) =>
+    internal async Task WriteFileAtomicBytesIfCurrentAuthorityAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        byte[] content,
+        PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
+        string expectedCurrentSha256)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
+        var expectedHash = NormalizeOwnedMutationHashes(
+                [expectedCurrentSha256])
+            .Single();
+
+        await WriteFileAtomicBytesCoreAsync(
+            relativePath,
+            content,
+            CancellationToken.None,
+            expectedDestinationIdentity: expectedCurrentIdentity,
+            expectedDestinationSha256: expectedHash);
+    }
+
+    private Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
+        string relativePath,
+        byte[] content) =>
         WriteFileAtomicBytesCoreAsync(relativePath, content, CancellationToken.None);
 
-    private async Task WriteFileAtomicBytesCoreAsync(
+    private async Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
         byte[] content,
         CancellationToken cancellationToken,
         IReadOnlySet<string>? allowedCurrentSha256s = null,
-        bool allowMissingCurrent = false)
+        bool allowMissingCurrent = false,
+        PhysicalFileAuthority.FileIdentity? expectedDestinationIdentity = null,
+        string? expectedDestinationSha256 = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if ((expectedDestinationIdentity == null) !=
+            string.IsNullOrWhiteSpace(expectedDestinationSha256))
+        {
+            throw new InvalidDataException(
+                "Conditional canonical replacement requires complete physical identity and digest authority.");
+        }
+
         var fullPath = ResolvePath(relativePath);
         using var mutationRegistration =
             new InProcessMutationRegistration(fullPath);
@@ -880,11 +952,12 @@ public class FileSystemManager
             EnsureCanonicalMutationBoundary(relativePath, fullPath);
             await InvokeAfterCanonicalMutationBoundaryValidatedAsync(
                 relativePath);
+            ReversibleFilePublication.PublicationResult publication;
             if (SupportsReversibleFileReplacement)
             {
                 EnsureRuntimeDirectoryExistsAndIsSafe(
                     PhysicalPublicationTransactionsRootPath);
-                await ReversibleFilePublication.PublishAsync(
+                publication = await ReversibleFilePublication.PublishAsync(
                     _basePath,
                     PhysicalPublicationTransactionsRootPath,
                     parentAuthority,
@@ -902,11 +975,16 @@ public class FileSystemManager
                     allowedDestinationSha256s:
                         allowedCurrentSha256s,
                     allowMissingDestination:
-                        allowMissingCurrent);
+                        allowMissingCurrent,
+                    expectedDestinationIdentity:
+                        expectedDestinationIdentity,
+                    expectedDestinationSha256:
+                        expectedDestinationSha256);
             }
             else
             {
-                if (allowedCurrentSha256s != null)
+                if (allowedCurrentSha256s != null ||
+                    expectedDestinationIdentity != null)
                 {
                     throw new PlatformNotSupportedException(
                         "Identity-bound conditional canonical replacement requires reversible file publication.");
@@ -918,9 +996,20 @@ public class FileSystemManager
                     fullPath,
                     replaceExisting: false,
                     "Canonical create-only publication");
+                var openedAuthority =
+                    PhysicalFileAuthority.CaptureOpenedFileAuthority(
+                        stream.SafeFileHandle,
+                        fullPath,
+                        "Canonical create-only publication");
+                publication = new ReversibleFilePublication.PublicationResult(
+                    openedAuthority.Identity,
+                    openedAuthority.Sha256);
             }
 
-            return;
+            return new CanonicalMutationPublication(
+                CanonicalMutationOperation.Write,
+                publication.PublishedIdentity,
+                publication.PublishedSha256);
         }
         catch
         {
@@ -1800,7 +1889,18 @@ public class FileSystemManager
                 desiredContent: null)
             .GetAwaiter()
             .GetResult();
-        DeleteFileCore(relativePath);
+        var publication = DeleteFileCore(
+            relativePath,
+            capturePublication: writeLease.MutationIntentRecorder != null);
+        if (publication != null)
+        {
+            RecordCanonicalMutationPublicationAsync(
+                    writeLease,
+                    relativePath,
+                    publication)
+                .GetAwaiter()
+                .GetResult();
+        }
     }
 
     internal async Task DeleteFileIfCurrentOwnedAsync(
@@ -1884,6 +1984,76 @@ public class FileSystemManager
         }
     }
 
+    internal async Task DeleteFileIfCurrentAuthorityAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
+        string expectedCurrentSha256)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
+        var expectedHash = NormalizeOwnedMutationHashes(
+                [expectedCurrentSha256])
+            .Single();
+        var fullPath = ResolvePath(relativePath);
+        using var mutationRegistration =
+            new InProcessMutationRegistration(fullPath);
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                await InvokeBeforeCanonicalMutationBoundaryAsync(
+                    relativePath);
+                using var parentAuthority = EnsureStableCanonicalParent(
+                    relativePath,
+                    fullPath);
+                EnsureCanonicalMutationBoundary(relativePath, fullPath);
+                var entry = PhysicalFileAuthority.ProbeNamespaceEntry(
+                    parentAuthority,
+                    fullPath,
+                    "Identity-bound canonical deletion");
+                if (entry !=
+                    PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
+                {
+                    throw new InvalidDataException(
+                        "Identity-bound canonical deletion target is not the expected physical regular file.");
+                }
+
+                using var targetHandle =
+                    PhysicalFileAuthority.OpenForRename(
+                        parentAuthority,
+                        fullPath,
+                        isDirectory: false,
+                        "Identity-bound canonical deletion",
+                        denyConcurrentWrites: true);
+                PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                    targetHandle,
+                    fullPath,
+                    expectedCurrentIdentity,
+                    expectedHash,
+                    "Identity-bound canonical deletion target");
+                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(
+                    relativePath);
+                PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                    targetHandle,
+                    fullPath,
+                    expectedCurrentIdentity,
+                    expectedHash,
+                    "Identity-bound canonical deletion final authority");
+                PhysicalFileAuthority.DeleteOpenedFile(
+                    targetHandle,
+                    "Identity-bound canonical deletion target");
+                return;
+            }
+            catch (Exception ex) when (
+                IsTransientFileAccessException(ex) &&
+                attempt < TransientFileAccessRetryCount)
+            {
+                await Task.Delay(TransientFileAccessRetryDelay);
+            }
+        }
+    }
+
     private async Task DeleteFileWithLockAsync(string relativePath)
     {
         await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
@@ -1901,6 +2071,20 @@ public class FileSystemManager
         await writeLease.MutationIntentRecorder.RecordMutationIntentAsync(
             relativePath,
             desiredContent);
+    }
+
+    private static async Task RecordCanonicalMutationPublicationAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath,
+        CanonicalMutationPublication publication)
+    {
+        if (writeLease.MutationIntentRecorder == null)
+            return;
+
+        await writeLease.MutationIntentRecorder
+            .RecordMutationPublicationAsync(
+                relativePath,
+                publication);
     }
 
     private static HashSet<string> NormalizeOwnedMutationHashes(
@@ -1925,7 +2109,9 @@ public class FileSystemManager
         return normalized;
     }
 
-    private void DeleteFileCore(string relativePath)
+    private CanonicalMutationPublication? DeleteFileCore(
+        string relativePath,
+        bool capturePublication = false)
     {
         var fullPath = ResolvePath(relativePath);
         for (var attempt = 0; ; attempt++)
@@ -1939,14 +2125,67 @@ public class FileSystemManager
                     relativePath,
                     fullPath);
                 EnsureCanonicalMutationBoundary(relativePath, fullPath);
+                if (!capturePublication)
+                {
+                    InvokeAfterCanonicalMutationBoundaryValidatedAsync(
+                            relativePath)
+                        .GetAwaiter()
+                        .GetResult();
+                    PhysicalFileAuthority.TryDeleteFile(
+                        parentAuthority,
+                        fullPath,
+                        "Canonical file deletion");
+                    return null;
+                }
+
+                var entry = PhysicalFileAuthority.ProbeNamespaceEntry(
+                    parentAuthority,
+                    fullPath,
+                    "Canonical file deletion receipt");
+                if (entry ==
+                    PhysicalFileAuthority.NamespaceEntryKind.Missing)
+                {
+                    InvokeAfterCanonicalMutationBoundaryValidatedAsync(
+                            relativePath)
+                        .GetAwaiter()
+                        .GetResult();
+                    return null;
+                }
+                if (entry !=
+                    PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
+                {
+                    throw new InvalidDataException(
+                        "Canonical deletion receipt requires one physical regular file.");
+                }
+
+                using var targetHandle =
+                    PhysicalFileAuthority.OpenForRename(
+                        parentAuthority,
+                        fullPath,
+                        isDirectory: false,
+                        "Canonical file deletion receipt",
+                        denyConcurrentWrites: true);
+                var deletedAuthority =
+                    PhysicalFileAuthority.CaptureOpenedFileAuthority(
+                        targetHandle,
+                        fullPath,
+                        "Canonical file deletion receipt");
                 InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath)
                     .GetAwaiter()
                     .GetResult();
-                PhysicalFileAuthority.TryDeleteFile(
-                    parentAuthority,
+                PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                    targetHandle,
                     fullPath,
-                    "Canonical file deletion");
-                return;
+                    deletedAuthority.Identity,
+                    deletedAuthority.Sha256,
+                    "Canonical file deletion final authority");
+                PhysicalFileAuthority.DeleteOpenedFile(
+                    targetHandle,
+                    "Canonical file deletion receipt");
+                return new CanonicalMutationPublication(
+                    CanonicalMutationOperation.Delete,
+                    deletedAuthority.Identity,
+                    deletedAuthority.Sha256);
             }
             catch (Exception ex) when (IsTransientFileAccessException(ex) && attempt < TransientFileAccessRetryCount)
             {

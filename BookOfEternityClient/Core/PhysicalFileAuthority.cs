@@ -80,6 +80,10 @@ internal static class PhysicalFileAuthority
         bool IsDirectory,
         uint NumberOfLinks);
 
+    internal sealed record OpenedFileAuthority(
+        FileIdentity Identity,
+        string Sha256);
+
     internal enum NamespaceEntryKind
     {
         Missing,
@@ -890,6 +894,53 @@ internal static class PhysicalFileAuthority
                 $"Could not hash {authorityName} opened authority.",
                 ex);
         }
+    }
+
+    internal static OpenedFileAuthority CaptureOpenedFileAuthority(
+        SafeFileHandle handle,
+        string expectedPath,
+        string authorityName)
+    {
+        var identity = CaptureFileIdentity(handle, authorityName);
+        if (identity.IsDirectory || identity.NumberOfLinks != 1)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} must be one single-link regular file.");
+        }
+
+        identity = EnsureExactFileIdentity(
+            handle,
+            expectedPath,
+            identity,
+            authorityName);
+        return new OpenedFileAuthority(
+            identity,
+            ComputeOpenedFileSha256(handle, authorityName));
+    }
+
+    internal static OpenedFileAuthority EnsureExactOpenedFileAuthority(
+        SafeFileHandle handle,
+        string expectedPath,
+        FileIdentity expectedIdentity,
+        string expectedSha256,
+        string authorityName)
+    {
+        var identity = EnsureExactFileIdentity(
+            handle,
+            expectedPath,
+            expectedIdentity,
+            authorityName);
+        var sha256 = ComputeOpenedFileSha256(handle, authorityName);
+        if (!string.Equals(
+                sha256,
+                expectedSha256,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException(
+                $"{authorityName} exact-byte hash changed.");
+        }
+
+        return new OpenedFileAuthority(identity, sha256);
     }
 
     internal static void DeleteOpenedFile(
