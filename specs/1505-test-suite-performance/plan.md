@@ -9,9 +9,15 @@
 Keep the public production validator behaviorally unchanged while adding an
 internal, non-empty flags-based selection of the existing 26 ordered validation
 phases. Prove equivalence and fail-closed selection behavior first, then migrate
-295 broad guardian-suite calls to reviewed test-side profiles. Add enforceable
-slow-test traits and a bounded PowerShell lane runner that retains TRX/log
-evidence and owns only the process tree it starts.
+295 broad guardian-suite calls to reviewed test-side profiles. Physically split
+fast and integration sources around a dependency-free TestSupport library, add
+enforceable slow-test traits and project/source guards, retain an isolated
+prepared Guardian fixture snapshot, and use a project-routed,
+discovery-balanced PowerShell runner with one deadline and retained
+JSON/TRX/log evidence.
+Keep the complete GameEngine turn-lifecycle class in an explicit
+LifecycleIntegration lane and retain only ten reviewed lifecycle sentinels in
+routine PreMerge.
 
 ## Technical Context
 
@@ -19,15 +25,24 @@ evidence and owns only the process tree it starts.
 
 **Primary Dependencies**: Existing `ValidationService`, `FileSystemManager`, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, `dotnet test`.
 
-**Storage**: Existing file-backed JSON fixtures plus ignored `TestResults/test-lanes/` logs and TRX output.
+**Storage**: Existing file-backed JSON fixtures plus ignored
+`TestResults/test-lanes/` logs, summaries, and TRX output.
 
-**Testing**: xUnit focused filters, source guards, bounded benchmark runs, and one final bounded complete C# suite.
+**Testing**: xUnit focused filters, source/project guards, bounded benchmark
+runs, two final Fast controls, one conditional DeepValidation control for this
+category-boundary change, one conditional LifecycleIntegration control, and
+one final bounded PreMerge control.
 
 **Target Platform**: Local Windows development machine; implementation remains portable .NET code.
 
-**Project Type**: Local console/browser game-client repository with one runtime project and one C# test project.
+**Project Type**: Local console/browser game-client repository with one runtime
+project, a non-test TestSupport library, and physically separate fast and
+integration test projects.
 
-**Performance Goals**: At least 5x on the fixed two-test guardian benchmark; fast lane at most 5 minutes; complete C# suite at most 15 minutes on the baseline machine.
+**Performance Goals**: At least 5x on the fixed two-test guardian benchmark;
+Fast at most 5 minutes; LifecycleIntegration at most 10 minutes;
+DeepValidation and PreMerge at most 15 minutes;
+PreMerge preferably below 10 minutes on the baseline machine.
 
 **Constraints**: Public validation still runs all 26 phases in canonical order; no gameplay, state schema, issue-code, prompt, documentation-example, console, browser, or frontend behavior changes; no unbounded full-suite run.
 
@@ -40,16 +55,26 @@ evidence and owns only the process tree it starts.
 **Verification Commands**:
 
 ```powershell
-dotnet build BookOfEternityClient\BookOfEternityClient.sln --no-restore
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~ValidationPhaseSelectionTests"
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~TestLaneSourceGuardTests"
-.\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~GuardianProjectValidation_OffensiveIntrigueAgainstTrustedTarget" -TimeoutMinutes 2
-.\scripts\test-csharp.ps1 -Lane Fast
+dotnet build BookOfEternityClient\BookOfEternityClient.sln --no-restore --verbosity minimal
+dotnet build BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --verbosity minimal
+dotnet build BookOfEternityClient.IntegrationTests\BookOfEternityClient.IntegrationTests.csproj --no-restore --verbosity minimal
+.\scripts\test-csharp.ps1
+.\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
 .\scripts\test-csharp.ps1 -Lane FullValidation
+.\scripts\test-csharp.ps1 -Lane RegressionIntegration
 .\scripts\test-csharp.ps1 -Lane ProcessIntegration
 .\scripts\test-csharp.ps1 -Lane E2E
-.\scripts\test-csharp.ps1 -Lane Complete -TimeoutMinutes 20
+.\scripts\test-csharp.ps1 -Lane LifecycleIntegration
+.\scripts\test-csharp.ps1 -Lane DeepValidation
+.\scripts\test-csharp.ps1 -Lane PreMerge
 ```
+
+The diagnostic lanes are not serial final gates. Run focused controls during
+implementation, two consecutive Fast controls at final verification, and one
+PreMerge control. Do not serially run all diagnostic lanes before PreMerge
+unless a focused failure requires diagnosis. `Complete` is a temporary alias
+for `PreMerge`. LifecycleIntegration and DeepValidation are conditional and
+explicit; this branch runs each once because their category boundaries change.
 
 ## Constitution Check
 
@@ -60,7 +85,10 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 - **Player-facing integrity**: No console, browser, copy, or player interaction changes.
 - **Contract/state authority**: Validation rule bodies, issue codes, canonical schemas, state normalization, and GM-authored contracts remain unchanged. Mortal/afterlife prompts, examples, manifests, and contract matrices therefore need no update.
 - **Test-first path**: Selection API compilation/fail-closed/equivalence/order tests precede production edits; source guards precede guardian migration and lane categorization.
-- **Verification evidence**: Focused tests, bounded benchmark, lane runs, build, diff checks, and final bounded complete TRX are required.
+- **Verification evidence**: Focused tests, bounded benchmark, project/source
+  guards, three builds, two Fast summaries, one LifecycleIntegration summary,
+  one DeepValidation summary, one PreMerge summary, Serena health, and final
+  diff checks are required.
 - **Agent orchestration**: Work remains in the current Codex session. No subagent report will be treated as verification evidence.
 
 ## Project Structure
@@ -91,10 +119,19 @@ BookOfEternityClient/
 
 BookOfEternityClient.Tests/
 ├── ValidationPhaseSelectionTests.cs
+├── FastTestBoundaryTests.cs
+└── ordinary fast sources
+
+BookOfEternityClient.TestSupport/
+└── shared fixtures and helpers without test-SDK/xUnit dependencies
+
+BookOfEternityClient.IntegrationTests/
 ├── GuardianValidationProfiles.cs
 ├── GuardianSystemRegressionTests*.cs
+├── GameEngineTurnLifecycleTests.cs
+├── IntegrationTestBoundaryTests.cs
 ├── TestLaneSourceGuardTests.cs
-└── slow/full-validation and process/E2E test classes receiving traits
+└── full-validation, regression-integration, process, and E2E sources
 
 scripts/
 └── test-csharp.ps1
@@ -105,8 +142,10 @@ docs/
 
 **Structure Decision**: Keep phase selection in the runtime validation namespace
 because the public facade and internal test overload share the same dispatcher.
-Keep profiles, source guards, and classification entirely in the test project.
-Use one repository script and one testing guide as the stable local interface.
+Keep shared fixtures in a non-test support library. Keep ordinary fast sources
+and slow integration sources in separate test projects without a reverse
+IntegrationTests-to-Tests reference. Use one repository script and one testing
+guide as the stable local interface.
 
 ## Phase 0: Research and Baseline
 
@@ -136,33 +175,55 @@ Use one repository script and one testing guide as the stable local interface.
 4. Run representative methods from each domain; add only the missing phase
    demonstrated by a failed assertion.
 5. Run all guardian cases under a bounded command and compare discovery/results.
-6. If the complete/fast budget is still missed, extract safe domain classes
-   from the partial class. Do not introduce shared mutable fixtures merely to
-   obtain parallelism.
+6. If the complete/fast budget is still missed, use discovery-validated,
+   non-overlapping domain/method chunks. Keep the shared partial class intact
+   and do not introduce shared mutable fixtures merely to obtain parallelism.
+7. If repeated fixture initialization remains material, capture one prepared
+   fixture snapshot in memory per test host and prove independent materialized
+   roots.
 
 ## Phase 3: Verification Lanes
 
-1. Add class- or method-level `FullValidation`, `ProcessIntegration`, and `E2E`
+1. Add class- or method-level `FullValidation`, `RegressionIntegration`,
+   `LifecycleIntegration`, `PreMergeSentinel`, `ProcessIntegration`, and `E2E`
    traits to the inventoried slow groups.
-2. Add a source guard for direct full-validation files and known process/E2E
-   entry points.
-3. Implement `scripts/test-csharp.ps1` with lane-to-filter mapping, configurable
-   timeout, timestamped TRX/log output, and `Process.Kill(true)` only for the
-   started `dotnet` process tree on timeout.
-4. Document fast, focused, full-validation, process-integration, E2E, and
-   complete commands plus expected durations in `docs/testing.md`.
-5. Test filter construction and source-guard behavior without launching the
-   entire suite.
+2. Extract common fixtures/helpers into `BookOfEternityClient.TestSupport`
+   without a test SDK or xUnit dependency.
+3. Move every reviewed slow source into
+   `BookOfEternityClient.IntegrationTests`; keep the fast project independent
+   from integration discovery.
+4. Add source/project guards for partial-class ownership, dependency direction,
+   direct/fixture-mediated full validation, file-backed regression integration,
+   and known process/E2E entry points.
+5. Implement `scripts/test-csharp.ps1` with explicit project routing, hard
+   five-/fifteen-minute caps, one deadline, timestamp/PID/GUID result
+   directories, JSON/TRX/log output, cross-descriptor duplicate detection, and
+   `Process.Kill(true)` only for exact owned process trees.
+6. Test plan construction, executable process lifecycle, TRX aggregation, and
+   source/project guards without launching an actual full suite.
 
 ## Phase 4: Performance and Integration Verification
 
 1. Run the fixed two-test guardian benchmark at least three times after build;
    compare median runner time with the approximately 20-second baseline.
-2. Run every guardian domain selection and the complete guardian class bounded.
-3. Run fast and slow lanes separately, retaining TRX/log evidence.
-4. Run one final complete suite with a 20-minute external bound.
-5. Confirm discovered-case delta, no owned child processes, Release build,
+2. Run focused migration batches, every reviewed Guardian domain selection,
+   and the retained broad-sentinel manifest under bounded controls.
+3. Build the production solution and both test projects sequentially.
+4. Run two consecutive Fast controls below five minutes each.
+5. Run LifecycleIntegration exactly once; require all 186 reviewed cases below
+   its ten-minute cap.
+6. Retain the accepted DeepValidation result because PlanOnly proves the
+   23-descriptor/1,950-case selection is unchanged and excludes lifecycle
+   tests; require at least 1,950 results below 15 minutes.
+7. Run exactly one PreMerge control below its single 15-minute deadline,
+   retaining JSON/TRX/log evidence and at least 4,490 results, including
+   completed ProcessIntegration and E2E phases.
+8. Re-index Serena, confirm green health, no owned child processes,
    `git diff --check`, Spec Kit consistency, and review findings.
+
+Final verification does not serially execute all diagnostic lanes. A failing
+bounded control is narrowed with only the smallest relevant focused or
+diagnostic selection.
 
 ## Complexity Tracking
 
