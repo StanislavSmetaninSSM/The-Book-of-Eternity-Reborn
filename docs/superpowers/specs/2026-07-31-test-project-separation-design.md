@@ -1,7 +1,7 @@
 # Isolated Fast and Integration Test Projects
 
-**Issue:** #1505  
-**Date:** 2026-07-31  
+**Issue:** #1505
+**Date:** 2026-07-31
 **Status:** Approved for implementation
 
 ## Objective
