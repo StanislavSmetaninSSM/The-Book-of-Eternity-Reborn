@@ -507,6 +507,14 @@ Follow-up tracking: GitHub issue #1502 owns T246-T253 after the verified
 baseline merge. Issue #1500 remains open until these tasks and dependency
 #1501 satisfy their acceptance criteria.
 
+- Gate recovery evidence (2026-08-01): #1500 was reopened after its manual
+  closure because #1501, #1502, and T246-T253 are still open.
+- Recovered lifecycle evidence: the production behavior isolated in
+  `f1c8f1a4` is already independently present in current `main` through
+  `29358497`; do not cherry-pick that commit. This reconciles the completed
+  T155 lifecycle work only. T250 and FR-125 through FR-129 remain open until
+  their Phase 45 behavior and verification evidence are complete.
+
 - [x] T245 Reconcile the final Phase 44 whole-branch reviews as FR-121 through FR-131, SC-036, Decisions 137 through 144, and corresponding plan/data-model changes before additional production edits.
   - Review evidence: three independent `gpt-5.6-sol`/max reviews compared merge base `9a1490146b7cecad6101af1f166bde614050a6a3` through `56be2f54` and confirmed browser publication-receipt, worker workspace/process ownership, load hard-link, save bounds/ADS, historical afterlife carrier, deliberate-empty surface, afterlife Actor Brain/location, Mortal location, legacy keyword inference, QTE turn, and worker-recovery boundary gaps.
 - [ ] T246 Complete and verify the existing RED/GREEN fixes for strict browser QTE current-turn authority, retained-handle worker-apply recovery, and workspace retention after unconfirmed process-tree cleanup.
