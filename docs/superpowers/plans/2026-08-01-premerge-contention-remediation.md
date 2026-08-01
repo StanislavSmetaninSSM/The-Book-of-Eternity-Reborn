@@ -103,7 +103,10 @@ Expected PreMerge plan change:
 - parallel descriptors: `22 -> 21`;
 - total descriptors: `24 -> 23`;
 - GameEngine descriptors: `2 x 93 -> 1 x 186`;
-- planned cases remain exactly `4,666`;
+- the required floor remains `4,666`;
+- live discovery is `4,679`:
+  `2,574 Fast + 1,650 core Integration + 440 ProcessIntegration + 15 E2E`;
+  this is the retained `4,678` discovery plus the new R5 boundary Fact;
 - ProcessIntegration and E2E remain exclusive final phases.
 
 The single class filter avoids joining both existing method filters into a
@@ -130,7 +133,8 @@ Run PreMerge `-PlanOnly` and require:
 - exit `0`;
 - `23` unique plan rows;
 - `21` parallel rows plus one ProcessIntegration and one E2E row;
-- exactly `4,666` planned cases;
+- `4,679` currently discovered cases and at least the unchanged `4,666`
+  required floor;
 - exactly one GameEngine row with `186` cases;
 - no duplicate filters or result paths;
 - DeepValidation plan remains `23` descriptors / `1,950` cases and contains
