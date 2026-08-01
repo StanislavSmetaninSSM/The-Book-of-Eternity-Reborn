@@ -1139,6 +1139,27 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void CommandDisplayPreparedTemplateContract_FalseNegative_RejectsFailureGuardElseAssignment()
+    {
+        var fixtureSource = PreparedCommandDisplayFixtureSource().Replace(
+            "            throw new InvalidOperationException($\"Could not prepare command-display save '{_saveFileName}'.\");",
+            "            throw new InvalidOperationException($\"Could not prepare command-display save '{_saveFileName}'.\");" +
+            Environment.NewLine +
+            "        else" +
+            Environment.NewLine +
+            "            caseRoot = _templateRootPath;",
+            StringComparison.Ordinal);
+
+        var violations = PreparedCommandDisplayContractViolations(
+            fixtureSource,
+            CommandDisplayTestSources());
+
+        Assert.Contains(
+            "ClonePreparedTemplateAsync must match the exact write-safe method shape.",
+            violations);
+    }
+
+    [Fact]
     public void CommandDisplayPreparedTemplateContract_RejectsSharedExecutionRoot()
     {
         var sources = CommandDisplayTestSources();
@@ -1824,13 +1845,33 @@ public sealed class IntegrationTestBoundaryTests
                 "ClonePreparedTemplateAsync must copy into its case-root parameter.");
         }
 
+        var exactCloneSignature =
+            clone is not null &&
+            clone.ReturnType.ToString() == "Task" &&
+            clone.Modifiers.Count == 2 &&
+            clone.Modifiers.Any(SyntaxKind.PublicKeyword) &&
+            clone.Modifiers.Any(SyntaxKind.AsyncKeyword) &&
+            clone.ParameterList.Parameters.Count == 1 &&
+            clone.ParameterList.Parameters[0].Type?.ToString() == "string" &&
+            clone.ParameterList.Parameters[0].Identifier.ValueText == "caseRoot" &&
+            clone.ExpressionBody is null;
+
         var exactCloneShape = false;
-        if (clone?.Body is { Statements.Count: 3 } cloneBody &&
+        if (exactCloneSignature &&
+            clone!.Body is { Statements.Count: 3 } cloneBody &&
             string.Equals(caseRootParameter, "caseRoot", StringComparison.Ordinal))
         {
             var localStatement = cloneBody.Statements[0] as LocalDeclarationStatementSyntax;
-            var preparedTemplateVariable =
-                localStatement?.Declaration.Variables.SingleOrDefault();
+            var localDeclarationHasExactShape =
+                localStatement is not null &&
+                localStatement.Modifiers.Count == 0 &&
+                localStatement.UsingKeyword.RawKind == 0 &&
+                localStatement.AwaitKeyword.RawKind == 0 &&
+                localStatement.Declaration.Type.ToString() == "var" &&
+                localStatement.Declaration.Variables.Count == 1;
+            var preparedTemplateVariable = localDeclarationHasExactShape
+                ? localStatement!.Declaration.Variables[0]
+                : null;
             var readsPreparedTemplate =
                 preparedTemplateVariable?.Identifier.ValueText == "preparedTemplate" &&
                 preparedTemplateVariable.Initializer?.Value is AwaitExpressionSyntax
@@ -1848,9 +1889,24 @@ public sealed class IntegrationTestBoundaryTests
                 .OfType<ObjectCreationExpressionSyntax>()
                 .ToArray();
             var createsOnlyFailureException =
-                failureGuard?.Condition.ToString() == "!preparedTemplate.SourceLoaded" &&
+                failureGuard?.Else is null &&
+                failureGuard?.Condition is PrefixUnaryExpressionSyntax
+                {
+                    RawKind: (int)SyntaxKind.LogicalNotExpression,
+                    Operand: MemberAccessExpressionSyntax
+                    {
+                        Expression: IdentifierNameSyntax { Identifier.ValueText: "preparedTemplate" },
+                        Name.Identifier.ValueText: "SourceLoaded"
+                    }
+                } &&
                 objectCreations.Length == 1 &&
                 objectCreations[0].Type.ToString() == "InvalidOperationException" &&
+                objectCreations[0].Initializer is null &&
+                objectCreations[0].ArgumentList?.Arguments.Count == 1 &&
+                objectCreations[0].ArgumentList!.Arguments[0].Expression
+                    .NormalizeWhitespace()
+                    .ToFullString() ==
+                    "$\"Could not prepare command-display save '{_saveFileName}'.\"" &&
                 failureThrow?.Expression == objectCreations[0];
 
             var copyStatement = cloneBody.Statements[2] as ExpressionStatementSyntax;
@@ -1875,11 +1931,17 @@ public sealed class IntegrationTestBoundaryTests
                 {
                     Identifier.ValueText: "caseRoot"
                 };
+            var containsHiddenControlFlowOrAssignment =
+                clone.DescendantNodes().OfType<AssignmentExpressionSyntax>().Any() ||
+                clone.DescendantNodes().OfType<LocalFunctionStatementSyntax>().Any() ||
+                clone.DescendantNodes().OfType<AnonymousFunctionExpressionSyntax>().Any() ||
+                clone.DescendantNodes().OfType<AwaitExpressionSyntax>().Count() != 1;
 
             exactCloneShape =
                 readsPreparedTemplate &&
                 createsOnlyFailureException &&
-                performsOnlyAllowedCopy;
+                performsOnlyAllowedCopy &&
+                !containsHiddenControlFlowOrAssignment;
         }
 
         if (!exactCloneShape)
