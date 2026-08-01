@@ -859,6 +859,152 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void CommandDisplaySaveSources_UseLazyPreparedTemplatesAndPreserveTheoryManifests()
+    {
+        const string preparedFixtureFileName = "PreparedCommandDisplaySaveFixture.cs";
+        var preparedFixturePath = SourcePath(IntegrationTestsDirectory, preparedFixtureFileName);
+        Assert.True(
+            File.Exists(preparedFixturePath),
+            $"Prepared command-display template contract is missing: {preparedFixtureFileName}");
+
+        var preparedFixtureSource = File.ReadAllText(preparedFixturePath);
+        var preparedFixtureRoot = CSharpSyntaxTree.ParseText(preparedFixtureSource).GetCompilationUnitRoot();
+        var preparedFixtureClass = Assert.Single(
+            preparedFixtureRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            static declaration => declaration.Identifier.ValueText == "PreparedCommandDisplaySaveFixture");
+
+        var lazyTemplateField = Assert.Single(
+            preparedFixtureClass.Members.OfType<FieldDeclarationSyntax>(),
+            static field => field.Declaration.Type.ToString() == "Lazy<Task<string>>");
+        Assert.Equal("_templateRoot", Assert.Single(lazyTemplateField.Declaration.Variables).Identifier.ValueText);
+        Assert.Contains("PrepareTemplateAsync", preparedFixtureClass.ToString(), StringComparison.Ordinal);
+        Assert.Contains("ExecutionAndPublication", preparedFixtureClass.ToString(), StringComparison.Ordinal);
+
+        var prepareTemplateMethod = Assert.Single(
+            preparedFixtureClass.Members.OfType<MethodDeclarationSyntax>(),
+            static method => method.Identifier.ValueText == "PrepareTemplateAsync");
+        var prepareTemplateBody = prepareTemplateMethod.ToString();
+        Assert.Contains("CopyCleanCheckoutDependencies", prepareTemplateBody, StringComparison.Ordinal);
+        Assert.Contains("new SaveLoadService", prepareTemplateBody, StringComparison.Ordinal);
+        Assert.Contains(".LoadGameAsync(", prepareTemplateBody, StringComparison.Ordinal);
+        Assert.Contains(".LoadSettingsAsync(", prepareTemplateBody, StringComparison.Ordinal);
+        Assert.Contains(".RefreshGameStateAsync(", prepareTemplateBody, StringComparison.Ordinal);
+
+        var cloneMethod = Assert.Single(
+            preparedFixtureClass.Members.OfType<MethodDeclarationSyntax>(),
+            static method => method.Identifier.ValueText == "ClonePreparedTemplateAsync");
+        Assert.Contains("_templateRoot.Value", cloneMethod.ToString(), StringComparison.Ordinal);
+        Assert.Contains("CopyDirectory", cloneMethod.ToString(), StringComparison.Ordinal);
+
+        var disposeMethod = Assert.Single(
+            preparedFixtureClass.Members.OfType<MethodDeclarationSyntax>(),
+            static method => method.Identifier.ValueText == "DisposeAsync");
+        Assert.Contains("_templateRoot.IsValueCreated", disposeMethod.ToString(), StringComparison.Ordinal);
+        Assert.Contains("DeleteOwnedRoot", disposeMethod.ToString(), StringComparison.Ordinal);
+
+        Assert.Equal(
+            ["ChaosSeaPreparedCommandDisplaySaveFixture", "MortalPreparedCommandDisplaySaveFixture", "ShiningAbodePreparedCommandDisplaySaveFixture"],
+            preparedFixtureRoot.DescendantNodes()
+                .OfType<ClassDeclarationSyntax>()
+                .Where(static declaration =>
+                    declaration.BaseList?.Types.Any(static type =>
+                        type.Type.ToString() == "PreparedCommandDisplaySaveFixture") == true)
+                .Select(static declaration => declaration.Identifier.ValueText)
+                .OrderBy(static name => name, StringComparer.Ordinal)
+                .ToArray());
+
+        var sourceContracts =
+            new Dictionary<string, (string Fixture, IReadOnlyDictionary<string, (string MemberData, string[] Categories)> Theories)>(
+                StringComparer.Ordinal)
+            {
+                ["MortalCommandDisplaySaveTests.cs"] =
+                    (
+                        "MortalPreparedCommandDisplaySaveFixture",
+                        new Dictionary<string, (string, string[])>(StringComparer.Ordinal)
+                        {
+                            ["LoadedMortalCommandDisplaySave_RendersCoveredCommandInBrowserAndConsole"] =
+                                ("CoveredMortalCommandInvocations", ["FullValidation"]),
+                            ["LoadedMortalCommandDisplaySave_WorldNewsLocalizesVisibilityEnums"] =
+                                ("MortalWorldNewsFixtureInvocations", ["FullValidation"])
+                        }),
+                ["ChaosSeaCommandDisplaySaveTests.cs"] =
+                    (
+                        "ChaosSeaPreparedCommandDisplaySaveFixture",
+                        new Dictionary<string, (string, string[])>(StringComparer.Ordinal)
+                        {
+                            ["LoadedChaosSeaCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole"] =
+                                ("CoveredChaosSeaCommandInvocations", ["FullValidation"]),
+                            ["LoadedChaosSeaCommandDisplaySave_RendersRepresentativeDetailTargets"] =
+                                ("ChaosSeaDetailInvocations", ["FullValidation"])
+                        }),
+                ["ShiningAbodeCommandDisplaySaveTests.cs"] =
+                    (
+                        "ShiningAbodePreparedCommandDisplaySaveFixture",
+                        new Dictionary<string, (string, string[])>(StringComparer.Ordinal)
+                        {
+                            ["LoadedShiningAbodeCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole"] =
+                                ("CoveredShiningAbodeCommandInvocations", ["FullValidation"]),
+                            ["LoadedShiningAbodeCommandDisplaySave_RendersRepresentativeDetailTargets"] =
+                                ("ShiningAbodeDetailInvocations", ["FullValidation"])
+                        })
+            };
+
+        foreach (var (fileName, contract) in sourceContracts)
+        {
+            var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName));
+            var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
+            var testClass = Assert.Single(
+                root.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+                declaration => declaration.Identifier.ValueText == Path.GetFileNameWithoutExtension(fileName));
+
+            Assert.Contains(
+                testClass.BaseList?.Types ?? [],
+                type => type.Type.ToString() == $"IClassFixture<{contract.Fixture}>");
+            Assert.Contains(
+                testClass.Members.OfType<ConstructorDeclarationSyntax>(),
+                constructor => constructor.ParameterList.Parameters.Any(
+                    parameter => parameter.Type?.ToString() == contract.Fixture));
+
+            var theories = testClass.Members.OfType<MethodDeclarationSyntax>()
+                .Where(static method => method.AttributeLists
+                    .SelectMany(static list => list.Attributes)
+                    .Any(static attribute => attribute.Name.ToString() == "Theory"))
+                .ToArray();
+            Assert.Equal(
+                contract.Theories.Keys.OrderBy(static name => name, StringComparer.Ordinal),
+                theories.Select(static method => method.Identifier.ValueText)
+                    .OrderBy(static name => name, StringComparer.Ordinal));
+
+            foreach (var theory in theories)
+            {
+                var expected = contract.Theories[theory.Identifier.ValueText];
+                var memberData = Assert.Single(
+                    theory.AttributeLists.SelectMany(static list => list.Attributes),
+                    static attribute => attribute.Name.ToString() == "MemberData");
+                var memberDataArgument = Assert.Single(memberData.ArgumentList!.Arguments);
+                Assert.Equal($"nameof({expected.MemberData})", memberDataArgument.Expression.ToString());
+                Assert.Equal(expected.Categories, CategoryTraits(fileName, theory.Identifier.ValueText));
+            }
+
+            var executionHelper = Assert.Single(
+                testClass.Members.OfType<MethodDeclarationSyntax>(),
+                static method => method.Identifier.ValueText == "ExecuteFromLoadedSaveAsync");
+            var executionBody = executionHelper.ToString();
+            Assert.Contains("CreateIsolatedRoot()", executionBody, StringComparison.Ordinal);
+            Assert.Contains("_fixture.ClonePreparedTemplateAsync(loadRoot)", executionBody, StringComparison.Ordinal);
+            Assert.Contains("new FileSystemManager", executionBody, StringComparison.Ordinal);
+            Assert.Contains("new StateManager", executionBody, StringComparison.Ordinal);
+            Assert.Contains("new ValidationService", executionBody, StringComparison.Ordinal);
+            Assert.Contains("new LocalizationManager", executionBody, StringComparison.Ordinal);
+            Assert.Contains("new ExplorerWebCommandService", executionBody, StringComparison.Ordinal);
+            Assert.DoesNotContain("SaveLoadService", executionBody, StringComparison.Ordinal);
+            Assert.DoesNotContain(".LoadGameAsync(", executionBody, StringComparison.Ordinal);
+            Assert.DoesNotContain("CopyCleanCheckoutDependencies", executionBody, StringComparison.Ordinal);
+            Assert.DoesNotContain("File.Copy(", executionBody, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ExactCategoryManifest_RejectsUnlistedSourcesAndTraitDrift()
     {
         var expected = new Dictionary<string, string[]>(StringComparer.Ordinal)

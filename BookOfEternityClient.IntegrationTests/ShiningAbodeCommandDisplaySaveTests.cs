@@ -12,14 +12,22 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
+public sealed class ShiningAbodeCommandDisplaySaveTests :
+    IDisposable,
+    IClassFixture<ShiningAbodePreparedCommandDisplaySaveFixture>
 {
     private const string SaveFileName = "shining_abode_command_display_fixture.zip";
     private const string MetadataFileName = "shining_abode_command_display_fixture_metadata.json";
     private const string SaveName = "Shining Abode Command Display Fixture (#1097)";
     private const string SaveRelativePath = "saves/manual_saves/" + SaveFileName;
 
+    private readonly ShiningAbodePreparedCommandDisplaySaveFixture _fixture;
     private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-shining-abode-command-save-" + Guid.NewGuid().ToString("N"));
+
+    public ShiningAbodeCommandDisplaySaveTests(ShiningAbodePreparedCommandDisplaySaveFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     [Fact]
     [Trait("Category", "PreMergeSentinel")]
@@ -217,21 +225,12 @@ public sealed class ShiningAbodeCommandDisplaySaveTests : IDisposable
 
     private async Task<ExplorerCommandResult> ExecuteFromLoadedSaveAsync(string command)
     {
-        var sourceArchive = GetSourceArchivePath();
-        Assert.True(File.Exists(sourceArchive), $"Missing reusable Shining Abode command display save: {sourceArchive}");
-
         var loadRoot = CreateIsolatedRoot();
+        await _fixture.ClonePreparedTemplateAsync(loadRoot);
         var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);
         fs.EnsureDirectoryStructure();
-        CopyCleanCheckoutDependencies(loadRoot);
-        var savePath = fs.ResolvePath(SaveRelativePath);
-        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
-        File.Copy(sourceArchive, savePath, overwrite: true);
 
         var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-        Assert.True(await saveLoad.LoadGameAsync(savePath));
         await stateManager.LoadSettingsAsync();
         await stateManager.RefreshGameStateAsync();
 

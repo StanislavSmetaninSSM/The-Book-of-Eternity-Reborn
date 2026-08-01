@@ -11,13 +11,21 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class MortalCommandDisplaySaveTests : IDisposable
+public sealed class MortalCommandDisplaySaveTests :
+    IDisposable,
+    IClassFixture<MortalPreparedCommandDisplaySaveFixture>
 {
     private const string SaveFileName = "mortal_world_command_display_fixture.zip";
     private const string SaveName = "Mortal World Command Display Fixture (#1095)";
     private const string SaveRelativePath = "saves/manual_saves/" + SaveFileName;
 
+    private readonly MortalPreparedCommandDisplaySaveFixture _fixture;
     private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-mortal-command-save-" + Guid.NewGuid().ToString("N"));
+
+    public MortalCommandDisplaySaveTests(MortalPreparedCommandDisplaySaveFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     [Fact]
     [Trait("Category", "PreMergeSentinel")]
@@ -154,21 +162,12 @@ public sealed class MortalCommandDisplaySaveTests : IDisposable
 
     private async Task<ExplorerCommandResult> ExecuteFromLoadedSaveAsync(string command)
     {
-        var sourceArchive = GetSourceArchivePath();
-        Assert.True(File.Exists(sourceArchive), $"Missing reusable Mortal World command display save: {sourceArchive}");
-
         var loadRoot = CreateIsolatedRoot();
+        await _fixture.ClonePreparedTemplateAsync(loadRoot);
         var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);
         fs.EnsureDirectoryStructure();
-        CopyCleanCheckoutDependencies(loadRoot);
-        var savePath = fs.ResolvePath(SaveRelativePath);
-        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
-        File.Copy(sourceArchive, savePath, overwrite: true);
 
         var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-        Assert.True(await saveLoad.LoadGameAsync(savePath));
         await stateManager.LoadSettingsAsync();
         await stateManager.RefreshGameStateAsync();
 

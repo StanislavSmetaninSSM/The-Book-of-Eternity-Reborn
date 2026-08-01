@@ -13,14 +13,22 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
+public sealed class ChaosSeaCommandDisplaySaveTests :
+    IDisposable,
+    IClassFixture<ChaosSeaPreparedCommandDisplaySaveFixture>
 {
     private const string SaveFileName = "chaos_sea_command_display_fixture.zip";
     private const string MetadataFileName = "chaos_sea_command_display_fixture_metadata.json";
     private const string SaveName = "Chaos Sea Command Display Fixture (#1096)";
     private const string SaveRelativePath = "saves/manual_saves/" + SaveFileName;
 
+    private readonly ChaosSeaPreparedCommandDisplaySaveFixture _fixture;
     private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-chaos-sea-command-save-" + Guid.NewGuid().ToString("N"));
+
+    public ChaosSeaCommandDisplaySaveTests(ChaosSeaPreparedCommandDisplaySaveFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     [Fact]
     [Trait("Category", "PreMergeSentinel")]
@@ -281,21 +289,12 @@ public sealed class ChaosSeaCommandDisplaySaveTests : IDisposable
 
     private async Task<ExplorerCommandResult> ExecuteFromLoadedSaveAsync(string command)
     {
-        var sourceArchive = GetSourceArchivePath();
-        Assert.True(File.Exists(sourceArchive), $"Missing reusable Chaos Sea command display save: {sourceArchive}");
-
         var loadRoot = CreateIsolatedRoot();
+        await _fixture.ClonePreparedTemplateAsync(loadRoot);
         var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);
         fs.EnsureDirectoryStructure();
-        CopyCleanCheckoutDependencies(loadRoot);
-        var savePath = fs.ResolvePath(SaveRelativePath);
-        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
-        File.Copy(sourceArchive, savePath, overwrite: true);
 
         var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-        Assert.True(await saveLoad.LoadGameAsync(savePath));
         await stateManager.LoadSettingsAsync();
         await stateManager.RefreshGameStateAsync();
 
