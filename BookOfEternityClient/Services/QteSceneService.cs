@@ -222,6 +222,25 @@ public sealed partial class QteSceneService
         }
     }
 
+    public async Task<QteOffer> BindAcceptedTurnAuthorityAsync(
+        QteOffer offer,
+        int sourceTurnNumber)
+    {
+        ArgumentNullException.ThrowIfNull(offer);
+        if (sourceTurnNumber <= 0)
+        {
+            throw new InvalidOperationException(
+                "QTE source turn authority must be positive.");
+        }
+
+        offer.SourceTurnNumber = sourceTurnNumber;
+        await WriteCanonicalFileAtomicAsync(
+            writeLease: null,
+            QteOfferPath,
+            JsonSerializer.Serialize(offer, JsonOpts));
+        return offer;
+    }
+
     public void ClearOfferFile() =>
         ClearOfferFileCore(writeLease: null);
 
@@ -321,6 +340,10 @@ public sealed partial class QteSceneService
         QteOffer offer,
         int sourceTurnNumber)
     {
+        EnsureBoundTurnAuthority(
+            offer,
+            sourceTurnNumber,
+            "QTE decline");
         var state = await LoadRuntimeStateAsync(writeLease);
         state.PendingOffer = null;
         state.ActiveScene = null;
@@ -391,11 +414,15 @@ public sealed partial class QteSceneService
         if (root.TryGetPropertyValue("activeScene", out var activeSceneNode) && activeSceneNode is not null)
         {
             if (activeSceneNode is not JsonObject activeScene ||
-                activeScene["offer"] is not JsonObject ||
+                activeScene["offer"] is not JsonObject activeOffer ||
                 !TryReadNodeString(activeScene["currentChapterId"], out var currentChapterId) ||
                 string.IsNullOrWhiteSpace(currentChapterId) ||
                 activeScene["acceptedAtTurn"] is null ||
-                !TryReadNodeInt(activeScene["acceptedAtTurn"], out _))
+                !TryReadNodeInt(activeScene["acceptedAtTurn"], out var acceptedAtTurn) ||
+                acceptedAtTurn <= 0 ||
+                !TryReadNodeInt(activeOffer["sourceTurnNumber"], out var sourceTurnNumber) ||
+                sourceTurnNumber <= 0 ||
+                sourceTurnNumber != acceptedAtTurn)
             {
                 root.Remove("activeScene");
                 root.Remove("pendingOffer");
@@ -497,6 +524,10 @@ public sealed partial class QteSceneService
         QteOffer offer,
         int currentTurnNumber)
     {
+        EnsureBoundTurnAuthority(
+            offer,
+            currentTurnNumber,
+            "QTE acceptance");
         var state = await LoadRuntimeStateAsync(writeLease);
         state.PendingOffer = offer;
         state.ActiveScene = new ActiveQteSceneState
@@ -548,6 +579,10 @@ public sealed partial class QteSceneService
         var state = await LoadRuntimeStateAsync(writeLease);
         var active = state.ActiveScene ?? throw new InvalidOperationException("QTE scene is not active.");
         var offer = active.Offer ?? throw new InvalidOperationException("QTE offer is missing.");
+        EnsureBoundTurnAuthority(
+            offer,
+            active.AcceptedAtTurn,
+            "QTE active scene");
 
         var chapter = offer.Chapters.FirstOrDefault(item =>
             string.Equals(item.ChapterId, active.CurrentChapterId, StringComparison.OrdinalIgnoreCase));
@@ -633,6 +668,21 @@ public sealed partial class QteSceneService
             ResultText = resultText,
             NextChapterId = target.NextChapterId
         };
+    }
+
+    private static void EnsureBoundTurnAuthority(
+        QteOffer offer,
+        int turnNumber,
+        string operation)
+    {
+        ArgumentNullException.ThrowIfNull(offer);
+        if (turnNumber <= 0 ||
+            offer.SourceTurnNumber is not > 0 ||
+            offer.SourceTurnNumber.Value != turnNumber)
+        {
+            throw new InvalidOperationException(
+                $"{operation} requires matching positive source turn authority.");
+        }
     }
 
     internal async Task<QteActionResolution> ResolveDarenShowcaseActionAsync(
@@ -5485,6 +5535,9 @@ public sealed partial class QteSceneService
 
         [JsonPropertyName("startChapterId")]
         public string StartChapterId { get; set; } = "";
+
+        [JsonPropertyName("sourceTurnNumber")]
+        public int? SourceTurnNumber { get; set; }
 
         [JsonPropertyName("chapters")]
         public List<QteChapter> Chapters { get; set; } = new();

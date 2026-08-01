@@ -863,6 +863,53 @@ public sealed class BrowserGenerationFencingSourceTests
     }
 
     [Fact]
+    public void BrowserQteTurnAuthority_UsesPersistedOfferAndRuntimeInsteadOfTurnRequest()
+    {
+        var webSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "WebUi",
+            "QteWebInteractionService.cs"));
+        var lifecycleSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "GameEngine",
+            "GameEngine.TurnLifecycle.cs"));
+        var offerDecision = ExtractMethod(
+            webSource,
+            "ResolveOfferDecisionBoundAsync",
+            "private async Task<QteWebStateDto>");
+        var actionDecision = ExtractMethod(
+            webSource,
+            "ResolveActionBoundAsync",
+            "private async Task<QteWebStateDto>");
+        var acceptedOffer = ExtractMethod(
+            lifecycleSource,
+            "HandleAcceptedQteOfferAsync",
+            "private async Task<(bool EarlyExit, GameResponse Response)>");
+
+        Assert.Contains(
+            "offer.SourceTurnNumber",
+            offerDecision,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "activeScene.AcceptedAtTurn",
+            actionDecision,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ReadCurrentTurnNumberAsync",
+            webSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "BindAcceptedTurnAuthorityAsync",
+            acceptedOffer,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "snapshotContext.TurnNumber",
+            acceptedOffer,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeDirectMultiWriteActions_UseOneCanonicalLeaseForEveryWrite()
     {
         var source = File.ReadAllText(SourcePath(

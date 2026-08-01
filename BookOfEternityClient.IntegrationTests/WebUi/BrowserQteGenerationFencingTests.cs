@@ -69,6 +69,103 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         Assert.False(fs.FileExists(QteSceneService.QteRuntimePath));
     }
 
+    [Theory]
+    [InlineData("accept", "Active")]
+    [InlineData("decline", "Declined")]
+    public async Task OfferDecision_UsesPersistedSourceTurnWithoutActiveTurnRequest(
+        string decision,
+        string expectedState)
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        await WriteOfferAsync(fs, BuildTerminalOffer());
+        Assert.False(fs.FileExists("input/turn_request.json"));
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
+
+        var result = await web.ResolveOfferDecisionAsync(
+            new QteWebOfferDecisionRequest(decision, interactionToken));
+
+        Assert.Equal(expectedState, result.State);
+        using var runtime = JsonDocument.Parse(
+            (await fs.ReadFileAsync(QteSceneService.QteRuntimePath))!);
+        var persistedTurn = decision == "accept"
+            ? runtime.RootElement
+                .GetProperty("activeScene")
+                .GetProperty("acceptedAtTurn")
+                .GetInt32()
+            : runtime.RootElement
+                .GetProperty("lastDeclinedAtTurn")
+                .GetInt32();
+        Assert.Equal(12, persistedTurn);
+    }
+
+    [Theory]
+    [InlineData("accept", null)]
+    [InlineData("accept", 0)]
+    [InlineData("accept", -1)]
+    [InlineData("decline", null)]
+    [InlineData("decline", 0)]
+    [InlineData("decline", -1)]
+    public async Task OfferDecision_MissingOrNonPositiveSourceTurnFailsWithoutMutation(
+        string decision,
+        int? sourceTurnNumber)
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(fs, new QteSceneServiceHooks());
+        var offer = BuildTerminalOffer();
+        offer.SourceTurnNumber = sourceTurnNumber;
+        await WriteOfferAsync(fs, offer);
+        var offerBefore = await fs.ReadFileAsync(QteSceneService.QteOfferPath);
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
+
+        var result = await web.ResolveOfferDecisionAsync(
+            new QteWebOfferDecisionRequest(decision, interactionToken));
+
+        Assert.Equal("Failed", result.State);
+        Assert.Contains(
+            "source turn authority",
+            result.Error,
+            StringComparison.Ordinal);
+        Assert.Equal(
+            offerBefore,
+            await fs.ReadFileAsync(QteSceneService.QteOfferPath));
+        Assert.False(fs.FileExists(QteSceneService.QteRuntimePath));
+    }
+
+    [Fact]
+    public async Task ActiveAction_UsesPersistedAcceptedTurnWithoutActiveTurnRequest()
+    {
+        var fs = CreateFileSystem();
+        var web = CreateWebService(
+            fs,
+            new QteSceneServiceHooks(),
+            out var stateManager);
+        var offer = BuildTerminalOffer();
+        await WriteActiveRuntimeAsync(fs, offer);
+        await fs.WriteFileAtomicAsync(
+            "game_state/player/experience.json",
+            """{ "totalExperience": 10 }""");
+        await stateManager.RefreshGameStateAsync();
+        Assert.False(fs.FileExists("input/turn_request.json"));
+        var interactionToken = RequiredInteractionToken(
+            await web.BuildReadOnlyStateAsync());
+
+        var result = await web.ResolveActionAsync(
+            new QteWebActionRequest(
+                "finish",
+                "success",
+                interactionToken));
+
+        Assert.Equal("Completed", result.State);
+        using var history = JsonDocument.Parse(
+            (await fs.ReadFileAsync(QteSceneService.QteHistoryPath))!);
+        var entry = Assert.Single(history.RootElement.EnumerateArray());
+        Assert.Equal(12, entry.GetProperty("acceptedAtTurn").GetInt32());
+        Assert.Equal(12, entry.GetProperty("finishedAtTurn").GetInt32());
+    }
+
     [Fact]
     public async Task PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection()
     {
@@ -1289,6 +1386,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             QteId = "browser_generation_fencing",
             Title = "Проверка транзакции QTE",
             StartChapterId = "start",
+            SourceTurnNumber = 12,
             Chapters =
             [
                 new QteSceneService.QteChapter

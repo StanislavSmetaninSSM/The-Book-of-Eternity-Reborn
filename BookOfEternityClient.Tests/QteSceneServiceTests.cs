@@ -889,6 +889,149 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BindAcceptedTurnAuthorityAsync_PersistsTrustedPositiveSourceTurn()
+    {
+        var offer = BuildUnscoredBranchChoiceOffer();
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteOfferPath,
+            JsonSerializer.Serialize(offer));
+
+        var boundOffer = await _service.BindAcceptedTurnAuthorityAsync(
+            offer,
+            sourceTurnNumber: 17);
+
+        Assert.Equal(17, boundOffer.SourceTurnNumber);
+        using var persisted = await ReadJsonDocumentAsync(QteSceneService.QteOfferPath);
+        Assert.Equal(
+            17,
+            persisted.RootElement.GetProperty("sourceTurnNumber").GetInt32());
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public async Task BindAcceptedTurnAuthorityAsync_NonPositiveTurnFailsWithoutMutation(
+        int sourceTurnNumber)
+    {
+        var offer = BuildUnscoredBranchChoiceOffer();
+        var originalJson = JsonSerializer.Serialize(offer);
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, originalJson);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.BindAcceptedTurnAuthorityAsync(offer, sourceTurnNumber));
+
+        Assert.Equal(
+            originalJson,
+            await _fs.ReadFileAsync(QteSceneService.QteOfferPath));
+    }
+
+    [Theory]
+    [InlineData(null, 12)]
+    [InlineData(0, 12)]
+    [InlineData(-1, 12)]
+    [InlineData(11, 12)]
+    public async Task BeginAcceptedSceneAsync_UnboundOrMismatchedTurnFailsWithoutRuntimeMutation(
+        int? sourceTurnNumber,
+        int acceptedAtTurn)
+    {
+        var offer = BuildUnscoredBranchChoiceOffer();
+        offer.SourceTurnNumber = sourceTurnNumber;
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.BeginAcceptedSceneAsync(offer, acceptedAtTurn));
+
+        Assert.False(_fs.FileExists(QteSceneService.QteRuntimePath));
+    }
+
+    [Theory]
+    [InlineData(null, 12)]
+    [InlineData(0, 12)]
+    [InlineData(-1, 12)]
+    [InlineData(11, 12)]
+    public async Task RecordDeclineAsync_UnboundOrMismatchedTurnFailsWithoutMutation(
+        int? sourceTurnNumber,
+        int declinedAtTurn)
+    {
+        var offer = BuildUnscoredBranchChoiceOffer();
+        offer.SourceTurnNumber = sourceTurnNumber;
+        var originalJson = JsonSerializer.Serialize(offer);
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, originalJson);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.RecordDeclineAsync(offer, declinedAtTurn));
+
+        Assert.Equal(
+            originalJson,
+            await _fs.ReadFileAsync(QteSceneService.QteOfferPath));
+        Assert.False(_fs.FileExists(QteSceneService.QteRuntimePath));
+    }
+
+    [Fact]
+    public async Task EnsureRuntimeStateHealthyAsync_RemovesNonPositiveAcceptedTurnAuthority()
+    {
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, """
+        {
+          "pendingOffer": {
+            "qteId": "qte_bridge",
+            "sourceTurnNumber": 0
+          },
+          "activeScene": {
+            "offer": {
+              "qteId": "qte_bridge",
+              "sourceTurnNumber": 0
+            },
+            "currentChapterId": "start",
+            "acceptedAtTurn": 0
+          },
+          "lastResolvedQteSummaryPendingReminder": "QTE summary"
+        }
+        """);
+
+        await _service.EnsureRuntimeStateHealthyAsync();
+
+        var json = await _fs.ReadFileAsync(QteSceneService.QteRuntimePath);
+        Assert.False(string.IsNullOrWhiteSpace(json));
+        Assert.DoesNotContain("activeScene", json!, StringComparison.Ordinal);
+        Assert.DoesNotContain("pendingOffer", json!, StringComparison.Ordinal);
+        Assert.Contains(
+            "lastResolvedQteSummaryPendingReminder",
+            json!,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_NonPositiveRuntimeAuthorityFailsWithoutMutation()
+    {
+        var offer = BuildScoredBranchChoiceOffer();
+        offer.SourceTurnNumber = 0;
+        var runtime = new QteSceneService.QteRuntimeState
+        {
+            PendingOffer = offer,
+            ActiveScene = new QteSceneService.ActiveQteSceneState
+            {
+                Offer = offer,
+                CurrentChapterId = offer.StartChapterId,
+                AcceptedAtTurn = 0
+            }
+        };
+        var originalJson = JsonSerializer.Serialize(runtime);
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteRuntimePath,
+            originalJson);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.ResolveActiveActionAsync(
+                "cross_yard",
+                submittedGrade: null,
+                currentTurnNumber: 21,
+                allowPreexistingStateIssues: true));
+
+        Assert.Equal(
+            originalJson,
+            await _fs.ReadFileAsync(QteSceneService.QteRuntimePath));
+    }
+
+    [Fact]
     public async Task ApplyTerminalOutcomeStateChangesAsync_CapturesBaselineForGuardianProjectNormalization()
     {
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """
@@ -1676,6 +1819,7 @@ public sealed class QteSceneServiceTests : IDisposable
           "offerText": "Нужно пройти двор, собрать улики и уйти до тревоги.",
           "introNarrative": "Фонари качаются над мокрым двором усадьбы.",
           "startChapterId": "yard",
+          "sourceTurnNumber": 10,
           "scoreModel": {
             "metrics": [
               { "id": "stealth", "label": "Скрытность", "initial": 50, "min": 0, "max": 100, "visibility": "always" },
@@ -1834,6 +1978,7 @@ public sealed class QteSceneServiceTests : IDisposable
             OfferText = "Нужно открыть ворота.",
             IntroNarrative = "Засов заедает от ржавчины.",
             StartChapterId = "gate",
+            SourceTurnNumber = 20,
             Chapters =
             [
                 new QteSceneService.QteChapter

@@ -1743,10 +1743,23 @@ public partial class GameEngine
             return (false, response);
         }
 
+        if (snapshotContext is null || snapshotContext.TurnNumber <= 0)
+        {
+            _logger.LogError(
+                "QTE offer {QteId} has no positive validated source turn and will be ignored.",
+                offer.QteId);
+            _qteSceneService.ClearOfferFile();
+            return (false, response);
+        }
+
+        offer = await _qteSceneService.BindAcceptedTurnAuthorityAsync(
+            offer,
+            snapshotContext.TurnNumber);
+        var sourceTurnNumber = offer.SourceTurnNumber!.Value;
         var decision = await _qteSceneService.PromptOfferDecisionAsync(offer);
         if (decision == QteSceneService.QteOfferDecision.Decline)
         {
-            await _qteSceneService.RecordDeclineAsync(offer, _gameLoop.TurnNumber);
+            await _qteSceneService.RecordDeclineAsync(offer, sourceTurnNumber);
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
 
@@ -1762,7 +1775,9 @@ public partial class GameEngine
             return (true, response);
         }
 
-        var completion = await _qteSceneService.StartAcceptedSceneAsync(offer, _gameLoop.TurnNumber);
+        var completion = await _qteSceneService.StartAcceptedSceneAsync(
+            offer,
+            sourceTurnNumber);
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
         await CheckLifeTransitions(snapshotContext);
         await CheckAscensionTrigger();

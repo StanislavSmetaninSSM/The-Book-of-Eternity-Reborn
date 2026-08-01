@@ -332,6 +332,7 @@ public sealed class BrowserQteMiniGameContractTests : IDisposable
           "offerText": "Нужно пройти двор и не поднять тревогу.",
           "introNarrative": "Фонари качаются над мокрым двором.",
           "startChapterId": "start",
+          "sourceTurnNumber": 12,
           "scoreModel": {
             "metrics": [
               { "id": "stealth", "label": "Скрытность", "initial": 50, "min": 0, "max": 100, "visibility": "always" },
