@@ -855,17 +855,73 @@ until termination is confirmed.
 
 ### Load-staging file authority set
 
-The load transaction retains one authority record per staged file: normalized
-relative path, opened physical identity, SHA-256 digest, byte length, and live
-handle. Every record must still be a single-link regular file immediately
-before and after directory publication.
+The load transaction retains one authority record per durable staged file:
+normalized relative path, opened physical identity, SHA-256 digest, byte
+length, and the final retained staging read handle. Extraction writes through
+an exclusive create-new handle, flushes and captures its receipt, closes that
+writer, then reopens the same path as a read handle and revalidates identity,
+digest, length, regular-file kind, and single-link count before retaining it.
+
+Windows does not permit a handle-bound parent-directory rename while descendant
+handles remain open. Immediately before publication the client therefore
+revalidates every retained staging reader, releases those readers at this one
+platform boundary, and renames the already-opened staging root. The renamed
+root handle is identity-checked through a delete-shared transitional handoff
+into a non-delete-shared root pin. Every destination leaf is then reopened from
+stable directory authority, exact-revalidated against its extraction record,
+and retained through commit or recovery. Any replacement or hard-link race
+between the checks fails closed and restores the byte-exact prior live session.
+
+The authority set also defines a closed-world membership policy: only its
+registered durable files and client-owned required directories may exist.
+Extra files, directories, reparse points, missing registered files, or
+displaced root/directory identities reject at the pre-activation validation
+point. The sole sanctioned post-activation file change is the player-soul
+profile mirror repair. If repair is necessary, its old retained reader is
+exact-validated and yielded, the replacement is conditional on that exact
+physical identity plus digest, and the returned publication receipt is
+exact-rebound before any canonical read. A no-change profile keeps its original
+reader.
+
+After that repair boundary, strict leaf and directory handles retain the
+identities of the registered publication objects. A final closed-world
+membership and exact-authority check immediately before the load journal commit
+is the transaction's linearization boundary. Directory handles do not claim
+ambient child-namespace write exclusion between checks or after commit.
+Recovery first releases the retained handles, restores the prior session, and
+removes only the failed transaction's own namespace entries without following
+reparse points. An external hard link never becomes cleanup authority and does
+not force the active load journal to remain as cleanup debt.
 
 ### Save archive budget
 
-Archive validation tracks trusted maximum entry count, metadata bytes, manifest
-bytes, soul-state bytes, per-entry expanded bytes, aggregate expanded bytes,
-and compression ratio. Counters are checked before allocation and during every
-bounded streaming copy. Archive path segments containing `:` are invalid.
+One immutable client-owned policy, never archive- or manifest-owned, imposes
+these limits:
+
+| Resource | Trusted maximum |
+|---|---:|
+| ZIP entries | 8,192 |
+| Aggregate UTF-8 entry-name metadata | 2 MiB |
+| Expanded `save_manifest.json` | 4 MiB |
+| Expanded `game_state/meta/soul_state.json` | 8 MiB |
+| Expanded bytes in any other file entry | 64 MiB |
+| Aggregate durable expanded payload | 512 MiB |
+| Expanded/compressed ratio | 200:1 after a 1 MiB expanded grace threshold |
+
+Entry count, name metadata, advertised expanded lengths, aggregate durable
+length, compressed length/ratio, and `:` alternate-stream syntax are rejected
+before content allocation and before lifecycle/session-replacement authority.
+Manifest and soul-state buffering is bounded by both advertised and actual
+bytes. Save-list metadata uses the same archive policy and bounded per-entry
+reader rather than an unbounded text read. Payload hashing and extraction
+stream in bounded chunks and require the actual byte count to equal the
+advertised length exactly.
+
+The three checked-in legacy realm saves provide deliberately large headroom:
+the current maximum is 100 entries, 214,559 aggregate expanded bytes, 45,351
+bytes in the largest entry, and 3,552 UTF-8 entry-name bytes. Mortal World,
+Chaos Sea, and Shining Abode fixtures all validate under the client policy and
+remain load-compatible.
 
 ### Complete afterlife actor authority
 

@@ -35,6 +35,7 @@ internal sealed class FileSystemManagerHooks
     internal Func<string, Task>? BeforeRuntimeFileCreateAsync { get; init; }
     internal Func<string, Task>? AfterRuntimeMutationBoundaryValidatedAsync { get; init; }
     internal Func<string, string, Task>? BeforeLoadDirectoryMoveAsync { get; init; }
+    internal Func<string, string, Task>? AfterLoadDirectoryMoveAsync { get; init; }
 }
 
 public enum CanonicalFileMutationResult
@@ -698,11 +699,62 @@ public class FileSystemManager
         string relativePath,
         string content)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        await WriteFileAtomicBytesAsync(
+        _ = await WriteFileAtomicWithPublicationAsync(
             writeLease,
             relativePath,
-            EncodeUtf8WithPreamble(content));
+            content);
+    }
+
+    internal async Task<CanonicalMutationPublication>
+        WriteFileAtomicWithPublicationAsync(
+            CanonicalWriteLease writeLease,
+            string relativePath,
+            string content)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        var bytes = EncodeUtf8WithPreamble(content);
+        await RecordCanonicalMutationIntentAsync(
+            writeLease,
+            relativePath,
+            bytes);
+        var publication =
+            await WriteFileAtomicBytesCoreAsync(relativePath, bytes);
+        await RecordCanonicalMutationPublicationAsync(
+            writeLease,
+            relativePath,
+            publication);
+        return publication;
+    }
+
+    internal async Task<CanonicalMutationPublication>
+        WriteFileAtomicWithPublicationIfCurrentAuthorityAsync(
+            CanonicalWriteLease writeLease,
+            string relativePath,
+            string content,
+            PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
+            string expectedCurrentSha256)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
+        var expectedHash = NormalizeOwnedMutationHashes(
+                [expectedCurrentSha256])
+            .Single();
+        var bytes = EncodeUtf8WithPreamble(content);
+        await RecordCanonicalMutationIntentAsync(
+            writeLease,
+            relativePath,
+            bytes);
+        var publication = await WriteFileAtomicBytesCoreAsync(
+            relativePath,
+            bytes,
+            CancellationToken.None,
+            expectedDestinationIdentity: expectedCurrentIdentity,
+            expectedDestinationSha256: expectedHash);
+        await RecordCanonicalMutationPublicationAsync(
+            writeLease,
+            relativePath,
+            publication);
+        return publication;
     }
 
     public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
@@ -1984,6 +2036,959 @@ public class FileSystemManager
         }
     }
 
+    internal sealed class LoadStagingAuthoritySet : IAsyncDisposable
+    {
+        private readonly FileSystemManager _owner;
+        private readonly string _stagingRoot;
+        private readonly List<LoadStagingFileAuthority> _files = [];
+        private readonly HashSet<string> _relativePaths =
+            new(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> _allowedDirectoryPaths =
+            new(StringComparer.OrdinalIgnoreCase);
+        private readonly List<LoadStagingDirectoryAuthority>
+            _publishedDirectories = [];
+        private PhysicalFileAuthority.StableDirectory?
+            _publishedRootAuthority;
+        private PhysicalFileAuthority.FileIdentity?
+            _publishedRootIdentity;
+        private bool _preparedForDirectoryMove;
+        private bool _sealedForCanonicalReads;
+        private bool _disposed;
+
+        internal LoadStagingAuthoritySet(
+            FileSystemManager owner,
+            string stagingRoot)
+        {
+            _owner = owner;
+            _stagingRoot = Path.GetFullPath(stagingRoot);
+            _owner.EnsureRuntimePathIsSafe(_stagingRoot);
+            foreach (var requiredDirectory in RequiredDirectories)
+            {
+                if (requiredDirectory.Equals(
+                        "game_session",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                AddAllowedDirectoryPath(
+                    requiredDirectory["game_session/".Length..]);
+            }
+        }
+
+        internal void Add(
+            string stagedPath,
+            FileStream stream,
+            PhysicalFileAuthority.OpenedFileAuthority authority)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            var fullPath = Path.GetFullPath(stagedPath);
+            if (!IsSameOrDescendant(fullPath, _stagingRoot) ||
+                string.Equals(
+                    fullPath,
+                    _stagingRoot,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException(
+                    "Load staging file is outside its retained authority root.");
+            }
+
+            var relativePath = Path
+                .GetRelativePath(_stagingRoot, fullPath)
+                .Replace('\\', '/');
+            if (!_relativePaths.Add(relativePath))
+            {
+                throw new InvalidDataException(
+                    $"Load staging authority contains duplicate path '{relativePath}'.");
+            }
+            AddAllowedDirectoryPath(
+                Path.GetDirectoryName(
+                    relativePath.Replace(
+                        '/',
+                        Path.DirectorySeparatorChar)));
+
+            _files.Add(
+                new LoadStagingFileAuthority(
+                    relativePath,
+                    stream,
+                    authority));
+        }
+
+        internal void EnsureExactAtRoot(
+            string currentRoot,
+            string authorityName)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (_preparedForDirectoryMove)
+            {
+                throw new InvalidOperationException(
+                    "Retained load-staging handles were already released for publication.");
+            }
+
+            var normalizedRoot = Path.GetFullPath(currentRoot);
+            _owner.EnsureLoadTransactionOperationPathIsSafe(normalizedRoot);
+            EnsureExactFileNamespace(normalizedRoot, authorityName);
+            foreach (var file in _files)
+            {
+                var stream = file.Stream
+                    ?? throw new InvalidOperationException(
+                        "Retained load-staging handle is unavailable.");
+                var expectedPath = ResolveExpectedPath(
+                    normalizedRoot,
+                    file.RelativePath);
+
+                PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                    stream.SafeFileHandle,
+                    expectedPath,
+                    file.Authority.Identity,
+                    file.Authority.Sha256,
+                    $"{authorityName} '{file.RelativePath}'",
+                    file.Authority.Length);
+            }
+            EnsureExactFileNamespace(normalizedRoot, authorityName);
+        }
+
+        internal void PrepareForDirectoryMove(
+            string sourceRoot,
+            string authorityName)
+        {
+            EnsureExactAtRoot(sourceRoot, authorityName);
+            ReleaseFileStreams(
+                includePublished: true,
+                includeSealed: true);
+            _preparedForDirectoryMove = true;
+        }
+
+        internal void EnsureExactAfterDirectoryMove(
+            string destinationRoot,
+            string authorityName,
+            PhysicalFileAuthority.FileIdentity expectedRootIdentity,
+            PhysicalFileAuthority.StableDirectory publishedRootAuthority)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            ArgumentNullException.ThrowIfNull(publishedRootAuthority);
+            if (!_preparedForDirectoryMove)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging authority was not prepared for directory publication.");
+            }
+            if (_publishedRootAuthority != null)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging root authority was already published.");
+            }
+            if (!expectedRootIdentity.IsDirectory)
+            {
+                throw new InvalidDataException(
+                    "Load-staging publication root authority is not a directory.");
+            }
+
+            var normalizedRoot = Path.GetFullPath(destinationRoot);
+            _owner.EnsureLoadTransactionOperationPathIsSafe(normalizedRoot);
+            PhysicalFileAuthority.StableDirectory? renameRootAuthority =
+                publishedRootAuthority;
+            try
+            {
+                renameRootAuthority.RebindFullPathAfterRename(
+                    normalizedRoot,
+                    authorityName);
+                PhysicalFileAuthority.EnsureExactDirectoryIdentity(
+                    renameRootAuthority,
+                    expectedRootIdentity,
+                    authorityName);
+                EnsureExactFileNamespace(normalizedRoot, authorityName);
+
+                _publishedRootAuthority =
+                    HandoffPublishedRootAuthority(
+                        renameRootAuthority,
+                        normalizedRoot,
+                        expectedRootIdentity,
+                        authorityName);
+                renameRootAuthority = null;
+                _publishedRootIdentity = expectedRootIdentity;
+
+                EnsurePublishedRoot(normalizedRoot, authorityName);
+                foreach (var file in _files)
+                {
+                    var expectedPath = ResolveExpectedPath(
+                        normalizedRoot,
+                        file.RelativePath);
+                    var parentPath = Path.GetDirectoryName(expectedPath)
+                        ?? throw new InvalidDataException(
+                            "Published load-staging file has no parent.");
+                    using var parentAuthority =
+                        PhysicalFileAuthority.EnsureStableDirectory(
+                            normalizedRoot,
+                            parentPath,
+                            authorityName);
+                    FileStream? stream = null;
+                    try
+                    {
+                        stream = PhysicalFileAuthority.OpenReadFile(
+                                parentAuthority,
+                                expectedPath,
+                                authorityName,
+                                asynchronous: false,
+                                shareDelete: true)
+                            ?? throw new InvalidDataException(
+                                $"{authorityName} '{file.RelativePath}' is missing.");
+                        PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                            stream.SafeFileHandle,
+                            expectedPath,
+                            file.Authority.Identity,
+                            file.Authority.Sha256,
+                            $"{authorityName} '{file.RelativePath}'",
+                            file.Authority.Length);
+                        file.Stream = stream;
+                        stream = null;
+                    }
+                    finally
+                    {
+                        stream?.Dispose();
+                    }
+                }
+
+                EnsureRetainedFileAuthorities(
+                    normalizedRoot,
+                    authorityName,
+                    useSealedAuthority: false);
+                EnsureExactFileNamespace(normalizedRoot, authorityName);
+            }
+            finally
+            {
+                renameRootAuthority?.Dispose();
+            }
+        }
+
+        internal void EnsurePublishedExactBeforeActivation(
+            string publishedRoot,
+            string authorityName)
+        {
+            EnsurePublishedState(
+                publishedRoot,
+                authorityName,
+                useSealedAuthority: false);
+        }
+
+        internal PhysicalFileAuthority.OpenedFileAuthority
+            YieldPublishedFileAuthorityForConditionalReplacement(
+                string publishedRoot,
+                string relativePath,
+                string authorityName)
+        {
+            EnsurePublishedState(
+                publishedRoot,
+                authorityName,
+                useSealedAuthority: false);
+            if (_sealedForCanonicalReads)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging publication authority is already sealed.");
+            }
+
+            var normalizedRelativePath = relativePath
+                .Replace('\\', '/');
+            var file = _files.SingleOrDefault(candidate =>
+                candidate.RelativePath.Equals(
+                    normalizedRelativePath,
+                    StringComparison.OrdinalIgnoreCase))
+                ?? throw new InvalidDataException(
+                    "Client-owned load repair targeted an unregistered file.");
+            if (file.SealedStream != null ||
+                file.YieldedForConditionalReplacement)
+            {
+                throw new InvalidOperationException(
+                    "Client-owned load repair authority was already yielded.");
+            }
+
+            var stream = file.Stream
+                ?? throw new InvalidOperationException(
+                    "Client-owned load repair authority is unavailable.");
+            var normalizedRoot = Path.GetFullPath(publishedRoot);
+            var expectedPath = ResolveExpectedPath(
+                normalizedRoot,
+                file.RelativePath);
+            PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                stream.SafeFileHandle,
+                expectedPath,
+                file.Authority.Identity,
+                file.Authority.Sha256,
+                authorityName,
+                file.Authority.Length);
+            stream.Dispose();
+            file.Stream = null;
+            file.YieldedForConditionalReplacement = true;
+            return file.Authority;
+        }
+
+        internal void RebindPublishedFileAuthority(
+            string publishedRoot,
+            string relativePath,
+            CanonicalMutationPublication publication,
+            string authorityName)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (!_preparedForDirectoryMove ||
+                _publishedRootAuthority == null)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging publication authority is unavailable.");
+            }
+            if (_sealedForCanonicalReads)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging publication authority is already sealed.");
+            }
+            if (publication.Operation != CanonicalMutationOperation.Write)
+            {
+                throw new InvalidDataException(
+                    "Load-staging authority can rebind only a published write.");
+            }
+
+            var normalizedRelativePath = relativePath
+                .Replace('\\', '/');
+            var file = _files.SingleOrDefault(candidate =>
+                candidate.RelativePath.Equals(
+                    normalizedRelativePath,
+                    StringComparison.OrdinalIgnoreCase))
+                ?? throw new InvalidDataException(
+                    "Client-owned load repair targeted an unregistered file.");
+            if (file.SealedStream != null)
+            {
+                throw new InvalidOperationException(
+                    "Client-owned load repair authority was already rebound.");
+            }
+            if (!file.YieldedForConditionalReplacement ||
+                file.Stream != null)
+            {
+                throw new InvalidOperationException(
+                    "Client-owned load repair authority was not yielded for conditional replacement.");
+            }
+
+            var normalizedRoot = Path.GetFullPath(publishedRoot);
+            var expectedPath = ResolveExpectedPath(
+                normalizedRoot,
+                file.RelativePath);
+            var parentPath = Path.GetDirectoryName(expectedPath)
+                ?? throw new InvalidDataException(
+                    "Rebound load-staging file has no parent.");
+            using var parentAuthority =
+                PhysicalFileAuthority.EnsureStableDirectory(
+                    normalizedRoot,
+                    parentPath,
+                    authorityName);
+            FileStream? stream = null;
+            try
+            {
+                stream = PhysicalFileAuthority.OpenReadFile(
+                        parentAuthority,
+                        expectedPath,
+                        authorityName,
+                        asynchronous: false)
+                    ?? throw new InvalidDataException(
+                        "Client-owned load repair publication is missing.");
+                file.Authority =
+                    PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                        stream.SafeFileHandle,
+                        expectedPath,
+                        publication.PhysicalIdentity,
+                        publication.Sha256,
+                        authorityName);
+                file.SealedStream = stream;
+                stream = null;
+                file.YieldedForConditionalReplacement = false;
+            }
+            finally
+            {
+                stream?.Dispose();
+            }
+        }
+
+        internal void SealPublishedAuthorityForCanonicalReads(
+            string publishedRoot,
+            string authorityName)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (!_preparedForDirectoryMove ||
+                _publishedRootAuthority == null)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging publication authority is unavailable.");
+            }
+            if (_sealedForCanonicalReads)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging publication authority was already sealed.");
+            }
+
+            var normalizedRoot = Path.GetFullPath(publishedRoot);
+            EnsurePublishedRoot(normalizedRoot, authorityName);
+            EnsureExactFileNamespace(normalizedRoot, authorityName);
+            RetainPublishedDirectoryAuthorities(
+                normalizedRoot,
+                authorityName);
+            foreach (var file in _files)
+            {
+                var expectedPath = ResolveExpectedPath(
+                    normalizedRoot,
+                    file.RelativePath);
+                if (file.SealedStream == null)
+                {
+                    var parentPath = Path.GetDirectoryName(expectedPath)
+                        ?? throw new InvalidDataException(
+                            "Sealed load-staging file has no parent.");
+                    using var parentAuthority =
+                        PhysicalFileAuthority.EnsureStableDirectory(
+                            normalizedRoot,
+                            parentPath,
+                            authorityName);
+                    FileStream? stream = null;
+                    try
+                    {
+                        stream = PhysicalFileAuthority.OpenReadFile(
+                                parentAuthority,
+                                expectedPath,
+                                authorityName,
+                                asynchronous: false)
+                            ?? throw new InvalidDataException(
+                                $"{authorityName} '{file.RelativePath}' is missing.");
+                        PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                            stream.SafeFileHandle,
+                            expectedPath,
+                            file.Authority.Identity,
+                            file.Authority.Sha256,
+                            $"{authorityName} '{file.RelativePath}'",
+                            file.Authority.Length);
+                        file.SealedStream = stream;
+                        stream = null;
+                    }
+                    finally
+                    {
+                        stream?.Dispose();
+                    }
+                }
+                else
+                {
+                    PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                        file.SealedStream.SafeFileHandle,
+                        expectedPath,
+                        file.Authority.Identity,
+                        file.Authority.Sha256,
+                        $"{authorityName} '{file.RelativePath}'",
+                        file.Authority.Length);
+                }
+            }
+
+            EnsureExactFileNamespace(normalizedRoot, authorityName);
+            _sealedForCanonicalReads = true;
+        }
+
+        internal void EnsureSealedExactBeforeCommit(
+            string publishedRoot,
+            string authorityName)
+        {
+            if (!_sealedForCanonicalReads)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging publication authority is not sealed.");
+            }
+
+            EnsurePublishedState(
+                publishedRoot,
+                authorityName,
+                useSealedAuthority: true);
+            foreach (var directory in _publishedDirectories)
+            {
+                PhysicalFileAuthority.EnsureExactDirectoryIdentity(
+                    directory.Authority,
+                    directory.Identity,
+                    authorityName);
+            }
+        }
+
+        internal void ReleaseForRecovery()
+        {
+            if (_disposed)
+                return;
+
+            ReleaseRetainedAuthorities();
+            _preparedForDirectoryMove = true;
+        }
+
+        private void EnsurePublishedState(
+            string publishedRoot,
+            string authorityName,
+            bool useSealedAuthority)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (!_preparedForDirectoryMove ||
+                _publishedRootAuthority == null)
+            {
+                throw new InvalidOperationException(
+                    "Load-staging publication authority is unavailable.");
+            }
+
+            var normalizedRoot = Path.GetFullPath(publishedRoot);
+            EnsurePublishedRoot(normalizedRoot, authorityName);
+            EnsureExactFileNamespace(normalizedRoot, authorityName);
+            EnsureRetainedFileAuthorities(
+                normalizedRoot,
+                authorityName,
+                useSealedAuthority);
+            EnsureExactFileNamespace(normalizedRoot, authorityName);
+        }
+
+        private void EnsureRetainedFileAuthorities(
+            string normalizedRoot,
+            string authorityName,
+            bool useSealedAuthority)
+        {
+            foreach (var file in _files)
+            {
+                var stream = useSealedAuthority
+                    ? file.SealedStream
+                    : file.Stream;
+                if (stream == null)
+                {
+                    throw new InvalidOperationException(
+                        "Retained load-staging file authority is unavailable.");
+                }
+
+                var expectedPath = ResolveExpectedPath(
+                    normalizedRoot,
+                    file.RelativePath);
+                PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                    stream.SafeFileHandle,
+                    expectedPath,
+                    file.Authority.Identity,
+                    file.Authority.Sha256,
+                    $"{authorityName} '{file.RelativePath}'",
+                    file.Authority.Length);
+            }
+        }
+
+        private static PhysicalFileAuthority.StableDirectory
+            HandoffPublishedRootAuthority(
+                PhysicalFileAuthority.StableDirectory renameRootAuthority,
+                string normalizedRoot,
+                PhysicalFileAuthority.FileIdentity expectedRootIdentity,
+                string authorityName)
+        {
+            PhysicalFileAuthority.StableDirectory? transitionAuthority =
+                null;
+            PhysicalFileAuthority.StableDirectory? pinnedAuthority =
+                null;
+            try
+            {
+                transitionAuthority =
+                    PhysicalFileAuthority.OpenStableDirectory(
+                        normalizedRoot,
+                        authorityName,
+                        shareDelete: true);
+                PhysicalFileAuthority.EnsureExactDirectoryIdentity(
+                    transitionAuthority,
+                    expectedRootIdentity,
+                    authorityName);
+
+                renameRootAuthority.Dispose();
+                pinnedAuthority =
+                    PhysicalFileAuthority.OpenStableDirectory(
+                        normalizedRoot,
+                        authorityName);
+                PhysicalFileAuthority.EnsureExactDirectoryIdentity(
+                    pinnedAuthority,
+                    expectedRootIdentity,
+                    authorityName);
+                var result = pinnedAuthority;
+                pinnedAuthority = null;
+                return result;
+            }
+            finally
+            {
+                pinnedAuthority?.Dispose();
+                transitionAuthority?.Dispose();
+                renameRootAuthority.Dispose();
+            }
+        }
+
+        private void EnsurePublishedRoot(
+            string normalizedRoot,
+            string authorityName)
+        {
+            var rootAuthority = _publishedRootAuthority
+                ?? throw new InvalidOperationException(
+                    "Published load-staging root handle is unavailable.");
+            var rootIdentity = _publishedRootIdentity
+                ?? throw new InvalidOperationException(
+                    "Published load-staging root identity is unavailable.");
+            if (!rootAuthority.FullPath.Equals(
+                    normalizedRoot,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException(
+                    "Published load-staging root path changed.");
+            }
+
+            PhysicalFileAuthority.EnsureExactDirectoryIdentity(
+                rootAuthority,
+                rootIdentity,
+                authorityName);
+        }
+
+        private void EnsureExactFileNamespace(
+            string normalizedRoot,
+            string authorityName)
+        {
+            if (IsReparsePoint(normalizedRoot))
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} root cannot be a reparse point.");
+            }
+
+            var actualFiles = new HashSet<string>(
+                StringComparer.OrdinalIgnoreCase);
+            var pendingDirectories = new Stack<string>();
+            pendingDirectories.Push(normalizedRoot);
+            var observedEntryCount = 0;
+            var maximumEntryCount = checked(
+                _relativePaths.Count +
+                _allowedDirectoryPaths.Count);
+            while (pendingDirectories.Count > 0)
+            {
+                var currentDirectory = pendingDirectories.Pop();
+                foreach (var entry in Directory.EnumerateFileSystemEntries(
+                             currentDirectory,
+                             "*",
+                             SearchOption.TopDirectoryOnly))
+                {
+                    observedEntryCount++;
+                    if (observedEntryCount > maximumEntryCount)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} namespace contains unregistered entries.");
+                    }
+
+                    var attributes = File.GetAttributes(entry);
+                    if ((attributes & FileAttributes.ReparsePoint) != 0)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} namespace contains a reparse point.");
+                    }
+
+                    var relativePath = Path
+                        .GetRelativePath(normalizedRoot, entry)
+                        .Replace('\\', '/');
+                    if ((attributes & FileAttributes.Directory) != 0)
+                    {
+                        if (!_allowedDirectoryPaths.Contains(relativePath))
+                        {
+                            throw new InvalidDataException(
+                                $"{authorityName} namespace contains an unregistered directory.");
+                        }
+
+                        pendingDirectories.Push(entry);
+                        continue;
+                    }
+
+                    if (!_relativePaths.Contains(relativePath))
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} namespace contains an unregistered file.");
+                    }
+
+                    actualFiles.Add(relativePath);
+                }
+            }
+
+            if (!actualFiles.SetEquals(_relativePaths))
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} namespace is missing a registered file.");
+            }
+        }
+
+        private void RetainPublishedDirectoryAuthorities(
+            string normalizedRoot,
+            string authorityName)
+        {
+            foreach (var relativePath in _allowedDirectoryPaths
+                         .OrderBy(path => path.Count(character =>
+                             character == '/'))
+                         .ThenBy(path => path, StringComparer.OrdinalIgnoreCase))
+            {
+                var directoryPath = Path.GetFullPath(
+                    Path.Combine(
+                        normalizedRoot,
+                        relativePath.Replace(
+                            '/',
+                            Path.DirectorySeparatorChar)));
+                if (!Directory.Exists(directoryPath))
+                    continue;
+
+                var authority =
+                    PhysicalFileAuthority.OpenStableDirectory(
+                        directoryPath,
+                        authorityName);
+                try
+                {
+                    var identity =
+                        PhysicalFileAuthority.CaptureFileIdentity(
+                            authority.Handle
+                            ?? throw new InvalidOperationException(
+                                "Published directory handle is unavailable."),
+                            authorityName);
+                    if (!identity.IsDirectory)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} namespace parent is not a directory.");
+                    }
+
+                    _publishedDirectories.Add(
+                        new LoadStagingDirectoryAuthority(
+                            authority,
+                            identity));
+                    authority = null!;
+                }
+                finally
+                {
+                    authority?.Dispose();
+                }
+            }
+        }
+
+        private void AddAllowedDirectoryPath(string? relativePath)
+        {
+            while (!string.IsNullOrWhiteSpace(relativePath) &&
+                   relativePath != ".")
+            {
+                var normalized = relativePath.Replace('\\', '/');
+                _allowedDirectoryPaths.Add(normalized);
+                relativePath = Path.GetDirectoryName(
+                    normalized.Replace(
+                        '/',
+                        Path.DirectorySeparatorChar));
+            }
+        }
+
+        private static string ResolveExpectedPath(
+            string normalizedRoot,
+            string relativePath)
+        {
+            var expectedPath = Path.GetFullPath(
+                Path.Combine(
+                    normalizedRoot,
+                    relativePath.Replace(
+                        '/',
+                        Path.DirectorySeparatorChar)));
+            if (!IsSameOrDescendant(expectedPath, normalizedRoot) ||
+                string.Equals(
+                    expectedPath,
+                    normalizedRoot,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException(
+                    "Load staging authority path escaped its current root.");
+            }
+
+            return expectedPath;
+        }
+
+        private void ReleaseFileStreams(
+            bool includePublished,
+            bool includeSealed)
+        {
+            List<Exception>? failures = null;
+            foreach (var file in _files)
+            {
+                if (includePublished && file.Stream != null)
+                {
+                    try
+                    {
+                        file.Stream.Dispose();
+                        file.Stream = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        failures ??= [];
+                        failures.Add(ex);
+                    }
+                }
+
+                if (includeSealed && file.SealedStream != null)
+                {
+                    try
+                    {
+                        file.SealedStream.Dispose();
+                        file.SealedStream = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        failures ??= [];
+                        failures.Add(ex);
+                    }
+                }
+            }
+
+            if (failures is { Count: > 0 })
+            {
+                throw new AggregateException(
+                    "Could not release every retained load-staging handle.",
+                    failures);
+            }
+        }
+
+        private void ReleaseRetainedAuthorities()
+        {
+            List<Exception>? failures = null;
+            try
+            {
+                ReleaseFileStreams(
+                    includePublished: true,
+                    includeSealed: true);
+            }
+            catch (Exception ex)
+            {
+                failures ??= [];
+                failures.Add(ex);
+            }
+
+            foreach (var directory in _publishedDirectories)
+            {
+                try
+                {
+                    directory.Authority.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    failures ??= [];
+                    failures.Add(ex);
+                }
+            }
+            _publishedDirectories.Clear();
+
+            if (_publishedRootAuthority != null)
+            {
+                try
+                {
+                    _publishedRootAuthority.Dispose();
+                    _publishedRootAuthority = null;
+                }
+                catch (Exception ex)
+                {
+                    failures ??= [];
+                    failures.Add(ex);
+                }
+            }
+
+            if (failures is { Count: > 0 })
+            {
+                throw new AggregateException(
+                    "Could not release every retained load-staging authority.",
+                    failures);
+            }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_disposed)
+                return;
+
+            _disposed = true;
+            List<Exception>? failures = null;
+            foreach (var file in _files)
+            {
+                if (file.Stream != null)
+                {
+                    try
+                    {
+                        await file.Stream.DisposeAsync();
+                        file.Stream = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        failures ??= [];
+                        failures.Add(ex);
+                    }
+                }
+
+                if (file.SealedStream != null)
+                {
+                    try
+                    {
+                        await file.SealedStream.DisposeAsync();
+                        file.SealedStream = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        failures ??= [];
+                        failures.Add(ex);
+                    }
+                }
+            }
+
+            foreach (var directory in _publishedDirectories)
+            {
+                try
+                {
+                    directory.Authority.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    failures ??= [];
+                    failures.Add(ex);
+                }
+            }
+            _publishedDirectories.Clear();
+
+            if (_publishedRootAuthority != null)
+            {
+                try
+                {
+                    _publishedRootAuthority.Dispose();
+                    _publishedRootAuthority = null;
+                }
+                catch (Exception ex)
+                {
+                    failures ??= [];
+                    failures.Add(ex);
+                }
+            }
+
+            _files.Clear();
+            _relativePaths.Clear();
+            _allowedDirectoryPaths.Clear();
+            if (failures is { Count: > 0 })
+            {
+                throw new AggregateException(
+                    "Could not release every retained load-staging authority.",
+                    failures);
+            }
+        }
+    }
+
+    private sealed class LoadStagingFileAuthority
+    {
+        internal LoadStagingFileAuthority(
+            string relativePath,
+            FileStream stream,
+            PhysicalFileAuthority.OpenedFileAuthority authority)
+        {
+            RelativePath = relativePath;
+            Stream = stream;
+            Authority = authority;
+        }
+
+        internal string RelativePath { get; }
+        internal FileStream? Stream { get; set; }
+        internal FileStream? SealedStream { get; set; }
+        internal PhysicalFileAuthority.OpenedFileAuthority Authority { get; set; }
+        internal bool YieldedForConditionalReplacement { get; set; }
+    }
+
+    private sealed record LoadStagingDirectoryAuthority(
+        PhysicalFileAuthority.StableDirectory Authority,
+        PhysicalFileAuthority.FileIdentity Identity);
+
     internal async Task DeleteFileIfCurrentAuthorityAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
@@ -2835,7 +3840,11 @@ public class FileSystemManager
             return;
 
         if (RuntimeDirectoryExists(paths.TransactionRoot))
-            DeleteRuntimeDirectory(paths.TransactionRoot);
+        {
+            DeleteRuntimeDirectory(
+                paths.TransactionRoot,
+                requireSingleFileLinks: false);
+        }
     }
 
     internal bool LoadDirectoryExists(string path)
@@ -2903,12 +3912,62 @@ public class FileSystemManager
             "Load directory creation is outside runtime and canonical session authority.");
     }
 
+    internal LoadStagingAuthoritySet CreateLoadStagingAuthoritySet(
+        string stagingSessionRoot)
+    {
+        EnsureRuntimePathIsSafe(stagingSessionRoot);
+        return new LoadStagingAuthoritySet(this, stagingSessionRoot);
+    }
+
     internal async Task WriteLoadTransactionFileAsync(
         string path,
         Stream source,
         CancellationToken cancellationToken = default)
     {
+        if (!source.CanSeek)
+        {
+            throw new InvalidDataException(
+                "A retained load-staging write requires an explicit expected length.");
+        }
+
+        await WriteLoadTransactionFileCoreAsync(
+            path,
+            source,
+            source.Length - source.Position,
+            authoritySet: null,
+            cancellationToken);
+    }
+
+    internal Task WriteLoadTransactionFileAsync(
+        string path,
+        Stream source,
+        long expectedLength,
+        LoadStagingAuthoritySet authoritySet,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(authoritySet);
+        return WriteLoadTransactionFileCoreAsync(
+            path,
+            source,
+            expectedLength,
+            authoritySet,
+            cancellationToken);
+    }
+
+    private async Task WriteLoadTransactionFileCoreAsync(
+        string path,
+        Stream source,
+        long expectedLength,
+        LoadStagingAuthoritySet? authoritySet,
+        CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(source);
+        if (expectedLength < 0)
+        {
+            throw new InvalidDataException(
+                "Load transaction file length cannot be negative.");
+        }
+
         EnsureRuntimePathIsSafe(path);
         var parent = Path.GetDirectoryName(path)
             ?? throw new InvalidDataException("Load transaction file has no parent.");
@@ -2917,15 +3976,98 @@ public class FileSystemManager
         if (_hooks?.BeforeRuntimeFileCreateAsync != null)
             await _hooks.BeforeRuntimeFileCreateAsync(path);
 
-        await using var output = PhysicalFileAuthority.CreateNewWritableFile(
-            parentAuthority,
-            path,
-            "Load transaction staging",
-            asynchronous: true);
-        await source.CopyToAsync(output, cancellationToken);
-        await output.FlushAsync(cancellationToken);
-        output.Flush(flushToDisk: true);
-        EnsureRuntimePathIsSafe(path);
+        FileStream? output = null;
+        try
+        {
+            output = PhysicalFileAuthority.CreateNewWritableFile(
+                parentAuthority,
+                path,
+                "Load transaction staging",
+                asynchronous: true,
+                shareDelete: authoritySet != null,
+                requestDeleteAccess: authoritySet == null);
+            var buffer = new byte[64 * 1024];
+            long written = 0;
+            while (true)
+            {
+                var read = await source.ReadAsync(
+                    buffer,
+                    cancellationToken);
+                if (read == 0)
+                    break;
+
+                written += read;
+                if (written > expectedLength)
+                {
+                    throw new InvalidDataException(
+                        "Load transaction payload exceeded its advertised length.");
+                }
+
+                await output.WriteAsync(
+                    buffer.AsMemory(0, read),
+                    cancellationToken);
+            }
+
+            if (written != expectedLength)
+            {
+                throw new InvalidDataException(
+                    "Load transaction payload did not match its advertised length.");
+            }
+
+            await output.FlushAsync(cancellationToken);
+            output.Flush(flushToDisk: true);
+            EnsureRuntimePathIsSafe(path);
+            if (authoritySet == null)
+                return;
+
+            var authority =
+                PhysicalFileAuthority.CaptureOpenedFileAuthority(
+                    output.SafeFileHandle,
+                    path,
+                    "Retained load transaction staging");
+            if (authority.Length != expectedLength)
+            {
+                throw new InvalidDataException(
+                    "Retained load transaction payload length changed.");
+            }
+
+            await output.DisposeAsync();
+            output = null;
+            FileStream? retainedStream = null;
+            try
+            {
+                retainedStream = PhysicalFileAuthority.OpenReadFile(
+                        parentAuthority,
+                        path,
+                        "Retained load transaction staging",
+                        asynchronous: false,
+                        shareDelete: true)
+                    ?? throw new InvalidDataException(
+                        "Retained load transaction staging file disappeared.");
+                var retainedAuthority =
+                    PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                        retainedStream.SafeFileHandle,
+                        path,
+                        authority.Identity,
+                        authority.Sha256,
+                        "Retained load transaction staging",
+                        authority.Length);
+                authoritySet.Add(
+                    path,
+                    retainedStream,
+                    retainedAuthority);
+                retainedStream = null;
+            }
+            finally
+            {
+                retainedStream?.Dispose();
+            }
+        }
+        finally
+        {
+            if (output != null)
+                await output.DisposeAsync();
+        }
     }
 
     internal void DeleteLoadTransactionFile(string path)
@@ -2937,10 +4079,15 @@ public class FileSystemManager
     internal void DeleteLoadTransactionDirectory(string path)
     {
         EnsureRuntimePathIsSafe(path);
-        DeleteRuntimeDirectory(path);
+        DeleteRuntimeDirectory(
+            path,
+            requireSingleFileLinks: false);
     }
 
-    internal void MoveLoadDirectory(string sourcePath, string destinationPath)
+    internal void MoveLoadDirectory(
+        string sourcePath,
+        string destinationPath,
+        LoadStagingAuthoritySet? authoritySet = null)
     {
         EnsureLoadTransactionOperationPathIsSafe(sourcePath);
         EnsureLoadTransactionOperationPathIsSafe(destinationPath);
@@ -2952,26 +4099,64 @@ public class FileSystemManager
         using var destinationParentAuthority = EnsureStableLoadOperationParent(
             destinationPath,
             "Load transaction destination");
-        using var sourceHandle = PhysicalFileAuthority.OpenForRename(
+        Microsoft.Win32.SafeHandles.SafeFileHandle? sourceHandle =
+            PhysicalFileAuthority.OpenForRename(
             sourceParentAuthority,
             sourcePath,
             isDirectory: true,
             "Load transaction directory move");
-        _hooks?.BeforeLoadDirectoryMoveAsync?.Invoke(sourcePath, destinationPath)
-            .GetAwaiter()
-            .GetResult();
-        _loadTransactionOperations.BeforeMoveDirectory(
-            sourcePath,
-            destinationPath);
-        PhysicalFileAuthority.RenameOpenedObjectRelative(
-            sourceHandle,
-            destinationParentAuthority,
-            destinationPath,
-            replaceExisting: false,
-            "Load transaction directory move",
-            requireSingleLink: false);
+        try
+        {
+            var sourceIdentity = authoritySet == null
+                ? null
+                : PhysicalFileAuthority.CaptureFileIdentity(
+                    sourceHandle,
+                    "Load staging directory publication");
+            _hooks?.BeforeLoadDirectoryMoveAsync?.Invoke(
+                    sourcePath,
+                    destinationPath)
+                .GetAwaiter()
+                .GetResult();
+            _loadTransactionOperations.BeforeMoveDirectory(
+                sourcePath,
+                destinationPath);
+            authoritySet?.PrepareForDirectoryMove(
+                sourcePath,
+                "Load staging immediately before directory move");
+            PhysicalFileAuthority.RenameOpenedObjectRelative(
+                sourceHandle,
+                destinationParentAuthority,
+                destinationPath,
+                replaceExisting: false,
+                "Load transaction directory move",
+                requireSingleLink: false);
 
-        EnsureLoadTransactionOperationPathIsSafe(destinationPath);
+            _hooks?.AfterLoadDirectoryMoveAsync?.Invoke(
+                    sourcePath,
+                    destinationPath)
+                .GetAwaiter()
+                .GetResult();
+            if (authoritySet != null)
+            {
+                var publishedRootAuthority =
+                    new PhysicalFileAuthority.StableDirectory(
+                        destinationPath,
+                        sourceHandle);
+                sourceHandle = null;
+                authoritySet.EnsureExactAfterDirectoryMove(
+                    destinationPath,
+                    "Load staging immediately after directory move",
+                    sourceIdentity
+                    ?? throw new InvalidOperationException(
+                        "Load-staging directory identity is unavailable."),
+                    publishedRootAuthority);
+            }
+            EnsureLoadTransactionOperationPathIsSafe(destinationPath);
+        }
+        finally
+        {
+            sourceHandle?.Dispose();
+        }
     }
 
     private void RestoreLoadTransactionBackup(CanonicalLoadTransactionPaths paths)
@@ -2982,7 +4167,11 @@ public class FileSystemManager
         if (LoadDirectoryExists(GameSessionPath))
         {
             if (RuntimeDirectoryExists(paths.FailedSessionPath))
-                DeleteRuntimeDirectory(paths.FailedSessionPath);
+            {
+                DeleteRuntimeDirectory(
+                    paths.FailedSessionPath,
+                    requireSingleFileLinks: false);
+            }
 
             CreateLoadDirectory(Path.GetDirectoryName(paths.FailedSessionPath)!);
             MoveLoadDirectory(GameSessionPath, paths.FailedSessionPath);
@@ -2994,7 +4183,11 @@ public class FileSystemManager
     private void CleanupCommittedLoadTransaction(CanonicalLoadTransactionPaths paths)
     {
         if (RuntimeDirectoryExists(paths.TransactionRoot))
-            DeleteRuntimeDirectory(paths.TransactionRoot);
+        {
+            DeleteRuntimeDirectory(
+                paths.TransactionRoot,
+                requireSingleFileLinks: false);
+        }
         if (RuntimeFileExists(ActiveLoadTransactionJournalPath))
             DeleteRuntimeFile(ActiveLoadTransactionJournalPath);
     }
@@ -3680,7 +4873,9 @@ public class FileSystemManager
             ?? throw new InvalidDataException("Runtime authority file has no parent."));
     }
 
-    private void DeleteRuntimeDirectory(string path)
+    private void DeleteRuntimeDirectory(
+        string path,
+        bool requireSingleFileLinks = true)
     {
         EnsureRuntimePathIsSafe(path);
         using var parentAuthority = EnsureStableRuntimeDirectory(
@@ -3691,7 +4886,8 @@ public class FileSystemManager
         PhysicalFileAuthority.TryDeleteDirectoryTree(
             parentAuthority,
             path,
-            "Runtime authority directory cleanup");
+            "Runtime authority directory cleanup",
+            requireSingleFileLinks);
         EnsureRuntimePathIsSafe(
             Path.GetDirectoryName(path)
             ?? throw new InvalidDataException("Runtime authority directory has no parent."));

@@ -16,6 +16,7 @@ internal static class PhysicalFileAuthority
     private const uint GenericWrite = 0x40000000;
     private const uint FileShareRead = 0x00000001;
     private const uint FileShareWrite = 0x00000002;
+    private const uint FileShareDelete = 0x00000004;
     private const uint CreateNew = 1;
     private const uint OpenExisting = 3;
     private const uint FileAttributeNormal = 0x00000080;
@@ -82,7 +83,8 @@ internal static class PhysicalFileAuthority
 
     internal sealed record OpenedFileAuthority(
         FileIdentity Identity,
-        string Sha256);
+        string Sha256,
+        long Length);
 
     internal enum NamespaceEntryKind
     {
@@ -313,7 +315,8 @@ internal static class PhysicalFileAuthority
     internal static StableDirectory OpenStableDirectory(
         string expectedPath,
         string authorityName,
-        bool allowRename = false)
+        bool allowRename = false,
+        bool shareDelete = false)
     {
         var normalizedPath = Path.GetFullPath(expectedPath);
         if (!Directory.Exists(normalizedPath))
@@ -331,7 +334,9 @@ internal static class PhysicalFileAuthority
         var handle = CreateFile(
             ToWindowsExtendedPath(normalizedPath),
             access,
-            FileShareRead | FileShareWrite,
+            FileShareRead |
+            FileShareWrite |
+            (shareDelete ? FileShareDelete : 0),
             IntPtr.Zero,
             OpenExisting,
             FileFlagBackupSemantics,
@@ -364,7 +369,9 @@ internal static class PhysicalFileAuthority
         StableDirectory parent,
         string expectedPath,
         string authorityName,
-        bool asynchronous)
+        bool asynchronous,
+        bool shareDelete = false,
+        bool requestDeleteAccess = true)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -374,7 +381,9 @@ internal static class PhysicalFileAuthority
                 normalizedPath,
                 FileMode.CreateNew,
                 FileAccess.ReadWrite,
-                FileShare.Read,
+                shareDelete
+                    ? FileShare.Read | FileShare.Delete
+                    : FileShare.Read,
                 bufferSize: 4096,
                 asynchronous
                     ? FileOptions.Asynchronous | FileOptions.WriteThrough
@@ -384,10 +393,16 @@ internal static class PhysicalFileAuthority
         var flags = FileAttributeNormal | FileFlagWriteThrough;
         if (asynchronous)
             flags |= FileFlagOverlapped;
+        var access =
+            GenericRead | GenericWrite | SynchronizeAccess;
+        if (requestDeleteAccess)
+            access |= DeleteAccess;
         var handle = CreateFile(
             ToWindowsExtendedPath(normalizedPath),
-            GenericRead | GenericWrite | DeleteAccess | SynchronizeAccess,
-            FileShareRead,
+            access,
+            shareDelete
+                ? FileShareRead | FileShareDelete
+                : FileShareRead,
             IntPtr.Zero,
             CreateNew,
             flags,
@@ -425,6 +440,7 @@ internal static class PhysicalFileAuthority
         string expectedPath,
         string authorityName,
         bool asynchronous,
+        bool shareDelete = false,
         Action? afterOpenedBeforeValidation = null)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
@@ -436,7 +452,8 @@ internal static class PhysicalFileAuthority
                 normalizedPath,
                 FileMode.Open,
                 FileAccess.Read,
-                FileShare.Read,
+                FileShare.Read |
+                (shareDelete ? FileShare.Delete : 0),
                 bufferSize: 4096,
                 asynchronous
                     ? FileOptions.Asynchronous | FileOptions.SequentialScan
@@ -915,7 +932,8 @@ internal static class PhysicalFileAuthority
             authorityName);
         return new OpenedFileAuthority(
             identity,
-            ComputeOpenedFileSha256(handle, authorityName));
+            ComputeOpenedFileSha256(handle, authorityName),
+            RandomAccess.GetLength(handle));
     }
 
     internal static OpenedFileAuthority EnsureExactOpenedFileAuthority(
@@ -923,13 +941,21 @@ internal static class PhysicalFileAuthority
         string expectedPath,
         FileIdentity expectedIdentity,
         string expectedSha256,
-        string authorityName)
+        string authorityName,
+        long? expectedLength = null)
     {
         var identity = EnsureExactFileIdentity(
             handle,
             expectedPath,
             expectedIdentity,
             authorityName);
+        var length = RandomAccess.GetLength(handle);
+        if (expectedLength.HasValue &&
+            length != expectedLength.Value)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} exact-byte length changed.");
+        }
         var sha256 = ComputeOpenedFileSha256(handle, authorityName);
         if (!string.Equals(
                 sha256,
@@ -940,7 +966,7 @@ internal static class PhysicalFileAuthority
                 $"{authorityName} exact-byte hash changed.");
         }
 
-        return new OpenedFileAuthority(identity, sha256);
+        return new OpenedFileAuthority(identity, sha256, length);
     }
 
     internal static void DeleteOpenedFile(
@@ -1090,7 +1116,8 @@ internal static class PhysicalFileAuthority
 
     internal static bool TryDeleteDirectoryTree(
         string expectedPath,
-        string authorityName)
+        string authorityName,
+        bool requireSingleFileLinks = true)
     {
         var normalizedPath = Path.GetFullPath(expectedPath).TrimEnd(
             Path.DirectorySeparatorChar,
@@ -1127,20 +1154,23 @@ internal static class PhysicalFileAuthority
             parent,
             normalizedPath,
             authorityName,
-            requirePhysicalDirectory: true);
+            requirePhysicalDirectory: true,
+            requireSingleFileLinks: requireSingleFileLinks);
     }
 
     internal static bool TryDeleteDirectoryTree(
         StableDirectory parent,
         string expectedPath,
-        string authorityName)
+        string authorityName,
+        bool requireSingleFileLinks = true)
     {
         ArgumentNullException.ThrowIfNull(parent);
         return TryDeleteEntry(
             parent,
             Path.GetFullPath(expectedPath),
             authorityName,
-            requirePhysicalDirectory: true);
+            requirePhysicalDirectory: true,
+            requireSingleFileLinks: requireSingleFileLinks);
     }
 
     internal static bool TryDeleteEmptyDirectory(
@@ -1313,7 +1343,8 @@ internal static class PhysicalFileAuthority
         StableDirectory parent,
         string expectedPath,
         string authorityName,
-        bool requirePhysicalDirectory = false)
+        bool requirePhysicalDirectory = false,
+        bool requireSingleFileLinks = true)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -1351,11 +1382,22 @@ internal static class PhysicalFileAuthority
 
             try
             {
-                EnsureHandleMatchesExpectedPath(
-                    handle,
-                    normalizedPath,
-                    authorityName,
-                    FileNameOpened);
+                if (requireSingleFileLinks)
+                {
+                    EnsureHandleMatchesExpectedPath(
+                        handle,
+                        normalizedPath,
+                        authorityName,
+                        FileNameOpened);
+                }
+                else
+                {
+                    EnsureHandlePathMatchesExpectedPath(
+                        handle,
+                        normalizedPath,
+                        authorityName,
+                        FileNameOpened);
+                }
                 attributeTag = GetAttributeTag(handle, authorityName);
                 var actualDirectory =
                     (attributeTag.FileAttributes & FileAttributes.Directory) != 0;
@@ -1403,7 +1445,11 @@ internal static class PhysicalFileAuthority
                              "*",
                              SearchOption.TopDirectoryOnly).ToArray())
                 {
-                    TryDeleteEntry(directory, child, authorityName);
+                    TryDeleteEntry(
+                        directory,
+                        child,
+                        authorityName,
+                        requireSingleFileLinks: requireSingleFileLinks);
                 }
             }
 

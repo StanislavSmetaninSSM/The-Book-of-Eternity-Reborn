@@ -5033,6 +5033,139 @@ public sealed class FileSystemManagerTests : IDisposable
         }
     }
 
+    [Theory]
+    [InlineData(2)]
+    [InlineData(4)]
+    public async Task LoadTransactionWrite_RejectsActualLengthMismatch(
+        long advertisedLength)
+    {
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        _fs.CreateLoadDirectory(
+            transactionPaths.StagingSessionPath);
+        var stagedFile = Path.Combine(
+            transactionPaths.StagingSessionPath,
+            "payload.bin");
+        await using var authorities =
+            _fs.CreateLoadStagingAuthoritySet(
+                transactionPaths.StagingSessionPath);
+        await using var source = new MemoryStream(
+            [0x10, 0x20, 0x30]);
+
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            _fs.WriteLoadTransactionFileAsync(
+                stagedFile,
+                source,
+                advertisedLength,
+                authorities));
+    }
+
+    [Fact]
+    public async Task LoadTransactionMove_RevalidatesRetainedFileAuthorityAcrossDirectoryRename()
+    {
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        _fs.CreateLoadDirectory(
+            transactionPaths.StagingSessionPath);
+        _fs.CreateLoadDirectory(
+            Path.GetDirectoryName(
+                transactionPaths.FailedSessionPath)!);
+        var relativePath = Path.Combine(
+            "game_state",
+            "world",
+            "payload.bin");
+        var stagedFile = Path.Combine(
+            transactionPaths.StagingSessionPath,
+            relativePath);
+        _fs.CreateLoadDirectory(
+            Path.GetDirectoryName(stagedFile)!);
+        await using var authorities =
+            _fs.CreateLoadStagingAuthoritySet(
+                transactionPaths.StagingSessionPath);
+        await using var source = new MemoryStream(
+            [0x10, 0x20, 0x30]);
+        await _fs.WriteLoadTransactionFileAsync(
+            stagedFile,
+            source,
+            expectedLength: 3,
+            authoritySet: authorities);
+
+        _fs.MoveLoadDirectory(
+            transactionPaths.StagingSessionPath,
+            transactionPaths.FailedSessionPath,
+            authorities);
+
+        Assert.Equal(
+            new byte[] { 0x10, 0x20, 0x30 },
+            await File.ReadAllBytesAsync(
+                Path.Combine(
+                    transactionPaths.FailedSessionPath,
+                    relativePath)));
+    }
+
+    [Fact]
+    public void LoadDirectoryMove_RetainsRenamedRootThroughPostMoveValidation()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        var sourcePath = transactionPaths.StagingSessionPath;
+        var destinationPath = transactionPaths.FailedSessionPath;
+        var displacedDestinationPath = destinationPath + "-displaced";
+        Directory.CreateDirectory(sourcePath);
+        Directory.CreateDirectory(
+            Path.GetDirectoryName(destinationPath)!);
+        File.WriteAllText(
+            Path.Combine(sourcePath, "payload.json"),
+            """{"state":"retained"}""");
+
+        var moveAttempted = false;
+        var moveBlocked = false;
+        var moved = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                AfterLoadDirectoryMoveAsync = (_, actualDestination) =>
+                {
+                    if (!actualDestination.Equals(
+                            destinationPath,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        return Task.CompletedTask;
+                    }
+
+                    moveAttempted = true;
+                    try
+                    {
+                        Directory.Move(
+                            destinationPath,
+                            displacedDestinationPath);
+                        moved = true;
+                    }
+                    catch (Exception ex) when (
+                        ex is IOException or UnauthorizedAccessException)
+                    {
+                        moveBlocked = true;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            });
+
+        raceFs.MoveLoadDirectory(sourcePath, destinationPath);
+
+        Assert.True(moveAttempted);
+        Assert.True(moveBlocked);
+        Assert.False(moved);
+        Assert.True(File.Exists(
+            Path.Combine(destinationPath, "payload.json")));
+    }
+
     [Fact]
     public async Task LoadTransactionCreate_ParentSwapCannotTruncateExternalFile()
     {
