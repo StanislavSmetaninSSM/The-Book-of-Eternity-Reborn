@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -11,6 +12,25 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ValidationService _validator;
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateGameStateAsync_CanonicalEmptyAgencyAllowsExplicitNullGoalAndActivity()
+    {
+        var root = JsonNode.Parse(BuildValidProfileJson())!.AsObject();
+        var profile = root[AfterlifeEntityProfileState.ProfilesProperty]![0]!.AsObject();
+        profile["goals"] = null;
+        profile["personalQuests"] = new JsonArray();
+        profile["currentActivity"] = null;
+        profile["completedActivities"] = new JsonArray();
+        await WriteProfileStateAsync(root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.AfterlifeEntityProfile);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "afterlife_entity_profile_agency_goals_not_object");
+    }
 
     public AfterlifeEntityProfileValidationTests()
     {
@@ -85,7 +105,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     [Fact]
     public async Task ValidateGameStateAsync_CurrentTeachableSpecialArtRequiresCombatEffect()
     {
-        await WriteProfileStateAsync(BuildCurrentProfileUpdateWithSpecialArt(
+        await WriteCurrentProfileUpdateStateAsync(BuildCurrentProfileUpdateWithSpecialArt(
             """
                   "effectSummary": "При успехе отражает часть давления в сторону противника."
             """));
@@ -100,7 +120,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     [Fact]
     public async Task ValidateGameStateAsync_CurrentTeachableSpecialArtAcceptsMeaningfulCombatEffect()
     {
-        await WriteProfileStateAsync(BuildCurrentProfileUpdateWithSpecialArt(
+        await WriteCurrentProfileUpdateStateAsync(BuildCurrentProfileUpdateWithSpecialArt(
             """
                   "effectSummary": "При успехе отражает часть давления в сторону противника.",
                   "combatEffect": {
@@ -178,7 +198,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         string artPayload,
         string expectedCode)
     {
-        await WriteProfileStateAsync(BuildCurrentProfileUpdateWithSpecialArt(artPayload));
+        await WriteCurrentProfileUpdateStateAsync(BuildCurrentProfileUpdateWithSpecialArt(artPayload));
 
         var issues = await _validator.ValidateGameStateAsync(
             IntegrationValidationProfiles.AfterlifeEntityProfile);
@@ -1607,6 +1627,65 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     private Task WriteProfileStateAsync(string json) =>
         _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, json);
 
+    private async Task WriteCurrentProfileUpdateStateAsync(string json)
+    {
+        const string preTurnJson =
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": []
+            }
+            """;
+        const string sessionId = "session_afterlife_profile_validation";
+        const string requestId = "request_afterlife_profile_validation";
+        const int turnNumber = 22;
+        const string playerAction = "Validate a current afterlife profile carrier.";
+        var path = AfterlifeEntityProfileState.StatePath;
+
+        await _fs.WriteFileAtomicAsync(path, json);
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{path}",
+            preTurnJson);
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            new JsonObject
+            {
+                ["sessionId"] = sessionId,
+                ["requestId"] = requestId,
+                ["turnNumber"] = turnNumber,
+                ["playerAction"] = playerAction
+            }.ToJsonString());
+
+        var manifest = new JsonObject
+        {
+            ["sessionId"] = sessionId,
+            ["requestId"] = requestId,
+            ["turnNumber"] = turnNumber,
+            ["requestTimestamp"] = "2026-08-02T00:00:00Z",
+            ["playerAction"] = playerAction,
+            ["files"] = new JsonObject
+            {
+                [path] = $"game_state/control/pending_turn_snapshot/{path}"
+            },
+            ["snapshotFileHashes"] = new JsonObject
+            {
+                [path] = PendingTurnSnapshotAuthority.ComputeSha256(preTurnJson)
+            },
+            ["clientOwnedValidationHashes"] = new JsonObject(),
+            ["rollbackBackups"] = new JsonObject(),
+            ["rollbackBaselineFiles"] = new JsonArray(path),
+            ["sourceLabel"] = "afterlife profile validation test",
+            ["manifestPayloadHash"] = string.Empty
+        };
+        manifest["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
     private static string AppendRootProperties(string json, string rootProperties)
     {
         var insertionIndex = json.LastIndexOf("\n}", StringComparison.Ordinal);
@@ -1625,8 +1704,17 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
               "actorType": "guardian",
               "actorId": "guardian_mirror",
               "displayName": "Хранитель Зеркал",
+              "appearanceDescription": "Высокая фигура хранителя окружена ровными гранями отражённого света.",
+              "profileSummary": "Хранитель Зеркал обучает точной защите и обращению давления противника.",
+              "personalityProfile": {
+                "archetype": "Хранитель отражений",
+                "worldview": "Любое давление можно обратить в урок точной защиты."
+              },
+              "motivation": "Научить достойных учеников превращать выдержку в осознанное преимущество.",
               "realm": "Chaos Sea",
+              "locationId": "location_mirror_abode",
               "locationName": "Зеркальная Обитель",
+              "gmThoughtsSummary": "Я должен убедиться, что ученик понимает цену отражённого давления.",
               "currencies": { "inkFeathers": 120, "lightSparks": 0 },
               "progression": {
                 "enlightenment": { "experience": 48, "tier": 4 },
@@ -1650,6 +1738,18 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
               ],
               "customStates": [],
               "fateCards": [],
+              "relationships": [],
+              "goals": {
+                "goalId": "goal_guardian_mirror_teaching",
+                "shortTermGoal": "Проверить готовность ученика к Зеркальной Защите.",
+                "longTermGoal": "Сохранить школу точной защиты в Море Хаоса.",
+                "plan": "Провести испытание защиты и разобрать каждое отражённое давление.",
+                "gmThoughtsSummary": "Сначала проверю выдержку ученика, затем объясню темповое окно.",
+                "updatedAtTurn": 22
+              },
+              "personalQuests": [],
+              "currentActivity": null,
+              "completedActivities": [],
               "soulDissipationTier": 1,
               "progressionStrategy": {
                 "strategyId": "strategy_guardian_mirror",
@@ -1658,7 +1758,42 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "lastUpdatedAtTurn": 22
               },
               "warnings": [],
-              "ledger": []
+              "ledger": [],
+              "progressionLedger": [],
+              "materialization": {
+                "schemaVersion": 1,
+                "materializationId": "mat_guardian_guardian_mirror_special_art",
+                "actorType": "guardian",
+                "actorId": "guardian_mirror",
+                "materializedAtTurn": 22,
+                "state": "complete",
+                "capabilities": {
+                  "canFight": true,
+                  "canTeach": true,
+                  "canTrade": false
+                },
+                "sections": {
+                  "standardArts": { "state": "populated" },
+                  "specialArts": { "state": "populated" },
+                  "customStates": {
+                    "state": "empty_by_design",
+                    "reason": "Особых духовных состояний сейчас нет."
+                  },
+                  "fateCards": {
+                    "state": "empty_by_design",
+                    "reason": "Карта судьбы ещё не открыта."
+                  },
+                  "relationships": {
+                    "state": "empty_by_design",
+                    "reason": "Устойчивые связи ещё не сложились."
+                  },
+                  "agency": { "state": "populated" },
+                  "progressionHistory": {
+                    "state": "empty_by_design",
+                    "reason": "История развития ещё не началась."
+                  }
+                }
+              }
             }
           ]
         }

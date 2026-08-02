@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -7,6 +8,109 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class GuardianAbodeResidentStateTests
 {
+    [Fact]
+    public void GuardianRelationshipSeed_ArchetypeProseDoesNotChangeStructuredScore()
+    {
+        static JsonArray BuildGuardians(string archetype) =>
+        [
+            new JsonObject
+            {
+                ["guardianId"] = "guardian_source",
+                ["canonicalName"] = "Source",
+                ["domain"] = "Knowledge",
+                ["personalityProfile"] = new JsonObject { ["archetype"] = archetype },
+                ["socialProfile"] = new JsonObject
+                {
+                    ["generosityFactor"] = 50,
+                    ["curiosityFactor"] = 50,
+                    ["competitiveFactor"] = 50,
+                    ["jealousyFactor"] = 50,
+                    ["isolationistTendency"] = 50
+                }
+            },
+            new JsonObject
+            {
+                ["guardianId"] = "guardian_target",
+                ["canonicalName"] = "Target",
+                ["domain"] = "Knowledge"
+            }
+        ];
+
+        static int SeedScore(JsonArray guardians)
+        {
+            GuardianRelationshipRules.EnsureCanonicalNetwork(guardians);
+            return guardians[0]!["guardianRelationships"]![0]!["attitudeScore"]!.GetValue<int>();
+        }
+
+        var benevolentScore = SeedScore(BuildGuardians("kind patient wise friend"));
+        var hostileScore = SeedScore(BuildGuardians("ruthless cunning stern manipulator"));
+
+        Assert.Equal(benevolentScore, hostileScore);
+    }
+
+    [Fact]
+    public void NormalizeResidentObject_MissingStructuredAuthorityUsesNeutralDefaultsIndependentOfProse()
+    {
+        static JsonObject BuildResident(string displayName, string summary, string bondReason, params string[] coreTraits) =>
+            new()
+            {
+                ["residentId"] = "resident_neutral",
+                ["guardianId"] = "guardian_neutral",
+                ["abodeId"] = "abode_neutral",
+                ["displayName"] = displayName,
+                ["residentKind"] = "wayfaring_soul",
+                ["originType"] = "traveler_soul",
+                ["roleLabel"] = summary,
+                ["summary"] = summary,
+                ["bondLevel"] = 50,
+                ["mortalWorldImprint"] = new JsonObject
+                {
+                    ["originWorldSummary"] = summary,
+                    ["futureCompanionPrompt"] = summary,
+                    ["bondReason"] = bondReason,
+                    ["coreTraits"] = new JsonArray(
+                        coreTraits.Select(value => JsonValue.Create(value)).ToArray()),
+                    ["archetypeHints"] = new JsonArray(summary)
+                }
+            };
+
+        var genreKeywords = BuildResident(
+            "Мудрая верная странница",
+            "Воительница архива ищет славу, дорогу и ритуал.",
+            "Преданность дому и страх одиночества.",
+            "loyal",
+            "restless",
+            "glory");
+        var arbitrarySetting = BuildResident(
+            "Unit 7",
+            "Vacuum-certified maintenance process.",
+            "Checksum continuity.",
+            "checksum",
+            "phase_lock");
+
+        GuardianAbodeResidentState.NormalizeResidentObject(genreKeywords, currentAbodePower: 60);
+        GuardianAbodeResidentState.NormalizeResidentObject(arbitrarySetting, currentAbodePower: 60);
+
+        Assert.True(JsonNode.DeepEquals(
+            genreKeywords["personalityProfile"],
+            arbitrarySetting["personalityProfile"]));
+        Assert.True(JsonNode.DeepEquals(
+            genreKeywords["abodeDisposition"],
+            arbitrarySetting["abodeDisposition"]));
+        Assert.Equal(
+            GuardianAbodeResidentState.PowerSensitivityMedium,
+            genreKeywords["abodeDisposition"]!["powerSensitivity"]!.GetValue<string>());
+        Assert.Equal(
+            GuardianAbodeResidentState.MigrationDispositionSelective,
+            genreKeywords["abodeDisposition"]!["migrationDisposition"]!.GetValue<string>());
+        Assert.Equal(
+            GuardianAbodeResidentState.CommunalOrientationMedium,
+            genreKeywords["abodeDisposition"]!["communalOrientation"]!.GetValue<string>());
+        Assert.Equal(
+            GuardianAbodeResidentState.StabilityNeedMedium,
+            genreKeywords["abodeDisposition"]!["stabilityNeed"]!.GetValue<string>());
+    }
+
     [Fact]
     public void NormalizeResidentObject_BackfillsPersonalityDispositionAndDerivedAbodeState()
     {

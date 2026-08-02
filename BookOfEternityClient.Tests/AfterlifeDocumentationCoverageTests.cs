@@ -3948,8 +3948,21 @@ public sealed class AfterlifeDocumentationCoverageTests
                          "sections",
                          "populated",
                          "empty_by_design",
+                         "physically present",
                          "actor-owned memory",
-                         "exact actorType:actorId"
+                         "exact actorType:actorId",
+                         "existing materialized afterlife profile",
+                         "full afterlifeEntityProfileUpdates carrier",
+                         "appearanceDescription",
+                         "profileSummary",
+                         "personalityProfile",
+                         "motivation",
+                         "worldview",
+                         "locationId",
+                         "goals with a non-empty plan",
+                         "archetype prose",
+                         "item types",
+                         "genre keywords"
                      })
             {
                 Assert.Contains(requiredText, text, StringComparison.OrdinalIgnoreCase);
@@ -3999,8 +4012,24 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("AFTERLIFE ACTOR MATERIALIZATION V1", examples, StringComparison.Ordinal);
         Assert.Contains("\"relationships\": { \"state\": \"populated\" }", examples, StringComparison.Ordinal);
         Assert.Contains("\"state\": \"empty_by_design\"", examples, StringComparison.Ordinal);
+        Assert.Contains("\"standardArts\": {}", examples, StringComparison.Ordinal);
+        foreach (var text in new[] { matrix, examples })
+        {
+            Assert.Contains("\"specialArts\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"customStates\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"fateCards\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"ledger\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"progressionLedger\": []", text, StringComparison.Ordinal);
+        }
         Assert.Contains("afterlife_actor_materialization_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("afterlife_actor_profile_binding_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("full afterlifeEntityProfileUpdates carrier", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("physically present", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("appearanceDescription", manifest, StringComparison.Ordinal);
+        Assert.Contains("locationId", manifest, StringComparison.Ordinal);
+        Assert.Contains("archetype prose", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("item types", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("genre keywords", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("exact current abode", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("trade tier", manifest, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("protected actor data", manifest, StringComparison.OrdinalIgnoreCase);
@@ -4231,6 +4260,13 @@ public sealed class AfterlifeDocumentationCoverageTests
             Directory.CreateDirectory(rootPath);
             var fs = new FileSystemManager(rootPath, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
+            WriteShiningExampleSnapshotAsync(
+                    fs,
+                    (
+                        "game_state/meta/afterlife_entity_profiles.json",
+                        """{ "profiles": [] }"""))
+                .GetAwaiter()
+                .GetResult();
             return new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateResponse(response);
         }
         finally

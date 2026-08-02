@@ -433,7 +433,16 @@ and query the complete Windows Job before slot release. Complete-tree and
 unattached-host termination confirmation have bounded deadlines. Timeout or
 cancellation remains the authoritative task result even if cleanup fails; any
 failure to confirm stop or dispose process-tree authority quarantines the slot
-for the remaining client process lifetime.
+and transfers the complete process/workspace owner to one fixed-capacity reaper
+entry. Bounded retries retain that entry while cleanup is uncertain. Once death
+and process-tree authority disposal are confirmed, the reaper cleans the
+workspace exactly once and releases the slot; a permanently unconfirmed owner
+continues to consume only its bounded entry. Slot release additionally requires
+one stable-id terminal audit receipt. The canonical generation-bound append is
+idempotent; if that generation was replaced, the retained runtime-root authority
+publishes a create-only
+`.worker_runtime/quarantine-audit/<eventId>.json` receipt. Audit uncertainty
+retains the entry and slot.
 An observed timeout remains the execution result even when malformed proposal
 bytes also exist. Built-in backup, restore, game-state clear, and current-world
 lore clear participate in the canonical write lease. Save reads and
@@ -851,21 +860,91 @@ A detached worker workspace owns stable runtime-root, workspace-root, and
 game-session directory capabilities. Reads and writes resolve descendants
 relative to those capabilities. An unconfirmed process-tree cleanup transfers
 the process tree, process, host launch, and workspace to one quarantined owner
-until termination is confirmed.
+until termination is confirmed. That owner also retains one stable terminal
+audit identity and runtime-root capability until either the generation-bound
+canonical audit append or the create-only replacement-generation receipt under
+`.worker_runtime/quarantine-audit` is durable.
 
 ### Load-staging file authority set
 
-The load transaction retains one authority record per staged file: normalized
-relative path, opened physical identity, SHA-256 digest, byte length, and live
-handle. Every record must still be a single-link regular file immediately
-before and after directory publication.
+The load transaction retains one authority record per durable staged file:
+normalized relative path, opened physical identity, SHA-256 digest, byte
+length, and the final retained staging read handle. Extraction writes through
+an exclusive create-new handle, flushes and captures its receipt, closes that
+writer, then reopens the same path as a read handle and revalidates identity,
+digest, length, regular-file kind, and single-link count before retaining it.
+
+Windows does not permit a handle-bound parent-directory rename while descendant
+handles remain open. Immediately before publication the client therefore
+revalidates each retained single-link staging reader and, while that original
+non-write/non-delete-shared handle remains open, creates one private hard-link
+guard under the transaction root outside the moving subtree. It opens and
+exact-validates the guard as the same identity, digest, length, kind, and
+exactly-two-link object before releasing the original reader. The guard handle
+then retains continuous physical authority while the already-opened staging
+root moves.
+
+After the move, each guard is exact-validated, a published reader is opened and
+proven to be the same two-link identity-plus-digest object, and both handles
+overlap before the guard is released. The client deletes the guard through
+opened authority and proves the retained published reader has returned to
+single-link authority. The private guard root remains pinned by one
+non-delete-shared opened-directory authority throughout those deletions and is
+itself deleted through that handle, so a late pathname swap cannot delete a
+foreign directory. Any replacement, missing guard, third or unowned hard link,
+guard-root swap, identity/digest change, or incomplete return to one link fails
+closed and restores the byte-exact prior live session.
+
+The authority set also defines a closed-world membership policy: only its
+registered durable files and client-owned required directories may exist.
+Extra files, directories, reparse points, missing registered files, or
+displaced root/directory identities reject at the pre-activation validation
+point. The sole sanctioned post-activation file change is the player-soul
+profile mirror repair. If repair is necessary, its old retained reader is
+exact-validated and yielded, the replacement is conditional on that exact
+physical identity plus digest, and the returned publication receipt is
+exact-rebound before any canonical read. A no-change profile keeps its original
+reader.
+
+After that repair boundary, strict leaf and directory handles retain the
+identities of the registered publication objects. A final closed-world
+membership and exact-authority check immediately before the load journal commit
+is the transaction's linearization boundary. Directory handles do not claim
+ambient child-namespace write exclusion between checks or after commit.
+Recovery first releases the retained handles, restores the prior session, and
+removes only the failed transaction's own namespace entries without following
+reparse points. An external hard link never becomes cleanup authority and does
+not force the active load journal to remain as cleanup debt.
 
 ### Save archive budget
 
-Archive validation tracks trusted maximum entry count, metadata bytes, manifest
-bytes, soul-state bytes, per-entry expanded bytes, aggregate expanded bytes,
-and compression ratio. Counters are checked before allocation and during every
-bounded streaming copy. Archive path segments containing `:` are invalid.
+One immutable client-owned policy, never archive- or manifest-owned, imposes
+these limits:
+
+| Resource | Trusted maximum |
+|---|---:|
+| ZIP entries | 8,192 |
+| Aggregate UTF-8 entry-name metadata | 2 MiB |
+| Expanded `save_manifest.json` | 4 MiB |
+| Expanded `game_state/meta/soul_state.json` | 8 MiB |
+| Expanded bytes in any other file entry | 64 MiB |
+| Aggregate durable expanded payload | 512 MiB |
+| Expanded/compressed ratio | 200:1 after a 1 MiB expanded grace threshold |
+
+Entry count, name metadata, advertised expanded lengths, aggregate durable
+length, compressed length/ratio, and `:` alternate-stream syntax are rejected
+before content allocation and before lifecycle/session-replacement authority.
+Manifest and soul-state buffering is bounded by both advertised and actual
+bytes. Save-list metadata uses the same archive policy and bounded per-entry
+reader rather than an unbounded text read. Payload hashing and extraction
+stream in bounded chunks and require the actual byte count to equal the
+advertised length exactly.
+
+The three checked-in legacy realm saves provide deliberately large headroom:
+the current maximum is 100 entries, 214,559 aggregate expanded bytes, 45,351
+bytes in the largest entry, and 3,552 UTF-8 entry-name bytes. Mortal World,
+Chaos Sea, and Shining Abode fixtures all validate under the client policy and
+remain load-compatible.
 
 ### Complete afterlife actor authority
 
@@ -874,6 +953,29 @@ personality, motivation, worldview, current realm/location, goals/plan, and
 actor-owned memory, or bind to an exact documented type-specific authority
 carrying those values. Every governed deliberate-empty surface remains present
 as an empty array/object/null according to its canonical shape.
+
+An existing materialized profile cannot return through the full
+`afterlifeEntityProfileUpdates` carrier. Historical goals, quests, activities,
+relationships, arts, custom states, journals, progression, memory, and other
+actor-owned fields change only through their exact dedicated commands. A
+legacy profile may carry its first envelope through a bounded migration only
+when usable validated pre-turn authority proves every historical field
+unchanged.
+
+A new Mortal `UpdateNPCs` actor carries exactly one non-empty location branch:
+known canonical `currentLocationId` plus null `initialLocationId`, or null
+current location plus a valid same-turn `initialLocationId`. Missing both,
+populating both, or naming an unknown current location is repair-blocking.
+
+Legacy helper defaults remain neutral. Names, descriptions, archetype prose,
+item types/groups, roles, and genre keywords never synthesize relationship
+scores, personality, disposition, equipment slots, relic identity, container
+or consumption behavior, trade, teaching, or another mechanic.
+
+Only these actor-authority changes are GM-authored. Browser publication,
+load/save/archive budgets, retained worker authority/recovery, and QTE
+source-turn retention are client-owned transaction/resource state and add no
+GM prompt, response, pending/control, or gameplay surface.
 
 ### QTE source-turn authority
 

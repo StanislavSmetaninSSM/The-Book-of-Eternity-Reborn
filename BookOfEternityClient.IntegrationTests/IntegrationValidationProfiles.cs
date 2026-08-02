@@ -73,8 +73,26 @@ internal static class IntegrationValidationProfiles
         GameStateValidationPhase.CrossReferences |
         GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
         GameStateValidationPhase.MetaMiscStateFiles |
-        GameStateValidationPhase.GuardianResonancePowerEvents |
-        GameStateValidationPhase.ClientOwnedControlFiles);
+        GameStateValidationPhase.ClientOwnedControlFiles,
+        "game_state/inventory/items.json",
+        "game_state/meta/guardians.json",
+        "game_state/meta/soul_state.json",
+        "game_state/npcs/npc_core.json",
+        "game_state/quests/soul_quests.json",
+        "game_state/world/world_events.json",
+        "lore/codex_entries.json",
+        AfterlifeArchiveActionState.ConsultationRequestPath,
+        AfterlifeArchiveActionState.ProjectFuelRequestPath,
+        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+        GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+        GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+        GuardianAbodeResidentState.StatePath,
+        GuardianProjectState.TrackerPath,
+        GuardianThoughtJournalState.StatePath,
+        GuardianTradeRequestState.PendingRequestPath,
+        NpcInteractionJournalState.StatePath,
+        RivalSoulArcService.StatePath);
 
     internal static readonly GameStateValidationSelection GuardianPolicy = Select(
         GameStateValidationPhase.CrossReferences |
@@ -183,6 +201,10 @@ internal static class IntegrationValidationProfiles
     internal static readonly GameStateValidationSelection Weather = Select(
         GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
 
-    private static GameStateValidationSelection Select(GameStateValidationPhase phases) =>
-        new(phases);
+    private static GameStateValidationSelection Select(
+        GameStateValidationPhase phases,
+        params string[] stateFiles) =>
+        stateFiles.Length == 0
+            ? new GameStateValidationSelection(phases)
+            : new GameStateValidationSelection(phases, stateFiles);
 }

@@ -1170,11 +1170,11 @@ internal static class GuardianAbodeResidentState
 
         if (resident["abodeDisposition"] is not JsonObject abodeDisposition)
             resident["abodeDisposition"] = abodeDisposition = new JsonObject();
-        NormalizeAbodeDispositionObject(abodeDisposition, seed);
+        NormalizeAbodeDispositionObject(abodeDisposition);
 
         if (resident["personalityProfile"] is not JsonObject personalityProfile)
             resident["personalityProfile"] = personalityProfile = new JsonObject();
-        NormalizePersonalityProfileObject(personalityProfile, seed, abodeDisposition, normalizedCurrentAbodePower);
+        NormalizePersonalityProfileObject(personalityProfile);
 
         var seededDevotionLevel = SeedAbodeDevotionLevel(seed, abodeDisposition, normalizedCurrentAbodePower);
         resident["abodeDevotionLevel"] = ClampResidentMeter(GetNodeIntOrDefault(resident["abodeDevotionLevel"], seededDevotionLevel));
@@ -1308,179 +1308,59 @@ internal static class GuardianAbodeResidentState
 
     private sealed class ResidentSeedContext
     {
-        public string DisplayName { get; init; } = "";
-        public string ResidentKind { get; init; } = "";
-        public string OriginType { get; init; } = "";
-        public string RoleLabel { get; init; } = "";
-        public string Summary { get; init; } = "";
         public int BondLevel { get; init; }
-        public string BondReason { get; init; } = "";
-        public string OriginWorldSummary { get; init; } = "";
-        public IReadOnlyList<string> CoreTraits { get; init; } = Array.Empty<string>();
-        public IReadOnlyList<string> ArchetypeHints { get; init; } = Array.Empty<string>();
     }
 
     private static ResidentSeedContext BuildSeedContext(JsonObject resident)
     {
-        var imprint = resident["mortalWorldImprint"] as JsonObject;
         return new ResidentSeedContext
         {
-            DisplayName = GetNodeString(resident["displayName"]) ?? string.Empty,
-            ResidentKind = GetNodeString(resident["residentKind"]) ?? string.Empty,
-            OriginType = GetNodeString(resident["originType"]) ?? string.Empty,
-            RoleLabel = GetNodeString(resident["roleLabel"]) ?? string.Empty,
-            Summary = GetNodeString(resident["summary"]) ?? string.Empty,
-            BondLevel = ClampResidentMeter(GetNodeInt(resident["bondLevel"])),
-            BondReason = GetNodeString(imprint?["bondReason"]) ?? string.Empty,
-            OriginWorldSummary = GetNodeString(imprint?["originWorldSummary"]) ?? string.Empty,
-            CoreTraits = ReadNodeStringArray(imprint?["coreTraits"]),
-            ArchetypeHints = ReadNodeStringArray(imprint?["archetypeHints"])
+            BondLevel = ClampResidentMeter(GetNodeInt(resident["bondLevel"]))
         };
     }
 
-    private static void NormalizePersonalityProfileObject(
-        JsonObject personalityProfile,
-        ResidentSeedContext seed,
-        JsonObject abodeDisposition,
-        int currentAbodePower)
+    private static void NormalizePersonalityProfileObject(JsonObject personalityProfile)
     {
         personalityProfile["archetype"] = NormalizeNonEmptyString(
             GetNodeString(personalityProfile["archetype"]),
-            SeedArchetype(seed));
+            "Unspecified");
         personalityProfile["worldview"] = NormalizeNonEmptyString(
             GetNodeString(personalityProfile["worldview"]),
-            SeedWorldview(seed));
+            "Unspecified");
         personalityProfile["culturalLayer"] = NormalizeNonEmptyString(
             GetNodeString(personalityProfile["culturalLayer"]),
-            SeedCulturalLayer(seed));
+            "Unspecified");
 
         if (personalityProfile["coreValues"] is not JsonArray coreValues)
             personalityProfile["coreValues"] = coreValues = new JsonArray();
         NormalizeStringArray(coreValues);
         if (coreValues.Count == 0)
-            foreach (var value in SeedCoreValues(seed))
-                coreValues.Add(value);
+            coreValues.Add("unspecified");
 
         if (personalityProfile["personalityTraits"] is not JsonArray personalityTraits)
             personalityProfile["personalityTraits"] = personalityTraits = new JsonArray();
         NormalizePersonalityTraitArray(personalityTraits);
         if (personalityTraits.Count == 0)
         {
-            foreach (var trait in SeedPersonalityTraits(seed, abodeDisposition, currentAbodePower))
+            foreach (var trait in BuildNeutralPersonalityTraits())
                 personalityTraits.Add(trait);
         }
     }
 
-    private static void NormalizeAbodeDispositionObject(JsonObject abodeDisposition, ResidentSeedContext seed)
+    private static void NormalizeAbodeDispositionObject(JsonObject abodeDisposition)
     {
-        var seedDisposition = SeedAbodeDisposition(seed);
         abodeDisposition["powerSensitivity"] = NormalizePowerSensitivity(
             GetNodeString(abodeDisposition["powerSensitivity"]),
-            seedDisposition.PowerSensitivity);
+            PowerSensitivityMedium);
         abodeDisposition["migrationDisposition"] = NormalizeMigrationDisposition(
             GetNodeString(abodeDisposition["migrationDisposition"]),
-            seedDisposition.MigrationDisposition);
+            MigrationDispositionSelective);
         abodeDisposition["communalOrientation"] = NormalizeCommunalOrientation(
             GetNodeString(abodeDisposition["communalOrientation"]),
-            seedDisposition.CommunalOrientation);
+            CommunalOrientationMedium);
         abodeDisposition["stabilityNeed"] = NormalizeStabilityNeed(
             GetNodeString(abodeDisposition["stabilityNeed"]),
-            seedDisposition.StabilityNeed);
-    }
-
-    private static ResidentAbodeDisposition SeedAbodeDisposition(ResidentSeedContext seed)
-    {
-        var powerIndex = 1;
-        var migrationIndex = 1;
-        var communalIndex = 1;
-        var stabilityIndex = 1;
-
-        switch ((seed.ResidentKind ?? string.Empty).Trim().ToLowerInvariant())
-        {
-            case "junior_spirit":
-                powerIndex = 2;
-                migrationIndex = 1;
-                communalIndex = 1;
-                stabilityIndex = 1;
-                break;
-            case "attendant_spirit":
-                powerIndex = 1;
-                migrationIndex = 0;
-                communalIndex = 2;
-                stabilityIndex = 2;
-                break;
-            case "wayfaring_soul":
-                powerIndex = 1;
-                migrationIndex = 3;
-                communalIndex = 0;
-                stabilityIndex = 0;
-                break;
-            case "bound_soul":
-                powerIndex = 0;
-                migrationIndex = 0;
-                communalIndex = 1;
-                stabilityIndex = 2;
-                break;
-        }
-
-        switch ((seed.OriginType ?? string.Empty).Trim().ToLowerInvariant())
-        {
-            case "native_spirit":
-                migrationIndex--;
-                communalIndex++;
-                stabilityIndex++;
-                break;
-            case "traveler_soul":
-                powerIndex++;
-                migrationIndex++;
-                communalIndex--;
-                break;
-        }
-
-        var keywords = CollectSeedKeywords(seed);
-        if (keywords.Any(keyword => ContainsAny(keyword, "loyal", "faith", "stead", "duty", "service", "верн", "предан", "служ")))
-        {
-            migrationIndex--;
-            communalIndex++;
-            stabilityIndex++;
-        }
-
-        if (keywords.Any(keyword => ContainsAny(keyword, "wander", "wayfar", "road", "nomad", "restless", "пут", "стран", "дорог", "вольн")))
-        {
-            migrationIndex++;
-            stabilityIndex--;
-        }
-
-        if (keywords.Any(keyword => ContainsAny(keyword, "glory", "prestige", "ambit", "pride", "горд", "слав", "честолюб", "велич")))
-            powerIndex++;
-
-        if (keywords.Any(keyword => ContainsAny(keyword, "fear", "anx", "fragile", "care", "vigil", "трев", "хруп", "осторож", "страж")))
-            stabilityIndex++;
-
-        if (keywords.Any(keyword => ContainsAny(keyword, "hearth", "house", "garden", "choir", "ritual", "kin", "дом", "сад", "ритуал", "очаг", "общ")))
-        {
-            communalIndex++;
-            migrationIndex--;
-        }
-
-        if (keywords.Any(keyword => ContainsAny(keyword, "alone", "solitary", "lone", "independent", "один", "одинок", "уедин", "сам")))
-        {
-            communalIndex--;
-            migrationIndex++;
-        }
-
-        powerIndex = Math.Clamp(powerIndex, 0, 2);
-        migrationIndex = Math.Clamp(migrationIndex, 0, 3);
-        communalIndex = Math.Clamp(communalIndex, 0, 2);
-        stabilityIndex = Math.Clamp(stabilityIndex, 0, 2);
-
-        return new ResidentAbodeDisposition
-        {
-            PowerSensitivity = ScaleOrder[powerIndex],
-            MigrationDisposition = MigrationDispositionOrder[migrationIndex],
-            CommunalOrientation = ScaleOrder[communalIndex],
-            StabilityNeed = ScaleOrder[stabilityIndex]
-        };
+            StabilityNeedMedium);
     }
 
     private static int SeedAbodeDevotionLevel(ResidentSeedContext seed, JsonObject abodeDisposition, int currentAbodePower)
@@ -1508,53 +1388,15 @@ internal static class GuardianAbodeResidentState
         return ClampResidentMeter(restlessness);
     }
 
-    private static JsonObject[] SeedPersonalityTraits(ResidentSeedContext seed, JsonObject abodeDisposition, int currentAbodePower)
+    private static JsonObject[] BuildNeutralPersonalityTraits()
     {
-        var loyalty = Math.Clamp(
-            2 + (int)Math.Round(seed.BondLevel / 15.0, MidpointRounding.AwayFromZero) +
-            (string.Equals(GetNodeString(abodeDisposition["migrationDisposition"]), MigrationDispositionRooted, StringComparison.OrdinalIgnoreCase) ? 2 : 0) +
-            (string.Equals(GetNodeString(abodeDisposition["communalOrientation"]), CommunalOrientationHigh, StringComparison.OrdinalIgnoreCase) ? 1 : 0),
-            1,
-            10);
-        var restlessness = Math.Clamp(
-            2 + Array.IndexOf(MigrationDispositionOrder, NormalizeMigrationDisposition(GetNodeString(abodeDisposition["migrationDisposition"]))) * 2 +
-            (currentAbodePower <= 39 ? 1 : 0),
-            1,
-            10);
-        var belonging = Math.Clamp(
-            2 + Array.IndexOf(ScaleOrder, NormalizeCommunalOrientation(GetNodeString(abodeDisposition["communalOrientation"]), CommunalOrientationMedium)) * 2 +
-            (string.Equals(seed.OriginType, "native_spirit", StringComparison.OrdinalIgnoreCase) ? 1 : 0),
-            1,
-            10);
-        var stability = Math.Clamp(
-            2 + Array.IndexOf(ScaleOrder, NormalizeStabilityNeed(GetNodeString(abodeDisposition["stabilityNeed"]), StabilityNeedMedium)) * 2 +
-            (currentAbodePower <= 39 ? 1 : 0),
-            1,
-            10);
-
-        var traits = new List<JsonObject>
-        {
-            BuildPersonalityTrait("Loyalty", loyalty, DescribeLoyalty(loyalty), "Clings to chosen bonds, vows, and duties once they feel real."),
-            BuildPersonalityTrait("Restlessness", restlessness, DescribeRestlessness(restlessness), "Feels the pull of movement, change, or the need to seek a better horizon."),
-            BuildPersonalityTrait("Need for Belonging", belonging, DescribeBelonging(belonging), "Measures safety and meaning through the warmth or absence of shared life."),
-            BuildPersonalityTrait("Need for Stability", stability, DescribeStabilityNeed(stability), "Feels disorder, weakness, and uncertainty as either tolerable strain or immediate pain.")
-        };
-
-        var imprintTrait = seed.CoreTraits.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
-        if (!string.IsNullOrWhiteSpace(imprintTrait))
-        {
-            var traitName = HumanizeToken(imprintTrait);
-            if (!traits.Any(existing => string.Equals(GetNodeString(existing["traitName"]), traitName, StringComparison.OrdinalIgnoreCase)))
-            {
-                traits.Add(BuildPersonalityTrait(
-                    traitName,
-                    6,
-                    "An old imprint still shapes the resident's reactions.",
-                    "This trait is preserved from the resident's earlier imprint and still colors abode life."));
-            }
-        }
-
-        return traits.Take(5).ToArray();
+        return
+        [
+            BuildPersonalityTrait("Loyalty", 5, "Neutral structured default.", string.Empty),
+            BuildPersonalityTrait("Restlessness", 5, "Neutral structured default.", string.Empty),
+            BuildPersonalityTrait("Need for Belonging", 5, "Neutral structured default.", string.Empty),
+            BuildPersonalityTrait("Need for Stability", 5, "Neutral structured default.", string.Empty)
+        ];
     }
 
     private static JsonObject BuildPersonalityTrait(string traitName, int value, string valueDescription, string description)
@@ -1566,81 +1408,6 @@ internal static class GuardianAbodeResidentState
             ["valueDescription"] = valueDescription,
             ["description"] = description
         };
-    }
-
-    private static string SeedArchetype(ResidentSeedContext seed)
-    {
-        var hint = seed.ArchetypeHints.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
-        if (!string.IsNullOrWhiteSpace(hint))
-            return HumanizeToken(hint);
-        if (!string.IsNullOrWhiteSpace(seed.RoleLabel))
-            return seed.RoleLabel;
-
-        return (seed.ResidentKind ?? string.Empty).Trim().ToLowerInvariant() switch
-        {
-            "junior_spirit" => "Awakening Spirit",
-            "attendant_spirit" => "Steady Attendant",
-            "wayfaring_soul" => "Wayworn Wanderer",
-            "bound_soul" => "Bound Witness",
-            _ => "Abode Resident"
-        };
-    }
-
-    private static string SeedWorldview(ResidentSeedContext seed) =>
-        (seed.ResidentKind ?? string.Empty).Trim().ToLowerInvariant() switch
-        {
-            "junior_spirit" => "Feels belonging through warmth, recognition, and the promise that growth here is still possible.",
-            "attendant_spirit" => "Believes an Abode proves itself through service, continuity, and the honoring of shared rituals.",
-            "wayfaring_soul" => "Treats belonging as a chosen shelter, not a permanent chain, and watches closely for signs of decline or renewal.",
-            "bound_soul" => "Sees loyalty as weighty and difficult to break; once a vow matters, even dimness becomes part of its burden.",
-            _ => "Reads Abode life through memory, attachment, and the question of whether a place still deserves faith."
-        };
-
-    private static string SeedCulturalLayer(ResidentSeedContext seed)
-    {
-        var residentKind = (seed.ResidentKind ?? string.Empty).Trim().ToLowerInvariant();
-        var originType = (seed.OriginType ?? string.Empty).Trim().ToLowerInvariant();
-        if (residentKind == "attendant_spirit" && originType == "native_spirit")
-            return "Household-spirit culture shaped by thresholds, service, and remembered vows.";
-        if (residentKind == "wayfaring_soul" && originType == "traveler_soul")
-            return "Pilgrim-memory culture shaped by roads, temporary shelters, and chosen loyalties.";
-        if (residentKind == "bound_soul")
-            return "Vow-bound memory culture shaped by remnants, unfinished ties, and endurance.";
-        if (residentKind == "junior_spirit")
-            return "Young abode-spirit culture formed by imitation, attachment, and the need to be welcomed.";
-
-        return "Afterlife household culture shaped by ritual, memory, and the search for belonging.";
-    }
-
-    private static string[] SeedCoreValues(ResidentSeedContext seed)
-    {
-        var values = new List<string>();
-        foreach (var trait in seed.CoreTraits)
-        {
-            var normalized = NormalizeCoreValue(trait);
-            if (!string.IsNullOrWhiteSpace(normalized) &&
-                !values.Contains(normalized, StringComparer.OrdinalIgnoreCase))
-            {
-                values.Add(normalized);
-            }
-        }
-
-        foreach (var fallback in (seed.ResidentKind ?? string.Empty).Trim().ToLowerInvariant() switch
-                 {
-                     "junior_spirit" => new[] { "belonging", "recognition", "growth" },
-                     "attendant_spirit" => new[] { "service", "continuity", "gratitude" },
-                     "wayfaring_soul" => new[] { "freedom", "honesty", "chosen loyalty" },
-                     "bound_soul" => new[] { "endurance", "memory", "fidelity" },
-                     _ => new[] { "continuity", "belonging", "memory" }
-                 })
-        {
-            if (!values.Contains(fallback, StringComparer.OrdinalIgnoreCase))
-                values.Add(fallback);
-            if (values.Count >= 4)
-                break;
-        }
-
-        return values.Take(4).ToArray();
     }
 
     private static void NormalizePersonalityTraitArray(JsonArray personalityTraits)
@@ -2994,54 +2761,6 @@ internal static class GuardianAbodeResidentState
     {
         var normalized = (value ?? string.Empty).Trim().ToLowerInvariant();
         return allowedValues.Contains(normalized) ? normalized : fallback;
-    }
-
-    private static IReadOnlyList<string> CollectSeedKeywords(ResidentSeedContext seed)
-    {
-        var result = new List<string>();
-        result.AddRange(seed.CoreTraits.Where(value => !string.IsNullOrWhiteSpace(value)).Select(value => value.Trim().ToLowerInvariant()));
-        result.AddRange(seed.ArchetypeHints.Where(value => !string.IsNullOrWhiteSpace(value)).Select(value => value.Trim().ToLowerInvariant()));
-        foreach (var candidate in new[] { seed.RoleLabel, seed.Summary, seed.BondReason, seed.OriginWorldSummary })
-        {
-            if (!string.IsNullOrWhiteSpace(candidate))
-                result.Add(candidate.Trim().ToLowerInvariant());
-        }
-
-        return result;
-    }
-
-    private static bool ContainsAny(string source, params string[] fragments) =>
-        fragments.Any(fragment => source.Contains(fragment, StringComparison.OrdinalIgnoreCase));
-
-    private static string NormalizeCoreValue(string raw)
-    {
-        var normalized = raw.Trim();
-        if (string.IsNullOrWhiteSpace(normalized))
-            return string.Empty;
-
-        normalized = normalized.Replace('_', ' ').Replace('-', ' ');
-        return normalized.ToLowerInvariant() switch
-        {
-            "верность" => "loyalty",
-            "долг" => "duty",
-            "память" => "memory",
-            "свобода" => "freedom",
-            "служение" => "service",
-            "благодарность" => "gratitude",
-            "рост" => "growth",
-            "честность" => "honesty",
-            "стойкость" => "endurance",
-            _ => normalized
-        };
-    }
-
-    private static string HumanizeToken(string raw)
-    {
-        var normalized = raw.Replace('_', ' ').Replace('-', ' ').Trim();
-        if (string.IsNullOrWhiteSpace(normalized))
-            return string.Empty;
-
-        return char.ToUpperInvariant(normalized[0]) + normalized[1..];
     }
 
     private static int GetPowerBandDevotionModifier(int currentAbodePower, string? powerSensitivity)

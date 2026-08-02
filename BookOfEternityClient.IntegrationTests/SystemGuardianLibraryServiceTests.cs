@@ -363,6 +363,9 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         };
         Assert.True(JsonNode.DeepEquals(expectedCapabilities, knowledgeCapabilities));
         Assert.True(JsonNode.DeepEquals(knowledgeCapabilities, combatCapabilities));
+        Assert.True(JsonNode.DeepEquals(
+            knowledgeGuardian["personalityProfile"]?["coreValues"],
+            combatGuardian["personalityProfile"]?["coreValues"]));
     }
 
     [Fact]

@@ -1916,12 +1916,23 @@ public partial class GameEngine
             "actor_materialization_inventory_reference_mismatch" => true,
             "actor_materialization_section_missing" => true,
             "actor_materialization_section_content_mismatch" => true,
+            "actor_materialization_section_empty_surface_invalid" => true,
             "actor_materialization_capability_mismatch" => true,
             "actor_materialization_existing_resend_forbidden" => true,
             "actor_materialization_historical_envelope_changed" => true,
+            "actor_materialization_afterlife_missing_appearance" => true,
+            "actor_materialization_afterlife_missing_profile_summary" => true,
+            "actor_materialization_afterlife_missing_personality" => true,
+            "actor_materialization_afterlife_missing_motivation" => true,
+            "actor_materialization_afterlife_missing_worldview" => true,
+            "actor_materialization_afterlife_missing_realm" => true,
+            "actor_materialization_afterlife_missing_location" => true,
+            "actor_materialization_afterlife_missing_goals_plan" => true,
             "afterlife_actor_materialization_profile_missing" => true,
             "afterlife_actor_materialization_profile_ambiguous" => true,
             "afterlife_actor_materialization_memory_missing" => true,
+            "npc_new_update_location_authority_not_exactly_one" => true,
+            "npc_new_update_current_location_unknown" => true,
             _ => false
         };
     }
@@ -3646,7 +3657,10 @@ public partial class GameEngine
             {
                 "Each listed actor uses one exact canonical actorType:actorId identity; display names, prose, and setting genre are never identity authority.",
                 "A new or promoted significant actor has one complete actor-bound materialization v1 envelope with exact capabilities and every required section disposition.",
-                "A section with canonical content uses state=populated; a deliberately empty section uses state=empty_by_design plus a non-empty in-world reason.",
+                "A section with canonical content uses state=populated; state=empty_by_design requires a non-empty in-world reason and keeps every governed canonical empty array, object, or null field physically present.",
+                "A new afterlife actor explicitly carries appearanceDescription, profileSummary, personalityProfile.archetype, motivation, personalityProfile.worldview, realm, locationId, goals with a non-empty plan, and exact actor-owned memory.",
+                "A new Mortal UpdateNPCs actor carries exactly one non-empty location authority: a known currentLocationId or a valid same-turn initialLocationId, never neither or both.",
+                "An existing materialized afterlife profile is never resent through the full afterlifeEntityProfileUpdates carrier; later changes use the exact dedicated delta, while a legacy first-envelope migration preserves every historical field.",
                 "Existing valid actor fields, valid sections, and accepted historical materialization envelopes remain unchanged unless an exact correction explicitly targets them."
             },
             SafeCorrectionRules = new List<string>
@@ -3655,13 +3669,17 @@ public partial class GameEngine
                 "Preserve every valid actor field and valid materialization section that is not named by an exact validation error.",
                 "For afterlife_actor_materialization_profile_missing, add exactly one common profile for the listed exact actorType:actorId in game_state/meta/afterlife_entity_profiles.json.",
                 "For profile ambiguity, keep one canonical exact type-and-ID profile and preserve its valid sections; do not merge records by displayName.",
-                "For actor-owned memory errors, initialize memory from facts of the current accepted turn in the exact actor profile or documented type-specific journal."
+                "For actor-owned memory errors, initialize memory from facts of the current accepted turn in the exact actor profile or documented type-specific journal.",
+                "For an empty-surface error, restore only the named governed field in its exact canonical empty array, object, or null shape; omission is not empty_by_design.",
+                "For afterlife presentation, personality, realm/location, or goals/plan errors, author only the exact missing structured field from current canonical evidence.",
+                "For a new Mortal location error, select exactly one known currentLocationId or valid same-turn initialLocationId and preserve every unrelated NPC field."
             },
             Steps = new List<string>
             {
                 "Open game_state/control/validation_repair_request.json and only the packet-listed targetFiles/templates first.",
                 "Locate each actor by the exact actorType:actorId value in canonicalActorNames; do not resolve an actor by displayName or narrative description.",
                 "Apply missingFields and exactFieldCorrections one by one, changing only the named envelope/profile/section target.",
+                "Remove any historical afterlife full-carrier resend and express its intended change through the documented exact dedicated delta surface.",
                 "Recheck that all unrelated actor data, already valid materialization sections, and historical envelopes are byte-for-byte or semantically preserved as required by the listed error.",
                 "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
             },
@@ -3670,7 +3688,7 @@ public partial class GameEngine
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer Actor Materialization rules; use this packet, validation_repair_request.json, templates, docs, examples, and canonical state.",
                 "Do not rewrite the whole actor, entire profile collection, or unrelated materialization sections to fix one listed target.",
                 "Do not delete an actor, profile, item, memory record, or valid section merely to silence a materialization error.",
-                "Do not infer identity, capabilities, skills, inventory, or section content from an actor name, prose keywords, or the setting genre.",
+                "Do not infer identity, capabilities, skills, inventory, equipment slots, trade, or section content from actor names, archetype prose, item types, genre keywords, or narrative descriptions.",
                 "Do not ask the client to invent GM-authored actor content or fabricate missing narrative facts; the GM must author only the exact bounded repair from current canonical evidence.",
                 "Do not create a new turn or write ready/turn_complete.json during validation repair."
             }
@@ -3687,6 +3705,13 @@ public partial class GameEngine
         }
 
         var actor = NormalizeRepairActorName(issue.Actor);
+        if (!string.IsNullOrWhiteSpace(actor) &&
+            actor.StartsWith("mortal_npc:", StringComparison.Ordinal))
+        {
+            yield return "game_state/npcs/npc_core.json";
+            yield break;
+        }
+
         if ((issue.Code ?? string.Empty).StartsWith("afterlife_actor_materialization_", StringComparison.OrdinalIgnoreCase) ||
             (!string.IsNullOrWhiteSpace(actor) && actor.Contains(':', StringComparison.Ordinal)))
         {
@@ -3715,8 +3740,19 @@ public partial class GameEngine
         {
             "actor_materialization_missing" => $"{actor} / materialization",
             "actor_materialization_section_missing" => $"{actor} / {issue.Section ?? "required section"}",
+            "actor_materialization_section_empty_surface_invalid" => $"{actor} / {issue.Section ?? "required section"} canonical empty surface",
+            "actor_materialization_afterlife_missing_appearance" => $"{actor} / appearanceDescription",
+            "actor_materialization_afterlife_missing_profile_summary" => $"{actor} / profileSummary",
+            "actor_materialization_afterlife_missing_personality" => $"{actor} / personalityProfile.archetype",
+            "actor_materialization_afterlife_missing_motivation" => $"{actor} / motivation",
+            "actor_materialization_afterlife_missing_worldview" => $"{actor} / personalityProfile.worldview",
+            "actor_materialization_afterlife_missing_realm" => $"{actor} / realm",
+            "actor_materialization_afterlife_missing_location" => $"{actor} / locationId",
+            "actor_materialization_afterlife_missing_goals_plan" => $"{actor} / goals plan",
             "afterlife_actor_materialization_profile_missing" => $"{actor} / common profile",
             "afterlife_actor_materialization_memory_missing" => $"{actor} / actor-owned memory",
+            "npc_new_update_location_authority_not_exactly_one" => $"{actor} / exactly one currentLocationId or initialLocationId",
+            "npc_new_update_current_location_unknown" => $"{actor} / known currentLocationId",
             _ => null
         };
     }

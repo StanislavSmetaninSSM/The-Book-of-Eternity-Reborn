@@ -8366,9 +8366,11 @@ Scenario:
 AFTERLIFE ACTOR MATERIALIZATION V1
 ==================================================
 
-Before writing the first durable profile, bind the source actor and profile by exact actorType:actorId. Do not infer the identity, `capabilities`, arts, inventory-like resources, teaching authority, or trade authority from a display name or prose. The first profile carries one immutable `materializationId`, `materializedAtTurn`, and complete `sections` disposition. Every intentional absence uses `empty_by_design` with an in-world reason.
+Before writing the first durable profile, bind the source actor and profile by exact actorType:actorId. Do not infer the identity, `capabilities`, arts, inventory-like resources, teaching authority, or trade authority from a display name or prose. Names, archetype prose, item types, and genre keywords never grant mechanics. The first profile carries one immutable `materializationId`, `materializedAtTurn`, and complete `sections` disposition. Every intentional absence uses `empty_by_design` with an in-world reason and keeps the real canonical empty field physically present in its exact empty array/object/null shape.
 
 Validation derives actor newness only from the client-owned validated pre-turn baseline. A malformed current source authority, malformed `profiles[]` root, duplicate source ID, or source actor without its exact ID is a repair-blocking error; do not omit that record, guess from its name, or reconstruct the baseline.
+
+A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
 
 Positive trade authority is exact and realm-local. In the Chaos Sea, `canTrade=true` is valid only for the one active Guardian whose abode is the exact current abode. In the Shining Abode, it is valid only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. If that structured authority is absent or ambiguous, use `canTrade=false`. A legacy actor that first gains trade authority is promoted into significant structured play and needs the complete envelope in the same accepted turn. A full response may carry that profile before canonical state is written, but accepted-turn validation still proves the claim from exact current or validated pre-turn authority.
 
@@ -8380,6 +8382,35 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
 
 ```json
 {
+  "actorType": "resident",
+  "actorId": "resident_quiet_witness",
+  "displayName": "Тихий Свидетель",
+  "appearanceDescription": "Полупрозрачный силуэт в простом дорожном плаще держится у края фонарного круга.",
+  "profileSummary": "Осторожный новый житель обители, который запоминает обещания пришедших душ.",
+  "personalityProfile": {
+    "archetype": "watchful_refugee",
+    "worldview": "Безопасность начинается с правдивого рассказа о пережитом."
+  },
+  "motivation": "Понять, можно ли доверить душе путь к внутреннему двору.",
+  "realm": "Chaos Sea",
+  "locationId": "abode_quiet_lantern",
+  "locationName": "Обитель Тихого Фонаря",
+  "standardArts": {},
+  "specialArts": [],
+  "customStates": [],
+  "fateCards": [],
+  "relationships": [],
+  "goals": {
+    "shortTermGoal": "Выслушать рассказ души без преждевременного вывода.",
+    "longTermGoal": "Найти безопасное место среди жителей обители.",
+    "plan": "Сопоставить слова души с тем, что он увидит в следующей встрече."
+  },
+  "personalQuests": [],
+  "currentActivity": null,
+  "completedActivities": [],
+  "gmThoughtsSummary": "Я ещё не доверяю душе, но хочу дать ей шанс говорить правду.",
+  "ledger": [],
+  "progressionLedger": [],
   "materialization": {
     "schemaVersion": 1,
     "materializationId": "mat_resident_quiet_witness_turn_23",
@@ -8397,7 +8428,7 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
       "specialArts": { "state": "empty_by_design", "reason": "Личное духовное искусство ещё не возникло." },
       "customStates": { "state": "empty_by_design", "reason": "Особое духовное состояние пока не проявилось." },
       "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не открылся." },
-      "relationships": { "state": "populated" },
+      "relationships": { "state": "empty_by_design", "reason": "У резидента ещё нет устойчивой личной связи с душой." },
       "agency": { "state": "populated" },
       "progressionHistory": { "state": "empty_by_design", "reason": "История развития начинается с этой встречи." }
     }
@@ -8421,7 +8452,15 @@ Valid response fragment:
       "actorType": "guardian",
       "actorId": "guardian_mirror",
       "displayName": "Хранитель Зеркал",
+      "appearanceDescription": "Высокий Хранитель в мантии из зеркальных пластин держит маску с треснувшей серебряной кромкой.",
+      "profileSummary": "Страж Зеркальной Обители, который испытывает честность душ и обучает защите от духовного давления.",
+      "personalityProfile": {
+        "archetype": "severe_mirror_judge",
+        "worldview": "Правда проявляется только тогда, когда душа отказывается от удобного отражения."
+      },
+      "motivation": "Подготовить душу к суду клятвы, не позволив ей купить доверие пустыми обещаниями.",
       "realm": "Chaos Sea",
+      "locationId": "abode_mirror",
       "locationName": "Зеркальная Обитель",
       "materialization": {
         "schemaVersion": 1,
@@ -9020,7 +9059,15 @@ Valid Shining faction-head response fragment:
       "actorType": "radiant_actor",
       "actorId": "radiant_archive_head",
       "displayName": "Архивариус Первого Света",
+      "appearanceDescription": "Архивариус в бело-золотой мантии носит на груди печать из трёх световых колец.",
+      "profileSummary": "Неподкупный глава Архива Первого Света, отвечающий за достоверность свидетельств фракции.",
+      "personalityProfile": {
+        "archetype": "disciplined_radiant_archivist",
+        "worldview": "Свет без проверенной памяти превращается в удобную пропаганду."
+      },
+      "motivation": "Сохранить независимость Архива и проверить свидетельство души до открытия закрытого зала.",
       "realm": "Shining Abode",
+      "locationId": "shining_first_archive_hall",
       "locationName": "Зал Первого Архива",
       "materialization": {
         "schemaVersion": 1,

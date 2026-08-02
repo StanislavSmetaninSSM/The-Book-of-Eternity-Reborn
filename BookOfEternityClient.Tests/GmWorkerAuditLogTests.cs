@@ -156,6 +156,106 @@ public sealed class GmWorkerAuditLogTests
     }
 
     [Fact]
+    public async Task AppendRequiredEventOnceIfCurrentSessionAsync_RepeatedEventIsIdempotent()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = CreateFileSystem(root);
+            string generation;
+            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
+                generation = fs.GetOrCreateSessionGeneration(writeLease);
+            var audit = new GmWorkerAuditLog(fs);
+            var auditEvent = new WorkerAuditEvent
+            {
+                EventId = "worker_audit_required_once",
+                EventType = "process-tree-cleanup-confirmed",
+                WorkerId = "validation_repair_codex",
+                TaskId = "worker_task_required_once",
+                TimestampUtc = "2026-08-02T00:00:00Z",
+                Summary = "Quarantined process-tree cleanup completed."
+            };
+
+            var first = await audit.AppendRequiredEventOnceIfCurrentSessionAsync(
+                generation,
+                auditEvent);
+            var second = await audit.AppendRequiredEventOnceIfCurrentSessionAsync(
+                generation,
+                auditEvent);
+
+            Assert.Equal(GmWorkerAuditAppendDisposition.Appended, first);
+            Assert.Equal(GmWorkerAuditAppendDisposition.Appended, second);
+            var events = await audit.ReadEventsAsync();
+            Assert.Single(events);
+            Assert.Equal(auditEvent.EventId, events[0].EventId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task AppendRequiredEventOnceIfCurrentSessionAsync_WriteFailurePropagatesForRetry()
+    {
+        var root = CreateTempRoot();
+        var rejectAuditWrite = 1;
+        try
+        {
+            var fs = CreateFileSystem(
+                root,
+                new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = path =>
+                    {
+                        if (Volatile.Read(ref rejectAuditWrite) != 0 &&
+                            path.Equals(
+                                GmWorkerAuditLog.AuditLogPath,
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            return Task.FromException(
+                                new IOException("Injected required audit write failure."));
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                });
+            string generation;
+            await using (var writeLease = await fs.AcquireCanonicalWriteLeaseAsync())
+                generation = fs.GetOrCreateSessionGeneration(writeLease);
+            var audit = new GmWorkerAuditLog(fs);
+            var auditEvent = new WorkerAuditEvent
+            {
+                EventId = "worker_audit_required_retry",
+                EventType = "process-tree-cleanup-confirmed",
+                WorkerId = "validation_repair_codex",
+                TaskId = "worker_task_required_retry",
+                TimestampUtc = "2026-08-02T00:00:00Z",
+                Summary = "Quarantined process-tree cleanup completed."
+            };
+
+            await Assert.ThrowsAsync<IOException>(
+                () => audit.AppendRequiredEventOnceIfCurrentSessionAsync(
+                    generation,
+                    auditEvent));
+            Assert.False(fs.FileExists(GmWorkerAuditLog.AuditLogPath));
+
+            Volatile.Write(ref rejectAuditWrite, 0);
+            var disposition =
+                await audit.AppendRequiredEventOnceIfCurrentSessionAsync(
+                    generation,
+                    auditEvent);
+
+            Assert.Equal(GmWorkerAuditAppendDisposition.Appended, disposition);
+            Assert.Single(await audit.ReadEventsAsync());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public void SharedAuditEventIdGenerator_DeterministicInputsProduceReadableStableId()
     {
         var generatorType = typeof(GmWorkerAuditLog).Assembly.GetType(
@@ -204,9 +304,15 @@ public sealed class GmWorkerAuditLogTests
             Assert.Matches("^worker_audit_[0-9]{17}_[0-9a-f]{32}$", eventId));
     }
 
-    private static FileSystemManager CreateFileSystem(string root)
+    private static FileSystemManager CreateFileSystem(
+        string root,
+        FileSystemManagerHooks? hooks = null)
     {
-        var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        var fs = new FileSystemManager(
+            root,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
         fs.EnsureDirectoryStructure();
         return fs;
     }

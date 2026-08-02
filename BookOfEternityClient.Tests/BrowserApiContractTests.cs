@@ -220,6 +220,44 @@ public sealed class BrowserApiContractTests
     }
 
     [Fact]
+    public void FailedQteAuthority_BlocksEveryLocalWriteProjection()
+    {
+        var lifecycle = BuildLifecycleDashboard();
+        var qte = BuildQteState(
+            "Failed",
+            "Состояние QTE повреждено.");
+
+        var turnState =
+            BrowserGameScreenTurnStateDto.From(lifecycle, qte);
+        var composer =
+            BrowserGameScreenActionComposerDto.From(lifecycle, qte);
+        var menu = BrowserPlayerCommandMenuBuilder.Build(
+            BuildRepresentativeState(
+                isChaosSea: false,
+                isShiningAbode: false,
+                isAfterlife: false),
+            lifecycle,
+            qte);
+        var localTurnActions = menu.Sections
+            .SelectMany(static section => section.Actions)
+            .Where(
+                static action =>
+                    action.MutationMode == "local-turn")
+            .ToArray();
+
+        Assert.Equal("qte-error", turnState.State);
+        Assert.False(turnState.CanStartBrowserWrite);
+        Assert.Equal("validation-failed", turnState.Phase);
+        Assert.Equal("error", turnState.Severity);
+        Assert.Equal("qte-error", composer.Mode);
+        Assert.False(composer.CanSubmit);
+        Assert.NotEmpty(localTurnActions);
+        Assert.All(
+            localTurnActions,
+            static action => Assert.False(action.Enabled));
+    }
+
+    [Fact]
     public void FrontendShell_ConsumesTypedApiContractSummaryInsteadOfHardCodedEndpointList()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
@@ -1084,7 +1122,9 @@ public sealed class BrowserApiContractTests
             }
         };
 
-    private static QteWebStateDto BuildQteState(string state = "NoScene") =>
+    private static QteWebStateDto BuildQteState(
+        string state = "NoScene",
+        string? error = null) =>
         new()
         {
             State = state,
@@ -1096,7 +1136,7 @@ public sealed class BrowserApiContractTests
             LastDeclinedQteId = string.Empty,
             AvailableOperations = [],
             Notification = null,
-            Error = null
+            Error = error
         };
 
     private static QteWebStateDto BuildQteStateFixture() =>

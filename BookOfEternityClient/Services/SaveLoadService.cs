@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,6 +14,7 @@ namespace BookOfEternityClient.Services;
 internal sealed class SaveLoadServiceHooks
 {
     internal Func<Task>? BeforeLoadLeaseAcquisitionAsync { get; init; }
+    internal Func<Task>? AfterLoadPublicationValidatedAsync { get; init; }
     internal Func<Task>? BeforeAutosaveCleanupLeaseAcquisitionAsync { get; init; }
     internal Func<Task>? BeforeAutosaveDeletionAsync { get; init; }
     internal Func<Task>? BeforeSaveCommitAsync { get; init; }
@@ -23,6 +25,33 @@ internal sealed class SaveLoadServiceHooks
 /// </summary>
 public class SaveLoadService
 {
+    internal sealed record SaveArchiveBudget(
+        int MaxEntryCount,
+        long MaxTotalEntryNameUtf8Bytes,
+        long MaxManifestExpandedBytes,
+        long MaxSoulStateExpandedBytes,
+        long MaxEntryExpandedBytes,
+        long MaxTotalExpandedBytes,
+        long CompressionRatioGraceExpandedBytes,
+        long MaxCompressionRatio);
+
+    internal sealed record SaveArchiveEntryDescriptor(
+        string Path,
+        bool IsDirectory,
+        long Length,
+        long CompressedLength);
+
+    internal static SaveArchiveBudget TrustedArchiveBudget { get; } =
+        new(
+            MaxEntryCount: 8_192,
+            MaxTotalEntryNameUtf8Bytes: 2L * 1024 * 1024,
+            MaxManifestExpandedBytes: 4L * 1024 * 1024,
+            MaxSoulStateExpandedBytes: 8L * 1024 * 1024,
+            MaxEntryExpandedBytes: 64L * 1024 * 1024,
+            MaxTotalExpandedBytes: 512L * 1024 * 1024,
+            CompressionRatioGraceExpandedBytes: 1L * 1024 * 1024,
+            MaxCompressionRatio: 200);
+
     private const string GameStateDirectory = "game_state";
     private const string GameStateArchivePrefix = GameStateDirectory + "/";
     private const string SoulStateArchivePath =
@@ -68,6 +97,11 @@ public class SaveLoadService
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
     private static readonly JsonSerializerOptions SaveManifestJsonOptions =
         new(JsonOpts)
+        {
+            PropertyNameCaseInsensitive = true
+        };
+    private static readonly JsonSerializerOptions SaveMetadataJsonOptions =
+        new()
         {
             PropertyNameCaseInsensitive = true
         };
@@ -322,6 +356,7 @@ public class SaveLoadService
     public async Task<bool> LoadGameAsync(string saveFilePath)
     {
         CanonicalLoadTransactionPaths? transactionPaths = null;
+        FileSystemManager.LoadStagingAuthoritySet? stagingAuthorities = null;
         try
         {
             var fullPath = saveFilePath;
@@ -340,11 +375,15 @@ public class SaveLoadService
             var transactionId = Guid.NewGuid().ToString("N");
             transactionPaths = _fs.GetLoadTransactionPaths(transactionId);
             _fs.CreateLoadDirectory(transactionPaths.StagingSessionPath);
+            stagingAuthorities = _fs.CreateLoadStagingAuthoritySet(
+                transactionPaths.StagingSessionPath);
 
             await using (openedArchive)
             {
                 try
                 {
+                    ValidateTrustedArchiveBeforeMaterialization(
+                        openedArchive.Stream);
                     using (var archive = new ZipArchive(
                                openedArchive.Stream,
                                ZipArchiveMode.Read,
@@ -377,7 +416,8 @@ public class SaveLoadService
                                 .Replace('\\', '/');
                             if (normalizedPath.Equals(
                                     SaveManifestArchivePath,
-                                    StringComparison.OrdinalIgnoreCase))
+                                    StringComparison.OrdinalIgnoreCase) ||
+                                IsEphemeralArchivePath(normalizedPath))
                             {
                                 continue;
                             }
@@ -389,7 +429,9 @@ public class SaveLoadService
                             await using var entryStream = entry.Open();
                             await _fs.WriteLoadTransactionFileAsync(
                                 targetPath,
-                                entryStream);
+                                entryStream,
+                                entry.Length,
+                                stagingAuthorities);
                         }
                     }
 
@@ -408,6 +450,9 @@ public class SaveLoadService
 
             if (_hooks?.BeforeLoadLeaseAcquisitionAsync != null)
                 await _hooks.BeforeLoadLeaseAcquisitionAsync();
+            stagingAuthorities.EnsureExactAtRoot(
+                transactionPaths.StagingSessionPath,
+                "Load staging before session lifecycle acquisition");
             await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
             var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
             await using (var writeLease =
@@ -422,17 +467,64 @@ public class SaveLoadService
                         _fs.MoveLoadDirectory(liveSessionPath, transactionPaths.BackupSessionPath);
                     }
 
-                    _fs.MoveLoadDirectory(transactionPaths.StagingSessionPath, liveSessionPath);
+                    _fs.MoveLoadDirectory(
+                        transactionPaths.StagingSessionPath,
+                        liveSessionPath,
+                        stagingAuthorities);
+                    if (_hooks?.AfterLoadPublicationValidatedAsync != null)
+                        await _hooks.AfterLoadPublicationValidatedAsync();
+                    stagingAuthorities.EnsurePublishedExactBeforeActivation(
+                        liveSessionPath,
+                        "Load publication immediately before activation");
                     _fs.ActivateLoadTransactionSession(writeLease, transactionId);
                     _fs.EnsureDirectoryStructure(writeLease);
+                    var profilePublication =
+                        await AfterlifeEntityProfileState
+                            .ApplyPlayerSoulProfileClientAuthorityAsync(
+                                _fs,
+                                writeLease,
+                                publishReplacementAsync: async content =>
+                                {
+                                    var currentAuthority =
+                                        stagingAuthorities
+                                            .YieldPublishedFileAuthorityForConditionalReplacement(
+                                                liveSessionPath,
+                                                AfterlifeEntityProfileState
+                                                    .StatePath,
+                                                "Client-owned load profile repair boundary");
+                                    return await _fs
+                                        .WriteFileAtomicWithPublicationIfCurrentAuthorityAsync(
+                                            writeLease,
+                                            AfterlifeEntityProfileState
+                                                .StatePath,
+                                            content,
+                                            currentAuthority.Identity,
+                                            currentAuthority.Sha256);
+                                });
+                    if (profilePublication != null)
+                    {
+                        stagingAuthorities.RebindPublishedFileAuthority(
+                            liveSessionPath,
+                            AfterlifeEntityProfileState.StatePath,
+                            profilePublication,
+                            "Client-owned load profile repair publication");
+                    }
+                    stagingAuthorities
+                        .SealPublishedAuthorityForCanonicalReads(
+                            liveSessionPath,
+                            "Load publication before canonical reads");
                     await _stateManager.RefreshGameStateAsync(writeLease);
                     await _stateManager.LoadSettingsAsync();
+                    stagingAuthorities.EnsureSealedExactBeforeCommit(
+                        liveSessionPath,
+                        "Load publication immediately before commit");
                     _fs.CommitLoadTransaction(writeLease, transactionId);
                 }
                 catch (Exception loadException)
                 {
                     try
                     {
+                        stagingAuthorities.ReleaseForRecovery();
                         _fs.RecoverInterruptedLoadTransaction(writeLease);
                         _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
                         await _stateManager.RefreshGameStateAsync(writeLease);
@@ -462,6 +554,20 @@ public class SaveLoadService
         }
         finally
         {
+            if (stagingAuthorities != null)
+            {
+                try
+                {
+                    await stagingAuthorities.DisposeAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(
+                        ex,
+                        "Не удалось освободить удерживаемые файловые полномочия staging загрузки.");
+                }
+            }
+
             if (transactionPaths != null)
             {
                 try
@@ -544,23 +650,24 @@ public class SaveLoadService
             try
             {
                 SaveMetadata? metadata = null;
+                ValidateTrustedArchiveBeforeMaterialization(
+                    openedFile.Stream);
                 using (var archive = new ZipArchive(
                            openedFile.Stream,
                            ZipArchiveMode.Read,
                            leaveOpen: true))
                 {
+                    ValidateTrustedArchiveBudget(archive);
                     var metadataEntry = archive.GetEntry("save_metadata.json");
                     if (metadataEntry != null)
                     {
-                        using var stream = metadataEntry.Open();
-                        using var reader = new StreamReader(stream);
-                        var json = await reader.ReadToEndAsync();
+                        var content = await ReadArchiveEntryBytesAsync(
+                            metadataEntry,
+                            TrustedArchiveBudget.MaxEntryExpandedBytes,
+                            "Save metadata");
                         metadata = JsonSerializer.Deserialize<SaveMetadata>(
-                            json,
-                            new JsonSerializerOptions
-                            {
-                                PropertyNameCaseInsensitive = true
-                            });
+                            StripUtf8Bom(content).Span,
+                            SaveMetadataJsonOptions);
                     }
                 }
 
@@ -663,10 +770,369 @@ public class SaveLoadService
                 Convert.ToHexString(SHA256.HashData(content))));
     }
 
+    internal static void ValidateTrustedArchiveBudget(
+        IReadOnlyCollection<SaveArchiveEntryDescriptor> entries)
+    {
+        ArgumentNullException.ThrowIfNull(entries);
+        var budget = TrustedArchiveBudget;
+        if (entries.Count > budget.MaxEntryCount)
+        {
+            throw new InvalidDataException(
+                $"Save archive contains more than {budget.MaxEntryCount} entries.");
+        }
+
+        long totalNameBytes = 0;
+        long totalExpandedBytes = 0;
+        foreach (var entry in entries)
+        {
+            if (string.IsNullOrEmpty(entry.Path) ||
+                entry.Path.Contains(':'))
+            {
+                throw new InvalidDataException(
+                    "Save archive contains an empty path or alternate-data-stream syntax.");
+            }
+
+            totalNameBytes += Encoding.UTF8.GetByteCount(entry.Path);
+            if (totalNameBytes >
+                budget.MaxTotalEntryNameUtf8Bytes)
+            {
+                throw new InvalidDataException(
+                    "Save archive entry names exceed the trusted UTF-8 budget.");
+            }
+
+            if (entry.Length < 0 || entry.CompressedLength < 0)
+            {
+                throw new InvalidDataException(
+                    $"Save archive entry '{entry.Path}' has a negative length.");
+            }
+
+            if (entry.IsDirectory)
+            {
+                if (entry.Length != 0)
+                {
+                    throw new InvalidDataException(
+                        $"Save archive directory '{entry.Path}' contains payload bytes.");
+                }
+
+                continue;
+            }
+
+            var normalizedPath = entry.Path.Replace('\\', '/');
+            var expandedLimit = normalizedPath.Equals(
+                    SaveManifestArchivePath,
+                    StringComparison.OrdinalIgnoreCase)
+                ? budget.MaxManifestExpandedBytes
+                : normalizedPath.Equals(
+                    SoulStateArchivePath,
+                    StringComparison.OrdinalIgnoreCase)
+                    ? budget.MaxSoulStateExpandedBytes
+                    : budget.MaxEntryExpandedBytes;
+            if (entry.Length > expandedLimit)
+            {
+                throw new InvalidDataException(
+                    $"Save archive entry '{entry.Path}' exceeds its trusted expanded-size budget.");
+            }
+
+            if (!normalizedPath.Equals(
+                    SaveManifestArchivePath,
+                    StringComparison.OrdinalIgnoreCase) &&
+                !IsEphemeralArchivePath(normalizedPath))
+            {
+                totalExpandedBytes += entry.Length;
+                if (totalExpandedBytes >
+                    budget.MaxTotalExpandedBytes)
+                {
+                    throw new InvalidDataException(
+                        "Save archive exceeds the trusted aggregate durable expanded-size budget.");
+                }
+            }
+
+            if (entry.Length >
+                budget.CompressionRatioGraceExpandedBytes)
+            {
+                var minimumCompressedLength =
+                    entry.Length / budget.MaxCompressionRatio +
+                    (entry.Length % budget.MaxCompressionRatio == 0
+                        ? 0
+                        : 1);
+                if (entry.CompressedLength < minimumCompressedLength)
+                {
+                    throw new InvalidDataException(
+                        $"Save archive entry '{entry.Path}' exceeds the trusted compression ratio.");
+                }
+            }
+        }
+    }
+
+    internal static void ValidateTrustedArchiveBeforeMaterialization(
+        Stream archiveStream)
+    {
+        ArgumentNullException.ThrowIfNull(archiveStream);
+        if (!archiveStream.CanRead ||
+            !archiveStream.CanSeek)
+        {
+            throw new InvalidDataException(
+                "Save archive preflight requires a seekable readable stream.");
+        }
+
+        const uint endOfCentralDirectorySignature =
+            0x06054b50;
+        const uint centralDirectoryHeaderSignature =
+            0x02014b50;
+        const int endOfCentralDirectoryLength = 22;
+        const int maximumZipCommentLength = ushort.MaxValue;
+        const int centralDirectoryHeaderLength = 46;
+        const ushort utf8NameFlag = 0x0800;
+        var originalPosition = archiveStream.Position;
+        try
+        {
+            var archiveLength = archiveStream.Length;
+            if (archiveLength <
+                endOfCentralDirectoryLength)
+            {
+                throw new InvalidDataException(
+                    "Save archive is missing its end-of-central-directory record.");
+            }
+
+            var tailLength = checked((int)Math.Min(
+                archiveLength,
+                endOfCentralDirectoryLength +
+                maximumZipCommentLength));
+            var tail = new byte[tailLength];
+            archiveStream.Position =
+                archiveLength - tailLength;
+            archiveStream.ReadExactly(tail);
+
+            var endRecordOffset = -1;
+            for (var offset =
+                     tailLength -
+                     endOfCentralDirectoryLength;
+                 offset >= 0;
+                 offset--)
+            {
+                var candidate = tail.AsSpan(offset);
+                if (BinaryPrimitives
+                        .ReadUInt32LittleEndian(candidate) !=
+                    endOfCentralDirectorySignature)
+                {
+                    continue;
+                }
+
+                var commentLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        candidate.Slice(20, 2));
+                if (offset +
+                    endOfCentralDirectoryLength +
+                    commentLength ==
+                    tailLength)
+                {
+                    endRecordOffset = offset;
+                    break;
+                }
+            }
+
+            if (endRecordOffset < 0)
+            {
+                throw new InvalidDataException(
+                    "Save archive has no bounded end-of-central-directory record.");
+            }
+
+            var endRecord =
+                tail.AsSpan(
+                    endRecordOffset,
+                    endOfCentralDirectoryLength);
+            var diskNumber = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(4, 2));
+            var centralDirectoryDisk = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(6, 2));
+            var diskEntryCount = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(8, 2));
+            var totalEntryCount = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(10, 2));
+            var centralDirectorySize = BinaryPrimitives
+                .ReadUInt32LittleEndian(
+                    endRecord.Slice(12, 4));
+            var centralDirectoryOffset = BinaryPrimitives
+                .ReadUInt32LittleEndian(
+                    endRecord.Slice(16, 4));
+            if (diskNumber != 0 ||
+                centralDirectoryDisk != 0 ||
+                diskEntryCount != totalEntryCount)
+            {
+                throw new InvalidDataException(
+                    "Multi-disk save archives are unsupported.");
+            }
+            if (totalEntryCount == ushort.MaxValue ||
+                centralDirectorySize == uint.MaxValue ||
+                centralDirectoryOffset == uint.MaxValue)
+            {
+                throw new InvalidDataException(
+                    "ZIP64 save archives exceed the trusted client-owned envelope.");
+            }
+            if (totalEntryCount >
+                TrustedArchiveBudget.MaxEntryCount)
+            {
+                throw new InvalidDataException(
+                    $"Save archive contains more than {TrustedArchiveBudget.MaxEntryCount} entries.");
+            }
+
+            var absoluteEndRecordOffset =
+                checked(
+                    archiveLength -
+                    tailLength +
+                    endRecordOffset);
+            var centralDirectoryEnd = checked(
+                (long)centralDirectoryOffset +
+                centralDirectorySize);
+            if (centralDirectoryEnd >
+                absoluteEndRecordOffset)
+            {
+                throw new InvalidDataException(
+                    "Save archive central-directory bounds are invalid.");
+            }
+
+            archiveStream.Position =
+                centralDirectoryOffset;
+            var descriptors =
+                new List<SaveArchiveEntryDescriptor>(
+                    totalEntryCount);
+            long consumedCentralDirectoryBytes = 0;
+            long totalNameUtf8Bytes = 0;
+            var header =
+                new byte[centralDirectoryHeaderLength];
+            var strictUtf8 =
+                new UTF8Encoding(
+                    encoderShouldEmitUTF8Identifier: false,
+                    throwOnInvalidBytes: true);
+            for (var index = 0;
+                 index < totalEntryCount;
+                 index++)
+            {
+                if (consumedCentralDirectoryBytes +
+                    centralDirectoryHeaderLength >
+                    centralDirectorySize)
+                {
+                    throw new InvalidDataException(
+                        "Save archive central directory ended before its declared entry count.");
+                }
+
+                archiveStream.ReadExactly(header);
+                var headerSpan = header.AsSpan();
+                if (BinaryPrimitives
+                        .ReadUInt32LittleEndian(headerSpan) !=
+                    centralDirectoryHeaderSignature)
+                {
+                    throw new InvalidDataException(
+                        "Save archive central directory contains an invalid entry header.");
+                }
+
+                var flags = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(8, 2));
+                var compressedLength = BinaryPrimitives
+                    .ReadUInt32LittleEndian(
+                        headerSpan.Slice(20, 4));
+                var expandedLength = BinaryPrimitives
+                    .ReadUInt32LittleEndian(
+                        headerSpan.Slice(24, 4));
+                var nameLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(28, 2));
+                var extraLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(30, 2));
+                var commentLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(32, 2));
+                var entryDisk = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(34, 2));
+                var localHeaderOffset = BinaryPrimitives
+                    .ReadUInt32LittleEndian(
+                        headerSpan.Slice(42, 4));
+                if (entryDisk != 0 ||
+                    compressedLength == uint.MaxValue ||
+                    expandedLength == uint.MaxValue ||
+                    localHeaderOffset == uint.MaxValue)
+                {
+                    throw new InvalidDataException(
+                        "ZIP64 or multi-disk save entries exceed the trusted client-owned envelope.");
+                }
+
+                var recordLength = checked(
+                    (long)centralDirectoryHeaderLength +
+                    nameLength +
+                    extraLength +
+                    commentLength);
+                if (consumedCentralDirectoryBytes +
+                    recordLength >
+                    centralDirectorySize)
+                {
+                    throw new InvalidDataException(
+                        "Save archive central-directory entry exceeds its declared bounds.");
+                }
+
+                var nameBytes = new byte[nameLength];
+                archiveStream.ReadExactly(nameBytes);
+                string path;
+                try
+                {
+                    path = (flags & utf8NameFlag) != 0
+                        ? strictUtf8.GetString(nameBytes)
+                        : Encoding.UTF8.GetString(nameBytes);
+                }
+                catch (DecoderFallbackException ex)
+                {
+                    throw new InvalidDataException(
+                        "Save archive entry name is not valid UTF-8.",
+                        ex);
+                }
+
+                totalNameUtf8Bytes = checked(
+                    totalNameUtf8Bytes +
+                    Encoding.UTF8.GetByteCount(path));
+                if (totalNameUtf8Bytes >
+                    TrustedArchiveBudget
+                        .MaxTotalEntryNameUtf8Bytes)
+                {
+                    throw new InvalidDataException(
+                        "Save archive entry names exceed the trusted UTF-8 budget.");
+                }
+
+                archiveStream.Seek(
+                    checked((long)extraLength +
+                            commentLength),
+                    SeekOrigin.Current);
+                consumedCentralDirectoryBytes +=
+                    recordLength;
+                descriptors.Add(
+                    new SaveArchiveEntryDescriptor(
+                        path,
+                        path.EndsWith('/') ||
+                        path.EndsWith('\\'),
+                        expandedLength,
+                        compressedLength));
+            }
+
+            ValidateTrustedArchiveBudget(
+                descriptors);
+        }
+        finally
+        {
+            archiveStream.Position =
+                originalPosition;
+        }
+    }
+
     private static bool TryResolveArchiveEntryTargetPath(string sessionRoot, string archiveEntryPath, out string targetPath)
     {
         targetPath = string.Empty;
-        if (string.IsNullOrWhiteSpace(archiveEntryPath))
+        if (string.IsNullOrWhiteSpace(archiveEntryPath) ||
+            archiveEntryPath.Contains(':'))
             return false;
 
         var normalizedRelativePath = archiveEntryPath
@@ -693,6 +1159,8 @@ public class SaveLoadService
         ZipArchive archive,
         string stagingSessionRoot)
     {
+        ValidateTrustedArchiveBudget(archive);
+
         var payloadEntries =
             new Dictionary<string, ZipArchiveEntry>(
                 StringComparer.OrdinalIgnoreCase);
@@ -728,19 +1196,17 @@ public class SaveLoadService
             return;
         }
 
-        SaveIntegrityManifest manifest;
-        await using (var manifestStream = manifestEntry.Open())
-        using (var manifestBuffer = new MemoryStream())
-        {
-            await manifestStream.CopyToAsync(manifestBuffer);
-            manifest =
-                StrictJsonAuthority.Deserialize<SaveIntegrityManifest>(
-                    StripUtf8Bom(manifestBuffer.ToArray()),
-                    SaveManifestJsonOptions,
-                    "Save integrity manifest")
-                ?? throw new InvalidDataException(
-                    "Save integrity manifest is null.");
-        }
+        var manifestBytes = await ReadArchiveEntryBytesAsync(
+            manifestEntry,
+            TrustedArchiveBudget.MaxManifestExpandedBytes,
+            "Save integrity manifest");
+        var manifest =
+            StrictJsonAuthority.Deserialize<SaveIntegrityManifest>(
+                StripUtf8Bom(manifestBytes),
+                SaveManifestJsonOptions,
+                "Save integrity manifest")
+            ?? throw new InvalidDataException(
+                "Save integrity manifest is null.");
 
         if (manifest.SchemaVersion != SaveManifestSchemaVersion ||
             !manifest.Algorithm.Equals(
@@ -800,9 +1266,9 @@ public class SaveLoadService
                     $"Save payload '{path}' does not match its manifested length.");
             }
 
-            await using var payloadStream = actualEntry.Open();
-            var digest = Convert.ToHexString(
-                await SHA256.HashDataAsync(payloadStream));
+            var digest = await ComputeArchiveEntrySha256Async(
+                actualEntry,
+                expected.Length);
             if (!digest.Equals(
                     expected.Sha256,
                     StringComparison.OrdinalIgnoreCase))
@@ -811,6 +1277,27 @@ public class SaveLoadService
                     $"Save payload '{path}' does not match its manifested SHA-256 digest.");
             }
         }
+    }
+
+    private static void ValidateTrustedArchiveBudget(
+        ZipArchive archive)
+    {
+        if (archive.Entries.Count >
+            TrustedArchiveBudget.MaxEntryCount)
+        {
+            throw new InvalidDataException(
+                $"Save archive contains more than {TrustedArchiveBudget.MaxEntryCount} entries.");
+        }
+
+        ValidateTrustedArchiveBudget(
+            archive.Entries
+                .Select(entry =>
+                    new SaveArchiveEntryDescriptor(
+                        entry.FullName,
+                        string.IsNullOrEmpty(entry.Name),
+                        entry.Length,
+                        entry.CompressedLength))
+                .ToArray());
     }
 
     private static string NormalizeArchiveEntryPath(
@@ -834,10 +1321,86 @@ public class SaveLoadService
     private static async Task ValidateSoulStateEntryAsync(
         ZipArchiveEntry soulStateEntry)
     {
-        await using var stream = soulStateEntry.Open();
-        using var buffer = new MemoryStream();
-        await stream.CopyToAsync(buffer);
-        ValidateSoulStateBytes(buffer.ToArray());
+        var content = await ReadArchiveEntryBytesAsync(
+            soulStateEntry,
+            TrustedArchiveBudget.MaxSoulStateExpandedBytes,
+            "Canonical soul state");
+        ValidateSoulStateBytes(content);
+    }
+
+    private static async Task<byte[]> ReadArchiveEntryBytesAsync(
+        ZipArchiveEntry entry,
+        long maximumLength,
+        string authorityName)
+    {
+        if (entry.Length < 0 || entry.Length > maximumLength)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} exceeds its trusted expanded-size budget.");
+        }
+
+        await using var stream = entry.Open();
+        using var buffer = new MemoryStream(
+            checked((int)entry.Length));
+        var chunk = new byte[64 * 1024];
+        long total = 0;
+        while (true)
+        {
+            var read = await stream.ReadAsync(chunk);
+            if (read == 0)
+                break;
+
+            total += read;
+            if (total > maximumLength || total > entry.Length)
+            {
+                throw new InvalidDataException(
+                    $"{authorityName} exceeded its advertised expanded length.");
+            }
+
+            await buffer.WriteAsync(chunk.AsMemory(0, read));
+        }
+
+        if (total != entry.Length)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} did not match its advertised expanded length.");
+        }
+
+        return buffer.ToArray();
+    }
+
+    private static async Task<string> ComputeArchiveEntrySha256Async(
+        ZipArchiveEntry entry,
+        long expectedLength)
+    {
+        await using var stream = entry.Open();
+        using var hash =
+            IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var buffer = new byte[64 * 1024];
+        long total = 0;
+        while (true)
+        {
+            var read = await stream.ReadAsync(buffer);
+            if (read == 0)
+                break;
+
+            total += read;
+            if (total > expectedLength)
+            {
+                throw new InvalidDataException(
+                    $"Save payload '{entry.FullName}' exceeded its advertised expanded length.");
+            }
+
+            hash.AppendData(buffer, 0, read);
+        }
+
+        if (total != expectedLength)
+        {
+            throw new InvalidDataException(
+                $"Save payload '{entry.FullName}' did not match its advertised expanded length.");
+        }
+
+        return Convert.ToHexString(hash.GetHashAndReset());
     }
 
     private static void ValidateArchivedSoulState(

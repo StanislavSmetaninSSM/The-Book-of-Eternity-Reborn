@@ -278,6 +278,15 @@ public static class BrowserPlayerCommandMenuBuilder
 
     private static Availability ResolveLocalWriteGate(BrowserLifecycleDashboardDto lifecycle, QteWebStateDto qte)
     {
+        if (qte.State == "Failed")
+        {
+            return new Availability(
+                false,
+                qte.Error ??
+                "Состояние QTE требует проверки перед локальной записью.",
+                "Локальная форма доступна после восстановления состояния QTE.");
+        }
+
         if (qte.State is "Offer" or "Active")
         {
             var detail = qte.Notification ?? qte.Offer?.OfferText ?? qte.ActiveScene?.Title ?? "активная быстрая сцена";

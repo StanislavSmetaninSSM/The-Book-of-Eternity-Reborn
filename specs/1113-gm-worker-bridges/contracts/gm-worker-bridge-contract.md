@@ -131,7 +131,14 @@ without an equivalent queryable kernel containment boundary fail closed before
 worker release. Timeout and cancellation remain authoritative; cleanup
 uncertainty quarantines the worker slot rather than changing the result or
 releasing uncertain capacity. Complete-tree termination and unattached-host
-cleanup is bounded; expiry is unconfirmed ownership and quarantines the slot.
+cleanup is bounded. One fixed-capacity reaper entry retains the complete
+process/workspace owner across bounded retries; it releases the slot and removes
+the workspace exactly once only after death and process-tree authority disposal
+are confirmed. Before release, the reaper durably records one stable-id
+`process-tree-cleanup-confirmed` event. The generation-bound canonical append is
+idempotent; after generation replacement, a create-only retained receipt is
+written under `.worker_runtime/quarantine-audit/<eventId>.json`. An uncertain
+audit write retains the same entry and slot for retry.
 Validation-repair hashes bind exact bytes: `contextFiles.sha256` and
 `changedFiles.beforeSha256` are the same exact 64-character SHA-256 digest (or
 `missing` for an absent add target), while each non-delete `afterSha256` is the

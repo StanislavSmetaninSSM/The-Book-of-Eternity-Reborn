@@ -12,8 +12,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class IntegrationTestBoundaryTests
 {
-    private const int BroadValidationSentinelBudget = 8;
-    private const int ReviewedBroadValidationCallCount = 8;
+    private const int BroadValidationSentinelBudget = 7;
+    private const int ReviewedBroadValidationCallCount = 7;
     private const int GuardianFullValidationSentinelBudget = 8;
     private const string FastTestsDirectory = "BookOfEternityClient.Tests";
     private const string IntegrationTestsDirectory = "BookOfEternityClient.IntegrationTests";
@@ -27,6 +27,8 @@ public sealed class IntegrationTestBoundaryTests
     private const string E2ETrait = "[Trait(\"Category\", \"E2E\")]";
     private const string RegressionIntegrationTrait =
         "[Trait(\"Category\", \"RegressionIntegration\")]";
+    private const string RegressionIntegrationOnlyTrait =
+        "[Trait(\"Category\", \"RegressionIntegrationOnly\")]";
     private const string LifecycleIntegrationTrait =
         "[Trait(\"Category\", \"LifecycleIntegration\")]";
 
@@ -53,6 +55,32 @@ public sealed class IntegrationTestBoundaryTests
                 ["CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"] =
                     ["PreMergeSentinel"],
                 ["RestorePreTurnBackup_BrowserDirectGachaPreservesExactPreSpendSoulBytes"] =
+                    ["PreMergeSentinel"]
+            };
+
+    private static readonly IReadOnlyDictionary<string, string[]>
+        AfterlifeSpiritualConflictSentinelCategories =
+            new Dictionary<string, string[]>(StringComparer.Ordinal)
+            {
+                ["ValidateGameStateAsync_NoEffectExchange_AllowsIdenticalBeforeAfter"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ContestedExchange_RejectsDiceNotFromAuthoritativePool"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ValidActiveCombatCondition_AllowsKnownContractShape"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_PlayerSoulDissipationRequiresTerminalGameOver"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ShiningVictoryReward_AllowsLightSparkDelta"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_CurrentContestedExchange_RequiresMatchupAudit"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ActiveConflictInSealedShiningAbode_FailsAvailabilityGate"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_HistoricalConflictBeforeLightIncarnate_DoesNotRequireRetroactiveModifier"] =
+                    ["PreMergeSentinel"],
+                ["ApplyUpdate_ExchangeAppliesAfterSnapshotToActiveConflict"] =
+                    ["PreMergeSentinel"],
+                ["ApplyUpdate_StartMissingRealm_MarksInvalidAndDoesNotCreateConflict"] =
                     ["PreMergeSentinel"]
             };
 
@@ -128,7 +156,7 @@ public sealed class IntegrationTestBoundaryTests
     private static readonly IReadOnlyDictionary<string, int> ReviewedBroadValidationCallManifest =
         new Dictionary<string, int>(StringComparer.Ordinal)
         {
-            [$"{TestSupportDirectory}/ValidatorFixtureHarness.cs"] = 2,
+            [$"{TestSupportDirectory}/ValidatorFixtureHarness.cs"] = 1,
             [$"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/ExampleDocumentationValidationTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/FileSystemExampleFixtureIntegrityTests.cs"] = 2,
@@ -174,6 +202,8 @@ public sealed class IntegrationTestBoundaryTests
 
     private static readonly string[] RegressionIntegrationSources =
     [
+        "ActorMaterializationValidationTests.cs",
+        "AfterlifeEntityProfileValidationTests.cs",
         "AfterlifeSpiritualConflictValidationTests.cs",
         "BrowserCommandPresentationAuditTests.cs",
         "ExplorerModeCommandTests.cs",
@@ -188,12 +218,14 @@ public sealed class IntegrationTestBoundaryTests
         RegressionIntegrationCategories =
             RegressionIntegrationSources.ToDictionary(
                 fileName => fileName,
-                fileName => string.Equals(
-                    fileName,
-                    "GuardianSystemRegressionTests.cs",
-                    StringComparison.Ordinal)
-                        ? new[] { RegressionIntegrationTrait, DeepValidationTrait }
-                        : new[] { RegressionIntegrationTrait },
+                fileName => fileName switch
+                {
+                    "GuardianSystemRegressionTests.cs" =>
+                        new[] { RegressionIntegrationTrait, DeepValidationTrait },
+                    "AfterlifeSpiritualConflictValidationTests.cs" =>
+                        new[] { RegressionIntegrationTrait, RegressionIntegrationOnlyTrait },
+                    _ => new[] { RegressionIntegrationTrait }
+                },
                 StringComparer.Ordinal);
 
     private static readonly string[] BroadValidationPreMergeSentinelSources =
@@ -270,7 +302,8 @@ public sealed class IntegrationTestBoundaryTests
             "$coreIntegrationFilter = " +
                 "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
                 "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
-                "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)\"",
+                "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)&\" + " +
+                "\"(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)\"",
             "$lifecycleIntegrationFilter = " +
                 "\"Category=LifecycleIntegration&\" + " +
                 "\"Category!=ProcessIntegration&Category!=E2E\"",
@@ -340,7 +373,8 @@ public sealed class IntegrationTestBoundaryTests
             "$coreIntegrationFilter = " +
             "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
             "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
-            "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)\"",
+            "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)&\" + " +
+            "\"(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)\"",
             "$deepValidationFilter = " +
             "\"(Category=FullValidation|Category=DeepValidation)&\" + " +
             "\"Category!=LifecycleIntegration&\" + " +
@@ -348,7 +382,7 @@ public sealed class IntegrationTestBoundaryTests
             "$lifecycleIntegrationFilter = " +
             "\"Category=LifecycleIntegration&\" + " +
             "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "$PreMergeMinimumCases = 4490",
+            "$PreMergeMinimumCases = 4240",
             "$DeepValidationMinimumCases = 1950",
             "$LifecycleIntegrationMinimumCases = 186",
             "$isComposedCoverageLane = $effectiveLane -in @( " +
@@ -414,6 +448,22 @@ public sealed class IntegrationTestBoundaryTests
         };
         Assert.All(forbiddenBroadProcessCommands, command =>
             Assert.DoesNotContain(command, source, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_DurationAwareSchedulePreservesCasesAndRunsLongFirst()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("DurationSchedule");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"Duration-schedule probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+        Assert.Contains(
+            "DURATION-SCHEDULE cases=105; maxCost=542; first=heavy; exclusive=True; weighted=True; bounded=True; regression=True; preMerge=True",
+            probe.StandardOutput,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -603,6 +653,104 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void GuardianArchiveTradeProfile_SelectsOnlyAssertionOwningPhasesAndFiles()
+    {
+        var profile = IntegrationValidationProfiles.GuardianArchiveTrade;
+
+        Assert.Equal(
+            GameStateValidationPhase.CrossReferences |
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+            GameStateValidationPhase.MetaMiscStateFiles |
+            GameStateValidationPhase.ClientOwnedControlFiles,
+            profile.Phases);
+
+        Assert.All(
+        [
+            "game_state/inventory/items.json",
+            "game_state/meta/guardians.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_core.json",
+            "game_state/quests/soul_quests.json",
+            "game_state/world/world_events.json",
+            "lore/codex_entries.json",
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            GuardianAbodeResidentState.StatePath,
+            GuardianProjectState.TrackerPath,
+            GuardianThoughtJournalState.StatePath,
+            GuardianTradeRequestState.PendingRequestPath,
+            NpcInteractionJournalState.StatePath,
+            RivalSoulArcService.StatePath
+        ],
+        path => Assert.True(
+            profile.IncludesStateFile(path),
+            $"Expected GuardianArchiveTrade to include '{path}'."));
+
+        Assert.All(
+        [
+            AfterlifeActiveThreatState.StatePath,
+            AfterlifeEntityProfileState.StatePath,
+            MathAssistantContractState.StatePath,
+            SarefMainStoryState.StatePath,
+            ShiningAbodeState.StatePath,
+            "game_state/misc/vehicles.json"
+        ],
+        path => Assert.False(
+            profile.IncludesStateFile(path),
+            $"Expected GuardianArchiveTrade to exclude '{path}'."));
+    }
+
+    [Fact]
+    public void ValidatorFixtureStateOnlySelection_IncludesMappedAndCanonicalSnapshotFiles()
+    {
+        var definition = new ValidatorFixtureDefinition
+        {
+            Runner = FixtureRunnerKind.StateOnly,
+            Shared =
+            [
+                new FixtureFileMapping
+                {
+                    Target =
+                        "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+                }
+            ],
+            Broken =
+            [
+                new FixtureFileMapping
+                {
+                    Target = "game_state/meta/soul_state.json"
+                }
+            ],
+            Fixed =
+            [
+                new FixtureFileMapping
+                {
+                    Target = "lore/codex_entries.json"
+                }
+            ]
+        };
+
+        var selection = ValidatorFixtureHarness.BuildStateOnlySelection(definition);
+
+        Assert.Equal(GameStateValidationPhase.All, selection.Phases);
+        Assert.All(
+        [
+            "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+            "game_state/meta/guardians.json",
+            "game_state/meta/soul_state.json",
+            "lore/codex_entries.json"
+        ],
+        path => Assert.True(
+            selection.IncludesStateFile(path),
+            $"Expected StateOnly fixture selection to include '{path}'."));
+        Assert.False(selection.IncludesStateFile("game_state/world/world_map.json"));
+    }
+
+    [Fact]
     public void ActorAndAfterlifeValidationSources_UseScopedProfiles()
     {
         var violations = ActorAndAfterlifeScopedProfileViolations(
@@ -654,7 +802,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedEightCallManifest()
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest()
     {
         var callSites = EnumerateIntegrationAndSupportSources()
             .SelectMany(candidate =>
@@ -669,7 +817,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsSameTotalPerFileDrift()
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsSameTotalPerFileDrift()
     {
         var callSites = ReviewedBroadValidationCallLocations().ToList();
         callSites.Remove($"{TestSupportDirectory}/ValidatorFixtureHarness.cs:1");
@@ -682,7 +830,7 @@ public sealed class IntegrationTestBoundaryTests
             violations,
             violation =>
                 violation.Contains(
-                    $"{TestSupportDirectory}/ValidatorFixtureHarness.cs: expected 2, found 1",
+                    $"{TestSupportDirectory}/ValidatorFixtureHarness.cs: expected 1, found 0",
                     StringComparison.Ordinal) &&
                 violation.Contains(
                     $"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs: expected 1, found 2",
@@ -690,7 +838,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsNinthUnreviewedCall()
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsEighthUnreviewedCall()
     {
         var callSites = ReviewedBroadValidationCallLocations()
             .Append($"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs:42")
@@ -702,18 +850,18 @@ public sealed class IntegrationTestBoundaryTests
             violations,
             violation =>
                 violation.Contains(
-                    "observed 9 exceeds sentinel budget 8",
+                    "observed 8 exceeds sentinel budget 7",
                     StringComparison.Ordinal));
         Assert.Contains(
             $"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs: expected 0, found 1",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Broad-validation sentinel budget is 8",
+            "Broad-validation sentinel budget is 7",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Expected reviewed call sites: 8",
+            "Expected reviewed call sites: 7",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -919,7 +1067,11 @@ public sealed class IntegrationTestBoundaryTests
     {
         AssertExactCategoryManifest(
             RegressionIntegrationCategories,
-            [RegressionIntegrationTrait, DeepValidationTrait],
+            [
+                RegressionIntegrationTrait,
+                RegressionIntegrationOnlyTrait,
+                DeepValidationTrait
+            ],
             "RegressionIntegration/DeepValidation");
 
         AssertExactCategoryManifest(
@@ -953,6 +1105,19 @@ public sealed class IntegrationTestBoundaryTests
         Assert.Equal(
             ["DeepValidation", "RegressionIntegration"],
             CategoryTraits("GuardianSystemRegressionTests.cs"));
+        Assert.Equal(
+            ["RegressionIntegration", "RegressionIntegrationOnly"],
+            CategoryTraits("AfterlifeSpiritualConflictValidationTests.cs"));
+
+        var actualAfterlifeConflictMethodCategories =
+            MethodCategoryTraits("AfterlifeSpiritualConflictValidationTests.cs");
+        Assert.Equal(
+            AfterlifeSpiritualConflictSentinelCategories.Keys.Order(StringComparer.Ordinal),
+            actualAfterlifeConflictMethodCategories.Keys.Order(StringComparer.Ordinal));
+        foreach (var (methodName, categories) in AfterlifeSpiritualConflictSentinelCategories)
+        {
+            Assert.Equal(categories, actualAfterlifeConflictMethodCategories[methodName]);
+        }
 
         var commandDisplayCategories =
             new Dictionary<string, IReadOnlyDictionary<string, string[]>>(StringComparer.Ordinal)
@@ -2416,6 +2581,13 @@ public sealed class IntegrationTestBoundaryTests
     private static async Task<RunnerSelfTestResult> RunCSharpRunnerTrxSelfTestAsync(
         string trxDirectory)
     {
+        return await RunCSharpRunnerSelfTestAsync("TrxSummary", trxDirectory);
+    }
+
+    private static async Task<RunnerSelfTestResult> RunCSharpRunnerSelfTestAsync(
+        string selfTest,
+        string? trxDirectory = null)
+    {
         var startInfo = new ProcessStartInfo("pwsh")
         {
             WorkingDirectory = TestRepoPaths.RepoRoot,
@@ -2430,12 +2602,15 @@ public sealed class IntegrationTestBoundaryTests
             "-File",
             Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1"),
             "-SelfTest",
-            "TrxSummary",
-            "-SelfTestTrxDirectory",
-            trxDirectory
+            selfTest
         })
         {
             startInfo.ArgumentList.Add(argument);
+        }
+        if (!string.IsNullOrWhiteSpace(trxDirectory))
+        {
+            startInfo.ArgumentList.Add("-SelfTestTrxDirectory");
+            startInfo.ArgumentList.Add(trxDirectory);
         }
 
         using var process = Process.Start(startInfo) ??

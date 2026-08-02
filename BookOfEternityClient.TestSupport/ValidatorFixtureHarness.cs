@@ -10,6 +10,9 @@ namespace BookOfEternityClient.Tests;
 
 internal sealed class ValidatorFixtureHarness : IDisposable
 {
+    private const string PendingTurnSnapshotPrefix =
+        "game_state/control/pending_turn_snapshot/";
+
     private readonly ValidatorFixtureDefinition _definition;
     private readonly string _fixtureRoot;
     private readonly string _tempRoot;
@@ -80,7 +83,8 @@ internal sealed class ValidatorFixtureHarness : IDisposable
     {
         var issues = _definition.Runner switch
         {
-            FixtureRunnerKind.StateOnly => await _validator.ValidateGameStateAsync(),
+            FixtureRunnerKind.StateOnly => await _validator.ValidateGameStateAsync(
+                BuildStateOnlySelection(_definition)),
             FixtureRunnerKind.AcceptedTurn => await RunAcceptedTurnValidationAsync(),
             FixtureRunnerKind.CriticalState => await RunCriticalStateValidationAsync(),
             _ => throw new InvalidOperationException($"Unsupported fixture runner: {_definition.Runner}")
@@ -93,6 +97,28 @@ internal sealed class ValidatorFixtureHarness : IDisposable
                   .Distinct(StringComparer.OrdinalIgnoreCase)
                   .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
                   .ToArray());
+    }
+
+    internal static GameStateValidationSelection BuildStateOnlySelection(
+        ValidatorFixtureDefinition definition)
+    {
+        ArgumentNullException.ThrowIfNull(definition);
+
+        var stateFiles = definition.Shared
+            .Concat(definition.Broken)
+            .Concat(definition.Fixed)
+            .Select(mapping => mapping.Target.Trim().Replace('\\', '/'))
+            .Where(path => path.Length > 0)
+            .SelectMany(path =>
+                path.StartsWith(PendingTurnSnapshotPrefix, StringComparison.OrdinalIgnoreCase)
+                    ? [path, path[PendingTurnSnapshotPrefix.Length..]]
+                    : new[] { path })
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        return stateFiles.Length == 0
+            ? GameStateValidationSelection.All
+            : new GameStateValidationSelection(GameStateValidationPhase.All, stateFiles);
     }
 
     private async Task<List<ValidationIssue>> RunAcceptedTurnValidationAsync()

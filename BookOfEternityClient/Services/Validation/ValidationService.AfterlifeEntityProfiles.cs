@@ -173,7 +173,19 @@ public partial class ValidationService
         var identities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         ValidateProfileArrayIfPresent(profiles, hasProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}", identities, issues);
         ValidateProfileArrayIfPresent(responseProfiles, hasResponseProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ResponseProfilesProperty}", identities, issues, requireCurrentSpecialArtCombatEffect: true, requireActorMaterialization: true);
-        ValidateProfileArrayIfPresent(updates, hasUpdates, $"{contextPrefix}.{AfterlifeEntityProfileState.UpdateProperty}", identities, issues, requireCurrentSpecialArtCombatEffect: true);
+        ValidateProfileArrayIfPresent(
+            updates,
+            hasUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.UpdateProperty}",
+            identities,
+            issues,
+            requireCurrentSpecialArtCombatEffect: true,
+            requireActorMaterialization: true);
+        ValidateAfterlifeEntityProfileFullCarrierAuthority(
+            updates,
+            hasUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.UpdateProperty}",
+            issues);
         ValidateAfterlifeEntityCustomStateChangesIfPresent(
             customStateChanges,
             hasCustomStateChanges,
@@ -2046,7 +2058,11 @@ public partial class ValidationService
         string? goalId = null;
         if (profile.TryGetProperty("goals", out var goals))
         {
-            if (goals.ValueKind != JsonValueKind.Object)
+            if (goals.ValueKind == JsonValueKind.Null)
+            {
+                // Canonical empty agency keeps the governed surface physically present as null.
+            }
+            else if (goals.ValueKind != JsonValueKind.Object)
             {
                 AddAgencyIssue($"{context}.goals", "afterlife_entity_profile_agency_goals_not_object", "goals профиля духовной сущности должен быть object.", "object", goals.ValueKind.ToString(), issues);
             }

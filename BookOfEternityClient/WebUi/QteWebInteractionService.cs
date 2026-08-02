@@ -100,14 +100,35 @@ public sealed class QteWebInteractionService
     public async Task<QteWebStateDto> BuildReadOnlyStateAsync(
         string? stateOverride = null,
         QteSceneService.QteActionResolution? resolution = null,
-        string? notification = null) =>
-        await _coordinator.RunBoundTransactionAsync(
-            writeLease => BuildStateCoreAsync(
-                writeLease,
-                normalizeRuntime: false,
-                stateOverride,
-                resolution,
-                notification));
+        string? notification = null)
+    {
+        try
+        {
+            return await _coordinator.RunBoundTransactionAsync(
+                async writeLease =>
+                {
+                    try
+                    {
+                        return await BuildStateCoreAsync(
+                            writeLease,
+                            normalizeRuntime: false,
+                            stateOverride,
+                            resolution,
+                            notification);
+                    }
+                    catch (InvalidDataException)
+                    {
+                        return Failed(
+                            "Состояние QTE повреждено. Данные сохранены без изменений.");
+                    }
+                });
+        }
+        catch (SessionReplacedException)
+        {
+            return Failed(
+                "Игровая сессия изменилась во время подготовки QTE. Повторите действие.");
+        }
+    }
 
     private async Task<QteWebStateDto> BuildStateCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -208,6 +229,9 @@ public sealed class QteWebInteractionService
         if (!tokenValidation.IsValid)
             return Failed(tokenValidation);
 
+        if (currentOffer.SourceTurnNumber is not > 0)
+            return Failed("QTE offer has no positive source turn authority.");
+
         var decision = request?.Decision?.Trim().ToLowerInvariant();
         if (decision is not ("accept" or "decline"))
             return Failed("decision must be accept or decline.");
@@ -223,7 +247,13 @@ public sealed class QteWebInteractionService
                 if (offer == null)
                     throw new InvalidOperationException("No pending QTE offer is available.");
 
-                var turnNumber = await ReadCurrentTurnNumberAsync(transactionLease);
+                if (offer.SourceTurnNumber is not > 0)
+                {
+                    throw new InvalidOperationException(
+                        "QTE offer has no positive source turn authority.");
+                }
+
+                var turnNumber = offer.SourceTurnNumber.Value;
                 if (decision == "decline")
                 {
                     await _qteSceneService.RecordDeclineAsync(
@@ -300,6 +330,13 @@ public sealed class QteWebInteractionService
         if (!tokenValidation.IsValid)
             return Failed(tokenValidation);
 
+        if (activeScene.AcceptedAtTurn <= 0 ||
+            activeScene.Offer.SourceTurnNumber != activeScene.AcceptedAtTurn)
+        {
+            return Failed(
+                "Active QTE scene has no matching positive turn authority.");
+        }
+
         var actionId = request?.ActionId?.Trim();
         if (string.IsNullOrWhiteSpace(actionId))
             return Failed("actionId is required.");
@@ -315,7 +352,7 @@ public sealed class QteWebInteractionService
                     transactionLease,
                     actionId,
                     request?.Grade,
-                    await ReadCurrentTurnNumberAsync(transactionLease),
+                    activeScene.AcceptedAtTurn,
                     allowPreexistingStateIssues: true);
 
                 state = await BuildStateCoreAsync(
@@ -1636,31 +1673,6 @@ public sealed class QteWebInteractionService
             Max = metric.Max,
             Visibility = metric.Visibility
         };
-
-    private async Task<int> ReadCurrentTurnNumberAsync(
-        FileSystemManager.CanonicalWriteLease writeLease)
-    {
-        var json = await _fs.ReadFileAsync(writeLease, "input/turn_request.json");
-        if (string.IsNullOrWhiteSpace(json))
-            return 0;
-
-        try
-        {
-            using var doc = System.Text.Json.JsonDocument.Parse(json);
-            if (doc.RootElement.TryGetProperty("turnNumber", out var turnNode) &&
-                turnNode.ValueKind == System.Text.Json.JsonValueKind.Number &&
-                turnNode.TryGetInt32(out var turnNumber))
-            {
-                return turnNumber;
-            }
-        }
-        catch
-        {
-            return 0;
-        }
-
-        return 0;
-    }
 
     private static BrowserLocalWriteRequest BuildWriteRequest(string operationLabel) =>
         new(

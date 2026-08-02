@@ -10,6 +10,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
+[Trait("Category", "RegressionIntegrationOnly")]
 public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 {
     private static readonly int[] AuthoritativeConflictDice = { 5, 18, 14, 9, 11, 7, 20, 1, 13, 6, 16, 8, 12, 4, 10, 15, 3, 17, 2, 19 };
@@ -53,6 +54,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         ValidateWithContextAsync();
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_NoEffectExchange_AllowsIdenticalBeforeAfter()
     {
         await WriteSoulStateAsync();
@@ -100,6 +102,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_ContestedExchange_RejectsDiceNotFromAuthoritativePool()
     {
         await WriteSoulStateAsync();
@@ -211,6 +214,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_ValidActiveCombatCondition_AllowsKnownContractShape()
     {
         await WriteSoulStateAsync();
@@ -776,6 +780,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_PlayerSoulDissipationRequiresTerminalGameOver()
     {
         await WriteSoulStateAsync();
@@ -1773,6 +1778,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_ShiningVictoryReward_AllowsLightSparkDelta()
     {
         await WriteSoulStateWithInkFeathersAsync(20, "Shining Abode");
@@ -2195,6 +2201,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_CurrentContestedExchange_RequiresMatchupAudit()
     {
         await WriteSoulStateAsync();
@@ -8637,6 +8644,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_HistoricalConflictBeforeLightIncarnate_DoesNotRequireRetroactiveModifier()
     {
         await WriteSoulStateWithLightIncarnateAsync();
@@ -9877,6 +9885,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public void ApplyUpdate_StartMissingRealm_MarksInvalidAndDoesNotCreateConflict()
     {
         var root = JsonNode.Parse("""
@@ -9984,6 +9993,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public void ApplyUpdate_ExchangeAppliesAfterSnapshotToActiveConflict()
     {
         var root = BuildRootWithActiveConflictAndInvalidMarkers();
@@ -11799,6 +11809,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "PreMergeSentinel")]
     public async Task ValidateGameStateAsync_ActiveConflictInSealedShiningAbode_FailsAvailabilityGate()
     {
         await WriteSoulStateAsync("Shining Abode");

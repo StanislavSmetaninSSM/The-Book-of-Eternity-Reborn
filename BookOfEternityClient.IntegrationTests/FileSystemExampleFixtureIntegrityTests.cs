@@ -1,3 +1,5 @@
+using System.IO.Compression;
+using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -9,6 +11,70 @@ namespace BookOfEternityClient.Tests;
 [Trait("Category", "FullValidation")]
 public sealed class FileSystemExampleFixtureIntegrityTests
 {
+    [Fact]
+    public void RealmSaveFixtures_RemainFarBelowTrustedArchiveBudgets()
+    {
+        var fixtureNames = new[]
+        {
+            "mortal_world_command_display_fixture.zip",
+            "chaos_sea_command_display_fixture.zip",
+            "shining_abode_command_display_fixture.zip"
+        };
+        var observed = new List<(
+            int EntryCount,
+            long ExpandedBytes,
+            long LargestEntryBytes,
+            long NameUtf8Bytes)>();
+        foreach (var fixtureName in fixtureNames)
+        {
+            var fixturePath = Path.Combine(
+                TestRepoPaths.BaseSessionRoot,
+                "saves",
+                "manual_saves",
+                fixtureName);
+            using var archive = ZipFile.OpenRead(fixturePath);
+            var descriptors = archive.Entries
+                .Select(entry =>
+                    new SaveLoadService.SaveArchiveEntryDescriptor(
+                        entry.FullName,
+                        string.IsNullOrEmpty(entry.Name),
+                        entry.Length,
+                        entry.CompressedLength))
+                .ToArray();
+
+            SaveLoadService.ValidateTrustedArchiveBudget(descriptors);
+            var files = descriptors
+                .Where(entry => !entry.IsDirectory)
+                .ToArray();
+            observed.Add(
+                (
+                    descriptors.Length,
+                    files.Sum(entry => entry.Length),
+                    files.Max(entry => entry.Length),
+                    descriptors.Sum(entry =>
+                        (long)Encoding.UTF8.GetByteCount(entry.Path))));
+        }
+
+        Assert.Equal(100, observed.Max(item => item.EntryCount));
+        Assert.Equal(214_559, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(45_351, observed.Max(item => item.LargestEntryBytes));
+        Assert.Equal(3_552, observed.Max(item => item.NameUtf8Bytes));
+
+        var budget = SaveLoadService.TrustedArchiveBudget;
+        Assert.True(
+            observed.Max(item => item.EntryCount) <
+            budget.MaxEntryCount);
+        Assert.True(
+            observed.Max(item => item.ExpandedBytes) <
+            budget.MaxTotalExpandedBytes);
+        Assert.True(
+            observed.Max(item => item.LargestEntryBytes) <
+            budget.MaxEntryExpandedBytes);
+        Assert.True(
+            observed.Max(item => item.NameUtf8Bytes) <
+            budget.MaxTotalEntryNameUtf8Bytes);
+    }
+
     [Fact]
     public void GameSessionFixtureJsonFiles_AreNonEmptyAndParseable()
     {

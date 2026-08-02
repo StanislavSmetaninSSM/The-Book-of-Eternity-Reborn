@@ -450,6 +450,28 @@ public sealed record BrowserGameScreenTurnStateDto(
                         "Ждать ответ ГМа",
                         "Не меняйте локальное состояние, пока ожидающий ход не завершится.",
                         "player-default")
+            ]);
+        }
+
+        if (qte.State == "Failed")
+        {
+            return Create(
+                state: "qte-error",
+                title: "Состояние QTE требует проверки",
+                message: qte.Error ??
+                         "Состояние быстрой сцены повреждено.",
+                canStartBrowserWrite: false,
+                lifecycle: lifecycle,
+                phase: "validation-failed",
+                severity: "error",
+                playerGuidance: "Не начинайте новый ход, пока состояние QTE не будет проверено или восстановлено.",
+                actions:
+                [
+                    Action(
+                        "review-qte-state",
+                        "Проверить состояние QTE",
+                        "Откройте расширенный режим для диагностики и восстановления состояния быстрой сцены.",
+                        "advanced-only")
                 ]);
         }
 
@@ -645,6 +667,17 @@ public sealed record BrowserGameScreenActionComposerDto(
                 Placeholder: "ГМ обрабатывает ход...",
                 Guidance: "Ход отправлен ГМу. Дождитесь ответа перед новыми действиями.",
                 DisabledReason: lifecycle.PendingTurn.Message);
+        }
+
+        if (qte.State == "Failed")
+        {
+            return new BrowserGameScreenActionComposerDto(
+                CanSubmit: false,
+                Mode: "qte-error",
+                Placeholder: "Требуется проверка состояния QTE...",
+                Guidance: "Не отправляйте новый ход до восстановления состояния быстрой сцены.",
+                DisabledReason: qte.Error ??
+                                "Состояние QTE требует проверки.");
         }
 
         if (qte.State is "Offer" or "Active")

@@ -17,7 +17,9 @@ discovery-balanced PowerShell runner with one deadline and retained
 JSON/TRX/log evidence.
 Keep the complete GameEngine turn-lifecycle class in an explicit
 LifecycleIntegration lane and retain only ten reviewed lifecycle sentinels in
-routine PreMerge.
+routine PreMerge. The Phase 45 capacity amendment tracked by #1502 likewise
+keeps all 358 afterlife spiritual-conflict cases in RegressionIntegration and
+admits only an exact ten-method sentinel manifest to routine PreMerge.
 
 ## Technical Context
 
@@ -48,7 +50,7 @@ PreMerge preferably below 10 minutes on the baseline machine.
 
 **Scale/Scope**: 6,560 discovered cases, 965 broad validation calls, 460 guardian cases, and 295 broad guardian calls across eight partial source files.
 
-**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505)
+**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
 
 **Contract Scope**: Internal validation orchestration and test infrastructure only.
 
@@ -81,15 +83,15 @@ branch ran each once because their category boundaries changed.
 
 *GATE before research: PASS. Re-check after design: PASS.*
 
-- **GitHub traceability**: Issue #1505 is open, in progress, and linked from all active Spec Kit artifacts.
+- **GitHub traceability**: #1505 is complete; the Phase 45 capacity amendment
+  is tracked by open issue #1502 and linked from the active Spec Kit artifacts.
 - **Spec Kit fit**: The implementation spans production validation orchestration, many guardian test files, traits/source guards, scripts, documentation, and multiple sessions.
 - **Player-facing integrity**: No console, browser, copy, or player interaction changes.
 - **Contract/state authority**: Validation rule bodies, issue codes, canonical schemas, state normalization, and GM-authored contracts remain unchanged. Mortal/afterlife prompts, examples, manifests, and contract matrices therefore need no update.
 - **Test-first path**: Selection API compilation/fail-closed/equivalence/order tests precede production edits; source guards precede guardian migration and lane categorization.
-- **Verification evidence**: Focused tests, bounded benchmark, project/source
-  guards, three builds, two Fast summaries, one LifecycleIntegration summary,
-  one DeepValidation summary, one PreMerge summary, Serena health, and final
-  diff checks are required.
+- **Verification evidence**: Focused tests, project/source guards, the retained
+  Fast checkpoint and relevant historical diagnostic controls, one final
+  PreMerge summary, Serena health, and final diff checks are required.
 - **Agent orchestration**: Work remains in the current Codex session. No subagent report will be treated as verification evidence.
 
 ## Project Structure
@@ -219,8 +221,10 @@ guide as the stable local interface.
    23-descriptor/1,950-case selection is unchanged and excludes lifecycle
    tests; require at least 1,950 results below 15 minutes.
 7. Run exactly one PreMerge control below its single 15-minute deadline,
-   retaining JSON/TRX/log evidence and at least 4,490 results, including
-   completed ProcessIntegration and E2E phases.
+   retaining JSON/TRX/log evidence and at least 4,240 results, including
+   completed ProcessIntegration and E2E phases, the exact ten lifecycle
+   sentinels, and the exact ten spiritual-conflict sentinels. The full
+   358-case spiritual-conflict matrix remains in RegressionIntegration.
 8. Re-index Serena, confirm green health, no owned child processes,
    `git diff --check`, Spec Kit consistency, and review findings.
 

@@ -348,7 +348,7 @@ public static class GuardianRelationshipRules
         {
             relationship["reason"] = hasExistingState && !string.IsNullOrWhiteSpace(GetString(relationship["attitude"]))
                 ? "Migrated from legacy inter-guardian standing."
-                : "Auto-seeded from guardian domain, archetype, and social profile.";
+                : "Auto-seeded from structured guardian domain and social profile.";
         }
 
         if (relationship["lastChangedAt"] != null &&
@@ -427,12 +427,6 @@ public static class GuardianRelationshipRules
             score -= competitive >= 50 ? 10 : 3;
         }
 
-        var archetype = GetString((sourceGuardian["personalityProfile"] as JsonObject)?["archetype"]);
-        if (ContainsAny(archetype, "kind", "patient", "wise", "friend"))
-            score += 5;
-        if (ContainsAny(archetype, "ruthless", "cunning", "stern", "manipulator"))
-            score -= 5;
-
         return Math.Clamp(score, -35, 25);
     }
 
@@ -484,10 +478,6 @@ public static class GuardianRelationshipRules
         if (string.Equals(GetString(activeGuardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase))
             root["activeGuardian"] = guardian.DeepClone();
     }
-
-    private static bool ContainsAny(string source, params string[] fragments) =>
-        !string.IsNullOrWhiteSpace(source) &&
-        fragments.Any(fragment => source.Contains(fragment, StringComparison.OrdinalIgnoreCase));
 
     private static bool IsPoliticalProjectType(string? projectType) =>
         string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) ||

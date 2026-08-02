@@ -44,6 +44,46 @@ public sealed class BrowserInventoryManagementTests : IDisposable
     }
 
     [Fact]
+    public async Task InventoryEquipmentAuthority_RequiresCanonicalSlotAndExactRelicIdentity()
+    {
+        Assert.Equal("mainHand", InventoryEquipmentService.ResolveEquipSlot("mainHand", "weapon"));
+        Assert.Null(InventoryEquipmentService.ResolveEquipSlot("", "weapon"));
+        Assert.Null(InventoryEquipmentService.ResolveEquipSlot("рука", ""));
+        Assert.Null(InventoryEquipmentService.ResolveEquipSlot("Основная рука", ""));
+
+        await _fs.WriteFileAtomicAsync(InventoryEquipmentService.ItemsPath, """
+        {
+          "items": [
+            {
+              "itemId": "item_prose_relic",
+              "name": "Soul relic named in prose",
+              "type": "soul_relic",
+              "group": "реликвия души",
+              "equipmentSlot": "mainHand"
+            },
+            {
+              "itemId": "item_exact_relic",
+              "name": "Exact relic",
+              "relicId": "relic_exact_001",
+              "equipmentSlot": "mainHand"
+            }
+          ],
+          "equipment": {}
+        }
+        """);
+
+        var context = await InventoryEquipmentService.ReadContextAsync(_fs);
+        Assert.NotNull(context);
+        var proseRelic = Assert.Single(context!.Items, item => item.Identity == "item_prose_relic");
+        var exactRelic = Assert.Single(context.Items, item => item.Identity == "item_exact_relic");
+
+        Assert.False(proseRelic.IsSoulRelic);
+        Assert.True(proseRelic.IsEquippable);
+        Assert.True(exactRelic.IsSoulRelic);
+        Assert.False(exactRelic.IsEquippable);
+    }
+
+    [Fact]
     [Trait("Category", "BrowserInventoryManagement")]
     public async Task ExecuteAsync_InventoryDrop_ReturnsConfirmationPromptWithPlayerFacingText()
     {

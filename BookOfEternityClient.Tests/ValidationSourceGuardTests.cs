@@ -122,6 +122,191 @@ public sealed class ValidationSourceGuardTests
             Assert.DoesNotContain(proseField, normalizedProfileSource, StringComparison.Ordinal);
             Assert.DoesNotContain(proseField, usableTradeSource, StringComparison.Ordinal);
         }
+
+        var guardianRelationshipSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Core",
+            "GuardianRelationshipRules.cs"));
+        var residentSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "GuardianAbodeResidentState.cs"));
+        var equipmentSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "InventoryEquipmentService.cs"));
+        var systemGuardianSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "SystemGuardianLibraryService.cs"));
+
+        Assert.DoesNotContain("ContainsAny(archetype", guardianRelationshipSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("CollectSeedKeywords", residentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SeedArchetype(", residentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SeedCoreValues(", residentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("TypeToSlot", equipmentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("label.Contains(itemSlot", equipmentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("marker.Contains(\"soul_relic\"", equipmentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ContainsAny(type", tradeSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ContainsAny(group", tradeSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildFreeformCoreValues", systemGuardianSource, StringComparison.Ordinal);
+
+        var soulRelicHelperStart = tradeSource.IndexOf(
+            "private static bool IsSoulRelicLikeItem(",
+            StringComparison.Ordinal);
+        var nextTradeHelperStart = tradeSource.IndexOf(
+            "private static void UpsertInventoryItem(",
+            soulRelicHelperStart,
+            StringComparison.Ordinal);
+        Assert.True(
+            soulRelicHelperStart >= 0 &&
+            nextTradeHelperStart > soulRelicHelperStart,
+            "Expected the NPC trade Soul Relic authority helper.");
+        var soulRelicHelper =
+            tradeSource[soulRelicHelperStart..nextTradeHelperStart];
+        Assert.Contains(
+            "GetNodeString(item[\"relicId\"])",
+            soulRelicHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "soulRelicId",
+            soulRelicHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "GetNodeString(item[\"type\"])",
+            soulRelicHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "GetNodeString(item[\"group\"])",
+            soulRelicHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            ".Contains(",
+            soulRelicHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            ".StartsWith(",
+            soulRelicHelper,
+            StringComparison.Ordinal);
+
+        var questHelperStart = tradeSource.IndexOf(
+            "private static bool IsQuestBoundItem(",
+            StringComparison.Ordinal);
+        Assert.True(
+            questHelperStart >= 0 &&
+            soulRelicHelperStart > questHelperStart,
+            "Expected the NPC trade quest-item authority helper.");
+        var questHelper =
+            tradeSource[questHelperStart..soulRelicHelperStart];
+        Assert.Contains(
+            "item[\"isQuestItem\"]",
+            questHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "item[\"group\"]",
+            questHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "GetNodeString(",
+            questHelper,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication()
+    {
+        var saveLoadSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "SaveLoadService.cs"));
+        var fileSystemSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Core",
+            "FileSystemManager.cs"));
+
+        foreach (var methodName in new[]
+                 {
+                     "public async Task<bool> LoadGameAsync(",
+                     "private static async Task<SaveMetadata?> ReadSaveMetadataAsync("
+                 })
+        {
+            var methodStart = saveLoadSource.IndexOf(
+                methodName,
+                StringComparison.Ordinal);
+            var archiveMaterialization = saveLoadSource.IndexOf(
+                "new ZipArchive(",
+                methodStart,
+                StringComparison.Ordinal);
+            var rawPreflight = saveLoadSource.IndexOf(
+                "ValidateTrustedArchiveBeforeMaterialization(",
+                methodStart,
+                StringComparison.Ordinal);
+            Assert.True(
+                methodStart >= 0 &&
+                rawPreflight > methodStart &&
+                archiveMaterialization > rawPreflight,
+                $"{methodName} must run raw bounded archive preflight before ZipArchive materializes entries.");
+        }
+
+        var prepareStart = fileSystemSource.IndexOf(
+            "internal void PrepareForDirectoryMove(",
+            StringComparison.Ordinal);
+        var afterMoveStart = fileSystemSource.IndexOf(
+            "internal void EnsureExactAfterDirectoryMove(",
+            prepareStart,
+            StringComparison.Ordinal);
+        var afterMoveEnd = fileSystemSource.IndexOf(
+            "internal void EnsurePublishedExactBeforeActivation(",
+            afterMoveStart,
+            StringComparison.Ordinal);
+        Assert.True(
+            prepareStart >= 0 &&
+            afterMoveStart > prepareStart &&
+            afterMoveEnd > afterMoveStart,
+            "Expected load-staging publication authority methods.");
+        var prepareSource =
+            fileSystemSource[prepareStart..afterMoveStart];
+        var afterMoveSource =
+            fileSystemSource[afterMoveStart..afterMoveEnd];
+
+        Assert.DoesNotContain(
+            "ReleaseFileStreams(",
+            prepareSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "file.Stream",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "file.GuardPath",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "expectedNumberOfLinks: 2",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "DeleteOpenedFile(",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "allowRename: true",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "DeleteOpenedDirectory(",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Delete(",
+            afterMoveSource,
+            StringComparison.Ordinal);
     }
 
     [Fact]

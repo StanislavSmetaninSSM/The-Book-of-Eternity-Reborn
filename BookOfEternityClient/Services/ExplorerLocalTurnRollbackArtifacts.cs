@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -17,6 +18,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
         "browser_write_cleanup_committed.intent";
     private const string BrowserWriteRestoredCleanupIntentFileName =
         "browser_write_cleanup_restored.intent";
+    private const int CurrentBrowserWriteManifestSchemaVersion = 6;
+    private const string WriteMutationOperation = "write";
+    private const string DeleteMutationOperation = "delete";
     private static readonly JsonSerializerOptions ManifestJsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -26,12 +30,26 @@ public static class ExplorerLocalTurnRollbackArtifacts
 
     public sealed record StagedBackup(string TrackedFile, string BackupPath);
 
+    internal sealed record BrowserWriteMutationIntent(
+        string Operation,
+        string? DesiredSha256);
+
+    internal sealed record BrowserWritePublicationReceipt(
+        string Operation,
+        PhysicalFileAuthority.FileIdentity PhysicalIdentity,
+        string Sha256,
+        bool Completed);
+
     internal sealed record BrowserWriteRollbackEntry(
         string TrackedFile,
         bool Existed,
         string? BackupPath,
         string? Sha256,
+        BrowserWriteMutationIntent? MutationIntent = null,
+        BrowserWritePublicationReceipt? PublicationReceipt = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         IReadOnlyList<string>? PublishedSha256s = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         bool DeletionIntended = false);
 
     internal sealed record BrowserWriteExternalRollbackEntry(
@@ -69,6 +87,12 @@ public static class ExplorerLocalTurnRollbackArtifacts
             get;
             init;
         }
+
+        internal int SchemaVersion
+        {
+            get;
+            init;
+        } = CurrentBrowserWriteManifestSchemaVersion;
     }
 
     internal enum BrowserWriteCleanupOutcome
@@ -77,7 +101,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         Restored
     }
 
-    private sealed class BrowserWriteMutationIntentRecorder :
+    private sealed class BrowserWriteMutationRecorder :
         ICanonicalMutationIntentRecorder
     {
         private readonly FileSystemManager _fs;
@@ -90,7 +114,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         private readonly List<BrowserWriteExternalRollbackEntry> _externalEntries;
         private readonly SemaphoreSlim _manifestGate = new(1, 1);
 
-        internal BrowserWriteMutationIntentRecorder(
+        internal BrowserWriteMutationRecorder(
             FileSystemManager fs,
             FileSystemManager.CanonicalWriteLease writeLease,
             string manifestPath,
@@ -127,27 +151,124 @@ public static class ExplorerLocalTurnRollbackArtifacts
             try
             {
                 var entry = _entries[index];
-                if (desiredContent == null)
+                var intent = desiredContent == null
+                    ? new BrowserWriteMutationIntent(
+                        DeleteMutationOperation,
+                        DesiredSha256: null)
+                    : new BrowserWriteMutationIntent(
+                        WriteMutationOperation,
+                        ComputeSha256(desiredContent));
+                _entries[index] = entry with
                 {
-                    _entries[index] = entry with
-                    {
-                        DeletionIntended = true
-                    };
-                }
-                else
+                    MutationIntent = intent,
+                    PublicationReceipt = null,
+                    PublishedSha256s = null,
+                    DeletionIntended = false
+                };
+
+                await PersistManifestAsync();
+            }
+            finally
+            {
+                _manifestGate.Release();
+            }
+        }
+
+        public async Task RecordMutationNonPublicationAsync(
+            string relativePath)
+        {
+            var trackedFile = NormalizeRelativePath(_fs, relativePath);
+            await _manifestGate.WaitAsync();
+            try
+            {
+                var index = _entries.FindIndex(entry =>
+                    string.Equals(
+                        entry.TrackedFile,
+                        trackedFile,
+                        StringComparison.OrdinalIgnoreCase));
+                if (index < 0)
+                    return;
+
+                var entry = _entries[index];
+                if (entry.MutationIntent == null)
+                    return;
+                if (entry.PublicationReceipt != null)
                 {
-                    var publishedSha256 = ComputeSha256(desiredContent);
-                    var publishedHashes = (entry.PublishedSha256s ?? [])
-                        .Append(publishedSha256)
-                        .Distinct(StringComparer.OrdinalIgnoreCase)
-                        .OrderBy(static value => value, StringComparer.Ordinal)
-                        .ToArray();
-                    _entries[index] = entry with
-                    {
-                        PublishedSha256s = publishedHashes
-                    };
+                    throw new InvalidDataException(
+                        "A completed canonical publication cannot be recorded as non-published.");
                 }
 
+                var updatedEntry = entry with
+                {
+                    MutationIntent = null,
+                    PublicationReceipt = null,
+                    PublishedSha256s = null,
+                    DeletionIntended = false
+                };
+                var updatedEntries = _entries.ToList();
+                updatedEntries[index] = updatedEntry;
+                await PersistManifestAsync(updatedEntries);
+                _entries[index] = updatedEntry;
+            }
+            finally
+            {
+                _manifestGate.Release();
+            }
+        }
+
+        public async Task RecordMutationPublicationAsync(
+            string relativePath,
+            CanonicalMutationPublication publication)
+        {
+            var trackedFile = NormalizeRelativePath(_fs, relativePath);
+            var index = _entries.FindIndex(entry =>
+                string.Equals(
+                    entry.TrackedFile,
+                    trackedFile,
+                    StringComparison.OrdinalIgnoreCase));
+            if (index < 0)
+                return;
+
+            await _manifestGate.WaitAsync();
+            try
+            {
+                var entry = _entries[index];
+                var operation = publication.Operation switch
+                {
+                    CanonicalMutationOperation.Write =>
+                        WriteMutationOperation,
+                    CanonicalMutationOperation.Delete =>
+                        DeleteMutationOperation,
+                    _ => throw new InvalidDataException(
+                        "Canonical mutation publication operation is unsupported.")
+                };
+                if (entry.MutationIntent == null ||
+                    !string.Equals(
+                        entry.MutationIntent.Operation,
+                        operation,
+                        StringComparison.Ordinal) ||
+                    publication.PhysicalIdentity.IsDirectory ||
+                    publication.PhysicalIdentity.NumberOfLinks != 1 ||
+                    !IsSha256(publication.Sha256) ||
+                    operation == WriteMutationOperation &&
+                    !string.Equals(
+                        entry.MutationIntent.DesiredSha256,
+                        publication.Sha256,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidDataException(
+                        "Canonical mutation publication does not match its durable intent.");
+                }
+
+                _entries[index] = entry with
+                {
+                    PublicationReceipt =
+                        new BrowserWritePublicationReceipt(
+                            operation,
+                            publication.PhysicalIdentity,
+                            publication.Sha256.ToLowerInvariant(),
+                            Completed: true)
+                };
                 await PersistManifestAsync();
             }
             finally
@@ -172,15 +293,16 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
         }
 
-        private async Task PersistManifestAsync()
+        private async Task PersistManifestAsync(
+            IReadOnlyList<BrowserWriteRollbackEntry>? entries = null)
         {
             var manifest = new BrowserWriteRollbackManifest(
-                SchemaVersion: 5,
+                SchemaVersion: CurrentBrowserWriteManifestSchemaVersion,
                 TransactionKind: "browser_local_write",
                 Status: "staged",
                 Scope: _scope,
                 CreatedAtUtc: _createdAtUtc,
-                Entries: _entries,
+                Entries: entries ?? _entries,
                 CleanupDirectories: _cleanupDirectories,
                 ExternalEntries: _externalEntries);
             await _fs.WriteFileAtomicAsync(
@@ -281,7 +403,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             new List<BrowserWriteExternalRollbackEntry>(externalFileIds.Length);
         var createdPaths = new List<string>();
         DarenRewardProfileRollbackTransaction? darenTransaction = null;
-        BrowserWriteMutationIntentRecorder? mutationIntentRecorder = null;
+        BrowserWriteMutationRecorder? mutationIntentRecorder = null;
 
         try
         {
@@ -358,7 +480,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
 
             var manifest = new BrowserWriteRollbackManifest(
-                SchemaVersion: 5,
+                SchemaVersion: CurrentBrowserWriteManifestSchemaVersion,
                 TransactionKind: "browser_local_write",
                 Status: "staged",
                 Scope: safeScope,
@@ -377,7 +499,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
                     "Canonical write lease already owns a mutation-intent recorder.");
             }
 
-            mutationIntentRecorder = new BrowserWriteMutationIntentRecorder(
+            mutationIntentRecorder = new BrowserWriteMutationRecorder(
                 fs,
                 writeLease,
                 manifestPath,
@@ -600,32 +722,69 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackEntry entry)
     {
-        var content = await ReadBrowserWriteBeforeImageAsync(fs, writeLease, entry);
-        var current = await fs.ReadFileBytesAsync(writeLease, entry.TrackedFile);
-        if (entry.Existed)
+        var intent = entry.MutationIntent;
+        if (intent == null)
+            return;
+        var receipt = entry.PublicationReceipt ??
+                      throw new InvalidDataException(
+                          $"Interrupted browser write '{entry.TrackedFile}' has durable intent without an exact physical publication receipt.");
+        var content = await ReadBrowserWriteBeforeImageAsync(
+            fs,
+            writeLease,
+            entry);
+        if (string.Equals(
+                receipt.Operation,
+                WriteMutationOperation,
+                StringComparison.Ordinal))
         {
-            if (current != null && current.AsSpan().SequenceEqual(content))
-                return;
+            if (entry.Existed)
+            {
+                await fs.WriteFileAtomicBytesIfCurrentAuthorityAsync(
+                    writeLease,
+                    entry.TrackedFile,
+                    content!,
+                    receipt.PhysicalIdentity,
+                    receipt.Sha256);
+            }
+            else
+            {
+                await fs.DeleteFileIfCurrentAuthorityAsync(
+                    writeLease,
+                    entry.TrackedFile,
+                    receipt.PhysicalIdentity,
+                    receipt.Sha256);
+            }
 
-            var allowedCurrentSha256s = (entry.PublishedSha256s ?? [])
-                .Append(ComputeSha256(content!))
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
-            await fs.WriteFileAtomicBytesIfCurrentOwnedAsync(
-                writeLease,
-                entry.TrackedFile,
-                content!,
-                allowedCurrentSha256s,
-                allowMissingCurrent:
-                    entry.DeletionIntended);
             return;
         }
 
-        if (current == null)
+        if (!string.Equals(
+                receipt.Operation,
+                DeleteMutationOperation,
+                StringComparison.Ordinal))
+        {
+            throw new InvalidDataException(
+                $"Interrupted browser write '{entry.TrackedFile}' has an unsupported publication receipt.");
+        }
+
+        var current = await fs.ReadFileBytesAsync(
+            writeLease,
+            entry.TrackedFile);
+        if (current != null)
+        {
+            throw new InvalidDataException(
+                $"Interrupted browser deletion '{entry.TrackedFile}' found a foreign recreation.");
+        }
+
+        if (!entry.Existed)
             return;
-        await fs.DeleteFileIfCurrentOwnedAsync(
+
+        await fs.WriteFileAtomicBytesIfCurrentOwnedAsync(
             writeLease,
             entry.TrackedFile,
-            entry.PublishedSha256s ?? []);
+            content!,
+            allowedCurrentSha256s: [],
+            allowMissingCurrent: true);
     }
 
     internal static bool TryDeleteBrowserWriteTransaction(
@@ -714,7 +873,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string manifestPath,
         BrowserWriteRollbackManifest manifest)
     {
-        if (manifest.SchemaVersion is not (1 or 2 or 3 or 4 or 5) ||
+        if (manifest.SchemaVersion is not (1 or 2 or 3 or 4 or 5 or 6) ||
             !string.Equals(manifest.TransactionKind, "browser_local_write", StringComparison.Ordinal) ||
             manifest.Status is not ("staged" or "committed" or "restored") ||
             manifest.Status == "restored" && manifest.SchemaVersion < 3 ||
@@ -780,20 +939,101 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
 
             var publishedSha256s = entry.PublishedSha256s ?? [];
-            if (manifest.SchemaVersion < 5)
+            BrowserWriteMutationIntent? normalizedMutationIntent = null;
+            BrowserWritePublicationReceipt? normalizedPublicationReceipt =
+                null;
+            if (manifest.SchemaVersion <
+                CurrentBrowserWriteManifestSchemaVersion)
             {
-                if (publishedSha256s.Count > 0 || entry.DeletionIntended)
+                if (entry.MutationIntent != null ||
+                    entry.PublicationReceipt != null ||
+                    manifest.SchemaVersion < 5 &&
+                    (publishedSha256s.Count > 0 ||
+                     entry.DeletionIntended))
                 {
                     throw new InvalidDataException(
-                        $"Browser rollback manifest '{manifestPath}' declares post-image authority under a legacy schema.");
+                        $"Browser rollback manifest '{manifestPath}' declares mutation authority under an incompatible legacy schema.");
+                }
+                if (publishedSha256s.Any(hash => !IsSha256(hash)) ||
+                    publishedSha256s
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .Count() != publishedSha256s.Count)
+                {
+                    throw new InvalidDataException(
+                        $"Browser rollback manifest '{manifestPath}' contains invalid or duplicate legacy post-image hashes.");
                 }
             }
-            else if (publishedSha256s.Any(hash => !IsSha256(hash)) ||
-                     publishedSha256s.Distinct(StringComparer.OrdinalIgnoreCase).Count() !=
-                     publishedSha256s.Count)
+            else
             {
-                throw new InvalidDataException(
-                    $"Browser rollback manifest '{manifestPath}' contains invalid or duplicate post-image hashes.");
+                if (publishedSha256s.Count > 0 ||
+                    entry.DeletionIntended)
+                {
+                    throw new InvalidDataException(
+                        $"Browser rollback manifest '{manifestPath}' mixes legacy digest authority with physical receipts.");
+                }
+
+                var intent = entry.MutationIntent;
+                var receipt = entry.PublicationReceipt;
+                if (intent == null)
+                {
+                    if (receipt != null)
+                    {
+                        throw new InvalidDataException(
+                            $"Browser rollback manifest '{manifestPath}' contains a publication receipt without durable intent.");
+                    }
+                }
+                else
+                {
+                    var isWrite = string.Equals(
+                        intent.Operation,
+                        WriteMutationOperation,
+                        StringComparison.Ordinal);
+                    var isDelete = string.Equals(
+                        intent.Operation,
+                        DeleteMutationOperation,
+                        StringComparison.Ordinal);
+                    if (!isWrite && !isDelete ||
+                        isWrite != IsSha256(intent.DesiredSha256) ||
+                        isDelete &&
+                        !string.IsNullOrWhiteSpace(
+                            intent.DesiredSha256))
+                    {
+                        throw new InvalidDataException(
+                            $"Browser rollback manifest '{manifestPath}' contains an invalid mutation intent.");
+                    }
+
+                    normalizedMutationIntent = intent with
+                    {
+                        DesiredSha256 =
+                            intent.DesiredSha256?.ToLowerInvariant()
+                    };
+                    if (receipt != null)
+                    {
+                        if (!receipt.Completed ||
+                            !string.Equals(
+                                receipt.Operation,
+                                intent.Operation,
+                                StringComparison.Ordinal) ||
+                            receipt.PhysicalIdentity == null ||
+                            receipt.PhysicalIdentity.IsDirectory ||
+                            receipt.PhysicalIdentity.NumberOfLinks != 1 ||
+                            !IsSha256(receipt.Sha256) ||
+                            isWrite &&
+                            !string.Equals(
+                                receipt.Sha256,
+                                intent.DesiredSha256,
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            throw new InvalidDataException(
+                                $"Browser rollback manifest '{manifestPath}' contains an incomplete physical publication receipt.");
+                        }
+
+                        normalizedPublicationReceipt = receipt with
+                        {
+                            Sha256 = receipt.Sha256.ToLowerInvariant()
+                        };
+                    }
+                }
             }
 
             var normalizedPublishedSha256s = publishedSha256s
@@ -812,7 +1052,18 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 entries.Add(entry with
                 {
                     TrackedFile = trackedFile,
-                    PublishedSha256s = normalizedPublishedSha256s
+                    MutationIntent = normalizedMutationIntent,
+                    PublicationReceipt =
+                        normalizedPublicationReceipt,
+                    PublishedSha256s =
+                        manifest.SchemaVersion <
+                        CurrentBrowserWriteManifestSchemaVersion
+                            ? normalizedPublishedSha256s
+                            : null,
+                    DeletionIntended =
+                        manifest.SchemaVersion <
+                        CurrentBrowserWriteManifestSchemaVersion &&
+                        entry.DeletionIntended
                 });
                 continue;
             }
@@ -837,7 +1088,18 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 TrackedFile = trackedFile,
                 BackupPath = backupPath,
                 Sha256 = entry.Sha256!.ToLowerInvariant(),
-                PublishedSha256s = normalizedPublishedSha256s
+                MutationIntent = normalizedMutationIntent,
+                PublicationReceipt =
+                    normalizedPublicationReceipt,
+                PublishedSha256s =
+                    manifest.SchemaVersion <
+                    CurrentBrowserWriteManifestSchemaVersion
+                        ? normalizedPublishedSha256s
+                        : null,
+                DeletionIntended =
+                    manifest.SchemaVersion <
+                    CurrentBrowserWriteManifestSchemaVersion &&
+                    entry.DeletionIntended
             });
         }
 
@@ -962,7 +1224,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 manifest.CreatedAtUtc,
                 entries,
                 cleanupDirectories,
-                externalEntries),
+                externalEntries)
+            {
+                SchemaVersion = manifest.SchemaVersion
+            },
             manifest.Status);
     }
 
@@ -971,12 +1236,34 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction)
     {
-        var failures = new List<Exception>();
-        foreach (var entry in transaction.Entries)
+        if (transaction.SchemaVersion <
+            CurrentBrowserWriteManifestSchemaVersion)
         {
+            throw new InvalidDataException(
+                $"Interrupted browser write '{transaction.ManifestPath}' uses a legacy manifest without exact physical publication receipts. Recovery evidence was retained.");
+        }
+
+        var failures = new List<Exception>();
+        var recoveredEntries = transaction.Entries.ToList();
+        for (var index = 0; index < recoveredEntries.Count; index++)
+        {
+            var entry = recoveredEntries[index];
             try
             {
                 await RestoreBrowserWriteEntryAsync(fs, writeLease, entry);
+                if (entry.MutationIntent != null)
+                {
+                    recoveredEntries[index] = entry with
+                    {
+                        MutationIntent = null,
+                        PublicationReceipt = null
+                    };
+                    await PersistBrowserWriteRecoveryProgressAsync(
+                        fs,
+                        writeLease,
+                        transaction,
+                        recoveredEntries);
+                }
             }
             catch (Exception ex)
             {
@@ -1064,25 +1351,39 @@ public static class ExplorerLocalTurnRollbackArtifacts
         }
 
         var restoredManifest = new BrowserWriteRollbackManifest(
-            SchemaVersion: transaction.Entries.Any(entry =>
-                entry.DeletionIntended ||
-                (entry.PublishedSha256s?.Count ?? 0) > 0)
-                ? 5
-                : transaction.ExternalEntries.Any(
-                static entry => entry.ParentIdentity != null)
-                ? 4
-                : 3,
+            SchemaVersion: transaction.SchemaVersion,
             TransactionKind: "browser_local_write",
             Status: "restored",
             Scope: transaction.Scope,
             CreatedAtUtc: transaction.CreatedAtUtc,
-            Entries: transaction.Entries,
+            Entries: recoveredEntries,
             CleanupDirectories: transaction.CleanupDirectories,
             ExternalEntries: transaction.ExternalEntries);
         await fs.WriteFileAtomicAsync(
             writeLease,
             transaction.ManifestPath,
             JsonSerializer.Serialize(restoredManifest, ManifestJsonOptions));
+    }
+
+    private static Task PersistBrowserWriteRecoveryProgressAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        BrowserWriteRollbackTransaction transaction,
+        IReadOnlyList<BrowserWriteRollbackEntry> entries)
+    {
+        var manifest = new BrowserWriteRollbackManifest(
+            SchemaVersion: transaction.SchemaVersion,
+            TransactionKind: "browser_local_write",
+            Status: "staged",
+            Scope: transaction.Scope,
+            CreatedAtUtc: transaction.CreatedAtUtc,
+            Entries: entries,
+            CleanupDirectories: transaction.CleanupDirectories,
+            ExternalEntries: transaction.ExternalEntries);
+        return fs.WriteFileAtomicAsync(
+            writeLease,
+            transaction.ManifestPath,
+            JsonSerializer.Serialize(manifest, ManifestJsonOptions));
     }
 
     private static void CreateBrowserWriteCommittedMarker(

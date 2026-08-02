@@ -316,6 +316,132 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyAsync_TypeAndGroupProseDoNotCreateContainerOrConsumptionAuthority()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var result = await service.BuyAsync("npc_merchant_001", "npc_trade_slot_006", currentTurn: 8);
+
+        Assert.True(result.Success);
+        using var inventoryDoc = JsonDocument.Parse(
+            await _fs.ReadFileAsync("game_state/inventory/items.json") ?? "{}");
+        var item = Assert.Single(inventoryDoc.RootElement.GetProperty("items").EnumerateArray());
+        Assert.Equal("Container", item.GetProperty("type").GetString());
+        Assert.Equal("Контейнеры", item.GetProperty("group").GetString());
+        Assert.False(item.GetProperty("isContainer").GetBoolean());
+        Assert.False(item.GetProperty("isConsumption").GetBoolean());
+    }
+
+    [Fact]
+    public async Task GetSellableItemsAsync_RelicLookingLegacyTextRemainsNeutralWithoutCanonicalRelicId()
+    {
+        await SeedBaseStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            """
+            {
+              "items": [
+                {
+                  "itemId": "sr_ordinary_tool",
+                  "name": "Обычный резец",
+                  "quality": "Common",
+                  "type": "tool",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_type_prose",
+                  "name": "Сувенир",
+                  "quality": "Common",
+                  "type": "soul relic replica",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_group_prose",
+                  "name": "Театральный реквизит",
+                  "quality": "Common",
+                  "group": "Реликвия души — декорации",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_legacy_field",
+                  "name": "Архивный муляж",
+                  "quality": "Common",
+                  "soulRelicId": "legacy_non_authority",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_quest_group_prose",
+                  "name": "Театральный реквизит задания",
+                  "quality": "Common",
+                  "group": "Quest",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_explicit_non_quest",
+                  "name": "Обычная памятка",
+                  "quality": "Common",
+                  "group": "Quest",
+                  "isQuestItem": false,
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_canonical_relic",
+                  "name": "Настоящая реликвия",
+                  "quality": "Rare",
+                  "relicId": "relic_authority_001",
+                  "price": 200,
+                  "baseSellPrice": 80
+                },
+                {
+                  "itemId": "item_canonical_quest",
+                  "name": "Подлинный предмет задания",
+                  "quality": "Common",
+                  "isQuestItem": true,
+                  "price": 20,
+                  "baseSellPrice": 8
+                }
+              ],
+              "equipment": {}
+            }
+            """);
+        var service = new NpcTradeService(
+            _fs,
+            NullLogger<NpcTradeService>.Instance);
+
+        var offers = await service.GetSellableItemsAsync(
+            "npc_merchant_001");
+
+        Assert.Equal(
+            [
+                "item_explicit_non_quest",
+                "item_group_prose",
+                "item_legacy_field",
+                "item_quest_group_prose",
+                "item_type_prose",
+                "sr_ordinary_tool"
+            ],
+            offers
+                .Select(offer => offer.ItemId)
+                .OrderBy(itemId => itemId, StringComparer.Ordinal)
+                .ToArray());
+        Assert.DoesNotContain(
+            offers,
+            offer => offer.ItemId == "item_canonical_relic");
+        Assert.DoesNotContain(
+            offers,
+            offer => offer.ItemId == "item_canonical_quest");
+    }
+
+    [Fact]
     public async Task BuyAsync_MortalScopeChangesBeforeCommit_BlocksWithoutMutation()
     {
         await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);

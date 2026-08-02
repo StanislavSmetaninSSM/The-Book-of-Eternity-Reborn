@@ -1,6 +1,6 @@
 # Quickstart: C# Verification Lanes
 
-**Source issue**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
 
 Run commands from the repository root with PowerShell 7.
 
@@ -42,7 +42,15 @@ under a ten-minute cap.
 projects with non-overlapping filters and one 15-minute deadline covering
 frontend verification, builds, discovery, tests, and cleanup. It excludes the
 complete lifecycle class while retaining exactly ten reviewed
-`PreMergeSentinel` lifecycle methods.
+`PreMergeSentinel` lifecycle methods. It also excludes the exhaustive
+358-case `AfterlifeSpiritualConflictValidationTests` matrix while retaining
+exactly ten reviewed sentinels from that class.
+
+The full spiritual-conflict matrix is not deleted or weakened. Run
+`RegressionIntegration` when changing that validator/normalizer boundary,
+diagnosing a related failure, or when an exhaustive control is explicitly
+requested. Unrelated ordinary work and final merges use the sentinel sample in
+PreMerge.
 
 ## Recommended Workflow
 
@@ -82,7 +90,7 @@ DeepValidation runs.
 The accepted post-change median runner-reported test duration is about three
 seconds, at least 6.7 times faster than the approximately 20-second baseline.
 
-## Fresh Final Evidence
+## Historical #1505 Evidence
 
 | Control | Result | Tests | Runner wall | Result directory |
 |---|---|---:|---:|---|
@@ -97,10 +105,16 @@ unique `TestResults/test-lanes/` result directory. A failed descriptor, timeout,
 TRX parse error, duplicate composed-lane test ID, or incomplete
 exact-owned-tree cleanup returns non-zero. DeepValidation requires at least
 1,950 results; LifecycleIntegration requires at least 186; PreMerge requires
-at least 4,490 results plus completed ProcessIntegration and E2E phases.
+at least 4,240 results plus completed ProcessIntegration and E2E phases.
 Every accepted control reported exit `0`, no failures or duplicate IDs, no
 timeout, complete cleanup, and zero remaining owned processes. PreMerge met
 the mandatory 15-minute ceiling but not the preferred below-ten-minute target.
+
+The Phase 45 amendment's current PlanOnly contract contains 19
+non-overlapping descriptors and 4,262 estimated cases, including exactly ten
+spiritual-conflict sentinels; Theory rows make merged TRX totals
+authoritative. Its exact clean-checkout executable result is retained in the
+#1502 PR/issue evidence before merge.
 
 The rejected historical all-inclusive attempt ended at `15:00.393` with exit
 `124`: all `4,738/4,738` completed tests passed, failures and duplicates were

@@ -4,6 +4,13 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
+internal enum GmWorkerAuditAppendDisposition
+{
+    Appended,
+    SessionReplaced,
+    CanonicalAuditUnavailable
+}
+
 public sealed class GmWorkerAuditLog
 {
     public const string AuditLogPath = "game_state/control/gm_worker_audit.jsonl";
@@ -57,17 +64,44 @@ public sealed class GmWorkerAuditLog
         return true;
     }
 
+    internal async Task<GmWorkerAuditAppendDisposition>
+        AppendRequiredEventOnceIfCurrentSessionAsync(
+            string expectedSessionGeneration,
+            WorkerAuditEvent auditEvent,
+            CancellationToken cancellationToken = default)
+    {
+        ValidateAuditEvent(auditEvent);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+            cancellationToken: cancellationToken);
+        if (!_fs.IsCurrentSessionGeneration(
+                writeLease,
+                expectedSessionGeneration))
+        {
+            return GmWorkerAuditAppendDisposition.SessionReplaced;
+        }
+
+        if (await ContainsEquivalentEventAsync(
+                writeLease,
+                auditEvent))
+        {
+            return GmWorkerAuditAppendDisposition.Appended;
+        }
+
+        await AppendEventCoreAsync(
+            auditEvent,
+            writeLease,
+            cancellationToken,
+            suppressFailure: false);
+        return GmWorkerAuditAppendDisposition.Appended;
+    }
+
     private async Task AppendEventCoreAsync(
         WorkerAuditEvent auditEvent,
         FileSystemManager.CanonicalWriteLease? writeLease,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        bool suppressFailure = true)
     {
-        if (string.IsNullOrWhiteSpace(auditEvent.EventId))
-            throw new ArgumentException("Audit event id is required.", nameof(auditEvent));
-        if (string.IsNullOrWhiteSpace(auditEvent.EventType))
-            throw new ArgumentException("Audit event type is required.", nameof(auditEvent));
-        if (string.IsNullOrWhiteSpace(auditEvent.WorkerId))
-            throw new ArgumentException("Audit worker id is required.", nameof(auditEvent));
+        ValidateAuditEvent(auditEvent);
 
         var line = JsonSerializer.Serialize(auditEvent, CompactJsonOptions);
         try
@@ -81,10 +115,116 @@ public sealed class GmWorkerAuditLog
                     line + Environment.NewLine,
                     cancellationToken);
         }
-        catch (Exception)
+        catch (Exception) when (suppressFailure)
         {
             // Audit is diagnostic telemetry and must not revoke an accepted canonical operation.
         }
+    }
+
+    private async Task<bool> ContainsEquivalentEventAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WorkerAuditEvent auditEvent)
+    {
+        var bytes = await _fs.ReadFileBytesAsync(
+            writeLease,
+            AuditLogPath);
+        if (bytes == null || bytes.Length == 0)
+            return false;
+
+        var jsonl = Encoding.UTF8.GetString(bytes);
+        if (jsonl.Length > 0 && jsonl[0] == '\uFEFF')
+            jsonl = jsonl[1..];
+
+        WorkerAuditEvent? matchedEvent = null;
+        foreach (var line in jsonl.Split(
+                     ['\r', '\n'],
+                     StringSplitOptions.RemoveEmptyEntries))
+        {
+            WorkerAuditEvent existingEvent;
+            try
+            {
+                existingEvent =
+                    JsonSerializer.Deserialize<WorkerAuditEvent>(
+                        line,
+                        CompactJsonOptions)
+                    ?? throw new InvalidDataException(
+                        "Worker audit event line is null.");
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidDataException(
+                    "Worker audit log contains malformed JSON.",
+                    ex);
+            }
+
+            if (!existingEvent.EventId.Equals(
+                    auditEvent.EventId,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            if (matchedEvent != null)
+            {
+                throw new InvalidDataException(
+                    $"Worker audit event '{auditEvent.EventId}' is duplicated.");
+            }
+
+            matchedEvent = existingEvent;
+        }
+
+        if (matchedEvent == null)
+            return false;
+        if (!AuditEventsEqual(matchedEvent, auditEvent))
+        {
+            throw new InvalidDataException(
+                $"Worker audit event '{auditEvent.EventId}' already exists with different content.");
+        }
+
+        return true;
+    }
+
+    private static bool AuditEventsEqual(
+        WorkerAuditEvent left,
+        WorkerAuditEvent right)
+    {
+        if (left.SchemaVersion != right.SchemaVersion ||
+            !left.EventId.Equals(right.EventId, StringComparison.Ordinal) ||
+            !left.EventType.Equals(right.EventType, StringComparison.Ordinal) ||
+            !left.WorkerId.Equals(right.WorkerId, StringComparison.Ordinal) ||
+            !string.Equals(left.TaskId, right.TaskId, StringComparison.Ordinal) ||
+            !string.Equals(left.ProposalId, right.ProposalId, StringComparison.Ordinal) ||
+            !left.TimestampUtc.Equals(right.TimestampUtc, StringComparison.Ordinal) ||
+            !left.Summary.Equals(right.Summary, StringComparison.Ordinal) ||
+            left.Details.Count != right.Details.Count)
+        {
+            return false;
+        }
+
+        foreach (var pair in left.Details)
+        {
+            if (!right.Details.TryGetValue(
+                    pair.Key,
+                    out var rightValues) ||
+                !pair.Value.SequenceEqual(
+                    rightValues,
+                    StringComparer.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static void ValidateAuditEvent(WorkerAuditEvent auditEvent)
+    {
+        if (string.IsNullOrWhiteSpace(auditEvent.EventId))
+            throw new ArgumentException("Audit event id is required.", nameof(auditEvent));
+        if (string.IsNullOrWhiteSpace(auditEvent.EventType))
+            throw new ArgumentException("Audit event type is required.", nameof(auditEvent));
+        if (string.IsNullOrWhiteSpace(auditEvent.WorkerId))
+            throw new ArgumentException("Audit worker id is required.", nameof(auditEvent));
     }
 
     public Task RecordTaskDispatchedAsync(WorkerTaskPacket task) =>

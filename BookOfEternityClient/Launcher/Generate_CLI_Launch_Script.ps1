@@ -149,7 +149,14 @@ retains both channels and the configured worker receives no
 pipe handle. Typed frames and an explicit `OutputDrained` acknowledgement replace
 worker-accessible marker files; unsupported platforms fail closed before worker
 release. Timeout/cancellation remains authoritative,
-and cleanup uncertainty quarantines the worker slot. Canonical writers recover
+and cleanup uncertainty transfers the complete process/workspace owner into a
+fixed-capacity reaper. Bounded retries retain that slot until process-tree
+death and authority disposal are confirmed, clean the workspace exactly once,
+and only then release the slot. Before release, the reaper durably records one
+stable-id `process-tree-cleanup-confirmed` event through an idempotent
+generation-bound canonical append; after generation replacement it uses a
+create-only retained `.worker_runtime/quarantine-audit/<eventId>.json` receipt.
+An uncertain audit write retains the same entry and slot for retry. Canonical writers recover
 an interrupted load and the durable `.boe_runtime/worker-apply-transactions`
 journal after lease acquisition or fail closed; state refresh holds the same
 lease across its complete read/modify/write.

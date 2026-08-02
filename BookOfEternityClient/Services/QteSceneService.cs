@@ -208,18 +208,47 @@ public sealed partial class QteSceneService
         FileSystemManager.CanonicalWriteLease? writeLease)
     {
         var json = await ReadCanonicalFileAsync(writeLease, QteOfferPath);
-        if (string.IsNullOrWhiteSpace(json))
+        if (json is null)
             return null;
 
         try
         {
-            return JsonSerializer.Deserialize<QteOffer>(json, JsonOpts);
+            return StrictJsonAuthority.Deserialize<QteOffer>(
+                json,
+                JsonOpts,
+                "QTE offer") ??
+                throw new InvalidDataException(
+                    "qte_offer.json contains a null QTE authority.");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (
+            ex is JsonException or
+            InvalidDataException or
+            NotSupportedException)
         {
             _logger.LogWarning(ex, "Не удалось разобрать qte_offer.json");
-            return null;
+            throw new InvalidDataException(
+                "qte_offer.json contains invalid QTE authority.",
+                ex);
         }
+    }
+
+    public async Task<QteOffer> BindAcceptedTurnAuthorityAsync(
+        QteOffer offer,
+        int sourceTurnNumber)
+    {
+        ArgumentNullException.ThrowIfNull(offer);
+        if (sourceTurnNumber <= 0)
+        {
+            throw new InvalidOperationException(
+                "QTE source turn authority must be positive.");
+        }
+
+        offer.SourceTurnNumber = sourceTurnNumber;
+        await WriteCanonicalFileAtomicAsync(
+            writeLease: null,
+            QteOfferPath,
+            JsonSerializer.Serialize(offer, JsonOpts));
+        return offer;
     }
 
     public void ClearOfferFile() =>
@@ -321,6 +350,10 @@ public sealed partial class QteSceneService
         QteOffer offer,
         int sourceTurnNumber)
     {
+        EnsureBoundTurnAuthority(
+            offer,
+            sourceTurnNumber,
+            "QTE decline");
         var state = await LoadRuntimeStateAsync(writeLease);
         state.PendingOffer = null;
         state.ActiveScene = null;
@@ -364,42 +397,53 @@ public sealed partial class QteSceneService
         FileSystemManager.CanonicalWriteLease? writeLease)
     {
         var json = await ReadCanonicalFileAsync(writeLease, QteRuntimePath);
-        if (string.IsNullOrWhiteSpace(json))
+        if (json is null)
             return;
 
         JsonNode? parsed;
         try
         {
-            parsed = JsonNode.Parse(json);
+            parsed = StrictJsonAuthority.Deserialize<JsonNode>(
+                json,
+                JsonOpts,
+                "QTE runtime");
         }
-        catch (JsonException ex)
+        catch (Exception ex) when (
+            ex is JsonException or
+            InvalidDataException or
+            NotSupportedException)
         {
-            _logger.LogWarning(ex, "Найден невалидный qte_runtime.json. Удаление как повреждённого client-owned runtime state.");
-            DeleteCanonicalFile(writeLease, QteRuntimePath);
-            return;
+            _logger.LogWarning(
+                ex,
+                "Найден невалидный qte_runtime.json. Runtime authority сохранён без изменений.");
+            throw new InvalidDataException(
+                "qte_runtime.json contains invalid QTE runtime authority.",
+                ex);
         }
 
         if (parsed is not JsonObject root)
         {
-            _logger.LogWarning("Найден qte_runtime.json с не-object корнем. Удаление как повреждённого runtime state.");
-            DeleteCanonicalFile(writeLease, QteRuntimePath);
-            return;
+            _logger.LogWarning(
+                "Найден qte_runtime.json с не-object корнем. Runtime authority сохранён без изменений.");
+            throw new InvalidDataException(
+                "qte_runtime.json must contain an object QTE runtime authority.");
         }
-
-        var changed = false;
 
         if (root.TryGetPropertyValue("activeScene", out var activeSceneNode) && activeSceneNode is not null)
         {
             if (activeSceneNode is not JsonObject activeScene ||
-                activeScene["offer"] is not JsonObject ||
+                activeScene["offer"] is not JsonObject activeOffer ||
                 !TryReadNodeString(activeScene["currentChapterId"], out var currentChapterId) ||
                 string.IsNullOrWhiteSpace(currentChapterId) ||
                 activeScene["acceptedAtTurn"] is null ||
-                !TryReadNodeInt(activeScene["acceptedAtTurn"], out _))
+                !TryReadNodeInt(activeScene["acceptedAtTurn"], out var acceptedAtTurn) ||
+                acceptedAtTurn <= 0 ||
+                !TryReadNodeInt(activeOffer["sourceTurnNumber"], out var sourceTurnNumber) ||
+                sourceTurnNumber <= 0 ||
+                sourceTurnNumber != acceptedAtTurn)
             {
-                root.Remove("activeScene");
-                root.Remove("pendingOffer");
-                changed = true;
+                throw new InvalidDataException(
+                    "qte_runtime.json contains invalid active QTE turn authority.");
             }
         }
 
@@ -407,29 +451,33 @@ public sealed partial class QteSceneService
             pendingOfferNode is not null &&
             pendingOfferNode is not JsonObject)
         {
-            root.Remove("pendingOffer");
-            changed = true;
-        }
-
-        if (root["activeScene"] is null && root["pendingOffer"] is JsonObject)
-        {
-            root.Remove("pendingOffer");
-            changed = true;
+            throw new InvalidDataException(
+                "qte_runtime.json contains invalid pending QTE offer authority.");
         }
 
         if (root.TryGetPropertyValue("lastDeclinedQteId", out var declinedIdNode) &&
             declinedIdNode is not null &&
-            !TryReadNodeString(declinedIdNode, out _))
+            (!TryReadNodeString(declinedIdNode, out var declinedId) ||
+             string.IsNullOrWhiteSpace(declinedId)))
         {
-            root.Remove("lastDeclinedQteId");
-            changed = true;
+            throw new InvalidDataException(
+                "qte_runtime.json contains invalid declined QTE identity authority.");
         }
 
         if (root.TryGetPropertyValue("lastDeclinedAtTurn", out var declinedTurnNode) &&
             declinedTurnNode is not null &&
-            !TryReadNodeInt(declinedTurnNode, out _))
+            (!TryReadNodeInt(declinedTurnNode, out var declinedTurn) ||
+             declinedTurn <= 0))
         {
-            root.Remove("lastDeclinedAtTurn");
+            throw new InvalidDataException(
+                "qte_runtime.json contains invalid declined QTE turn authority.");
+        }
+
+        var changed = false;
+
+        if (root["activeScene"] is null && root["pendingOffer"] is JsonObject)
+        {
+            root.Remove("pendingOffer");
             changed = true;
         }
 
@@ -497,6 +545,10 @@ public sealed partial class QteSceneService
         QteOffer offer,
         int currentTurnNumber)
     {
+        EnsureBoundTurnAuthority(
+            offer,
+            currentTurnNumber,
+            "QTE acceptance");
         var state = await LoadRuntimeStateAsync(writeLease);
         state.PendingOffer = offer;
         state.ActiveScene = new ActiveQteSceneState
@@ -548,6 +600,10 @@ public sealed partial class QteSceneService
         var state = await LoadRuntimeStateAsync(writeLease);
         var active = state.ActiveScene ?? throw new InvalidOperationException("QTE scene is not active.");
         var offer = active.Offer ?? throw new InvalidOperationException("QTE offer is missing.");
+        EnsureBoundTurnAuthority(
+            offer,
+            active.AcceptedAtTurn,
+            "QTE active scene");
 
         var chapter = offer.Chapters.FirstOrDefault(item =>
             string.Equals(item.ChapterId, active.CurrentChapterId, StringComparison.OrdinalIgnoreCase));
@@ -633,6 +689,21 @@ public sealed partial class QteSceneService
             ResultText = resultText,
             NextChapterId = target.NextChapterId
         };
+    }
+
+    private static void EnsureBoundTurnAuthority(
+        QteOffer offer,
+        int turnNumber,
+        string operation)
+    {
+        ArgumentNullException.ThrowIfNull(offer);
+        if (turnNumber <= 0 ||
+            offer.SourceTurnNumber is not > 0 ||
+            offer.SourceTurnNumber.Value != turnNumber)
+        {
+            throw new InvalidOperationException(
+                $"{operation} requires matching positive source turn authority.");
+        }
     }
 
     internal async Task<QteActionResolution> ResolveDarenShowcaseActionAsync(
@@ -4490,11 +4561,21 @@ public sealed partial class QteSceneService
 
         try
         {
-            return JsonSerializer.Deserialize<QteRuntimeState>(json, JsonOpts) ?? new QteRuntimeState();
+            return StrictJsonAuthority.Deserialize<QteRuntimeState>(
+                       json,
+                       JsonOpts,
+                       "QTE runtime") ??
+                   throw new InvalidDataException(
+                       "qte_runtime.json contains a null QTE authority root.");
         }
-        catch
+        catch (Exception ex) when (
+            ex is JsonException or
+            InvalidDataException or
+            NotSupportedException)
         {
-            return new QteRuntimeState();
+            throw new InvalidDataException(
+                "qte_runtime.json contains invalid QTE authority.",
+                ex);
         }
     }
 
@@ -5485,6 +5566,9 @@ public sealed partial class QteSceneService
 
         [JsonPropertyName("startChapterId")]
         public string StartChapterId { get; set; } = "";
+
+        [JsonPropertyName("sourceTurnNumber")]
+        public int? SourceTurnNumber { get; set; }
 
         [JsonPropertyName("chapters")]
         public List<QteChapter> Chapters { get; set; } = new();

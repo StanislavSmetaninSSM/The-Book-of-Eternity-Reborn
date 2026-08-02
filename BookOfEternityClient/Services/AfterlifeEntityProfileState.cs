@@ -251,21 +251,24 @@ internal static class AfterlifeEntityProfileState
         }
     }
 
-    internal static async Task<bool> ApplyPlayerSoulProfileClientAuthorityAsync(
+    internal static async Task<CanonicalMutationPublication?>
+        ApplyPlayerSoulProfileClientAuthorityAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
-        Func<Task>? afterInputsReadAsync = null)
+        Func<Task>? afterInputsReadAsync = null,
+        Func<string, Task<CanonicalMutationPublication>>?
+            publishReplacementAsync = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(writeLease);
 
         var currentRoot = await ReadObjectAsync(fs, StatePath);
         if (currentRoot == null)
-            return false;
+            return null;
 
         var soulRoot = await ReadObjectAsync(fs, "game_state/meta/soul_state.json");
         if (soulRoot == null)
-            return false;
+            return null;
 
         var projectedRoot = currentRoot.DeepClone().AsObject();
         var shiningRoot = await ReadObjectAsync(fs, ShiningAbodeState.StatePath);
@@ -274,11 +277,16 @@ internal static class AfterlifeEntityProfileState
         ApplyPlayerSoulProfileClientAuthority(projectedRoot, soulRoot, shiningRoot);
 
         if (JsonNode.DeepEquals(currentRoot, projectedRoot))
-            return false;
+            return null;
 
         var content = projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
-        await fs.WriteFileAtomicAsync(writeLease, StatePath, content);
-        return true;
+        if (publishReplacementAsync != null)
+            return await publishReplacementAsync(content);
+
+        return await fs.WriteFileAtomicWithPublicationAsync(
+            writeLease,
+            StatePath,
+            content);
     }
 
     private static HashSet<string> CollectCommandAuthoredMentorShowcaseKeys(JsonObject? currentRoot, JsonObject? previousRoot)

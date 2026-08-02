@@ -471,7 +471,15 @@ before and cover the ownership handshake. Platforms without an equivalent
 queryable kernel complete-tree boundary fail closed before worker release.
 Complete-tree and unattached-host termination confirmation are bounded; timeout
 and cancellation remain authoritative, while every cleanup uncertainty
-quarantines capacity for the remainder of the process lifetime.
+transfers the complete owner to one fixed-capacity reaper entry. The last fixed
+backoff repeats while ownership remains uncertain; confirmed death and
+process-tree authority disposal permit exactly-once workspace cleanup and slot
+release, while permanently unconfirmed owners remain bounded by admission
+capacity. Release also requires one stable-id terminal audit event. Its
+generation-bound canonical append is idempotent; a replaced generation uses the
+retained runtime-root capability to publish a create-only
+`.worker_runtime/quarantine-audit/<eventId>.json` receipt. I/O uncertainty
+retains the same owner and slot for a later pass.
 
 **Rationale**: Worker-visible markers let descendants forge readiness or success.
 Attaching after direct launch leaves a child-escape race, beginning timeout after
@@ -1427,20 +1435,32 @@ before publication proves intent, not who created the current file.
 **Decision**: A worker workspace owns stable runtime/workspace/session directory
 handles for its lifetime. Unconfirmed process-tree shutdown transfers all
 process and workspace owners to a quarantined reaper; it never releases the
-owner and deletes by path.
+owner and deletes by path. The owner retains one stable terminal audit identity.
+It releases only after an idempotent generation-bound canonical append or, when
+that generation was replaced, a create-only receipt under the retained
+`.worker_runtime/quarantine-audit` authority is durable.
 
 **Rationale**: Path validation before a later read/write/delete does not prevent
 a junction swap, and cleanup is unsafe while a descendant process may still be
 using the workspace.
 
-### Decision 139: Load staging remains single-link through publication
+### Decision 139: Load staging uses one controlled guard handoff through publication
 
-**Decision**: Open and validate every staged regular file, retain those handles
-through the staging-directory move, and repeat identity, link-count, length,
-and digest validation before commit.
+**Decision**: Open and validate every staged regular file as single-link
+authority. Because Windows refuses a directory rename while descendant file
+handles remain open, create exactly one private transaction-owned guard link
+outside the moving subtree while the original handle is retained. Exact-prove
+the two names share one identity-plus-digest object, retain the guard through
+the move, overlap it with the published handle, delete the guard through opened
+authority, and prove the published file is single-link again before activation
+or commit. Retain one non-delete-shared handle on the private guard root through
+its exact opened-directory deletion. Any third or unowned link or guard-root
+swap fails closed.
 
-**Rationale**: Initial create-only validation does not prevent a later hard
-link from turning an external alias into canonical authority.
+**Rationale**: Releasing every descendant handle creates the post-check race,
+while retaining a descendant handle prevents the Windows directory rename. One
+private non-writable guard transfers the same physical capability without an
+unowned namespace gap and is removed before published bytes become canonical.
 
 ### Decision 140: Save archive budgets are trusted client authority
 

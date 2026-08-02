@@ -1,6 +1,6 @@
 # Research: Test Suite Performance and Verification Lanes
 
-**Source issue**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
 
 ## Baseline Findings
 
@@ -142,6 +142,9 @@ when a new partial Guardian source is not assigned.
 - `FullValidation`: tests/classes intentionally invoking the public full pipeline.
 - `RegressionIntegration`: file-backed Guardian, Explorer, GameEngine,
   browser-command, and local-host workflow regressions.
+- `RegressionIntegrationOnly`: an exhaustive matrix available through
+  RegressionIntegration but excluded from routine PreMerge except for its
+  exact reviewed sentinels.
 - `ProcessIntegration`: tests/classes starting a real child process.
 - `E2E`: end-to-end client or Agent Console workflows.
 - `LifecycleIntegration`: the complete GameEngine turn-lifecycle class, run
@@ -201,7 +204,7 @@ test-project builds, discovery, tests, and cleanup. Its non-overlapping
 schedule is:
 
 1. the complete fast assembly plus integration tests filtered with
-   `Category!=FullValidation&Category!=DeepValidation&Category!=ProcessIntegration&Category!=E2E&(Category!=LifecycleIntegration|Category=PreMergeSentinel)`,
+   `Category!=FullValidation&Category!=DeepValidation&Category!=ProcessIntegration&Category!=E2E&(Category!=LifecycleIntegration|Category=PreMergeSentinel)&(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)`,
    with at most four test hosts overall and at most two fast hosts;
 2. `Category=ProcessIntegration&Category!=E2E` sequentially;
 3. `Category=E2E` sequentially.
@@ -211,14 +214,15 @@ DeepValidation is the disjoint Integration-only union
 It has a 1,950-result floor. LifecycleIntegration selects
 `Category=LifecycleIntegration&Category!=ProcessIntegration&Category!=E2E` as
 one descriptor under a ten-minute cap and has a 186-result floor. PreMerge has
-a 4,490-result floor. Exactly ten lifecycle methods also carry
-`PreMergeSentinel`; every other lifecycle method stays outside routine
-PreMerge.
+a 4,240-result floor. Exactly ten lifecycle methods and ten methods from the
+358-case `AfterlifeSpiritualConflictValidationTests` matrix also carry
+`PreMergeSentinel`; every other case in those exhaustive groups stays outside
+routine PreMerge and remains explicitly selectable.
 
 ## Final Verification Decision
 
-Run focused controls during implementation, two consecutive Fast controls at
-final verification, and one PreMerge control. Do not serially run all
+Run focused controls during implementation, one Fast control at a meaningful
+checkpoint, and one final PreMerge control. Do not serially run all
 diagnostic lanes before PreMerge unless a focused failure requires diagnosis.
 LifecycleIntegration and DeepValidation are conditional and explicit. They run
 only for a relevant boundary change, related diagnosis, or an explicitly
@@ -243,6 +247,17 @@ The rejected all-inclusive attempt is retained as historical capacity evidence:
 duplicates `0`, cleanup succeeded, projected lower bound `25:37.741`. It was
 correctness-clean and capacity-invalid, motivating the approved two-tier
 design.
+
+Phase 45 later reached the same capacity boundary after adding regressions:
+the exact clean-checkout attempt completed `4606/4606` available cases green
+in `15:00.159`, but had only about eleven seconds left after
+ProcessIntegration and could not complete the final 15 E2E cases. Replay of
+the retained descriptor timings showed that applying the existing
+RegressionIntegration duration costs to PreMerge saves about 72 seconds.
+Keeping the exhaustive 358-case spiritual-conflict class in its diagnostic
+lane and admitting ten representative sentinels saves about another 126
+parallel slot-seconds. This changes selection, not coverage ownership: the
+full matrix remains in RegressionIntegration and no assertion is removed.
 
 The documented runner interface is:
 

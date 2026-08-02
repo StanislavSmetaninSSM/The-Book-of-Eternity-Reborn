@@ -120,6 +120,10 @@ public partial class ValidationService
                 ActorId);
     }
 
+    private readonly record struct AfterlifeFullCarrierPreTurnAuthority(
+        ValidatedPendingTurnSnapshotStatus Status,
+        IReadOnlyDictionary<string, string>? ProfilesByIdentity);
+
     private static IReadOnlySet<string> MergeActorMaterializationSectionSets(
         IReadOnlySet<string> left,
         IReadOnlySet<string> right)
@@ -1241,6 +1245,230 @@ public partial class ValidationService
         actorId = identityNode.GetString()!.Trim();
         identityKey = $"{actorType}\u001f{actorId}";
         return true;
+    }
+
+    private void ValidateAfterlifeEntityProfileFullCarrierAuthority(
+        JsonElement updates,
+        bool hasUpdates,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUpdates ||
+            updates.ValueKind != JsonValueKind.Array ||
+            updates.GetArrayLength() == 0)
+        {
+            return;
+        }
+
+        var authority = ReadValidatedAfterlifeFullCarrierPreTurnAuthoritySync();
+        if (authority.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            authority.ProfilesByIdentity == null)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Полный carrier профиля сущности посмертия нельзя принять без однозначной валидированной pre-turn authority.",
+                code: "afterlife_entity_profile_full_carrier_pre_turn_authority_unusable",
+                section: "AfterlifeEntityProfiles",
+                expected: "usable validated pre-turn afterlife profile snapshot with unique canonical identities",
+                actual: authority.Status.ToString(),
+                repairHint: "Восстанови валидированный pending-turn snapshot; не доказывай историческое состояние текущим полным carrier."));
+            return;
+        }
+
+        var index = 0;
+        foreach (var update in updates.EnumerateArray())
+        {
+            var updateContext = $"{context}[{index++}]";
+            if (update.ValueKind != JsonValueKind.Object ||
+                TryFindDuplicateJsonProperty(update, out _) ||
+                !TryReadCanonicalAfterlifePreTurnActorIdentity(
+                    update,
+                    out _,
+                    out _,
+                    out var identityKey))
+            {
+                continue;
+            }
+
+            if (!authority.ProfilesByIdentity.TryGetValue(identityKey, out var preTurnProfileJson))
+                continue;
+
+            using var preTurnDocument = JsonDocument.Parse(preTurnProfileJson);
+            var preTurnProfile = preTurnDocument.RootElement;
+            if (preTurnProfile.TryGetProperty(ActorMaterializationContract.PropertyName, out _))
+            {
+                issues.Add(new ValidationIssue(
+                    updateContext,
+                    IssueSeverity.Error,
+                    "Исторический материализованный профиль нельзя повторно присылать или заменять полным afterlifeEntityProfileUpdates carrier.",
+                    code: "afterlife_entity_profile_historical_full_carrier_forbidden",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "dedicated afterlife delta command for the exact changed surface",
+                    actual: identityKey.Replace('\u001f', ':'),
+                    repairHint: "Удали полный carrier и используй afterlifeEntityCustomStateChanges, afterlifeActorGoalUpdates, relationship/progression/art или другую точную delta-поверхность."));
+                continue;
+            }
+
+            if (!IsBoundedAfterlifeLegacyFullCarrierMigration(preTurnProfile, update))
+            {
+                issues.Add(new ValidationIssue(
+                    updateContext,
+                    IssueSeverity.Error,
+                    "Legacy-профиль может пройти через полный carrier только как доказуемая ограниченная миграция без изменения исторических полей.",
+                    code: "afterlife_entity_profile_unproven_full_carrier_migration",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "all historical properties preserved exactly; only a first materialization envelope and bounded missing canonical fields may be added",
+                    actual: identityKey.Replace('\u001f', ':'),
+                    repairHint: "Сохрани все существующие данные без изменений; игровые изменения выполняй отдельными delta-командами."));
+            }
+        }
+    }
+
+    private AfterlifeFullCarrierPreTurnAuthority
+        ReadValidatedAfterlifeFullCarrierPreTurnAuthoritySync()
+    {
+        var lookup = LoadValidatedPendingTurnSnapshotLookupSync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+            return new AfterlifeFullCarrierPreTurnAuthority(lookup.Status, null);
+
+        var preTurnJson = ReadValidatedPendingTurnSnapshotFileSync(
+            lookup.Manifest,
+            AfterlifeActorMaterializationStatePath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+        {
+            return new AfterlifeFullCarrierPreTurnAuthority(
+                ValidatedPendingTurnSnapshotStatus.Unusable,
+                null);
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(preTurnJson);
+            var root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Object ||
+                TryFindDuplicateJsonProperty(root, out _) ||
+                !root.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles) ||
+                profiles.ValueKind != JsonValueKind.Array)
+            {
+                return new AfterlifeFullCarrierPreTurnAuthority(
+                    ValidatedPendingTurnSnapshotStatus.Unusable,
+                    null);
+            }
+
+            var profilesByIdentity = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var profile in profiles.EnumerateArray())
+            {
+                if (profile.ValueKind != JsonValueKind.Object ||
+                    !TryReadCanonicalAfterlifePreTurnActorIdentity(
+                        profile,
+                        out _,
+                        out _,
+                        out var identityKey) ||
+                    !profilesByIdentity.TryAdd(identityKey, profile.GetRawText()))
+                {
+                    return new AfterlifeFullCarrierPreTurnAuthority(
+                        ValidatedPendingTurnSnapshotStatus.Unusable,
+                        null);
+                }
+            }
+
+            return new AfterlifeFullCarrierPreTurnAuthority(
+                ValidatedPendingTurnSnapshotStatus.Usable,
+                profilesByIdentity);
+        }
+        catch (JsonException)
+        {
+            return new AfterlifeFullCarrierPreTurnAuthority(
+                ValidatedPendingTurnSnapshotStatus.Unusable,
+                null);
+        }
+    }
+
+    private static bool IsBoundedAfterlifeLegacyFullCarrierMigration(
+        JsonElement preTurnProfile,
+        JsonElement update)
+    {
+        if (preTurnProfile.ValueKind != JsonValueKind.Object ||
+            update.ValueKind != JsonValueKind.Object ||
+            TryFindDuplicateJsonProperty(preTurnProfile, out _) ||
+            TryFindDuplicateJsonProperty(update, out _) ||
+            preTurnProfile.TryGetProperty(ActorMaterializationContract.PropertyName, out _) ||
+            !update.TryGetProperty(ActorMaterializationContract.PropertyName, out var materialization) ||
+            materialization.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        foreach (var historicalProperty in preTurnProfile.EnumerateObject())
+        {
+            if (!update.TryGetProperty(historicalProperty.Name, out var updatedValue) ||
+                !JsonValuesSemanticallyEqual(
+                    historicalProperty.Value.GetRawText(),
+                    updatedValue.GetRawText()))
+            {
+                return false;
+            }
+        }
+
+        foreach (var updateProperty in update.EnumerateObject())
+        {
+            if (preTurnProfile.TryGetProperty(updateProperty.Name, out _))
+                continue;
+            if (!IsAllowedAfterlifeLegacyMigrationAddition(updateProperty))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static bool IsAllowedAfterlifeLegacyMigrationAddition(JsonProperty property)
+    {
+        if (string.Equals(
+                property.Name,
+                ActorMaterializationContract.PropertyName,
+                StringComparison.Ordinal))
+        {
+            return property.Value.ValueKind == JsonValueKind.Object;
+        }
+
+        if (property.Name is
+            "displayName" or
+            "appearanceDescription" or
+            "profileSummary" or
+            "motivation" or
+            "realm" or
+            "locationId" or
+            "locationName" or
+            "gmThoughtsSummary")
+        {
+            return property.Value.ValueKind == JsonValueKind.String &&
+                   !string.IsNullOrWhiteSpace(property.Value.GetString());
+        }
+
+        if (property.Name == "personalityProfile")
+            return property.Value.ValueKind == JsonValueKind.Object;
+
+        if (property.Name == "standardArts")
+            return property.Value.ValueKind == JsonValueKind.Object &&
+                   !property.Value.EnumerateObject().Any();
+
+        if (property.Name is
+            "specialArts" or
+            "customStates" or
+            "fateCards" or
+            "relationships" or
+            "personalQuests" or
+            "completedActivities" or
+            "ledger" or
+            "progressionLedger")
+        {
+            return property.Value.ValueKind == JsonValueKind.Array &&
+                   property.Value.GetArrayLength() == 0;
+        }
+
+        return property.Name is "goals" or "currentActivity" &&
+               property.Value.ValueKind == JsonValueKind.Null;
     }
 
     private static string? ReadActorMaterializationString(JsonElement value, params string[] propertyNames)

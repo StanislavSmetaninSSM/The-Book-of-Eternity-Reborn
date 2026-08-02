@@ -684,6 +684,13 @@ public sealed class BrowserGenerationFencingSourceTests
             canonicalWrite.IndexOf(
                 "WriteFileAtomicBytesCoreAsync(",
                 StringComparison.Ordinal));
+        Assert.True(
+            canonicalWrite.IndexOf(
+                "WriteFileAtomicBytesCoreAsync(",
+                StringComparison.Ordinal) <
+            canonicalWrite.IndexOf(
+                "RecordCanonicalMutationPublicationAsync(",
+                StringComparison.Ordinal));
         var compareExchange = ExtractMethod(
             fileSystemSource,
             "CompareExchangeFileBytesAsync",
@@ -694,6 +701,13 @@ public sealed class BrowserGenerationFencingSourceTests
                 StringComparison.Ordinal) <
             compareExchange.IndexOf(
                 "DeleteFileCore(",
+                StringComparison.Ordinal));
+        Assert.True(
+            compareExchange.IndexOf(
+                "DeleteFileCore(",
+                StringComparison.Ordinal) <
+            compareExchange.IndexOf(
+                "RecordCanonicalMutationPublicationAsync(",
                 StringComparison.Ordinal));
         var canonicalDelete = ExtractMethod(
             fileSystemSource,
@@ -706,33 +720,48 @@ public sealed class BrowserGenerationFencingSourceTests
             canonicalDelete.IndexOf(
                 "DeleteFileCore(",
                 StringComparison.Ordinal));
+        Assert.True(
+            canonicalDelete.IndexOf(
+                "DeleteFileCore(",
+                StringComparison.Ordinal) <
+            canonicalDelete.IndexOf(
+                "RecordCanonicalMutationPublicationAsync(",
+                StringComparison.Ordinal));
 
         Assert.Contains(
-            "SchemaVersion: 5",
+            "SchemaVersion: CurrentBrowserWriteManifestSchemaVersion",
             rollbackSource,
             StringComparison.Ordinal);
         Assert.Contains(
-            "PublishedSha256s",
+            "BrowserWriteMutationIntent",
             rollbackSource,
             StringComparison.Ordinal);
         Assert.Contains(
-            "DeletionIntended",
+            "BrowserWritePublicationReceipt",
             rollbackSource,
             StringComparison.Ordinal);
-        Assert.Contains(
-            "WriteFileAtomicBytesIfCurrentOwnedAsync(",
+        var restoreEntry = ExtractMethod(
             rollbackSource,
+            "RestoreBrowserWriteEntryAsync",
+            "internal static async Task");
+        Assert.Contains(
+            "receipt.PhysicalIdentity",
+            restoreEntry,
             StringComparison.Ordinal);
         Assert.Contains(
-            "DeleteFileIfCurrentOwnedAsync(",
-            rollbackSource,
+            "WriteFileAtomicBytesIfCurrentAuthorityAsync(",
+            restoreEntry,
             StringComparison.Ordinal);
         Assert.DoesNotContain(
-            "IsTransactionOwnedPostImage(entry, current)",
-            rollbackSource,
+            "PublishedSha256s",
+            restoreEntry,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "DeletionIntended",
+            restoreEntry,
             StringComparison.Ordinal);
         Assert.Contains(
-            "allowedDestinationSha256s",
+            "expectedDestinationIdentity",
             reversiblePublicationSource,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -741,6 +770,10 @@ public sealed class BrowserGenerationFencingSourceTests
             StringComparison.Ordinal);
         Assert.Contains(
             "denyConcurrentWrites",
+            physicalAuthoritySource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "EnsureExactOpenedFileAuthority",
             physicalAuthoritySource,
             StringComparison.Ordinal);
 
@@ -776,9 +809,21 @@ public sealed class BrowserGenerationFencingSourceTests
             "save_manifest.json",
             saveLoadSource,
             StringComparison.Ordinal);
-        Assert.Contains(
-            "SHA256.HashDataAsync",
+        var archiveEntryHash = ExtractMethod(
             saveLoadSource,
+            "ComputeArchiveEntrySha256Async",
+            "private static async Task<string>");
+        Assert.Contains(
+            "IncrementalHash.CreateHash(HashAlgorithmName.SHA256)",
+            archiveEntryHash,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "hash.AppendData(",
+            archiveEntryHash,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "total != expectedLength",
+            archiveEntryHash,
             StringComparison.Ordinal);
         Assert.Contains(
             "StrictJsonAuthority.Deserialize<SaveIntegrityManifest>",
@@ -860,6 +905,53 @@ public sealed class BrowserGenerationFencingSourceTests
         Assert.True(
             source.Split("_coordinator.RunBoundTransactionAsync", StringSplitOptions.None).Length - 1 >= 4,
             "Every QTE browser mutation family must enter a generation-bound canonical transaction.");
+    }
+
+    [Fact]
+    public void BrowserQteTurnAuthority_UsesPersistedOfferAndRuntimeInsteadOfTurnRequest()
+    {
+        var webSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "WebUi",
+            "QteWebInteractionService.cs"));
+        var lifecycleSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient",
+            "Core",
+            "GameEngine",
+            "GameEngine.TurnLifecycle.cs"));
+        var offerDecision = ExtractMethod(
+            webSource,
+            "ResolveOfferDecisionBoundAsync",
+            "private async Task<QteWebStateDto>");
+        var actionDecision = ExtractMethod(
+            webSource,
+            "ResolveActionBoundAsync",
+            "private async Task<QteWebStateDto>");
+        var acceptedOffer = ExtractMethod(
+            lifecycleSource,
+            "HandleAcceptedQteOfferAsync",
+            "private async Task<(bool EarlyExit, GameResponse Response)>");
+
+        Assert.Contains(
+            "offer.SourceTurnNumber",
+            offerDecision,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "activeScene.AcceptedAtTurn",
+            actionDecision,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ReadCurrentTurnNumberAsync",
+            webSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "BindAcceptedTurnAuthorityAsync",
+            acceptedOffer,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "snapshotContext.TurnNumber",
+            acceptedOffer,
+            StringComparison.Ordinal);
     }
 
     [Fact]

@@ -1522,8 +1522,15 @@ public sealed partial class NpcTradeService
         {
             root["equipment"] = new JsonObject
             {
-                ["head"] = null, ["body"] = null, ["hands"] = null, ["feet"] = null,
-                ["mainHand"] = null, ["offHand"] = null, ["neck"] = null, ["ring1"] = null, ["ring2"] = null
+                ["head"] = null,
+                ["body"] = null,
+                ["hands"] = null,
+                ["feet"] = null,
+                ["mainHand"] = null,
+                ["offHand"] = null,
+                ["neck"] = null,
+                ["ring1"] = null,
+                ["ring2"] = null
             };
         }
     }
@@ -1545,33 +1552,15 @@ public sealed partial class NpcTradeService
 
     private static bool IsQuestBoundItem(JsonObject item)
     {
-        if (item["isQuestItem"] is JsonValue questValue && questValue.TryGetValue<bool>(out var isQuestItem) && isQuestItem)
-            return true;
-        return string.Equals(GetNodeString(item["group"]), "Quest", StringComparison.OrdinalIgnoreCase);
+        return item["isQuestItem"] is JsonValue questValue &&
+               questValue.TryGetValue<bool>(out var isQuestItem) &&
+               isQuestItem;
     }
 
     private static bool IsSoulRelicLikeItem(JsonObject item)
     {
-        if (!string.IsNullOrWhiteSpace(GetNodeString(item["relicId"])) ||
-            !string.IsNullOrWhiteSpace(GetNodeString(item["soulRelicId"])))
-            return true;
-
-        var type = GetNodeString(item["type"]);
-        if (!string.IsNullOrWhiteSpace(type) &&
-            (type.Contains("soul relic", StringComparison.OrdinalIgnoreCase) ||
-             type.Contains("реликвия души", StringComparison.OrdinalIgnoreCase)))
-            return true;
-
-        var group = GetNodeString(item["group"]);
-        if (!string.IsNullOrWhiteSpace(group) &&
-            (group.Contains("soul relic", StringComparison.OrdinalIgnoreCase) ||
-             group.Contains("реликвия души", StringComparison.OrdinalIgnoreCase)))
-            return true;
-
-        var itemId = GetNodeString(item["itemId"]) ?? GetNodeString(item["id"]) ?? GetNodeString(item["existedId"]);
-        return !string.IsNullOrWhiteSpace(itemId) &&
-               (itemId.StartsWith("sr_", StringComparison.OrdinalIgnoreCase) ||
-                itemId.Contains("soulrelic", StringComparison.OrdinalIgnoreCase));
+        return !string.IsNullOrWhiteSpace(
+            GetNodeString(item["relicId"]));
     }
 
     private static void UpsertInventoryItem(JsonArray items, JsonObject item)
@@ -1608,14 +1597,8 @@ public sealed partial class NpcTradeService
         var quality = NormalizeInventoryItemQuality(FirstNonEmpty(GetNodeString(item["quality"]), GetNodeString(item["rarity"]), "Common"));
         var price = Math.Max(0, GetNodeInt(item["price"], GetNodeInt(tradeSource?["price"], 0)));
         var count = Math.Max(1, GetNodeInt(item["count"], GetNodeInt(item["quantity"], GetNodeInt(tradeSource?["quantity"], 1))));
-        var type = GetNodeString(item["type"]) ?? "";
-        var group = GetNodeString(item["group"]) ?? "";
-        var isContainer = GetNodeBool(item["isContainer"]) ||
-                          ContainsAny(type, "container", "контейнер", "сумка", "кофр") ||
-                          ContainsAny(group, "container", "контейнер");
-        var isConsumption = GetNodeBool(item["isConsumption"]) ||
-                            ContainsAny(type, "consumable", "consumption", "расход", "припас", "еда", "food") ||
-                            ContainsAny(group, "consumable", "consumption", "расход", "припас", "еда", "food");
+        var isContainer = GetNodeBool(item["isContainer"]);
+        var isConsumption = GetNodeBool(item["isConsumption"]);
 
         EnsureStringField(item, "itemId", itemId);
         EnsureStringField(item, "id", itemId);

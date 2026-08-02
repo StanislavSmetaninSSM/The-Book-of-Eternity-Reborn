@@ -795,7 +795,40 @@ public sealed class LocalWebUiHostTests : IDisposable
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
 
-        Assert.Equal("NoScene", root["qte"]!["state"]!.GetValue<string>());
+        Assert.Equal("Failed", root["qte"]!["state"]!.GetValue<string>());
+        Assert.False(
+            string.IsNullOrWhiteSpace(
+                root["qte"]!["error"]!.GetValue<string>()));
+        Assert.Equal(
+            "qte-error",
+            root["turnState"]!["state"]!.GetValue<string>());
+        Assert.False(
+            root["turnState"]!["canStartBrowserWrite"]!.GetValue<bool>());
+        Assert.Equal(
+            "validation-failed",
+            root["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal(
+            "error",
+            root["turnState"]!["severity"]!.GetValue<string>());
+        Assert.Equal(
+            "qte-error",
+            root["actionComposer"]!["mode"]!.GetValue<string>());
+        Assert.False(
+            root["actionComposer"]!["canSubmit"]!.GetValue<bool>());
+        var localTurnActions = root["actionMenu"]!["sections"]!
+            .AsArray()
+            .SelectMany(
+                static section => section!["actions"]!.AsArray())
+            .Where(
+                static action =>
+                    action!["mutationMode"]!.GetValue<string>() ==
+                    "local-turn")
+            .ToArray();
+        Assert.NotEmpty(localTurnActions);
+        Assert.All(
+            localTurnActions,
+            static action =>
+                Assert.False(action!["enabled"]!.GetValue<bool>()));
         Assert.True(File.Exists(runtimePath));
         Assert.Equal(before, File.ReadAllText(runtimePath));
     }
@@ -1609,6 +1642,7 @@ public sealed class LocalWebUiHostTests : IDisposable
           "declineHint": "Можно отказаться от QTE и оставить сцену обычной проверке.",
           "cinematicJustification": "Редкая кинематографичная сцена.",
           "startChapterId": "start",
+          "sourceTurnNumber": 12,
           "chapters": [
             {
               "chapterId": "start",

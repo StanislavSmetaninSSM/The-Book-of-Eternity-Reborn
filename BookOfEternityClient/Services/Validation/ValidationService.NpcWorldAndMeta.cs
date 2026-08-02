@@ -5051,6 +5051,7 @@ public partial class ValidationService
     {
         var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature, string? BuybackInventorySignature)>(StringComparer.OrdinalIgnoreCase);
         var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(root);
+        var knownPermanentLocationIds = ReadKnownPermanentLocationIdsSync();
         var currentSceneAnchor = ReadCurrentSceneLocationAnchorSync();
         var currentSceneLocationId = currentSceneAnchor.LocationId;
         var currentSceneInitialId = currentSceneAnchor.InitialId;
@@ -5129,6 +5130,43 @@ public partial class ValidationService
                 }
                 var initialLocationId = GetFirstNonEmptyString(item, "initialLocationId");
                 var currentLocationId = GetFirstNonEmptyString(item, "currentLocationId");
+                var isNewUpdateNpc =
+                    validateCurrentMaterializationPersonality &&
+                    string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
+                    usesSameTurnInitialId;
+                var hasInitialLocationAuthority = !string.IsNullOrWhiteSpace(initialLocationId);
+                var hasCurrentLocationAuthority = !string.IsNullOrWhiteSpace(currentLocationId);
+                if (isNewUpdateNpc &&
+                    hasInitialLocationAuthority == hasCurrentLocationAuthority)
+                {
+                    issues.Add(new ValidationIssue(
+                        itemContext,
+                        IssueSeverity.Error,
+                        "Новый Mortal actor в UpdateNPCs должен иметь ровно одну location authority: existing currentLocationId или same-turn initialLocationId.",
+                        code: "npc_new_update_location_authority_not_exactly_one",
+                        section: "NPC",
+                        actor: $"mortal_npc:{effectiveNpcId}",
+                        expected: "exactly one of known currentLocationId or valid same-turn initialLocationId",
+                        actual: hasCurrentLocationAuthority
+                            ? $"currentLocationId={currentLocationId}; initialLocationId={initialLocationId}"
+                            : "both missing/null",
+                        repairHint: "Для существующей canonical location оставь только currentLocationId. Для создаваемой в этом ходу location оставь currentLocationId = null и скопируй exact newLocations/currentLocationData.initialId в initialLocationId."));
+                }
+                if (isNewUpdateNpc &&
+                    hasCurrentLocationAuthority &&
+                    !knownPermanentLocationIds.Contains(currentLocationId!))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.currentLocationId",
+                        IssueSeverity.Error,
+                        "currentLocationId нового Mortal actor не найден в валидированной pre-turn location authority.",
+                        code: "npc_new_update_current_location_unknown",
+                        section: "NPC",
+                        actor: $"mortal_npc:{effectiveNpcId}",
+                        expected: "locationId from validated pre-turn current_location/world_map",
+                        actual: currentLocationId,
+                        repairHint: "Используй exact существующий locationId из валидированного snapshot либо создай location в этом ходу и свяжи NPC через initialLocationId."));
+                }
                 if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
                     !string.IsNullOrWhiteSpace(currentSceneLocationId) &&
                     string.IsNullOrWhiteSpace(currentLocationId))
@@ -5219,8 +5257,8 @@ public partial class ValidationService
                 }
 
                 if (!string.IsNullOrWhiteSpace(initialLocationId) &&
-                    sameTurnLocationInitialIds.Count > 0 &&
-                    !sameTurnLocationInitialIds.Contains(initialLocationId))
+                    !sameTurnLocationInitialIds.Contains(initialLocationId) &&
+                    (isNewUpdateNpc || sameTurnLocationInitialIds.Count > 0))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.initialLocationId",
@@ -6076,6 +6114,40 @@ public partial class ValidationService
                     repairHint: "Используй в completedActivities.finalOutcome только Success, SuccessWithComplication или Failure."));
             }
         }
+    }
+
+    private HashSet<string> ReadKnownPermanentLocationIdsSync()
+    {
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var relativePath in new[]
+                 {
+                     "game_state/world/current_location.json",
+                     "game_state/world/world_map.json"
+                 })
+        {
+            var json = ReadPreTurnTrackedFileSync(relativePath);
+            if (string.IsNullOrWhiteSpace(json))
+                continue;
+
+            try
+            {
+                using var document = JsonDocument.Parse(json);
+                foreach (var location in EnumerateLocationLikeObjects(
+                             document.RootElement,
+                             includeLocationUpdates: false))
+                {
+                    var locationId = GetFirstNonEmptyString(location, "locationId");
+                    if (!string.IsNullOrWhiteSpace(locationId))
+                        ids.Add(locationId);
+                }
+            }
+            catch (JsonException)
+            {
+                // Unusable pre-turn location authority yields no trusted permanent IDs.
+            }
+        }
+
+        return ids;
     }
 
     private static HashSet<string> CollectSameTurnLocationInitialIds(JsonElement root)
