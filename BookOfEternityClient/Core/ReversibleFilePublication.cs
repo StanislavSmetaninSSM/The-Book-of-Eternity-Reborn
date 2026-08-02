@@ -392,7 +392,8 @@ internal static class ReversibleFilePublication
         IReadOnlySet<string>? allowedDestinationSha256s = null,
         bool allowMissingDestination = false,
         PhysicalFileAuthority.FileIdentity? expectedDestinationIdentity = null,
-        string? expectedDestinationSha256 = null)
+        string? expectedDestinationSha256 = null,
+        Func<Task>? afterPublicationNotCommitted = null)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -608,7 +609,25 @@ internal static class ReversibleFilePublication
             if (committed)
                 ExceptionDispatchInfo.Capture(publicationFailure).Throw();
             if (journal == null || intent == null)
+            {
+                if (afterPublicationNotCommitted != null)
+                {
+                    try
+                    {
+                        await afterPublicationNotCommitted();
+                    }
+                    catch (Exception recorderFailure)
+                    {
+                        throw new InvalidDataException(
+                            $"{authorityName} was not published, but its durable mutation intent could not be cleared.",
+                            new AggregateException(
+                                publicationFailure,
+                                recorderFailure));
+                    }
+                }
+
                 ExceptionDispatchInfo.Capture(publicationFailure).Throw();
+            }
 
             Exception? rollbackFailure = null;
             try
@@ -639,6 +658,22 @@ internal static class ReversibleFilePublication
                     new AggregateException(
                         publicationFailure,
                         rollbackFailure));
+            }
+
+            if (afterPublicationNotCommitted != null)
+            {
+                try
+                {
+                    await afterPublicationNotCommitted();
+                }
+                catch (Exception recorderFailure)
+                {
+                    throw new InvalidDataException(
+                        $"{authorityName} was rolled back exactly, but its durable mutation intent could not be cleared.",
+                        new AggregateException(
+                            publicationFailure,
+                            recorderFailure));
+                }
             }
 
             ExceptionDispatchInfo.Capture(publicationFailure).Throw();

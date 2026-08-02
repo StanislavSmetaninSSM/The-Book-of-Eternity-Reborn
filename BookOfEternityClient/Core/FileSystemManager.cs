@@ -85,6 +85,8 @@ internal interface ICanonicalMutationIntentRecorder
         string relativePath,
         byte[]? desiredContent);
 
+    Task RecordMutationNonPublicationAsync(string relativePath);
+
     Task RecordMutationPublicationAsync(
         string relativePath,
         CanonicalMutationPublication publication);
@@ -718,7 +720,13 @@ public class FileSystemManager
             relativePath,
             bytes);
         var publication =
-            await WriteFileAtomicBytesCoreAsync(relativePath, bytes);
+            await WriteFileAtomicBytesCoreAsync(
+                relativePath,
+                bytes,
+                afterPublicationNotCommitted: () =>
+                    RecordCanonicalMutationNonPublicationAsync(
+                        writeLease,
+                        relativePath));
         await RecordCanonicalMutationPublicationAsync(
             writeLease,
             relativePath,
@@ -749,7 +757,11 @@ public class FileSystemManager
             bytes,
             CancellationToken.None,
             expectedDestinationIdentity: expectedCurrentIdentity,
-            expectedDestinationSha256: expectedHash);
+            expectedDestinationSha256: expectedHash,
+            afterPublicationNotCommitted: () =>
+                RecordCanonicalMutationNonPublicationAsync(
+                    writeLease,
+                    relativePath));
         await RecordCanonicalMutationPublicationAsync(
             writeLease,
             relativePath,
@@ -774,7 +786,13 @@ public class FileSystemManager
             relativePath,
             content);
         var publication =
-            await WriteFileAtomicBytesCoreAsync(relativePath, content);
+            await WriteFileAtomicBytesCoreAsync(
+                relativePath,
+                content,
+                afterPublicationNotCommitted: () =>
+                    RecordCanonicalMutationNonPublicationAsync(
+                        writeLease,
+                        relativePath));
         await RecordCanonicalMutationPublicationAsync(
             writeLease,
             relativePath,
@@ -821,7 +839,11 @@ public class FileSystemManager
         var publication = await WriteFileAtomicBytesCoreAsync(
             relativePath,
             nextContent,
-            cancellationToken);
+            cancellationToken,
+            afterPublicationNotCommitted: () =>
+                RecordCanonicalMutationNonPublicationAsync(
+                    writeLease,
+                    relativePath));
         await RecordCanonicalMutationPublicationAsync(
             writeLease,
             relativePath,
@@ -886,14 +908,28 @@ public class FileSystemManager
             desiredContent);
         CanonicalMutationPublication? publication;
         if (desiredContent == null)
+        {
             publication = DeleteFileCore(
                 relativePath,
                 capturePublication: writeLease.MutationIntentRecorder != null);
+            if (publication == null)
+            {
+                await RecordCanonicalMutationNonPublicationAsync(
+                    writeLease,
+                    relativePath);
+            }
+        }
         else
+        {
             publication =
                 await WriteFileAtomicBytesCoreAsync(
                     relativePath,
-                    desiredContent);
+                    desiredContent,
+                    afterPublicationNotCommitted: () =>
+                        RecordCanonicalMutationNonPublicationAsync(
+                            writeLease,
+                            relativePath));
+        }
         if (publication != null)
         {
             await RecordCanonicalMutationPublicationAsync(
@@ -949,8 +985,14 @@ public class FileSystemManager
 
     private Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
-        byte[] content) =>
-        WriteFileAtomicBytesCoreAsync(relativePath, content, CancellationToken.None);
+        byte[] content,
+        Func<Task>? afterPublicationNotCommitted = null) =>
+        WriteFileAtomicBytesCoreAsync(
+            relativePath,
+            content,
+            CancellationToken.None,
+            afterPublicationNotCommitted:
+                afterPublicationNotCommitted);
 
     private async Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
@@ -959,7 +1001,8 @@ public class FileSystemManager
         IReadOnlySet<string>? allowedCurrentSha256s = null,
         bool allowMissingCurrent = false,
         PhysicalFileAuthority.FileIdentity? expectedDestinationIdentity = null,
-        string? expectedDestinationSha256 = null)
+        string? expectedDestinationSha256 = null,
+        Func<Task>? afterPublicationNotCommitted = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if ((expectedDestinationIdentity == null) !=
@@ -1031,7 +1074,9 @@ public class FileSystemManager
                     expectedDestinationIdentity:
                         expectedDestinationIdentity,
                     expectedDestinationSha256:
-                        expectedDestinationSha256);
+                        expectedDestinationSha256,
+                    afterPublicationNotCommitted:
+                        afterPublicationNotCommitted);
             }
             else
             {
@@ -1950,6 +1995,14 @@ public class FileSystemManager
                     writeLease,
                     relativePath,
                     publication)
+                .GetAwaiter()
+                .GetResult();
+        }
+        else
+        {
+            RecordCanonicalMutationNonPublicationAsync(
+                    writeLease,
+                    relativePath)
                 .GetAwaiter()
                 .GetResult();
         }
@@ -3076,6 +3129,17 @@ public class FileSystemManager
         await writeLease.MutationIntentRecorder.RecordMutationIntentAsync(
             relativePath,
             desiredContent);
+    }
+
+    private static async Task RecordCanonicalMutationNonPublicationAsync(
+        CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        if (writeLease.MutationIntentRecorder == null)
+            return;
+
+        await writeLease.MutationIntentRecorder
+            .RecordMutationNonPublicationAsync(relativePath);
     }
 
     private static async Task RecordCanonicalMutationPublicationAsync(

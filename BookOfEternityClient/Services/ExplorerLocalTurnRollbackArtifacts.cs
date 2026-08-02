@@ -174,6 +174,48 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
         }
 
+        public async Task RecordMutationNonPublicationAsync(
+            string relativePath)
+        {
+            var trackedFile = NormalizeRelativePath(_fs, relativePath);
+            await _manifestGate.WaitAsync();
+            try
+            {
+                var index = _entries.FindIndex(entry =>
+                    string.Equals(
+                        entry.TrackedFile,
+                        trackedFile,
+                        StringComparison.OrdinalIgnoreCase));
+                if (index < 0)
+                    return;
+
+                var entry = _entries[index];
+                if (entry.MutationIntent == null)
+                    return;
+                if (entry.PublicationReceipt != null)
+                {
+                    throw new InvalidDataException(
+                        "A completed canonical publication cannot be recorded as non-published.");
+                }
+
+                var updatedEntry = entry with
+                {
+                    MutationIntent = null,
+                    PublicationReceipt = null,
+                    PublishedSha256s = null,
+                    DeletionIntended = false
+                };
+                var updatedEntries = _entries.ToList();
+                updatedEntries[index] = updatedEntry;
+                await PersistManifestAsync(updatedEntries);
+                _entries[index] = updatedEntry;
+            }
+            finally
+            {
+                _manifestGate.Release();
+            }
+        }
+
         public async Task RecordMutationPublicationAsync(
             string relativePath,
             CanonicalMutationPublication publication)
@@ -251,7 +293,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
             }
         }
 
-        private async Task PersistManifestAsync()
+        private async Task PersistManifestAsync(
+            IReadOnlyList<BrowserWriteRollbackEntry>? entries = null)
         {
             var manifest = new BrowserWriteRollbackManifest(
                 SchemaVersion: CurrentBrowserWriteManifestSchemaVersion,
@@ -259,7 +302,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 Status: "staged",
                 Scope: _scope,
                 CreatedAtUtc: _createdAtUtc,
-                Entries: _entries,
+                Entries: entries ?? _entries,
                 CleanupDirectories: _cleanupDirectories,
                 ExternalEntries: _externalEntries);
             await _fs.WriteFileAtomicAsync(
