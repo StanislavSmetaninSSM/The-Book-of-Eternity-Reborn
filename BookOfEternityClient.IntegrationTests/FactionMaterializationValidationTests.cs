@@ -11,6 +11,18 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     private const string MortalPath = "game_state/factions/faction_core.json";
     private const string ShiningPath = "game_state/meta/shining_abode_state.json";
 
+    public static TheoryData<string, string> MissingMortalSemantics => new()
+    {
+        { "factionColor", "faction_materialization_mortal_color_missing" },
+        { "purpose", "faction_materialization_mortal_purpose_missing" },
+        { "currentAgenda", "faction_materialization_mortal_agenda_missing" },
+        { "principles", "faction_materialization_mortal_principles_missing" },
+        { "memory", "faction_materialization_mortal_memory_missing" },
+        { "governance", "faction_materialization_mortal_governance_missing" },
+        { "leadership", "faction_materialization_mortal_leadership_missing" },
+        { "scribeChronicle", "faction_materialization_mortal_chronicle_missing" }
+    };
+
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ValidationService _validator;
@@ -300,6 +312,211 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             issue.Code == "faction_materialization_missing");
     }
 
+    [Theory]
+    [MemberData(nameof(MissingMortalSemantics))]
+    public async Task NewMortalFaction_MissingSemanticField_FailsRaw(
+        string propertyName,
+        string expectedCode)
+    {
+        var faction = BuildCompleteMortalCreation();
+        faction.Remove(propertyName);
+        await WriteMortalCreationAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task NewMortalFaction_AllSevenExactEmptySurfaces_Passes()
+    {
+        await WriteMortalCreationAsync(BuildCompleteMinimalMortalCreation());
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task NewMortalFaction_InvalidColor_FailsRaw()
+    {
+        var faction = BuildCompleteMortalCreation();
+        faction["factionColor"] = "watch-blue";
+        await WriteMortalCreationAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_color_invalid" &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Theory]
+    [InlineData("structure", "faction_materialization_mortal_structure_missing")]
+    [InlineData("resources", "faction_materialization_mortal_resources_missing")]
+    [InlineData("custom", "faction_materialization_mortal_custom_missing")]
+    public async Task NewMortalFaction_MissingCanonicalSidecarTarget_Fails(
+        string sidecar,
+        string expectedCode)
+    {
+        await WriteCanonicalMinimalMortalCreationAsync(missingSidecar: sidecar);
+
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task NewMortalFaction_ProjectRowContradictsEmptyDisposition_FailsRaw()
+    {
+        var faction = BuildCompleteMortalCreation();
+        faction["activeProjects"] = new JsonArray(new JsonObject
+        {
+            ["projectId"] = "project_watchtower",
+            ["name"] = "Raise the Watchtower"
+        });
+        await WriteMortalCreationAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_disposition_mismatch" &&
+            issue.Actor == "mortal_faction:temp-faction-watch" &&
+            issue.Section == "projects");
+    }
+
+    [Theory]
+    [InlineData("relation", "faction_materialization_mortal_relation_unknown_target")]
+    [InlineData("location", "faction_materialization_mortal_territory_unknown_location")]
+    [InlineData("leader", "faction_materialization_mortal_leader_unknown_npc")]
+    public async Task NewMortalFaction_UnknownCrossReference_FailsRaw(
+        string referenceKind,
+        string expectedCode)
+    {
+        var faction = BuildCompleteMortalCreation();
+        switch (referenceKind)
+        {
+            case "relation":
+                faction["relations"] = new JsonArray(new JsonObject
+                {
+                    ["targetFactionId"] = "faction_missing",
+                    ["status"] = "Neutral",
+                    ["description"] = "No trusted envoy has confirmed this faction."
+                });
+                break;
+            case "location":
+                faction["controlledTerritories"] = new JsonArray(new JsonObject
+                {
+                    ["locationId"] = "location_missing",
+                    ["locationName"] = "Missing Hold"
+                });
+                break;
+            case "leader":
+                faction["leadership"] = new JsonObject
+                {
+                    ["leadershipState"] = "headed",
+                    ["summary"] = "A named captain commands the watch.",
+                    ["leaderNpcIds"] = new JsonArray("npc_missing")
+                };
+                break;
+        }
+
+        await WriteMortalCreationAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task NewMortalFaction_InitialIdCollidesWithPreTurnFaction_FailsRaw()
+    {
+        var faction = BuildCompleteMortalCreation();
+        faction["initialId"] = "faction_watch";
+        faction["materialization"] = BuildMortalEnvelope(
+            "faction_watch",
+            "fmat_watch_creation");
+        var current = new JsonObject
+        {
+            ["factionDataChanges"] = new JsonArray(faction)
+        };
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, current.ToJsonString()),
+            (MortalPath, MortalRoot(LegacyMortalFaction("faction_watch")).ToJsonString()));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_initial_id_collision" &&
+            issue.Actor == "mortal_faction:faction_watch");
+    }
+
+    [Fact]
+    public async Task NewMortalFaction_VacantLeadershipWithLeaderIds_FailsRaw()
+    {
+        var faction = BuildCompleteMortalCreation();
+        faction["leadership"]!["leaderNpcIds"] = new JsonArray("npc_watch_captain");
+        await WriteMortalCreationAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_leadership_invalid" &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task NewMortalFaction_OmitsExactPlayerNonMemberValue_FailsRaw()
+    {
+        var faction = BuildCompleteMortalCreation();
+        faction.Remove("reputationDescription");
+        await WriteMortalCreationAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_player_membership_incomplete" &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task NewMortalFaction_NpcAffiliationTargetsUnknownFaction_FailsRaw()
+    {
+        await WriteMortalCreationAsync(BuildCompleteMinimalMortalCreation());
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "npc_watch_captain",
+                    ["name"] = "Captain Mira",
+                    ["factionAffiliations"] = new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = "faction_missing",
+                        ["factionName"] = "Missing Faction",
+                        ["rank"] = "Captain",
+                        ["branch"] = null,
+                        ["membershipStatus"] = "Active"
+                    })
+                })
+            }.ToJsonString());
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_npc_affiliation_unknown_faction");
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))
@@ -317,6 +534,118 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         await WriteCurrentAndSnapshotAsync(
             (MortalPath, current.ToJsonString()),
             (MortalPath, preTurn.ToJsonString()));
+    }
+
+    private async Task WriteMortalCreationAsync(JsonObject faction)
+    {
+        var current = new JsonObject
+        {
+            ["factionDataChanges"] = new JsonArray(faction)
+        };
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, current.ToJsonString()),
+            (MortalPath, MortalRoot().ToJsonString()));
+    }
+
+    private async Task WriteCanonicalMinimalMortalCreationAsync(string? missingSidecar = null)
+    {
+        var faction = BuildCompleteMinimalMortalCreation();
+        faction["factionId"] = "temp-faction-watch";
+        faction.Remove("initialId");
+        faction.Remove("isNewFaction");
+        faction.Remove("governance");
+        faction.Remove("leadership");
+        faction.Remove("ranks");
+        faction.Remove("structuredBonuses");
+        faction.Remove("resources");
+        faction.Remove("activeProjects");
+        faction.Remove("completedProjects");
+        faction.Remove("customStates");
+        faction.Remove("scribeChronicle");
+
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, MortalRoot(faction).ToJsonString()),
+            (MortalPath, MortalRoot().ToJsonString()));
+
+        if (!string.Equals(missingSidecar, "structure", StringComparison.Ordinal))
+        {
+            await _fs.WriteFileAtomicAsync(
+                "game_state/factions/faction_structure.json",
+                new JsonObject
+                {
+                    ["entries"] = new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = "temp-faction-watch",
+                        ["factionName"] = "Wayfarer Watch",
+                        ["governance"] = new JsonObject
+                        {
+                            ["model"] = "Open moot",
+                            ["decisionProcess"] = "Active wardens decide by simple majority."
+                        },
+                        ["leadership"] = new JsonObject
+                        {
+                            ["leadershipState"] = "vacant",
+                            ["summary"] = "No successor has been chosen.",
+                            ["leaderNpcIds"] = new JsonArray()
+                        },
+                        ["ranks"] = new JsonObject
+                        {
+                            ["branches"] = new JsonArray()
+                        },
+                        ["structuredBonuses"] = new JsonArray()
+                    })
+                }.ToJsonString());
+        }
+
+        if (!string.Equals(missingSidecar, "resources", StringComparison.Ordinal))
+        {
+            await _fs.WriteFileAtomicAsync(
+                "game_state/factions/faction_resources.json",
+                new JsonObject
+                {
+                    ["entries"] = new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = "temp-faction-watch",
+                        ["factionName"] = "Wayfarer Watch",
+                        ["metaResources"] = new JsonArray(),
+                        ["strategicGoods"] = new JsonArray()
+                    })
+                }.ToJsonString());
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/factions/faction_projects.json",
+            new JsonObject
+            {
+                ["activeProjects"] = new JsonArray(),
+                ["completedProjects"] = new JsonArray()
+            }.ToJsonString());
+
+        if (!string.Equals(missingSidecar, "custom", StringComparison.Ordinal))
+        {
+            await _fs.WriteFileAtomicAsync(
+                "game_state/factions/faction_custom.json",
+                new JsonObject
+                {
+                    ["entries"] = new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = "temp-faction-watch",
+                        ["factionName"] = "Wayfarer Watch",
+                        ["customStates"] = new JsonArray()
+                    })
+                }.ToJsonString());
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/factions/faction_chronicles.json",
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = "temp-faction-watch",
+                    ["entry"] = "#12 - The Wayfarer Watch took responsibility for the western road."
+                })
+            }.ToJsonString());
     }
 
     private async Task WriteMortalAndShiningCreationsAsync(
@@ -456,6 +785,87 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         faction["materialization"] = BuildShiningEnvelope(factionId, materializationId);
         return faction;
     }
+
+    private static JsonObject BuildCompleteMortalCreation() =>
+        BuildCompleteMinimalMortalCreation();
+
+    private static JsonObject BuildCompleteMinimalMortalCreation() =>
+        new()
+        {
+            ["factionId"] = null,
+            ["initialId"] = "temp-faction-watch",
+            ["isNewFaction"] = true,
+            ["name"] = "Wayfarer Watch",
+            ["description"] = "A small watch formed to keep one road safe.",
+            ["image_prompt"] = "weathered road wardens beneath a wooden watchtower",
+            ["factionColor"] = "#7B6852",
+            ["purpose"] = "Keep the old western road open.",
+            ["currentAgenda"] = "Repair the bridge before the spring thaw.",
+            ["principles"] = new JsonArray(
+                "Every traveler receives warning before judgment."),
+            ["memory"] = new JsonObject
+            {
+                ["summary"] = "The watch formed after the bridge massacre.",
+                ["lastUpdatedTurn"] = 12,
+                ["enduringFacts"] = new JsonArray(
+                    "The first wardens were caravan survivors."),
+                ["openThreads"] = new JsonArray(
+                    "The bridge attackers were never identified.")
+            },
+            ["governance"] = new JsonObject
+            {
+                ["model"] = "Open moot",
+                ["decisionProcess"] = "Active wardens decide by simple majority."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["leadershipState"] = "vacant",
+                ["summary"] = "The founder died and no successor has been chosen.",
+                ["leaderNpcIds"] = new JsonArray()
+            },
+            ["powerProfile"] = new JsonObject
+            {
+                ["military"] = 0,
+                ["economic"] = 0,
+                ["social"] = 0,
+                ["covert"] = 0,
+                ["logistics"] = 0,
+                ["stability"] = 0,
+                ["arcane_tech"] = 0,
+                ["exploration"] = 0
+            },
+            ["ranks"] = new JsonObject
+            {
+                ["branches"] = new JsonArray()
+            },
+            ["structuredBonuses"] = new JsonArray(),
+            ["resources"] = new JsonObject
+            {
+                ["metaResources"] = new JsonArray(),
+                ["strategicGoods"] = new JsonArray()
+            },
+            ["relations"] = new JsonArray(),
+            ["activeProjects"] = new JsonArray(),
+            ["completedProjects"] = new JsonArray(),
+            ["controlledTerritories"] = new JsonArray(),
+            ["customStates"] = new JsonArray(),
+            ["scribeChronicle"] = new JsonArray(
+                "#12 - The Wayfarer Watch took responsibility for the western road."),
+            ["isPlayerFaction"] = false,
+            ["isPlayerMember"] = false,
+            ["playerRank"] = null,
+            ["playerBranch"] = null,
+            ["playerStrategyDirective"] = null,
+            ["reputation"] = 0,
+            ["reputationDescription"] = null,
+            ["level"] = 1,
+            ["experience"] = 0,
+            ["experienceForNextLevel"] = 100,
+            ["developmentArchetype"] = "Custodian",
+            ["materialization"] = BuildMortalEnvelope(
+                "temp-faction-watch",
+                "fmat_watch_creation")
+        };
 
     private static JsonObject BuildMortalEnvelope(
         string factionId,

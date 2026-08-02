@@ -7504,11 +7504,29 @@ public partial class ValidationService
                 continue;
 
             ValidateCanonicalFactionIdentity(item, itemContext, issues);
+            var factionId = GetFirstNonEmptyString(item, "factionId");
+            var materialized =
+                !string.IsNullOrWhiteSpace(factionId) &&
+                CurrentMortalFactionHasMaterializationReceipt(factionId);
+            var requiredStructureFields = new[]
+            {
+                "governance",
+                "leadership",
+                "ranks",
+                "structuredBonuses"
+            };
             var missingStructureFields = new List<string>();
-            if (!item.TryGetProperty("ranks", out var ranks))
-                missingStructureFields.Add("ranks");
-            if (!item.TryGetProperty("structuredBonuses", out var structuredBonuses))
-                missingStructureFields.Add("structuredBonuses");
+            foreach (var requiredField in requiredStructureFields)
+            {
+                if (!materialized &&
+                    requiredField is "governance" or "leadership")
+                {
+                    continue;
+                }
+
+                if (!item.TryGetProperty(requiredField, out _))
+                    missingStructureFields.Add(requiredField);
+            }
 
             if (missingStructureFields.Count > 0)
             {
@@ -7518,12 +7536,18 @@ public partial class ValidationService
                     "Canonical faction_structure entry не содержит обязательные корневые поля",
                     code: "canonical_faction_structure_missing_required_fields",
                     section: "Factions",
-                    expected: "ranks and structuredBonuses in each entries[] item",
+                    expected: materialized
+                        ? "governance, leadership, ranks, and structuredBonuses in materialized entries[] items"
+                        : "ranks and structuredBonuses in legacy entries[] items",
                     actual: string.Join(", ", missingStructureFields),
-                    repairHint: "Для canonical faction_structure.json каждая запись в entries[] должна хранить полные ranks и structuredBonuses, а не partial fragment."));
+                    repairHint: materialized
+                        ? "Для materialized faction_structure.json записи сохрани полные governance, leadership, ranks и structuredBonuses."
+                        : "Для legacy canonical faction_structure.json записи сохрани полные ranks и structuredBonuses."));
                 continue;
             }
 
+            var ranks = item.GetProperty("ranks");
+            var structuredBonuses = item.GetProperty("structuredBonuses");
             if (RequireObject(ranks, $"{itemContext}.ranks", issues))
             {
                 if (!TryGetArray(ranks, "branches", $"{itemContext}.ranks.branches", issues, out var branches))

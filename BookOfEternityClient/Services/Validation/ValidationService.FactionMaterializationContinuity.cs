@@ -53,6 +53,9 @@ public partial class ValidationService
             rawBeforeNormalization: true,
             issues,
             materializedFactions);
+        await ValidateAcceptedTurnMortalFactionMaterializationCompletenessAsync(
+            rawBeforeNormalization: true,
+            issues);
         await ValidateAcceptedTurnShiningFactionMaterializationContinuityAsync(
             rawBeforeNormalization: true,
             issues,
@@ -76,6 +79,9 @@ public partial class ValidationService
             rawBeforeNormalization: false,
             issues,
             materializedFactions);
+        await ValidateAcceptedTurnMortalFactionMaterializationCompletenessAsync(
+            rawBeforeNormalization: false,
+            issues);
         await ValidateAcceptedTurnShiningFactionMaterializationContinuityAsync(
             rawBeforeNormalization: false,
             issues,

@@ -252,6 +252,49 @@ public partial class ValidationService
                 repairHint: "Если фракция уже существует в canonical faction_core.json, передай её permanent factionId. initialId оставляй только для genuinely new same-turn faction."));
         }
 
+        var isMortalFullCarrier = itemContext.Contains(
+            ".factionDataChanges[",
+            StringComparison.Ordinal);
+        var isCreationOrPromotion = false;
+        var alreadyMaterialized = false;
+        var collidesWithPreTurnId = false;
+        var materializationFactionId = string.Empty;
+        if (isMortalFullCarrier)
+        {
+            isCreationOrPromotion = TryClassifyMortalFullCarrier(
+                item,
+                out materializationFactionId,
+                out alreadyMaterialized,
+                out collidesWithPreTurnId);
+        }
+
+        if (isCreationOrPromotion)
+        {
+            if (collidesWithPreTurnId)
+            {
+                issues.Add(FactionIssue(
+                    $"{itemContext}.initialId",
+                    "faction_materialization_mortal_initial_id_collision",
+                    materializationFactionId,
+                    "A Mortal creation initialId must not collide with a pre-turn permanent factionId."));
+            }
+
+            ValidateMortalSemanticCore(
+                item,
+                itemContext,
+                materializationFactionId,
+                HasPreTurnMortalChronicle(materializationFactionId),
+                issues);
+        }
+        else if (isMortalFullCarrier && alreadyMaterialized)
+        {
+            AddExistingFactionFullResendIssue(
+                itemContext,
+                "mortal_faction",
+                materializationFactionId,
+                issues);
+        }
+
         RequireString(item, itemContext, issues, "name");
         RequireString(item, itemContext, issues, "description");
         ValidateOptionalString(item, itemContext, issues, "factionColor");
