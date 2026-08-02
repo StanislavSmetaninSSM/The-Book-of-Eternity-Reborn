@@ -27,6 +27,8 @@ public sealed class IntegrationTestBoundaryTests
     private const string E2ETrait = "[Trait(\"Category\", \"E2E\")]";
     private const string RegressionIntegrationTrait =
         "[Trait(\"Category\", \"RegressionIntegration\")]";
+    private const string RegressionIntegrationOnlyTrait =
+        "[Trait(\"Category\", \"RegressionIntegrationOnly\")]";
     private const string LifecycleIntegrationTrait =
         "[Trait(\"Category\", \"LifecycleIntegration\")]";
 
@@ -53,6 +55,32 @@ public sealed class IntegrationTestBoundaryTests
                 ["CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"] =
                     ["PreMergeSentinel"],
                 ["RestorePreTurnBackup_BrowserDirectGachaPreservesExactPreSpendSoulBytes"] =
+                    ["PreMergeSentinel"]
+            };
+
+    private static readonly IReadOnlyDictionary<string, string[]>
+        AfterlifeSpiritualConflictSentinelCategories =
+            new Dictionary<string, string[]>(StringComparer.Ordinal)
+            {
+                ["ValidateGameStateAsync_NoEffectExchange_AllowsIdenticalBeforeAfter"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ContestedExchange_RejectsDiceNotFromAuthoritativePool"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ValidActiveCombatCondition_AllowsKnownContractShape"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_PlayerSoulDissipationRequiresTerminalGameOver"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ShiningVictoryReward_AllowsLightSparkDelta"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_CurrentContestedExchange_RequiresMatchupAudit"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_ActiveConflictInSealedShiningAbode_FailsAvailabilityGate"] =
+                    ["PreMergeSentinel"],
+                ["ValidateGameStateAsync_HistoricalConflictBeforeLightIncarnate_DoesNotRequireRetroactiveModifier"] =
+                    ["PreMergeSentinel"],
+                ["ApplyUpdate_ExchangeAppliesAfterSnapshotToActiveConflict"] =
+                    ["PreMergeSentinel"],
+                ["ApplyUpdate_StartMissingRealm_MarksInvalidAndDoesNotCreateConflict"] =
                     ["PreMergeSentinel"]
             };
 
@@ -190,12 +218,14 @@ public sealed class IntegrationTestBoundaryTests
         RegressionIntegrationCategories =
             RegressionIntegrationSources.ToDictionary(
                 fileName => fileName,
-                fileName => string.Equals(
-                    fileName,
-                    "GuardianSystemRegressionTests.cs",
-                    StringComparison.Ordinal)
-                        ? new[] { RegressionIntegrationTrait, DeepValidationTrait }
-                        : new[] { RegressionIntegrationTrait },
+                fileName => fileName switch
+                {
+                    "GuardianSystemRegressionTests.cs" =>
+                        new[] { RegressionIntegrationTrait, DeepValidationTrait },
+                    "AfterlifeSpiritualConflictValidationTests.cs" =>
+                        new[] { RegressionIntegrationTrait, RegressionIntegrationOnlyTrait },
+                    _ => new[] { RegressionIntegrationTrait }
+                },
                 StringComparer.Ordinal);
 
     private static readonly string[] BroadValidationPreMergeSentinelSources =
@@ -272,7 +302,8 @@ public sealed class IntegrationTestBoundaryTests
             "$coreIntegrationFilter = " +
                 "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
                 "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
-                "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)\"",
+                "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)&\" + " +
+                "\"(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)\"",
             "$lifecycleIntegrationFilter = " +
                 "\"Category=LifecycleIntegration&\" + " +
                 "\"Category!=ProcessIntegration&Category!=E2E\"",
@@ -342,7 +373,8 @@ public sealed class IntegrationTestBoundaryTests
             "$coreIntegrationFilter = " +
             "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
             "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
-            "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)\"",
+            "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)&\" + " +
+            "\"(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)\"",
             "$deepValidationFilter = " +
             "\"(Category=FullValidation|Category=DeepValidation)&\" + " +
             "\"Category!=LifecycleIntegration&\" + " +
@@ -350,7 +382,7 @@ public sealed class IntegrationTestBoundaryTests
             "$lifecycleIntegrationFilter = " +
             "\"Category=LifecycleIntegration&\" + " +
             "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "$PreMergeMinimumCases = 4490",
+            "$PreMergeMinimumCases = 4240",
             "$DeepValidationMinimumCases = 1950",
             "$LifecycleIntegrationMinimumCases = 186",
             "$isComposedCoverageLane = $effectiveLane -in @( " +
@@ -429,7 +461,7 @@ public sealed class IntegrationTestBoundaryTests
             $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
             $"stderr:{Environment.NewLine}{probe.StandardError}");
         Assert.Contains(
-            "DURATION-SCHEDULE cases=105; maxCost=542; first=heavy; exclusive=True; weighted=True; bounded=True; regression=True",
+            "DURATION-SCHEDULE cases=105; maxCost=542; first=heavy; exclusive=True; weighted=True; bounded=True; regression=True; preMerge=True",
             probe.StandardOutput,
             StringComparison.Ordinal);
     }
@@ -1035,7 +1067,11 @@ public sealed class IntegrationTestBoundaryTests
     {
         AssertExactCategoryManifest(
             RegressionIntegrationCategories,
-            [RegressionIntegrationTrait, DeepValidationTrait],
+            [
+                RegressionIntegrationTrait,
+                RegressionIntegrationOnlyTrait,
+                DeepValidationTrait
+            ],
             "RegressionIntegration/DeepValidation");
 
         AssertExactCategoryManifest(
@@ -1069,6 +1105,19 @@ public sealed class IntegrationTestBoundaryTests
         Assert.Equal(
             ["DeepValidation", "RegressionIntegration"],
             CategoryTraits("GuardianSystemRegressionTests.cs"));
+        Assert.Equal(
+            ["RegressionIntegration", "RegressionIntegrationOnly"],
+            CategoryTraits("AfterlifeSpiritualConflictValidationTests.cs"));
+
+        var actualAfterlifeConflictMethodCategories =
+            MethodCategoryTraits("AfterlifeSpiritualConflictValidationTests.cs");
+        Assert.Equal(
+            AfterlifeSpiritualConflictSentinelCategories.Keys.Order(StringComparer.Ordinal),
+            actualAfterlifeConflictMethodCategories.Keys.Order(StringComparer.Ordinal));
+        foreach (var (methodName, categories) in AfterlifeSpiritualConflictSentinelCategories)
+        {
+            Assert.Equal(categories, actualAfterlifeConflictMethodCategories[methodName]);
+        }
 
         var commandDisplayCategories =
             new Dictionary<string, IReadOnlyDictionary<string, string[]>>(StringComparer.Ordinal)

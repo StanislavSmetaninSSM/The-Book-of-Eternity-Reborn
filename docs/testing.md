@@ -60,12 +60,21 @@ ordinary post-edit controls.
 PreMerge uses one deadline across frontend verification, both test-project
 builds, discovery, all tests, and owned-tree cleanup. It runs the full fast
 assembly together with core integration tests excluding `FullValidation`,
-`DeepValidation`, `ProcessIntegration`, `E2E`, and ordinary
-`LifecycleIntegration` tests. Exactly ten reviewed
-`Category=PreMergeSentinel` lifecycle methods remain in core Integration.
+`DeepValidation`, `ProcessIntegration`, `E2E`, ordinary
+`LifecycleIntegration` tests, and exhaustive `RegressionIntegrationOnly`
+matrices. Exactly ten reviewed lifecycle methods and ten representative
+`AfterlifeSpiritualConflictValidationTests` methods carry
+`Category=PreMergeSentinel` and remain in core Integration.
 ProcessIntegration and E2E then run sequentially with non-overlapping filters.
 External test-process concurrency is capped at four overall and two for the
 fast project.
+
+`AfterlifeSpiritualConflictValidationTests` remains complete and selectable:
+`RegressionIntegration` runs all 358 cases. Run that diagnostic lane when
+changing spiritual-conflict validation/normalization, investigating a related
+failure, or when an exhaustive control is explicitly requested. Ordinary
+changes and unrelated final merges use the exact ten-method sentinel manifest
+through PreMerge; no test or assertion is deleted.
 
 DeepValidation is conditional and explicit. It selects the Integration-only
 union of `FullValidation` and `DeepValidation`, excluding ProcessIntegration
@@ -76,12 +85,15 @@ to every PreMerge run.
 
 ### Duration-Aware Diagnostic Scheduling
 
-DeepValidation and RegressionIntegration discover their complete bounded
-selections before building an execution plan. Retained duration costs affect
-bin balancing and long-first ordering only; they never add, remove, skip, or
-recategorize a discovered test. Parameterized rows discovered dynamically can
-make `-PlanOnly` `EstimatedCases` lower than the final count, so the merged TRX
-summary is the authoritative coverage result.
+DeepValidation, RegressionIntegration, and PreMerge discover their complete
+bounded selections before building an execution plan. Retained duration costs
+affect bin balancing and long-first ordering only; they never add, remove,
+skip, or recategorize a discovered test. PreMerge applies the retained
+RegressionIntegration costs to its overlapping core classes, while the
+ten-case spiritual-conflict sentinel keeps its discovered-case cost instead
+of inheriting the exhaustive class cost. Parameterized rows discovered
+dynamically can make `-PlanOnly` `EstimatedCases` lower than the final count,
+so the merged TRX summary is the authoritative coverage result.
 
 Within DeepValidation, storage-heavy validation descriptors share one
 scheduling group and therefore do not overlap. The state-only validator
@@ -124,22 +136,27 @@ starting frontend verification, builds, or tests.
 - `FullValidation` identifies intentional complete-pipeline sentinels.
 - `RegressionIntegration` identifies file-backed Guardian, Explorer,
   GameEngine, browser-command, and local-host workflow regressions.
+- `RegressionIntegrationOnly` keeps an exhaustive matrix in the explicit
+  RegressionIntegration lane; reviewed `PreMergeSentinel` methods are its only
+  routine PreMerge overlap.
 - `ProcessIntegration` identifies tests that start a real child process.
 - `E2E` identifies end-to-end console, Agent Console, and built-frontend
   workflows.
 - `LifecycleIntegration` identifies the complete GameEngine turn-lifecycle
   class.
-- `PreMergeSentinel` admits a reviewed small lifecycle/full-validation sample
-  into PreMerge without admitting its complete heavy class or matrix.
+- `PreMergeSentinel` admits a reviewed small lifecycle/full-validation or
+  regression-integration sample into PreMerge without admitting its complete
+  heavy class or matrix.
 - `DeepValidation` identifies the exhaustive Guardian regression matrix;
   the DeepValidation lane also includes `FullValidation`.
 
 A slow test may carry more than one diagnostic category. PreMerge prevents
-overlap by excluding FullValidation, DeepValidation, and ordinary
-LifecycleIntegration from core Integration, excluding E2E from its
-ProcessIntegration phase, and selecting E2E alone. The only intentional
-LifecycleIntegration/PreMerge overlap is the exact ten-method sentinel
-manifest. DeepValidation and PreMerge remain disjoint.
+overlap by excluding FullValidation, DeepValidation, ordinary
+LifecycleIntegration, and exhaustive RegressionIntegrationOnly tests from
+core Integration, excluding E2E from its ProcessIntegration phase, and
+selecting E2E alone. The intentional overlaps are exact ten-method lifecycle
+and spiritual-conflict sentinel manifests. DeepValidation and PreMerge remain
+disjoint.
 
 ## Results and Cleanup
 
@@ -162,7 +179,7 @@ enumerates or kills processes by name. A timeout returns exit code 124; any
 failed descriptor, TRX parse error, duplicate composed-lane test ID, or
 incomplete owned-tree cleanup is non-zero evidence.
 
-## Fresh Final Evidence
+## Historical #1505 Evidence
 
 The accepted controls on the baseline Windows machine are:
 
@@ -180,12 +197,18 @@ GameEngine lifecycle tests. PreMerge included ProcessIntegration `440/440`,
 E2E `15/15`, and exactly the ten reviewed lifecycle sentinels.
 
 Both Fast controls met five minutes, LifecycleIntegration met ten minutes,
-DeepValidation met 15 minutes and its 1,950-result floor, and PreMerge met its
-single 15-minute deadline and 4,490-result floor. Every accepted control
+DeepValidation met 15 minutes and its 1,950-result floor, and the historical
+#1505 PreMerge met its single 15-minute deadline and then-current 4,490-result
+floor. Every accepted control
 reported exit `0`, no failures, no duplicate IDs, no timeout, complete
 owned-tree cleanup, and zero remaining owned processes. PreMerge did not meet
 the preferred below-ten-minute target; its accepted runner time was
 `12:12.687`.
+
+The Phase 45 amendment uses a 4,240-result floor. Its final PlanOnly contract
+contains 19 non-overlapping descriptors and 4,262 estimated cases; Theory rows
+make the merged TRX count authoritative. The exact clean-checkout executable
+result is retained in the #1502 PR/issue evidence before merge.
 
 ## Rejected All-Inclusive Evidence
 

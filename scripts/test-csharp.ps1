@@ -69,7 +69,7 @@ $DeepValidationClassConcurrencyWeights = @{
 }
 $LargeClassCaseTarget = 120
 $OwnedCleanupPassLimit = 2
-$PreMergeMinimumCases = 4490
+$PreMergeMinimumCases = 4240
 $DeepValidationMinimumCases = 1950
 $DeepValidationClassDurationCosts = @{
     "BookOfEternityClient.Tests.ValidatorFixtureTests" = 542
@@ -117,7 +117,8 @@ $LifecycleIntegrationMinimumCases = 186
 $coreIntegrationFilter =
     "Category!=FullValidation&Category!=DeepValidation&" +
     "Category!=ProcessIntegration&Category!=E2E&" +
-    "(Category!=LifecycleIntegration|Category=PreMergeSentinel)"
+    "(Category!=LifecycleIntegration|Category=PreMergeSentinel)&" +
+    "(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)"
 $deepValidationFilter =
     "(Category=FullValidation|Category=DeepValidation)&" +
     "Category!=LifecycleIntegration&" +
@@ -1104,9 +1105,16 @@ function Get-IntegrationClassDurationCost {
         [int]$FallbackCost
     )
 
+    if ($LaneName -eq "PreMerge" -and
+        $ClassName -eq
+            "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests") {
+        return $FallbackCost
+    }
+
     $durationCosts = switch ($LaneName) {
         "DeepValidation" { $DeepValidationClassDurationCosts }
         "RegressionIntegration" { $RegressionIntegrationClassDurationCosts }
+        "PreMerge" { $RegressionIntegrationClassDurationCosts }
         default { $null }
     }
     if ($null -ne $durationCosts -and $durationCosts.ContainsKey($ClassName)) {
@@ -2166,20 +2174,31 @@ try {
                         -ShardName "TradeOfferingResonance" `
                         -FallbackCost 160 `
                         -ChunkCount 2) -eq 215
+                $preMerge =
+                    (Get-IntegrationClassDurationCost `
+                        -LaneName "PreMerge" `
+                        -ClassName "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" `
+                        -FallbackCost 166) -eq 339 -and
+                    (Get-IntegrationClassDurationCost `
+                        -LaneName "PreMerge" `
+                        -ClassName "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests" `
+                        -FallbackCost 10) -eq 10
                 if ($caseCount -ne 105 -or
                     $maxCost -ne 542 -or
                     $firstSelection -ne "heavy" -or
                     -not $exclusive -or
                     -not $weighted -or
                     -not $bounded -or
-                    -not $regression) {
+                    -not $regression -or
+                    -not $preMerge) {
                     throw "Duration schedule did not preserve case counts or long-first order."
                 }
                 Write-Host (
                     "DURATION-SCHEDULE cases=$caseCount; " +
                     "maxCost=$maxCost; first=$firstSelection; " +
                     "exclusive=$exclusive; weighted=$weighted; " +
-                    "bounded=$bounded; regression=$regression")
+                    "bounded=$bounded; regression=$regression; " +
+                    "preMerge=$preMerge")
             }
             "ResultDirectory" {
                 Add-Content -LiteralPath $logPath -Value (

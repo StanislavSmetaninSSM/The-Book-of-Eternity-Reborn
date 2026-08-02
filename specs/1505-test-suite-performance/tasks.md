@@ -2,7 +2,7 @@
 
 **Input**: Design documents from `specs/1505-test-suite-performance/`
 
-**Source issue**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
 
 **Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [quickstart.md](quickstart.md)
 
@@ -139,8 +139,29 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
   documentation/spec files.
 - [x] T037 Complete independent branch review and resolve every Critical or
   Important finding with fresh bounded evidence.
-- [ ] T038 Push, merge the issue-linked PR into `main`, verify local/remote
-  hashes, and close #1505 only after all acceptance criteria pass.
+- [x] T038 Push and merge issue-linked PR #1506 into `main` as
+  `de246f917d18b4790d9758b3df41e1e1cb46a19d`; #1505 closed from that merge
+  after its acceptance criteria passed.
+
+---
+
+## Phase 8: Phase 45 PreMerge Capacity Amendment
+
+- [x] T039 Retain and analyze the exact clean-checkout PreMerge capacity
+  failure: `4606/4606` available cases green, zero duplicates and cleanup debt,
+  but the 15-minute deadline expired before the final 15 E2E cases.
+- [x] T040 Add RED/GREEN boundary coverage for `RegressionIntegrationOnly`,
+  the exact ten-method spiritual-conflict sentinel manifest, the 4,240-result
+  floor, and PreMerge duration-aware long-first scheduling.
+- [x] T041 Keep all 358 `AfterlifeSpiritualConflictValidationTests` cases in
+  RegressionIntegration, admit only the exact ten reviewed sentinels to
+  routine PreMerge, and verify discovery plus the ten-case executable sample.
+- [ ] T042 Synchronize the runner contract and agent guidance, then run one
+  final exact clean-checkout PreMerge below 15 minutes with at least 4,240
+  non-duplicate results, completed ProcessIntegration/E2E, and complete owned
+  cleanup.
+- [ ] T043 Record final evidence in #1502/T253, complete exact-diff review, and
+  integrate the issue-linked Phase 45 PR only after the bounded gate is green.
 
 ## Dependencies and Execution Order
 
@@ -153,13 +174,15 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - T032–T038 are final gates; T034 is exactly two post-review Fast runs and T035
   contains the final post-review PreMerge run plus retained unchanged
   LifecycleIntegration and DeepValidation evidence.
+- T039–T043 are the #1502 capacity amendment. They preserve the completed
+  #1505 history while updating the current PreMerge contract and final evidence.
 
 ## Notes
 
 - Tests precede production changes for every behavior boundary.
 - No task may claim speedup by removing assertions or silently reducing discovery.
-- Run focused controls during implementation, two consecutive Fast controls at
-  final verification, and one PreMerge control. Do not serially run all
+- Run focused controls during implementation, one Fast control at a meaningful
+  checkpoint, and one final PreMerge control. Do not serially run all
   diagnostic lanes before PreMerge unless a focused failure requires diagnosis.
 - LifecycleIntegration and DeepValidation are conditional and explicit; run
   them only for a relevant boundary change, related diagnosis, or an explicitly

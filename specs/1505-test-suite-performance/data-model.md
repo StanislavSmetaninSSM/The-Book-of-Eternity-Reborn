@@ -1,6 +1,6 @@
 # Data Model: Validation Selection and Test Lanes
 
-**Source issue**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
 
 This feature adds no persisted gameplay data. The model consists of internal
 runtime/test values and lane-result artifacts.
@@ -105,19 +105,24 @@ focused diagnostic selection inside
 PreMerge has one deadline across frontend verification, both project builds,
 discovery, tests, and cleanup. Its parallel phase selects the complete fast
 assembly and integration tests with
-`Category!=FullValidation&Category!=DeepValidation&Category!=ProcessIntegration&Category!=E2E&(Category!=LifecycleIntegration|Category=PreMergeSentinel)`;
+`Category!=FullValidation&Category!=DeepValidation&Category!=ProcessIntegration&Category!=E2E&(Category!=LifecycleIntegration|Category=PreMergeSentinel)&(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)`;
 its exclusive phases use `Category=ProcessIntegration&Category!=E2E` and then
 `Category=E2E`. DeepValidation is the disjoint Integration-only union of
 FullValidation and DeepValidation categories, excluding LifecycleIntegration,
 ProcessIntegration, and E2E. LifecycleIntegration selects all 186 lifecycle
 cases as one external process. Exactly ten methods additionally carry
 `PreMergeSentinel`; those ten are the only intentional overlap between the
-complete lifecycle lane and routine PreMerge.
+complete lifecycle lane and routine PreMerge. The exhaustive 358-case
+`AfterlifeSpiritualConflictValidationTests` class carries
+`RegressionIntegrationOnly`; exactly ten reviewed methods also carry
+`PreMergeSentinel`, while all 358 remain available through
+RegressionIntegration. The Phase 45 PreMerge minimum is 4,240 merged,
+non-duplicate results plus completed ProcessIntegration and E2E phases.
 
-Default Fast is the ordinary post-edit control. Final merge verification is two
-Fast runs plus one PreMerge run. DeepValidation is conditional and explicit;
-LifecycleIntegration follows the same conditional policy. Diagnostic lanes are
-not serial final gates and do not run after every edit.
+Default Fast is the ordinary post-edit control. Final merge verification is one
+Fast checkpoint plus one PreMerge run. DeepValidation, LifecycleIntegration,
+and the exhaustive RegressionIntegration matrix are conditional and explicit.
+Diagnostic lanes are not serial final gates and do not run after every edit.
 
 ### Workflow commands
 

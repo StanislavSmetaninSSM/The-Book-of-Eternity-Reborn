@@ -10,7 +10,7 @@
 
 ## Source Issues & Scope
 
-- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505)
+- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
 - **Issue type**: Test-infrastructure performance, reliability, and developer experience.
 - **Spec Kit justification**: The implementation spans the production validation orchestrator, a large multi-file guardian regression suite, test classification and source guards, verification scripts or documentation, and performance evidence across multiple sessions.
 - **Contract scope**: Internal validation orchestration and test infrastructure. There is no player-facing, GM-facing, gameplay, canonical-state schema, console, browser, frontend, prompt, documentation-example, or afterlife contract change.
@@ -34,6 +34,14 @@ DeepValidation at `2142/2142` in `14:15.857`, and PreMerge at `4522/4522` in
 IDs, timeout, cleanup failure, or remaining owned process. PreMerge met the
 mandatory below-15-minute ceiling but not the preferred below-ten-minute
 target.
+
+Phase 45 subsequently added enough integration regressions for the exact
+PreMerge control to complete `4606/4606` available results green but reach the
+15-minute deadline before its final 15 E2E cases. The approved amendment keeps
+the exhaustive 358-case `AfterlifeSpiritualConflictValidationTests` matrix in
+RegressionIntegration, retains an exact ten-method PreMerge sentinel, and
+applies measured long-first costs to overlapping PreMerge classes. No test or
+assertion is removed.
 
 ## User Scenarios & Testing
 
@@ -83,10 +91,9 @@ expectations.
 
 **Independent Test**: Enumerate both test projects, prove the fast project
 cannot discover integration sources, inspect the disjoint DeepValidation and
-PreMerge schedules and the reviewed lifecycle-sentinel overlap, then run two
-Fast controls, one LifecycleIntegration control, retain the unchanged
-DeepValidation control for this category-boundary change, and run one PreMerge
-control.
+PreMerge schedules and the reviewed lifecycle/spiritual-conflict sentinel
+overlaps, then run one Fast checkpoint, the diagnostic lane required by the
+changed boundary, and one final PreMerge control.
 
 **Acceptance Scenarios**:
 
@@ -106,9 +113,11 @@ control.
    completes below 15 minutes with at least 1,950 non-duplicate results.
 7. **Given** the PreMerge command, **when** it runs under the final bounded
    control, **then** one 15-minute deadline covers frontend verification,
-   builds, tests, and cleanup; at least 4,490 non-duplicate results complete,
+   builds, tests, and cleanup; at least 4,240 non-duplicate results complete,
    including ProcessIntegration, E2E, and exactly ten reviewed GameEngine
-   lifecycle sentinels rather than the complete lifecycle class.
+   lifecycle sentinels rather than the complete lifecycle class, plus exactly
+   ten reviewed spiritual-conflict sentinels rather than the complete 358-case
+   matrix.
 
 ---
 
@@ -137,7 +146,9 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - A test can belong to more than one slow category. DeepValidation, ordinary
   PreMerge core Integration, ProcessIntegration, and E2E remain disjoint.
   LifecycleIntegration overlaps PreMerge only through the exact reviewed
-  ten-method `PreMergeSentinel` manifest.
+  ten-method `PreMergeSentinel` manifest. `RegressionIntegrationOnly`
+  overlaps PreMerge only through the exact reviewed ten-method
+  spiritual-conflict sentinel manifest.
 - Splitting the partial guardian class must preserve isolated temporary roots and must not introduce shared mutable fixture state, file collisions, or nondeterministic parallel failures.
 - External process tests must use ownership-aware cleanup. On Windows, a
   target must remain behind a launch gate until its launcher belongs to a
@@ -162,8 +173,9 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **FR-009**: The guardian regression suite MUST be partitioned into independently runnable, non-overlapping domain chunks by the bounded runner; shared mutable fixture state MUST NOT be introduced.
 - **FR-010**: A source guard MUST enforce the guardian broad-call budget, sentinel category, and scoped-validation API boundary.
 - **FR-011**: Slow tests MUST use explicit `FullValidation`,
-  `DeepValidation`, `RegressionIntegration`, `LifecycleIntegration`,
-  `PreMergeSentinel`, `ProcessIntegration`, and `E2E` categories as applicable.
+  `DeepValidation`, `RegressionIntegration`, `RegressionIntegrationOnly`,
+  `LifecycleIntegration`, `PreMergeSentinel`, `ProcessIntegration`, and `E2E`
+  categories as applicable.
 - **FR-012**: The repository MUST provide documented default fast, focused,
   full-validation, regression-integration, process-integration, E2E, and
   LifecycleIntegration, DeepValidation, and PreMerge commands with expected
@@ -176,10 +188,12 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   FullValidation and DeepValidation, excluding LifecycleIntegration,
   ProcessIntegration, and E2E. LifecycleIntegration MUST select the complete
   reviewed lifecycle class as one external process under a ten-minute cap.
-  PreMerge MUST exclude both deep categories and ordinary lifecycle tests from
-  core Integration, admit exactly ten reviewed lifecycle sentinels, include
-  ProcessIntegration and E2E through exclusive non-overlapping phases, and use
-  one deadline across frontend verification, builds, tests, and cleanup.
+  PreMerge MUST exclude both deep categories, ordinary lifecycle tests, and
+  exhaustive RegressionIntegrationOnly matrices from core Integration; admit
+  exactly ten reviewed lifecycle sentinels and exactly ten reviewed
+  spiritual-conflict sentinels; include ProcessIntegration and E2E through
+  exclusive non-overlapping phases; and use one deadline across frontend
+  verification, builds, tests, and cleanup.
 - **FR-015**: Performance comparisons and final controls MUST use bounded
   execution, retain JSON/TRX/log results, detect cross-descriptor duplicate test
   IDs, and verify cleanup of owned child processes.
@@ -212,8 +226,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
    partial-class, source, broad-call, and category boundaries.
 7. Route Fast directly to the fast project and route diagnostic categories to
    the integration project. Compose PreMerge from both projects with
-   non-overlapping filters, an exact ten-method lifecycle sentinel exception,
-   and one deadline. Route the complete lifecycle class to its explicit lane.
+   non-overlapping filters, exact ten-method lifecycle and
+   spiritual-conflict sentinel exceptions, and one deadline. Route the
+   complete lifecycle class to LifecycleIntegration and the complete
+   spiritual-conflict matrix to RegressionIntegration.
 8. Treat fixture-copy optimization as secondary. Because bounded post-selection evidence missed the Fast budget, capture one immutable in-memory prepared Guardian snapshot per test host and materialize independent roots per test.
 
 ## Success Criteria
@@ -232,10 +248,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **SC-006**: One PreMerge control completes within one 15-minute deadline on
   the baseline Windows machine, preferably below ten minutes, and retains
   JSON/TRX/log evidence.
-- **SC-007**: PreMerge produces at least 4,490 results, completes
+- **SC-007**: PreMerge produces at least 4,240 results, completes
   ProcessIntegration and E2E, executes exactly ten reviewed lifecycle
-  sentinels, and reports zero failures and zero cross-descriptor duplicate test
-  IDs.
+  sentinels and ten reviewed spiritual-conflict sentinels, and reports zero
+  failures and zero cross-descriptor duplicate test IDs.
 - **SC-008**: Public full validation and explicit all-phase validation produce identical ordered issues on representative valid and invalid fixtures.
 - **SC-009**: The guardian source guard fails deterministically when the broad-call budget or sentinel category rule is violated.
 - **SC-010**: Bounded verification leaves no owned `dotnet`, testhost, client, worker-host, PowerShell helper, Agent Console, or related child process running.
@@ -246,17 +262,17 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   - Build the solution without restoring after dependencies are present.
   - Run new validation-selection equivalence, ordering, invalid-selection, and state-isolation tests.
   - Run the guardian source guard and the fixed before/after guardian benchmark under an external process-tree timeout.
-  - Run focused controls during implementation, two consecutive Fast controls
-    at final verification, and one PreMerge control. Do not serially run all
+  - Run focused controls during implementation, one Fast control at a
+    meaningful checkpoint, and one final PreMerge control. Do not serially run all
     diagnostic lanes before PreMerge unless a focused failure requires
     diagnosis.
   - Run DeepValidation once on this branch because it changes the category
     boundary; retain the accepted result when PlanOnly proves the selection is
     unchanged. Run LifecycleIntegration once because its boundary changes;
     both lanes remain conditional and explicit.
-  - Retain the two Fast summaries plus the LifecycleIntegration,
-    DeepValidation, and PreMerge JSON/TRX/log and wall-time evidence. Do not use
-    an unbounded 40–60 minute control.
+  - Retain the meaningful Fast checkpoint plus relevant conditional-lane and
+    final PreMerge JSON/TRX/log and wall-time evidence. Do not use an unbounded
+    40–60 minute control.
 - **Documentation/contract verification**: Run the new test-lane/source-guard coverage. GM prompts, Mortal/afterlife docs, worked examples, manifests, and contract matrices are N/A because FR-016 prohibits gameplay or GM-authored contract changes.
 - **Frontend verification**: N/A; no frontend files or browser behavior are in scope.
 - **Manual/player-facing verification**: N/A; compare process inventory before and after bounded integration runs to verify owned child cleanup.
