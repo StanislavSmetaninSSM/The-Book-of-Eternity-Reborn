@@ -403,12 +403,12 @@ internal static class ReversibleFilePublication
         if ((expectedDestinationIdentity == null) !=
             string.IsNullOrWhiteSpace(expectedDestinationSha256) ||
             expectedDestinationIdentity is
-            {
-                IsDirectory: true
-            } or
-            {
-                NumberOfLinks: not 1
-            } ||
+        {
+            IsDirectory: true
+        } or
+        {
+            NumberOfLinks: not 1
+        } ||
             expectedDestinationSha256 is { } expectedHash &&
             !IsSha256(expectedHash))
         {
