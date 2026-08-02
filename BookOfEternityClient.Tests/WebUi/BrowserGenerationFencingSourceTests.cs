@@ -809,9 +809,21 @@ public sealed class BrowserGenerationFencingSourceTests
             "save_manifest.json",
             saveLoadSource,
             StringComparison.Ordinal);
-        Assert.Contains(
-            "SHA256.HashDataAsync",
+        var archiveEntryHash = ExtractMethod(
             saveLoadSource,
+            "ComputeArchiveEntrySha256Async",
+            "private static async Task<string>");
+        Assert.Contains(
+            "IncrementalHash.CreateHash(HashAlgorithmName.SHA256)",
+            archiveEntryHash,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "hash.AppendData(",
+            archiveEntryHash,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "total != expectedLength",
+            archiveEntryHash,
             StringComparison.Ordinal);
         Assert.Contains(
             "StrictJsonAuthority.Deserialize<SaveIntegrityManifest>",
