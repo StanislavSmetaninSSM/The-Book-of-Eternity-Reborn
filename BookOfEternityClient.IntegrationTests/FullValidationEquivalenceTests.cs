@@ -74,6 +74,26 @@ public sealed class FullValidationEquivalenceTests : IDisposable
         Assert.Equal(issueProperties, snapshotProperties);
     }
 
+    [Fact]
+    public void ExplicitAll_SelectsFactionMaterializationPhaseExactlyOnce()
+    {
+        var atomicPhases = Enum.GetValues<GameStateValidationPhase>()
+            .Where(phase =>
+                phase != GameStateValidationPhase.None &&
+                phase != GameStateValidationPhase.All &&
+                phase != GameStateValidationPhase.Selectable &&
+                uint.IsPow2((uint)phase))
+            .ToArray();
+
+        Assert.Single(
+            atomicPhases,
+            phase => phase ==
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness);
+        Assert.True(
+            GameStateValidationPhase.All.HasFlag(
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness));
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

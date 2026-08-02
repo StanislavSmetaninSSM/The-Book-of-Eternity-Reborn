@@ -161,6 +161,17 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     }
 
     [Fact]
+    public void FactionMaterializationPhase_IsIncludedInAllAndSelectable()
+    {
+        Assert.True(
+            GameStateValidationPhase.All.HasFlag(
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness));
+        Assert.True(
+            GameStateValidationPhase.Selectable.HasFlag(
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness));
+    }
+
+    [Fact]
     public void AcceptedTurnReasoningSelection_RequiresCoreAndRejectsUnknownScopes()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new AcceptedTurnReasoningValidationSelection(

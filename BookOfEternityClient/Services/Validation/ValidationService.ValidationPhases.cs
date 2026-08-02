@@ -96,6 +96,11 @@ public partial class ValidationService
             await ValidateGuardianProjectStateFilesAsync(issues);
         if (phases.Includes(GameStateValidationPhase.AcceptedTurnActorMaterializationCompleteness))
             await ValidateAcceptedTurnActorMaterializationCompletenessAsync(issues);
+        if (phases.HasFlag(
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness))
+        {
+            await ValidateAcceptedTurnFactionMaterializationCompletenessAsync(issues);
+        }
         if (phases.Includes(GameStateValidationPhase.AfterlifeSpiritualConflictState))
             await ValidateAfterlifeSpiritualConflictStateAsync(issues);
         if (phases.Includes(GameStateValidationPhase.SourceOfLightCapstoneGlobalState))

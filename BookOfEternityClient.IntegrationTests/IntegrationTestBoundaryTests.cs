@@ -653,6 +653,20 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void FactionValidationProfiles_IncludeMaterializationContinuity()
+    {
+        Assert.True(
+            IntegrationValidationProfiles.FactionMaterialization.HasFlag(
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness));
+        Assert.True(
+            IntegrationValidationProfiles.FactionState.Phases.HasFlag(
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness));
+        Assert.True(
+            IntegrationValidationProfiles.ShiningState.Phases.HasFlag(
+                GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness));
+    }
+
+    [Fact]
     public void GuardianArchiveTradeProfile_SelectsOnlyAssertionOwningPhasesAndFiles()
     {
         var profile = IntegrationValidationProfiles.GuardianArchiveTrade;
