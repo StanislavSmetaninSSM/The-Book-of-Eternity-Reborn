@@ -191,6 +191,26 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             issue.FilePath == path);
     }
 
+    [Fact]
+    public async Task Validate_AbsentCurrentAuthorityWithDuplicatePreTurnFactionMembers_FailsClosed()
+    {
+        var historicalFaction =
+            MaterializedMortalFaction("faction_watch", "fmat_historical");
+        var preTurnJson = $$"""
+        {
+          "factions": [{{historicalFaction.ToJsonString()}}],
+          "factions": []
+        }
+        """;
+        await WriteValidatedSnapshotManifestAsync((MortalPath, preTurnJson));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath.StartsWith(MortalPath, StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

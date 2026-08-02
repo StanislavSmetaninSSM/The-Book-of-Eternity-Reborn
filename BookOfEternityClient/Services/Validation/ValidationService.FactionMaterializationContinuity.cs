@@ -102,7 +102,8 @@ public partial class ValidationService
             if (currentFileExists ||
                 await ValidatedPreTurnHasFactionAuthorityAsync(
                     lookup,
-                    MortalFactionMaterializationPath))
+                    MortalFactionMaterializationPath,
+                    issues))
             {
                 AddUnusableCurrentFactionMaterializationFileIssue(
                     MortalFactionMaterializationPath,
@@ -290,7 +291,8 @@ public partial class ValidationService
             if (currentFileExists ||
                 await ValidatedPreTurnHasFactionAuthorityAsync(
                     lookup,
-                    ShiningFactionMaterializationPath))
+                    ShiningFactionMaterializationPath,
+                    issues))
             {
                 AddUnusableCurrentFactionMaterializationFileIssue(
                     ShiningFactionMaterializationPath,
@@ -471,7 +473,8 @@ public partial class ValidationService
 
     private async Task<bool> ValidatedPreTurnHasFactionAuthorityAsync(
         ValidatedPendingTurnSnapshotLookup lookup,
-        string path)
+        string path,
+        List<ValidationIssue> issues)
     {
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
@@ -485,20 +488,27 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return false;
 
-        try
+        using var document = TryParseFactionMaterializationDocument(
+            preTurnJson,
+            path,
+            currentAuthority: false,
+            issues);
+        if (document == null)
+            return true;
+        if (!TryReadPreTurnFactionMap(
+                document.RootElement,
+                path,
+                "factions",
+                out var preTurnFactions))
         {
-            using var document = JsonDocument.Parse(preTurnJson);
-            if (document.RootElement.ValueKind != JsonValueKind.Object)
-                return true;
-            if (!document.RootElement.TryGetProperty("factions", out var factions))
-                return false;
-            return factions.ValueKind != JsonValueKind.Array ||
-                   factions.GetArrayLength() > 0;
-        }
-        catch (JsonException)
-        {
+            AddUnusableFactionMaterializationPreTurnAuthorityIssue(
+                path,
+                "malformed, duplicate, or ambiguous faction authority",
+                issues);
             return true;
         }
+
+        return preTurnFactions.Count > 0;
     }
 
     private static Dictionary<string, FactionCarrier> ReadCurrentFactionCarriers(
