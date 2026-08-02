@@ -19,6 +19,10 @@ param(
     [string]$Filter,
 
     [Parameter(ParameterSetName = "Lane")]
+    [ValidateSet("Fast", "Integration")]
+    [string]$FocusedProject = "Fast",
+
+    [Parameter(ParameterSetName = "Lane")]
     [ValidateRange(0, 120)]
     [int]$TimeoutMinutes = 0,
 
@@ -182,10 +186,17 @@ $laneDefinitions = @{
 $isSelfTest = $PSCmdlet.ParameterSetName -eq "SelfTest"
 $effectiveLane = $null
 $laneDefinition = $null
+$selectedProject = $null
 $effectiveTimeoutMinutes = $null
 if (-not $isSelfTest) {
     $effectiveLane = if ($Lane -eq "Complete") { "PreMerge" } else { $Lane }
     $laneDefinition = $laneDefinitions[$effectiveLane]
+    $selectedProject = if ($effectiveLane -eq "Focused") {
+        $FocusedProject
+    }
+    else {
+        $laneDefinition.Project
+    }
     $effectiveTimeoutMinutes = if ($TimeoutMinutes -gt 0) {
         $TimeoutMinutes
     }
@@ -1715,7 +1726,7 @@ function New-TestRuns {
         return @($preMergeRuns)
     }
 
-    $projectPath = if ($laneDefinition.Project -eq "Fast") {
+    $projectPath = if ($selectedProject -eq "Fast") {
         $fastTestProject
     }
     else {
@@ -2397,6 +2408,10 @@ try {
         if ($Lane -ne "Focused" -and -not [string]::IsNullOrWhiteSpace($Filter)) {
             throw "-Filter is supported only with -Lane Focused."
         }
+        if ($PSBoundParameters.ContainsKey("FocusedProject") -and
+            $Lane -ne "Focused") {
+            throw "-FocusedProject is supported only with -Lane Focused."
+        }
         if ($TimeoutMinutes -gt [int]$laneDefinition.TimeoutMinutes) {
             throw "Lane '$Lane' has a hard limit of $($laneDefinition.TimeoutMinutes) minute(s)."
         }
@@ -2419,7 +2434,7 @@ try {
         }
 
         if (-not $NoBuild) {
-            $buildSelections = if ($laneDefinition.Project -eq "Both") {
+            $buildSelections = if ($selectedProject -eq "Both") {
                 @(
                     [pscustomobject]@{
                         Name = "Build-Fast"
@@ -2431,7 +2446,7 @@ try {
                     }
                 )
             }
-            elseif ($laneDefinition.Project -eq "Fast") {
+            elseif ($selectedProject -eq "Fast") {
                 @(
                     [pscustomobject]@{
                         Name = "Build-Fast"
