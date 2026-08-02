@@ -37,6 +37,7 @@ param(
         "NpmStartup",
         "ResultDirectory",
         "TrxSummary",
+        "DurationSchedule",
         "OwnedPostStartFailure",
         "OwnedPostStartCleanupRetry",
         "OwnedExitedRootDescendant",
@@ -55,10 +56,63 @@ $FastParallelismLimit = 2
 $PreMergeParallelism = 4
 $PreMergeFastParallelismLimit = 2
 $ComposedSmallClassBinCount = 4
+$DeepValidationSmallClassBinCount = 6
+$DeepValidationInProcessParallelismEstimate = 3
+$DeepValidationGuardianCaseTarget = 30
+$DeepValidationStorageHeavySchedulingGroup = "DeepValidationStorageHeavy"
+$DeepValidationStorageHeavyClasses = @(
+    "BookOfEternityClient.Tests.ValidatorFixtureTests",
+    "BookOfEternityClient.Tests.GuardianArchiveAndTradeRequestValidationTests"
+)
+$DeepValidationClassConcurrencyWeights = @{
+    "BookOfEternityClient.Tests.ValidatorFixtureTests" = 2
+}
 $LargeClassCaseTarget = 120
 $OwnedCleanupPassLimit = 2
 $PreMergeMinimumCases = 4490
 $DeepValidationMinimumCases = 1950
+$DeepValidationClassDurationCosts = @{
+    "BookOfEternityClient.Tests.ValidatorFixtureTests" = 542
+    "BookOfEternityClient.Tests.GuardianArchiveAndTradeRequestValidationTests" = 600
+    "BookOfEternityClient.Tests.ActorMaterializationValidationTests" = 285
+    "BookOfEternityClient.Tests.SarefMainStoryStateValidationTests" = 271
+    "BookOfEternityClient.Tests.SourceOfLightCapstoneValidationTests" = 201
+    "BookOfEternityClient.Tests.NpcCoreChangesTests" = 194
+    "BookOfEternityClient.Tests.ExampleDocumentationValidationTests" = 192
+    "BookOfEternityClient.Tests.MortalBootstrapValidationTests" = 178
+    "BookOfEternityClient.Tests.PlayerGuardianFoundationValidationTests" = 170
+    "BookOfEternityClient.Tests.MechanicalBonusAuthorityValidationTests" = 170
+    "BookOfEternityClient.Tests.MortalCommandDisplaySaveTests" = 154
+    "BookOfEternityClient.Tests.ChaosSeaCommandDisplaySaveTests" = 138
+    "BookOfEternityClient.Tests.CanonicalStateNormalizerTests" = 136
+    "BookOfEternityClient.Tests.AfterlifeRealmSegregationValidationTests" = 132
+    "BookOfEternityClient.Tests.ShiningAbodeCommandDisplaySaveTests" = 132
+    "BookOfEternityClient.Tests.AfterlifeEntityProfileValidationTests" = 131
+    "BookOfEternityClient.Tests.GuardianPolicyKernelTests" = 119
+    "BookOfEternityClient.Tests.ShiningPoliticalResolutionValidationTests" = 108
+    "BookOfEternityClient.Tests.ReadableDocumentAuthorityValidationTests" = 100
+    "BookOfEternityClient.Tests.AfterlifeSpiritualConflictBalanceTests" = 87
+    "BookOfEternityClient.Tests.QuestRewardAuthorityValidationTests" = 84
+    "BookOfEternityClient.Tests.ChaosSeaPendingRequestHygieneTests" = 83
+    "BookOfEternityClient.Tests.ValidationServiceQteTests" = 50
+}
+$RegressionIntegrationClassDurationCosts = @{
+    "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests" = 350
+    "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" = 339
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests" = 251
+    "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests" = 548
+}
+$RetainedGuardianShardDurationCosts = @{
+    AcceptedAuthority = 280
+    ActorBrain = 85
+    Lifecycle = 35
+    MortalFactPersistence = 10
+    PowerJournalOfferings = 160
+    ProjectsPower = 285
+    QuestProgress = 55
+    RivalResidents = 330
+    TradeOfferingResonance = 430
+}
 $LifecycleIntegrationMinimumCases = 186
 $coreIntegrationFilter =
     "Category!=FullValidation&Category!=DeepValidation&" +
@@ -1037,6 +1091,136 @@ function Get-DiscoveredTestCases {
     return @($testCases)
 }
 
+function Get-IntegrationClassDurationCost {
+    param(
+        [Parameter(Mandatory)]
+        [string]$LaneName,
+
+        [Parameter(Mandatory)]
+        [string]$ClassName,
+
+        [Parameter(Mandatory)]
+        [ValidateRange(1, 1000000)]
+        [int]$FallbackCost
+    )
+
+    $durationCosts = switch ($LaneName) {
+        "DeepValidation" { $DeepValidationClassDurationCosts }
+        "RegressionIntegration" { $RegressionIntegrationClassDurationCosts }
+        default { $null }
+    }
+    if ($null -ne $durationCosts -and $durationCosts.ContainsKey($ClassName)) {
+        return [int]$durationCosts[$ClassName]
+    }
+    return $FallbackCost
+}
+
+function Get-RetainedGuardianShardDurationCost {
+    param(
+        [Parameter(Mandatory)]
+        [string]$ShardName,
+
+        [Parameter(Mandatory)]
+        [ValidateRange(1, 1000000)]
+        [int]$FallbackCost,
+
+        [Parameter(Mandatory)]
+        [ValidateRange(1, 1000)]
+        [int]$ChunkCount
+    )
+
+    if ($RetainedGuardianShardDurationCosts.ContainsKey($ShardName)) {
+        return [int][Math]::Ceiling(
+            $RetainedGuardianShardDurationCosts[$ShardName] / $ChunkCount)
+    }
+    return $FallbackCost
+}
+
+function Test-DescriptorSchedulingGroupAvailable {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Descriptor,
+
+        [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
+        [object[]]$ActiveEntries
+    )
+
+    $groupProperty = $Descriptor.PSObject.Properties["SchedulingGroup"]
+    if ($null -eq $groupProperty -or
+        [string]::IsNullOrWhiteSpace([string]$groupProperty.Value)) {
+        return $true
+    }
+
+    foreach ($entry in $ActiveEntries) {
+        $activeGroupProperty =
+            $entry.Descriptor.PSObject.Properties["SchedulingGroup"]
+        if ($null -ne $activeGroupProperty -and
+            [StringComparer]::Ordinal.Equals(
+                [string]$groupProperty.Value,
+                [string]$activeGroupProperty.Value)) {
+            return $false
+        }
+    }
+    return $true
+}
+
+function Get-DescriptorConcurrencyWeight {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Descriptor
+    )
+
+    $weightProperty = $Descriptor.PSObject.Properties["ConcurrencyWeight"]
+    if ($null -eq $weightProperty) {
+        return 1
+    }
+
+    $weight = [int]$weightProperty.Value
+    if ($weight -lt 1) {
+        throw "Descriptor concurrency weight must be at least one."
+    }
+    return $weight
+}
+
+function Test-DescriptorCapacityAvailable {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Descriptor,
+
+        [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
+        [object[]]$ActiveEntries,
+
+        [Parameter(Mandatory)]
+        [ValidateRange(1, 8)]
+        [int]$MaximumParallelism
+    )
+
+    $activeWeight = 0
+    foreach ($entry in $ActiveEntries) {
+        $activeWeight += [Math]::Min(
+            $MaximumParallelism,
+            (Get-DescriptorConcurrencyWeight -Descriptor $entry.Descriptor))
+    }
+    $descriptorWeight = [Math]::Min(
+        $MaximumParallelism,
+        (Get-DescriptorConcurrencyWeight -Descriptor $Descriptor))
+    return (
+        $activeWeight + $descriptorWeight) -le $MaximumParallelism
+}
+
+function Get-DeepValidationSmallClassBinCost {
+    param(
+        [Parameter(Mandatory)]
+        [object]$Bin
+    )
+
+    $parallelizedCost = [Math]::Ceiling(
+        $Bin.Weight / $DeepValidationInProcessParallelismEstimate)
+    return [Math]::Max([int]$Bin.PeakWeight, [int]$parallelizedCost)
+}
+
 function New-BalancedBins {
     param(
         [Parameter(Mandatory)]
@@ -1050,6 +1234,8 @@ function New-BalancedBins {
     $bins = for ($index = 0; $index -lt $BinCount; $index++) {
         [pscustomobject]@{
             Weight = 0
+            PeakWeight = 0
+            Cases = 0
             Items = [System.Collections.Generic.List[object]]::new()
         }
     }
@@ -1058,6 +1244,13 @@ function New-BalancedBins {
         $bin = $bins | Sort-Object Weight | Select-Object -First 1
         [void]$bin.Items.Add($item)
         $bin.Weight += [int]$item.Weight
+        $bin.PeakWeight = [Math]::Max($bin.PeakWeight, [int]$item.Weight)
+        $bin.Cases += if ($null -ne $item.PSObject.Properties["Cases"]) {
+            [int]$item.Cases
+        }
+        else {
+            [int]$item.Weight
+        }
     }
 
     return @($bins | Where-Object { $_.Items.Count -gt 0 })
@@ -1102,7 +1295,13 @@ function New-RunDescriptor {
         [int]$EstimatedCases,
 
         [Parameter(Mandatory)]
-        [int]$EstimatedCost
+        [int]$EstimatedCost,
+
+        [AllowNull()]
+        [string]$SchedulingGroup,
+
+        [ValidateRange(1, 8)]
+        [int]$ConcurrencyWeight = 1
     )
 
     return [pscustomobject]@{
@@ -1113,6 +1312,8 @@ function New-RunDescriptor {
         Filter = $TestFilter
         EstimatedCases = $EstimatedCases
         EstimatedCost = $EstimatedCost
+        SchedulingGroup = $SchedulingGroup
+        ConcurrencyWeight = $ConcurrencyWeight
         Arguments = New-TestArguments `
             -ProjectPath $ProjectPath `
             -TrxFileName $TrxFileName `
@@ -1161,12 +1362,38 @@ function New-SelectionRuns {
     $runIndex = 0
 
     foreach ($classGroup in $baseClassGroups | Where-Object Count -gt $LargeClassCaseTarget) {
+        $classDurationCost = Get-IntegrationClassDurationCost `
+            -LaneName $effectiveLane `
+            -ClassName $classGroup.Name `
+            -FallbackCost $classGroup.Count
+        $classSchedulingGroup = if (
+            $effectiveLane -eq "DeepValidation" -and
+            $classGroup.Name -in $DeepValidationStorageHeavyClasses
+        ) {
+            $DeepValidationStorageHeavySchedulingGroup
+        }
+        else {
+            $null
+        }
+        $classConcurrencyWeight = if (
+            $effectiveLane -eq "DeepValidation" -and
+            $DeepValidationClassConcurrencyWeights.ContainsKey($classGroup.Name)
+        ) {
+            [int]$DeepValidationClassConcurrencyWeights[$classGroup.Name]
+        }
+        else {
+            1
+        }
         $methodItems = @(
             $classGroup.Group |
                 Group-Object MethodName |
                 ForEach-Object {
                     [pscustomobject]@{
-                        Weight = $_.Count
+                        Weight = [Math]::Max(
+                            1,
+                            [Math]::Ceiling(
+                                $_.Count * $classDurationCost / $classGroup.Count))
+                        Cases = $_.Count
                         Selection = "FullyQualifiedName=$($_.Name)"
                     }
                 }
@@ -1185,8 +1412,10 @@ function New-SelectionRuns {
                     -ProjectPath $Selection.ProjectPath `
                     -TestFilter $testFilter `
                     -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
-                    -EstimatedCases $bin.Weight `
-                    -EstimatedCost $bin.Weight
+                    -EstimatedCases $bin.Cases `
+                    -EstimatedCost $bin.Weight `
+                    -SchedulingGroup $classSchedulingGroup `
+                    -ConcurrencyWeight $classConcurrencyWeight
             ))
         }
     }
@@ -1195,14 +1424,40 @@ function New-SelectionRuns {
         $baseClassGroups |
             Where-Object Count -le $LargeClassCaseTarget |
             ForEach-Object {
+                $durationCost = Get-IntegrationClassDurationCost `
+                    -LaneName $effectiveLane `
+                    -ClassName $_.Name `
+                    -FallbackCost $_.Count
                 [pscustomobject]@{
-                    Weight = $_.Count
+                    Weight = $durationCost
+                    Cases = $_.Count
                     Selection = "FullyQualifiedName~$($_.Name)."
+                    SchedulingGroup = if (
+                        $effectiveLane -eq "DeepValidation" -and
+                        $_.Name -in $DeepValidationStorageHeavyClasses
+                    ) {
+                        $DeepValidationStorageHeavySchedulingGroup
+                    }
+                    else {
+                        $null
+                    }
+                    ConcurrencyWeight = if (
+                        $effectiveLane -eq "DeepValidation" -and
+                        $DeepValidationClassConcurrencyWeights.ContainsKey($_.Name)
+                    ) {
+                        [int]$DeepValidationClassConcurrencyWeights[$_.Name]
+                    }
+                    else {
+                        1
+                    }
                 }
             }
     )
     $smallClassBinCount = if ($effectiveLane -eq "RegressionIntegration") {
         1
+    }
+    elseif ($effectiveLane -eq "DeepValidation") {
+        $DeepValidationSmallClassBinCount
     }
     else {
         $ComposedSmallClassBinCount
@@ -1215,6 +1470,31 @@ function New-SelectionRuns {
         $testFilter = Join-TestFilter `
             -SelectionFilter $selectionFilter `
             -CategoryFilter $Selection.Filter
+        $estimatedCost = if ($effectiveLane -eq "DeepValidation") {
+            Get-DeepValidationSmallClassBinCost -Bin $bin
+        }
+        else {
+            $bin.Weight
+        }
+        $schedulingGroups = @(
+            $bin.Items |
+                ForEach-Object SchedulingGroup |
+                Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+                Sort-Object -Unique
+        )
+        if ($schedulingGroups.Count -gt 1) {
+            throw "A balanced descriptor contains incompatible scheduling groups: $($schedulingGroups -join ', ')"
+        }
+        $schedulingGroup = if ($schedulingGroups.Count -eq 1) {
+            $schedulingGroups[0]
+        }
+        else {
+            $null
+        }
+        $concurrencyWeight = (
+            $bin.Items |
+                Measure-Object ConcurrencyWeight -Maximum
+        ).Maximum
         [void]$descriptors.Add((
             New-RunDescriptor `
                 -Phase $Phase `
@@ -1222,8 +1502,10 @@ function New-SelectionRuns {
                 -ProjectPath $Selection.ProjectPath `
                 -TestFilter $testFilter `
                 -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
-                -EstimatedCases $bin.Weight `
-                -EstimatedCost $bin.Weight
+                -EstimatedCases $bin.Cases `
+                -EstimatedCost $estimatedCost `
+                -SchedulingGroup $schedulingGroup `
+                -ConcurrencyWeight $concurrencyWeight
         ))
     }
 
@@ -1287,6 +1569,7 @@ function New-SelectionRuns {
                 [void]$selectedGuardianMethods.Add($fullyQualifiedMethod)
                 [void]$methodItems.Add([pscustomobject]@{
                     Weight = $guardianCaseCounts[$fullyQualifiedMethod]
+                    Cases = $guardianCaseCounts[$fullyQualifiedMethod]
                     Selection = "FullyQualifiedName=$fullyQualifiedMethod"
                 })
             }
@@ -1296,7 +1579,15 @@ function New-SelectionRuns {
             }
 
             $domainCaseCount = ($methodItems | Measure-Object Weight -Sum).Sum
-            $domainBinCount = [Math]::Max(1, [Math]::Ceiling($domainCaseCount / 60))
+            $domainCaseTarget = if ($effectiveLane -eq "DeepValidation") {
+                $DeepValidationGuardianCaseTarget
+            }
+            else {
+                60
+            }
+            $domainBinCount = [Math]::Max(
+                1,
+                [Math]::Ceiling($domainCaseCount / $domainCaseTarget))
             $domainChunkIndex = 0
             foreach ($bin in @(
                 New-BalancedBins -Items @($methodItems) -BinCount $domainBinCount
@@ -1308,6 +1599,18 @@ function New-SelectionRuns {
                 $testFilter = Join-TestFilter `
                     -SelectionFilter $selectionFilter `
                     -CategoryFilter $Selection.Filter
+                $estimatedCost = if ($effectiveLane -in @(
+                    "DeepValidation",
+                    "RegressionIntegration"
+                )) {
+                    Get-RetainedGuardianShardDurationCost `
+                        -ShardName $shard.Key `
+                        -FallbackCost ($bin.Weight * 4) `
+                        -ChunkCount $domainBinCount
+                }
+                else {
+                    $bin.Weight * 4
+                }
                 [void]$descriptors.Add((
                     New-RunDescriptor `
                         -Phase $Phase `
@@ -1315,8 +1618,8 @@ function New-SelectionRuns {
                         -ProjectPath $Selection.ProjectPath `
                         -TestFilter $testFilter `
                         -TrxFileName "$($Selection.Name.ToLowerInvariant())-guardian-$($guardianRunIndex.ToString('D2')).trx" `
-                        -EstimatedCases $bin.Weight `
-                        -EstimatedCost ($bin.Weight * 4)
+                        -EstimatedCases $bin.Cases `
+                        -EstimatedCost $estimatedCost
                 ))
             }
         }
@@ -1348,6 +1651,7 @@ function New-SelectionRuns {
     return @(
         $descriptors |
             Sort-Object `
+                @{ Expression = "ConcurrencyWeight"; Descending = $true },
                 @{ Expression = "EstimatedCost"; Descending = $true },
                 @{ Expression = "Name"; Descending = $false }
     )
@@ -1469,6 +1773,17 @@ function Invoke-DescriptorBatch {
                             $_.ProjectPath,
                             $fastTestProject) -or
                         $activeFastCount -lt $MaximumFastParallelism
+                } |
+                Where-Object {
+                    Test-DescriptorCapacityAvailable `
+                        -Descriptor $_ `
+                        -ActiveEntries @($active) `
+                        -MaximumParallelism $MaximumParallelism
+                } |
+                Where-Object {
+                    Test-DescriptorSchedulingGroupAvailable `
+                        -Descriptor $_ `
+                        -ActiveEntries @($active)
                 } |
                 Select-Object -First 1
             if ($null -eq $descriptor) {
@@ -1744,6 +2059,128 @@ try {
                     throw "TRX summary self-test found duplicate TRX test IDs: $($trxSummaryOverride.DuplicateTests -join ', ')"
                 }
             }
+            "DurationSchedule" {
+                $probeItems = @(
+                    [pscustomobject]@{
+                        Weight = 542
+                        Cases = 2
+                        Selection = "heavy"
+                    },
+                    [pscustomobject]@{
+                        Weight = 399
+                        Cases = 58
+                        Selection = "medium"
+                    },
+                    [pscustomobject]@{
+                        Weight = 100
+                        Cases = 45
+                        Selection = "light"
+                    }
+                )
+                $probeBins = @(
+                    New-BalancedBins -Items $probeItems -BinCount 2
+                )
+                $caseCount = (
+                    $probeBins |
+                        Measure-Object Cases -Sum
+                ).Sum
+                $rankedBins = @(
+                    $probeBins |
+                        ForEach-Object {
+                            [pscustomobject]@{
+                                Bin = $_
+                                Cost = Get-DeepValidationSmallClassBinCost -Bin $_
+                            }
+                        } |
+                        Sort-Object Cost -Descending
+                )
+                $maxCost = $rankedBins[0].Cost
+                $firstSelection = (
+                    $rankedBins[0].Bin.Items |
+                        Sort-Object Weight -Descending |
+                        Select-Object -First 1
+                ).Selection
+                $exclusiveDescriptor = [pscustomobject]@{
+                    SchedulingGroup = "storage-heavy"
+                }
+                $exclusiveActive = @(
+                    [pscustomobject]@{
+                        Descriptor = [pscustomobject]@{
+                            SchedulingGroup = "storage-heavy"
+                        }
+                    }
+                )
+                $sameGroupAvailable =
+                    Test-DescriptorSchedulingGroupAvailable `
+                        -Descriptor $exclusiveDescriptor `
+                        -ActiveEntries $exclusiveActive
+                $otherGroupAvailable =
+                    Test-DescriptorSchedulingGroupAvailable `
+                        -Descriptor ([pscustomobject]@{
+                            SchedulingGroup = "other"
+                        }) `
+                        -ActiveEntries $exclusiveActive
+                $exclusive = -not $sameGroupAvailable -and $otherGroupAvailable
+                $weightedDescriptor = [pscustomobject]@{
+                    ConcurrencyWeight = 2
+                }
+                $twoActiveSlots = @(
+                    1..2 |
+                        ForEach-Object {
+                            [pscustomobject]@{
+                                Descriptor = [pscustomobject]@{
+                                    ConcurrencyWeight = 1
+                                }
+                            }
+                        }
+                )
+                $threeActiveSlots = @(
+                    1..3 |
+                        ForEach-Object {
+                            [pscustomobject]@{
+                                Descriptor = [pscustomobject]@{
+                                    ConcurrencyWeight = 1
+                                }
+                            }
+                        }
+                )
+                $weighted =
+                    (Test-DescriptorCapacityAvailable `
+                        -Descriptor $weightedDescriptor `
+                        -ActiveEntries $twoActiveSlots `
+                        -MaximumParallelism 4) -and
+                    -not (Test-DescriptorCapacityAvailable `
+                        -Descriptor $weightedDescriptor `
+                        -ActiveEntries $threeActiveSlots `
+                        -MaximumParallelism 4)
+                $bounded = Test-DescriptorCapacityAvailable `
+                    -Descriptor $weightedDescriptor `
+                    -ActiveEntries @() `
+                    -MaximumParallelism 1
+                $regression =
+                    (Get-IntegrationClassDurationCost `
+                        -LaneName "RegressionIntegration" `
+                        -ClassName "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" `
+                        -FallbackCost 166) -eq 339 -and
+                    (Get-RetainedGuardianShardDurationCost `
+                        -ShardName "TradeOfferingResonance" `
+                        -FallbackCost 160 `
+                        -ChunkCount 2) -eq 215
+                if ($caseCount -ne 105 -or
+                    $maxCost -ne 542 -or
+                    $firstSelection -ne "heavy" -or
+                    -not $exclusive -or
+                    -not $weighted -or
+                    -not $bounded -or
+                    -not $regression) {
+                    throw "Duration schedule did not preserve case counts or long-first order."
+                }
+                Write-Host (
+                    "DURATION-SCHEDULE cases=$caseCount; " +
+                    "maxCost=$maxCost; first=$firstSelection; " +
+                    "exclusive=$exclusive; weighted=$weighted; " +
+                    "bounded=$bounded; regression=$regression")
+            }
             "ResultDirectory" {
                 Add-Content -LiteralPath $logPath -Value (
                     "Result-directory self-test: $resultDirectory")
@@ -2014,7 +2451,8 @@ try {
     if ($PlanOnly) {
         $planRows = @(
             $testRuns |
-                Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost
+                Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost,
+                    SchedulingGroup, ConcurrencyWeight
         )
         $planLines = [System.Collections.Generic.List[string]]::new()
         [void]$planLines.Add("PLAN-BEGIN EffectiveLane=$effectiveLane")

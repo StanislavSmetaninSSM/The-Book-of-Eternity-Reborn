@@ -74,6 +74,29 @@ explicit: it runs all 186 GameEngine lifecycle cases in one external process.
 Neither lane is part of ordinary post-edit feedback or an automatic companion
 to every PreMerge run.
 
+### Duration-Aware Diagnostic Scheduling
+
+DeepValidation and RegressionIntegration discover their complete bounded
+selections before building an execution plan. Retained duration costs affect
+bin balancing and long-first ordering only; they never add, remove, skip, or
+recategorize a discovered test. Parameterized rows discovered dynamically can
+make `-PlanOnly` `EstimatedCases` lower than the final count, so the merged TRX
+summary is the authoritative coverage result.
+
+Within DeepValidation, storage-heavy validation descriptors share one
+scheduling group and therefore do not overlap. The state-only validator
+reserves two of the existing four external-process slots while it runs, leaving
+capacity for two ordinary descriptors; this is a capacity weight, not
+additional parallelism. The weight is bounded by a caller's lower
+`-Parallelism`, so a serial diagnostic run still makes progress. Both lanes
+keep the same four-process ceiling and 15-minute hard deadline.
+
+When either lane approaches its deadline, inspect one plan and the completed
+TRX durations before changing it. Preserve every discovered case and
+assertion; adjust retained costs, binning, or resource weights only from
+measured evidence. Do not raise the timeout or concurrency to turn a capacity
+failure green.
+
 ## Working Rhythm
 
 During implementation, run the smallest relevant Focused filter first and one

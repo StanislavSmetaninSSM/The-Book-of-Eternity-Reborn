@@ -417,6 +417,22 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public async Task CSharpLaneRunner_DurationAwareSchedulePreservesCasesAndRunsLongFirst()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("DurationSchedule");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"Duration-schedule probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+        Assert.Contains(
+            "DURATION-SCHEDULE cases=105; maxCost=542; first=heavy; exclusive=True; weighted=True; bounded=True; regression=True",
+            probe.StandardOutput,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task CSharpLaneRunner_RepeatedTheoryRowsWithinOneTrxAreNotDuplicates()
     {
         var fixtureDirectory = CreateTrxFixtureDirectory();
@@ -2514,6 +2530,13 @@ public sealed class IntegrationTestBoundaryTests
     private static async Task<RunnerSelfTestResult> RunCSharpRunnerTrxSelfTestAsync(
         string trxDirectory)
     {
+        return await RunCSharpRunnerSelfTestAsync("TrxSummary", trxDirectory);
+    }
+
+    private static async Task<RunnerSelfTestResult> RunCSharpRunnerSelfTestAsync(
+        string selfTest,
+        string? trxDirectory = null)
+    {
         var startInfo = new ProcessStartInfo("pwsh")
         {
             WorkingDirectory = TestRepoPaths.RepoRoot,
@@ -2528,12 +2551,15 @@ public sealed class IntegrationTestBoundaryTests
             "-File",
             Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1"),
             "-SelfTest",
-            "TrxSummary",
-            "-SelfTestTrxDirectory",
-            trxDirectory
+            selfTest
         })
         {
             startInfo.ArgumentList.Add(argument);
+        }
+        if (!string.IsNullOrWhiteSpace(trxDirectory))
+        {
+            startInfo.ArgumentList.Add("-SelfTestTrxDirectory");
+            startInfo.ArgumentList.Add(trxDirectory);
         }
 
         using var process = Process.Start(startInfo) ??
