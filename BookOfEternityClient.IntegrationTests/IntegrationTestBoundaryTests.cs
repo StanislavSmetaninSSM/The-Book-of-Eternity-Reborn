@@ -603,6 +603,58 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void GuardianArchiveTradeProfile_SelectsOnlyAssertionOwningPhasesAndFiles()
+    {
+        var profile = IntegrationValidationProfiles.GuardianArchiveTrade;
+
+        Assert.Equal(
+            GameStateValidationPhase.CrossReferences |
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+            GameStateValidationPhase.MetaMiscStateFiles |
+            GameStateValidationPhase.ClientOwnedControlFiles,
+            profile.Phases);
+
+        Assert.All(
+        [
+            "game_state/inventory/items.json",
+            "game_state/meta/guardians.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_core.json",
+            "game_state/quests/soul_quests.json",
+            "game_state/world/world_events.json",
+            "lore/codex_entries.json",
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            GuardianAbodeResidentState.StatePath,
+            GuardianProjectState.TrackerPath,
+            GuardianThoughtJournalState.StatePath,
+            GuardianTradeRequestState.PendingRequestPath,
+            NpcInteractionJournalState.StatePath,
+            RivalSoulArcService.StatePath
+        ],
+        path => Assert.True(
+            profile.IncludesStateFile(path),
+            $"Expected GuardianArchiveTrade to include '{path}'."));
+
+        Assert.All(
+        [
+            AfterlifeActiveThreatState.StatePath,
+            AfterlifeEntityProfileState.StatePath,
+            MathAssistantContractState.StatePath,
+            SarefMainStoryState.StatePath,
+            ShiningAbodeState.StatePath,
+            "game_state/misc/vehicles.json"
+        ],
+        path => Assert.False(
+            profile.IncludesStateFile(path),
+            $"Expected GuardianArchiveTrade to exclude '{path}'."));
+    }
+
+    [Fact]
     public void ActorAndAfterlifeValidationSources_UseScopedProfiles()
     {
         var violations = ActorAndAfterlifeScopedProfileViolations(
