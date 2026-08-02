@@ -205,6 +205,54 @@ public sealed class FactionMaterializationContractTests
     }
 
     [Fact]
+    public void Validate_UnsupportedFactionType_ReportsInvalidEnvelope()
+    {
+        using var document = JsonDocument.Parse(BuildMortalFactionJson().Replace(
+            "\"factionType\": \"mortal_faction\"", "\"factionType\": \"unsupported_faction\"", StringComparison.Ordinal));
+        var evidence = EmptyMortalEvidence("faction_watch") with { FactionType = "unsupported_faction" };
+
+        Assert.Contains(Validate(document.RootElement, FactionMaterializationFamily.Mortal, evidence), issue =>
+            issue.Code == "faction_materialization_invalid");
+    }
+
+    [Fact]
+    public void Validate_UnsupportedFamily_ReportsInvalidEnvelope()
+    {
+        using var document = JsonDocument.Parse(BuildShiningFactionJson());
+
+        Assert.Contains(Validate(document.RootElement, (FactionMaterializationFamily)42), issue =>
+            issue.Code == "faction_materialization_invalid");
+    }
+
+    [Fact]
+    public void Validate_DirectCapabilityRequiresItsMappedSectionToBePopulated()
+    {
+        using var document = JsonDocument.Parse(BuildMortalFactionJson().Replace(
+            "\"runsProjects\": false", "\"runsProjects\": true", StringComparison.Ordinal));
+        var evidence = EmptyMortalEvidence("faction_watch") with
+        {
+            CapabilityEvidence = new Dictionary<string, bool>(EmptyMortalEvidence("faction_watch").CapabilityEvidence, StringComparer.Ordinal)
+            {
+                ["runsProjects"] = true
+            }
+        };
+
+        Assert.Contains(Validate(document.RootElement, FactionMaterializationFamily.Mortal, evidence), issue =>
+            issue.Code == "faction_materialization_capability_mismatch" && issue.Section == "projects");
+    }
+
+    [Theory]
+    [InlineData("\"usesCustomMechanics\": false", "\"usesCustomMechanics\": false, \"unknownCapability\": false")]
+    [InlineData("\"hierarchy\": { \"state\": \"empty_by_design\", \"reason\": \"No ranks exist yet.\" }", "\"hierarchy\": { \"state\": \"empty_by_design\", \"reason\": \"No ranks exist yet.\", \"unknownDisposition\": false }")]
+    public void Validate_UnknownCapabilityOrDispositionMember_ReportsInvalidEnvelope(string find, string replace)
+    {
+        using var document = JsonDocument.Parse(BuildMortalFactionJson().Replace(find, replace, StringComparison.Ordinal));
+
+        Assert.Contains(Validate(document.RootElement, FactionMaterializationFamily.Mortal), issue =>
+            issue.Code == "faction_materialization_invalid");
+    }
+
+    [Fact]
     public void ValidateUniqueMaterializationIds_DuplicateIdsReturnIssue()
     {
         using var first = JsonDocument.Parse(BuildMortalFactionJson());

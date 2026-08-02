@@ -85,6 +85,17 @@ internal static class FactionMaterializationContract
             return issues;
         }
 
+        if (!TryGetCanonicalFactionType(family, out var canonicalFactionType))
+        {
+            issues.Add(Invalid($"{context}.{PropertyName}.factionType", evidence, "Mortal or Shining faction materialization family", family.ToString()));
+            return issues;
+        }
+
+        if (!string.Equals(evidence.FactionType, canonicalFactionType, StringComparison.Ordinal))
+        {
+            issues.Add(Invalid($"{context}.factionType", evidence, canonicalFactionType, evidence.FactionType));
+        }
+
         ValidateDuplicateEnvelopeProperty(faction, context, evidence, issues);
         if (!faction.TryGetProperty(PropertyName, out var envelope))
         {
@@ -100,7 +111,7 @@ internal static class FactionMaterializationContract
         }
 
         ValidateExactFields(envelope, EnvelopeFields, $"{context}.{PropertyName}", evidence, issues);
-        ValidateScalars(envelope, context, evidence, issues);
+        ValidateScalars(envelope, context, evidence, canonicalFactionType, issues);
         ValidateCapabilities(envelope, context, family, evidence, issues, deferEvidenceConsistency);
         ValidateSections(envelope, context, family, evidence, issues, deferEvidenceConsistency);
         return issues;
@@ -164,6 +175,7 @@ internal static class FactionMaterializationContract
         JsonElement envelope,
         string context,
         FactionMaterializationEvidence evidence,
+        string canonicalFactionType,
         List<ValidationIssue> issues)
     {
         var envelopeContext = $"{context}.{PropertyName}";
@@ -177,6 +189,9 @@ internal static class FactionMaterializationContract
         ValidateNonEmptyString(envelope, "materializationId", envelopeContext, evidence, issues);
         var factionType = ReadNonEmptyString(envelope, "factionType");
         var factionId = ReadNonEmptyString(envelope, "factionId");
+        if (!string.Equals(factionType, canonicalFactionType, StringComparison.Ordinal))
+            issues.Add(Invalid($"{envelopeContext}.factionType", evidence, canonicalFactionType, factionType ?? "missing"));
+
         if (!string.Equals(factionType, evidence.FactionType, StringComparison.Ordinal) ||
             !string.Equals(factionId, evidence.FactionId, StringComparison.Ordinal))
         {
@@ -231,8 +246,11 @@ internal static class FactionMaterializationContract
         var mappings = family == FactionMaterializationFamily.Mortal
             ? MortalCapabilitySections
             : ShiningDirectCapabilitySections;
-        foreach (var capability in mappings.Keys)
+        foreach (var (capability, section) in mappings)
+        {
             ValidateCapabilityEvidence(capabilities, capabilityContext, capability, evidence, issues);
+            ValidateCapabilitySectionConsistency(capabilities, capabilityContext, capability, section, evidence, issues);
+        }
 
         if (family == FactionMaterializationFamily.Shining)
             ValidateCapabilityEvidence(capabilities, capabilityContext, "canTrade", evidence, issues);
@@ -260,6 +278,34 @@ internal static class FactionMaterializationContract
             evidence,
             section: capability,
             expected: actual.ToString(),
+            actual: declared.GetBoolean().ToString()));
+    }
+
+    private static void ValidateCapabilitySectionConsistency(
+        JsonElement capabilities,
+        string capabilityContext,
+        string capability,
+        string section,
+        FactionMaterializationEvidence evidence,
+        List<ValidationIssue> issues)
+    {
+        if (!capabilities.TryGetProperty(capability, out var declared) ||
+            declared.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+        {
+            return;
+        }
+
+        var hasSectionContent = evidence.SectionHasContent.TryGetValue(section, out var content) && content;
+        if (declared.GetBoolean() == hasSectionContent)
+            return;
+
+        issues.Add(Issue(
+            $"{capabilityContext}.{capability}",
+            "faction_materialization_capability_mismatch",
+            $"Declared capability {capability} contradicts mapped section {section} evidence.",
+            evidence,
+            section: section,
+            expected: hasSectionContent.ToString(),
             actual: declared.GetBoolean().ToString()));
     }
 
@@ -389,6 +435,22 @@ internal static class FactionMaterializationContract
             return null;
         var text = property.GetString();
         return string.IsNullOrWhiteSpace(text) ? null : text;
+    }
+
+    private static bool TryGetCanonicalFactionType(FactionMaterializationFamily family, out string factionType)
+    {
+        switch (family)
+        {
+            case FactionMaterializationFamily.Mortal:
+                factionType = "mortal_faction";
+                return true;
+            case FactionMaterializationFamily.Shining:
+                factionType = "shining_faction";
+                return true;
+            default:
+                factionType = string.Empty;
+                return false;
+        }
     }
 
     private static string Describe(JsonElement value, string propertyName) =>
