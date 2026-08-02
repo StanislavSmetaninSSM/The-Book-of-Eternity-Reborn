@@ -943,6 +943,29 @@ actor-owned memory, or bind to an exact documented type-specific authority
 carrying those values. Every governed deliberate-empty surface remains present
 as an empty array/object/null according to its canonical shape.
 
+An existing materialized profile cannot return through the full
+`afterlifeEntityProfileUpdates` carrier. Historical goals, quests, activities,
+relationships, arts, custom states, journals, progression, memory, and other
+actor-owned fields change only through their exact dedicated commands. A
+legacy profile may carry its first envelope through a bounded migration only
+when usable validated pre-turn authority proves every historical field
+unchanged.
+
+A new Mortal `UpdateNPCs` actor carries exactly one non-empty location branch:
+known canonical `currentLocationId` plus null `initialLocationId`, or null
+current location plus a valid same-turn `initialLocationId`. Missing both,
+populating both, or naming an unknown current location is repair-blocking.
+
+Legacy helper defaults remain neutral. Names, descriptions, archetype prose,
+item types/groups, roles, and genre keywords never synthesize relationship
+scores, personality, disposition, equipment slots, relic identity, container
+or consumption behavior, trade, teaching, or another mechanic.
+
+Only these actor-authority changes are GM-authored. Browser publication,
+load/save/archive budgets, retained worker authority/recovery, and QTE
+source-turn retention are client-owned transaction/resource state and add no
+GM prompt, response, pending/control, or gameplay surface.
+
 ### QTE source-turn authority
 
 A GM-authored QTE offer carries positive integer `sourceTurnNumber`. On

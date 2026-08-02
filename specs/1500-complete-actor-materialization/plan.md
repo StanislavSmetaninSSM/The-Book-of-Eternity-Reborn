@@ -701,12 +701,16 @@ pathname checks:
    prompts/docs/examples for actor-contract changes, and repeat the complete
    verification and independent review gates.
 
-The storage, QTE, and worker portions are client-owned harness changes. The
-actor completeness and no-inference portions change GM-authored Mortal and
-afterlife contracts, so both prompt families, worked examples, manifests,
-Afterlife Contract Matrix, and documentation/source guards must be checked and
-updated in the same phase. Save resource bounds are additionally tracked by
-GitHub issue #1501 and may close with this integration.
+Browser publication receipts, load-staging authority, save/archive limits, QTE
+source-turn retention, worker workspace ownership, and worker recovery are
+client-owned transaction/resource boundaries. They deliberately add no
+GM-authored storage, load, worker, QTE, pending/control, or gameplay surface and
+therefore do not belong in Mortal or afterlife prompts. The actor completeness
+and no-inference portions do change GM-authored Mortal and afterlife contracts,
+so both prompt families, worked examples, manifests, Afterlife Contract Matrix,
+and documentation/source guards must be checked and updated in the same phase.
+Save resource bounds are additionally tracked by GitHub issue #1501 and may
+close with this integration.
 
 ## Complexity Tracking
 

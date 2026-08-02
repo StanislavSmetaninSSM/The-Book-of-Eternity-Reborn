@@ -71,7 +71,7 @@ The GM normally does not need to read client code. Use this matrix to decide whi
 
 ## Actor Materialization v1
 
-The first durable appearance of a significant non-player afterlife actor is one atomic contract. The source actor and its complete `game_state/meta/afterlife_entity_profiles.json` profile must bind by exact actorType:actorId; display name, prose, role, and realm genre are never identity or capability authority.
+The first durable appearance of a significant non-player afterlife actor is one atomic contract. The source actor and its complete `game_state/meta/afterlife_entity_profiles.json` profile must bind by exact actorType:actorId; display name, prose, role, and realm genre are never identity or capability authority. Names, archetype prose, item types, and genre keywords never grant mechanics.
 
 The complete accepted profile actor-type vocabulary is: `guardian`, `resident`, `shining_resident`, `shining_faction_head`, `radiant_actor`, `saref_agent`, `system_actor`, and `custom_afterlife_actor`. This includes every newly created Guardian or resident, every durable Shining resident/faction head/radiant actor, every discovered Saref agent that becomes durable, and system/custom afterlife actors when they become significant structured participants. A non-vacant Shining leadership source still binds only through its exact structured `headActorType` and `headActorId`; the accepted profile vocabulary does not make a title, description, or inferred role into source authority.
 
@@ -81,12 +81,47 @@ The profile has exactly one canonical `actorType` and exactly one canonical `act
 
 Exact newness and cross-file binding use only the client-owned validated pre-turn baseline. A malformed current source authority, malformed profile root, duplicate source identity, or source record without its exact canonical ID rejects the accepted turn instead of being skipped. Do not reconstruct missing baseline authority, repair an identity from display prose, or copy a profile from another actor.
 
+A new afterlife actor explicitly carries player-readable `appearanceDescription` and `profileSummary`, structured `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. These fields come from the exact common profile or documented type-specific structured authority; prose never fills a missing field.
+
+An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier. Use the exact dedicated goal, quest, activity, relationship, art, custom-state, journal, progression, or other documented delta for later changes. A legacy profile may use a full carrier only for a first-envelope bounded migration when usable validated pre-turn authority proves every historical field unchanged.
+
 A physical resident record may disappear from `guardian_abode_residents.json.entries[]` only as one proven lifecycle exception: the validated pre-turn snapshot contains the exact resident's `departure_only` pending transfer with no target, current state contains its exact `departed_only` receipt, and that receipt points to an exact departure history entry while no source or target resident remains. A missing, untracked, duplicate, case-variant, targeted, or contradictory request/receipt/history chain fails closed. No other actor type or removal mode may bypass source-to-profile continuity.
 
 The immutable envelope is stored as `materialization` on the same profile:
 
 ```json
 {
+  "actorType": "guardian",
+  "actorId": "guardian_quiet_lantern",
+  "displayName": "Хранитель Тихого Фонаря",
+  "appearanceDescription": "Высокая фигура в пепельном плаще держит фонарь с неподвижным серебряным пламенем.",
+  "profileSummary": "Страж безмолвной обители, который проверяет намерения пришедших душ.",
+  "personalityProfile": {
+    "archetype": "patient_oath_keeper",
+    "worldview": "Обещание имеет вес только тогда, когда его выдерживают в тишине."
+  },
+  "motivation": "Сохранить покой обители и отделить искренние клятвы от удобных слов.",
+  "realm": "Chaos Sea",
+  "locationId": "abode_quiet_lantern",
+  "locationName": "Обитель Тихого Фонаря",
+  "standardArts": {
+    "guard": 1
+  },
+  "specialArts": [],
+  "customStates": [],
+  "fateCards": [],
+  "relationships": [],
+  "goals": {
+    "shortTermGoal": "Проверить, почему душа просит убежища.",
+    "longTermGoal": "Не позволить ложной клятве нарушить покой обители.",
+    "plan": "Задать душе три проверочных вопроса и сопоставить ответы с памятью фонаря."
+  },
+  "personalQuests": [],
+  "currentActivity": null,
+  "completedActivities": [],
+  "gmThoughtsSummary": "Я дам душе время, но не приму её слова без проверки.",
+  "ledger": [],
+  "progressionLedger": [],
   "materialization": {
     "schemaVersion": 1,
     "materializationId": "mat_guardian_quiet_lantern_turn_12",
@@ -104,7 +139,7 @@ The immutable envelope is stored as `materialization` on the same profile:
       "specialArts": { "state": "empty_by_design", "reason": "Хранитель ещё не создал личного духовного искусства." },
       "customStates": { "state": "empty_by_design", "reason": "Особое духовное состояние пока не проявилось." },
       "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не открылся." },
-      "relationships": { "state": "populated" },
+      "relationships": { "state": "empty_by_design", "reason": "У Хранителя ещё нет устойчивой личной связи с этой душой." },
       "agency": { "state": "populated" },
       "progressionHistory": { "state": "empty_by_design", "reason": "История развития начинается с текущего цикла." }
     }
@@ -112,7 +147,7 @@ The immutable envelope is stored as `materialization` on the same profile:
 }
 ```
 
-Every required section is declared `populated` when the canonical profile contains meaningful structured data, or `empty_by_design` with a non-empty in-world reason when absence is intentional. `capabilities` must agree with actual combat arts, mentor authority, and trade authority. `canTeach=true` requires a positive teachable tier or cap: a positive standard/special art tier, an explicitly teachable positive special art, or another supported positive lesson such as a valid mentor showcase offer with `sourceCap > 0`. A declared mentor flag, an art at tier `0`, or a showcase with a non-positive cap is not teaching capability. A legacy actor that newly gains teaching, trade, combat, Actor Brain, or non-vacant leadership authority is promoted into significant structured play and must receive a complete envelope in that accepted turn. Positive trade authority is exact and realm-local: in the Chaos Sea, `canTrade=true` is available only to the one `activeGuardian.guardianId` whose `abode.abodeId` equals `chaosSeaNavigation.currentAbodeId` (the exact current abode); in the Shining Abode it is available only to a non-player faction head whose leadership is secure or contested, whose faction lifecycle is operational, and whose faction strength gives trade tier 1 or higher. When authoritative trade evidence is unavailable at the validation boundary, the contract fails closed: write `canTrade=false` and do not infer trading from a name, role, description, or genre vocabulary. A full response may carry the new common profile before canonical files are written; the accepted-turn binding check then proves `canTrade=true` against exact validated pre-turn or current realm authority instead of trusting the profile claim itself.
+Every required section is declared `populated` when the canonical profile contains meaningful structured data, or `empty_by_design` with a non-empty in-world reason when absence is intentional. `empty_by_design` keeps every governed real canonical empty field physically present in its exact empty array/object/null shape; an omitted or wrong-kind property is not deliberate emptiness. `capabilities` must agree with actual combat arts, mentor authority, and trade authority. `canTeach=true` requires a positive teachable tier or cap: a positive standard/special art tier, an explicitly teachable positive special art, or another supported positive lesson such as a valid mentor showcase offer with `sourceCap > 0`. A declared mentor flag, an art at tier `0`, or a showcase with a non-positive cap is not teaching capability. A legacy actor that newly gains teaching, trade, combat, Actor Brain, or non-vacant leadership authority is promoted into significant structured play and must receive a complete envelope in that accepted turn. Positive trade authority is exact and realm-local: in the Chaos Sea, `canTrade=true` is available only to the one `activeGuardian.guardianId` whose `abode.abodeId` equals `chaosSeaNavigation.currentAbodeId` (the exact current abode); in the Shining Abode it is available only to a non-player faction head whose leadership is secure or contested, whose faction lifecycle is operational, and whose faction strength gives trade tier 1 or higher. When authoritative trade evidence is unavailable at the validation boundary, the contract fails closed: write `canTrade=false` and do not infer trading from a name, role, description, or genre vocabulary. A full response may carry the new common profile before canonical files are written; the accepted-turn binding check then proves `canTrade=true` against exact validated pre-turn or current realm authority instead of trusting the profile claim itself.
 
 Console and browser player projections use the same visibility contract. Ordinary player views hide `gmOnly`, secret, internal, explicitly non-player-visible, and `system_actor` system profiles. They may be shown only through explicit diagnostics enabled by the player/operator; ordinary commands must not leak them merely because the canonical profile is valid.
 

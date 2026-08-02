@@ -552,7 +552,14 @@ public sealed class PromptDocumentationCoverageTests
                          "populated",
                          "empty_by_design",
                          "in-world reason",
+                         "physically present",
+                         "exactly one non-empty location authority",
+                         "currentLocationId",
+                         "same-turn initialLocationId",
                          "display name, prose, occupation, or setting genre",
+                         "archetype prose",
+                         "item types",
+                         "genre keywords",
                          "existing NPC",
                          "dedicated delta"
                      })
@@ -567,6 +574,11 @@ public sealed class PromptDocumentationCoverageTests
             Assert.Contains("\"relationships\": { \"state\": \"populated\" }", text, StringComparison.Ordinal);
             Assert.Contains("\"inventory\": {", text, StringComparison.Ordinal);
             Assert.Contains("\"state\": \"empty_by_design\"", text, StringComparison.Ordinal);
+            Assert.Contains("\"activeSkills\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"passiveSkills\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"inventory\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"fateCards\": []", text, StringComparison.Ordinal);
+            Assert.Contains("\"personalQuests\": []", text, StringComparison.Ordinal);
         }
 
         foreach (var requiredText in new[]
@@ -643,6 +655,11 @@ public sealed class PromptDocumentationCoverageTests
 
         Assert.Contains("mortal_actor_materialization_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("E_CLI_Step_Main.txt", manifest, StringComparison.Ordinal);
+        Assert.Contains("exactly one non-empty location authority", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("physically present", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("archetype prose", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("item types", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("genre keywords", manifest, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

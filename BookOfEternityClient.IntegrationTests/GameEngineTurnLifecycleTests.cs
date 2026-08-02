@@ -4425,6 +4425,22 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(safeRules, rule => rule.Contains("preserve", StringComparison.OrdinalIgnoreCase) &&
                                           rule.Contains("valid", StringComparison.OrdinalIgnoreCase));
 
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("empty_by_design", StringComparison.Ordinal) &&
+                                              item.Contains("physically present", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("appearanceDescription", StringComparison.Ordinal) &&
+                                              item.Contains("profileSummary", StringComparison.Ordinal) &&
+                                              item.Contains("personalityProfile", StringComparison.Ordinal) &&
+                                              item.Contains("motivation", StringComparison.Ordinal) &&
+                                              item.Contains("worldview", StringComparison.Ordinal) &&
+                                              item.Contains("locationId", StringComparison.Ordinal));
+        Assert.Contains(expectedShape, item => item.Contains("goals", StringComparison.Ordinal) &&
+                                              item.Contains("plan", StringComparison.OrdinalIgnoreCase) &&
+                                              item.Contains("actor-owned memory", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(expectedShape, item => item.Contains("exactly one", StringComparison.OrdinalIgnoreCase) &&
+                                              item.Contains("currentLocationId", StringComparison.Ordinal) &&
+                                              item.Contains("initialLocationId", StringComparison.Ordinal));
+
         var doNotDo = packet.GetProperty("doNotDo").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
         Assert.Contains(doNotDo, item => item.Contains("implementation code", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(doNotDo, item => item.Contains("whole actor", StringComparison.OrdinalIgnoreCase) ||
@@ -4433,6 +4449,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(doNotDo, item => item.Contains("name", StringComparison.OrdinalIgnoreCase) &&
                                          item.Contains("prose", StringComparison.OrdinalIgnoreCase) &&
                                          item.Contains("genre", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(doNotDo, item => item.Contains("archetype", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("item type", StringComparison.OrdinalIgnoreCase) &&
+                                         item.Contains("genre keyword", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(doNotDo, item => item.Contains("client", StringComparison.OrdinalIgnoreCase) &&
                                          item.Contains("invent", StringComparison.OrdinalIgnoreCase));
     }
@@ -4479,16 +4498,28 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     [InlineData("actor_materialization_inventory_reference_mismatch")]
     [InlineData("actor_materialization_section_missing")]
     [InlineData("actor_materialization_section_content_mismatch")]
+    [InlineData("actor_materialization_section_empty_surface_invalid")]
     [InlineData("actor_materialization_capability_mismatch")]
     [InlineData("actor_materialization_existing_resend_forbidden")]
     [InlineData("actor_materialization_historical_envelope_changed")]
+    [InlineData("actor_materialization_afterlife_missing_appearance")]
+    [InlineData("actor_materialization_afterlife_missing_profile_summary")]
+    [InlineData("actor_materialization_afterlife_missing_personality")]
+    [InlineData("actor_materialization_afterlife_missing_motivation")]
+    [InlineData("actor_materialization_afterlife_missing_worldview")]
+    [InlineData("actor_materialization_afterlife_missing_realm")]
+    [InlineData("actor_materialization_afterlife_missing_location")]
+    [InlineData("actor_materialization_afterlife_missing_goals_plan")]
     [InlineData("afterlife_actor_materialization_profile_missing")]
     [InlineData("afterlife_actor_materialization_profile_ambiguous")]
     [InlineData("afterlife_actor_materialization_memory_missing")]
+    [InlineData("npc_new_update_location_authority_not_exactly_one")]
+    [InlineData("npc_new_update_current_location_unknown")]
     public async Task WriteValidationRepairRequestAsync_ActionableActorMaterializationCode_IsClassified(
         string code)
     {
-        var isAfterlife = code.StartsWith("afterlife_", StringComparison.Ordinal);
+        var isAfterlife = code.StartsWith("afterlife_", StringComparison.Ordinal) ||
+                          code.StartsWith("actor_materialization_afterlife_", StringComparison.Ordinal);
         var engine = CreateGameEngine();
         var issues = new List<ValidationIssue>
         {
@@ -4519,6 +4550,48 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             (await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
         var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
         Assert.Equal("actor_materialization_repair", packet.GetProperty("kind").GetString());
+    }
+
+    [Theory]
+    [InlineData("npc_new_update_location_authority_not_exactly_one")]
+    [InlineData("npc_new_update_current_location_unknown")]
+    public async Task WriteValidationRepairRequestAsync_NewMortalLocationIssueTargetsNpcCore(
+        string code)
+    {
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                "game_state/npcs/npc_core.json.UpdateNPCs[0].currentLocationId",
+                IssueSeverity.Error,
+                "New Mortal actor location authority is invalid.",
+                code: code,
+                actor: "mortal_npc:npc_location_repair",
+                section: "NPC",
+                expected: "exactly one known currentLocationId or same-turn initialLocationId",
+                actual: "missing or unknown")
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        using var doc = JsonDocument.Parse(
+            (await _fs.ReadFileAsync("game_state/control/validation_repair_request.json"))!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal(
+            new[] { "game_state/npcs/npc_core.json" },
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        var expectedShape = packet.GetProperty("expectedShape").EnumerateArray().Select(item => item.GetString() ?? string.Empty).ToArray();
+        Assert.Contains(expectedShape, item => item.Contains("exactly one", StringComparison.OrdinalIgnoreCase) &&
+                                              item.Contains("currentLocationId", StringComparison.Ordinal) &&
+                                              item.Contains("initialLocationId", StringComparison.Ordinal));
     }
 
     [Fact]
