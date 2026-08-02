@@ -12,8 +12,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class IntegrationTestBoundaryTests
 {
-    private const int BroadValidationSentinelBudget = 8;
-    private const int ReviewedBroadValidationCallCount = 8;
+    private const int BroadValidationSentinelBudget = 7;
+    private const int ReviewedBroadValidationCallCount = 7;
     private const int GuardianFullValidationSentinelBudget = 8;
     private const string FastTestsDirectory = "BookOfEternityClient.Tests";
     private const string IntegrationTestsDirectory = "BookOfEternityClient.IntegrationTests";
@@ -128,7 +128,7 @@ public sealed class IntegrationTestBoundaryTests
     private static readonly IReadOnlyDictionary<string, int> ReviewedBroadValidationCallManifest =
         new Dictionary<string, int>(StringComparer.Ordinal)
         {
-            [$"{TestSupportDirectory}/ValidatorFixtureHarness.cs"] = 2,
+            [$"{TestSupportDirectory}/ValidatorFixtureHarness.cs"] = 1,
             [$"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/ExampleDocumentationValidationTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/FileSystemExampleFixtureIntegrityTests.cs"] = 2,
@@ -655,6 +655,52 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
+    public void ValidatorFixtureStateOnlySelection_IncludesMappedAndCanonicalSnapshotFiles()
+    {
+        var definition = new ValidatorFixtureDefinition
+        {
+            Runner = FixtureRunnerKind.StateOnly,
+            Shared =
+            [
+                new FixtureFileMapping
+                {
+                    Target =
+                        "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+                }
+            ],
+            Broken =
+            [
+                new FixtureFileMapping
+                {
+                    Target = "game_state/meta/soul_state.json"
+                }
+            ],
+            Fixed =
+            [
+                new FixtureFileMapping
+                {
+                    Target = "lore/codex_entries.json"
+                }
+            ]
+        };
+
+        var selection = ValidatorFixtureHarness.BuildStateOnlySelection(definition);
+
+        Assert.Equal(GameStateValidationPhase.All, selection.Phases);
+        Assert.All(
+        [
+            "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+            "game_state/meta/guardians.json",
+            "game_state/meta/soul_state.json",
+            "lore/codex_entries.json"
+        ],
+        path => Assert.True(
+            selection.IncludesStateFile(path),
+            $"Expected StateOnly fixture selection to include '{path}'."));
+        Assert.False(selection.IncludesStateFile("game_state/world/world_map.json"));
+    }
+
+    [Fact]
     public void ActorAndAfterlifeValidationSources_UseScopedProfiles()
     {
         var violations = ActorAndAfterlifeScopedProfileViolations(
@@ -706,7 +752,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedEightCallManifest()
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest()
     {
         var callSites = EnumerateIntegrationAndSupportSources()
             .SelectMany(candidate =>
@@ -721,7 +767,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsSameTotalPerFileDrift()
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsSameTotalPerFileDrift()
     {
         var callSites = ReviewedBroadValidationCallLocations().ToList();
         callSites.Remove($"{TestSupportDirectory}/ValidatorFixtureHarness.cs:1");
@@ -734,7 +780,7 @@ public sealed class IntegrationTestBoundaryTests
             violations,
             violation =>
                 violation.Contains(
-                    $"{TestSupportDirectory}/ValidatorFixtureHarness.cs: expected 2, found 1",
+                    $"{TestSupportDirectory}/ValidatorFixtureHarness.cs: expected 1, found 0",
                     StringComparison.Ordinal) &&
                 violation.Contains(
                     $"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs: expected 1, found 2",
@@ -742,7 +788,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsNinthUnreviewedCall()
+    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsEighthUnreviewedCall()
     {
         var callSites = ReviewedBroadValidationCallLocations()
             .Append($"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs:42")
@@ -754,18 +800,18 @@ public sealed class IntegrationTestBoundaryTests
             violations,
             violation =>
                 violation.Contains(
-                    "observed 9 exceeds sentinel budget 8",
+                    "observed 8 exceeds sentinel budget 7",
                     StringComparison.Ordinal));
         Assert.Contains(
             $"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs: expected 0, found 1",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Broad-validation sentinel budget is 8",
+            "Broad-validation sentinel budget is 7",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Expected reviewed call sites: 8",
+            "Expected reviewed call sites: 7",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
