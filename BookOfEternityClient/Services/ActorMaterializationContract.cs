@@ -13,7 +13,8 @@ internal sealed record ActorMaterializationEvidence(
     string ActorId,
     IReadOnlyDictionary<string, bool> SectionHasContent,
     IReadOnlyDictionary<string, bool> CapabilityEvidence,
-    IReadOnlySet<string>? DeferredCapabilityEvidence = null);
+    IReadOnlySet<string>? DeferredCapabilityEvidence = null,
+    IReadOnlyDictionary<string, bool>? SectionHasCanonicalEmptySurface = null);
 
 internal static class ActorMaterializationContract
 {
@@ -266,11 +267,8 @@ internal static class ActorMaterializationContract
         var hasSkills = HasUsableMortalCombatSkill(npc);
         var inventoryItemIds = ReadStructuredInventoryItemIds(npc);
         var hasInventory = inventoryItemIds.Count > 0;
-        var hasRelationships = npc.TryGetProperty("relationshipLevel", out var relationshipLevel) &&
-                               relationshipLevel.ValueKind == JsonValueKind.Number &&
-                               !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(npc, "attitude")) &&
-                               npc.TryGetProperty("relationshipLock", out var relationshipLock) &&
-                               relationshipLock.ValueKind == JsonValueKind.Object;
+        var hasRelationships = HasStructuredMortalRelationshipSurface(npc) &&
+                               !HasCanonicalEmptyMortalRelationshipSurface(npc);
         var canTeach = HasUsableMortalTeacherAuthority(npc);
         var canTrade = HasExplicitMortalTradeAuthority(npc);
 
@@ -291,6 +289,16 @@ internal static class ActorMaterializationContract
                 ["canTeach"] = canTeach,
                 ["canTrade"] = canTrade,
                 ["ownsItems"] = hasInventory
+            },
+            SectionHasCanonicalEmptySurface: new Dictionary<string, bool>(StringComparer.Ordinal)
+            {
+                ["skills"] = HasExactEmptyArray(npc, "activeSkills") &&
+                             HasExactEmptyArray(npc, "passiveSkills"),
+                ["inventory"] = HasExactEmptyArray(npc, "inventory") &&
+                                HasExactEmptyObject(npc, "equippedItems"),
+                ["fateCards"] = HasExactEmptyArray(npc, "fateCards"),
+                ["personalQuests"] = HasExactEmptyArray(npc, "personalQuests"),
+                ["relationships"] = HasCanonicalEmptyMortalRelationshipSurface(npc)
             });
 
         var requireEnvelope = requireEnvelopeOverride ?? isNewNpc;
@@ -435,7 +443,18 @@ internal static class ActorMaterializationContract
                 ["progressionHistory"] = hasProgressionHistory
             },
             capabilityEvidence,
-            deferredCapabilityEvidence);
+            deferredCapabilityEvidence,
+            new Dictionary<string, bool>(StringComparer.Ordinal)
+            {
+                ["standardArts"] = HasExactEmptyObject(profile, "standardArts"),
+                ["specialArts"] = HasExactEmptyArray(profile, "specialArts"),
+                ["customStates"] = HasExactEmptyArray(profile, "customStates"),
+                ["fateCards"] = HasExactEmptyArray(profile, "fateCards"),
+                ["relationships"] = HasExactEmptyArray(profile, "relationships"),
+                ["agency"] = HasCanonicalEmptyAfterlifeAgencySurface(profile),
+                ["progressionHistory"] = HasExactEmptyArray(profile, "ledger") &&
+                                         HasExactEmptyArray(profile, "progressionLedger")
+            });
 
         var issues = Validate(
             profile,
@@ -444,6 +463,9 @@ internal static class ActorMaterializationContract
             evidence,
             requireEnvelope,
             deferEvidenceConsistency).ToList();
+
+        if (requireEnvelope && !deferEvidenceConsistency)
+            ValidateAfterlifeCompleteness(profile, context, evidence, issues);
 
         var hasLegacyActorRefProperty = HasPropertyIgnoringCase(profile, "actorRef");
         if ((requireEnvelope || hasMaterializationEnvelope) &&
@@ -684,6 +706,22 @@ internal static class ActorMaterializationContract
             return;
 
         var hasContent = evidence.SectionHasContent.TryGetValue(section, out var sectionHasContent) && sectionHasContent;
+        if (isEmptyByDesign &&
+            (evidence.SectionHasCanonicalEmptySurface == null ||
+             !evidence.SectionHasCanonicalEmptySurface.TryGetValue(section, out var hasCanonicalEmptySurface) ||
+             !hasCanonicalEmptySurface))
+        {
+            issues.Add(CreateIssue(
+                sectionContext,
+                "actor_materialization_section_empty_surface_invalid",
+                $"empty_by_design для секции {section} требует физически присутствующую каноническую пустую поверхность.",
+                evidence,
+                section: section,
+                expected: "all governed properties present in their exact canonical empty shape",
+                actual: "missing, wrong-kind, or non-empty governed surface",
+                repairHint: "Восстанови каждое поле этой секции в его точной пустой форме; не заменяй пустоту пропуском, null другого типа или prose-описанием."));
+        }
+
         if ((isPopulated && !hasContent) || (isEmptyByDesign && hasContent))
         {
             issues.Add(CreateIssue(
@@ -901,6 +939,154 @@ internal static class ActorMaterializationContract
         HasObjectArrayEntries(profile, "personalQuests") ||
         HasMeaningfulObject(profile, "currentActivity") ||
         HasObjectArrayEntries(profile, "completedActivities");
+
+    private static bool HasExactEmptyArray(JsonElement owner, string propertyName) =>
+        owner.ValueKind == JsonValueKind.Object &&
+        owner.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind == JsonValueKind.Array &&
+        value.GetArrayLength() == 0;
+
+    private static bool HasExactEmptyObject(JsonElement owner, string propertyName) =>
+        owner.ValueKind == JsonValueKind.Object &&
+        owner.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind == JsonValueKind.Object &&
+        !value.EnumerateObject().Any();
+
+    private static bool HasExactNull(JsonElement owner, string propertyName) =>
+        owner.ValueKind == JsonValueKind.Object &&
+        owner.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind == JsonValueKind.Null;
+
+    private static bool HasStructuredMortalRelationshipSurface(JsonElement npc) =>
+        npc.TryGetProperty("relationshipLevel", out var relationshipLevel) &&
+        relationshipLevel.ValueKind == JsonValueKind.Number &&
+        !string.IsNullOrWhiteSpace(ReadFirstNonEmptyString(npc, "attitude")) &&
+        npc.TryGetProperty("relationshipLock", out var relationshipLock) &&
+        relationshipLock.ValueKind == JsonValueKind.Object;
+
+    private static bool HasCanonicalEmptyMortalRelationshipSurface(JsonElement npc)
+    {
+        if (!npc.TryGetProperty("relationshipLevel", out var relationshipLevel) ||
+            relationshipLevel.ValueKind != JsonValueKind.Number ||
+            !relationshipLevel.TryGetInt32(out var relationshipValue) ||
+            relationshipValue != 0 ||
+            !TryReadExactNonEmptyString(npc, "attitude", out var attitude) ||
+            attitude is not ("Нейтралитет" or "Neutral") ||
+            !npc.TryGetProperty("relationshipLock", out var relationshipLock) ||
+            relationshipLock.ValueKind != JsonValueKind.Object ||
+            !relationshipLock.TryGetProperty("isLocked", out var isLocked) ||
+            isLocked.ValueKind != JsonValueKind.False)
+        {
+            return false;
+        }
+
+        return relationshipLock.EnumerateObject().All(property =>
+            string.Equals(property.Name, "isLocked", StringComparison.Ordinal) ||
+            property.Value.ValueKind == JsonValueKind.Null);
+    }
+
+    private static bool HasCanonicalEmptyAfterlifeAgencySurface(JsonElement profile) =>
+        HasExactNull(profile, "goals") &&
+        HasExactEmptyArray(profile, "personalQuests") &&
+        HasExactNull(profile, "currentActivity") &&
+        HasExactEmptyArray(profile, "completedActivities");
+
+    private static void ValidateAfterlifeCompleteness(
+        JsonElement profile,
+        string context,
+        ActorMaterializationEvidence evidence,
+        List<ValidationIssue> issues)
+    {
+        AddMissingAfterlifeCompletenessIssueIf(
+            !TryReadExactNonEmptyString(profile, "appearanceDescription", out _),
+            $"{context}.appearanceDescription",
+            "actor_materialization_afterlife_missing_appearance",
+            "player-readable appearanceDescription",
+            evidence,
+            issues);
+        AddMissingAfterlifeCompletenessIssueIf(
+            !TryReadExactNonEmptyString(profile, "profileSummary", out _),
+            $"{context}.profileSummary",
+            "actor_materialization_afterlife_missing_profile_summary",
+            "player-readable profileSummary",
+            evidence,
+            issues);
+
+        var hasPersonalityProfile = profile.TryGetProperty("personalityProfile", out var personalityProfile) &&
+                                    personalityProfile.ValueKind == JsonValueKind.Object;
+        AddMissingAfterlifeCompletenessIssueIf(
+            !hasPersonalityProfile ||
+            !TryReadExactNonEmptyString(personalityProfile, "archetype", out _),
+            $"{context}.personalityProfile.archetype",
+            "actor_materialization_afterlife_missing_personality",
+            "structured personalityProfile.archetype",
+            evidence,
+            issues);
+        AddMissingAfterlifeCompletenessIssueIf(
+            !TryReadExactNonEmptyString(profile, "motivation", out _),
+            $"{context}.motivation",
+            "actor_materialization_afterlife_missing_motivation",
+            "structured motivation",
+            evidence,
+            issues);
+        AddMissingAfterlifeCompletenessIssueIf(
+            !hasPersonalityProfile ||
+            !TryReadExactNonEmptyString(personalityProfile, "worldview", out _),
+            $"{context}.personalityProfile.worldview",
+            "actor_materialization_afterlife_missing_worldview",
+            "structured personalityProfile.worldview",
+            evidence,
+            issues);
+        AddMissingAfterlifeCompletenessIssueIf(
+            !TryReadExactNonEmptyString(profile, "realm", out _),
+            $"{context}.realm",
+            "actor_materialization_afterlife_missing_realm",
+            "canonical realm",
+            evidence,
+            issues);
+        AddMissingAfterlifeCompletenessIssueIf(
+            !TryReadExactNonEmptyString(profile, "locationId", out _),
+            $"{context}.locationId",
+            "actor_materialization_afterlife_missing_location",
+            "canonical locationId",
+            evidence,
+            issues);
+
+        var hasGoals = profile.TryGetProperty("goals", out var goals) &&
+                       goals.ValueKind == JsonValueKind.Object &&
+                       TryReadExactNonEmptyString(goals, "shortTermGoal", out _) &&
+                       TryReadExactNonEmptyString(goals, "longTermGoal", out _) &&
+                       TryReadExactNonEmptyString(goals, "plan", out _);
+        AddMissingAfterlifeCompletenessIssueIf(
+            !hasGoals,
+            $"{context}.goals",
+            "actor_materialization_afterlife_missing_goals_plan",
+            "structured shortTermGoal, longTermGoal, and non-empty plan",
+            evidence,
+            issues);
+    }
+
+    private static void AddMissingAfterlifeCompletenessIssueIf(
+        bool isMissing,
+        string path,
+        string code,
+        string expected,
+        ActorMaterializationEvidence evidence,
+        List<ValidationIssue> issues)
+    {
+        if (!isMissing)
+            return;
+
+        issues.Add(CreateIssue(
+            path,
+            code,
+            "Новая значимая сущность посмертия не имеет полной structured authority для представления, Actor Brain или местоположения.",
+            evidence,
+            section: "AfterlifeActorCompleteness",
+            expected: expected,
+            actual: "missing or blank",
+            repairHint: "Добавь точное structured поле в common profile либо используй документированную type-specific authority; не выводи его из имени, описания или жанровых ключевых слов."));
+    }
 
     private static HashSet<string> ReadStructuredInventoryItemIds(JsonElement npc)
     {

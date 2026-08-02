@@ -1608,14 +1608,8 @@ public sealed partial class NpcTradeService
         var quality = NormalizeInventoryItemQuality(FirstNonEmpty(GetNodeString(item["quality"]), GetNodeString(item["rarity"]), "Common"));
         var price = Math.Max(0, GetNodeInt(item["price"], GetNodeInt(tradeSource?["price"], 0)));
         var count = Math.Max(1, GetNodeInt(item["count"], GetNodeInt(item["quantity"], GetNodeInt(tradeSource?["quantity"], 1))));
-        var type = GetNodeString(item["type"]) ?? "";
-        var group = GetNodeString(item["group"]) ?? "";
-        var isContainer = GetNodeBool(item["isContainer"]) ||
-                          ContainsAny(type, "container", "контейнер", "сумка", "кофр") ||
-                          ContainsAny(group, "container", "контейнер");
-        var isConsumption = GetNodeBool(item["isConsumption"]) ||
-                            ContainsAny(type, "consumable", "consumption", "расход", "припас", "еда", "food") ||
-                            ContainsAny(group, "consumable", "consumption", "расход", "припас", "еда", "food");
+        var isContainer = GetNodeBool(item["isContainer"]);
+        var isConsumption = GetNodeBool(item["isConsumption"]);
 
         EnsureStringField(item, "itemId", itemId);
         EnsureStringField(item, "id", itemId);

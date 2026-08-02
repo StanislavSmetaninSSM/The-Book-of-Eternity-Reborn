@@ -24,33 +24,6 @@ public static class InventoryEquipmentService
             ["ring2"] = "💍 Кольцо 2"
         };
 
-    private static readonly IReadOnlyDictionary<string, string> TypeToSlot =
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["weapon"] = "mainHand",
-            ["оружие"] = "mainHand",
-            ["меч"] = "mainHand",
-            ["посох"] = "mainHand",
-            ["armor"] = "body",
-            ["броня"] = "body",
-            ["helmet"] = "head",
-            ["шлем"] = "head",
-            ["shield"] = "offHand",
-            ["щит"] = "offHand",
-            ["boots"] = "feet",
-            ["сапоги"] = "feet",
-            ["gloves"] = "hands",
-            ["перчатки"] = "hands",
-            ["ring"] = "ring1",
-            ["кольцо"] = "ring1",
-            ["necklace"] = "neck",
-            ["ожерелье"] = "neck",
-            ["amulet"] = "neck",
-            ["амулет"] = "neck",
-            ["accessory"] = "neck",
-            ["аксессуар"] = "neck"
-        };
-
     public static async Task<InventoryEquipmentContext?> ReadContextAsync(FileSystemManager fs) =>
         await ReadContextCoreAsync(fs, writeLease: null);
 
@@ -282,48 +255,11 @@ public static class InventoryEquipmentService
 
     public static string? ResolveEquipSlot(string itemSlot, string itemType)
     {
-        if (!string.IsNullOrWhiteSpace(itemSlot))
-        {
-            var direct = SlotLabels.Keys.FirstOrDefault(key =>
+        _ = itemType;
+        return string.IsNullOrWhiteSpace(itemSlot)
+            ? null
+            : SlotLabels.Keys.FirstOrDefault(key =>
                 string.Equals(key, itemSlot.Trim(), StringComparison.OrdinalIgnoreCase));
-            if (direct != null)
-                return direct;
-
-            foreach (var (key, label) in SlotLabels)
-            {
-                if (label.Contains(itemSlot, StringComparison.OrdinalIgnoreCase))
-                    return key;
-            }
-
-            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ["Head"] = "head",
-                ["Body"] = "body",
-                ["Hands"] = "hands",
-                ["Feet"] = "feet",
-                ["MainHand"] = "mainHand",
-                ["OffHand"] = "offHand",
-                ["Neck"] = "neck",
-                ["Ring"] = "ring1",
-                ["Ring1"] = "ring1",
-                ["Ring2"] = "ring2",
-                ["Голова"] = "head",
-                ["Тело"] = "body",
-                ["Руки"] = "hands",
-                ["Ноги"] = "feet",
-                ["Основная рука"] = "mainHand",
-                ["Вторая рука"] = "offHand",
-                ["Шея"] = "neck",
-                ["Кольцо"] = "ring1"
-            };
-            if (map.TryGetValue(itemSlot.Trim(), out var mapped))
-                return mapped;
-        }
-
-        if (!string.IsNullOrWhiteSpace(itemType) && TypeToSlot.TryGetValue(itemType.Trim(), out var slotFromType))
-            return slotFromType;
-
-        return null;
     }
 
     public static string ReadFirstCommandArgument(string command)
@@ -474,17 +410,13 @@ public static class InventoryEquipmentService
             GetString(item, "id"));
         var name = FirstNonEmpty(GetString(item, "name"), GetString(item, "itemName"), "???");
         var type = GetString(item, "type");
-        var itemSlot = FirstNonEmpty(
-            GetString(item, "equipmentSlot"),
-            GetString(item, "slot"),
-            GetString(item, "equipSlot"));
+        var itemSlot = GetString(item, "equipmentSlot");
         var resolvedSlot = ResolveEquipSlot(itemSlot, type) ?? string.Empty;
         var isBroken = ReadBool(item, "isBroken") || IsZeroPercent(GetString(item, "durability"));
         var isSoulRelic = IsSoulRelic(item);
         var isEquippable = !isSoulRelic &&
                             !isBroken &&
-                            (!string.IsNullOrWhiteSpace(itemSlot) ||
-                             (!string.IsNullOrWhiteSpace(type) && TypeToSlot.ContainsKey(type)));
+                            !string.IsNullOrWhiteSpace(resolvedSlot);
 
         return new InventoryEquipmentItem(
             Identity: identity,
@@ -626,24 +558,7 @@ public static class InventoryEquipmentService
     }
 
     private static bool IsSoulRelic(JsonObject item)
-    {
-        if (!string.IsNullOrWhiteSpace(GetString(item, "relicId")))
-            return true;
-
-        foreach (var property in new[] { "type", "kind", "category", "itemType" })
-        {
-            var marker = GetString(item, property)
-                .Replace("-", "_", StringComparison.Ordinal)
-                .Replace(" ", "_", StringComparison.Ordinal)
-                .Trim();
-            if (marker.Contains("soul_relic", StringComparison.OrdinalIgnoreCase) ||
-                marker.Contains("soulrelic", StringComparison.OrdinalIgnoreCase) ||
-                marker.Contains("реликвия_души", StringComparison.OrdinalIgnoreCase))
-                return true;
-        }
-
-        return false;
-    }
+        => !string.IsNullOrWhiteSpace(GetString(item, "relicId"));
 
     private static string FirstNonEmpty(params string[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;

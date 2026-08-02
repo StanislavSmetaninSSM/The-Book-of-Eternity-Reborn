@@ -438,7 +438,7 @@ public sealed class SystemGuardianLibraryService
             {
                 ["archetype"] = "Freeform Guardian",
                 ["speechPattern"] = "тон и манера речи заданы свободным описанием игрока",
-                ["coreValues"] = BuildFreeformCoreValues(normalizedDescription)
+                ["coreValues"] = new JsonArray("сопровождение души")
             },
             ["mood"] = new JsonObject
             {
@@ -609,9 +609,16 @@ public sealed class SystemGuardianLibraryService
         var materializationTurn = Math.Max(0, turnNumber);
         var presetId = FirstNonEmpty(preset.PresetId, "system_guardian");
         var guardianId = BuildSystemGuardianId(presetId);
+        var abodeId = BuildSystemGuardianAbodeId(presetId);
         var defaultName = FirstNonEmpty(preset.DefaultNameVariant, preset.DisplayName, presetId);
         var abodeName = FirstNonEmpty(preset.AbodeName, $"{defaultName} — Обитель");
         var domain = FirstNonEmpty(preset.Domain, "Knowledge");
+        var appearanceDescription = FirstNonEmpty(
+            preset.DefaultAppearanceDescription,
+            $"Хранитель {defaultName} проявляется в форме, заданной системным досье.");
+        var profileSummary = FirstNonEmpty(
+            preset.Summary,
+            $"Системный Хранитель {defaultName} сопровождает душу в Обители Хаоса.");
         const string progressionStrategySummary =
             "Стартовый системный Хранитель держит запас духовных техник для обучения души через витрину наставника.";
 
@@ -620,7 +627,17 @@ public sealed class SystemGuardianLibraryService
             ["actorType"] = "guardian",
             ["actorId"] = guardianId,
             ["displayName"] = defaultName,
+            ["appearanceDescription"] = appearanceDescription,
+            ["profileSummary"] = profileSummary,
+            ["personalityProfile"] = new JsonObject
+            {
+                ["archetype"] = FirstNonEmpty(preset.Archetype, "Guardian"),
+                ["worldview"] = "Духовное сопровождение требует последовательности, границ и ответственности.",
+                ["coreValues"] = ToJsonStringArray(preset.CoreValues)
+            },
+            ["motivation"] = $"Помогать душе осваивать путь через структурированную область «{domain}».",
             ["realm"] = "Chaos Sea",
+            ["locationId"] = abodeId,
             ["locationName"] = abodeName,
             ["sourcePreset"] = new JsonObject
             {
@@ -713,8 +730,13 @@ public sealed class SystemGuardianLibraryService
         var displayName = ExtractFreeformGuardianName(normalizedDescription);
         var domain = FreeformGuardianDomain;
         var guardianId = BuildFreeformGuardianId(displayName, normalizedDescription);
+        var abodeId = BuildFreeformGuardianAbodeId(guardianId);
         var abodeName = BuildFreeformAbodeName(displayName, normalizedDescription);
         var seedSegment = SanitizeIdSegment(guardianId);
+        var appearanceDescription =
+            $"Первичная форма Хранителя взята из описания игрока: {TruncateForSummary(normalizedDescription, 420)}";
+        var profileSummary =
+            $"Свободно описанный Хранитель {displayName}, созданный для первой встречи и сопровождения души.";
         const string progressionStrategySummary =
             "Стартовый свободно описанный Хранитель держит безопасный набор духовных техник для первых уроков души.";
 
@@ -723,7 +745,17 @@ public sealed class SystemGuardianLibraryService
             ["actorType"] = "guardian",
             ["actorId"] = guardianId,
             ["displayName"] = displayName,
+            ["appearanceDescription"] = appearanceDescription,
+            ["profileSummary"] = profileSummary,
+            ["personalityProfile"] = new JsonObject
+            {
+                ["archetype"] = "Freeform Guardian",
+                ["worldview"] = "Свободный образ не подменяет доказуемые границы духовной власти.",
+                ["coreValues"] = new JsonArray("сопровождение души")
+            },
+            ["motivation"] = "Сопровождать душу в первых решениях, не приписывая себе власть из описательного текста.",
             ["realm"] = "Chaos Sea",
+            ["locationId"] = abodeId,
             ["locationName"] = abodeName,
             ["originType"] = "freeform",
             ["freeformSourceDescription"] = normalizedDescription,
@@ -1066,21 +1098,6 @@ public sealed class SystemGuardianLibraryService
             return $"Архив {displayName}";
 
         return $"Обитель {displayName}";
-    }
-
-    private static JsonArray BuildFreeformCoreValues(string description)
-    {
-        var values = new JsonArray();
-        var source = description.ToLowerInvariant();
-        if (ContainsAny(source, "мудрост", "осторож"))
-            values.Add("осторожная мудрость");
-        if (ContainsAny(source, "сдел", "цен", "договор"))
-            values.Add("цена любого обещания");
-        if (ContainsAny(source, "библиот", "архив", "знан"))
-            values.Add("сохранение забытых знаний");
-        if (values.Count == 0)
-            values.Add("сопровождение души");
-        return values;
     }
 
     private static string InferFreeformPronouns(string displayName, string description)

@@ -316,6 +316,24 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyAsync_TypeAndGroupProseDoNotCreateContainerOrConsumptionAuthority()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var result = await service.BuyAsync("npc_merchant_001", "npc_trade_slot_006", currentTurn: 8);
+
+        Assert.True(result.Success);
+        using var inventoryDoc = JsonDocument.Parse(
+            await _fs.ReadFileAsync("game_state/inventory/items.json") ?? "{}");
+        var item = Assert.Single(inventoryDoc.RootElement.GetProperty("items").EnumerateArray());
+        Assert.Equal("Container", item.GetProperty("type").GetString());
+        Assert.Equal("Контейнеры", item.GetProperty("group").GetString());
+        Assert.False(item.GetProperty("isContainer").GetBoolean());
+        Assert.False(item.GetProperty("isConsumption").GetBoolean());
+    }
+
+    [Fact]
     public async Task BuyAsync_MortalScopeChangesBeforeCommit_BlocksWithoutMutation()
     {
         await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);

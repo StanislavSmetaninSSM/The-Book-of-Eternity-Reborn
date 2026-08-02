@@ -122,6 +122,38 @@ public sealed class ValidationSourceGuardTests
             Assert.DoesNotContain(proseField, normalizedProfileSource, StringComparison.Ordinal);
             Assert.DoesNotContain(proseField, usableTradeSource, StringComparison.Ordinal);
         }
+
+        var guardianRelationshipSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Core",
+            "GuardianRelationshipRules.cs"));
+        var residentSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "GuardianAbodeResidentState.cs"));
+        var equipmentSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "InventoryEquipmentService.cs"));
+        var systemGuardianSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "SystemGuardianLibraryService.cs"));
+
+        Assert.DoesNotContain("ContainsAny(archetype", guardianRelationshipSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("CollectSeedKeywords", residentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SeedArchetype(", residentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("SeedCoreValues(", residentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("TypeToSlot", equipmentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("label.Contains(itemSlot", equipmentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("marker.Contains(\"soul_relic\"", equipmentSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ContainsAny(type", tradeSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ContainsAny(group", tradeSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("BuildFreeformCoreValues", systemGuardianSource, StringComparison.Ordinal);
     }
 
     [Fact]

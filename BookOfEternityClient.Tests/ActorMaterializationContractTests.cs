@@ -56,6 +56,14 @@ public sealed class ActorMaterializationContractTests
                 ["canTeach"] = false,
                 ["canTrade"] = false,
                 ["ownsItems"] = true
+            },
+            SectionHasCanonicalEmptySurface: new Dictionary<string, bool>(StringComparer.Ordinal)
+            {
+                ["skills"] = false,
+                ["inventory"] = false,
+                ["fateCards"] = true,
+                ["personalQuests"] = false,
+                ["relationships"] = false
             });
 
         var issues = ActorMaterializationContract.Validate(
@@ -193,6 +201,146 @@ public sealed class ActorMaterializationContractTests
         Assert.Contains(issues, issue =>
             issue.Code == "actor_materialization_section_content_mismatch" &&
             issue.Section == "fateCards");
+    }
+
+    [Fact]
+    public void ValidateMortalNpc_EmptyByDesignRequiresEveryCanonicalSurface()
+    {
+        foreach (var section in new[] { "skills", "inventory", "fateCards", "personalQuests", "relationships" })
+        {
+            var actor = CreateMortalNpcWithEnvelope();
+            ConfigureCanonicalEmptyMortalSection(actor, section);
+
+            using (var validDocument = JsonDocument.Parse(actor.ToJsonString()))
+            {
+                var validIssues = ActorMaterializationContract.ValidateMortalNpc(
+                    validDocument.RootElement,
+                    "npc",
+                    "UpdateNPCs");
+                Assert.DoesNotContain(validIssues, issue =>
+                    issue.Code == "actor_materialization_section_empty_surface_invalid" &&
+                    issue.Section == section);
+            }
+
+            RemoveOneMortalSectionSurface(actor, section);
+            using var missingDocument = JsonDocument.Parse(actor.ToJsonString());
+            var missingIssues = ActorMaterializationContract.ValidateMortalNpc(
+                missingDocument.RootElement,
+                "npc",
+                "UpdateNPCs");
+            Assert.Contains(missingIssues, issue =>
+                issue.Code == "actor_materialization_section_empty_surface_invalid" &&
+                issue.Section == section);
+        }
+    }
+
+    [Fact]
+    public void ValidateAfterlifeProfile_EmptyByDesignRejectsOmittedNullAndContradictorySurfaces()
+    {
+        var validProfile = CreateAfterlifeProfile();
+        foreach (var section in new[]
+                 {
+                     "standardArts",
+                     "specialArts",
+                     "customStates",
+                     "fateCards",
+                     "relationships",
+                     "agency",
+                     "progressionHistory"
+                 })
+        {
+            ConfigureCanonicalEmptyAfterlifeSection(validProfile, section);
+        }
+
+        using (var validDocument = JsonDocument.Parse(validProfile.ToJsonString()))
+        {
+            var validIssues = ActorMaterializationContract.ValidateAfterlifeProfile(
+                validDocument.RootElement,
+                "profile",
+                requireEnvelope: true,
+                canTradeEvidence: false);
+            Assert.DoesNotContain(validIssues, issue =>
+                issue.Code == "actor_materialization_section_empty_surface_invalid");
+        }
+
+        var omitted = validProfile.DeepClone().AsObject();
+        omitted.Remove("specialArts");
+        using (var omittedDocument = JsonDocument.Parse(omitted.ToJsonString()))
+        {
+            var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+                omittedDocument.RootElement,
+                "profile",
+                requireEnvelope: true,
+                canTradeEvidence: false);
+            Assert.Contains(issues, issue =>
+                issue.Code == "actor_materialization_section_empty_surface_invalid" &&
+                issue.Section == "specialArts");
+        }
+
+        var nullInsteadOfObject = validProfile.DeepClone().AsObject();
+        nullInsteadOfObject["standardArts"] = null;
+        using (var nullDocument = JsonDocument.Parse(nullInsteadOfObject.ToJsonString()))
+        {
+            var issues = ActorMaterializationContract.ValidateAfterlifeProfile(
+                nullDocument.RootElement,
+                "profile",
+                requireEnvelope: true,
+                canTradeEvidence: false);
+            Assert.Contains(issues, issue =>
+                issue.Code == "actor_materialization_section_empty_surface_invalid" &&
+                issue.Section == "standardArts");
+        }
+
+        var contradictory = validProfile.DeepClone().AsObject();
+        contradictory["fateCards"] = new JsonArray(new JsonObject { ["cardId"] = "card_forbidden" });
+        using var contradictoryDocument = JsonDocument.Parse(contradictory.ToJsonString());
+        var contradictoryIssues = ActorMaterializationContract.ValidateAfterlifeProfile(
+            contradictoryDocument.RootElement,
+            "profile",
+            requireEnvelope: true,
+            canTradeEvidence: false);
+        Assert.Contains(contradictoryIssues, issue =>
+            issue.Code == "actor_materialization_section_empty_surface_invalid" &&
+            issue.Section == "fateCards");
+    }
+
+    [Fact]
+    public void ValidateAfterlifeProfile_FirstMaterializationRequiresStructuredPresentationBrainAndLocation()
+    {
+        static IReadOnlyList<ValidationIssue> Validate(JsonObject profile)
+        {
+            using var document = JsonDocument.Parse(profile.ToJsonString());
+            return ActorMaterializationContract.ValidateAfterlifeProfile(
+                document.RootElement,
+                "profile",
+                requireEnvelope: true,
+                canTradeEvidence: false);
+        }
+
+        var complete = CreateAfterlifeProfile();
+        Assert.DoesNotContain(Validate(complete), issue =>
+            issue.Code?.StartsWith("actor_materialization_afterlife_missing_", StringComparison.Ordinal) == true);
+
+        foreach (var (propertyName, expectedCode) in new[]
+                 {
+                     ("appearanceDescription", "actor_materialization_afterlife_missing_appearance"),
+                     ("profileSummary", "actor_materialization_afterlife_missing_profile_summary"),
+                     ("personalityProfile", "actor_materialization_afterlife_missing_personality"),
+                     ("motivation", "actor_materialization_afterlife_missing_motivation"),
+                     ("realm", "actor_materialization_afterlife_missing_realm"),
+                     ("locationId", "actor_materialization_afterlife_missing_location"),
+                     ("goals", "actor_materialization_afterlife_missing_goals_plan")
+                 })
+        {
+            var incomplete = complete.DeepClone().AsObject();
+            incomplete.Remove(propertyName);
+            Assert.Contains(Validate(incomplete), issue => issue.Code == expectedCode);
+        }
+
+        var missingWorldview = complete.DeepClone().AsObject();
+        missingWorldview["personalityProfile"]!.AsObject().Remove("worldview");
+        Assert.Contains(Validate(missingWorldview), issue =>
+            issue.Code == "actor_materialization_afterlife_missing_worldview");
     }
 
     [Fact]
@@ -354,7 +502,7 @@ public sealed class ActorMaterializationContractTests
               "inventory": { "state": "populated" },
               "fateCards": { "state": "empty_by_design", "reason": "Его линия судьбы ещё не проявилась." },
               "personalQuests": { "state": "empty_by_design", "reason": "Сейчас он не просит героя о личной помощи." },
-              "relationships": { "state": "populated" }
+              "relationships": { "state": "empty_by_design", "reason": "Отношение остаётся нейтральным и не закреплено." }
             }
           }
         }
@@ -533,6 +681,16 @@ public sealed class ActorMaterializationContractTests
         {
           "actorType": "custom_afterlife_actor",
           "actorId": "actor_echo_of_the_last_signal",
+          "displayName": "Эхо последнего сигнала",
+          "appearanceDescription": "Светящийся силуэт, собранный из обрывков радиосигнала.",
+          "profileSummary": "Самостоятельная сущность, которая восстанавливает последний сигнал.",
+          "personalityProfile": {
+            "archetype": "Осторожный исследователь",
+            "worldview": "Любой сигнал заслуживает точной проверки."
+          },
+          "motivation": "Понять, кто отправил последний сигнал.",
+          "realm": "Shining Abode",
+          "locationId": "shining_signal_archive",
           "standardArts": { "pressure": 2, "guard": 1 },
           "specialArts": [],
           "customStates": [],
@@ -1326,13 +1484,30 @@ public sealed class ActorMaterializationContractTests
             {
               "actorType": "guardian",
               "actorId": "guardian_archive_keeper",
+              "displayName": "Хранитель архива",
+              "appearanceDescription": "Высокая фигура в плаще из архивных лент.",
+              "profileSummary": "Хранитель, отвечающий за целостность духовного архива.",
+              "personalityProfile": {
+                "archetype": "Сдержанный хранитель",
+                "worldview": "Память должна сохраняться без подмен."
+              },
+              "motivation": "Не допустить искажения архивных свидетельств.",
+              "realm": "Chaos Sea",
+              "locationId": "abode_archive_keeper",
+              "locationName": "Архивная обитель",
+              "gmThoughtsSummary": "Я обязан помнить, почему защищаю этот архив.",
               "standardArts": { "guard": 1 },
               "specialArts": [],
               "customStates": [],
               "fateCards": [],
               "relationships": [],
               "goals": {
-                "goalId": "goal_preserve_archive"
+                "goalId": "goal_preserve_archive",
+                "shortTermGoal": "Проверить новые архивные записи.",
+                "longTermGoal": "Сохранить архив без подмен.",
+                "plan": "Сопоставлять каждую запись с независимым свидетельством.",
+                "gmThoughtsSummary": "Я должен сохранить точность архива.",
+                "updatedAtTurn": 1
               },
               "ledger": [
                 { "entryId": "entry_archive_keeper" }
@@ -1367,6 +1542,90 @@ public sealed class ActorMaterializationContractTests
         profile["materialization"]!["actorType"] = actorType;
         profile["materialization"]!["actorId"] = actorId;
         return profile;
+    }
+
+    private static void ConfigureCanonicalEmptyMortalSection(JsonObject actor, string section)
+    {
+        actor["materialization"]!["sections"]![section] = new JsonObject
+        {
+            ["state"] = "empty_by_design",
+            ["reason"] = "Эта поверхность намеренно пуста при первой материализации."
+        };
+
+        switch (section)
+        {
+            case "skills":
+                actor["activeSkills"] = new JsonArray();
+                actor["passiveSkills"] = new JsonArray();
+                actor["materialization"]!["capabilities"]!["canFight"] = false;
+                break;
+            case "inventory":
+                actor["inventory"] = new JsonArray();
+                actor["equippedItems"] = new JsonObject();
+                actor["materialization"]!["capabilities"]!["ownsItems"] = false;
+                break;
+            case "fateCards":
+                actor["fateCards"] = new JsonArray();
+                break;
+            case "personalQuests":
+                actor["personalQuests"] = new JsonArray();
+                break;
+            case "relationships":
+                actor["relationshipLevel"] = 0;
+                actor["attitude"] = "Нейтралитет";
+                actor["relationshipLock"] = new JsonObject { ["isLocked"] = false };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(section), section, null);
+        }
+    }
+
+    private static void RemoveOneMortalSectionSurface(JsonObject actor, string section)
+    {
+        actor.Remove(section switch
+        {
+            "skills" => "passiveSkills",
+            "inventory" => "equippedItems",
+            "fateCards" => "fateCards",
+            "personalQuests" => "personalQuests",
+            "relationships" => "attitude",
+            _ => throw new ArgumentOutOfRangeException(nameof(section), section, null)
+        });
+    }
+
+    private static void ConfigureCanonicalEmptyAfterlifeSection(JsonObject profile, string section)
+    {
+        profile["materialization"]!["sections"]![section] = new JsonObject
+        {
+            ["state"] = "empty_by_design",
+            ["reason"] = "Эта поверхность намеренно пуста при первой материализации."
+        };
+
+        switch (section)
+        {
+            case "standardArts":
+                profile["standardArts"] = new JsonObject();
+                profile["materialization"]!["capabilities"]!["canFight"] = false;
+                break;
+            case "specialArts":
+            case "customStates":
+            case "fateCards":
+            case "relationships":
+                profile[section] = new JsonArray();
+                break;
+            case "agency":
+                profile["goals"] = null;
+                profile["personalQuests"] = new JsonArray();
+                profile["currentActivity"] = null;
+                profile["completedActivities"] = new JsonArray();
+                break;
+            case "progressionHistory":
+                profile["ledger"] = new JsonArray();
+                profile["progressionLedger"] = new JsonArray();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(section), section, null);
+        }
     }
 
     private static string CreateMortalEnvelope() => """

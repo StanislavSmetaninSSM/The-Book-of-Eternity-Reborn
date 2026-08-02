@@ -1514,6 +1514,214 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateResponse_AfterlifeFullCarrier_GenuinelyNewProfileIsAllowedByValidatedPreTurnAuthority()
+    {
+        var path = AfterlifeEntityProfileState.StatePath;
+        var preTurnJson = BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            "guardian_existing_other",
+            includeProfile: false);
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+        var profile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            "guardian_new_full_carrier",
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "new");
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(profile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is
+                "afterlife_entity_profile_full_carrier_pre_turn_authority_unusable" or
+                "afterlife_entity_profile_historical_full_carrier_forbidden" or
+                "afterlife_entity_profile_unproven_full_carrier_migration");
+    }
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateResponse_AfterlifeFullCarrier_GenuinelyNewProfileRequiresCompleteMaterialization()
+    {
+        var path = AfterlifeEntityProfileState.StatePath;
+        var preTurnJson = BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            "guardian_existing_other",
+            includeProfile: false);
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+        var profile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            "guardian_new_incomplete_full_carrier",
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "new");
+        profile.Remove(ActorMaterializationContract.PropertyName);
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(profile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "actor_materialization_missing");
+    }
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateResponse_AfterlifeFullCarrier_HistoricalMaterializedProfileResendIsRejected()
+    {
+        var path = AfterlifeEntityProfileState.StatePath;
+        var actorId = "guardian_historical_full_carrier";
+        var preTurnJson = BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            actorId,
+            includeProfile: true);
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+        var profile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            actorId,
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "a");
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(profile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_entity_profile_historical_full_carrier_forbidden");
+    }
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateResponse_AfterlifeFullCarrier_LegacyEnvelopeOnlyMigrationIsAllowed()
+    {
+        var path = AfterlifeEntityProfileState.StatePath;
+        var actorId = "guardian_legacy_envelope_migration";
+        var preTurnJson = BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            actorId,
+            includeProfile: true,
+            includeEnvelope: false);
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+        var migratedProfile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            actorId,
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "migration");
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(migratedProfile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is
+                "afterlife_entity_profile_full_carrier_pre_turn_authority_unusable" or
+                "afterlife_entity_profile_historical_full_carrier_forbidden" or
+                "afterlife_entity_profile_unproven_full_carrier_migration");
+    }
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateResponse_AfterlifeFullCarrier_LegacyMigrationWithProfileMutationIsRejected()
+    {
+        var path = AfterlifeEntityProfileState.StatePath;
+        var actorId = "guardian_legacy_mutating_migration";
+        var preTurnJson = BuildCompleteAfterlifeBindingProfileStateJson(
+            "guardian",
+            actorId,
+            includeProfile: true,
+            includeEnvelope: false);
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+        var migratedProfile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            actorId,
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "migration");
+        migratedProfile["gmThoughtsSummary"] = "Полный carrier не может переписать историческую память.";
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(migratedProfile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_entity_profile_unproven_full_carrier_migration");
+    }
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public void ValidateResponse_AfterlifeFullCarrier_MissingValidatedPreTurnAuthorityFailsClosed()
+    {
+        var profile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            "guardian_missing_snapshot_authority",
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "new");
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(profile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_entity_profile_full_carrier_pre_turn_authority_unusable");
+    }
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateResponse_AfterlifeFullCarrier_MalformedValidatedPreTurnAuthorityFailsClosed()
+    {
+        var path = AfterlifeEntityProfileState.StatePath;
+        await WriteCurrentAndValidatedPreTurnAsync(
+            path,
+            BuildCompleteAfterlifeBindingProfileStateJson("guardian", "ignored", includeProfile: false),
+            "{ malformed validated afterlife profile snapshot");
+        var profile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            "guardian_malformed_snapshot_authority",
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "new");
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(profile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_entity_profile_full_carrier_pre_turn_authority_unusable");
+    }
+
+    [Fact]
+    [Trait("Category", "RegressionIntegration")]
+    public async Task ValidateResponse_AfterlifeFullCarrier_AmbiguousValidatedPreTurnAuthorityFailsClosed()
+    {
+        var path = AfterlifeEntityProfileState.StatePath;
+        var actorId = "guardian_ambiguous_snapshot_authority";
+        var duplicateProfile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            actorId,
+            includeMemory: true,
+            includeEnvelope: false,
+            materializationSuffix: "legacy");
+        var preTurnJson = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(
+                duplicateProfile.DeepClone(),
+                duplicateProfile.DeepClone())
+        }.ToJsonString();
+        await WriteCurrentAndValidatedPreTurnAsync(path, preTurnJson, preTurnJson);
+        var profile = BuildCompleteAfterlifeBindingProfile(
+            "guardian",
+            actorId,
+            includeMemory: true,
+            includeEnvelope: true,
+            materializationSuffix: "migration");
+        using var document = JsonDocument.Parse(BuildAfterlifeFullCarrierResponse(profile).ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "afterlife_entity_profile_full_carrier_pre_turn_authority_unusable");
+    }
+
+    [Fact]
     public void ValidateResponse_FullAfterlifeProfileCarrier_DefersPositiveTradeAuthorityToAcceptedTurn()
     {
         var state = JsonNode.Parse(BuildCompleteAfterlifeBindingProfileStateJson(
@@ -2030,7 +2238,35 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             ["actorType"] = actorType,
             ["actorId"] = actorId,
             ["displayName"] = "Сущность точного договора",
+            ["appearanceDescription"] = "Силуэт сущности очерчен ровным сиянием и строгими линиями духовного одеяния.",
+            ["profileSummary"] = "Хранитель точных договоров и непрерывности личной истории.",
+            ["personalityProfile"] = new JsonObject
+            {
+                ["archetype"] = "Хранитель договора",
+                ["worldview"] = "Личная власть требует доказуемой ответственности."
+            },
+            ["motivation"] = "Сохранять точную связь между решениями и их последствиями.",
             ["realm"] = "Shining Abode",
+            ["locationId"] = "location_shining_abode_gate",
+            ["locationName"] = "Врата Обители Сияния",
+            ["currencies"] = new JsonObject
+            {
+                ["inkFeathers"] = 0,
+                ["lightSparks"] = 0
+            },
+            ["progression"] = new JsonObject
+            {
+                ["enlightenment"] = new JsonObject
+                {
+                    ["experience"] = 0,
+                    ["tier"] = 0
+                },
+                ["radiance"] = new JsonObject
+                {
+                    ["experience"] = 0,
+                    ["tier"] = 0
+                }
+            },
             ["standardArts"] = new JsonObject { ["guard"] = 1 },
             ["specialArts"] = new JsonArray(),
             ["customStates"] = new JsonArray(),
@@ -2048,6 +2284,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             ["personalQuests"] = new JsonArray(),
             ["currentActivity"] = null,
             ["completedActivities"] = new JsonArray(),
+            ["soulDissipationTier"] = 0,
             ["progressionStrategy"] = new JsonObject
             {
                 ["strategyId"] = $"strategy_{actorId}",
@@ -2097,6 +2334,13 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             ["reason"] = reason
         };
     }
+
+    private static JsonObject BuildAfterlifeFullCarrierResponse(JsonObject profile)
+        => new()
+        {
+            ["response"] = "Сущность передаёт полный профиль для канонической записи.",
+            [AfterlifeEntityProfileState.UpdateProperty] = new JsonArray(profile.DeepClone())
+        };
 
     private async Task WriteAfterlifeBindingScenarioAsync(
         string sourcePath,
@@ -3908,7 +4152,26 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             currentRoot["UpdateNPCs"]![0]!.AsObject(),
             initialId,
             "mat_genuinely_new_same_turn_actor_turn_8");
-        await WriteCurrentAndValidatedPreTurnAsync(path, currentRoot.ToJsonString(), preTurnJson);
+        const string worldMapPath = "game_state/world/world_map.json";
+        var worldMapJson = new JsonObject
+        {
+            ["locations"] = new JsonArray(
+                new JsonObject
+                {
+                    ["locationId"] = MortalActorTestFixtures.DefaultLocationId
+                })
+        }.ToJsonString();
+        await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{path}",
+            preTurnJson);
+        await _fs.WriteFileAtomicAsync(worldMapPath, worldMapJson);
+        await _fs.WriteFileAtomicAsync(
+            $"game_state/control/pending_turn_snapshot/{worldMapPath}",
+            worldMapJson);
+        await WriteValidatedSnapshotManifestAsync(
+            (path, preTurnJson),
+            (worldMapPath, worldMapJson));
 
         using var currentDocument = JsonDocument.Parse(currentRoot.ToJsonString());
         var issues = _validator.ValidateResponse(currentDocument.RootElement);
@@ -3937,6 +4200,134 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         var issues = _validator.ValidateResponse(currentDocument.RootElement);
 
         Assert.DoesNotContain(issues, issue => issue.Code == "npc_existing_inventory_resend_forbidden");
+    }
+
+    [Fact]
+    public void ValidateResponse_NewUpdateNpcWithoutLocationAuthorityIsRejected()
+    {
+        const string initialId = "new_update_npc_missing_location";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var actor = currentRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            initialId,
+            "mat_new_update_npc_missing_location_turn_9");
+        actor.Remove("currentLocationId");
+        actor.Remove("initialLocationId");
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_new_update_location_authority_not_exactly_one");
+    }
+
+    [Fact]
+    public void ValidateResponse_NewUpdateNpcWithUnknownInitialLocationIsRejected()
+    {
+        const string initialId = "new_update_npc_unknown_initial_location";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var actor = currentRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            initialId,
+            "mat_new_update_npc_unknown_initial_location_turn_9");
+        actor["currentLocationId"] = null;
+        actor["initialLocationId"] = "location_not_created_this_turn";
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_initial_location_same_turn_target_unknown");
+    }
+
+    [Fact]
+    public void ValidateResponse_NewUpdateNpcWithUnknownCurrentLocationIsRejected()
+    {
+        const string initialId = "new_update_npc_unknown_current_location";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var actor = currentRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            initialId,
+            "mat_new_update_npc_unknown_current_location_turn_9");
+        actor["currentLocationId"] = "location_not_in_validated_pre_turn_world";
+        actor["initialLocationId"] = null;
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_new_update_current_location_unknown");
+    }
+
+    [Fact]
+    public void ValidateResponse_NewUpdateNpcWithBothLocationAuthoritiesIsRejected()
+    {
+        const string initialId = "new_update_npc_contradictory_location";
+        const string locationInitialId = "new_location_for_contradictory_npc";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var actor = currentRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            initialId,
+            "mat_new_update_npc_contradictory_location_turn_9");
+        actor["currentLocationId"] = MortalActorTestFixtures.DefaultLocationId;
+        actor["initialLocationId"] = locationInitialId;
+        currentRoot["newLocations"] = new JsonArray(
+            new JsonObject { ["initialId"] = locationInitialId });
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_new_update_location_authority_not_exactly_one");
+    }
+
+    [Fact]
+    public void ValidateResponse_NewUpdateNpcWithExactSameTurnInitialLocationIsAccepted()
+    {
+        const string initialId = "new_update_npc_valid_initial_location";
+        const string locationInitialId = "new_location_for_valid_npc";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var actor = currentRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            initialId,
+            "mat_new_update_npc_valid_initial_location_turn_9");
+        actor["currentLocationId"] = null;
+        actor["initialLocationId"] = locationInitialId;
+        currentRoot["newLocations"] = new JsonArray(
+            new JsonObject { ["initialId"] = locationInitialId });
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is
+                "npc_new_update_location_authority_not_exactly_one" or
+                "npc_initial_location_same_turn_target_unknown");
     }
 
     [Fact]
@@ -4210,7 +4601,17 @@ public sealed class ActorMaterializationValidationTests : IDisposable
               "actorType": "radiant_actor",
               "actorId": "radiant_complete_actor",
               "displayName": "Смотритель светлого архива",
+              "appearanceDescription": "Смотритель проявляется как высокая фигура в светлом архивном одеянии.",
+              "profileSummary": "Смотритель защищает непрерывность памяти светлого архива.",
+              "personalityProfile": {
+                "archetype": "Хранитель светлого архива",
+                "worldview": "Память должна оставаться проверяемой и доступной тем, кто отвечает за неё."
+              },
+              "motivation": "Сохранить архив и не допустить подмены его записей.",
               "realm": "Shining Abode",
+              "locationId": "location_shining_archive",
+              "locationName": "Светлый архив",
+              "gmThoughtsSummary": "Я должен сохранить архив и проверить каждую новую запись.",
               "currencies": { "inkFeathers": 0, "lightSparks": 2 },
               "progression": {
                 "enlightenment": { "experience": 0, "tier": 0 },
