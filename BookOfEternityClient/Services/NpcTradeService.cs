@@ -1522,8 +1522,15 @@ public sealed partial class NpcTradeService
         {
             root["equipment"] = new JsonObject
             {
-                ["head"] = null, ["body"] = null, ["hands"] = null, ["feet"] = null,
-                ["mainHand"] = null, ["offHand"] = null, ["neck"] = null, ["ring1"] = null, ["ring2"] = null
+                ["head"] = null,
+                ["body"] = null,
+                ["hands"] = null,
+                ["feet"] = null,
+                ["mainHand"] = null,
+                ["offHand"] = null,
+                ["neck"] = null,
+                ["ring1"] = null,
+                ["ring2"] = null
             };
         }
     }
@@ -1552,26 +1559,8 @@ public sealed partial class NpcTradeService
 
     private static bool IsSoulRelicLikeItem(JsonObject item)
     {
-        if (!string.IsNullOrWhiteSpace(GetNodeString(item["relicId"])) ||
-            !string.IsNullOrWhiteSpace(GetNodeString(item["soulRelicId"])))
-            return true;
-
-        var type = GetNodeString(item["type"]);
-        if (!string.IsNullOrWhiteSpace(type) &&
-            (type.Contains("soul relic", StringComparison.OrdinalIgnoreCase) ||
-             type.Contains("реликвия души", StringComparison.OrdinalIgnoreCase)))
-            return true;
-
-        var group = GetNodeString(item["group"]);
-        if (!string.IsNullOrWhiteSpace(group) &&
-            (group.Contains("soul relic", StringComparison.OrdinalIgnoreCase) ||
-             group.Contains("реликвия души", StringComparison.OrdinalIgnoreCase)))
-            return true;
-
-        var itemId = GetNodeString(item["itemId"]) ?? GetNodeString(item["id"]) ?? GetNodeString(item["existedId"]);
-        return !string.IsNullOrWhiteSpace(itemId) &&
-               (itemId.StartsWith("sr_", StringComparison.OrdinalIgnoreCase) ||
-                itemId.Contains("soulrelic", StringComparison.OrdinalIgnoreCase));
+        return !string.IsNullOrWhiteSpace(
+            GetNodeString(item["relicId"]));
     }
 
     private static void UpsertInventoryItem(JsonArray items, JsonObject item)

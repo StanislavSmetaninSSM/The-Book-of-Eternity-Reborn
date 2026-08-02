@@ -213,12 +213,20 @@ public sealed partial class QteSceneService
 
         try
         {
-            return JsonSerializer.Deserialize<QteOffer>(json, JsonOpts);
+            return StrictJsonAuthority.Deserialize<QteOffer>(
+                json,
+                JsonOpts,
+                "QTE offer");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (
+            ex is JsonException or
+            InvalidDataException or
+            NotSupportedException)
         {
             _logger.LogWarning(ex, "Не удалось разобрать qte_offer.json");
-            return null;
+            throw new InvalidDataException(
+                "qte_offer.json contains invalid QTE authority.",
+                ex);
         }
     }
 
@@ -393,9 +401,15 @@ public sealed partial class QteSceneService
         JsonNode? parsed;
         try
         {
-            parsed = JsonNode.Parse(json);
+            parsed = StrictJsonAuthority.Deserialize<JsonNode>(
+                json,
+                JsonOpts,
+                "QTE runtime");
         }
-        catch (JsonException ex)
+        catch (Exception ex) when (
+            ex is JsonException or
+            InvalidDataException or
+            NotSupportedException)
         {
             _logger.LogWarning(ex, "Найден невалидный qte_runtime.json. Удаление как повреждённого client-owned runtime state.");
             DeleteCanonicalFile(writeLease, QteRuntimePath);
@@ -4540,11 +4554,21 @@ public sealed partial class QteSceneService
 
         try
         {
-            return JsonSerializer.Deserialize<QteRuntimeState>(json, JsonOpts) ?? new QteRuntimeState();
+            return StrictJsonAuthority.Deserialize<QteRuntimeState>(
+                       json,
+                       JsonOpts,
+                       "QTE runtime") ??
+                   throw new InvalidDataException(
+                       "qte_runtime.json contains a null QTE authority root.");
         }
-        catch
+        catch (Exception ex) when (
+            ex is JsonException or
+            InvalidDataException or
+            NotSupportedException)
         {
-            return new QteRuntimeState();
+            throw new InvalidDataException(
+                "qte_runtime.json contains invalid QTE authority.",
+                ex);
         }
     }
 

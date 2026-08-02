@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
@@ -381,6 +382,8 @@ public class SaveLoadService
             {
                 try
                 {
+                    ValidateTrustedArchiveBeforeMaterialization(
+                        openedArchive.Stream);
                     using (var archive = new ZipArchive(
                                openedArchive.Stream,
                                ZipArchiveMode.Read,
@@ -647,6 +650,8 @@ public class SaveLoadService
             try
             {
                 SaveMetadata? metadata = null;
+                ValidateTrustedArchiveBeforeMaterialization(
+                    openedFile.Stream);
                 using (var archive = new ZipArchive(
                            openedFile.Stream,
                            ZipArchiveMode.Read,
@@ -856,6 +861,270 @@ public class SaveLoadService
                         $"Save archive entry '{entry.Path}' exceeds the trusted compression ratio.");
                 }
             }
+        }
+    }
+
+    internal static void ValidateTrustedArchiveBeforeMaterialization(
+        Stream archiveStream)
+    {
+        ArgumentNullException.ThrowIfNull(archiveStream);
+        if (!archiveStream.CanRead ||
+            !archiveStream.CanSeek)
+        {
+            throw new InvalidDataException(
+                "Save archive preflight requires a seekable readable stream.");
+        }
+
+        const uint endOfCentralDirectorySignature =
+            0x06054b50;
+        const uint centralDirectoryHeaderSignature =
+            0x02014b50;
+        const int endOfCentralDirectoryLength = 22;
+        const int maximumZipCommentLength = ushort.MaxValue;
+        const int centralDirectoryHeaderLength = 46;
+        const ushort utf8NameFlag = 0x0800;
+        var originalPosition = archiveStream.Position;
+        try
+        {
+            var archiveLength = archiveStream.Length;
+            if (archiveLength <
+                endOfCentralDirectoryLength)
+            {
+                throw new InvalidDataException(
+                    "Save archive is missing its end-of-central-directory record.");
+            }
+
+            var tailLength = checked((int)Math.Min(
+                archiveLength,
+                endOfCentralDirectoryLength +
+                maximumZipCommentLength));
+            var tail = new byte[tailLength];
+            archiveStream.Position =
+                archiveLength - tailLength;
+            archiveStream.ReadExactly(tail);
+
+            var endRecordOffset = -1;
+            for (var offset =
+                     tailLength -
+                     endOfCentralDirectoryLength;
+                 offset >= 0;
+                 offset--)
+            {
+                var candidate = tail.AsSpan(offset);
+                if (BinaryPrimitives
+                        .ReadUInt32LittleEndian(candidate) !=
+                    endOfCentralDirectorySignature)
+                {
+                    continue;
+                }
+
+                var commentLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        candidate.Slice(20, 2));
+                if (offset +
+                    endOfCentralDirectoryLength +
+                    commentLength ==
+                    tailLength)
+                {
+                    endRecordOffset = offset;
+                    break;
+                }
+            }
+
+            if (endRecordOffset < 0)
+            {
+                throw new InvalidDataException(
+                    "Save archive has no bounded end-of-central-directory record.");
+            }
+
+            var endRecord =
+                tail.AsSpan(
+                    endRecordOffset,
+                    endOfCentralDirectoryLength);
+            var diskNumber = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(4, 2));
+            var centralDirectoryDisk = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(6, 2));
+            var diskEntryCount = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(8, 2));
+            var totalEntryCount = BinaryPrimitives
+                .ReadUInt16LittleEndian(
+                    endRecord.Slice(10, 2));
+            var centralDirectorySize = BinaryPrimitives
+                .ReadUInt32LittleEndian(
+                    endRecord.Slice(12, 4));
+            var centralDirectoryOffset = BinaryPrimitives
+                .ReadUInt32LittleEndian(
+                    endRecord.Slice(16, 4));
+            if (diskNumber != 0 ||
+                centralDirectoryDisk != 0 ||
+                diskEntryCount != totalEntryCount)
+            {
+                throw new InvalidDataException(
+                    "Multi-disk save archives are unsupported.");
+            }
+            if (totalEntryCount == ushort.MaxValue ||
+                centralDirectorySize == uint.MaxValue ||
+                centralDirectoryOffset == uint.MaxValue)
+            {
+                throw new InvalidDataException(
+                    "ZIP64 save archives exceed the trusted client-owned envelope.");
+            }
+            if (totalEntryCount >
+                TrustedArchiveBudget.MaxEntryCount)
+            {
+                throw new InvalidDataException(
+                    $"Save archive contains more than {TrustedArchiveBudget.MaxEntryCount} entries.");
+            }
+
+            var absoluteEndRecordOffset =
+                checked(
+                    archiveLength -
+                    tailLength +
+                    endRecordOffset);
+            var centralDirectoryEnd = checked(
+                (long)centralDirectoryOffset +
+                centralDirectorySize);
+            if (centralDirectoryEnd >
+                absoluteEndRecordOffset)
+            {
+                throw new InvalidDataException(
+                    "Save archive central-directory bounds are invalid.");
+            }
+
+            archiveStream.Position =
+                centralDirectoryOffset;
+            var descriptors =
+                new List<SaveArchiveEntryDescriptor>(
+                    totalEntryCount);
+            long consumedCentralDirectoryBytes = 0;
+            long totalNameUtf8Bytes = 0;
+            var header =
+                new byte[centralDirectoryHeaderLength];
+            var strictUtf8 =
+                new UTF8Encoding(
+                    encoderShouldEmitUTF8Identifier: false,
+                    throwOnInvalidBytes: true);
+            for (var index = 0;
+                 index < totalEntryCount;
+                 index++)
+            {
+                if (consumedCentralDirectoryBytes +
+                    centralDirectoryHeaderLength >
+                    centralDirectorySize)
+                {
+                    throw new InvalidDataException(
+                        "Save archive central directory ended before its declared entry count.");
+                }
+
+                archiveStream.ReadExactly(header);
+                var headerSpan = header.AsSpan();
+                if (BinaryPrimitives
+                        .ReadUInt32LittleEndian(headerSpan) !=
+                    centralDirectoryHeaderSignature)
+                {
+                    throw new InvalidDataException(
+                        "Save archive central directory contains an invalid entry header.");
+                }
+
+                var flags = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(8, 2));
+                var compressedLength = BinaryPrimitives
+                    .ReadUInt32LittleEndian(
+                        headerSpan.Slice(20, 4));
+                var expandedLength = BinaryPrimitives
+                    .ReadUInt32LittleEndian(
+                        headerSpan.Slice(24, 4));
+                var nameLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(28, 2));
+                var extraLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(30, 2));
+                var commentLength = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(32, 2));
+                var entryDisk = BinaryPrimitives
+                    .ReadUInt16LittleEndian(
+                        headerSpan.Slice(34, 2));
+                var localHeaderOffset = BinaryPrimitives
+                    .ReadUInt32LittleEndian(
+                        headerSpan.Slice(42, 4));
+                if (entryDisk != 0 ||
+                    compressedLength == uint.MaxValue ||
+                    expandedLength == uint.MaxValue ||
+                    localHeaderOffset == uint.MaxValue)
+                {
+                    throw new InvalidDataException(
+                        "ZIP64 or multi-disk save entries exceed the trusted client-owned envelope.");
+                }
+
+                var recordLength = checked(
+                    (long)centralDirectoryHeaderLength +
+                    nameLength +
+                    extraLength +
+                    commentLength);
+                if (consumedCentralDirectoryBytes +
+                    recordLength >
+                    centralDirectorySize)
+                {
+                    throw new InvalidDataException(
+                        "Save archive central-directory entry exceeds its declared bounds.");
+                }
+
+                var nameBytes = new byte[nameLength];
+                archiveStream.ReadExactly(nameBytes);
+                string path;
+                try
+                {
+                    path = (flags & utf8NameFlag) != 0
+                        ? strictUtf8.GetString(nameBytes)
+                        : Encoding.UTF8.GetString(nameBytes);
+                }
+                catch (DecoderFallbackException ex)
+                {
+                    throw new InvalidDataException(
+                        "Save archive entry name is not valid UTF-8.",
+                        ex);
+                }
+
+                totalNameUtf8Bytes = checked(
+                    totalNameUtf8Bytes +
+                    Encoding.UTF8.GetByteCount(path));
+                if (totalNameUtf8Bytes >
+                    TrustedArchiveBudget
+                        .MaxTotalEntryNameUtf8Bytes)
+                {
+                    throw new InvalidDataException(
+                        "Save archive entry names exceed the trusted UTF-8 budget.");
+                }
+
+                archiveStream.Seek(
+                    checked((long)extraLength +
+                            commentLength),
+                    SeekOrigin.Current);
+                consumedCentralDirectoryBytes +=
+                    recordLength;
+                descriptors.Add(
+                    new SaveArchiveEntryDescriptor(
+                        path,
+                        path.EndsWith('/') ||
+                        path.EndsWith('\\'),
+                        expandedLength,
+                        compressedLength));
+            }
+
+            ValidateTrustedArchiveBudget(
+                descriptors);
+        }
+        finally
+        {
+            archiveStream.Position =
+                originalPosition;
         }
     }
 

@@ -1337,6 +1337,119 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.False(File.Exists(raceFs.ResolvePath(triggerPath)));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task WorkerRecovery_ByteIdenticalForeignReplacementAtMutationBoundaryPreservesBytesAndEvidence(
+        bool baselineExists)
+    {
+        const string trackedPath =
+            "game_state/world/worker-recovery-identical-foreign-boundary.json";
+        const string triggerPath =
+            "game_state/world/worker-recovery-identical-foreign-boundary-trigger.json";
+        byte[] baseline = [0x21, 0x32];
+        byte[] applied = [0x43, 0x54];
+        if (baselineExists)
+            await _fs.WriteFileAtomicBytesAsync(trackedPath, baseline);
+
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            transactionId);
+        var beforeRoot = Path.Combine(transactionRoot, "before");
+        Directory.CreateDirectory(beforeRoot);
+        var beforeImage = baselineExists
+            ? "before/0000.bin"
+            : null;
+        if (baselineExists)
+        {
+            await File.WriteAllBytesAsync(
+                Path.Combine(beforeRoot, "0000.bin"),
+                baseline);
+        }
+
+        await File.WriteAllTextAsync(
+            Path.Combine(transactionRoot, "manifest.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                entries = new[]
+                {
+                    new
+                    {
+                        path = trackedPath,
+                        baselineExists,
+                        beforeImage,
+                        beforeSha256 = baselineExists
+                            ? Sha256(baseline)
+                            : "missing",
+                        appliedSha256 = Sha256(applied)
+                    }
+                }
+            }));
+        var activeJournalPath = Path.Combine(
+            _rootPath,
+            ".boe_runtime",
+            "worker-apply-transactions",
+            "active.json");
+        await File.WriteAllTextAsync(
+            activeJournalPath,
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                transactionId,
+                committed = false
+            }));
+        var canonicalPath = _fs.ResolvePath(trackedPath);
+        await File.WriteAllBytesAsync(canonicalPath, applied);
+
+        var displacedPath = canonicalPath + ".transaction-owned";
+        var foreignReplacementInjected = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationBoundaryAsync = async path =>
+            {
+                if (foreignReplacementInjected ||
+                    !path.Equals(
+                        trackedPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                foreignReplacementInjected = true;
+                File.Move(canonicalPath, displacedPath);
+                await File.WriteAllBytesAsync(
+                    canonicalPath,
+                    applied);
+            }
+        };
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => raceFs.WriteFileAtomicBytesAsync(
+                triggerPath,
+                [0x77]));
+
+        Assert.True(foreignReplacementInjected);
+        Assert.Equal(
+            applied,
+            await File.ReadAllBytesAsync(canonicalPath));
+        Assert.Equal(
+            applied,
+            await File.ReadAllBytesAsync(displacedPath));
+        Assert.True(File.Exists(activeJournalPath));
+        Assert.True(Directory.Exists(transactionRoot));
+        Assert.False(File.Exists(raceFs.ResolvePath(triggerPath)));
+    }
+
     [Fact]
     public async Task CanonicalWriter_CompletesEveryRecoverableRollbackEntryBeforeFailingClosed()
     {
@@ -5095,6 +5208,79 @@ public sealed class FileSystemManagerTests : IDisposable
             transactionPaths.FailedSessionPath,
             authorities);
 
+        Assert.Equal(
+            new byte[] { 0x10, 0x20, 0x30 },
+            await File.ReadAllBytesAsync(
+                Path.Combine(
+                    transactionPaths.FailedSessionPath,
+                    relativePath)));
+    }
+
+    [Fact]
+    public async Task LoadTransactionMove_PostCheckWriteRaceIsBlockedByRetainedLeafAuthority()
+    {
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        var relativePath = Path.Combine(
+            "game_state",
+            "world",
+            "post-check-payload.bin");
+        var stagedFile = Path.Combine(
+            transactionPaths.StagingSessionPath,
+            relativePath);
+        var mutationAttempted = false;
+        var mutationBlocked = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                AfterLoadStagingFinalValidationAsync =
+                    (_, _) =>
+                    {
+                        mutationAttempted = true;
+                        try
+                        {
+                            File.WriteAllBytes(
+                                stagedFile,
+                                [0xEE]);
+                        }
+                        catch (Exception ex) when (
+                            ex is IOException or
+                            UnauthorizedAccessException)
+                        {
+                            mutationBlocked = true;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+            });
+        raceFs.CreateLoadDirectory(
+            transactionPaths.StagingSessionPath);
+        raceFs.CreateLoadDirectory(
+            Path.GetDirectoryName(
+                transactionPaths.FailedSessionPath)!);
+        raceFs.CreateLoadDirectory(
+            Path.GetDirectoryName(stagedFile)!);
+        await using var authorities =
+            raceFs.CreateLoadStagingAuthoritySet(
+                transactionPaths.StagingSessionPath);
+        await using var source = new MemoryStream(
+            [0x10, 0x20, 0x30]);
+        await raceFs.WriteLoadTransactionFileAsync(
+            stagedFile,
+            source,
+            expectedLength: 3,
+            authoritySet: authorities);
+
+        raceFs.MoveLoadDirectory(
+            transactionPaths.StagingSessionPath,
+            transactionPaths.FailedSessionPath,
+            authorities);
+
+        Assert.True(mutationAttempted);
+        Assert.True(mutationBlocked);
         Assert.Equal(
             new byte[] { 0x10, 0x20, 0x30 },
             await File.ReadAllBytesAsync(

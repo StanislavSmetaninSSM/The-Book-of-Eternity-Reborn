@@ -35,6 +35,7 @@ internal sealed class FileSystemManagerHooks
     internal Func<string, Task>? BeforeRuntimeFileCreateAsync { get; init; }
     internal Func<string, Task>? AfterRuntimeMutationBoundaryValidatedAsync { get; init; }
     internal Func<string, string, Task>? BeforeLoadDirectoryMoveAsync { get; init; }
+    internal Func<string, string, Task>? AfterLoadStagingFinalValidationAsync { get; init; }
     internal Func<string, string, Task>? AfterLoadDirectoryMoveAsync { get; init; }
 }
 
@@ -2093,6 +2094,7 @@ public class FileSystemManager
     {
         private readonly FileSystemManager _owner;
         private readonly string _stagingRoot;
+        private readonly string _publicationGuardRoot;
         private readonly List<LoadStagingFileAuthority> _files = [];
         private readonly HashSet<string> _relativePaths =
             new(StringComparer.OrdinalIgnoreCase);
@@ -2115,6 +2117,17 @@ public class FileSystemManager
             _owner = owner;
             _stagingRoot = Path.GetFullPath(stagingRoot);
             _owner.EnsureRuntimePathIsSafe(_stagingRoot);
+            var stageRoot = Path.GetDirectoryName(_stagingRoot)
+                ?? throw new InvalidDataException(
+                    "Load-staging authority root has no stage parent.");
+            var transactionRoot = Path.GetDirectoryName(stageRoot)
+                ?? throw new InvalidDataException(
+                    "Load-staging authority root has no transaction parent.");
+            _publicationGuardRoot = Path.Combine(
+                transactionRoot,
+                "publication-authority");
+            _owner.EnsureRuntimePathIsSafe(
+                _publicationGuardRoot);
             foreach (var requiredDirectory in RequiredDirectories)
             {
                 if (requiredDirectory.Equals(
@@ -2206,10 +2219,94 @@ public class FileSystemManager
             string authorityName)
         {
             EnsureExactAtRoot(sourceRoot, authorityName);
-            ReleaseFileStreams(
-                includePublished: true,
-                includeSealed: true);
+            RetainPublicationGuards(
+                sourceRoot,
+                authorityName);
             _preparedForDirectoryMove = true;
+        }
+
+        private void RetainPublicationGuards(
+            string sourceRoot,
+            string authorityName)
+        {
+            var normalizedRoot = Path.GetFullPath(sourceRoot);
+            _owner.CreateLoadDirectory(
+                _publicationGuardRoot);
+            using var guardParentAuthority =
+                PhysicalFileAuthority.OpenStableDirectory(
+                    _publicationGuardRoot,
+                    $"{authorityName} publication guard root");
+            for (var index = 0;
+                 index < _files.Count;
+                 index++)
+            {
+                var file = _files[index];
+                var originalStream = file.Stream
+                    ?? throw new InvalidOperationException(
+                        "Retained load-staging handle is unavailable.");
+                var sourcePath = ResolveExpectedPath(
+                    normalizedRoot,
+                    file.RelativePath);
+                PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                    originalStream.SafeFileHandle,
+                    sourcePath,
+                    file.Authority.Identity,
+                    file.Authority.Sha256,
+                    $"{authorityName} '{file.RelativePath}'",
+                    file.Authority.Length);
+                var guardPath = Path.Combine(
+                    _publicationGuardRoot,
+                    $"{index:D8}.guard");
+                PhysicalFileAuthority.CreateHardLinkRelative(
+                    guardParentAuthority,
+                    guardPath,
+                    originalStream.SafeFileHandle,
+                    sourcePath,
+                    $"{authorityName} '{file.RelativePath}' guard");
+
+                FileStream? guardStream = null;
+                try
+                {
+                    guardStream =
+                        PhysicalFileAuthority.OpenReadFile(
+                            guardParentAuthority,
+                            guardPath,
+                            $"{authorityName} '{file.RelativePath}' guard",
+                            asynchronous: false,
+                            requireSingleLink: false) ??
+                        throw new InvalidDataException(
+                            "Load-staging publication guard disappeared.");
+                    var guardAuthority =
+                        PhysicalFileAuthority
+                            .EnsureExactOpenedFileAuthority(
+                                guardStream.SafeFileHandle,
+                                guardPath,
+                                file.Authority.Identity,
+                                file.Authority.Sha256,
+                                $"{authorityName} '{file.RelativePath}' guard",
+                                file.Authority.Length,
+                                expectedNumberOfLinks: 2);
+                    PhysicalFileAuthority
+                        .EnsureExactOpenedFileAuthority(
+                            originalStream.SafeFileHandle,
+                            sourcePath,
+                            file.Authority.Identity,
+                            file.Authority.Sha256,
+                            $"{authorityName} '{file.RelativePath}' guarded source",
+                            file.Authority.Length,
+                            expectedNumberOfLinks: 2);
+
+                    originalStream.Dispose();
+                    file.Stream = guardStream;
+                    file.Authority = guardAuthority;
+                    file.GuardPath = guardPath;
+                    guardStream = null;
+                }
+                finally
+                {
+                    guardStream?.Dispose();
+                }
+            }
         }
 
         internal void EnsureExactAfterDirectoryMove(
@@ -2266,6 +2363,20 @@ public class FileSystemManager
                     var expectedPath = ResolveExpectedPath(
                         normalizedRoot,
                         file.RelativePath);
+                    var guardStream = file.Stream
+                        ?? throw new InvalidDataException(
+                            "Published load-staging guard authority is unavailable.");
+                    var guardPath = file.GuardPath
+                        ?? throw new InvalidDataException(
+                            "Published load-staging guard path is unavailable.");
+                    PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
+                        guardStream.SafeFileHandle,
+                        guardPath,
+                        file.Authority.Identity,
+                        file.Authority.Sha256,
+                        $"{authorityName} '{file.RelativePath}' guard",
+                        file.Authority.Length,
+                        expectedNumberOfLinks: 2);
                     var parentPath = Path.GetDirectoryName(expectedPath)
                         ?? throw new InvalidDataException(
                             "Published load-staging file has no parent.");
@@ -2274,30 +2385,75 @@ public class FileSystemManager
                             normalizedRoot,
                             parentPath,
                             authorityName);
-                    FileStream? stream = null;
+                    FileStream? publishedStream = null;
                     try
                     {
-                        stream = PhysicalFileAuthority.OpenReadFile(
+                        publishedStream =
+                            PhysicalFileAuthority.OpenReadFile(
                                 parentAuthority,
                                 expectedPath,
                                 authorityName,
                                 asynchronous: false,
-                                shareDelete: true)
-                            ?? throw new InvalidDataException(
+                                shareDelete: true,
+                                requireSingleLink: false) ??
+                            throw new InvalidDataException(
                                 $"{authorityName} '{file.RelativePath}' is missing.");
-                        PhysicalFileAuthority.EnsureExactOpenedFileAuthority(
-                            stream.SafeFileHandle,
-                            expectedPath,
-                            file.Authority.Identity,
-                            file.Authority.Sha256,
-                            $"{authorityName} '{file.RelativePath}'",
-                            file.Authority.Length);
-                        file.Stream = stream;
-                        stream = null;
+                        PhysicalFileAuthority
+                            .EnsureExactOpenedFileAuthority(
+                                publishedStream.SafeFileHandle,
+                                expectedPath,
+                                file.Authority.Identity,
+                                file.Authority.Sha256,
+                                $"{authorityName} '{file.RelativePath}' guarded publication",
+                                file.Authority.Length,
+                                expectedNumberOfLinks: 2);
+
+                        guardStream.Dispose();
+                        file.Stream = null;
+                        using (var guardParentAuthority =
+                               PhysicalFileAuthority
+                                   .OpenStableDirectory(
+                                       _publicationGuardRoot,
+                                       $"{authorityName} publication guard root"))
+                        using (var guardHandle =
+                               PhysicalFileAuthority.OpenForRename(
+                                   guardParentAuthority,
+                                   guardPath,
+                                   isDirectory: false,
+                                   $"{authorityName} '{file.RelativePath}' guard deletion",
+                                   denyConcurrentWrites: true,
+                                   requireSingleLink: false))
+                        {
+                            PhysicalFileAuthority
+                                .EnsureExactOpenedFileAuthority(
+                                    guardHandle,
+                                    guardPath,
+                                    file.Authority.Identity,
+                                    file.Authority.Sha256,
+                                    $"{authorityName} '{file.RelativePath}' guard deletion",
+                                    file.Authority.Length,
+                                    expectedNumberOfLinks: 2);
+                            PhysicalFileAuthority.DeleteOpenedFile(
+                                guardHandle,
+                                $"{authorityName} '{file.RelativePath}' guard");
+                        }
+
+                        file.Authority =
+                            PhysicalFileAuthority
+                                .EnsureExactOpenedFileAuthority(
+                                    publishedStream.SafeFileHandle,
+                                    expectedPath,
+                                    file.Authority.Identity,
+                                    file.Authority.Sha256,
+                                    $"{authorityName} '{file.RelativePath}'",
+                                    file.Authority.Length);
+                        file.Stream = publishedStream;
+                        file.GuardPath = null;
+                        publishedStream = null;
                     }
                     finally
                     {
-                        stream?.Dispose();
+                        publishedStream?.Dispose();
                     }
                 }
 
@@ -2306,6 +2462,9 @@ public class FileSystemManager
                     authorityName,
                     useSealedAuthority: false);
                 EnsureExactFileNamespace(normalizedRoot, authorityName);
+                Directory.Delete(
+                    _publicationGuardRoot,
+                    recursive: false);
             }
             finally
             {
@@ -3035,6 +3194,7 @@ public class FileSystemManager
         internal FileStream? Stream { get; set; }
         internal FileStream? SealedStream { get; set; }
         internal PhysicalFileAuthority.OpenedFileAuthority Authority { get; set; }
+        internal string? GuardPath { get; set; }
         internal bool YieldedForConditionalReplacement { get; set; }
     }
 
@@ -4104,8 +4264,7 @@ public class FileSystemManager
                         parentAuthority,
                         path,
                         "Retained load transaction staging",
-                        asynchronous: false,
-                        shareDelete: true)
+                        asynchronous: false)
                     ?? throw new InvalidDataException(
                         "Retained load transaction staging file disappeared.");
                 var retainedAuthority =
@@ -4187,6 +4346,11 @@ public class FileSystemManager
             authoritySet?.PrepareForDirectoryMove(
                 sourcePath,
                 "Load staging immediately before directory move");
+            _hooks?.AfterLoadStagingFinalValidationAsync?.Invoke(
+                    sourcePath,
+                    destinationPath)
+                .GetAwaiter()
+                .GetResult();
             PhysicalFileAuthority.RenameOpenedObjectRelative(
                 sourceHandle,
                 destinationParentAuthority,
@@ -4480,42 +4644,120 @@ public class FileSystemManager
             {
                 EnsureSafeCanonicalRelativePath(entry.Path);
                 var baseline = ReadWorkerApplyBeforeImage(transactionRoot, entry);
-                var current = FileExistsCore(entry.Path)
-                    ? await ReadFileBytesCoreAsync(
+                var fullPath = ResolvePath(entry.Path);
+                using var parentAuthority =
+                    EnsureStableCanonicalParent(
                         entry.Path,
-                        CancellationToken.None)
-                    : null;
-                var currentHash = ComputeSha256OrMissing(current);
-                if (string.Equals(currentHash, entry.BeforeSha256, StringComparison.OrdinalIgnoreCase))
-                    continue;
-                if (!string.Equals(currentHash, entry.AppliedSha256, StringComparison.OrdinalIgnoreCase))
+                        fullPath);
+                EnsureCanonicalMutationBoundary(
+                    entry.Path,
+                    fullPath);
+                var destinationEntry =
+                    PhysicalFileAuthority.ProbeNamespaceEntry(
+                        parentAuthority,
+                        fullPath,
+                        "Worker apply recovery destination");
+                FileStream? retainedCurrentStream = null;
+                try
                 {
-                    errors.Add($"worker apply recovery found unowned canonical bytes: {entry.Path}.");
-                    continue;
-                }
+                    PhysicalFileAuthority.OpenedFileAuthority?
+                        currentAuthority = null;
+                    if (destinationEntry ==
+                        PhysicalFileAuthority
+                            .NamespaceEntryKind
+                            .RegularFile)
+                    {
+                        retainedCurrentStream =
+                            PhysicalFileAuthority.OpenReadFile(
+                                parentAuthority,
+                                fullPath,
+                                "Retained worker apply recovery destination",
+                                asynchronous: false,
+                                shareDelete: true,
+                                shareWrite: true) ??
+                            throw new InvalidDataException(
+                                "Worker apply recovery destination disappeared.");
+                        currentAuthority =
+                            PhysicalFileAuthority
+                                .CaptureOpenedFileAuthority(
+                                    retainedCurrentStream
+                                        .SafeFileHandle,
+                                    fullPath,
+                                    "Retained worker apply recovery destination");
+                    }
+                    else if (destinationEntry !=
+                             PhysicalFileAuthority
+                                 .NamespaceEntryKind
+                                 .Missing)
+                    {
+                        throw new InvalidDataException(
+                            "Worker apply recovery destination is not a physical regular file.");
+                    }
 
-                if (baseline == null)
-                {
-                    await DeleteFileIfCurrentOwnedAsync(
-                        writeLease,
-                        entry.Path,
-                        [entry.AppliedSha256]);
-                }
-                else
-                {
+                    var currentHash =
+                        currentAuthority?.Sha256 ??
+                        "missing";
+                    if (string.Equals(
+                            currentHash,
+                            entry.BeforeSha256,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    if (!string.Equals(
+                            currentHash,
+                            entry.AppliedSha256,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        errors.Add(
+                            $"worker apply recovery found unowned canonical bytes: {entry.Path}.");
+                        continue;
+                    }
+
+                    if (baseline == null)
+                    {
+                        var retainedAuthority =
+                            currentAuthority ??
+                            throw new InvalidDataException(
+                                "Worker apply recovery cannot delete a missing destination.");
+                        await DeleteFileIfCurrentAuthorityAsync(
+                            writeLease,
+                            entry.Path,
+                            retainedAuthority.Identity,
+                            retainedAuthority.Sha256);
+                        continue;
+                    }
+
                     var appliedDestinationMissing = string.Equals(
                         entry.AppliedSha256,
                         "missing",
                         StringComparison.OrdinalIgnoreCase);
-                    await WriteFileAtomicBytesIfCurrentOwnedAsync(
-                        writeLease,
-                        entry.Path,
-                        baseline,
-                        appliedDestinationMissing
-                            ? []
-                            : [entry.AppliedSha256],
-                        allowMissingCurrent:
-                            appliedDestinationMissing);
+                    if (appliedDestinationMissing)
+                    {
+                        await WriteFileAtomicBytesIfCurrentOwnedAsync(
+                            writeLease,
+                            entry.Path,
+                            baseline,
+                            [],
+                            allowMissingCurrent: true);
+                    }
+                    else
+                    {
+                        var retainedAuthority =
+                            currentAuthority ??
+                            throw new InvalidDataException(
+                                "Worker apply recovery destination authority is missing.");
+                        await WriteFileAtomicBytesIfCurrentAuthorityAsync(
+                            writeLease,
+                            entry.Path,
+                            baseline,
+                            retainedAuthority.Identity,
+                            retainedAuthority.Sha256);
+                    }
+                }
+                finally
+                {
+                    retainedCurrentStream?.Dispose();
                 }
             }
             catch (Exception ex)

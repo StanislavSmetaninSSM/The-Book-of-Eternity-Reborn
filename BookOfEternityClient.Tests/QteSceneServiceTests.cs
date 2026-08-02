@@ -888,6 +888,107 @@ public sealed class QteSceneServiceTests : IDisposable
         Assert.Contains("lastResolvedQteSummaryPendingReminder", json!, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(
+        """
+        {
+          "qteId": "qte_duplicate_turn",
+          "sourceTurnNumber": 12,
+          "sourceTurnNumber": 12
+        }
+        """)]
+    [InlineData(
+        """
+        {
+          "qteId": "qte_wrong_turn_type",
+          "sourceTurnNumber": "12"
+        }
+        """)]
+    [InlineData("""{"qteId":"qte_malformed_turn","sourceTurnNumber":""")]
+    public async Task TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer(
+        string invalidOfferJson)
+    {
+        const string runtimeJson = """
+        {
+          "lastDeclinedQteId": "qte_previous",
+          "lastDeclinedAtTurn": 11
+        }
+        """;
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteOfferPath,
+            invalidOfferJson);
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteRuntimePath,
+            runtimeJson);
+
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _service.TryReadOfferAsync());
+
+        Assert.Equal(
+            invalidOfferJson,
+            await _fs.ReadFileAsync(QteSceneService.QteOfferPath));
+        Assert.Equal(
+            runtimeJson,
+            await _fs.ReadFileAsync(QteSceneService.QteRuntimePath));
+    }
+
+    [Theory]
+    [InlineData(
+        """
+        {
+          "pendingOffer": null,
+          "activeScene": {
+            "offer": {
+              "qteId": "qte_duplicate_accepted_turn",
+              "sourceTurnNumber": 12
+            },
+            "currentChapterId": "yard",
+            "acceptedAtTurn": 12,
+            "acceptedAtTurn": 12
+          }
+        }
+        """)]
+    [InlineData(
+        """
+        {
+          "pendingOffer": null,
+          "activeScene": {
+            "offer": {
+              "qteId": "qte_wrong_accepted_turn_type",
+              "sourceTurnNumber": 12
+            },
+            "currentChapterId": "yard",
+            "acceptedAtTurn": "12"
+          }
+        }
+        """)]
+    [InlineData(
+        """
+        {
+          "pendingOffer": null,
+          "activeScene": {
+            "acceptedAtTurn":
+        """)]
+    public async Task ResolveActiveActionAsync_InvalidPersistedTurnAuthorityFailsWithoutMutation(
+        string invalidRuntimeJson)
+    {
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteRuntimePath,
+            invalidRuntimeJson);
+
+        await Assert.ThrowsAsync<InvalidDataException>(() =>
+            _service.ResolveActiveActionAsync(
+                "cross_yard",
+                submittedGrade: null,
+                currentTurnNumber: 12,
+                allowPreexistingStateIssues: true));
+
+        Assert.Equal(
+            invalidRuntimeJson,
+            await _fs.ReadFileAsync(QteSceneService.QteRuntimePath));
+        Assert.False(_fs.FileExists(QteSceneService.QteHistoryPath));
+    }
+
     [Fact]
     public async Task BindAcceptedTurnAuthorityAsync_PersistsTrustedPositiveSourceTurn()
     {

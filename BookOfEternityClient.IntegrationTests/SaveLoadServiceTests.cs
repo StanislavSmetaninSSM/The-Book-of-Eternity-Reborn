@@ -1180,6 +1180,63 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Theory]
+    [InlineData("entry-count")]
+    [InlineData("entry-name-metadata")]
+    public async Task TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization(
+        string attack)
+    {
+        var archivePath = Path.Combine(
+            _rootPath,
+            $"raw-preflight-{attack}.zip");
+        await CreateBudgetAttackArchiveAsync(
+            archivePath,
+            attack);
+        await using var stream = new FileStream(
+            archivePath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read);
+        stream.Position = 1;
+
+        Assert.Throws<InvalidDataException>(() =>
+            SaveLoadService
+                .ValidateTrustedArchiveBeforeMaterialization(
+                    stream));
+
+        Assert.Equal(1, stream.Position);
+    }
+
+    [Fact]
+    public async Task TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition()
+    {
+        var archivePath = Path.Combine(
+            _rootPath,
+            "raw-preflight-valid.zip");
+        using (var archive = ZipFile.Open(
+                   archivePath,
+                   ZipArchiveMode.Create))
+        {
+            await WriteArchiveEntryAsync(
+                archive,
+                "game_state/world/state.json",
+                """{"state":"valid"}""");
+        }
+
+        await using var stream = new FileStream(
+            archivePath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read);
+        stream.Position = 1;
+
+        SaveLoadService
+            .ValidateTrustedArchiveBeforeMaterialization(
+                stream);
+
+        Assert.Equal(1, stream.Position);
+    }
+
+    [Theory]
     [InlineData(
         "mortal_world_command_display_fixture.zip",
         "Mortal World")]

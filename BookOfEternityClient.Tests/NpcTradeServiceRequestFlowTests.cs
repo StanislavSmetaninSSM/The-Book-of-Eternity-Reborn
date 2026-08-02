@@ -334,6 +334,84 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task GetSellableItemsAsync_RelicLookingLegacyTextRemainsNeutralWithoutCanonicalRelicId()
+    {
+        await SeedBaseStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            """
+            {
+              "items": [
+                {
+                  "itemId": "sr_ordinary_tool",
+                  "name": "Обычный резец",
+                  "quality": "Common",
+                  "type": "tool",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_type_prose",
+                  "name": "Сувенир",
+                  "quality": "Common",
+                  "type": "soul relic replica",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_group_prose",
+                  "name": "Театральный реквизит",
+                  "quality": "Common",
+                  "group": "Реликвия души — декорации",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_legacy_field",
+                  "name": "Архивный муляж",
+                  "quality": "Common",
+                  "soulRelicId": "legacy_non_authority",
+                  "price": 20,
+                  "baseSellPrice": 8
+                },
+                {
+                  "itemId": "item_canonical_relic",
+                  "name": "Настоящая реликвия",
+                  "quality": "Rare",
+                  "relicId": "relic_authority_001",
+                  "price": 200,
+                  "baseSellPrice": 80
+                }
+              ],
+              "equipment": {}
+            }
+            """);
+        var service = new NpcTradeService(
+            _fs,
+            NullLogger<NpcTradeService>.Instance);
+
+        var offers = await service.GetSellableItemsAsync(
+            "npc_merchant_001");
+
+        Assert.Equal(
+            [
+                "item_group_prose",
+                "item_legacy_field",
+                "item_type_prose",
+                "sr_ordinary_tool"
+            ],
+            offers
+                .Select(offer => offer.ItemId)
+                .OrderBy(itemId => itemId, StringComparer.Ordinal)
+                .ToArray());
+        Assert.DoesNotContain(
+            offers,
+            offer => offer.ItemId == "item_canonical_relic");
+    }
+
+    [Fact]
     public async Task BuyAsync_MortalScopeChangesBeforeCommit_BlocksWithoutMutation()
     {
         await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);

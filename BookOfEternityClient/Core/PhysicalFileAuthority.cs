@@ -602,7 +602,9 @@ internal static class PhysicalFileAuthority
         string authorityName,
         bool asynchronous,
         bool shareDelete = false,
-        Action? afterOpenedBeforeValidation = null)
+        Action? afterOpenedBeforeValidation = null,
+        bool requireSingleLink = true,
+        bool shareWrite = false)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -614,6 +616,7 @@ internal static class PhysicalFileAuthority
                 FileMode.Open,
                 FileAccess.Read,
                 FileShare.Read |
+                (shareWrite ? FileShare.Write : 0) |
                 (shareDelete ? FileShare.Delete : 0),
                 bufferSize: 4096,
                 asynchronous
@@ -632,10 +635,24 @@ internal static class PhysicalFileAuthority
         try
         {
             afterOpenedBeforeValidation?.Invoke();
-            EnsureRegularFileHandleMatchesExpectedPath(
-                stream.SafeFileHandle,
-                normalizedPath,
-                authorityName);
+            if (requireSingleLink)
+            {
+                EnsureRegularFileHandleMatchesExpectedPath(
+                    stream.SafeFileHandle,
+                    normalizedPath,
+                    authorityName);
+            }
+            else
+            {
+                EnsureHandlePathMatchesExpectedPath(
+                    stream.SafeFileHandle,
+                    normalizedPath,
+                    authorityName);
+                EnsureOpenedObjectKind(
+                    stream.SafeFileHandle,
+                    expectedDirectory: false,
+                    authorityName);
+            }
             return stream;
         }
         catch
@@ -651,7 +668,8 @@ internal static class PhysicalFileAuthority
         bool isDirectory,
         string authorityName,
         bool writable = false,
-        bool denyConcurrentWrites = false)
+        bool denyConcurrentWrites = false,
+        bool requireSingleLink = true)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         if (!OperatingSystem.IsWindows())
@@ -692,10 +710,20 @@ internal static class PhysicalFileAuthority
 
         try
         {
-            EnsureHandleMatchesExpectedPath(
-                handle,
-                normalizedPath,
-                authorityName);
+            if (requireSingleLink)
+            {
+                EnsureHandleMatchesExpectedPath(
+                    handle,
+                    normalizedPath,
+                    authorityName);
+            }
+            else
+            {
+                EnsureHandlePathMatchesExpectedPath(
+                    handle,
+                    normalizedPath,
+                    authorityName);
+            }
             EnsureOpenedObjectKind(
                 handle,
                 isDirectory,
@@ -1074,6 +1102,63 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    internal static void CreateHardLinkRelative(
+        StableDirectory linkParent,
+        string linkPath,
+        SafeFileHandle existingHandle,
+        string existingPath,
+        string authorityName)
+    {
+        ArgumentNullException.ThrowIfNull(linkParent);
+        ArgumentNullException.ThrowIfNull(existingHandle);
+        EnsureDirectChild(
+            linkParent,
+            linkPath,
+            authorityName);
+        if (!OperatingSystem.IsWindows() ||
+            linkParent.Handle is not { IsInvalid: false } linkParentHandle)
+        {
+            throw new PlatformNotSupportedException(
+                "Retained-authority hard links are available only on Windows.");
+        }
+
+        EnsureHandlePathMatchesExpectedPath(
+            linkParentHandle,
+            linkParent.FullPath,
+            authorityName);
+        EnsureHandlePathMatchesExpectedPath(
+            existingHandle,
+            existingPath,
+            authorityName);
+        if (ProbeNamespaceEntry(
+                linkParent,
+                linkPath,
+                authorityName) !=
+            NamespaceEntryKind.Missing)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} destination already exists.");
+        }
+        if (!CreateHardLink(
+                ToWindowsExtendedPath(linkPath),
+                ToWindowsExtendedPath(existingPath),
+                IntPtr.Zero))
+        {
+            throw CreateIoException(
+                $"Could not create {authorityName}.",
+                Marshal.GetLastWin32Error());
+        }
+
+        EnsureHandlePathMatchesExpectedPath(
+            linkParentHandle,
+            linkParent.FullPath,
+            authorityName);
+        EnsureHandlePathMatchesExpectedPath(
+            existingHandle,
+            existingPath,
+            authorityName);
+    }
+
     internal static OpenedFileAuthority CaptureOpenedFileAuthority(
         SafeFileHandle handle,
         string expectedPath,
@@ -1103,13 +1188,22 @@ internal static class PhysicalFileAuthority
         FileIdentity expectedIdentity,
         string expectedSha256,
         string authorityName,
-        long? expectedLength = null)
+        long? expectedLength = null,
+        uint expectedNumberOfLinks = 1)
     {
         var identity = EnsureExactFileIdentity(
             handle,
             expectedPath,
             expectedIdentity,
-            authorityName);
+            authorityName,
+            requireSingleLink:
+                expectedNumberOfLinks == 1);
+        if (identity.NumberOfLinks !=
+            expectedNumberOfLinks)
+        {
+            throw new InvalidDataException(
+                $"{authorityName} physical link count changed.");
+        }
         var length = RandomAccess.GetLength(handle);
         if (expectedLength.HasValue &&
             length != expectedLength.Value)
@@ -1955,6 +2049,17 @@ internal static class PhysicalFileAuthority
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool CreateDirectory(
         string lpPathName,
+        IntPtr lpSecurityAttributes);
+
+    [DllImport(
+        "kernel32.dll",
+        EntryPoint = "CreateHardLinkW",
+        CharSet = CharSet.Unicode,
+        SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CreateHardLink(
+        string lpFileName,
+        string lpExistingFileName,
         IntPtr lpSecurityAttributes);
 
     [DllImport("kernel32.dll", SetLastError = true)]
