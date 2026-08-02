@@ -876,13 +876,24 @@ digest, length, regular-file kind, and single-link count before retaining it.
 
 Windows does not permit a handle-bound parent-directory rename while descendant
 handles remain open. Immediately before publication the client therefore
-revalidates every retained staging reader, releases those readers at this one
-platform boundary, and renames the already-opened staging root. The renamed
-root handle is identity-checked through a delete-shared transitional handoff
-into a non-delete-shared root pin. Every destination leaf is then reopened from
-stable directory authority, exact-revalidated against its extraction record,
-and retained through commit or recovery. Any replacement or hard-link race
-between the checks fails closed and restores the byte-exact prior live session.
+revalidates each retained single-link staging reader and, while that original
+non-write/non-delete-shared handle remains open, creates one private hard-link
+guard under the transaction root outside the moving subtree. It opens and
+exact-validates the guard as the same identity, digest, length, kind, and
+exactly-two-link object before releasing the original reader. The guard handle
+then retains continuous physical authority while the already-opened staging
+root moves.
+
+After the move, each guard is exact-validated, a published reader is opened and
+proven to be the same two-link identity-plus-digest object, and both handles
+overlap before the guard is released. The client deletes the guard through
+opened authority and proves the retained published reader has returned to
+single-link authority. The private guard root remains pinned by one
+non-delete-shared opened-directory authority throughout those deletions and is
+itself deleted through that handle, so a late pathname swap cannot delete a
+foreign directory. Any replacement, missing guard, third or unowned hard link,
+guard-root swap, identity/digest change, or incomplete return to one link fails
+closed and restores the byte-exact prior live session.
 
 The authority set also defines a closed-world membership policy: only its
 registered durable files and client-owned required directories may exist.

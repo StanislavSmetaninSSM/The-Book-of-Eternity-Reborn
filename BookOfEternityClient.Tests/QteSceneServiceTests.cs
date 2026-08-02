@@ -829,13 +829,19 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
+    public async Task EnsureRuntimeStateHealthyAsync_InvalidJsonFailsWithoutMutation()
     {
-        await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, "{ invalid json");
+        const string originalJson = "{ invalid json";
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteRuntimePath,
+            originalJson);
 
-        await _service.EnsureRuntimeStateHealthyAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _service.EnsureRuntimeStateHealthyAsync());
 
-        Assert.False(_fs.FileExists(QteSceneService.QteRuntimePath));
+        Assert.Equal(
+            originalJson,
+            await _fs.ReadFileAsync(QteSceneService.QteRuntimePath));
     }
 
     [Fact]
@@ -861,9 +867,9 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureRuntimeStateHealthyAsync_ClearsBrokenActiveSceneButPreservesReminder()
+    public async Task EnsureRuntimeStateHealthyAsync_BrokenActiveSceneFailsWithoutMutation()
     {
-        await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, """
+        const string originalJson = """
         {
           "pendingOffer": {
             "qteId": "qte_bridge",
@@ -877,15 +883,17 @@ public sealed class QteSceneServiceTests : IDisposable
           },
           "lastResolvedQteSummaryPendingReminder": "QTE summary"
         }
-        """);
+        """;
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteRuntimePath,
+            originalJson);
 
-        await _service.EnsureRuntimeStateHealthyAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _service.EnsureRuntimeStateHealthyAsync());
 
-        var json = await _fs.ReadFileAsync(QteSceneService.QteRuntimePath);
-        Assert.False(string.IsNullOrWhiteSpace(json));
-        Assert.DoesNotContain("activeScene", json!, StringComparison.Ordinal);
-        Assert.DoesNotContain("pendingOffer", json!, StringComparison.Ordinal);
-        Assert.Contains("lastResolvedQteSummaryPendingReminder", json!, StringComparison.Ordinal);
+        Assert.Equal(
+            originalJson,
+            await _fs.ReadFileAsync(QteSceneService.QteRuntimePath));
     }
 
     [Theory]
@@ -905,6 +913,8 @@ public sealed class QteSceneServiceTests : IDisposable
         }
         """)]
     [InlineData("""{"qteId":"qte_malformed_turn","sourceTurnNumber":""")]
+    [InlineData("   ")]
+    [InlineData("null")]
     public async Task TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer(
         string invalidOfferJson)
     {
@@ -1068,9 +1078,9 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureRuntimeStateHealthyAsync_RemovesNonPositiveAcceptedTurnAuthority()
+    public async Task EnsureRuntimeStateHealthyAsync_NonPositiveAcceptedTurnFailsWithoutMutation()
     {
-        await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, """
+        const string originalJson = """
         {
           "pendingOffer": {
             "qteId": "qte_bridge",
@@ -1086,18 +1096,17 @@ public sealed class QteSceneServiceTests : IDisposable
           },
           "lastResolvedQteSummaryPendingReminder": "QTE summary"
         }
-        """);
+        """;
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteRuntimePath,
+            originalJson);
 
-        await _service.EnsureRuntimeStateHealthyAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(
+            () => _service.EnsureRuntimeStateHealthyAsync());
 
-        var json = await _fs.ReadFileAsync(QteSceneService.QteRuntimePath);
-        Assert.False(string.IsNullOrWhiteSpace(json));
-        Assert.DoesNotContain("activeScene", json!, StringComparison.Ordinal);
-        Assert.DoesNotContain("pendingOffer", json!, StringComparison.Ordinal);
-        Assert.Contains(
-            "lastResolvedQteSummaryPendingReminder",
-            json!,
-            StringComparison.Ordinal);
+        Assert.Equal(
+            originalJson,
+            await _fs.ReadFileAsync(QteSceneService.QteRuntimePath));
     }
 
     [Fact]

@@ -37,6 +37,7 @@ internal sealed class FileSystemManagerHooks
     internal Func<string, string, Task>? BeforeLoadDirectoryMoveAsync { get; init; }
     internal Func<string, string, Task>? AfterLoadStagingFinalValidationAsync { get; init; }
     internal Func<string, string, Task>? AfterLoadDirectoryMoveAsync { get; init; }
+    internal Func<string, Task>? BeforeLoadPublicationGuardRootDeleteAsync { get; init; }
 }
 
 public enum CanonicalFileMutationResult
@@ -2358,6 +2359,11 @@ public class FileSystemManager
                 _publishedRootIdentity = expectedRootIdentity;
 
                 EnsurePublishedRoot(normalizedRoot, authorityName);
+                using var publicationGuardRootAuthority =
+                    PhysicalFileAuthority.OpenStableDirectory(
+                        _publicationGuardRoot,
+                        $"{authorityName} publication guard root",
+                        allowRename: true);
                 foreach (var file in _files)
                 {
                     var expectedPath = ResolveExpectedPath(
@@ -2410,14 +2416,9 @@ public class FileSystemManager
 
                         guardStream.Dispose();
                         file.Stream = null;
-                        using (var guardParentAuthority =
-                               PhysicalFileAuthority
-                                   .OpenStableDirectory(
-                                       _publicationGuardRoot,
-                                       $"{authorityName} publication guard root"))
                         using (var guardHandle =
                                PhysicalFileAuthority.OpenForRename(
-                                   guardParentAuthority,
+                                   publicationGuardRootAuthority,
                                    guardPath,
                                    isDirectory: false,
                                    $"{authorityName} '{file.RelativePath}' guard deletion",
@@ -2462,9 +2463,16 @@ public class FileSystemManager
                     authorityName,
                     useSealedAuthority: false);
                 EnsureExactFileNamespace(normalizedRoot, authorityName);
-                Directory.Delete(
-                    _publicationGuardRoot,
-                    recursive: false);
+                _owner._hooks?
+                    .BeforeLoadPublicationGuardRootDeleteAsync?
+                    .Invoke(_publicationGuardRoot)
+                    .GetAwaiter()
+                    .GetResult();
+                PhysicalFileAuthority.DeleteOpenedDirectory(
+                    publicationGuardRootAuthority.Handle ??
+                    throw new InvalidDataException(
+                        $"{authorityName} publication guard root authority is unavailable."),
+                    $"{authorityName} publication guard root");
             }
             finally
             {

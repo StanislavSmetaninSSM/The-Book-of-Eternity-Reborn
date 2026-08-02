@@ -1552,9 +1552,9 @@ public sealed partial class NpcTradeService
 
     private static bool IsQuestBoundItem(JsonObject item)
     {
-        if (item["isQuestItem"] is JsonValue questValue && questValue.TryGetValue<bool>(out var isQuestItem) && isQuestItem)
-            return true;
-        return string.Equals(GetNodeString(item["group"]), "Quest", StringComparison.OrdinalIgnoreCase);
+        return item["isQuestItem"] is JsonValue questValue &&
+               questValue.TryGetValue<bool>(out var isQuestItem) &&
+               isQuestItem;
     }
 
     private static bool IsSoulRelicLikeItem(JsonObject item)

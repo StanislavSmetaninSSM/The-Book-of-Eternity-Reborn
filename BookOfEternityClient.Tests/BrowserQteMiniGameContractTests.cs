@@ -198,6 +198,98 @@ public sealed class BrowserQteMiniGameContractTests : IDisposable
         Assert.DoesNotContain("scoreDeltas", serializedScore, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(
+        """
+        {
+          "activeScene": {
+            "offer": {
+              "qteId": "browser_duplicate_runtime",
+              "sourceTurnNumber": 12
+            },
+            "currentChapterId": "start",
+            "acceptedAtTurn": 12,
+            "acceptedAtTurn": 12
+          },
+          "lastDeclinedQteId": "qte_previous",
+          "lastDeclinedAtTurn": 11
+        }
+        """)]
+    [InlineData(
+        """
+        {
+          "activeScene": {
+            "offer": {
+              "qteId": "browser_wrong_type_runtime",
+              "sourceTurnNumber": 12
+            },
+            "currentChapterId": "start",
+            "acceptedAtTurn": "12"
+          },
+          "lastDeclinedQteId": "qte_previous",
+          "lastDeclinedAtTurn": 11
+        }
+        """)]
+    [InlineData(
+        """
+        {
+          "activeScene": {
+            "offer": {
+              "qteId": "browser_nonpositive_runtime",
+              "sourceTurnNumber": 0
+            },
+            "currentChapterId": "start",
+            "acceptedAtTurn": 0
+          },
+          "lastDeclinedQteId": "qte_previous",
+          "lastDeclinedAtTurn": 11
+        }
+        """)]
+    [InlineData("""{"activeScene":{"acceptedAtTurn":""")]
+    public async Task BuildStateAsync_InvalidPersistedTurnAuthorityFailsWithoutAnyQteMutation(
+        string invalidRuntimeJson)
+    {
+        var offerJson = JsonSerializer.Serialize(
+            BuildScoredBrowserOffer(),
+            WebJsonOptions);
+        const string historyJson =
+            """{"entries":[{"qteId":"qte_previous"}]}""";
+        const string experienceJson =
+            """{"totalExperience":123}""";
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteRuntimePath,
+            invalidRuntimeJson);
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteOfferPath,
+            offerJson);
+        await _fs.WriteFileAtomicAsync(
+            QteSceneService.QteHistoryPath,
+            historyJson);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/player/experience.json",
+            experienceJson);
+
+        var state = await _web.BuildStateAsync();
+
+        Assert.Equal("Failed", state.State);
+        Assert.Equal(
+            invalidRuntimeJson,
+            await _fs.ReadFileAsync(
+                QteSceneService.QteRuntimePath));
+        Assert.Equal(
+            offerJson,
+            await _fs.ReadFileAsync(
+                QteSceneService.QteOfferPath));
+        Assert.Equal(
+            historyJson,
+            await _fs.ReadFileAsync(
+                QteSceneService.QteHistoryPath));
+        Assert.Equal(
+            experienceJson,
+            await _fs.ReadFileAsync(
+                "game_state/player/experience.json"));
+    }
+
     private async Task WriteActiveSceneAsync(IReadOnlyList<QteSceneService.QteAction> actions)
     {
         var state = new QteSceneService.QteRuntimeState

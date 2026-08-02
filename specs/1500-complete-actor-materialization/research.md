@@ -1444,14 +1444,23 @@ that generation was replaced, a create-only receipt under the retained
 a junction swap, and cleanup is unsafe while a descendant process may still be
 using the workspace.
 
-### Decision 139: Load staging remains single-link through publication
+### Decision 139: Load staging uses one controlled guard handoff through publication
 
-**Decision**: Open and validate every staged regular file, retain those handles
-through the staging-directory move, and repeat identity, link-count, length,
-and digest validation before commit.
+**Decision**: Open and validate every staged regular file as single-link
+authority. Because Windows refuses a directory rename while descendant file
+handles remain open, create exactly one private transaction-owned guard link
+outside the moving subtree while the original handle is retained. Exact-prove
+the two names share one identity-plus-digest object, retain the guard through
+the move, overlap it with the published handle, delete the guard through opened
+authority, and prove the published file is single-link again before activation
+or commit. Retain one non-delete-shared handle on the private guard root through
+its exact opened-directory deletion. Any third or unowned link or guard-root
+swap fails closed.
 
-**Rationale**: Initial create-only validation does not prevent a later hard
-link from turning an external alias into canonical authority.
+**Rationale**: Releasing every descendant handle creates the post-check race,
+while retaining a descendant handle prevents the Windows directory rename. One
+private non-writable guard transfers the same physical capability without an
+unowned namespace gap and is removed before published bytes become canonical.
 
 ### Decision 140: Save archive budgets are trusted client authority
 

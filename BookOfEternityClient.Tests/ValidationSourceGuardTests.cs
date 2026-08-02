@@ -192,6 +192,28 @@ public sealed class ValidationSourceGuardTests
             ".StartsWith(",
             soulRelicHelper,
             StringComparison.Ordinal);
+
+        var questHelperStart = tradeSource.IndexOf(
+            "private static bool IsQuestBoundItem(",
+            StringComparison.Ordinal);
+        Assert.True(
+            questHelperStart >= 0 &&
+            soulRelicHelperStart > questHelperStart,
+            "Expected the NPC trade quest-item authority helper.");
+        var questHelper =
+            tradeSource[questHelperStart..soulRelicHelperStart];
+        Assert.Contains(
+            "item[\"isQuestItem\"]",
+            questHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "item[\"group\"]",
+            questHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "GetNodeString(",
+            questHelper,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -271,6 +293,18 @@ public sealed class ValidationSourceGuardTests
             StringComparison.Ordinal);
         Assert.Contains(
             "DeleteOpenedFile(",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "allowRename: true",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "DeleteOpenedDirectory(",
+            afterMoveSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Directory.Delete(",
             afterMoveSource,
             StringComparison.Ordinal);
     }

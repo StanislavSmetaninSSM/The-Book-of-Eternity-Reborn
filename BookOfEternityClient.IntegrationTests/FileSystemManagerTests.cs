@@ -5290,6 +5290,162 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
+    public async Task LoadTransactionMove_PostCheckHardLinkRaceFailsClosedWithExactBytesAndEvidence()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        var relativePath = Path.Combine(
+            "game_state",
+            "world",
+            "post-check-hard-link-payload.bin");
+        var stagedFile = Path.Combine(
+            transactionPaths.StagingSessionPath,
+            relativePath);
+        var publishedFile = Path.Combine(
+            transactionPaths.FailedSessionPath,
+            relativePath);
+        var aliasPath = Path.Combine(
+            _rootPath,
+            "post-check-hard-link-payload.alias");
+        var hardLinkCreated = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                AfterLoadStagingFinalValidationAsync =
+                    (_, _) =>
+                    {
+                        CreateHardLink(
+                            aliasPath,
+                            stagedFile);
+                        hardLinkCreated = true;
+                        return Task.CompletedTask;
+                    }
+            });
+        raceFs.CreateLoadDirectory(
+            transactionPaths.StagingSessionPath);
+        raceFs.CreateLoadDirectory(
+            Path.GetDirectoryName(
+                transactionPaths.FailedSessionPath)!);
+        raceFs.CreateLoadDirectory(
+            Path.GetDirectoryName(stagedFile)!);
+        await using var authorities =
+            raceFs.CreateLoadStagingAuthoritySet(
+                transactionPaths.StagingSessionPath);
+        byte[] expectedBytes = [0x10, 0x20, 0x30];
+        await using var source = new MemoryStream(
+            expectedBytes);
+        await raceFs.WriteLoadTransactionFileAsync(
+            stagedFile,
+            source,
+            expectedLength: expectedBytes.Length,
+            authoritySet: authorities);
+
+        var error = Assert.Throws<InvalidDataException>(() =>
+            raceFs.MoveLoadDirectory(
+                transactionPaths.StagingSessionPath,
+                transactionPaths.FailedSessionPath,
+                authorities));
+
+        Assert.True(hardLinkCreated);
+        Assert.Contains(
+            "link count changed",
+            error.Message,
+            StringComparison.Ordinal);
+        Assert.Equal(
+            expectedBytes,
+            await File.ReadAllBytesAsync(aliasPath));
+        Assert.Equal(
+            expectedBytes,
+            await File.ReadAllBytesAsync(publishedFile));
+        Assert.True(Directory.Exists(
+            transactionPaths.TransactionRoot));
+    }
+
+    [Fact]
+    public async Task LoadTransactionMove_GuardRootSwapBeforeCleanupCannotDeleteForeignDirectory()
+    {
+        var transactionPaths = _fs.GetLoadTransactionPaths(
+            Guid.NewGuid().ToString("N"));
+        var relativePath = Path.Combine(
+            "game_state",
+            "world",
+            "guard-root-cleanup-payload.bin");
+        var stagedFile = Path.Combine(
+            transactionPaths.StagingSessionPath,
+            relativePath);
+        var displacedGuardRoot = Path.Combine(
+            transactionPaths.TransactionRoot,
+            "publication-authority-displaced");
+        var swapAttempted = false;
+        var swapBlocked = false;
+        var raceFs = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks
+            {
+                BeforeLoadPublicationGuardRootDeleteAsync =
+                    guardRoot =>
+                    {
+                        swapAttempted = true;
+                        try
+                        {
+                            Directory.Move(
+                                guardRoot,
+                                displacedGuardRoot);
+                            Directory.CreateDirectory(
+                                guardRoot);
+                        }
+                        catch (Exception ex) when (
+                            ex is IOException or
+                            UnauthorizedAccessException)
+                        {
+                            swapBlocked = true;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+            });
+        raceFs.CreateLoadDirectory(
+            transactionPaths.StagingSessionPath);
+        raceFs.CreateLoadDirectory(
+            Path.GetDirectoryName(
+                transactionPaths.FailedSessionPath)!);
+        raceFs.CreateLoadDirectory(
+            Path.GetDirectoryName(stagedFile)!);
+        await using var authorities =
+            raceFs.CreateLoadStagingAuthoritySet(
+                transactionPaths.StagingSessionPath);
+        await using var source = new MemoryStream(
+            [0x10, 0x20, 0x30]);
+        await raceFs.WriteLoadTransactionFileAsync(
+            stagedFile,
+            source,
+            expectedLength: 3,
+            authoritySet: authorities);
+
+        raceFs.MoveLoadDirectory(
+            transactionPaths.StagingSessionPath,
+            transactionPaths.FailedSessionPath,
+            authorities);
+
+        Assert.True(swapAttempted);
+        Assert.True(swapBlocked);
+        Assert.False(Directory.Exists(
+            displacedGuardRoot));
+        Assert.False(Directory.Exists(
+            Path.Combine(
+                transactionPaths.TransactionRoot,
+                "publication-authority")));
+    }
+
+    [Fact]
     public void LoadDirectoryMove_RetainsRenamedRootThroughPostMoveValidation()
     {
         if (!OperatingSystem.IsWindows())

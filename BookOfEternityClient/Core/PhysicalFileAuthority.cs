@@ -1241,6 +1241,23 @@ internal static class PhysicalFileAuthority
         MarkOpenedObjectForDeletion(handle, authorityName);
     }
 
+    internal static void DeleteOpenedDirectory(
+        SafeFileHandle handle,
+        string authorityName)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            throw new PlatformNotSupportedException(
+                "Opened-directory deletion is available only on Windows.");
+        }
+
+        EnsureOpenedObjectKind(
+            handle,
+            expectedDirectory: true,
+            authorityName);
+        MarkOpenedObjectForDeletion(handle, authorityName);
+    }
+
     internal static void ValidateExistingReplacementTarget(
         StableDirectory parent,
         string expectedPath,
