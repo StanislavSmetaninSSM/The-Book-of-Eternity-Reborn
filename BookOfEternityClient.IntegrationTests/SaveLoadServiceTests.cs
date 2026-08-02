@@ -1382,7 +1382,7 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task LoadGameAsync_StagingReplacementAtMoveBoundaryRestoresExactLiveSession()
+    public async Task LoadGameAsync_StagingReplacementAtMoveBoundaryIsBlockedAndPreservesExactLiveSession()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -1405,12 +1405,13 @@ public sealed class SaveLoadServiceTests : IDisposable
                 """{"state":"replacement"}""");
         }
 
-        var replaced = false;
+        var replacementAttempted = false;
+        var replacementBlocked = false;
         var hooks = new FileSystemManagerHooks
         {
             BeforeLoadDirectoryMoveAsync = (source, destination) =>
             {
-                if (replaced ||
+                if (replacementAttempted ||
                     !source.Contains(
                         $"{Path.DirectorySeparatorChar}stage{Path.DirectorySeparatorChar}",
                         StringComparison.OrdinalIgnoreCase) ||
@@ -1427,12 +1428,23 @@ public sealed class SaveLoadServiceTests : IDisposable
                         '/',
                         Path.DirectorySeparatorChar));
                 var foreignPath = stagedPath + ".foreign";
-                File.WriteAllText(
-                    foreignPath,
-                    """{"state":"foreign"}""");
-                File.Delete(stagedPath);
-                File.Move(foreignPath, stagedPath);
-                replaced = true;
+                replacementAttempted = true;
+                try
+                {
+                    File.WriteAllText(
+                        foreignPath,
+                        """{"state":"foreign"}""");
+                    File.Delete(stagedPath);
+                    File.Move(foreignPath, stagedPath);
+                }
+                catch (Exception ex) when (
+                    ex is IOException or
+                    UnauthorizedAccessException)
+                {
+                    replacementBlocked = true;
+                    throw;
+                }
+
                 return Task.CompletedTask;
             }
         };
@@ -1452,7 +1464,8 @@ public sealed class SaveLoadServiceTests : IDisposable
             NullLogger<SaveLoadService>.Instance);
 
         Assert.False(await service.LoadGameAsync(archivePath));
-        Assert.True(replaced);
+        Assert.True(replacementAttempted);
+        Assert.True(replacementBlocked);
         Assert.Equal(liveState, await raceFs.ReadFileAsync(markerPath));
     }
 

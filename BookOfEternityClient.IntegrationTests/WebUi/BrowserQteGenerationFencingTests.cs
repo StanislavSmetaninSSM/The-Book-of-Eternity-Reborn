@@ -670,7 +670,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         await WriteActiveRuntimeAsync(fs, offer);
         var original = JsonNode.Parse(
             (await fs.ReadFileAsync(QteSceneService.QteRuntimePath))!)!.AsObject();
-        original["lastDeclinedAtTurn"] = "invalid";
+        original["lastResolvedQteSummaryPendingReminder"] = 42;
         var originalJson = original.ToJsonString(
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
         await fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, originalJson);
