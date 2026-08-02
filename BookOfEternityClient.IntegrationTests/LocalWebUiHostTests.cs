@@ -795,7 +795,10 @@ public sealed class LocalWebUiHostTests : IDisposable
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
 
-        Assert.Equal("NoScene", root["qte"]!["state"]!.GetValue<string>());
+        Assert.Equal("Failed", root["qte"]!["state"]!.GetValue<string>());
+        Assert.False(
+            string.IsNullOrWhiteSpace(
+                root["qte"]!["error"]!.GetValue<string>()));
         Assert.True(File.Exists(runtimePath));
         Assert.Equal(before, File.ReadAllText(runtimePath));
     }

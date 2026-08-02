@@ -100,14 +100,29 @@ public sealed class QteWebInteractionService
     public async Task<QteWebStateDto> BuildReadOnlyStateAsync(
         string? stateOverride = null,
         QteSceneService.QteActionResolution? resolution = null,
-        string? notification = null) =>
-        await _coordinator.RunBoundTransactionAsync(
-            writeLease => BuildStateCoreAsync(
-                writeLease,
-                normalizeRuntime: false,
-                stateOverride,
-                resolution,
-                notification));
+        string? notification = null)
+    {
+        try
+        {
+            return await _coordinator.RunBoundTransactionAsync(
+                writeLease => BuildStateCoreAsync(
+                    writeLease,
+                    normalizeRuntime: false,
+                    stateOverride,
+                    resolution,
+                    notification));
+        }
+        catch (InvalidDataException)
+        {
+            return Failed(
+                "Состояние QTE повреждено. Данные сохранены без изменений.");
+        }
+        catch (SessionReplacedException)
+        {
+            return Failed(
+                "Игровая сессия изменилась во время подготовки QTE. Повторите действие.");
+        }
+    }
 
     private async Task<QteWebStateDto> BuildStateCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
