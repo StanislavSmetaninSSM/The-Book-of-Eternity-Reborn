@@ -105,17 +105,23 @@ public sealed class QteWebInteractionService
         try
         {
             return await _coordinator.RunBoundTransactionAsync(
-                writeLease => BuildStateCoreAsync(
-                    writeLease,
-                    normalizeRuntime: false,
-                    stateOverride,
-                    resolution,
-                    notification));
-        }
-        catch (InvalidDataException)
-        {
-            return Failed(
-                "Состояние QTE повреждено. Данные сохранены без изменений.");
+                async writeLease =>
+                {
+                    try
+                    {
+                        return await BuildStateCoreAsync(
+                            writeLease,
+                            normalizeRuntime: false,
+                            stateOverride,
+                            resolution,
+                            notification);
+                    }
+                    catch (InvalidDataException)
+                    {
+                        return Failed(
+                            "Состояние QTE повреждено. Данные сохранены без изменений.");
+                    }
+                });
         }
         catch (SessionReplacedException)
         {
