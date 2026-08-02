@@ -122,9 +122,14 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [Fact]
     public async Task Validate_CaseVariantFactionIds_AreDistinctExactIdentities()
     {
-        var preTurn = MortalRoot(LegacyMortalFaction("Faction_Watch"));
+        var preTurn = MortalRoot(
+            MaterializedMortalFaction(
+                "Faction_Watch",
+                "fmat_historical_case_variant"));
         var current = MortalRoot(
-            MaterializedMortalFaction("faction_watch", "fmat_watch"));
+            MaterializedMortalFaction(
+                "faction_watch",
+                "fmat_current_exact_identity"));
         await WriteCurrentAndSnapshotAsync(
             (MortalPath, current.ToJsonString()),
             (MortalPath, preTurn.ToJsonString()));
@@ -137,6 +142,93 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 "faction_materialization_missing" or
                 "faction_materialization_immutable_receipt_changed" or
                 "faction_materialization_pre_turn_authority_unusable");
+    }
+
+    [Theory]
+    [InlineData(false, null)]
+    [InlineData(false, "")]
+    [InlineData(false, "{")]
+    [InlineData(false, "[]")]
+    [InlineData(true, null)]
+    [InlineData(true, "")]
+    [InlineData(true, "{")]
+    [InlineData(true, "[]")]
+    public async Task Validate_UnusableCurrentAuthorityWithHistoricalFaction_FailsClosed(
+        bool shining,
+        string? currentJson)
+    {
+        var path = shining ? ShiningPath : MortalPath;
+        var preTurn = shining
+            ? ShiningRoot(
+                MaterializedShiningFaction("order_dawn", "fmat_historical"))
+            : MortalRoot(
+                MaterializedMortalFaction("faction_watch", "fmat_historical"));
+        if (currentJson != null)
+            await _fs.WriteFileAtomicAsync(path, currentJson);
+        await WriteValidatedSnapshotManifestAsync((path, preTurn.ToJsonString()));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_current_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Validate_AbsentCurrentAuthorityWithoutHistoricalFactions_RemainsOptional(
+        bool shining)
+    {
+        var path = shining ? ShiningPath : MortalPath;
+        var preTurn = shining ? ShiningRoot() : MortalRoot();
+        await WriteValidatedSnapshotManifestAsync((path, preTurn.ToJsonString()));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "faction_materialization_current_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Validate_RawCanonicalLegacyWithoutSnapshot_FailsClosed(
+        bool shining)
+    {
+        var path = shining ? ShiningPath : MortalPath;
+        var current = shining
+            ? ShiningRoot(LegacyShiningFaction("order_dawn", factionStrength: 30))
+            : MortalRoot(LegacyMortalFaction("faction_watch"));
+        await _fs.WriteFileAtomicAsync(path, current.ToJsonString());
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_pre_turn_authority_unusable" &&
+            issue.FilePath == path);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Validate_PostCanonicalLegacyWithoutSnapshot_RemainsCompatible(
+        bool shining)
+    {
+        var path = shining ? ShiningPath : MortalPath;
+        var current = shining
+            ? ShiningRoot(LegacyShiningFaction("order_dawn", factionStrength: 30))
+            : MortalRoot(LegacyMortalFaction("faction_watch"));
+        await _fs.WriteFileAtomicAsync(path, current.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is
+                "faction_materialization_pre_turn_authority_unusable" or
+                "faction_materialization_missing");
     }
 
     [Fact]

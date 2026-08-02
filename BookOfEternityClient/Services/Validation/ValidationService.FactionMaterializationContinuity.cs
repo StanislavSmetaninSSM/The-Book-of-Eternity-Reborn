@@ -94,9 +94,24 @@ public partial class ValidationService
             string FactionType,
             string FactionId)> materializedFactions)
     {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var currentFileExists = _fs.FileExists(MortalFactionMaterializationPath);
         var currentJson = await _fs.ReadFileAsync(MortalFactionMaterializationPath);
         if (string.IsNullOrWhiteSpace(currentJson))
+        {
+            if (currentFileExists ||
+                await ValidatedPreTurnHasFactionAuthorityAsync(
+                    lookup,
+                    MortalFactionMaterializationPath))
+            {
+                AddUnusableCurrentFactionMaterializationFileIssue(
+                    MortalFactionMaterializationPath,
+                    currentFileExists ? "blank current file" : "missing current file",
+                    issues);
+            }
+
             return;
+        }
 
         using var currentDocument = TryParseFactionMaterializationDocument(
             currentJson,
@@ -106,6 +121,14 @@ public partial class ValidationService
         if (currentDocument == null ||
             currentDocument.RootElement.ValueKind != JsonValueKind.Object)
         {
+            if (currentDocument != null)
+            {
+                AddUnusableCurrentFactionMaterializationFileIssue(
+                    MortalFactionMaterializationPath,
+                    $"non-object root ({currentDocument.RootElement.ValueKind})",
+                    issues);
+            }
+
             return;
         }
 
@@ -126,10 +149,10 @@ public partial class ValidationService
                 issues)
             : new Dictionary<string, FactionCarrier>(StringComparer.Ordinal);
 
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
         {
-            if (currentFull.Count > 0)
+            if (rawBeforeNormalization &&
+                (currentCanonical.Count > 0 || currentFull.Count > 0))
             {
                 AddUnusableFactionMaterializationPreTurnAuthorityIssue(
                     MortalFactionMaterializationPath,
@@ -259,10 +282,24 @@ public partial class ValidationService
             string FactionType,
             string FactionId)> materializedFactions)
     {
-        _ = rawBeforeNormalization;
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var currentFileExists = _fs.FileExists(ShiningFactionMaterializationPath);
         var currentJson = await _fs.ReadFileAsync(ShiningFactionMaterializationPath);
         if (string.IsNullOrWhiteSpace(currentJson))
+        {
+            if (currentFileExists ||
+                await ValidatedPreTurnHasFactionAuthorityAsync(
+                    lookup,
+                    ShiningFactionMaterializationPath))
+            {
+                AddUnusableCurrentFactionMaterializationFileIssue(
+                    ShiningFactionMaterializationPath,
+                    currentFileExists ? "blank current file" : "missing current file",
+                    issues);
+            }
+
             return;
+        }
 
         using var currentDocument = TryParseFactionMaterializationDocument(
             currentJson,
@@ -272,6 +309,14 @@ public partial class ValidationService
         if (currentDocument == null ||
             currentDocument.RootElement.ValueKind != JsonValueKind.Object)
         {
+            if (currentDocument != null)
+            {
+                AddUnusableCurrentFactionMaterializationFileIssue(
+                    ShiningFactionMaterializationPath,
+                    $"non-object root ({currentDocument.RootElement.ValueKind})",
+                    issues);
+            }
+
             return;
         }
 
@@ -282,9 +327,16 @@ public partial class ValidationService
             useInitialId: false,
             "shining_faction",
             issues);
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
         {
+            if (rawBeforeNormalization && currentFactions.Count > 0)
+            {
+                AddUnusableFactionMaterializationPreTurnAuthorityIssue(
+                    ShiningFactionMaterializationPath,
+                    "missing",
+                    issues);
+            }
+
             ValidateFactionsWithoutPreTurnAuthority(
                 currentFactions.Values,
                 FactionMaterializationFamily.Shining,
@@ -405,7 +457,47 @@ public partial class ValidationService
         }
         catch (JsonException)
         {
+            if (currentAuthority)
+            {
+                AddUnusableCurrentFactionMaterializationFileIssue(
+                    path,
+                    "malformed JSON",
+                    issues);
+            }
+
             return null;
+        }
+    }
+
+    private async Task<bool> ValidatedPreTurnHasFactionAuthorityAsync(
+        ValidatedPendingTurnSnapshotLookup lookup,
+        string path)
+    {
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            lookup.Manifest == null)
+        {
+            return false;
+        }
+
+        var preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            lookup.Manifest,
+            path);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return false;
+
+        try
+        {
+            using var document = JsonDocument.Parse(preTurnJson);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+                return true;
+            if (!document.RootElement.TryGetProperty("factions", out var factions))
+                return false;
+            return factions.ValueKind != JsonValueKind.Array ||
+                   factions.GetArrayLength() > 0;
+        }
+        catch (JsonException)
+        {
+            return true;
         }
     }
 
@@ -813,6 +905,22 @@ public partial class ValidationService
             expected: expected,
             actual: actual,
             repairHint: "Restore one exact current faction identity and carrier before retrying the turn."));
+    }
+
+    private static void AddUnusableCurrentFactionMaterializationFileIssue(
+        string path,
+        string actual,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "Current faction materialization authority is missing or unreadable.",
+            code: "faction_materialization_current_authority_unusable",
+            section: "FactionMaterialization",
+            expected: "one readable faction authority object preserving historical carriers",
+            actual: actual,
+            repairHint: "Restore current faction authority from the validated pre-turn snapshot before retrying the turn."));
     }
 
     private static void AddExistingFactionFullResendIssue(
