@@ -84,13 +84,20 @@ and manifests; console/browser metadata privacy; no player-facing redesign
 **Verification Commands**:
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~FactionCoreChangesContractTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests|FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests"
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests|FullyQualifiedName~ExampleDocumentationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionCoreChangesContractTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests"
 pwsh .\scripts\test-csharp.ps1 -Lane Fast
 pwsh .\scripts\test-csharp.ps1 -Lane FullValidation
 pwsh .\scripts\test-csharp.ps1 -Lane PreMerge
 ```
+
+Focused commands are project-scoped: omission selects the fast project and
+`-FocusedProject Integration` selects the integration project. A filter never
+mixes class names from those two projects.
 
 `FullValidation` is required once for this issue because the Shining afterlife
 contract documentation and examples change. Fast runs once at the stable

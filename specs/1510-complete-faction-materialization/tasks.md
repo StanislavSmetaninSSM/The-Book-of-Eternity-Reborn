@@ -10,10 +10,13 @@
 code-review gates per coherent slice, and fresh verification before completion.
 
 **Test policy**: Use only `pwsh .\scripts\test-csharp.ps1`. During development,
-run exact `Focused` filters. Run one Fast checkpoint after stable cross-domain
-implementation, one required FullValidation after the Shining docs boundary
-stabilizes, and one clean PreMerge immediately before integration. Do not widen
-timeouts/concurrency or invoke an unbounded full suite.
+run exact project-scoped `Focused` filters: omission selects the fast project
+and `-FocusedProject Integration` selects the integration project. Never mix
+classes from both projects in one filter. Run one Fast checkpoint after stable
+cross-domain implementation, one required FullValidation after the Shining
+docs boundary stabilizes, and one clean PreMerge immediately before
+integration. Do not widen timeouts/concurrency or invoke an unbounded full
+suite.
 
 ## Format
 
@@ -34,8 +37,15 @@ timeouts/concurrency or invoke an unbounded full suite.
 - [ ] T002 Confirm the saved Fast baseline (2,633/2,633 in 4:16.219) still
   describes the starting commit; do not rerun Fast merely for setup unless the
   branch base changed.
-- [ ] T003 Record the exact focused filters from `quickstart.md` in the
-  implementation log/PR notes before code changes.
+- [ ] T003 Implement the approved bounded Focused integration selector from
+  `docs/superpowers/specs/2026-08-03-focused-integration-selection-design.md`:
+  add RED closed/default/scope/override coverage in
+  `BookOfEternityClient.Tests/FastTestBoundaryTests.cs`, add
+  `-FocusedProject Fast|Integration` with default `Fast` and non-Focused
+  rejection in `scripts/test-csharp.ps1`, document it in `docs/testing.md`,
+  then prove both project plans and one exact pre-existing integration method
+  within the unchanged five-minute Focused limit. Record the project-scoped
+  filters from `quickstart.md` in the implementation log/PR notes.
 
 **Checkpoint**: Issue, branch, scope boundaries, and bounded verification are
 known.
@@ -61,8 +71,11 @@ both domains require.
   immutable historical envelopes, including one duplicate
   `materializationId` shared by a Mortal and a Shining faction.
 - [ ] T006 Run
-  `pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionMaterializationValidationTests"`
-  and record the expected missing-contract/classifier RED failures.
+  `pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests"`
+  and
+  `pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests"`;
+  record the expected missing-contract/classifier RED failures separately for
+  the fast and integration projects.
 
 ### Implementation
 
@@ -80,8 +93,9 @@ both domains require.
 - [ ] T009 Wire raw faction checks into
   `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
   `CollectAcceptedTurnRawStateIssuesAsync` before canonical refresh.
-- [ ] T010 Re-run the T006 focused filter to GREEN and inspect issue coordinates
-  for exact `mortal_faction:<id>` / `shining_faction:<id>` routing.
+- [ ] T010 Re-run both T006 project-scoped focused commands to GREEN and inspect
+  issue coordinates for exact `mortal_faction:<id>` /
+  `shining_faction:<id>` routing.
 
 ### Selectable canonical phase
 
@@ -462,9 +476,13 @@ without player-facing harness leakage.
 
 ## Phase 7: Cross-cutting verification and review
 
-- [ ] T074 Run the complete focused common/Mortal/Shining/core-change filters
-  from `quickstart.md`; diagnose any unexpected failure with systematic
-  debugging rather than broad changes.
+- [ ] T074 Run every project-scoped focused command from `quickstart.md`:
+  fast common and core contracts; integration common/core/normalizer/Shining
+  behavior; fast phase selection; integration phase
+  equivalence/boundary/repair; fast documentation/privacy guards; and
+  integration example validation. Confirm each result names the intended
+  project; diagnose any unexpected failure with systematic debugging rather
+  than broad changes.
 - [ ] T075 Run one Fast checkpoint:
   `pwsh .\scripts\test-csharp.ps1 -Lane Fast`; record result count, duration,
   duplicates, timeout, and owned-process cleanup.

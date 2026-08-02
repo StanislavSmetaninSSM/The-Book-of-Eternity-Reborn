@@ -14,6 +14,12 @@ result artifacts, and failure diagnosis.
 
 - During implementation, run the smallest relevant `Focused` selection, then
   one `Fast` control at a meaningful checkpoint.
+- `Focused` targets the fast test project by default. To run an exact class or
+  method from `BookOfEternityClient.IntegrationTests`, pass
+  `-FocusedProject Integration`.
+- Never mix fast-project and integration-project test classes in one
+  `Focused` filter. Run one bounded command per selected project so a
+  successful result proves that every requested test was discoverable.
 - Immediately before merge, run one `PreMerge` control. Do not add duplicate
   Fast runs immediately before it because PreMerge already includes the full
   fast project.

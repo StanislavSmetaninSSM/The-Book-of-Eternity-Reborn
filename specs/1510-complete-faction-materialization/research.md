@@ -308,6 +308,9 @@ tests. Raw pre-normalization validation remains a separate earlier fence.
 
 **Rationale**: Canonical bundle and receipt continuity must be independently
 selectable and visible in validation reports, as Actor Materialization is.
+Focused verification is correspondingly project-scoped: fast phase-bit tests
+use the default Focused project, while equivalence and boundary tests use
+`-FocusedProject Integration`; mixed-project filters are not valid evidence.
 
 **Rejected alternatives**:
 

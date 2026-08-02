@@ -390,9 +390,12 @@ privacy.
 
 ## Verification Plan
 
-- **C# verification**: Use
-  `pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~FactionCoreChangesContractTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"`
-  during RED/GREEN work, then one
+- **C# verification**: During RED/GREEN work, use
+  `pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionCoreChangesContractTests"`
+  for fast contracts and
+  `pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"`
+  for integration behavior. Never mix classes from the two projects in one
+  filter. Then run one
   `pwsh .\scripts\test-csharp.ps1 -Lane Fast` checkpoint and one clean-checkout
   `pwsh .\scripts\test-csharp.ps1 -Lane PreMerge` before integration.
 - **Documentation/contract verification**: Run

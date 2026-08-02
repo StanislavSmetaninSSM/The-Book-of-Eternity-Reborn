@@ -24,7 +24,8 @@ artifacts.
 Use the task order in `tasks.md`. For each behavior:
 
 1. Add the smallest focused test.
-2. Run the exact `Focused` filter and record the expected RED failure.
+2. Run the exact project-scoped `Focused` filter and record the expected RED
+   failure.
 3. Implement only enough production behavior for GREEN.
 4. Re-run the same filter.
 5. Inspect the diff for authority bypass, semantic defaulting, metadata leakage,
@@ -32,25 +33,30 @@ Use the task order in `tasks.md`. For each behavior:
 6. Commit one coherent slice with `(#1510)` in the message.
 
 Never use an unbounded full-solution or full-suite `dotnet test` command.
+Focused defaults to the fast project. Pass `-FocusedProject Integration` for
+classes owned by `BookOfEternityClient.IntegrationTests`, and never mix test
+classes from the two projects in one filter.
 
 ## Focused filters by slice
 
 ### Common envelope and classification
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionMaterializationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests"
 ```
 
 ### Mortal normalization and narrow updates
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionCoreChangesContractTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionCoreChangesContractTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"
 ```
 
 ### Shining route materialization
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests"
 ```
 
 If this combined filter becomes noisy, use one exact class or method filter
@@ -59,13 +65,15 @@ while iterating; do not compensate by raising lane limits.
 ### Validation phase and repair routing
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests|FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests|FullyQualifiedName~FactionMaterializationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests|FullyQualifiedName~FactionMaterializationValidationTests"
 ```
 
 ### Documentation, examples, and privacy guards
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests|FullyQualifiedName~ExampleDocumentationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests"
 ```
 
 ## Checkpoints

@@ -27,8 +27,12 @@
 - Ordinary console/browser views never expose `materialization`, schema/receipt
   IDs, disposition tokens, or private empty-state reasons.
 - Use only `pwsh .\scripts\test-csharp.ps1`: exact Focused selections while
-  iterating, one Fast checkpoint, one required FullValidation after afterlife
-  docs stabilize, and one clean PreMerge before integration.
+  iterating, `-FocusedProject Integration` for integration-project selections,
+  one Fast checkpoint, one required FullValidation after afterlife docs
+  stabilize, and one clean PreMerge before integration.
+- Never combine fast-project and integration-project test classes in one
+  Focused filter; one successful command must prove discovery in one explicit
+  project.
 - Do not widen test timeouts or concurrency and do not run an unbounded
   full-solution/full-suite `dotnet test`.
 - Preserve unrelated worktree changes and never stage `.serena/`, `bin/`,
@@ -101,6 +105,206 @@
   `AfterlifeShiningPlayerFacingSourceGuardTests.cs`,
   `ShiningAbodeStateTests.cs`,
   `ExampleDocumentationValidationTests.cs`.
+
+---
+
+### Task 0: Add bounded Focused integration project selection
+
+**Files:**
+
+- Modify: `scripts/test-csharp.ps1`
+- Modify: `BookOfEternityClient.Tests/FastTestBoundaryTests.cs`
+- Modify: `docs/testing.md`
+- Reference:
+  `docs/superpowers/specs/2026-08-03-focused-integration-selection-design.md`
+
+- [ ] **Step 1: Add the failing closed-selector contract test**
+
+Add this test to `FastTestBoundaryTests`:
+
+```csharp
+[Fact]
+public void CSharpLaneRunner_FocusedProjectSelectorIsClosedScopedAndApplied()
+{
+    var runnerPath = Path.Combine(
+        TestRepoPaths.RepoRoot,
+        "scripts",
+        "test-csharp.ps1");
+    var source = File.ReadAllText(runnerPath);
+    var normalized = Regex.Replace(source, @"\s+", " ");
+
+    Assert.Contains(
+        "[ValidateSet(\"Fast\", \"Integration\")] " +
+        "[string]$FocusedProject = \"Fast\"",
+        normalized,
+        StringComparison.Ordinal);
+    Assert.Contains(
+        "$PSBoundParameters.ContainsKey(\"FocusedProject\")",
+        source,
+        StringComparison.Ordinal);
+    Assert.Contains(
+        "-FocusedProject is supported only with -Lane Focused.",
+        source,
+        StringComparison.Ordinal);
+    Assert.Contains(
+        "$selectedProject = if ($effectiveLane -eq \"Focused\") " +
+        "{ $FocusedProject } else { $laneDefinition.Project }",
+        normalized,
+        StringComparison.Ordinal);
+    Assert.Contains(
+        "$projectPath = if ($selectedProject -eq \"Fast\")",
+        normalized,
+        StringComparison.Ordinal);
+    Assert.Contains(
+        "if ($selectedProject -eq \"Both\")",
+        normalized,
+        StringComparison.Ordinal);
+    Assert.Contains(
+        "elseif ($selectedProject -eq \"Fast\")",
+        normalized,
+        StringComparison.Ordinal);
+}
+```
+
+- [ ] **Step 2: Run the contract test and the desired command to verify RED**
+
+```powershell
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FastTestBoundaryTests.CSharpLaneRunner_FocusedProjectSelectorIsClosedScopedAndApplied"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName=BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge"
+```
+
+Expected: the fast contract test fails because the selector is absent, and the
+integration invocation fails parameter binding because `FocusedProject` is an
+unknown parameter. The second failure is expected RED evidence, not a passing
+test result.
+
+- [ ] **Step 3: Add the closed parameter and derive an immutable selection**
+
+Add the parameter after `Filter`:
+
+```powershell
+[Parameter(ParameterSetName = "Lane")]
+[ValidateSet("Fast", "Integration")]
+[string]$FocusedProject = "Fast",
+```
+
+Initialize `$selectedProject` next to the other effective lane values and set
+it without mutating `$laneDefinitions`:
+
+```powershell
+$selectedProject = $null
+if (-not $isSelfTest) {
+    $effectiveLane = if ($Lane -eq "Complete") { "PreMerge" } else { $Lane }
+    $laneDefinition = $laneDefinitions[$effectiveLane]
+    $selectedProject = if ($effectiveLane -eq "Focused") {
+        $FocusedProject
+    }
+    else {
+        $laneDefinition.Project
+    }
+    $effectiveTimeoutMinutes = if ($TimeoutMinutes -gt 0) {
+        $TimeoutMinutes
+    }
+    else {
+        [int]$laneDefinition.TimeoutMinutes
+    }
+}
+```
+
+Reject explicit use on every non-Focused lane before running build or tests:
+
+```powershell
+if ($PSBoundParameters.ContainsKey("FocusedProject") -and
+    $Lane -ne "Focused") {
+    throw "-FocusedProject is supported only with -Lane Focused."
+}
+```
+
+In `New-TestRuns` and the non-PreMerge build-selection block, replace only
+project-routing reads of `$laneDefinition.Project` with `$selectedProject`:
+
+```powershell
+$projectPath = if ($selectedProject -eq "Fast") {
+    $fastTestProject
+}
+else {
+    $integrationTestProject
+}
+```
+
+```powershell
+$buildSelections = if ($selectedProject -eq "Both") {
+    @(
+        [pscustomobject]@{
+            Name = "Build-Fast"
+            ProjectPath = $fastTestProject
+        },
+        [pscustomobject]@{
+            Name = "Build-Integration"
+            ProjectPath = $integrationTestProject
+        }
+    )
+}
+elseif ($selectedProject -eq "Fast") {
+    @(
+        [pscustomobject]@{
+            Name = "Build-Fast"
+            ProjectPath = $fastTestProject
+        }
+    )
+}
+else {
+    @(
+        [pscustomobject]@{
+            Name = "Build-Integration"
+            ProjectPath = $integrationTestProject
+        }
+    )
+}
+```
+
+Do not alter Focused's five-minute definition, parallelism, mandatory filter,
+zero-result guard, process ownership, cleanup, or result merging.
+
+- [ ] **Step 4: Document project-scoped Focused use**
+
+In `docs/testing.md`, state that:
+
+- Focused defaults to `BookOfEternityClient.Tests`;
+- `-FocusedProject Integration` selects
+  `BookOfEternityClient.IntegrationTests`;
+- the selector accepts only `Fast` or `Integration` and is valid only with
+  `-Lane Focused`;
+- fast and integration class names must never be combined in one filter;
+- both variants retain the five-minute hard limit and require `-Filter`.
+
+Include these exact examples:
+
+```powershell
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~IntegrationTestBoundaryTests.CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge"
+```
+
+- [ ] **Step 5: Run exact GREEN and plan-evidence controls**
+
+```powershell
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FastTestBoundaryTests.CSharpLaneRunner_FocusedProjectSelectorIsClosedScopedAndApplied"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName=BookOfEternityClient.Tests.IntegrationTestBoundaryTests.CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FastTestBoundaryTests" -PlanOnly
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~IntegrationTestBoundaryTests" -PlanOnly
+```
+
+Expected: both exact tests pass; the first plan names
+`BookOfEternityClient.Tests.csproj`, the second names
+`BookOfEternityClient.IntegrationTests.csproj`; neither command widens the
+Focused timeout or concurrency.
+
+- [ ] **Step 6: Commit**
+
+```powershell
+git add -- scripts/test-csharp.ps1 BookOfEternityClient.Tests/FastTestBoundaryTests.cs docs/testing.md
+git commit -m "test: allow focused integration selection (#1510)"
+```
 
 ---
 
@@ -617,7 +821,8 @@ FullValidation equivalence counts/selects it exactly once.
 - [ ] **Step 3: Run the focused tests and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~ValidationPhaseSelectionTests|FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests"
 ```
 
 Expected: build failures for the new classifier, validation methods, profile,
@@ -922,7 +1127,7 @@ with `vacant`, and omit an exact player non-member value.
 - [ ] **Step 2: Run Mortal tests and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests"
 ```
 
 Expected: new Mortal cases fail because no Mortal evidence builder enforces the
@@ -1189,7 +1394,7 @@ untouched legacy core preservation.
 - [ ] **Step 2: Run the normalizer filter and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~CanonicalStateNormalizerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~CanonicalStateNormalizerTests"
 ```
 
 Expected: the new faction normalizer tests fail because `scribeChronicle` is
@@ -1363,7 +1568,7 @@ Keep ordinary `factionChronicleUpdates` collection and consumption unchanged.
 - [ ] **Step 7: Run normalizer and Mortal validation tests to GREEN**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~CanonicalStateNormalizerTests|FullyQualifiedName~FactionMaterializationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~CanonicalStateNormalizerTests|FullyQualifiedName~FactionMaterializationValidationTests"
 ```
 
 Expected: all new Mortal normalizer/materialization cases pass and no legacy
@@ -1471,7 +1676,8 @@ evidence consistency is deferred for `AlreadyMaterialized`.
 - [ ] **Step 2: Run core-change tests and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionCoreChangesContractTests|FullyQualifiedName~FactionCoreChangesTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionCoreChangesContractTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionCoreChangesTests"
 ```
 
 Expected: missing response/contract/validator/normalizer failures.
@@ -1642,7 +1848,8 @@ call to the GameEngine method shown in Task 2.
 - [ ] **Step 6: Run core-change and Mortal tests to GREEN**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionCoreChangesContractTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionCoreChangesContractTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests"
 ```
 
 Expected: valid commands apply/consume; invalid commands remain; full existing
@@ -1734,7 +1941,7 @@ empty trade surface.
 - [ ] **Step 2: Run Shining focused tests and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests"
 ```
 
 Expected: Shining semantic cases fail because the normalizer still supplies
@@ -2008,7 +2215,7 @@ public async Task PlayerFounding_CompleteMaterialization_Passes()
 - [ ] **Step 3: Run exact route tests and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests"
 ```
 
 Expected: route materialization cases report missing provenance/history/actor
@@ -2359,7 +2566,7 @@ an unrelated faction/root is not included.
 - [ ] **Step 2: Run repair tests and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~GameEngineTurnLifecycleTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~GameEngineTurnLifecycleTests"
 ```
 
 Expected: existing repair router falls through to generic identity/resource
@@ -2598,7 +2805,8 @@ public void GetPlayerVisibleShiningFactions_UsesCanonicalVisibility(
 - [ ] **Step 2: Run doc/privacy tests and verify RED**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests|FullyQualifiedName~ExampleDocumentationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests"
 ```
 
 Expected: missing contract/example/manifest tokens and privacy filtering.
@@ -2762,9 +2970,12 @@ git commit -m "docs: document faction materialization contracts (#1510)"
 - [ ] **Step 1: Run all focused feature selections**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~FactionCoreChangesContractTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests|FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests"
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests|FullyQualifiedName~ExampleDocumentationValidationTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FactionMaterializationContractTests|FullyQualifiedName~FactionCoreChangesContractTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FactionMaterializationValidationTests|FullyQualifiedName~FactionCoreChangesTests|FullyQualifiedName~CanonicalStateNormalizerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~FullValidationEquivalenceTests|FullyQualifiedName~IntegrationTestBoundaryTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests|FullyQualifiedName~ValidationSourceGuardTests|FullyQualifiedName~ExplorerModeSourceGuardTests|FullyQualifiedName~AfterlifeShiningPlayerFacingSourceGuardTests|FullyQualifiedName~ShiningAbodeStateTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests"
 ```
 
 Expected: all selected tests pass with no timeout, duplicate test ID, or
