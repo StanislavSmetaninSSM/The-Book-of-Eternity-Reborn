@@ -320,15 +320,18 @@ Ordinary existing-faction core updates use a new closed
 - permits only reviewed core groups such as profile/visual identity,
   purpose-agenda-principles, power/progression, governance/leadership, and
   player-membership core state;
+- permits one closed absolute `relations` group because the current protocol
+  has no standalone Mortal relation-change command;
 - rejects unknown members recursively;
 - protects identity and `materialization`;
 - cannot mutate sidecars or fields owned by dedicated commands.
 
-Existing dedicated rank, resource, relation, project, custom-state, chronicle,
-location-control, and NPC-affiliation commands retain their authority. A valid
-`FactionCoreChanges` entry is reduced into canonical state and consumed; an
-invalid entry remains visible for repair. A full object for an already
-materialized faction is rejected even when most values are unchanged.
+Existing dedicated rank, bonus, resource, project, custom-state, chronicle,
+location-control, and NPC-affiliation commands retain their authority. The
+closed relations group avoids adding a second new top-level response command.
+A valid `FactionCoreChanges` entry is reduced into canonical state and
+consumed; an invalid entry remains visible for repair. A full object for an
+already materialized faction is rejected even when most values are unchanged.
 
 ## Shining Faction Profile
 
