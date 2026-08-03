@@ -314,6 +314,125 @@ public partial class ValidationService
         return result;
     }
 
+    private void ValidateShiningRouteMaterialization(
+        string route,
+        string authorityType,
+        string authorityId,
+        JsonObject? faction,
+        string hallId,
+        IReadOnlySet<string> residentIds,
+        IReadOnlySet<string> projectIds,
+        JsonObject currentResidentsRoot,
+        List<ValidationIssue> issues)
+    {
+        if (faction == null)
+            return;
+
+        var factionId =
+            ReadShiningMaterializationString(faction, "factionId");
+        if (string.IsNullOrWhiteSpace(factionId))
+            return;
+
+        var context =
+            $"{ShiningAbodeState.StatePath}.factions[{factionId}]";
+        var provenance = faction["creationProvenance"] as JsonObject;
+        if (provenance == null ||
+            !string.Equals(
+                ReadShiningMaterializationString(provenance, "route"),
+                route,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                ReadShiningMaterializationString(
+                    provenance,
+                    "authorityType"),
+                authorityType,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                ReadShiningMaterializationString(
+                    provenance,
+                    "authorityId"),
+                authorityId,
+                StringComparison.Ordinal))
+        {
+            issues.Add(
+                ShiningFactionMaterializationIssue(
+                    $"{context}.creationProvenance",
+                    "faction_materialization_shining_route_provenance_invalid",
+                    factionId,
+                    "Shining faction creation provenance must bind to the exact resolved route authority.",
+                    expected:
+                        $"{route} / {authorityType} / {authorityId}",
+                    actual:
+                        $"{ReadShiningMaterializationString(provenance, "route") ?? "missing"} / " +
+                        $"{ReadShiningMaterializationString(provenance, "authorityType") ?? "missing"} / " +
+                        $"{ReadShiningMaterializationString(provenance, "authorityId") ?? "missing"}"));
+        }
+
+        var actualResidentIds =
+            CollectAffiliatedShiningResidentIds(
+                currentResidentsRoot,
+                factionId);
+        if (!actualResidentIds.SetEquals(residentIds))
+        {
+            issues.Add(
+                ShiningFactionMaterializationIssue(
+                    $"{context}.materialization.sections.residentAffiliations",
+                    "faction_materialization_shining_route_resident_affiliation_invalid",
+                    factionId,
+                    "Shining creation route resident affiliations must match the exact resolved resident set.",
+                    expected:
+                        string.Join(
+                            ",",
+                            residentIds.OrderBy(
+                                value => value,
+                                StringComparer.Ordinal)),
+                    actual:
+                        string.Join(
+                            ",",
+                            actualResidentIds.OrderBy(
+                                value => value,
+                                StringComparer.Ordinal))));
+        }
+
+        if (string.Equals(route, "player_founding", StringComparison.Ordinal))
+        {
+            var historyMatches =
+                faction["leadershipHistory"] is JsonArray history &&
+                history
+                    .OfType<JsonObject>()
+                    .Count(entry =>
+                        string.Equals(
+                            ReadShiningMaterializationString(
+                                entry,
+                                "requestId"),
+                            authorityId,
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            ReadShiningMaterializationString(
+                                entry,
+                                "eventType"),
+                            "founded",
+                            StringComparison.Ordinal)) == 1;
+            if (!historyMatches)
+            {
+                issues.Add(
+                    ShiningFactionMaterializationIssue(
+                        $"{context}.leadershipHistory",
+                        "faction_materialization_shining_route_history_invalid",
+                        factionId,
+                        "Player-founded Shining faction must record one exact founding leadership history entry.",
+                        expected:
+                            $"{authorityId} / founded",
+                        actual:
+                            faction["leadershipHistory"]?.ToJsonString() ??
+                            "missing"));
+            }
+        }
+
+        _ = hallId;
+        _ = projectIds;
+    }
+
     private void ValidateShiningFactionMaterializationReferences(
         ShiningFactionMaterializationTarget target,
         JsonObject currentRoot,

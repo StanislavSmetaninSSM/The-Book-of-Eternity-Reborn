@@ -1258,6 +1258,21 @@ public partial class ValidationService
                             actual: resident == null ? "resident_missing" : (GetNodeString(resident["shiningFactionId"]) ?? "null"),
                             repairHint: "После accepted founding обнови resident.shiningFactionId для каждого supporter из request."));
                     }
+
+                    ValidateShiningRouteMaterialization(
+                        route: "player_founding",
+                        authorityType: "shining_founding_request",
+                        authorityId: request.RequestId,
+                        faction: currentFaction,
+                        hallId: request.ProposedHallId,
+                        residentIds: request.SupportingResidentIds
+                            .Where(id => !string.IsNullOrWhiteSpace(id))
+                            .Select(id => id.Trim())
+                            .ToHashSet(StringComparer.Ordinal),
+                        projectIds: new HashSet<string>(
+                            StringComparer.Ordinal),
+                        currentResidentsRoot: currentResidentsRoot,
+                        issues: issues);
                 }
                 else if (currentFaction != null || currentHall != null)
                 {
@@ -9770,6 +9785,17 @@ public partial class ValidationService
                 actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
                 repairHint: "Списывай Ink Feathers exactly по quotedCostFeathers из discovery request."));
         }
+
+        ValidateShiningRouteMaterialization(
+            route: "native_discovery",
+            authorityType: "shining_core_action_request",
+            authorityId: request.RequestId,
+            faction: currentFaction,
+            hallId: hallId,
+            residentIds: residentIds,
+            projectIds: projectIds,
+            currentResidentsRoot: currentResidentsRoot,
+            issues: issues);
 
         ValidateAcceptedShiningNativeDiscoveryConstrainedDiff(
             request,
