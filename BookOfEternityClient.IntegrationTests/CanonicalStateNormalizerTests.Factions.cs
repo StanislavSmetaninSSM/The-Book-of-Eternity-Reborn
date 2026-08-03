@@ -574,6 +574,165 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task Normalize_OrdinaryChronicleUpdate_RepeatedTextAppendsDistinctEvent()
+    {
+        const string factionId = "faction_wayfarer_watch";
+        const string repeatedText =
+            "#14 - The watch renewed its western-road patrol.";
+        await _fs.WriteFileAtomicAsync(
+            MortalFactionChroniclesPath,
+            new JsonObject
+            {
+                ["factionChronicleUpdates"] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["factionName"] = "Wayfarer Watch",
+                    ["entry"] = repeatedText,
+                    ["timestamp"] = "2026-08-03T12:00:00Z",
+                    ["eventId"] = "patrol-renewal-2"
+                })
+            }.ToJsonString());
+
+        var backups = new Dictionary<string, string>(
+            StringComparer.OrdinalIgnoreCase);
+        await AddFactionBackupAsync(
+            backups,
+            MortalFactionChroniclesPath,
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["factionName"] = "Wayfarer Watch",
+                    ["entry"] = repeatedText,
+                    ["timestamp"] = "2026-08-02T12:00:00Z",
+                    ["eventId"] = "patrol-renewal-1"
+                })
+            });
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(backups);
+
+        var chronicles = await ReadFactionObjectAsync(
+            MortalFactionChroniclesPath);
+        Assert.False(chronicles.ContainsKey("factionChronicleUpdates"));
+        var entries = chronicles["entries"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(2, entries.Length);
+        Assert.Contains(entries, entry =>
+            entry["eventId"]!.GetValue<string>() == "patrol-renewal-1");
+        Assert.Contains(entries, entry =>
+            entry["eventId"]!.GetValue<string>() == "patrol-renewal-2");
+    }
+
+    [Fact]
+    public async Task Normalize_ExistingChronicles_SameTextDifferentMetadataRemainDistinct()
+    {
+        const string factionId = "faction_wayfarer_watch";
+        const string repeatedText =
+            "#15 - The watch escorted another caravan through the pass.";
+        await _fs.WriteFileAtomicAsync(
+            MortalFactionChroniclesPath,
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["entry"] = repeatedText,
+                        ["timestamp"] = "2026-08-01T15:00:00Z",
+                        ["caravanId"] = "caravan-north"
+                    },
+                    new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["entry"] = repeatedText,
+                        ["timestamp"] = "2026-08-02T15:00:00Z",
+                        ["caravanId"] = "caravan-south"
+                    })
+            }.ToJsonString());
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(
+            new Dictionary<string, string>(
+                StringComparer.OrdinalIgnoreCase));
+
+        var chronicles = await ReadFactionObjectAsync(
+            MortalFactionChroniclesPath);
+        var entries = chronicles["entries"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(2, entries.Length);
+        Assert.Contains(entries, entry =>
+            entry["caravanId"]!.GetValue<string>() == "caravan-north");
+        Assert.Contains(entries, entry =>
+            entry["caravanId"]!.GetValue<string>() == "caravan-south");
+    }
+
+    [Theory]
+    [InlineData("chronicle")]
+    [InlineData("text")]
+    public async Task Normalize_MaterializedPromotion_DeduplicatesEmbeddedLegacyChronicleAgainstAlias(
+        string aliasName)
+    {
+        const string factionId = "faction_wayfarer_watch";
+        const string repeatedText =
+            "#9 - The old watch reopened the eastern crossing.";
+
+        var legacyFaction = BuildCarrierShapedLegacyMortalFaction(factionId);
+        legacyFaction["scribeChronicle"] = new JsonArray(repeatedText);
+
+        var promotion = BuildCompleteMinimalMortalCreation();
+        promotion["factionId"] = factionId;
+        promotion.Remove("initialId");
+        promotion.Remove("isNewFaction");
+        promotion["materialization"]!["factionId"] = factionId;
+        promotion["materialization"]!["materializationId"] =
+            "fmat_wayfarer_watch_alias_promotion";
+        promotion["scribeChronicle"] = new JsonArray();
+
+        var backups = await WriteFactionCoreAsync(
+            promotion,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray(legacyFaction)
+            });
+        var existingAliasEntry = new JsonObject
+        {
+            ["factionId"] = factionId,
+            ["factionName"] = "Wayfarer Watch",
+            ["timestamp"] = "2026-07-09T00:00:00Z",
+            ["source"] = "canonical-alias"
+        };
+        existingAliasEntry[aliasName] = repeatedText;
+        await AddFactionBackupAsync(
+            backups,
+            MortalFactionChroniclesPath,
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(existingAliasEntry)
+            });
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(backups);
+
+        var chronicles = await ReadFactionObjectAsync(
+            MortalFactionChroniclesPath);
+        var retained = Assert.IsType<JsonObject>(
+            Assert.Single(chronicles["entries"]!.AsArray()));
+        Assert.Equal(
+            repeatedText,
+            retained[aliasName]!.GetValue<string>());
+        Assert.Equal(
+            "2026-07-09T00:00:00Z",
+            retained["timestamp"]!.GetValue<string>());
+        Assert.Equal(
+            "canonical-alias",
+            retained["source"]!.GetValue<string>());
+        Assert.False(retained.ContainsKey("entry"));
+    }
+
+    [Fact]
     public async Task Normalize_MaterializedCreations_SameNameDistinctIdsRemainSeparate()
     {
         var east = BuildPopulatedCreationForIdentity(

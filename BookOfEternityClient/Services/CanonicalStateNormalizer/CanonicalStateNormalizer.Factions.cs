@@ -260,9 +260,9 @@ public partial class CanonicalStateNormalizer
         var entries = EnsureArray(result, "entries");
 
         foreach (var entry in CollectFactionChronicleEntries(previous))
-            AddUniqueFactionChronicleEntry(entries, entry);
+            AddUniqueNode(entries, entry);
         foreach (var entry in CollectFactionChronicleEntries(currentNode))
-            AddUniqueFactionChronicleEntry(entries, entry);
+            AddUniqueNode(entries, entry);
         foreach (var entry in promotedLegacyEntries)
             AddUniqueFactionChronicleEntry(entries, entry);
         foreach (var entry in initialPreviousEntries)

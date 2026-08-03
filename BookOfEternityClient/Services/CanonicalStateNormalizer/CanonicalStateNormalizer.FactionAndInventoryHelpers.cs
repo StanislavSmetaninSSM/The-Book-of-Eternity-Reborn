@@ -249,7 +249,10 @@ public partial class CanonicalStateNormalizer
         if (candidate is JsonObject candidateObject)
         {
             var factionId = GetNodeString(candidateObject["factionId"]);
-            var entryText = GetNodeString(candidateObject["entry"]);
+            var entryText =
+                GetNodeString(candidateObject["entry"]) ??
+                GetNodeString(candidateObject["chronicle"]) ??
+                GetNodeString(candidateObject["text"]);
             if (!string.IsNullOrWhiteSpace(factionId) &&
                 !string.IsNullOrWhiteSpace(entryText) &&
                 entries.OfType<JsonObject>().Any(existing =>
@@ -258,7 +261,9 @@ public partial class CanonicalStateNormalizer
                         factionId,
                         StringComparison.Ordinal) &&
                     string.Equals(
-                        GetNodeString(existing["entry"]),
+                        GetNodeString(existing["entry"]) ??
+                        GetNodeString(existing["chronicle"]) ??
+                        GetNodeString(existing["text"]),
                         entryText,
                         StringComparison.Ordinal)))
             {
