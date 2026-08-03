@@ -267,10 +267,10 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("JSON shining_abode_state.factions/projects для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAudit(context.Root["factions"]), Color.Gold1);
-        WriteJsonAuditPanel("Полный JSON guardian_abode_residents.json для Shining bindings", context.ResidentRoot, Color.Gold1);
-        WriteJsonAuditPanel("JSON shining_abode_state.halls для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAudit(context.Root["halls"]), Color.Gold1);
-        WriteJsonAuditPanel("JSON shining_abode_state.shiningPoliticalActors для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAudit(context.Root["shiningPoliticalActors"]), Color.Gold1);
+        WriteJsonAuditPanel("JSON shining_abode_state.factions/projects для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAuditWithAuthority(context.Root["factions"], context.Root), Color.Gold1);
+        WriteJsonAuditPanel("JSON guardian_abode_residents.json для Shining bindings (скрытые faction refs удалены)", CloneShiningJsonForPlayerFacingAuditWithAuthority(context.ResidentRoot, context.Root), Color.Gold1);
+        WriteJsonAuditPanel("JSON shining_abode_state.halls для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAuditWithAuthority(context.Root["halls"], context.Root), Color.Gold1);
+        WriteJsonAuditPanel("JSON shining_abode_state.shiningPoliticalActors для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAuditWithAuthority(context.Root["shiningPoliticalActors"], context.Root), Color.Gold1);
     }
 
     private static List<JsonObject> CollectShiningFactionResidents(JsonObject? residentRoot, string? factionId)
@@ -306,8 +306,17 @@ public partial class ExplorerMode
             var feathers = await ReadInkFeathersBalance();
             var lightSparks = GetNodeInt(context?.Root["lightSparks"]);
             var ascendedResidentCount = CountAscendedShiningResidents(context?.ResidentRoot);
+            var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context?.Root)
+                .ToList();
+            var visibleFactionIds = visibleFactions
+                .Select(faction => GetNodeString(faction["factionId"]))
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Cast<string>()
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
             var factionCampaigns = (context?.Root[ShiningAbodeState.FactionConflictCampaignsProperty] as JsonArray)?
                 .OfType<JsonObject>()
+                .Where(campaign => visibleFactionIds.Contains(
+                    GetNodeString(campaign["targetFactionId"]) ?? string.Empty))
                 .ToList() ?? new List<JsonObject>();
             var foundingPreconditionsMet = feathers >= ShiningFactionRequestState.FactionFoundingCostFeathers &&
                                            lightSparks >= ShiningFactionRequestState.FactionFoundingCostLightSparks &&
@@ -331,7 +340,6 @@ public partial class ExplorerMode
             lines.Add("  • Смена власти: требует существующую faction, валидного incumbent и допустимого кандидата на главу. Pending-модель не глобальная: блокируют foreign pending leadership для той же factionId и supporter/candidate locks; pending других фракций сам по себе не запрещает проверку.");
             lines.Add("  • Кампания против фракции: создаёт запись `factionConflictCampaigns[]` с целью `weaken`/`expose`/`depose_leader`/`break`/`dissolve`. ГМ ведёт прогресс через `breakthroughLog[]`; духовный бой может дать `duel_victory`, но также допустимы `exposure`, `defection`, `sabotage`, `resource_disruption`, `oath_break`, `trial` и `saref_directive`.");
 
-            var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context?.Root).ToList();
             if (visibleFactions.Count > 0 && context != null)
             {
                 lines.Add("");
@@ -361,7 +369,13 @@ public partial class ExplorerMode
                              .ThenBy(item => GetNodeString(item["campaignId"]), StringComparer.OrdinalIgnoreCase))
                 {
                     var targetFactionId = GetNodeString(campaign["targetFactionId"]) ?? string.Empty;
-                    var targetLabel = ResolveShiningFactionLabel(context.Root, targetFactionId);
+                    if (!TryResolvePlayerVisibleShiningFactionLabel(
+                            context.Root,
+                            targetFactionId,
+                            out var targetLabel))
+                    {
+                        continue;
+                    }
                     var goal = DescribeShiningFactionCampaignGoal(GetNodeString(campaign["goal"]));
                     var status = DescribeShiningFactionCampaignStatus(GetNodeString(campaign["status"]));
                     var breakthroughCount = (campaign["breakthroughLog"] as JsonArray)?.Count ?? 0;
@@ -1105,18 +1119,34 @@ public partial class ExplorerMode
 
     private static string ResolveShiningFactionLabel(JsonObject? shiningRoot, string? factionId)
     {
+        return TryResolvePlayerVisibleShiningFactionLabel(
+            shiningRoot,
+            factionId,
+            out var label)
+            ? label
+            : "нераскрытая фракция";
+    }
+
+    private static bool TryResolvePlayerVisibleShiningFactionLabel(
+        JsonObject? shiningRoot,
+        string? factionId,
+        out string label)
+    {
+        label = string.Empty;
         if (string.IsNullOrWhiteSpace(factionId))
-            return "?";
+            return false;
 
-        if (shiningRoot != null)
-        {
-            var faction = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
-                .FirstOrDefault(item => string.Equals(GetNodeString(item["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
-            if (faction != null)
-                return GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
-        }
+        var faction = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+            .FirstOrDefault(item => string.Equals(
+                GetNodeString(item["factionId"]),
+                factionId,
+                StringComparison.OrdinalIgnoreCase));
+        if (faction == null)
+            return false;
 
-        return factionId;
+        label = GetNodeString(faction["charter"]?["factionName"])
+            ?? "открытая фракция";
+        return true;
     }
 
     private static string ResolveShiningHallLabel(JsonObject? shiningRoot, string? hallId)
@@ -1214,15 +1244,21 @@ public partial class ExplorerMode
                 var actorId = GetNodeString(actor["actorId"]) ?? string.Empty;
                 var displayName = GetNodeString(actor["displayName"]) ?? actorId;
                 var summary = GetNodeString(actor["summary"]) ?? string.Empty;
-                var originFaction = ResolveShiningFactionLabel(context.Root, GetNodeString(actor["originFactionId"]));
-                var currentFaction = ResolveShiningFactionLabel(context.Root, GetNodeString(actor["currentFactionId"]));
+                var hasVisibleOriginFaction = TryResolvePlayerVisibleShiningFactionLabel(
+                    context.Root,
+                    GetNodeString(actor["originFactionId"]),
+                    out var originFaction);
+                var hasVisibleCurrentFaction = TryResolvePlayerVisibleShiningFactionLabel(
+                    context.Root,
+                    GetNodeString(actor["currentFactionId"]),
+                    out var currentFaction);
                 lines.Add($"  • {Markup.Escape(displayName)}");
                 if (!string.IsNullOrWhiteSpace(summary))
                     lines.Add($"    Сводка: {Markup.Escape(summary)}");
                 lines.Add($"    Политический статус: {Markup.Escape(DescribeShiningPoliticalStatus(GetNodeString(actor["politicalStatus"])))}");
-                if (!string.IsNullOrWhiteSpace(originFaction) && originFaction != "?")
+                if (hasVisibleOriginFaction)
                     lines.Add($"    Фракция происхождения: {Markup.Escape(originFaction)}");
-                if (!string.IsNullOrWhiteSpace(currentFaction) && currentFaction != "?")
+                if (hasVisibleCurrentFaction)
                     lines.Add($"    Текущая фракция: {Markup.Escape(currentFaction)}");
                 lines.Add($"    Идентификатор актора: [dim]{Markup.Escape(actorId)}[/]");
             }
@@ -1244,9 +1280,9 @@ public partial class ExplorerMode
         });
 
         if (context.Root["halls"] is JsonArray hallsAudit)
-            WriteJsonAuditPanel("Полный JSON halls[]", hallsAudit, Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON halls[]", CloneShiningJsonForPlayerFacingAuditWithAuthority(hallsAudit, context.Root), Color.Gold1);
         if (context.Root["shiningPoliticalActors"] is JsonArray actorsAudit)
-            WriteJsonAuditPanel("Полный JSON shiningPoliticalActors[]", actorsAudit, Color.Orange1);
+            WriteJsonAuditPanel("Полный JSON shiningPoliticalActors[]", CloneShiningJsonForPlayerFacingAuditWithAuthority(actorsAudit, context.Root), Color.Orange1);
     }
 
     private void ShowShiningFactionPoliticalInspectionPanel(ShiningContext context)
@@ -1389,7 +1425,19 @@ public partial class ExplorerMode
                 var projectName = GetNodeString(project["displayName"]) ?? GetNodeString(project["projectId"]) ?? "проект";
                 var projectId = GetNodeString(project["projectId"]) ?? string.Empty;
                 var toneTags = (project["toneTags"] as JsonArray)?.Select(tag => GetNodeString(tag)).Where(tag => !string.IsNullOrWhiteSpace(tag)).Cast<string>().ToList() ?? new List<string>();
-                var targetFactionIds = (project["targetFactionIds"] as JsonArray)?.Select(tag => ResolveShiningFactionLabel(context.Root, GetNodeString(tag))).Where(tag => !string.IsNullOrWhiteSpace(tag)).Cast<string>().ToList() ?? new List<string>();
+                var targetFactionIds = (project["targetFactionIds"] as JsonArray)?
+                    .Select(tag =>
+                    {
+                        return TryResolvePlayerVisibleShiningFactionLabel(
+                            context.Root,
+                            GetNodeString(tag),
+                            out var label)
+                            ? label
+                            : null;
+                    })
+                    .Where(label => !string.IsNullOrWhiteSpace(label))
+                    .Cast<string>()
+                    .ToList() ?? new List<string>();
                 lines.Add($"  • {Markup.Escape(projectName)}");
                 lines.Add($"    Статус: {Markup.Escape(DescribeShiningProjectStatus(GetNodeString(project["status"])))}");
                 lines.Add($"    Поддержка: {(GetNodeBool(project["isSupported"]) ? "[green]поддерживается[/]" : "[dim]не поддерживается[/]")}");
@@ -1418,12 +1466,15 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        WriteJsonAuditPanel("Полный JSON фракции: leadership, projects, bindings", faction, Color.Orange1);
+        WriteJsonAuditPanel("Полный JSON фракции: leadership, projects, bindings", CloneShiningJsonForPlayerFacingAuditWithAuthority(faction, context.Root), Color.Orange1);
     }
 
     private void ShowShiningCoreReceiptInspectionPanel(ShiningContext context, bool includeAuditPayloads)
     {
-        var receipts = ShiningAbodeState.EnsureCoreActionReceiptsArray(context.Root).OfType<JsonObject>()
+        var receipts = ShiningAbodeState.EnsureCoreActionReceiptsArray(context.Root)
+            .OfType<JsonObject>()
+            .Select(receipt => CloneShiningJsonForPlayerFacingAuditWithAuthority(receipt, context.Root))
+            .OfType<JsonObject>()
             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"]))
             .ThenByDescending(item => GetNodeString(item["resolvedAtUtc"]), StringComparer.OrdinalIgnoreCase)
             .ToList();
@@ -1565,11 +1616,11 @@ public partial class ExplorerMode
         {
             var receiptAudit = new JsonArray();
             foreach (var receipt in receipts)
-                receiptAudit.Add(CloneShiningJsonForPlayerFacingAudit(receipt));
+                receiptAudit.Add(receipt.DeepClone());
             WriteJsonAuditPanel("JSON coreActionReceipts[] для просмотра (скрытые runtime details удалены)", receiptAudit, Color.Gold1);
             WriteJsonAuditPanel(
                 "JSON shining_abode_state.json после исходов для просмотра (скрытые runtime details удалены)",
-                CloneShiningJsonForPlayerFacingAudit(context.Root),
+                CloneShiningJsonForPlayerFacingAuditWithAuthority(context.Root, context.Root),
                 Color.Gold1);
         }
     }
@@ -1888,19 +1939,27 @@ public partial class ExplorerMode
 
     private void ShowShiningPoliticalResolutionInspectionPanel(ShiningContext context)
     {
-        var foundingReceipts = ShiningAbodeState.EnsureFactionFoundingReceiptsArray(context.Root).OfType<JsonObject>()
+        var foundingReceipts = ShiningAbodeState.EnsureFactionFoundingReceiptsArray(context.Root)
+            .OfType<JsonObject>()
+            .Select(receipt => CloneShiningJsonForPlayerFacingAuditWithAuthority(receipt, context.Root))
+            .OfType<JsonObject>()
             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"]))
             .ThenByDescending(item => GetNodeString(item["resolvedAtUtc"]), StringComparer.OrdinalIgnoreCase)
             .ToList();
-        var realignmentReceipts = ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(context.Root).OfType<JsonObject>()
+        var realignmentReceipts = ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(context.Root)
+            .OfType<JsonObject>()
+            .Select(receipt => CloneShiningJsonForPlayerFacingAuditWithAuthority(receipt, context.Root))
+            .OfType<JsonObject>()
             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"]))
             .ThenByDescending(item => GetNodeString(item["resolvedAtUtc"]), StringComparer.OrdinalIgnoreCase)
             .ToList();
-        var leadershipReceipts = ShiningAbodeState.EnsureFactionsArray(context.Root).OfType<JsonObject>()
+        var leadershipReceipts = SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root)
             .SelectMany(faction =>
             {
                 var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
                 return (faction["leadershipReceipts"] as JsonArray)?.OfType<JsonObject>()
+                    .Select(receipt => CloneShiningJsonForPlayerFacingAuditWithAuthority(receipt, context.Root))
+                    .OfType<JsonObject>()
                     .Select(receipt => (Faction: faction, FactionName: factionName, Receipt: receipt))
                     ?? Enumerable.Empty<(JsonObject Faction, string FactionName, JsonObject Receipt)>();
             })
@@ -2026,7 +2085,10 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        WriteJsonAuditPanel("Полный JSON political state and receipts", context.Root, Color.Orange1);
+        WriteJsonAuditPanel(
+            "Полный JSON political state and receipts",
+            CloneShiningJsonForPlayerFacingAuditWithAuthority(context.Root, context.Root),
+            Color.Orange1);
     }
 
     private static void AppendShiningReceiptConsequenceLines(List<string> lines, JsonObject receipt, int indent = 2)
@@ -2149,14 +2211,74 @@ public partial class ExplorerMode
 
     private static JsonNode? CloneShiningJsonForPlayerFacingAudit(JsonNode? node)
     {
+        return CloneShiningJsonForPlayerFacingAuditCore(
+            node,
+            BuildShiningPlayerProjectionContext(node));
+    }
+
+    private static JsonNode? CloneShiningJsonForPlayerFacingAuditWithAuthority(
+        JsonNode? node,
+        JsonObject? shiningRoot)
+    {
+        return CloneShiningJsonForPlayerFacingAuditCore(
+            node,
+            BuildShiningPlayerProjectionContext(shiningRoot));
+    }
+
+    private static JsonNode? CloneShiningJsonForPlayerFacingAuditCore(
+        JsonNode? node,
+        ShiningPlayerProjectionContext context)
+    {
         if (node == null)
             return null;
 
         var clone = node.DeepClone();
         RemovePrivateFactionMaterialization(clone);
         RemoveShiningBlessingRuntimePayloads(clone);
-        RemovePlayerHiddenShiningFactions(clone);
+        RemovePlayerHiddenShiningFactions(clone, context.VisibleFactionIds);
+        RemovePlayerHiddenShiningFactionReferences(clone, context.VisibleFactionIds);
         return clone;
+    }
+
+    private static ShiningPlayerProjectionContext BuildShiningPlayerProjectionContext(
+        JsonNode? authorityNode)
+    {
+        var visibleIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void AddFaction(JsonObject faction)
+        {
+            var factionId = GetNodeString(faction["factionId"]);
+            if (string.IsNullOrWhiteSpace(factionId))
+                return;
+
+            if (SarefMainStoryState.IsPlayerVisibleShiningFaction(faction))
+                visibleIds.Add(factionId);
+        }
+
+        if (authorityNode is JsonObject authorityRoot)
+        {
+            var factionsNode = authorityRoot["factions"];
+            if (factionsNode is JsonArray factionArray)
+            {
+                foreach (var faction in factionArray.OfType<JsonObject>())
+                    AddFaction(faction);
+            }
+            else if (IsShiningFactionShape(authorityRoot))
+            {
+                AddFaction(authorityRoot);
+            }
+        }
+        else if (authorityNode is JsonArray authorityArray)
+        {
+            foreach (var faction in authorityArray
+                         .OfType<JsonObject>()
+                         .Where(IsShiningFactionShape))
+            {
+                AddFaction(faction);
+            }
+        }
+
+        return new ShiningPlayerProjectionContext(visibleIds);
     }
 
     private static void RemovePrivateFactionMaterialization(JsonNode? node)
@@ -2175,32 +2297,113 @@ public partial class ExplorerMode
         }
     }
 
-    private static void RemovePlayerHiddenShiningFactions(JsonNode? node)
+    private static void RemovePlayerHiddenShiningFactions(
+        JsonNode? node,
+        IReadOnlySet<string> visibleFactionIds)
     {
         switch (node)
         {
             case JsonObject obj:
                 foreach (var child in obj.Select(pair => pair.Value).ToList())
-                    RemovePlayerHiddenShiningFactions(child);
+                    RemovePlayerHiddenShiningFactions(child, visibleFactionIds);
                 break;
             case JsonArray array:
                 for (var index = array.Count - 1; index >= 0; index--)
                 {
                     if (array[index] is JsonObject faction &&
-                        faction.ContainsKey("factionId") &&
-                        faction.ContainsKey("originType") &&
-                        faction.ContainsKey("hallId") &&
-                        !SarefMainStoryState.IsPlayerVisibleShiningFaction(faction))
+                        IsShiningFactionShape(faction) &&
+                        !visibleFactionIds.Contains(
+                            GetNodeString(faction["factionId"]) ?? string.Empty))
                     {
                         array.RemoveAt(index);
                         continue;
                     }
 
-                    RemovePlayerHiddenShiningFactions(array[index]);
+                    RemovePlayerHiddenShiningFactions(
+                        array[index],
+                        visibleFactionIds);
                 }
                 break;
         }
     }
+
+    private static void RemovePlayerHiddenShiningFactionReferences(
+        JsonNode? node,
+        IReadOnlySet<string> visibleFactionIds)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                foreach (var property in obj.ToList())
+                {
+                    if (property.Value is JsonArray ids &&
+                        IsFactionReferenceArray(property.Key))
+                    {
+                        for (var index = ids.Count - 1; index >= 0; index--)
+                        {
+                            var id = GetNodeString(ids[index]);
+                            if (!string.IsNullOrWhiteSpace(id) &&
+                                !visibleFactionIds.Contains(id))
+                            {
+                                ids.RemoveAt(index);
+                            }
+                        }
+                    }
+                    else if (property.Value is JsonValue value &&
+                             value.TryGetValue<string>(out var referenceId) &&
+                             IsFactionReferenceProperty(obj, property.Key) &&
+                             !string.IsNullOrWhiteSpace(referenceId) &&
+                             !visibleFactionIds.Contains(referenceId))
+                    {
+                        obj.Remove(property.Key);
+                        RemoveFactionReferenceDisplayNames(obj, property.Key);
+                        continue;
+                    }
+
+                    RemovePlayerHiddenShiningFactionReferences(
+                        obj[property.Key],
+                        visibleFactionIds);
+                }
+                break;
+            case JsonArray array:
+                foreach (var child in array)
+                {
+                    RemovePlayerHiddenShiningFactionReferences(
+                        child,
+                        visibleFactionIds);
+                }
+                break;
+        }
+    }
+
+    private static bool IsShiningFactionShape(JsonObject obj) =>
+        obj.ContainsKey("factionId") &&
+        obj.ContainsKey("originType") &&
+        obj.ContainsKey("hallId");
+
+    private static bool IsFactionReferenceArray(string propertyName) =>
+        string.Equals(propertyName, "factionIds", StringComparison.Ordinal) ||
+        propertyName.EndsWith("FactionIds", StringComparison.Ordinal);
+
+    private static bool IsFactionReferenceProperty(
+        JsonObject owner,
+        string propertyName)
+    {
+        return (string.Equals(propertyName, "factionId", StringComparison.Ordinal) ||
+                propertyName.EndsWith("FactionId", StringComparison.Ordinal)) &&
+               !(string.Equals(propertyName, "factionId", StringComparison.Ordinal) &&
+                 IsShiningFactionShape(owner));
+    }
+
+    private static void RemoveFactionReferenceDisplayNames(
+        JsonObject owner,
+        string referencePropertyName)
+    {
+        owner.Remove($"{referencePropertyName[..^2]}Name");
+    }
+
+    private sealed record ShiningPlayerProjectionContext(
+        HashSet<string> VisibleFactionIds);
 
     private static void RemoveShiningBlessingRuntimePayloads(JsonNode? node)
     {

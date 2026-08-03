@@ -41,6 +41,9 @@ This legacy faction is promoted through the full `factionDataChanges` carrier in
     {
       "factionId": "faction_old_ferry_circle",
       "name": "Старый перевозный круг",
+      "description": "Старинный круг перевозчиков, который поддерживает безопасную переправу.",
+      "image_prompt": "old river ferrymen repairing a broad wooden ferry at dawn",
+      "factionColor": "#6F7958",
       "purpose": "Сохранять безопасную переправу через Серую реку.",
       "currentAgenda": "Собрать запас дерева для весеннего ремонта.",
       "principles": ["Никого не бросать на воде"],
@@ -52,13 +55,49 @@ This legacy faction is promoted through the full `factionDataChanges` carrier in
       },
       "governance": {"model": "совет перевозчиков", "decisionProcess": "Единогласие дежурных капитанов."},
       "leadership": {"leadershipState": "collective", "summary": "Два дежурных капитана.", "leaderNpcIds": ["npc_ferry_ada", "npc_ferry_borin"]},
-      "hierarchy": [{"branchId": "core", "name": "Дежурные капитаны"}],
-      "resources": {"timber": 8},
+      "powerProfile": {
+        "military": 1,
+        "economic": 2,
+        "social": 3,
+        "covert": 0,
+        "logistics": 4,
+        "stability": 3,
+        "arcane_tech": 0,
+        "exploration": 2
+      },
+      "ranks": {
+        "branches": [
+          {
+            "branchId": "ferry_captains",
+            "name": "Дежурные капитаны",
+            "ranks": [{"rankId": "captain", "name": "Капитан переправы"}]
+          }
+        ]
+      },
+      "structuredBonuses": [
+        {"bonusId": "river_crossing", "description": "Круг знает безопасные переправы через Серую реку."}
+      ],
+      "resources": {
+        "metaResources": [{"resourceId": "ferry_trust", "name": "Доверие перевозчиков", "amount": 8}],
+        "strategicGoods": [{"goodId": "repair_timber", "name": "Ремонтная древесина", "amount": 8}]
+      },
       "relations": [],
-      "projects": [{"projectId": "project_repair_ferry", "status": "active"}],
-      "territoryAndInfluence": [],
-      "playerMembership": {},
+      "activeProjects": [{"projectId": "project_repair_ferry", "name": "Ремонт старой переправы"}],
+      "completedProjects": [],
+      "controlledTerritories": [],
       "customStates": [],
+      "scribeChronicle": ["#27 — Круг учредил общий фонд ремонта переправы."],
+      "isPlayerFaction": false,
+      "isPlayerMember": false,
+      "playerRank": null,
+      "playerBranch": null,
+      "playerStrategyDirective": null,
+      "reputation": 6,
+      "reputationDescription": "Знакомый перевозчикам путник",
+      "level": 1,
+      "experience": 20,
+      "experienceForNextLevel": 100,
+      "developmentArchetype": "Custodian",
       "materialization": {
         "schemaVersion": 1,
         "materializationId": "mat_faction_old_ferry_circle_turn_27",
@@ -92,7 +131,7 @@ This legacy faction is promoted through the full `factionDataChanges` carrier in
 
 ### mortal_faction_core_changes_update_v1
 
-An ordinary update preserves historical materialization and sends only bounded semantic groups. `scribeChronicle` is extracted to the dedicated chronicle surface by the client contract.
+An ordinary update preserves historical materialization and sends only bounded semantic groups. Chronicle changes use the dedicated `factionChronicleUpdates` surface, not this command.
 
 ```json
 {
@@ -101,17 +140,37 @@ An ordinary update preserves historical materialization and sends only bounded s
       "factionId": "faction_old_ferry_circle",
       "reason": "Совет завершил сбор древесины и выбрал следующую цель.",
       "purposeAndPrinciples": {
-        "currentAgenda": "Укрепить восточную опору до половодья."
+        "purpose": "Сохранять безопасную переправу через Серую реку.",
+        "currentAgenda": "Укрепить восточную опору до половодья.",
+        "principles": ["Никого не бросать на воде"]
       },
       "progressionAndPower": {
-        "progressionSummary": "Подготовка перешла от сбора материалов к строительству."
+        "level": 2,
+        "experience": 0,
+        "experienceForNextLevel": 140,
+        "developmentArchetype": "Custodian",
+        "customArchetypePriorities": null,
+        "powerProfile": {
+          "military": 1,
+          "economic": 3,
+          "social": 3,
+          "covert": 0,
+          "logistics": 5,
+          "stability": 4,
+          "arcane_tech": 0,
+          "exploration": 2
+        }
       },
       "governanceAndLeadership": {
-        "leadershipState": "collective",
-        "summary": "Два капитана продолжают совместное руководство."
-      },
-      "scribeChronicle": {
-        "summary": "Общий запас дерева собран."
+        "governance": {
+          "model": "совет перевозчиков",
+          "decisionProcess": "Единогласие дежурных капитанов."
+        },
+        "leadership": {
+          "leadershipState": "collective",
+          "summary": "Два капитана продолжают совместное руководство.",
+          "leaderNpcIds": ["npc_ferry_ada", "npc_ferry_borin"]
+        }
       }
     }
   ]

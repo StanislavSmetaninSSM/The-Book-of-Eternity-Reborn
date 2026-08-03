@@ -112,7 +112,10 @@ public partial class ExplorerMode
 
         MarkupLine($"[green]Кампания против фракции «{Markup.Escape(factionName)}» создана. ГМ должен развивать её через `factionConflictCampaigns[].breakthroughLog[]`.[/]");
         MarkupLine("[dim]Поддержанные типы прорывов: exposure, duel_victory, defection, sabotage, resource_disruption, oath_break, trial, saref_directive.[/]");
-        WriteJsonAuditPanel("Полный JSON новой кампании против фракции", campaign, Color.Orange1);
+        WriteJsonAuditPanel(
+            "Полный JSON новой кампании против фракции",
+            CloneShiningJsonForPlayerFacingAuditWithAuthority(campaign, context.Root),
+            Color.Orange1);
         WaitForKey();
     }
 
@@ -293,7 +296,7 @@ public partial class ExplorerMode
                 ShiningFactionRequestState.PendingRealignmentsRequestPath))
             return;
 
-        var resident = PromptForShiningResidentReadyToRealign(context.ResidentRoot);
+        var resident = PromptForShiningResidentReadyToRealign(context.Root, context.ResidentRoot);
         if (resident == null)
             return;
 
@@ -513,7 +516,9 @@ public partial class ExplorerMode
         return tags;
     }
 
-    private JsonObject? PromptForShiningResidentReadyToRealign(JsonObject? residentRoot)
+    private JsonObject? PromptForShiningResidentReadyToRealign(
+        JsonObject shiningRoot,
+        JsonObject? residentRoot)
     {
         if (residentRoot?["entries"] is not JsonArray entries)
         {
@@ -525,14 +530,21 @@ public partial class ExplorerMode
         var choices = entries.OfType<JsonObject>()
             .Where(entry =>
                 string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(GetNodeString(entry["factionRealignmentState"]), ShiningAbodeState.FactionRealignmentStateReadyToRealign, StringComparison.OrdinalIgnoreCase))
+                string.Equals(GetNodeString(entry["factionRealignmentState"]), ShiningAbodeState.FactionRealignmentStateReadyToRealign, StringComparison.OrdinalIgnoreCase) &&
+                TryResolvePlayerVisibleShiningFactionLabel(
+                    shiningRoot,
+                    GetNodeString(entry["shiningFactionId"]),
+                    out _))
             .Select(entry =>
             {
                 var residentId = GetNodeString(entry["residentId"]) ?? string.Empty;
                 var displayName = GetNodeString(entry["displayName"]) ?? residentId;
                 var factionId = GetNodeString(entry["shiningFactionId"]) ?? "none";
-                var factionLabel = GetNodeString(entry["shiningFactionName"]) ?? factionId;
-                var label = $"{displayName} [dim](residentId={residentId}; фракция {factionLabel}/{factionId}; лояльность {GetNodeInt(entry["factionLoyaltyLevel"])}, брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
+                _ = TryResolvePlayerVisibleShiningFactionLabel(
+                    shiningRoot,
+                    factionId,
+                    out var factionLabel);
+                var label = $"{displayName} [dim](residentId={residentId}; фракция {factionLabel}; лояльность {GetNodeInt(entry["factionLoyaltyLevel"])}, брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
                 return (Label: label, Entry: entry);
             })
             .ToList();
@@ -556,10 +568,7 @@ public partial class ExplorerMode
 
     private JsonObject? PromptForShiningFactionTarget(JsonObject shiningRoot, string excludedFactionId, string title)
     {
-        if (shiningRoot["factions"] is not JsonArray factions)
-            return null;
-
-        var choices = factions.OfType<JsonObject>()
+        var choices = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .Where(faction => !string.Equals(GetNodeString(faction["factionId"]), excludedFactionId, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(faction => GetNodeInt(faction["factionStrength"]))
             .Select(faction =>
@@ -707,14 +716,12 @@ public partial class ExplorerMode
         var residentId = GetNodeString(resident["residentId"]) ?? string.Empty;
         var residentName = GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? residentId;
         var ascensionState = GetNodeString(resident["ascensionState"]) ?? "unknown";
-        var factionId = GetNodeString(resident["shiningFactionId"]) ?? "none";
-        var factionLabel = GetNodeString(resident["shiningFactionName"]) ?? factionId;
         var role = DescribeShiningResidentRole(GetNodeString(resident["residentRole"]));
         var loyaltyLevel = GetNodeInt(resident["factionLoyaltyLevel"]);
         var loyaltyTier = DescribeShiningFactionLoyaltyTier(GetNodeString(resident["factionLoyaltyTier"]));
         var restlessness = GetNodeInt(resident["factionRestlessness"]);
         var realignmentState = DescribeShiningFactionRealignmentState(GetNodeString(resident["factionRealignmentState"]));
-        return $"{Markup.Escape(residentName)} [dim]({Markup.Escape(residentId)}; фракция {Markup.Escape(factionLabel)}/{Markup.Escape(factionId)}; ascension={Markup.Escape(ascensionState)}; роль {Markup.Escape(role)}; лояльность {loyaltyLevel}/{Markup.Escape(loyaltyTier)}; брожение {restlessness}; перестройка {Markup.Escape(realignmentState)})[/]";
+        return $"{Markup.Escape(residentName)} [dim]({Markup.Escape(residentId)}; ascension={Markup.Escape(ascensionState)}; роль {Markup.Escape(role)}; лояльность {loyaltyLevel}/{Markup.Escape(loyaltyTier)}; брожение {restlessness}; перестройка {Markup.Escape(realignmentState)})[/]";
     }
 
     private static string BuildShiningGuardianPoliticalChoiceLabel(JsonObject guardian, bool isActive)
@@ -733,18 +740,21 @@ public partial class ExplorerMode
         var displayName = GetNodeString(actor["displayName"]) ?? actorId;
         var status = DescribeShiningPoliticalStatus(GetNodeString(actor["politicalStatus"]));
         var factionId = GetNodeString(actor["currentFactionId"]) ?? "none";
-        var factionName = ResolveShiningFactionLabel(shiningRoot, factionId);
+        var hasVisibleFaction = TryResolvePlayerVisibleShiningFactionLabel(
+            shiningRoot,
+            factionId,
+            out var factionName);
         var summary = GetNodeString(actor["summary"]);
         var suffix = string.IsNullOrWhiteSpace(summary) ? string.Empty : $"; {summary}";
-        return $"{Markup.Escape(displayName)} [dim]({Markup.Escape(actorId)}; светозарный актор; статус {Markup.Escape(status)}; фракция {Markup.Escape(factionName)}/{Markup.Escape(factionId)}{Markup.Escape(suffix)})[/]";
+        var factionSuffix = hasVisibleFaction
+            ? $"; фракция {Markup.Escape(factionName)}"
+            : string.Empty;
+        return $"{Markup.Escape(displayName)} [dim]({Markup.Escape(actorId)}; светозарный актор; статус {Markup.Escape(status)}{factionSuffix}{Markup.Escape(suffix)})[/]";
     }
 
     private static JsonObject? FindShiningFactionNode(JsonObject shiningRoot, string factionId)
     {
-        if (shiningRoot["factions"] is not JsonArray factions)
-            return null;
-
-        return factions.OfType<JsonObject>()
+        return SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .FirstOrDefault(faction => string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
     }
 

@@ -149,7 +149,7 @@ public partial class ExplorerMode
                 ? ResolveShiningFactionLabel(context.Root, request.FactionId)
                 : request.FactionName;
             lines.Add($"  • Фракция: [white]{Markup.Escape(factionName)}[/] [dim]({Markup.Escape(request.FactionId)})[/]");
-            var faction = FindShiningFactionForPreview(context.Root, request.FactionId);
+            var faction = FindCanonicalShiningFactionForPendingPreview(context.Root, request.FactionId);
             if (faction != null)
             {
                 lines.Add($"    Текущая сила: [dim]{GetNodeInt(faction["factionStrength"])}[/]");
@@ -164,7 +164,7 @@ public partial class ExplorerMode
                 ? ResolveShiningProjectLabel(context.Root, request.FactionId, request.ProjectId)
                 : request.ProjectDisplayName;
             lines.Add($"  • Проект: [white]{Markup.Escape(projectName)}[/] [dim]({Markup.Escape(request.ProjectId)})[/]");
-            var project = FindShiningProjectForPreview(context.Root, request.FactionId, request.ProjectId);
+            var project = FindCanonicalShiningProjectForPendingPreview(context.Root, request.FactionId, request.ProjectId);
             if (project != null)
             {
                 lines.Add($"    Статус: [dim]{Markup.Escape(DescribeShiningProjectStatus(GetNodeString(project["status"])))}[/]");
@@ -311,7 +311,7 @@ public partial class ExplorerMode
                 var chargesUsed = GetNodeInt(gachaSystem?["chargesUsedThisReturn"]);
                 var chargesPerReturn = GetNodeInt(gachaSystem?["chargesPerReturn"]);
                 lines.Add($"  • chargesUsedThisReturn: {chargesUsed} -> {chargesUsed + 1} из {chargesPerReturn}; projected bonus ceiling: +{request.ProjectedGachaBonusSteps} rarity step(s).");
-                if (FindShiningFactionForPreview(context.Root, request.FactionId) is JsonObject gachaFaction)
+                if (FindCanonicalShiningFactionForPendingPreview(context.Root, request.FactionId) is JsonObject gachaFaction)
                 {
                     lines.Add($"  • Вклад в бонус: тир Сияния {GetNodeInt(context.Root["radiance"]?["tier"])}, factionStrength {GetNodeInt(gachaFaction["factionStrength"])}, поддержанные проекты/резиденты из текущего состояния Сияющей Обители.");
                     lines.Add($"  • Trade/forge context for same faction: tradeTier {ShiningAbodeState.GetTradeTier(GetNodeInt(gachaFaction["factionStrength"]))}, rarity ceiling {Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(GetNodeInt(gachaFaction["factionStrength"])))}.");
@@ -729,8 +729,8 @@ public partial class ExplorerMode
             };
         }
 
-        var beforeFaction = FindShiningFactionForPreview(beforeRoot, request.FactionId);
-        var afterFaction = FindShiningFactionForPreview(projectedRoot, request.FactionId);
+        var beforeFaction = FindCanonicalShiningFactionForPendingPreview(beforeRoot, request.FactionId);
+        var afterFaction = FindCanonicalShiningFactionForPendingPreview(projectedRoot, request.FactionId);
         if (beforeFaction != null || afterFaction != null)
         {
             fragment["targetFaction"] = new JsonObject
@@ -740,8 +740,8 @@ public partial class ExplorerMode
             };
         }
 
-        var beforeProject = FindShiningProjectForPreview(beforeRoot, request.FactionId, request.ProjectId);
-        var afterProject = FindShiningProjectForPreview(projectedRoot, request.FactionId, request.ProjectId);
+        var beforeProject = FindCanonicalShiningProjectForPendingPreview(beforeRoot, request.FactionId, request.ProjectId);
+        var afterProject = FindCanonicalShiningProjectForPendingPreview(projectedRoot, request.FactionId, request.ProjectId);
         if (beforeProject != null || afterProject != null)
         {
             fragment["targetProject"] = new JsonObject
@@ -781,7 +781,7 @@ public partial class ExplorerMode
             };
         }
 
-        var faction = FindShiningFactionForPreview(shiningRoot, request.FactionId);
+        var faction = FindCanonicalShiningFactionForPendingPreview(shiningRoot, request.FactionId);
         if (faction != null)
         {
             var strength = GetNodeInt(faction["factionStrength"]);
@@ -799,7 +799,7 @@ public partial class ExplorerMode
             };
         }
 
-        var project = FindShiningProjectForPreview(shiningRoot, request.FactionId, request.ProjectId);
+        var project = FindCanonicalShiningProjectForPendingPreview(shiningRoot, request.FactionId, request.ProjectId);
         if (project != null)
         {
             summary["targetProject"] = new JsonObject
@@ -961,7 +961,7 @@ public partial class ExplorerMode
         ShiningContext context,
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
-        var beforeFaction = FindShiningFactionForPreview(context.Root, request.FactionId);
+        var beforeFaction = FindCanonicalShiningFactionForPendingPreview(context.Root, request.FactionId);
         if (!ShiningCoreActionRequestState.TryBuildProjectedShiningRootForPreview(
                 request,
                 context.Root,
@@ -971,7 +971,7 @@ public partial class ExplorerMode
             return;
         }
 
-        var afterFaction = FindShiningFactionForPreview(projectedRoot, request.FactionId);
+        var afterFaction = FindCanonicalShiningFactionForPendingPreview(projectedRoot, request.FactionId);
         if (beforeFaction == null || afterFaction == null)
             return;
 
@@ -986,7 +986,7 @@ public partial class ExplorerMode
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
         bool support)
     {
-        var project = FindShiningProjectForPreview(context.Root, request.FactionId, request.ProjectId);
+        var project = FindCanonicalShiningProjectForPendingPreview(context.Root, request.FactionId, request.ProjectId);
         if (project == null)
             return;
 
@@ -1006,8 +1006,8 @@ public partial class ExplorerMode
                 context.Root,
                 context.ResidentRoot,
                 out var projectedRoot) &&
-            FindShiningFactionForPreview(context.Root, request.FactionId) is JsonObject beforeFaction &&
-            FindShiningFactionForPreview(projectedRoot, request.FactionId) is JsonObject afterFaction)
+            FindCanonicalShiningFactionForPendingPreview(context.Root, request.FactionId) is JsonObject beforeFaction &&
+            FindCanonicalShiningFactionForPendingPreview(projectedRoot, request.FactionId) is JsonObject afterFaction)
         {
             var beforeStrength = GetNodeInt(beforeFaction["factionStrength"]);
             var afterStrength = GetNodeInt(afterFaction["factionStrength"]);
@@ -1023,7 +1023,7 @@ public partial class ExplorerMode
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
         var relic = FindSoulRelicForPreview(context.SoulRoot, request.RelicId);
-        var faction = FindShiningFactionForPreview(context.Root, request.FactionId);
+        var faction = FindCanonicalShiningFactionForPendingPreview(context.Root, request.FactionId);
         lines.Add("  • Mutates exactly one Soul Relic plus resource costs and blessing entitlement lifecycle.");
         lines.Add("  • Shining resident state must remain unchanged.");
         if (faction != null)
@@ -1083,7 +1083,7 @@ public partial class ExplorerMode
     private static JsonObject? CloneJsonObjectForPreview(JsonObject? root) =>
         root == null ? null : JsonNode.Parse(root.ToJsonString()) as JsonObject;
 
-    private static JsonObject? FindShiningFactionForPreview(JsonObject? shiningRoot, string? factionId)
+    private static JsonObject? FindCanonicalShiningFactionForPendingPreview(JsonObject? shiningRoot, string? factionId)
     {
         if (shiningRoot?["factions"] is not JsonArray factions || string.IsNullOrWhiteSpace(factionId))
             return null;
@@ -1092,7 +1092,7 @@ public partial class ExplorerMode
             .FirstOrDefault(faction => string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static JsonObject? FindShiningProjectForPreview(JsonObject? shiningRoot, string? factionId, string? projectId)
+    private static JsonObject? FindCanonicalShiningProjectForPendingPreview(JsonObject? shiningRoot, string? factionId, string? projectId)
     {
         if (string.IsNullOrWhiteSpace(projectId) || shiningRoot?["factions"] is not JsonArray factions)
             return null;

@@ -1,5 +1,7 @@
+using System.Reflection;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -31,6 +33,122 @@ public sealed class ShiningAbodeStateTests
             SarefMainStoryState
                 .GetPlayerVisibleShiningFactions(root)
                 .Any());
+    }
+
+    [Fact]
+    public void CloneShiningJsonForPlayerFacingAudit_RemovesHiddenAndPrivateFactionDataWithoutMutatingCanonicalState()
+    {
+        var canonical = JsonNode.Parse("""
+        {
+          "factions": [
+            {
+              "factionId": "faction_revealed",
+              "originType": "native_radiant",
+              "hallId": "hall_revealed",
+              "visibility": "revealed",
+              "charter": { "factionName": "Открытый хор" },
+              "materialization": {
+                "materializationId": "private_revealed_envelope"
+              },
+              "projects": [
+                {
+                  "projectId": "project_revealed",
+                  "materialization": {
+                    "materializationId": "private_nested_envelope"
+                  }
+                }
+              ]
+            },
+            {
+              "factionId": "faction_hidden",
+              "originType": "story",
+              "hallId": "hall_hidden",
+              "visibility": "hidden",
+              "charter": { "factionName": "Тайный хор" },
+              "materialization": {
+                "materializationId": "private_hidden_envelope"
+              }
+            }
+          ],
+          "otherRecords": [
+            {
+              "factionId": "reference_only",
+              "marker": "unrelated_non_faction_survives"
+            }
+          ],
+          "shiningPoliticalActors": [
+            {
+              "actorId": "radiant_hidden_affiliate",
+              "currentFactionId": "faction_hidden",
+              "originFactionId": "faction_hidden"
+            }
+          ],
+          "residentReferences": [
+            {
+              "residentId": "resident_hidden_affiliate",
+              "shiningFactionId": "faction_hidden",
+              "shiningFactionName": "Тайный хор"
+            }
+          ],
+          "gachaSystem": {
+            "gachaHistory": [
+              {
+                "resultId": "gacha_hidden_source",
+                "factionId": "faction_hidden"
+              }
+            ]
+          },
+          "coreActionReceipts": [
+            {
+              "receiptId": "receipt_hidden_source",
+              "factionId": "faction_hidden"
+            }
+          ],
+          "factionConflictCampaigns": [
+            {
+              "campaignId": "campaign_hidden_target",
+              "targetFactionId": "faction_hidden"
+            }
+          ],
+          "gates": {
+            "availableBlessingCards": [
+              {
+                "cardId": "card_hidden_source",
+                "sourceFactionId": "faction_hidden",
+                "sourceFactionName": "Тайный хор"
+              }
+            ]
+          }
+        }
+        """)!.AsObject();
+        var before = canonical.DeepClone();
+        var method = typeof(ExplorerMode).GetMethod(
+            "CloneShiningJsonForPlayerFacingAudit",
+            BindingFlags.NonPublic | BindingFlags.Static);
+
+        Assert.NotNull(method);
+        var projected = Assert.IsAssignableFrom<JsonNode>(
+            method.Invoke(null, new object?[] { canonical }));
+        var projectedJson = projected.ToJsonString();
+
+        var projectedRoot = projected.AsObject();
+        var revealedFaction = Assert.Single(
+            Assert.IsType<JsonArray>(projectedRoot["factions"])
+                .OfType<JsonObject>());
+        Assert.Equal(
+            "Открытый хор",
+            revealedFaction["charter"]!["factionName"]!.GetValue<string>());
+        Assert.Equal(
+            "project_revealed",
+            Assert.Single(
+                Assert.IsType<JsonArray>(revealedFaction["projects"])
+                    .OfType<JsonObject>())["projectId"]!.GetValue<string>());
+        Assert.DoesNotContain("Тайный хор", projectedJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("faction_hidden", projectedJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("materialization", projectedJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("private_", projectedJson, StringComparison.Ordinal);
+        Assert.Contains("unrelated_non_faction_survives", projectedJson, StringComparison.Ordinal);
+        Assert.True(JsonNode.DeepEquals(before, canonical));
     }
 
     [Fact]

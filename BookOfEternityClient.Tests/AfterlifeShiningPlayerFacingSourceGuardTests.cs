@@ -4,6 +4,17 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
 {
+    private static readonly string[] OrdinaryShiningConsolePartialFiles =
+    [
+        "ExplorerMode.Afterlife.ShiningAbode.cs",
+        "ExplorerMode.Afterlife.ShiningAbode.Actions.cs",
+        "ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs",
+        "ExplorerMode.Afterlife.ShiningAbode.Gates.cs",
+        "ExplorerMode.Afterlife.ShiningAbode.Politics.cs",
+        "ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs",
+        "ExplorerMode.Afterlife.ShiningAbode.Treasury.cs"
+    ];
+
     private static string ReadSource(string fileName)
     {
         var path = Path.Combine(
@@ -19,6 +30,29 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
     {
         var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", fileName);
         return File.ReadAllText(path);
+    }
+
+    private static string ExtractMethodSource(string source, string signature)
+    {
+        var start = source.IndexOf(signature, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Could not find method signature '{signature}'.");
+        var openBrace = source.IndexOf('{', start);
+        Assert.True(openBrace >= 0, $"Could not find method body for '{signature}'.");
+
+        var depth = 0;
+        for (var index = openBrace; index < source.Length; index++)
+        {
+            if (source[index] == '{')
+                depth++;
+            else if (source[index] == '}')
+                depth--;
+
+            if (depth == 0)
+                return source[start..(index + 1)];
+        }
+
+        Assert.Fail($"Could not extract method body for '{signature}'.");
+        return string.Empty;
     }
 
     [Fact]
@@ -288,7 +322,26 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
     [Fact]
     public void ShiningOrdinaryFactionEnumerations_MustUseCanonicalPlayerVisibility()
     {
-        var consoleSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.cs");
+        var partialDirectory = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode");
+        var discoveredPartials = Directory
+            .GetFiles(
+                partialDirectory,
+                "ExplorerMode.Afterlife.ShiningAbode*.cs",
+                SearchOption.TopDirectoryOnly)
+            .Select(Path.GetFileName)
+            .OrderBy(file => file, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(
+            OrdinaryShiningConsolePartialFiles.OrderBy(file => file, StringComparer.Ordinal),
+            discoveredPartials);
+
+        var consoleSources = OrdinaryShiningConsolePartialFiles
+            .ToDictionary(file => file, ReadSource, StringComparer.Ordinal);
+        var consoleSource = consoleSources["ExplorerMode.Afterlife.ShiningAbode.cs"];
         var browserSource = File.ReadAllText(Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
@@ -303,8 +356,106 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
             "SarefMainStoryState.GetPlayerVisibleShiningFactions",
             browserSource,
             StringComparison.Ordinal);
+        foreach (var file in new[]
+                 {
+                     "ExplorerMode.Afterlife.ShiningAbode.cs",
+                     "ExplorerMode.Afterlife.ShiningAbode.Actions.cs",
+                     "ExplorerMode.Afterlife.ShiningAbode.Gates.cs",
+                     "ExplorerMode.Afterlife.ShiningAbode.Politics.cs",
+                     "ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs"
+                 })
+        {
+            var source = consoleSources[file];
+            Assert.Contains(
+                "SarefMainStoryState.GetPlayerVisibleShiningFactions",
+                source,
+                StringComparison.Ordinal);
+            Assert.Contains(
+                "TryResolvePlayerVisibleShiningFactionLabel",
+                source,
+                StringComparison.Ordinal);
+
+            foreach (var rawPattern in new[]
+                     {
+                         "[\"factions\"] as JsonArray",
+                         "[\"factions\"] is JsonArray",
+                         "[\"factions\"] is not JsonArray",
+                         "factions.OfType<JsonObject>()"
+                     })
+            {
+                Assert.DoesNotContain(
+                    rawPattern,
+                    source,
+                    StringComparison.Ordinal);
+            }
+
+            Assert.DoesNotContain(
+                "ShiningAbodeState.EnsureFactionsArray(context.Root)",
+                source,
+                StringComparison.Ordinal);
+        }
+
+        var actionPreviews =
+            consoleSources["ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs"];
+        Assert.Contains(
+            "FindCanonicalShiningFactionForPendingPreview",
+            actionPreviews,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "FindCanonicalShiningProjectForPendingPreview",
+            actionPreviews,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "FindShiningFactionForPreview",
+            actionPreviews,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "FindShiningProjectForPreview",
+            actionPreviews,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "[\"beforeFullShiningRoot\"] = CloneShiningJsonForPlayerFacingAudit(beforeRoot)",
+            actionPreviews,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "[\"afterFullShiningRoot\"] = CloneShiningJsonForPlayerFacingAudit(projectedRoot)",
+            actionPreviews,
+            StringComparison.Ordinal);
+
+        var treasury =
+            consoleSources["ExplorerMode.Afterlife.ShiningAbode.Treasury.cs"];
+        var treasuryAudit = ExtractMethodSource(
+            treasury,
+            "private static JsonObject BuildShiningTreasuryAuditNode");
+        Assert.Contains(
+            "ShiningAbodeState.GetSoulSpendableInkFeathers",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ShiningAbodeState.TreasuryProperty",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.Contains("[\"lightSparks\"]", treasuryAudit, StringComparison.Ordinal);
+        Assert.DoesNotContain("[\"factions\"]", treasuryAudit, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "FactionMaterializationContract.PropertyName",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "beforeShiningRoot.DeepClone",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "afterShiningRoot.DeepClone",
+            treasuryAudit,
+            StringComparison.Ordinal);
+
         Assert.DoesNotContain(
             "RemoveHiddenSarefWingsFactions",
+            consoleSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "CloneShiningJsonForPlayerFacingAuditWithAuthority(context.ResidentRoot, context.Root)",
             consoleSource,
             StringComparison.Ordinal);
         Assert.Contains(

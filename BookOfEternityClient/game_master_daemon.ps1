@@ -717,7 +717,7 @@ function New-GmExperienceLesson {
         "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids. Register durable destination locations in world_map first, then update current_location and NPC currentLocationId/currentLocationName only to known ids. Every world_map adjacency/link/storage/threat target must point to an existing locationId or a same-turn newLocations.initialId that is fully materialized in the same response; do not leave unknown target/source ids. Resolve duplicate coordinates in same-turn map updates. If the place is narrative color inside the current room, keep current_location unchanged and describe it as part of the existing location."
     }
     elseif ($hasMortalFactionIssue) {
-        "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction as a complete factions[] object when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
+        "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction through the complete factionDataChanges creation carrier when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
     }
     elseif ($hasMortalNpcIssue) {
         "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize genuinely new or true legacy-promotion Mortal World NPCs through UpdateNPCs/NPCsInScene as complete objects with relationshipLock, goals, 3-5 integer-valued personalityTraits, attitude, and culturalStance. For an ordinary existing NPC, use dedicated commands and bounded NPCCoreChanges; never resend an unchanged or updated full object through UpdateNPCs. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest first-person thought and append journalEntries[] objects with fresh entryId, non-empty first-person description, and timestamp. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
@@ -1943,43 +1943,160 @@ Validation issue kinds usually mean one of three things:
 
 2. Create the missing faction.
    - Use this only when the story really introduced a durable faction.
-   - Add a complete `factions[]` object to `game_state/factions/faction_core.json` before sidecars reference it.
+   - Use the complete `factionDataChanges[]` creation carrier before sidecars reference it.
    - Keep the id stable, lowercase/snake-like, and based on the faction, not on one scene line.
 
 3. Remove or retarget the invalid sidecar.
    - Use this when the sidecar was speculative, duplicate, or belonged to a faction that should not exist.
    - Remove only the invalid sidecar entry, or retarget it to an existing canonical factionId.
 
-## Minimal durable faction object
+## Faction Materialization v1 creation carrier
 
 ```json
 {
-  "factionId": "faction_<stable_slug>",
-  "name": "<Russian faction name>",
-  "displayName": "<Russian faction name>",
-  "description": "<what the faction wants and why it matters>",
-  "type": "organization",
-  "status": "active",
-  "visibility": "known",
-  "reputation": 0,
-  "influence": 10,
-  "resources": {
-    "wealth": 10,
-    "manpower": 10,
-    "information": 10,
-    "magic": 0
-  },
-  "ranks": [],
-  "rankBranches": [],
-  "relations": [],
-  "controlledTerritories": [],
-  "projects": [],
-  "chronicle": [],
-  "customStates": []
+  "factionDataChanges": [
+    {
+      "factionId": null,
+      "initialId": "faction_<stable_slug>",
+      "isNewFaction": true,
+      "name": "<Russian faction name>",
+      "description": "<what the faction wants and why it matters>",
+      "image_prompt": "<setting-aware visual prompt>",
+      "factionColor": "#6F7958",
+      "purpose": "<durable purpose>",
+      "currentAgenda": "<current concrete agenda>",
+      "principles": ["<principle>"],
+      "memory": {
+        "summary": "<durable memory>",
+        "lastUpdatedTurn": 1,
+        "enduringFacts": [],
+        "openThreads": []
+      },
+      "governance": {
+        "model": "<governance model>",
+        "decisionProcess": "<decision process>"
+      },
+      "leadership": {
+        "leadershipState": "vacant",
+        "summary": "<leadership summary>",
+        "leaderNpcIds": []
+      },
+      "powerProfile": {
+        "military": 0,
+        "economic": 0,
+        "social": 0,
+        "covert": 0,
+        "logistics": 0,
+        "stability": 0,
+        "arcane_tech": 0,
+        "exploration": 0
+      },
+      "ranks": {"branches": []},
+      "structuredBonuses": [],
+      "resources": {"metaResources": [], "strategicGoods": []},
+      "relations": [],
+      "activeProjects": [],
+      "completedProjects": [],
+      "controlledTerritories": [],
+      "customStates": [],
+      "scribeChronicle": ["#1 — <first durable faction event>"],
+      "isPlayerFaction": false,
+      "isPlayerMember": false,
+      "playerRank": null,
+      "playerBranch": null,
+      "playerStrategyDirective": null,
+      "reputation": 0,
+      "reputationDescription": null,
+      "level": 1,
+      "experience": 0,
+      "experienceForNextLevel": 100,
+      "developmentArchetype": "<archetype>",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_faction_<stable_slug>_turn_1",
+        "factionType": "mortal_faction",
+        "factionId": "faction_<stable_slug>",
+        "materializedAtTurn": 1,
+        "state": "complete",
+        "capabilities": {
+          "hasFormalHierarchy": false,
+          "usesFactionResources": false,
+          "maintainsRelations": false,
+          "runsProjects": false,
+          "holdsTerritoryOrInfluence": false,
+          "supportsPlayerMembership": false,
+          "usesCustomMechanics": false
+        },
+        "sections": {
+          "hierarchy": {"state": "empty_by_design", "reason": "<why no ranks exist>"},
+          "resources": {"state": "empty_by_design", "reason": "<why no common resources exist>"},
+          "relations": {"state": "empty_by_design", "reason": "<why no relations exist>"},
+          "projects": {"state": "empty_by_design", "reason": "<why no projects exist>"},
+          "territoryAndInfluence": {"state": "empty_by_design", "reason": "<why no territory is controlled>"},
+          "playerMembership": {"state": "empty_by_design", "reason": "<why membership is unavailable>"},
+          "customStates": {"state": "empty_by_design", "reason": "<why no custom mechanics exist>"}
+        }
+      }
+    }
+  ]
 }
 ```
 
-Preserve existing faction ranks, rankBranches, chronicles, relations, projects, resources, reputation, and custom states. Do not delete unrelated faction data to silence one identity error.
+For a true legacy promotion, resend the same complete carrier with the existing permanent `factionId`, omit `initialId`/`isNewFaction`, and add the first complete `materialization` envelope. An already materialized faction must not be resent through the full carrier.
+
+## Ordinary existing faction update
+
+Use bounded `factionCoreChanges` only for semantic core groups. Keep rank/resource/project/chronicle mutations on their dedicated arrays.
+
+```json
+{
+  "factionCoreChanges": [
+    {
+      "factionId": "faction_<existing_id>",
+      "reason": "<why the semantic core changed>",
+      "purposeAndPrinciples": {
+        "purpose": "<complete current purpose>",
+        "currentAgenda": "<new current agenda>",
+        "principles": ["<complete current principle>"]
+      },
+      "progressionAndPower": {
+        "level": 2,
+        "experience": 0,
+        "experienceForNextLevel": 140,
+        "developmentArchetype": "<archetype>",
+        "customArchetypePriorities": null,
+        "powerProfile": {
+          "military": 0,
+          "economic": 0,
+          "social": 0,
+          "covert": 0,
+          "logistics": 0,
+          "stability": 0,
+          "arcane_tech": 0,
+          "exploration": 0
+        }
+      },
+      "governanceAndLeadership": {
+        "governance": {
+          "model": "<governance model>",
+          "decisionProcess": "<decision process>"
+        },
+        "leadership": {
+          "leadershipState": "vacant",
+          "summary": "<leadership summary>",
+          "leaderNpcIds": []
+        }
+      }
+    }
+  ],
+  "factionRankChanges": [],
+  "factionResourceChanges": [],
+  "factionProjectUpdates": [],
+  "factionChronicleUpdates": []
+}
+```
+
+Preserve existing ranks, branches, chronicles, relations, projects, resources, reputation, and the historical materialization envelope. Do not delete unrelated faction data to silence one identity error.
 '@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_LOCATION_TRANSITION_TEMPLATE.md" -Role "compact_mortal_location_transition_template" -Content @'
 # Compact Mortal Location Transition Template

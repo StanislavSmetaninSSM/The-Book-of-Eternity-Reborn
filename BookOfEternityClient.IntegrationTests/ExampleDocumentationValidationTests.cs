@@ -161,20 +161,18 @@ public sealed class ExampleDocumentationValidationTests
     [Fact]
     public void FactionMaterializationManifest_CoversEightWorkedExampleFamiliesWithBothRepairVariants()
     {
-        var manifestPath = Path.Combine(
-            TestRepoPaths.RepoRoot,
-            "Examples",
-            "example_validation_manifest.json");
-        using var document = JsonDocument.Parse(File.ReadAllText(manifestPath));
-        var coverageEntries = document.RootElement
-            .EnumerateObject()
-            .Where(property => property.Value.ValueKind == JsonValueKind.Array)
-            .SelectMany(property => property.Value.EnumerateArray())
-            .Where(entry => entry.ValueKind == JsonValueKind.Object &&
-                            entry.TryGetProperty("contractId", out _))
+        var manifest = ExampleValidationManifest.Load();
+        var coverageProperty = typeof(ExampleValidationManifest).GetProperty(
+            "FactionMaterializationCoverage",
+            BindingFlags.Instance | BindingFlags.Public);
+        Assert.NotNull(coverageProperty);
+        var coverageEntries = Assert
+            .IsAssignableFrom<IEnumerable<ActorMaterializationExampleCoverage>>(
+                coverageProperty!.GetValue(manifest))
             .ToArray();
+        Assert.Equal(9, coverageEntries.Length);
         var entriesByContractId = coverageEntries.ToDictionary(
-            entry => entry.GetProperty("contractId").GetString() ?? string.Empty,
+            entry => entry.ContractId,
             StringComparer.Ordinal);
         var requiredEntries = new Dictionary<string, string>(StringComparer.Ordinal)
         {
@@ -194,32 +192,28 @@ public sealed class ExampleDocumentationValidationTests
             Assert.True(
                 entriesByContractId.TryGetValue(contractId, out var entry),
                 $"Missing manifest coverage for {contractId}.");
-            Assert.Equal(expectedFile, entry.GetProperty("file").GetString());
+            Assert.Equal(expectedFile, entry.File);
             Assert.True(
                 File.Exists(Path.Combine(
                     TestRepoPaths.RepoRoot,
                     "Examples",
                     expectedFile)));
 
-            var validationKind = entry.GetProperty("validationKind").GetString();
+            var validationKind = entry.ValidationKind;
             Assert.Contains(
                 validationKind,
                 new[] { "production-validator", "focused-fragment" });
-            Assert.False(string.IsNullOrWhiteSpace(
-                entry.GetProperty("coverageLimit").GetString()));
+            Assert.False(string.IsNullOrWhiteSpace(entry.CoverageLimit));
 
             if (string.Equals(
                     validationKind,
                     "production-validator",
                     StringComparison.Ordinal))
             {
-                Assert.False(string.IsNullOrWhiteSpace(
-                    entry.GetProperty("validationRoute").GetString()));
+                Assert.False(string.IsNullOrWhiteSpace(entry.ValidationRoute));
             }
 
-            var requiredText = entry.GetProperty("requiredText")
-                .EnumerateArray()
-                .Select(value => value.GetString() ?? string.Empty)
+            var requiredText = entry.RequiredText
                 .Where(value => !string.IsNullOrWhiteSpace(value))
                 .ToArray();
             Assert.NotEmpty(requiredText);
@@ -229,9 +223,231 @@ public sealed class ExampleDocumentationValidationTests
                 expectedFile));
             Assert.All(requiredText, token =>
                 Assert.Contains(token, example, StringComparison.Ordinal));
+
+            if (contractId.StartsWith("mortal_faction_", StringComparison.Ordinal))
+            {
+                Assert.Equal(
+                    FactionCoreChangesContract.FactionCorePath,
+                    entry.StatePath);
+            }
         }
 
         Assert.Equal(requiredEntries.Count, requiredEntries.Keys.Distinct().Count());
+    }
+
+    [Fact]
+    public void ExampleValidationManifest_RejectsUnknownRootCoverageContainers()
+    {
+        const string unknownContainerManifest = """
+        {
+          "version": 1,
+          "unknownFactionCoverage": []
+        }
+        """;
+
+        Assert.Throws<JsonException>(() =>
+            JsonSerializer.Deserialize<ExampleValidationManifest>(
+                unknownContainerManifest,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }));
+    }
+
+    [Fact]
+    public void MortalFactionMaterializationWorkedExamples_UseCanonicalRuntimeCarriersAndSurfaces()
+    {
+        var creationExamples = new[]
+        {
+            ParseNamedJsonFence(
+                "E_Block_21.txt",
+                "mortal_faction_materialization_populated_creation_v1"),
+            ParseNamedJsonFence(
+                "E_Block_21.txt",
+                "mortal_faction_materialization_seven_empty_creation_v1")
+        };
+
+        foreach (var response in creationExamples)
+        {
+            var faction = Assert.Single(
+                Assert.IsType<JsonArray>(response["factionDataChanges"])
+                    .OfType<JsonObject>());
+            Assert.Null(faction["factionId"]);
+            var initialId = Assert.IsAssignableFrom<JsonValue>(faction["initialId"])
+                .GetValue<string>();
+            Assert.False(string.IsNullOrWhiteSpace(initialId));
+            Assert.True(faction["isNewFaction"]!.GetValue<bool>());
+            AssertCompleteMortalFactionCarrier(faction);
+            Assert.Equal(
+                initialId,
+                faction["materialization"]!["factionId"]!.GetValue<string>());
+        }
+
+        var legacyResponse = ParseNamedJsonFence(
+            "E_CLI_Step_Main.txt",
+            "mortal_faction_materialization_legacy_promotion_v1");
+        var legacyFaction = Assert.Single(
+            Assert.IsType<JsonArray>(legacyResponse["factionDataChanges"])
+                .OfType<JsonObject>());
+        Assert.False(string.IsNullOrWhiteSpace(
+            legacyFaction["factionId"]?.GetValue<string>()));
+        AssertCompleteMortalFactionCarrier(legacyFaction);
+
+        var coreResponse = ParseNamedJsonFence(
+            "E_CLI_Step_Main.txt",
+            "mortal_faction_core_changes_update_v1");
+        var command = Assert.Single(
+            Assert.IsType<JsonArray>(coreResponse["factionCoreChanges"])
+                .OfType<JsonObject>());
+        var legacyFactionId = legacyFaction["factionId"]!.GetValue<string>();
+        var knownLeaderNpcIds = (command["governanceAndLeadership"]?["leadership"]?["leaderNpcIds"] as JsonArray)?
+            .OfType<JsonValue>()
+            .Select(value => value.GetValue<string>())
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToHashSet(StringComparer.Ordinal)
+            ?? new HashSet<string>(StringComparer.Ordinal);
+        var preTurnCore = new JsonObject
+        {
+            ["factions"] = new JsonArray(legacyFaction.DeepClone())
+        };
+        var currentCore = preTurnCore.DeepClone().AsObject();
+        currentCore[FactionCoreChangesContract.PropertyName] =
+            coreResponse["factionCoreChanges"]!.DeepClone();
+        var coreEvaluation = FactionCoreChangesContract.Evaluate(
+            currentCore,
+            preTurnCore,
+            new FactionCoreChangesContract.Authority(
+                new HashSet<string>(StringComparer.Ordinal) { legacyFactionId },
+                knownLeaderNpcIds));
+        Assert.True(
+            coreEvaluation.CanApply,
+            string.Join(
+                Environment.NewLine,
+                coreEvaluation.Issues.Select(issue =>
+                    $"{issue.Code}: {issue.FilePath}")));
+
+        var allowedCommandKeys = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "factionId",
+            "reason",
+            "profile",
+            "purposeAndPrinciples",
+            "progressionAndPower",
+            "governanceAndLeadership",
+            "playerMembership",
+            "relations"
+        };
+        Assert.All(command.Select(property => property.Key),
+            key => Assert.Contains(key, allowedCommandKeys));
+        Assert.DoesNotContain("scribeChronicle", command.Select(property => property.Key));
+        if (command["progressionAndPower"] is JsonObject progression)
+        {
+            var allowedProgressionKeys = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "level",
+                "experience",
+                "experienceForNextLevel",
+                "developmentArchetype",
+                "customArchetypePriorities",
+                "powerProfile"
+            };
+            Assert.All(progression.Select(property => property.Key),
+                key => Assert.Contains(key, allowedProgressionKeys));
+        }
+
+        if (command["governanceAndLeadership"] is JsonObject governanceAndLeadership)
+        {
+            Assert.IsType<JsonObject>(governanceAndLeadership["governance"]);
+            Assert.IsType<JsonObject>(governanceAndLeadership["leadership"]);
+        }
+
+        var repair = ExtractNamedJsonFence(
+            "E_Block_21.txt",
+            "mortal_faction_materialization_repair_v1");
+        Assert.Contains("resources.metaResources", repair, StringComparison.Ordinal);
+        Assert.Contains("materialization.sections.resources", repair, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningFactionMaterializationWorkedExamples_UseCanonicalRuntimeSurfaces()
+    {
+        var examples = new[]
+        {
+            ParseNamedJsonFence(
+                "E_CLI_Afterlife_Turns.txt",
+                "shining_faction_materialization_native_discovery_v1"),
+            ParseNamedJsonFence(
+                "E_CLI_Afterlife_Turns.txt",
+                "shining_faction_materialization_player_founding_v1"),
+            ParseNamedJsonFence(
+                "E_CLI_Afterlife_Turns.txt",
+                "shining_faction_materialization_story_hidden_v1")
+        };
+        var supportedOrigins = new HashSet<string>(StringComparer.Ordinal)
+        {
+            ShiningAbodeState.OriginTypeAscendedGuardian,
+            ShiningAbodeState.OriginTypeNativeRadiant,
+            ShiningAbodeState.OriginTypePlayerFounded
+        };
+
+        foreach (var faction in examples)
+        {
+            Assert.Contains(
+                faction["originType"]!.GetValue<string>(),
+                supportedOrigins);
+            foreach (var requiredSurface in new[]
+                     {
+                         "creationProvenance",
+                         "charter",
+                         "currentAgenda",
+                         "factionLifecycle",
+                         "leadership",
+                         "strategicMemory",
+                         "chronicle",
+                         "projects",
+                         "territorialInfluence",
+                         "resourceLedger",
+                         "tradeInventory",
+                         "tradeInventoryReceipts",
+                         "leadershipReceipts",
+                         "leadershipHistory",
+                         "storyAuthority",
+                         "materialization"
+                     })
+            {
+                Assert.True(
+                    faction.ContainsKey(requiredSurface),
+                    $"Shining faction example is missing canonical surface '{requiredSurface}'.");
+            }
+
+            var leadership = Assert.IsType<JsonObject>(faction["leadership"]);
+            Assert.False(string.IsNullOrWhiteSpace(
+                leadership["headActorType"]?.GetValue<string>()));
+            Assert.False(string.IsNullOrWhiteSpace(
+                leadership["headActorId"]?.GetValue<string>()));
+            Assert.DoesNotContain("leaderActorIds", leadership.Select(property => property.Key));
+            Assert.DoesNotContain("residentAffiliations", faction.Select(property => property.Key));
+            Assert.DoesNotContain("trade", faction.Select(property => property.Key));
+            Assert.DoesNotContain("storyState", faction.Select(property => property.Key));
+        }
+
+        Assert.Equal(
+            "native_discovery",
+            examples[0]["creationProvenance"]!["route"]!.GetValue<string>());
+        Assert.Equal(
+            "player_founding",
+            examples[1]["creationProvenance"]!["route"]!.GetValue<string>());
+        Assert.Equal(
+            "story",
+            examples[2]["creationProvenance"]!["route"]!.GetValue<string>());
+        Assert.IsType<JsonObject>(examples[2]["storyAuthority"]);
+
+        var repair = ExtractNamedJsonFence(
+            "E_CLI_Afterlife_Turns.txt",
+            "shining_faction_materialization_repair_v1");
+        Assert.Contains("tradeInventory", repair, StringComparison.Ordinal);
+        Assert.Contains("tradeInventoryReceipts", repair, StringComparison.Ordinal);
+        Assert.Contains("materialization.sections.trade", repair, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1763,6 +1979,92 @@ public sealed class ExampleDocumentationValidationTests
                 filesModified = Array.Empty<string>()
             }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         return failures;
+    }
+
+    private static JsonObject ParseNamedJsonFence(
+        string file,
+        string contractId) =>
+        JsonNode.Parse(ExtractNamedJsonFence(file, contractId))!.AsObject();
+
+    private static string ExtractNamedJsonFence(
+        string file,
+        string contractId)
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "Examples", file);
+        var source = File.ReadAllText(path);
+        var heading = $"### {contractId}";
+        var headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
+        Assert.True(
+            headingIndex >= 0,
+            $"Named example heading '{heading}' was not found in Examples/{file}.");
+        var fenceIndex = source.IndexOf("```json", headingIndex, StringComparison.Ordinal);
+        Assert.True(
+            fenceIndex >= 0,
+            $"Named example '{contractId}' has no JSON fence.");
+        var jsonStart = source.IndexOf('\n', fenceIndex);
+        Assert.True(
+            jsonStart >= 0,
+            $"Named example '{contractId}' JSON fence has no content line.");
+        jsonStart++;
+        var fenceEnd = source.IndexOf("```", jsonStart, StringComparison.Ordinal);
+        Assert.True(
+            fenceEnd > jsonStart,
+            $"Named example '{contractId}' JSON fence is not terminated.");
+        return source[jsonStart..fenceEnd].Trim();
+    }
+
+    private static void AssertCompleteMortalFactionCarrier(JsonObject faction)
+    {
+        foreach (var requiredSurface in new[]
+                 {
+                     "name",
+                     "description",
+                     "image_prompt",
+                     "factionColor",
+                     "purpose",
+                     "currentAgenda",
+                     "principles",
+                     "memory",
+                     "governance",
+                     "leadership",
+                     "powerProfile",
+                     "ranks",
+                     "structuredBonuses",
+                     "resources",
+                     "relations",
+                     "activeProjects",
+                     "completedProjects",
+                     "controlledTerritories",
+                     "customStates",
+                     "scribeChronicle",
+                     "isPlayerFaction",
+                     "isPlayerMember",
+                     "playerRank",
+                     "playerBranch",
+                     "playerStrategyDirective",
+                     "reputation",
+                     "reputationDescription",
+                     "level",
+                     "experience",
+                     "experienceForNextLevel",
+                     "developmentArchetype",
+                     "materialization"
+                 })
+        {
+            Assert.True(
+                faction.ContainsKey(requiredSurface),
+                $"Mortal faction carrier is missing canonical surface '{requiredSurface}'.");
+        }
+
+        Assert.IsType<JsonArray>(
+            Assert.IsType<JsonObject>(faction["ranks"])["branches"]);
+        var resources = Assert.IsType<JsonObject>(faction["resources"]);
+        Assert.IsType<JsonArray>(resources["metaResources"]);
+        Assert.IsType<JsonArray>(resources["strategicGoods"]);
+        Assert.IsType<JsonArray>(faction["activeProjects"]);
+        Assert.IsType<JsonArray>(faction["completedProjects"]);
+        Assert.IsType<JsonArray>(faction["controlledTerritories"]);
+        Assert.IsType<JsonObject>(faction["materialization"]);
     }
 
     private static string GetRequiredString(JsonObject root, string propertyName)
