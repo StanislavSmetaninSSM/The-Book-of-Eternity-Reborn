@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
@@ -15,6 +16,8 @@ public partial class ValidationService
             result);
         AddCurrentShiningFactionHeadTradeAuthorities(
             await _fs.ReadFileAsync(ShiningAbodeState.StatePath),
+            await _fs.ReadFileAsync(
+                GuardianAbodeResidentState.StatePath),
             result);
         return result;
     }
@@ -28,6 +31,9 @@ public partial class ValidationService
             result);
         AddCurrentShiningFactionHeadTradeAuthorities(
             await ReadValidatedPendingTurnSnapshotFileAsync(manifest, ShiningAbodeState.StatePath),
+            await ReadValidatedPendingTurnSnapshotFileAsync(
+                manifest,
+                GuardianAbodeResidentState.StatePath),
             result);
         return result;
     }
@@ -128,6 +134,7 @@ public partial class ValidationService
 
     private static void AddCurrentShiningFactionHeadTradeAuthorities(
         string? json,
+        string? residentJson,
         ISet<string> result)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -135,21 +142,37 @@ public partial class ValidationService
 
         try
         {
-            using var document = JsonDocument.Parse(json);
-            var root = document.RootElement;
-            if (root.ValueKind != JsonValueKind.Object ||
-                !TryReadOptionalArray(root, "factions", out var factions))
+            if (JsonNode.Parse(json) is not JsonObject root ||
+                root["factions"] is not JsonArray factions)
             {
                 return;
             }
 
-            foreach (var faction in factions.EnumerateArray())
+            JsonObject? residentRoot = null;
+            if (!string.IsNullOrWhiteSpace(residentJson))
             {
-                if (!TryReadExactInt32(faction, "factionStrength", out var factionStrength) ||
-                    ShiningAbodeState.GetTradeTier(factionStrength) < 1 ||
-                    !HasOperationalShiningFactionLifecycle(faction) ||
-                    !TryReadExactOptionalProperty(
+                residentRoot = JsonNode.Parse(residentJson) as JsonObject;
+                if (residentRoot == null)
+                    return;
+            }
+
+            var radianceTier =
+                ShiningAbodeState.ResolveRadianceTierFromAuthoredState(
+                    root);
+            foreach (var faction in factions.OfType<JsonObject>())
+            {
+                var factionElement =
+                    JsonSerializer.SerializeToElement(faction);
+                var factionStrength =
+                    ShiningAbodeState.ComputeFactionStrength(
                         faction,
+                        residentRoot,
+                        radianceTier);
+                if (ShiningAbodeState.GetTradeTier(factionStrength) < 1 ||
+                    !HasOperationalShiningFactionLifecycle(
+                        factionElement) ||
+                    !TryReadExactOptionalProperty(
+                        factionElement,
                         "leadership",
                         out var leadership,
                         out var hasLeadership) ||
@@ -212,26 +235,6 @@ public partial class ValidationService
                    state,
                    ShiningAbodeState.FactionLifecycleStateWeakened,
                    StringComparison.Ordinal);
-    }
-
-    private static bool TryReadExactInt32(
-        JsonElement root,
-        string propertyName,
-        out int value)
-    {
-        value = 0;
-        if (!TryReadExactOptionalProperty(
-                root,
-                propertyName,
-                out var property,
-                out var exists) ||
-            !exists ||
-            property.ValueKind != JsonValueKind.Number)
-        {
-            return false;
-        }
-
-        return property.TryGetInt32(out value);
     }
 
     private static string? NormalizeAfterlifeTradeRealm(string realm)

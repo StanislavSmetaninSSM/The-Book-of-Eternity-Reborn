@@ -647,6 +647,11 @@ internal static partial class ShiningAbodeState
         };
     }
 
+    internal static int ResolveRadianceTierFromAuthoredState(
+        JsonObject? root) =>
+        ResolveRadianceTier(
+            GetNodeInt(root?["radiance"]?["experience"], 0));
+
     public static int GetPickCap(int radianceTier) => Math.Clamp(radianceTier, 0, 4) switch
     {
         0 => 1,
@@ -705,6 +710,18 @@ internal static partial class ShiningAbodeState
         <= 74 => 2,
         _ => 3
     };
+
+    internal static bool FactionHasAvailableTrade(
+        JsonObject? faction,
+        int factionStrength) =>
+        faction != null &&
+        IsFactionOperational(faction) &&
+        faction["leadership"] is JsonObject leadership &&
+        !string.Equals(
+            GetNodeString(leadership["leadershipState"]),
+            LeadershipStateVacant,
+            StringComparison.OrdinalIgnoreCase) &&
+        GetTradeTier(factionStrength) >= 1;
 
     public static double GetServiceMultiplier(int factionStrength) => Math.Clamp(factionStrength, 0, 100) switch
     {
@@ -2045,7 +2062,10 @@ internal static partial class ShiningAbodeState
         }
     }
 
-    private static int ComputeFactionStrength(JsonObject faction, JsonObject? residentRoot, int radianceTier)
+    internal static int ComputeFactionStrength(
+        JsonObject faction,
+        JsonObject? residentRoot,
+        int radianceTier)
     {
         if (IsFactionDefeated(faction))
             return 0;

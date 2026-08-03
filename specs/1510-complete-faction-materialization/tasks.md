@@ -510,6 +510,17 @@ without player-facing harness leakage.
   cover omitted, empty, whitespace, non-English, and overlong values with
   stable missing/invalid issue codes across raw creation/promotion carriers and
   canonical materialized factions.
+- [x] T078c Reject forged Shining derived-strength trade authority across
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
+  `BookOfEternityClient/Services/ShiningAbodeState.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`,
+  and
+  `BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationTradeAuthority.cs`,
+  and record the bounded evidence in
+  `sdd/task-11-fix3-cantrade-report.md`: cover forged-high and forged-low raw
+  `factionStrength` values whose independently derived strengths cross the
+  trade threshold in the opposite direction, plus linked non-player Actor
+  Materialization trade-authority parity, without changing Guardian authority.
 - [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.

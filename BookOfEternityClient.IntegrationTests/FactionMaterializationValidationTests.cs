@@ -461,6 +461,29 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         Assert.Equal(expectsMismatch, hasMismatch);
     }
 
+    [Theory]
+    [InlineData(20, 30, true)]
+    [InlineData(30, 20, false)]
+    public async Task NewShiningFaction_ForgedStrengthCannotControlTradeCapability(
+        int derivedBaseStrength,
+        int submittedFactionStrength,
+        bool declaredCanTrade)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["baseStrength"] = derivedBaseStrength;
+        faction["factionStrength"] = submittedFactionStrength;
+        faction["materialization"]!["capabilities"]!["canTrade"] =
+            declaredCanTrade;
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_capability_mismatch" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.Section == "canTrade");
+    }
+
     [Fact]
     public async Task NewShiningFaction_TradeContentCannotUseEmptyDisposition()
     {
@@ -746,6 +769,33 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             issue.Code?.StartsWith(
                 "actor_materialization_",
                 StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public async Task ShiningRequiredActor_ForgedStrengthCannotGrantTradeAuthority()
+    {
+        await WriteRequiredShiningActorOutcomeAsync(
+            "head",
+            includeProfile: true,
+            includeEnvelope: true,
+            derivedBaseStrength: 20,
+            submittedFactionStrength: 30,
+            factionCanTrade: false,
+            actorCanTrade: true);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var factionHasMismatch = issues.Any(issue =>
+            issue.Code == "faction_materialization_capability_mismatch" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.Section == "canTrade");
+        var actorHasMismatch = issues.Any(issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Actor == "resident:required_head" &&
+            issue.Section == "canTrade");
+
+        Assert.True(
+            !factionHasMismatch && actorHasMismatch,
+            $"Faction mismatch: {factionHasMismatch}; actor mismatch: {actorHasMismatch}.");
     }
 
     [Theory]
@@ -1861,11 +1911,24 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string actorKind,
         bool includeProfile,
         bool includeEnvelope,
-        string profileShape = "exact")
+        string profileShape = "exact",
+        int? derivedBaseStrength = null,
+        int? submittedFactionStrength = null,
+        bool? factionCanTrade = null,
+        bool? actorCanTrade = null)
     {
         const string factionId = "shine_faction_dawn_archive";
         var actorId = $"required_{actorKind}";
         var faction = BuildCompleteNativeShiningFaction();
+        if (derivedBaseStrength.HasValue)
+            faction["baseStrength"] = derivedBaseStrength.Value;
+        if (submittedFactionStrength.HasValue)
+            faction["factionStrength"] = submittedFactionStrength.Value;
+        if (factionCanTrade.HasValue)
+        {
+            faction["materialization"]!["capabilities"]!["canTrade"] =
+                factionCanTrade.Value;
+        }
         var residentRoot = BuildRouteResidentRoot();
         var current = ShiningRoot(faction);
         current["halls"] = new JsonArray(
@@ -1923,7 +1986,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                     actorId,
                     includeEnvelope,
                     actorType,
-                    canTrade);
+                    actorCanTrade ?? canTrade);
             JsonObject DifferentTypeProfile() =>
                 BuildRouteAfterlifeProfile(
                     actorId,

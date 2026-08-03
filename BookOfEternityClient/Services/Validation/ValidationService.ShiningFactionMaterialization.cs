@@ -40,6 +40,9 @@ public partial class ValidationService
             SarefMainStoryState.StatePath);
         var currentTradeAuthorities =
             await LoadCurrentAfterlifeActorTradeAuthoritiesAsync();
+        var radianceTier =
+            ShiningAbodeState.ResolveRadianceTierFromAuthoredState(
+                currentRoot);
 
         foreach (var target in currentFactions)
         {
@@ -112,7 +115,11 @@ public partial class ValidationService
                     "tradeInventoryReceipts");
             var canTrade =
                 ShiningAbodeState.FactionHasAvailableTrade(
-                    target.Faction);
+                    target.Faction,
+                    ShiningAbodeState.ComputeFactionStrength(
+                        target.Faction,
+                        residentRoot,
+                        radianceTier));
             var evidence = new FactionMaterializationEvidence(
                 "shining_faction",
                 target.FactionId,
