@@ -88,7 +88,8 @@ public partial class ValidationService
             var affiliatedResidentIds =
                 CollectAffiliatedShiningResidentIds(
                     residentRoot,
-                    target.FactionId);
+                    target.FactionId,
+                    issues);
             ValidateShiningFactionMaterializationReferences(
                 target,
                 currentRoot,
@@ -294,29 +295,72 @@ public partial class ValidationService
     private static HashSet<string>
         CollectAffiliatedShiningResidentIds(
             JsonObject? residentRoot,
-            string factionId)
+            string factionId,
+            List<ValidationIssue>? issues = null)
     {
         var result = new HashSet<string>(StringComparer.Ordinal);
         if (residentRoot?["entries"] is not JsonArray residents)
             return result;
 
-        foreach (var resident in residents.OfType<JsonObject>())
+        var sourceResidentIdentities =
+            new Dictionary<string, bool>(StringComparer.Ordinal);
+        for (var index = 0; index < residents.Count; index++)
         {
-            if (!string.Equals(
+            if (residents[index] is not JsonObject resident)
+                continue;
+
+            var linkedToTarget =
+                string.Equals(
                     ReadShiningMaterializationString(
                         resident,
                         "shiningFactionId"),
                     factionId,
-                    StringComparison.Ordinal))
-            {
-                continue;
-            }
-
+                    StringComparison.Ordinal);
             var residentId =
                 ReadShiningMaterializationString(
                     resident,
                     "residentId");
-            if (!string.IsNullOrWhiteSpace(residentId))
+            if (string.IsNullOrWhiteSpace(residentId))
+            {
+                if (linkedToTarget)
+                {
+                    issues?.Add(
+                        ShiningFactionMaterializationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{index}]",
+                            "faction_materialization_shining_actor_profile_invalid",
+                            factionId,
+                            "A linked Shining resident requires a usable exact residentId.",
+                            expected: "non-empty residentId",
+                            actual: resident.ToJsonString()));
+                }
+
+                continue;
+            }
+
+            if (!sourceResidentIdentities.TryAdd(
+                    residentId,
+                    linkedToTarget))
+            {
+                var priorLinkedToTarget =
+                    sourceResidentIdentities[residentId];
+                if (linkedToTarget || priorLinkedToTarget)
+                {
+                    issues?.Add(
+                        ShiningFactionMaterializationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{index}]",
+                            "faction_materialization_shining_actor_profile_invalid",
+                            factionId,
+                            "Linked Shining resident identities must be unique within the resident source.",
+                            expected:
+                                "one source entry per residentId",
+                            actual: residentId));
+                }
+
+                if (linkedToTarget && !priorLinkedToTarget)
+                    sourceResidentIdentities[residentId] = true;
+            }
+
+            if (linkedToTarget)
                 result.Add(residentId);
         }
 
@@ -867,18 +911,20 @@ public partial class ValidationService
             return;
         }
 
+        var sourceActorIdentities =
+            new Dictionary<string, bool>(StringComparer.Ordinal);
         for (var index = 0; index < actors.Count; index++)
         {
-            if (actors[index] is not JsonObject actor ||
-                !string.Equals(
+            if (actors[index] is not JsonObject actor)
+                continue;
+
+            var linkedToTarget =
+                string.Equals(
                     ReadShiningMaterializationString(
                         actor,
                         "currentFactionId"),
                     target.FactionId,
-                    StringComparison.Ordinal))
-            {
-                continue;
-            }
+                    StringComparison.Ordinal);
 
             var actorId =
                 ReadShiningMaterializationString(
@@ -894,23 +940,57 @@ public partial class ValidationService
                     ShiningAbodeState.HeadActorTypeRadiantActor,
                     StringComparison.Ordinal))
             {
-                issues.Add(
-                    ShiningFactionMaterializationIssue(
-                        $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[{index}]",
-                        "faction_materialization_shining_actor_profile_invalid",
-                        target.FactionId,
-                        "A newly significant political actor requires exact radiant_actor identity.",
-                        expected:
-                            "actorType=radiant_actor and non-empty actorId",
-                        actual: actor.ToJsonString()));
+                if (linkedToTarget)
+                {
+                    issues.Add(
+                        ShiningFactionMaterializationIssue(
+                            $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[{index}]",
+                            "faction_materialization_shining_actor_profile_invalid",
+                            target.FactionId,
+                            "A newly significant political actor requires exact radiant_actor identity.",
+                            expected:
+                                "actorType=radiant_actor and non-empty actorId",
+                            actual: actor.ToJsonString()));
+                }
+
                 continue;
             }
 
-            AddRequiredShiningActor(
-                requiredActors,
-                ShiningAbodeState.HeadActorTypeRadiantActor,
-                actorId,
-                $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[{index}]");
+            var sourceIdentity =
+                BuildAfterlifeActorIdentityKey(
+                    ShiningAbodeState.HeadActorTypeRadiantActor,
+                    actorId);
+            if (!sourceActorIdentities.TryAdd(
+                    sourceIdentity,
+                    linkedToTarget))
+            {
+                var priorLinkedToTarget =
+                    sourceActorIdentities[sourceIdentity];
+                if (linkedToTarget || priorLinkedToTarget)
+                {
+                    issues.Add(
+                        ShiningFactionMaterializationIssue(
+                            $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[{index}]",
+                            "faction_materialization_shining_actor_profile_invalid",
+                            target.FactionId,
+                            "Linked Shining political actor identities must be unique within the political source.",
+                            expected:
+                                "one source entry per radiant_actor identity",
+                            actual: $"{actorType}:{actorId}"));
+                }
+
+                if (linkedToTarget && !priorLinkedToTarget)
+                    sourceActorIdentities[sourceIdentity] = true;
+            }
+
+            if (linkedToTarget)
+            {
+                AddRequiredShiningActor(
+                    requiredActors,
+                    ShiningAbodeState.HeadActorTypeRadiantActor,
+                    actorId,
+                    $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[{index}]");
+            }
         }
     }
 
@@ -948,16 +1028,16 @@ public partial class ValidationService
                                 candidate.Profile,
                                 "actorId"),
                             actor.ActorId,
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            ReadShiningMaterializationString(
+                                candidate.Profile,
+                                "actorType"),
+                            actor.ActorType,
                             StringComparison.Ordinal))
                     .ToArray()
                 : Array.Empty<(JsonObject? Profile, int Index)>();
-        if (profiles.Length != 1 ||
-            !string.Equals(
-                ReadShiningMaterializationString(
-                    profiles.SingleOrDefault().Profile,
-                    "actorType"),
-                actor.ActorType,
-                StringComparison.Ordinal))
+        if (profiles.Length != 1)
         {
             issues.Add(
                 ShiningFactionMaterializationIssue(
@@ -968,7 +1048,7 @@ public partial class ValidationService
                     expected:
                         $"one {actor.ActorType}:{actor.ActorId} profile",
                     actual:
-                        $"{profiles.Length} actorId candidates"));
+                        $"{profiles.Length} exact-pair candidates"));
             return;
         }
 

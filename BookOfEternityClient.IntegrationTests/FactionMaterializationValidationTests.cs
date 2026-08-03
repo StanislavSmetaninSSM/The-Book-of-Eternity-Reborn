@@ -772,6 +772,99 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Theory]
+    [InlineData("exact_plus_different_type", false)]
+    [InlineData("wrong_type_only", true)]
+    [InlineData("duplicate_exact_pair", true)]
+    public async Task ShiningRequiredActor_ExactProfilePairControls(
+        string profileShape,
+        bool expectsProfileIssue)
+    {
+        await WriteRequiredShiningActorOutcomeAsync(
+            "resident",
+            includeProfile: true,
+            includeEnvelope: true,
+            profileShape: profileShape);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var factionMaterializationErrors = issues
+            .Where(issue =>
+                issue.Severity == IssueSeverity.Error &&
+                issue.Actor ==
+                    "shining_faction:shine_faction_dawn_archive" &&
+                issue.Section == "FactionMaterialization")
+            .ToArray();
+
+        if (expectsProfileIssue)
+        {
+            var profileIssue =
+                Assert.Single(factionMaterializationErrors);
+            Assert.Equal(
+                "faction_materialization_shining_actor_profile_invalid",
+                profileIssue.Code);
+            Assert.Equal(
+                $"{ResidentPath}.entries[required_resident]",
+                profileIssue.FilePath);
+        }
+        else
+        {
+            Assert.Empty(factionMaterializationErrors);
+        }
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith(
+                "actor_materialization_",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Theory]
+    [InlineData("missing_resident_id")]
+    [InlineData("duplicate_resident_id")]
+    [InlineData("duplicate_political_identity")]
+    [InlineData("duplicate_resident_id_across_factions")]
+    [InlineData("duplicate_political_identity_across_factions")]
+    public async Task ShiningRequiredActor_RawSourceIdentityMustBeUsableAndUnique(
+        string mutation)
+    {
+        await WriteRequiredShiningActorSourceOutcomeAsync(mutation);
+
+        var expectedPath = mutation switch
+        {
+            "missing_resident_id" =>
+                $"{ResidentPath}.entries[0]",
+            "duplicate_resident_id" =>
+                $"{ResidentPath}.entries[1]",
+            "duplicate_resident_id_across_factions" =>
+                $"{ResidentPath}.entries[1]",
+            "duplicate_political_identity" =>
+                $"{ShiningPath}.shiningPoliticalActors[1]",
+            "duplicate_political_identity_across_factions" =>
+                $"{ShiningPath}.shiningPoliticalActors[1]",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(mutation),
+                mutation,
+                "Unsupported required actor source mutation.")
+        };
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var factionMaterializationErrors = issues
+            .Where(issue =>
+                issue.Severity == IssueSeverity.Error &&
+                issue.Actor ==
+                    "shining_faction:shine_faction_dawn_archive" &&
+                issue.Section == "FactionMaterialization")
+            .ToArray();
+
+        var sourceIssue =
+            Assert.Single(factionMaterializationErrors);
+        Assert.Equal(
+            "faction_materialization_shining_actor_profile_invalid",
+            sourceIssue.Code);
+        Assert.Equal(expectedPath, sourceIssue.FilePath);
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith(
+                "actor_materialization_",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Theory]
     [InlineData("player_soul")]
     [InlineData("vacant")]
     public async Task ShiningHeadActor_ExactDocumentedException_Passes(
@@ -1662,7 +1755,8 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     private async Task WriteRequiredShiningActorOutcomeAsync(
         string actorKind,
         bool includeProfile,
-        bool includeEnvelope)
+        bool includeEnvelope,
+        string profileShape = "exact")
     {
         const string factionId = "shine_faction_dawn_archive";
         var actorId = $"required_{actorKind}";
@@ -1716,22 +1810,176 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                     "Unsupported required actor test kind.");
         }
 
-        var profiles = includeProfile
-            ? new[]
-            {
+        var profiles = new List<JsonObject>();
+        if (includeProfile)
+        {
+            JsonObject ExactProfile() =>
                 BuildRouteAfterlifeProfile(
                     actorId,
                     includeEnvelope,
                     actorType,
-                    canTrade)
+                    canTrade);
+            JsonObject DifferentTypeProfile() =>
+                BuildRouteAfterlifeProfile(
+                    actorId,
+                    includeEnvelope: true,
+                    actorType:
+                        ShiningAbodeState.HeadActorTypeGuardian,
+                    canTrade: false);
+
+            switch (profileShape)
+            {
+                case "exact":
+                    profiles.Add(ExactProfile());
+                    break;
+                case "exact_plus_different_type":
+                    profiles.Add(ExactProfile());
+                    profiles.Add(DifferentTypeProfile());
+                    break;
+                case "wrong_type_only":
+                    profiles.Add(DifferentTypeProfile());
+                    break;
+                case "duplicate_exact_pair":
+                    profiles.Add(ExactProfile());
+                    profiles.Add(ExactProfile());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(profileShape),
+                        profileShape,
+                        "Unsupported required actor profile shape.");
             }
-            : Array.Empty<JsonObject>();
+        }
+
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, current.ToJsonString()),
             (ResidentPath, residentRoot.ToJsonString()),
             (AfterlifeProfilesPath,
                 BuildAfterlifeProfileRoot(profiles).ToJsonString()),
             (ShiningPath, ShiningRoot().ToJsonString()));
+    }
+
+    private async Task WriteRequiredShiningActorSourceOutcomeAsync(
+        string mutation)
+    {
+        const string factionId = "shine_faction_dawn_archive";
+        var faction = BuildCompleteNativeShiningFaction();
+        var residentRoot = BuildRouteResidentRoot();
+        var current = ShiningRoot(faction);
+        var preTurnShining = ShiningRoot();
+        current["halls"] = new JsonArray(
+            BuildShiningHall(
+                "hall_dawn_archive",
+                "Dawn Archive"));
+        current["shiningPoliticalActors"] = new JsonArray();
+
+        string actorId;
+        string actorType;
+        switch (mutation)
+        {
+            case "missing_resident_id":
+                actorId = "required_resident";
+                actorType =
+                    ShiningAbodeState.HeadActorTypeResident;
+                var missingIdResident =
+                    BuildRouteResident(actorId, factionId);
+                missingIdResident.Remove("residentId");
+                ((JsonArray)residentRoot["entries"]!).Add(
+                    missingIdResident);
+                break;
+            case "duplicate_resident_id":
+                actorId = "required_resident";
+                actorType =
+                    ShiningAbodeState.HeadActorTypeResident;
+                ((JsonArray)residentRoot["entries"]!).Add(
+                    BuildRouteResident(actorId, factionId));
+                ((JsonArray)residentRoot["entries"]!).Add(
+                    BuildRouteResident(actorId, factionId));
+                MarkResidentAffiliationsPopulated(faction);
+                break;
+            case "duplicate_resident_id_across_factions":
+                actorId = "required_resident";
+                actorType =
+                    ShiningAbodeState.HeadActorTypeResident;
+                ((JsonArray)residentRoot["entries"]!).Add(
+                    BuildRouteResident(actorId, factionId));
+                ((JsonArray)residentRoot["entries"]!).Add(
+                    BuildRouteResident(
+                        actorId,
+                        "shine_faction_other"));
+                MarkResidentAffiliationsPopulated(faction);
+                break;
+            case "duplicate_political_identity":
+                actorId = "required_political";
+                actorType =
+                    ShiningAbodeState.HeadActorTypeRadiantActor;
+                JsonObject PoliticalActor() =>
+                    new()
+                    {
+                        ["actorId"] = actorId,
+                        ["actorType"] = actorType,
+                        ["currentFactionId"] = factionId
+                    };
+                ((JsonArray)current["shiningPoliticalActors"]!).Add(
+                    PoliticalActor());
+                ((JsonArray)current["shiningPoliticalActors"]!).Add(
+                    PoliticalActor());
+                break;
+            case "duplicate_political_identity_across_factions":
+                actorId = "required_political";
+                actorType =
+                    ShiningAbodeState.HeadActorTypeRadiantActor;
+                ((JsonArray)current["shiningPoliticalActors"]!).Add(
+                    new JsonObject
+                    {
+                        ["actorId"] = actorId,
+                        ["actorType"] = actorType,
+                        ["currentFactionId"] = factionId
+                    });
+                ((JsonArray)current["shiningPoliticalActors"]!).Add(
+                    new JsonObject
+                    {
+                        ["actorId"] = actorId,
+                        ["actorType"] = actorType,
+                        ["currentFactionId"] =
+                            "shine_faction_other"
+                    });
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(mutation),
+                    mutation,
+                    "Unsupported required actor source mutation.");
+        }
+
+        if (mutation is
+            "duplicate_resident_id_across_factions" or
+            "duplicate_political_identity_across_factions")
+        {
+            ((JsonArray)current["factions"]!).Add(
+                LegacyShiningFaction(
+                    "shine_faction_other",
+                    factionStrength: 30));
+            ((JsonArray)preTurnShining["factions"]!).Add(
+                LegacyShiningFaction(
+                    "shine_faction_other",
+                    factionStrength: 30));
+        }
+
+        var profiles = new[]
+        {
+            BuildRouteAfterlifeProfile(
+                actorId,
+                includeEnvelope: true,
+                actorType: actorType,
+                canTrade: false)
+        };
+        await WriteCurrentAndSnapshotAsync(
+            (ShiningPath, current.ToJsonString()),
+            (ResidentPath, residentRoot.ToJsonString()),
+            (AfterlifeProfilesPath,
+                BuildAfterlifeProfileRoot(profiles).ToJsonString()),
+            (ShiningPath, preTurnShining.ToJsonString()));
     }
 
     private async Task WriteCanonicalMinimalMortalCreationAsync(string? missingSidecar = null)
