@@ -630,6 +630,11 @@ public partial class ValidationService
         bool hasExistingChronicle,
         List<ValidationIssue> issues)
     {
+        ValidateRequiredMortalImagePrompt(
+            faction,
+            context,
+            factionId,
+            issues);
         var factionColor = RequireMortalString(
             faction,
             context,
@@ -688,6 +693,11 @@ public partial class ValidationService
         string factionId,
         List<ValidationIssue> issues)
     {
+        ValidateRequiredMortalImagePrompt(
+            faction,
+            context,
+            factionId,
+            issues);
         var factionColor = RequireMortalString(
             faction,
             context,
@@ -721,6 +731,30 @@ public partial class ValidationService
             "faction_materialization_mortal_agenda_missing");
         ValidateMortalPrinciples(faction, context, factionId, issues);
         ValidateMortalFactionMemory(faction, context, factionId, issues);
+    }
+
+    private static void ValidateRequiredMortalImagePrompt(
+        JsonElement faction,
+        string context,
+        string factionId,
+        List<ValidationIssue> issues)
+    {
+        var imagePrompt = RequireMortalString(
+            faction,
+            context,
+            factionId,
+            issues,
+            "image_prompt",
+            "faction_materialization_mortal_image_prompt_missing");
+        if (!string.IsNullOrWhiteSpace(imagePrompt) &&
+            !LooksLikeEnglishImagePrompt(imagePrompt))
+        {
+            issues.Add(FactionIssue(
+                $"{context}.image_prompt",
+                "faction_materialization_mortal_image_prompt_invalid",
+                factionId,
+                "A materialized Mortal faction requires an English-only image_prompt no longer than 150 characters."));
+        }
     }
 
     private static void ValidateMortalPrinciples(

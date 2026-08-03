@@ -19,6 +19,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
 
     public static TheoryData<string, string> MissingMortalSemantics => new()
     {
+        { "image_prompt", "faction_materialization_mortal_image_prompt_missing" },
         { "factionColor", "faction_materialization_mortal_color_missing" },
         { "purpose", "faction_materialization_mortal_purpose_missing" },
         { "currentAgenda", "faction_materialization_mortal_agenda_missing" },
@@ -998,7 +999,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string propertyName,
         string expectedCode)
     {
-        var faction = BuildCompleteMortalCreation();
+        var faction = BuildCompleteMinimalMortalCreation();
         faction.Remove(propertyName);
         await WriteMortalCreationAsync(faction);
 
@@ -1083,6 +1084,80 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Theory]
+    [InlineData("omitted")]
+    [InlineData("empty")]
+    [InlineData("whitespace")]
+    public async Task MortalPromotion_MissingOrBlankImagePrompt_FailsRaw(
+        string variation)
+    {
+        var faction = BuildCompleteMortalPromotion();
+        switch (variation)
+        {
+            case "omitted":
+                faction.Remove("image_prompt");
+                break;
+            case "empty":
+                faction["image_prompt"] = string.Empty;
+                break;
+            case "whitespace":
+                faction["image_prompt"] = "   ";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(variation),
+                    variation,
+                    "Unsupported image prompt variation.");
+        }
+        await WriteMortalPromotionAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_image_prompt_missing" &&
+            issue.Actor == "mortal_faction:faction_watch" &&
+            issue.FilePath ==
+                $"{MortalPath}.factionDataChanges[0].image_prompt");
+    }
+
+    [Theory]
+    [InlineData(false, "non_english")]
+    [InlineData(false, "overlong")]
+    [InlineData(true, "non_english")]
+    [InlineData(true, "overlong")]
+    public async Task MortalMaterialization_InvalidImagePrompt_FailsRaw(
+        bool promotion,
+        string variation)
+    {
+        var faction = promotion
+            ? BuildCompleteMortalPromotion()
+            : BuildCompleteMinimalMortalCreation();
+        faction["image_prompt"] = variation switch
+        {
+            "non_english" => "дозорные у старой башни",
+            "overlong" => new string('a', 151),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(variation),
+                variation,
+                "Unsupported image prompt variation.")
+        };
+        if (promotion)
+            await WriteMortalPromotionAsync(faction);
+        else
+            await WriteMortalCreationAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var expectedFactionId = promotion
+            ? "faction_watch"
+            : "temp-faction-watch";
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_image_prompt_invalid" &&
+            issue.Actor == $"mortal_faction:{expectedFactionId}" &&
+            issue.FilePath ==
+                $"{MortalPath}.factionDataChanges[0].image_prompt");
+    }
+
+    [Theory]
     [InlineData("structure", "faction_materialization_mortal_structure_missing")]
     [InlineData("resources", "faction_materialization_mortal_resources_missing")]
     [InlineData("custom", "faction_materialization_mortal_custom_missing")]
@@ -1111,6 +1186,26 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
             issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Theory]
+    [InlineData("omitted", "faction_materialization_mortal_image_prompt_missing")]
+    [InlineData("non_english", "faction_materialization_mortal_image_prompt_invalid")]
+    [InlineData("overlong", "faction_materialization_mortal_image_prompt_invalid")]
+    public async Task CanonicalMaterializedMortal_MissingOrInvalidImagePrompt_FailsCompleteness(
+        string variation,
+        string expectedCode)
+    {
+        await WriteCanonicalMinimalMortalCreationAsync(
+            imagePromptVariation: variation);
+
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode &&
+            issue.Actor == "mortal_faction:temp-faction-watch" &&
+            issue.FilePath == $"{MortalPath}.factions[0].image_prompt");
     }
 
     [Fact]
@@ -1383,6 +1478,16 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         await WriteCurrentAndSnapshotAsync(
             (MortalPath, current.ToJsonString()),
             (MortalPath, MortalRoot().ToJsonString()));
+    }
+
+    private async Task WriteMortalPromotionAsync(JsonObject faction)
+    {
+        var current = MortalRoot();
+        current["factionDataChanges"] = new JsonArray(faction);
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, current.ToJsonString()),
+            (MortalPath, MortalRoot(
+                LegacyMortalFaction("faction_watch")).ToJsonString()));
     }
 
     private async Task<IReadOnlyList<ValidationIssue>> ValidateNativeDiscoveryRouteAsync()
@@ -1982,12 +2087,33 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (ShiningPath, preTurnShining.ToJsonString()));
     }
 
-    private async Task WriteCanonicalMinimalMortalCreationAsync(string? missingSidecar = null)
+    private async Task WriteCanonicalMinimalMortalCreationAsync(
+        string? missingSidecar = null,
+        string? imagePromptVariation = null)
     {
         var faction = BuildCompleteMinimalMortalCreation();
         faction["factionId"] = "temp-faction-watch";
         faction.Remove("initialId");
         faction.Remove("isNewFaction");
+        switch (imagePromptVariation)
+        {
+            case null:
+                break;
+            case "omitted":
+                faction.Remove("image_prompt");
+                break;
+            case "non_english":
+                faction["image_prompt"] = "дозорные у старой башни";
+                break;
+            case "overlong":
+                faction["image_prompt"] = new string('a', 151);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(imagePromptVariation),
+                    imagePromptVariation,
+                    "Unsupported image prompt variation.");
+        }
         faction.Remove("governance");
         faction.Remove("leadership");
         faction.Remove("ranks");
@@ -3095,6 +3221,18 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 "temp-faction-watch",
                 "fmat_watch_creation")
         };
+
+    private static JsonObject BuildCompleteMortalPromotion()
+    {
+        var faction = BuildCompleteMinimalMortalCreation();
+        faction["factionId"] = "faction_watch";
+        faction.Remove("initialId");
+        faction.Remove("isNewFaction");
+        faction["materialization"] = BuildMortalEnvelope(
+            "faction_watch",
+            "fmat_watch_promotion");
+        return faction;
+    }
 
     private static JsonObject BuildMortalEnvelope(
         string factionId,

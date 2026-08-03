@@ -502,6 +502,14 @@ without player-facing harness leakage.
   materialization envelope remain revealed-only/fail-closed, while a legacy
   faction without materialization and with `visibility=public` remains visible
   unless the preexisting Saref Wings fallback hides it.
+- [x] T078b Require production-valid `image_prompt` semantics for Mortal
+  faction creation, promotion, and canonical materialization in
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
+  and
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`:
+  cover omitted, empty, whitespace, non-English, and overlong values with
+  stable missing/invalid issue codes across raw creation/promotion carriers and
+  canonical materialized factions.
 - [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.
