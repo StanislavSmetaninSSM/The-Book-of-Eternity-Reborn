@@ -94,7 +94,14 @@ internal static partial class ShiningAbodeState
         IsFactionOperational(faction) && CountSupportedProjectsByArchetypeForFaction(faction, archetype) > 0;
 
     public static bool FactionHasAvailableTrade(JsonObject? faction) =>
-        faction != null && IsFactionOperational(faction) && GetTradeTier(GetNodeInt(faction["factionStrength"], 0)) >= 1;
+        faction != null &&
+        IsFactionOperational(faction) &&
+        faction["leadership"] is JsonObject leadership &&
+        !string.Equals(
+            GetNodeString(leadership["leadershipState"]),
+            LeadershipStateVacant,
+            StringComparison.OrdinalIgnoreCase) &&
+        GetTradeTier(GetNodeInt(faction["factionStrength"], 0)) >= 1;
 
     public static string GetTradeCycleId(int currentIncarnation) => $"shining_return_{Math.Max(0, currentIncarnation)}";
 

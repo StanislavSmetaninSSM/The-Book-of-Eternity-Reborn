@@ -60,6 +60,9 @@ public partial class ValidationService
             rawBeforeNormalization: true,
             issues,
             materializedFactions);
+        await ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync(
+            rawBeforeNormalization: true,
+            issues);
         issues.AddRange(
             FactionMaterializationContract.ValidateUniqueMaterializationIds(
                 materializedFactions));
@@ -86,6 +89,9 @@ public partial class ValidationService
             rawBeforeNormalization: false,
             issues,
             materializedFactions);
+        await ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync(
+            rawBeforeNormalization: false,
+            issues);
         issues.AddRange(
             FactionMaterializationContract.ValidateUniqueMaterializationIds(
                 materializedFactions));

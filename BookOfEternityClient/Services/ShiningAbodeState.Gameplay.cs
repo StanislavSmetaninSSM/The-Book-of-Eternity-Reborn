@@ -93,13 +93,34 @@ internal static partial class ShiningAbodeState
         return root;
     }
 
-    public static void NormalizeStateRoot(JsonObject root, JsonObject? residentRoot, JsonObject? guardiansRoot)
+    public static void NormalizeStateRoot(
+        JsonObject root,
+        JsonObject? residentRoot,
+        JsonObject? guardiansRoot) =>
+        NormalizeStateRoot(
+            root,
+            residentRoot,
+            guardiansRoot,
+            normalizationModes: null);
+
+    internal static void NormalizeStateRoot(
+        JsonObject root,
+        JsonObject? residentRoot,
+        JsonObject? guardiansRoot,
+        IReadOnlyDictionary<string, ShiningFactionNormalizationMode>?
+            normalizationModes)
     {
-        NormalizeStateRoot(root, residentRoot);
+        NormalizeStateRootWithFactionModes(
+            root,
+            residentRoot,
+            normalizationModes);
         HydrateLeadershipReceiptSnapshots(root, residentRoot, guardiansRoot);
         if (EnsureActiveGuardianFactionMaterialized(root, guardiansRoot))
         {
-            NormalizeStateRoot(root, residentRoot);
+            NormalizeStateRootWithFactionModes(
+                root,
+                residentRoot,
+                normalizationModes);
             HydrateLeadershipReceiptSnapshots(root, residentRoot, guardiansRoot);
         }
     }
@@ -817,6 +838,21 @@ internal static partial class ShiningAbodeState
 
         var factionId = $"faction_{Slugify(guardianId)}";
         var hallId = $"hall_{Slugify(guardianId)}";
+        var faction = EnsureFactionsArray(root)
+            .OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(
+                GetNodeString(item["factionId"]),
+                factionId,
+                StringComparison.Ordinal));
+        if (faction == null)
+            return false;
+
+        if (faction.ContainsKey(
+                FactionMaterializationContract.PropertyName))
+        {
+            return false;
+        }
+
         var guardianName = GuardianManifestation.GetDisplayName(activeGuardian) ??
                            GetNodeString(activeGuardian["canonicalName"]) ??
                            GetNodeString(activeGuardian["name"]) ??
@@ -880,97 +916,62 @@ internal static partial class ShiningAbodeState
             }
         }
 
-        var faction = FindFaction(root, factionId);
-        if (faction == null)
+        if (!string.Equals(GetNodeString(faction["originType"]), derivedOriginType, StringComparison.OrdinalIgnoreCase))
         {
-            faction = new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["originType"] = derivedOriginType,
-                ["hallId"] = hallId,
-                ["charter"] = new JsonObject
-                {
-                    ["factionName"] = guardianName,
-                    ["favoredArchetype"] = favoredArchetype,
-                    ["patronEffectFamily"] = patronEffectFamily,
-                    ["summary"] = charterSummary
-                },
-                ["leadership"] = new JsonObject
-                {
-                    ["leadershipState"] = LeadershipStateSecure,
-                    ["headActorType"] = HeadActorTypeGuardian,
-                    ["headActorId"] = guardianId
-                },
-                ["baseStrength"] = 35,
-                ["factionStrength"] = 35,
-                ["investCountThisAscension"] = 0,
-                ["projectArchetypesCountedThisAscension"] = new JsonArray(),
-                ["projects"] = new JsonArray(),
-                ["leadershipReceipts"] = new JsonArray(),
-                ["leadershipHistory"] = new JsonArray()
-            };
-            EnsureFactionsArray(root).Add(faction);
+            faction["originType"] = derivedOriginType;
             changed = true;
         }
-        else
+
+        if (!string.Equals(GetNodeString(faction["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
         {
-            if (!string.Equals(GetNodeString(faction["originType"]), derivedOriginType, StringComparison.OrdinalIgnoreCase))
-            {
-                faction["originType"] = derivedOriginType;
-                changed = true;
-            }
+            faction["hallId"] = hallId;
+            changed = true;
+        }
 
-            if (!string.Equals(GetNodeString(faction["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
-            {
-                faction["hallId"] = hallId;
-                changed = true;
-            }
+        if (faction["charter"] is not JsonObject charter)
+        {
+            charter = new JsonObject();
+            faction["charter"] = charter;
+            changed = true;
+        }
 
-            if (faction["charter"] is not JsonObject charter)
-            {
-                charter = new JsonObject();
-                faction["charter"] = charter;
-                changed = true;
-            }
+        if (!string.Equals(GetNodeString(charter["factionName"]), guardianName, StringComparison.Ordinal))
+        {
+            charter["factionName"] = guardianName;
+            changed = true;
+        }
 
-            if (!string.Equals(GetNodeString(charter["factionName"]), guardianName, StringComparison.Ordinal))
-            {
-                charter["factionName"] = guardianName;
-                changed = true;
-            }
+        if (!string.Equals(GetNodeString(charter["favoredArchetype"]), favoredArchetype, StringComparison.OrdinalIgnoreCase))
+        {
+            charter["favoredArchetype"] = favoredArchetype;
+            changed = true;
+        }
 
-            if (!string.Equals(GetNodeString(charter["favoredArchetype"]), favoredArchetype, StringComparison.OrdinalIgnoreCase))
-            {
-                charter["favoredArchetype"] = favoredArchetype;
-                changed = true;
-            }
+        if (!string.Equals(GetNodeString(charter["patronEffectFamily"]), patronEffectFamily, StringComparison.OrdinalIgnoreCase))
+        {
+            charter["patronEffectFamily"] = patronEffectFamily;
+            changed = true;
+        }
 
-            if (!string.Equals(GetNodeString(charter["patronEffectFamily"]), patronEffectFamily, StringComparison.OrdinalIgnoreCase))
-            {
-                charter["patronEffectFamily"] = patronEffectFamily;
-                changed = true;
-            }
+        if (!string.Equals(GetNodeString(charter["summary"]), charterSummary, StringComparison.Ordinal))
+        {
+            charter["summary"] = charterSummary;
+            changed = true;
+        }
 
-            if (!string.Equals(GetNodeString(charter["summary"]), charterSummary, StringComparison.Ordinal))
-            {
-                charter["summary"] = charterSummary;
-                changed = true;
-            }
+        if (faction["leadership"] is not JsonObject leadership)
+        {
+            leadership = new JsonObject();
+            faction["leadership"] = leadership;
+            changed = true;
+        }
 
-            if (faction["leadership"] is not JsonObject leadership)
-            {
-                leadership = new JsonObject();
-                faction["leadership"] = leadership;
-                changed = true;
-            }
-
-            if (!string.Equals(GetNodeString(leadership["leadershipState"]), LeadershipStateVacant, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(GetNodeString(leadership["headActorType"]), HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(GetNodeString(leadership["headActorId"]), guardianId, StringComparison.OrdinalIgnoreCase))
-            {
-                leadership["headActorId"] = guardianId;
-                changed = true;
-            }
+        if (!string.Equals(GetNodeString(leadership["leadershipState"]), LeadershipStateVacant, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(GetNodeString(leadership["headActorType"]), HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(GetNodeString(leadership["headActorId"]), guardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            leadership["headActorId"] = guardianId;
+            changed = true;
         }
 
         return changed;

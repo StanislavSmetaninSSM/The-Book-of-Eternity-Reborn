@@ -20,6 +20,10 @@ public partial class CanonicalStateNormalizer
             return;
 
         ShiningAbodeState.ApplyFactionPoliticalUpdateSurfaces(result);
+        var factionNormalizationModes =
+            BuildShiningFactionNormalizationModes(
+                result,
+                previous);
 
         JsonObject? residentRoot = null;
         if (await ReadNodeAsync(GuardianAbodeResidentState.StatePath) is JsonObject currentResidentObject)
@@ -32,8 +36,70 @@ public partial class CanonicalStateNormalizer
         if (await ReadNodeAsync("game_state/meta/guardians.json") is JsonObject currentGuardiansObject)
             guardiansRoot = CloneObject(currentGuardiansObject);
 
-        ShiningAbodeState.NormalizeStateRoot(result, residentRoot, guardiansRoot);
+        ShiningAbodeState.NormalizeStateRoot(
+            result,
+            residentRoot,
+            guardiansRoot,
+            factionNormalizationModes);
         await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private static IReadOnlyDictionary<
+        string,
+        ShiningFactionNormalizationMode>
+        BuildShiningFactionNormalizationModes(
+            JsonObject current,
+            JsonObject? previous)
+    {
+        var previousById =
+            new Dictionary<string, JsonObject>(
+                StringComparer.Ordinal);
+        if (previous?["factions"] is JsonArray previousFactions)
+        {
+            foreach (var faction in
+                     previousFactions.OfType<JsonObject>())
+            {
+                var factionId =
+                    GetNodeString(faction["factionId"]);
+                if (!string.IsNullOrWhiteSpace(factionId))
+                    previousById.TryAdd(factionId, faction);
+            }
+        }
+
+        var result =
+            new Dictionary<
+                string,
+                ShiningFactionNormalizationMode>(
+                StringComparer.Ordinal);
+        if (current["factions"] is not JsonArray currentFactions)
+            return result;
+
+        foreach (var faction in
+                 currentFactions.OfType<JsonObject>())
+        {
+            var factionId =
+                GetNodeString(faction["factionId"]);
+            if (string.IsNullOrWhiteSpace(factionId))
+                continue;
+
+            var hasReceipt = faction.ContainsKey(
+                FactionMaterializationContract.PropertyName);
+            var untouchedLegacy =
+                !hasReceipt &&
+                previousById.TryGetValue(
+                    factionId,
+                    out var previousFaction) &&
+                !previousFaction.ContainsKey(
+                    FactionMaterializationContract.PropertyName) &&
+                JsonNode.DeepEquals(
+                    faction,
+                    previousFaction);
+            result[factionId] = untouchedLegacy
+                ? ShiningFactionNormalizationMode.LegacyCompatibility
+                : ShiningFactionNormalizationMode.AuthoredMaterialization;
+        }
+
+        return result;
     }
 
     private static void MergeShiningAbodeRoot(JsonObject target, JsonObject source)

@@ -23,6 +23,20 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         { "scribeChronicle", "faction_materialization_mortal_chronicle_missing" }
     };
 
+    public static TheoryData<string, string> MissingShiningSemantics => new()
+    {
+        { "creationProvenance", "faction_materialization_shining_provenance_missing" },
+        { "hallId", "faction_materialization_shining_hall_missing" },
+        { "charter", "faction_materialization_shining_charter_missing" },
+        { "currentAgenda", "faction_materialization_shining_agenda_missing" },
+        { "factionLifecycle", "faction_materialization_shining_lifecycle_missing" },
+        { "leadership", "faction_materialization_shining_leadership_missing" },
+        { "strategicMemory", "faction_materialization_shining_memory_missing" },
+        { "chronicle", "faction_materialization_shining_chronicle_missing" },
+        { "visibility", "faction_materialization_shining_visibility_missing" },
+        { "storyAuthority", "faction_materialization_shining_story_authority_missing" }
+    };
+
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ValidationService _validator;
@@ -310,6 +324,191 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             issue.Actor == "shining_faction:order_dawn" &&
             issue.Code == "faction_materialization_missing");
+    }
+
+    [Theory]
+    [MemberData(nameof(MissingShiningSemantics))]
+    public async Task NewShiningFaction_MissingAuthoredSemantic_FailsBeforeNormalization(
+        string field,
+        string code)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction.Remove(field);
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == code &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive");
+    }
+
+    [Fact]
+    public async Task NewShiningFaction_AllSevenExactEmptySurfaces_PassesRaw()
+    {
+        await WriteNativeDiscoveryOutcomeAsync(
+            BuildCompleteNativeShiningFaction());
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive");
+    }
+
+    [Theory]
+    [InlineData(false, true, false)]
+    [InlineData(false, false, true)]
+    [InlineData(true, false, false)]
+    [InlineData(true, true, true)]
+    public async Task NewShiningFaction_TradeCapabilityMustMatchOperationalLeadershipEvidence(
+        bool vacantLeadership,
+        bool declaredCanTrade,
+        bool expectsMismatch)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        var leadership = faction["leadership"]!.AsObject();
+        if (vacantLeadership)
+        {
+            leadership["leadershipState"] = ShiningAbodeState.LeadershipStateVacant;
+            leadership["headActorType"] = null;
+            leadership["headActorId"] = null;
+        }
+
+        faction["materialization"]!["capabilities"]!["canTrade"] =
+            declaredCanTrade;
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var hasMismatch = issues.Any(issue =>
+            issue.Code == "faction_materialization_capability_mismatch" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.Section == "canTrade");
+
+        Assert.Equal(expectsMismatch, hasMismatch);
+    }
+
+    [Fact]
+    public async Task NewShiningFaction_TradeContentCannotUseEmptyDisposition()
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["tradeInventory"] = new JsonObject
+        {
+            ["tradeCycleId"] = "shining_return_12"
+        };
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_disposition_mismatch" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.Section == "trade");
+    }
+
+    [Theory]
+    [InlineData("exact", false)]
+    [InlineData("missing_inventory", true)]
+    [InlineData("missing_receipts", true)]
+    [InlineData("null_receipts", true)]
+    [InlineData("non_empty_receipts", true)]
+    public async Task NewShiningFaction_EmptyTradeDispositionRequiresExplicitNullAndEmptyReceipts(
+        string surface,
+        bool expectsMismatch)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        switch (surface)
+        {
+            case "missing_inventory":
+                faction.Remove("tradeInventory");
+                break;
+            case "missing_receipts":
+                faction.Remove("tradeInventoryReceipts");
+                break;
+            case "null_receipts":
+                faction["tradeInventoryReceipts"] = null;
+                break;
+            case "non_empty_receipts":
+                faction["tradeInventoryReceipts"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["requestId"] = "trade_history"
+                    });
+                break;
+        }
+
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var hasMismatch = issues.Any(issue =>
+            issue.Code == "faction_materialization_disposition_mismatch" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.Section == "trade");
+
+        Assert.Equal(expectsMismatch, hasMismatch);
+    }
+
+    [Fact]
+    public async Task NewShiningFaction_UnknownExactHall_FailsRaw()
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["hallId"] = "hall_missing";
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_shining_hall_reference_invalid" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive");
+    }
+
+    [Theory]
+    [InlineData("provenance_extra", "faction_materialization_shining_provenance_invalid")]
+    [InlineData("route_invalid", "faction_materialization_shining_provenance_invalid")]
+    [InlineData("non_story_authority", "faction_materialization_shining_story_authority_invalid")]
+    [InlineData("story_authority_mismatch", "faction_materialization_shining_story_authority_invalid")]
+    public async Task NewShiningFaction_ProvenanceAndStoryAuthorityUseClosedRouteShape(
+        string mutation,
+        string expectedCode)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        switch (mutation)
+        {
+            case "provenance_extra":
+                faction["creationProvenance"]!["extra"] = "not_allowed";
+                break;
+            case "route_invalid":
+                faction["creationProvenance"]!["route"] = "inferred";
+                break;
+            case "non_story_authority":
+                faction["storyAuthority"] = new JsonObject
+                {
+                    ["authorityType"] = "saref_main_story",
+                    ["authorityId"] = "shine_faction_dawn_archive",
+                    ["factionRole"] = "wings_of_angels"
+                };
+                break;
+            case "story_authority_mismatch":
+                faction["originType"] = ShiningAbodeState.OriginTypeAscendedGuardian;
+                faction["creationProvenance"]!["route"] = "story";
+                faction["creationProvenance"]!["authorityType"] = "guardian_ascension";
+                faction["creationProvenance"]!["authorityId"] = "guardian_dawn";
+                faction["storyAuthority"] = new JsonObject
+                {
+                    ["authorityType"] = "guardian_ascension",
+                    ["authorityId"] = "guardian_other",
+                    ["factionRole"] = "patron_guardian"
+                };
+                break;
+        }
+
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive");
     }
 
     [Theory]
@@ -705,6 +904,18 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (MortalPath, MortalRoot().ToJsonString()));
     }
 
+    private async Task WriteNativeDiscoveryOutcomeAsync(JsonObject faction)
+    {
+        var current = ShiningRoot(faction);
+        current["halls"] = new JsonArray(
+            BuildShiningHall(
+                "hall_dawn_archive",
+                "Dawn Archive"));
+        await WriteCurrentAndSnapshotAsync(
+            (ShiningPath, current.ToJsonString()),
+            (ShiningPath, ShiningRoot().ToJsonString()));
+    }
+
     private async Task WriteCanonicalMinimalMortalCreationAsync(string? missingSidecar = null)
     {
         var faction = BuildCompleteMinimalMortalCreation();
@@ -959,6 +1170,85 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         return faction;
     }
 
+    private static JsonObject BuildCompleteNativeShiningFaction() =>
+        new()
+        {
+            ["factionId"] = "shine_faction_dawn_archive",
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = "hall_dawn_archive",
+            ["creationProvenance"] = new JsonObject
+            {
+                ["route"] = "native_discovery",
+                ["authorityType"] = "shining_core_action_request",
+                ["authorityId"] = "request_discover_dawn_archive"
+            },
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = "Dawn Archive",
+                ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeRemembrance,
+                ["patronEffectFamily"] = ShiningAbodeState.EffectFamilyMemory,
+                ["summary"] = "Preserve the truths carried into light."
+            },
+            ["currentAgenda"] = "Recover the names erased from the western gallery.",
+            ["visibility"] = "revealed",
+            ["storyAuthority"] = null,
+            ["factionLifecycle"] = new JsonObject
+            {
+                ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure,
+                ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul
+            },
+            ["strategicMemory"] = new JsonObject
+            {
+                ["summary"] = "The Archive remembers the first dimming.",
+                ["lastUpdatedTurn"] = 12,
+                ["recentCampaigns"] = new JsonArray(),
+                ["losses"] = new JsonArray(),
+                ["alliances"] = new JsonArray(),
+                ["enemies"] = new JsonArray()
+            },
+            ["chronicle"] = new JsonArray(
+                new JsonObject
+                {
+                    ["entryId"] = "shine_chronicle_dawn_archive_founding",
+                    ["turnNumber"] = 12,
+                    ["eventType"] = "faction_materialized",
+                    ["summary"] = "The Dawn Archive opened its hall.",
+                    ["visibility"] = "known",
+                    ["consequences"] = new JsonArray()
+                }),
+            ["baseStrength"] = 30,
+            ["factionStrength"] = 30,
+            ["investCountThisAscension"] = 0,
+            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+            ["projects"] = new JsonArray(),
+            ["territorialInfluence"] = new JsonArray(),
+            ["resourceLedger"] = new JsonArray(),
+            ["tradeInventory"] = null,
+            ["tradeInventoryReceipts"] = new JsonArray(),
+            ["leadershipReceipts"] = new JsonArray(),
+            ["leadershipHistory"] = new JsonArray(),
+            ["materialization"] = BuildShiningEnvelope(
+                "shine_faction_dawn_archive",
+                "fmat_dawn_archive_12",
+                canTrade: true)
+        };
+
+    private static JsonObject BuildShiningHall(
+        string hallId,
+        string hallName) =>
+        new()
+        {
+            ["hallId"] = hallId,
+            ["hallName"] = hallName,
+            ["description"] = $"{hallName} serves the faction.",
+            ["serviceTags"] = new JsonArray("memory")
+        };
+
     private static JsonObject BuildCompleteMortalCreation()
     {
         var faction = BuildCompleteMinimalMortalCreation();
@@ -1180,7 +1470,8 @@ public sealed class FactionMaterializationValidationTests : IDisposable
 
     private static JsonObject BuildShiningEnvelope(
         string factionId,
-        string materializationId) =>
+        string materializationId,
+        bool canTrade = false) =>
         new()
         {
             ["schemaVersion"] = 1,
@@ -1195,7 +1486,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 ["holdsTerritorialInfluence"] = false,
                 ["usesResourceLedger"] = false,
                 ["hasResidentAffiliations"] = false,
-                ["canTrade"] = false,
+                ["canTrade"] = canTrade,
                 ["hasLeadershipHistory"] = false,
                 ["usesStoryState"] = false
             },

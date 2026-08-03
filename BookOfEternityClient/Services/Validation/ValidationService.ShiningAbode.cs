@@ -5,6 +5,22 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
+    private static readonly HashSet<string> ShiningCreationRoutes =
+        new(StringComparer.Ordinal)
+        {
+            "native_discovery",
+            "player_founding",
+            "story"
+        };
+
+    private static readonly HashSet<string> ShiningVisibilityStates =
+        new(StringComparer.Ordinal)
+        {
+            "revealed",
+            "rumored",
+            "hidden"
+        };
+
     private void ValidateShiningAbodeStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         RequireString(root, contextPrefix, issues, "availability");
@@ -1143,6 +1159,475 @@ public partial class ValidationService
         if (faction.TryGetProperty(ShiningAbodeState.FactionResourceLedgerProperty, out var resourceLedger))
             ValidateDuplicateStringIdsInArray(resourceLedger, $"{contextPrefix}.{ShiningAbodeState.FactionResourceLedgerProperty}", issues, "entryId", "shining_faction_resource_duplicate_entry_id");
     }
+
+    private void ValidateShiningFactionMaterializationSemanticCore(
+        JsonElement faction,
+        string contextPrefix,
+        string factionId,
+        List<ValidationIssue> issues)
+    {
+        var originType = ReadExactShiningMaterializationString(
+            faction,
+            "originType");
+        if (originType == null)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.originType",
+                "faction_materialization_shining_origin_missing",
+                factionId,
+                "A materialized Shining faction requires an authored originType."));
+        }
+        else if (!string.Equals(
+                     originType,
+                     ShiningAbodeState.OriginTypeAscendedGuardian,
+                     StringComparison.Ordinal) &&
+                 !string.Equals(
+                     originType,
+                     ShiningAbodeState.OriginTypeNativeRadiant,
+                     StringComparison.Ordinal) &&
+                 !string.Equals(
+                     originType,
+                     ShiningAbodeState.OriginTypePlayerFounded,
+                     StringComparison.Ordinal))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.originType",
+                "faction_materialization_shining_origin_invalid",
+                factionId,
+                "A materialized Shining faction originType must use an exact supported value.",
+                expected:
+                    "ascended_guardian | native_radiant | player_founded",
+                actual: originType));
+        }
+
+        JsonElement creationProvenance = default;
+        string? route = null;
+        string? provenanceAuthorityType = null;
+        string? provenanceAuthorityId = null;
+        if (!faction.TryGetProperty(
+                "creationProvenance",
+                out creationProvenance))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.creationProvenance",
+                "faction_materialization_shining_provenance_missing",
+                factionId,
+                "A materialized Shining faction requires exact authored creation provenance."));
+        }
+        else
+        {
+            route = ReadExactShiningMaterializationString(
+                creationProvenance,
+                "route");
+            provenanceAuthorityType =
+                ReadExactShiningMaterializationString(
+                    creationProvenance,
+                    "authorityType");
+            provenanceAuthorityId =
+                ReadExactShiningMaterializationString(
+                    creationProvenance,
+                    "authorityId");
+            var exactShape =
+                HasExactShiningMaterializationFields(
+                    creationProvenance,
+                    "route",
+                    "authorityType",
+                    "authorityId");
+            var supportedRoute =
+                route != null &&
+                ShiningCreationRoutes.Contains(route);
+            var originMatchesRoute = route switch
+            {
+                "native_discovery" => string.Equals(
+                    originType,
+                    ShiningAbodeState.OriginTypeNativeRadiant,
+                    StringComparison.Ordinal),
+                "player_founding" => string.Equals(
+                    originType,
+                    ShiningAbodeState.OriginTypePlayerFounded,
+                    StringComparison.Ordinal),
+                "story" =>
+                    originType != null &&
+                    ShiningAbodeState.IsSupportedOriginType(
+                        originType),
+                _ => false
+            };
+            if (!exactShape ||
+                !supportedRoute ||
+                !originMatchesRoute ||
+                provenanceAuthorityType == null ||
+                provenanceAuthorityId == null)
+            {
+                issues.Add(ShiningFactionMaterializationIssue(
+                    $"{contextPrefix}.creationProvenance",
+                    "faction_materialization_shining_provenance_invalid",
+                    factionId,
+                    "Shining creationProvenance must use the exact closed route-bound shape.",
+                    expected:
+                        "route, authorityType, authorityId with matching origin",
+                    actual: creationProvenance.ToString()));
+            }
+        }
+
+        if (ReadExactShiningMaterializationString(
+                faction,
+                "hallId") == null)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.hallId",
+                "faction_materialization_shining_hall_missing",
+                factionId,
+                "A materialized Shining faction requires one exact authored hallId."));
+        }
+
+        if (!faction.TryGetProperty("charter", out var charter))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.charter",
+                "faction_materialization_shining_charter_missing",
+                factionId,
+                "A materialized Shining faction requires a complete authored charter."));
+        }
+        else if (charter.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.charter",
+                "faction_materialization_shining_charter_invalid",
+                factionId,
+                "A materialized Shining faction charter must be an object."));
+        }
+        else
+        {
+            ValidateShiningFactionCharterObject(
+                charter,
+                $"{contextPrefix}.charter",
+                issues);
+        }
+
+        if (ReadExactShiningMaterializationString(
+                faction,
+                "currentAgenda") == null)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.currentAgenda",
+                "faction_materialization_shining_agenda_missing",
+                factionId,
+                "A materialized Shining faction requires a non-empty authored currentAgenda."));
+        }
+
+        if (!faction.TryGetProperty(
+                "factionLifecycle",
+                out var lifecycle))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.factionLifecycle",
+                "faction_materialization_shining_lifecycle_missing",
+                factionId,
+                "A materialized Shining faction requires explicit lifecycle semantics."));
+        }
+        else if (lifecycle.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.factionLifecycle",
+                "faction_materialization_shining_lifecycle_invalid",
+                factionId,
+                "A materialized Shining faction lifecycle must be an object."));
+        }
+        else
+        {
+            ValidateShiningFactionLifecycleObject(
+                faction,
+                contextPrefix,
+                issues);
+        }
+
+        if (!faction.TryGetProperty(
+                "leadership",
+                out var leadership))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.leadership",
+                "faction_materialization_shining_leadership_missing",
+                factionId,
+                "A materialized Shining faction requires explicit leadership semantics."));
+        }
+        else if (leadership.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.leadership",
+                "faction_materialization_shining_leadership_invalid",
+                factionId,
+                "A materialized Shining faction leadership must be an object."));
+        }
+        else
+        {
+            ValidateShiningFactionLeadershipObject(
+                leadership,
+                $"{contextPrefix}.leadership",
+                issues);
+            var leadershipState =
+                ReadExactShiningMaterializationString(
+                    leadership,
+                    "leadershipState");
+            if (string.Equals(
+                    leadershipState,
+                    ShiningAbodeState.LeadershipStateVacant,
+                    StringComparison.Ordinal) &&
+                (!leadership.TryGetProperty(
+                     "headActorType",
+                     out var headActorType) ||
+                 headActorType.ValueKind != JsonValueKind.Null ||
+                 !leadership.TryGetProperty(
+                     "headActorId",
+                     out var headActorId) ||
+                 headActorId.ValueKind != JsonValueKind.Null))
+            {
+                issues.Add(ShiningFactionMaterializationIssue(
+                    $"{contextPrefix}.leadership",
+                    "faction_materialization_shining_leadership_invalid",
+                    factionId,
+                    "Vacant authored leadership requires explicit null head fields.",
+                    expected:
+                        "headActorType=null and headActorId=null",
+                    actual: leadership.ToString()));
+            }
+        }
+
+        if (!faction.TryGetProperty(
+                ShiningAbodeState.FactionStrategicMemoryProperty,
+                out var strategicMemory))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.{ShiningAbodeState.FactionStrategicMemoryProperty}",
+                "faction_materialization_shining_memory_missing",
+                factionId,
+                "A materialized Shining faction requires complete authored strategic memory."));
+        }
+        else if (strategicMemory.ValueKind !=
+                 JsonValueKind.Object)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.{ShiningAbodeState.FactionStrategicMemoryProperty}",
+                "faction_materialization_shining_memory_invalid",
+                factionId,
+                "A materialized Shining faction strategicMemory must be an object."));
+        }
+        else
+        {
+            ValidateShiningFactionStrategicMemoryObject(
+                strategicMemory,
+                $"{contextPrefix}.{ShiningAbodeState.FactionStrategicMemoryProperty}",
+                issues);
+        }
+
+        if (!faction.TryGetProperty(
+                ShiningAbodeState.FactionChronicleProperty,
+                out var chronicle) ||
+            chronicle.ValueKind != JsonValueKind.Array ||
+            !chronicle.EnumerateArray().Any(
+                IsProductionValidShiningMaterializationChronicleEntry))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.{ShiningAbodeState.FactionChronicleProperty}",
+                "faction_materialization_shining_chronicle_missing",
+                factionId,
+                "A materialized Shining faction requires at least one production-valid authored chronicle entry."));
+        }
+        else
+        {
+            ValidateArrayItems(
+                faction,
+                $"{contextPrefix}.{ShiningAbodeState.FactionChronicleProperty}",
+                issues,
+                ShiningAbodeState.FactionChronicleProperty,
+                ValidateShiningFactionChronicleEntryObject);
+        }
+
+        var visibility = ReadExactShiningMaterializationString(
+            faction,
+            "visibility");
+        if (visibility == null)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.visibility",
+                "faction_materialization_shining_visibility_missing",
+                factionId,
+                "A materialized Shining faction requires explicit authored visibility."));
+        }
+        else if (!ShiningVisibilityStates.Contains(visibility))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.visibility",
+                "faction_materialization_shining_visibility_invalid",
+                factionId,
+                "Shining faction visibility must use an exact supported state.",
+                expected: "revealed | rumored | hidden",
+                actual: visibility));
+        }
+
+        if (!faction.TryGetProperty(
+                "storyAuthority",
+                out var storyAuthority))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.storyAuthority",
+                "faction_materialization_shining_story_authority_missing",
+                factionId,
+                "A materialized Shining faction requires explicit storyAuthority object or JSON null."));
+        }
+        else if (string.Equals(
+                     route,
+                     "story",
+                     StringComparison.Ordinal))
+        {
+            var storyAuthorityType =
+                ReadExactShiningMaterializationString(
+                    storyAuthority,
+                    "authorityType");
+            var storyAuthorityId =
+                ReadExactShiningMaterializationString(
+                    storyAuthority,
+                    "authorityId");
+            var storyRole =
+                ReadExactShiningMaterializationString(
+                    storyAuthority,
+                    "factionRole");
+            if (!HasExactShiningMaterializationFields(
+                    storyAuthority,
+                    "authorityType",
+                    "authorityId",
+                    "factionRole") ||
+                storyAuthorityType == null ||
+                storyAuthorityId == null ||
+                storyRole == null ||
+                !string.Equals(
+                    storyAuthorityType,
+                    provenanceAuthorityType,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    storyAuthorityId,
+                    provenanceAuthorityId,
+                    StringComparison.Ordinal))
+            {
+                issues.Add(ShiningFactionMaterializationIssue(
+                    $"{contextPrefix}.storyAuthority",
+                    "faction_materialization_shining_story_authority_invalid",
+                    factionId,
+                    "Story route authority must use the exact closed shape and match creation provenance.",
+                    expected:
+                        "authorityType, authorityId, factionRole matching creationProvenance",
+                    actual: storyAuthority.ToString()));
+            }
+        }
+        else if (storyAuthority.ValueKind !=
+                 JsonValueKind.Null)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(
+                $"{contextPrefix}.storyAuthority",
+                "faction_materialization_shining_story_authority_invalid",
+                factionId,
+                "Non-story Shining creation requires explicit JSON null storyAuthority.",
+                expected: "null",
+                actual: storyAuthority.ToString()));
+        }
+    }
+
+    private static bool
+        IsProductionValidShiningMaterializationChronicleEntry(
+            JsonElement entry)
+    {
+        if (entry.ValueKind != JsonValueKind.Object ||
+            ReadExactShiningMaterializationString(
+                entry,
+                "entryId") == null ||
+            ReadExactShiningMaterializationString(
+                entry,
+                "eventType") == null ||
+            ReadExactShiningMaterializationString(
+                entry,
+                "summary") == null ||
+            ReadExactShiningMaterializationString(
+                entry,
+                "visibility") == null ||
+            !entry.TryGetProperty(
+                "turnNumber",
+                out var turnNumber) ||
+            turnNumber.ValueKind != JsonValueKind.Number ||
+            !turnNumber.TryGetInt32(out var turn) ||
+            turn < 0 ||
+            !entry.TryGetProperty(
+                "consequences",
+                out var consequences) ||
+            consequences.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        return consequences.EnumerateArray().All(value =>
+            value.ValueKind == JsonValueKind.String &&
+            !string.IsNullOrWhiteSpace(value.GetString()));
+    }
+
+    private static bool HasExactShiningMaterializationFields(
+        JsonElement value,
+        params string[] fields)
+    {
+        if (value.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var expected = new HashSet<string>(
+            fields,
+            StringComparer.Ordinal);
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var property in value.EnumerateObject())
+        {
+            if (!expected.Contains(property.Name) ||
+                !seen.Add(property.Name))
+            {
+                return false;
+            }
+        }
+
+        return seen.SetEquals(expected);
+    }
+
+    private static string?
+        ReadExactShiningMaterializationString(
+            JsonElement value,
+            string propertyName)
+    {
+        if (value.ValueKind != JsonValueKind.Object ||
+            !value.TryGetProperty(
+                propertyName,
+                out var property) ||
+            property.ValueKind != JsonValueKind.String)
+        {
+            return null;
+        }
+
+        var text = property.GetString();
+        return string.IsNullOrWhiteSpace(text) ? null : text;
+    }
+
+    private static ValidationIssue
+        ShiningFactionMaterializationIssue(
+            string path,
+            string code,
+            string factionId,
+            string message,
+            string? expected = null,
+            string? actual = null) =>
+        new(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            actor: $"shining_faction:{factionId}",
+            section: "FactionMaterialization",
+            expected: expected,
+            actual: actual,
+            repairHint:
+                "Repair only this Shining faction's authored semantic or materialization bundle.");
 
     private string ValidateShiningFactionLifecycleObject(JsonElement faction, string contextPrefix, List<ValidationIssue> issues)
     {
