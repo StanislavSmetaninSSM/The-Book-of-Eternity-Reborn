@@ -521,6 +521,16 @@ without player-facing harness leakage.
   `factionStrength` values whose independently derived strengths cross the
   trade threshold in the opposite direction, plus linked non-player Actor
   Materialization trade-authority parity, without changing Guardian authority.
+- [x] T078c1 Reject forged completed-project `strengthReward` trade authority
+  across
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
+  and `BookOfEternityClient/Services/ShiningAbodeState.cs`, and record the
+  bounded evidence in
+  `sdd/task-11-fix3b-project-strength-report.md`: cover high and negative/low
+  raw project rewards whose canonical clamped-tier rewards cross the trade
+  threshold in the opposite direction, plus linked non-player Actor
+  Materialization parity, by using the same tier-to-reward projection as
+  normalization.
 - [x] T078d Require complete same-turn promotion for every externally touched
   receipt-less legacy faction across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,

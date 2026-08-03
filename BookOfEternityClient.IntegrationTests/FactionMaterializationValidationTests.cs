@@ -654,6 +654,34 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             issue.Section == "canTrade");
     }
 
+    [Theory]
+    [InlineData(1, 20, 30, true)]
+    [InlineData(3, -20, 10, false)]
+    public async Task NewShiningFaction_ForgedProjectRewardCannotControlTradeCapability(
+        int projectTier,
+        int submittedProjectStrengthReward,
+        int submittedFactionStrength,
+        bool declaredCanTrade)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["baseStrength"] = 10;
+        faction["factionStrength"] = submittedFactionStrength;
+        AddCompletedShiningProject(
+            faction,
+            projectTier,
+            submittedProjectStrengthReward);
+        faction["materialization"]!["capabilities"]!["canTrade"] =
+            declaredCanTrade;
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_capability_mismatch" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.Section == "canTrade");
+    }
+
     [Fact]
     public async Task NewShiningFaction_TradeContentCannotUseEmptyDisposition()
     {
@@ -952,6 +980,35 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             submittedFactionStrength: 30,
             factionCanTrade: false,
             actorCanTrade: true);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var factionHasMismatch = issues.Any(issue =>
+            issue.Code == "faction_materialization_capability_mismatch" &&
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.Section == "canTrade");
+        var actorHasMismatch = issues.Any(issue =>
+            issue.Code == "actor_materialization_capability_mismatch" &&
+            issue.Actor == "resident:required_head" &&
+            issue.Section == "canTrade");
+
+        Assert.True(
+            !factionHasMismatch && actorHasMismatch,
+            $"Faction mismatch: {factionHasMismatch}; actor mismatch: {actorHasMismatch}.");
+    }
+
+    [Fact]
+    public async Task ShiningRequiredActor_ForgedProjectRewardCannotGrantTradeAuthority()
+    {
+        await WriteRequiredShiningActorOutcomeAsync(
+            "head",
+            includeProfile: true,
+            includeEnvelope: true,
+            derivedBaseStrength: 10,
+            submittedFactionStrength: 33,
+            factionCanTrade: false,
+            actorCanTrade: true,
+            projectTier: 1,
+            submittedProjectStrengthReward: 20);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
         var factionHasMismatch = issues.Any(issue =>
@@ -2300,7 +2357,9 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         int? derivedBaseStrength = null,
         int? submittedFactionStrength = null,
         bool? factionCanTrade = null,
-        bool? actorCanTrade = null)
+        bool? actorCanTrade = null,
+        int? projectTier = null,
+        int? submittedProjectStrengthReward = null)
     {
         const string factionId = "shine_faction_dawn_archive";
         var actorId = $"required_{actorKind}";
@@ -2313,6 +2372,18 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         {
             faction["materialization"]!["capabilities"]!["canTrade"] =
                 factionCanTrade.Value;
+        }
+        if (projectTier.HasValue != submittedProjectStrengthReward.HasValue)
+        {
+            throw new ArgumentException(
+                "Project tier and submitted reward must be provided together.");
+        }
+        if (projectTier.HasValue)
+        {
+            AddCompletedShiningProject(
+                faction,
+                projectTier.Value,
+                submittedProjectStrengthReward!.Value);
         }
         var residentRoot = BuildRouteResidentRoot();
         var current = ShiningRoot(faction);
@@ -3433,6 +3504,35 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             "hasResidentAffiliations"] = true;
         faction["materialization"]!["sections"]![
             "residentAffiliations"] = PopulatedDisposition();
+    }
+
+    private static void AddCompletedShiningProject(
+        JsonObject faction,
+        int tier,
+        int submittedStrengthReward)
+    {
+        faction["projects"] = new JsonArray(new JsonObject
+        {
+            ["projectId"] = "project_forged_reward",
+            ["displayName"] = "Forged Reward Project",
+            ["summary"] = "A completed project with raw derived evidence.",
+            ["toneTags"] = new JsonArray(),
+            ["targetFactionIds"] = new JsonArray(),
+            ["projectArchetype"] =
+                ShiningAbodeState.ProjectArchetypeRemembrance,
+            ["outputEffectFamily"] =
+                ShiningAbodeState.EffectFamilyMemory,
+            ["tier"] = tier,
+            ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+            ["isSupported"] = true,
+            ["strengthReward"] = submittedStrengthReward,
+            ["completedAtTurn"] = 12,
+            ["completedAtUtc"] = "2026-08-03T00:05:00Z"
+        });
+        faction["materialization"]!["capabilities"]!["runsProjects"] =
+            true;
+        faction["materialization"]!["sections"]!["projects"] =
+            PopulatedDisposition();
     }
 
     private static JsonObject CloneJsonObject(JsonObject source) =>

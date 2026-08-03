@@ -2079,7 +2079,14 @@ internal static partial class ShiningAbodeState
             foreach (var project in projects.OfType<JsonObject>())
             {
                 if (string.Equals(GetNodeString(project["status"]), ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase))
-                    completedProjectBonus += Math.Max(0, GetNodeInt(project["strengthReward"], 0));
+                {
+                    var tier = Math.Clamp(
+                        GetNodeInt(project["tier"], 1),
+                        1,
+                        3);
+                    completedProjectBonus +=
+                        ResolveProjectStrengthReward(tier);
+                }
             }
         }
 
