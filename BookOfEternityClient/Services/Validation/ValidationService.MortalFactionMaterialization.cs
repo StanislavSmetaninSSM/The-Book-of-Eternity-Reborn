@@ -1918,19 +1918,23 @@ public partial class ValidationService
                 preTurnEvidence);
         }
 
+        var currentNpcRoot = await ReadRawMortalTouchRootAsync(
+            lookup.Manifest,
+            MortalNpcCorePath,
+            preTurn: false,
+            issues);
+        var preTurnNpcRoot = await ReadRawMortalTouchRootAsync(
+            lookup.Manifest,
+            MortalNpcCorePath,
+            preTurn: true,
+            issues);
         CollectRawMortalNpcTouchEvidence(
-            await ReadRawMortalTouchRootAsync(
-                lookup.Manifest,
-                MortalNpcCorePath,
-                preTurn: false,
-                issues),
+            ProjectRawMortalNpcAffiliationCommands(
+                currentNpcRoot,
+                preTurnNpcRoot),
             currentEvidence);
         CollectRawMortalNpcTouchEvidence(
-            await ReadRawMortalTouchRootAsync(
-                lookup.Manifest,
-                MortalNpcCorePath,
-                preTurn: true,
-                issues),
+            preTurnNpcRoot,
             preTurnEvidence);
 
         return new RawMortalExternalFactionTouchSummary(
@@ -1960,9 +1964,9 @@ public partial class ValidationService
                     StringComparer.Ordinal);
             foreach (var item in currentItems ?? [])
             {
-                currentByIdentity.TryAdd(
-                    MortalRawHistoryEvidenceIdentity(item),
-                    item.Payload);
+                currentByIdentity[
+                    MortalRawHistoryEvidenceIdentity(item)] =
+                    item.Payload;
             }
 
             foreach (var historical in historicalItems)
@@ -2186,6 +2190,133 @@ public partial class ValidationService
                         $"npc:{npcId}.factionAffiliations",
                         JsonNode.Parse(affiliation.GetRawText()));
                 }
+            }
+        }
+    }
+
+    private static JsonElement? ProjectRawMortalNpcAffiliationCommands(
+        JsonElement? currentRoot,
+        JsonElement? preTurnRoot)
+    {
+        if (currentRoot is not { ValueKind: JsonValueKind.Object } ||
+            preTurnRoot is not { ValueKind: JsonValueKind.Object })
+        {
+            return currentRoot;
+        }
+
+        var projected = JsonNode.Parse(
+            currentRoot.Value.GetRawText()) as JsonObject;
+        var preTurn = JsonNode.Parse(
+            preTurnRoot.Value.GetRawText()) as JsonObject;
+        if (projected == null ||
+            preTurn == null ||
+            projected[NpcCoreChangesContract.PropertyName]
+                is not JsonArray commands)
+        {
+            return currentRoot;
+        }
+
+        var preTurnActors =
+            EnumerateRawMortalNpcActors(preTurn).ToArray();
+        var currentActors =
+            EnumerateRawMortalNpcActors(projected).ToArray();
+        foreach (var command in commands.OfType<JsonObject>())
+        {
+            var npcId = ReadShiningMaterializationString(
+                command,
+                "NPCId");
+            if (npcId == null ||
+                !preTurnActors.Any(actor =>
+                    string.Equals(
+                        actor.NpcId,
+                        npcId,
+                        StringComparison.Ordinal)))
+            {
+                continue;
+            }
+
+            var targets = currentActors
+                .Where(actor => string.Equals(
+                    actor.NpcId,
+                    npcId,
+                    StringComparison.Ordinal))
+                .Select(actor => actor.Actor)
+                .ToArray();
+            if (targets.Length == 0 ||
+                command["factionAffiliationsToUpsert"]
+                    is not JsonArray upserts)
+            {
+                continue;
+            }
+
+            foreach (var target in targets)
+            {
+                var affiliations =
+                    target["factionAffiliations"] as JsonArray ??
+                    new JsonArray();
+                target["factionAffiliations"] = affiliations;
+                foreach (var upsert in upserts.OfType<JsonObject>())
+                {
+                    var factionId =
+                        ReadShiningMaterializationString(
+                            upsert,
+                            "factionId");
+                    if (factionId == null)
+                        continue;
+
+                    var existingIndex = -1;
+                    for (var index = 0;
+                         index < affiliations.Count;
+                         index++)
+                    {
+                        if (affiliations[index] is JsonObject existing &&
+                            string.Equals(
+                                ReadShiningMaterializationString(
+                                    existing,
+                                    "factionId"),
+                                factionId,
+                                StringComparison.Ordinal))
+                        {
+                            existingIndex = index;
+                            break;
+                        }
+                    }
+
+                    if (existingIndex >= 0)
+                        affiliations[existingIndex] =
+                            upsert.DeepClone();
+                    else
+                        affiliations.Add(upsert.DeepClone());
+                }
+            }
+        }
+
+        return JsonSerializer.SerializeToElement(projected);
+    }
+
+    private static IEnumerable<RawMortalNpcActor>
+        EnumerateRawMortalNpcActors(JsonObject root)
+    {
+        foreach (var section in
+                 GuardianPolicyContracts
+                     .NpcCoreCanonicalNpcObjectSections)
+        {
+            if (root[section] is not JsonArray actors)
+                continue;
+
+            foreach (var actor in actors.OfType<JsonObject>())
+            {
+                if (!GuardianPolicyContracts
+                        .TryResolveStrictPermanentNpcId(
+                            actor,
+                            out var npcId))
+                {
+                    continue;
+                }
+
+                yield return new RawMortalNpcActor(
+                    npcId,
+                    actor);
             }
         }
     }
@@ -3000,6 +3131,10 @@ public partial class ValidationService
     private sealed record MortalNpcAuthority(
         HashSet<string> NpcIds,
         IReadOnlyList<JsonElement> Npcs);
+
+    private sealed record RawMortalNpcActor(
+        string NpcId,
+        JsonObject Actor);
 
     private sealed record RawMortalExternalFactionTouchSummary(
         IReadOnlySet<string> ChangedAuthorityIds,

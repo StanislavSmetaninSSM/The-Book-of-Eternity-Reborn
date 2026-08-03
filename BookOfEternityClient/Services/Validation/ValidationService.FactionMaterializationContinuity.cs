@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -936,7 +937,10 @@ public partial class ValidationService
 
         evidence.Add(new RawFactionTouchEvidence(
             sourceIdentity,
-            payload.DeepClone()));
+            payload.DeepClone(),
+            BuildRawFactionTouchComparisonFingerprint(
+                sourceIdentity,
+                payload)));
     }
 
     private static HashSet<string> FindChangedRawFactionTouchIds(
@@ -968,34 +972,165 @@ public partial class ValidationService
         if (left.Count != right.Count)
             return false;
 
-        var matched = new bool[right.Count];
-        foreach (var leftItem in left)
+        var counts =
+            new Dictionary<RawFactionTouchComparisonKey, int>();
+        foreach (var item in left)
         {
-            var found = false;
-            for (var index = 0; index < right.Count; index++)
-            {
-                if (matched[index] ||
-                    !string.Equals(
-                        leftItem.SourceIdentity,
-                        right[index].SourceIdentity,
-                        StringComparison.Ordinal) ||
-                    !JsonNode.DeepEquals(
-                        leftItem.Payload,
-                        right[index].Payload))
-                {
-                    continue;
-                }
-
-                matched[index] = true;
-                found = true;
-                break;
-            }
-
-            if (!found)
-                return false;
+            var key = new RawFactionTouchComparisonKey(
+                item.SourceIdentity,
+                item.ComparisonFingerprint);
+            counts.TryGetValue(key, out var count);
+            counts[key] = count + 1;
         }
 
-        return true;
+        foreach (var item in right)
+        {
+            var key = new RawFactionTouchComparisonKey(
+                item.SourceIdentity,
+                item.ComparisonFingerprint);
+            if (!counts.TryGetValue(key, out var count))
+                return false;
+
+            if (count == 1)
+                counts.Remove(key);
+            else
+                counts[key] = count - 1;
+        }
+
+        return counts.Count == 0;
+    }
+
+    private static string BuildRawFactionTouchComparisonFingerprint(
+        string sourceIdentity,
+        JsonNode payload)
+    {
+        var result = new StringBuilder();
+        AppendRawFactionTouchCanonicalNode(
+            result,
+            sourceIdentity,
+            "$",
+            payload);
+        return result.ToString();
+    }
+
+    private static void AppendRawFactionTouchCanonicalNode(
+        StringBuilder result,
+        string sourceIdentity,
+        string path,
+        JsonNode? node)
+    {
+        switch (node)
+        {
+            case null:
+                result.Append("null");
+                return;
+            case JsonObject value:
+            {
+                result.Append('{');
+                var first = true;
+                foreach (var property in value.OrderBy(
+                             item => item.Key,
+                             StringComparer.Ordinal))
+                {
+                    if (!first)
+                        result.Append(',');
+                    first = false;
+                    result.Append(
+                        JsonSerializer.Serialize(property.Key));
+                    result.Append(':');
+                    AppendRawFactionTouchCanonicalNode(
+                        result,
+                        sourceIdentity,
+                        $"{path}.{property.Key}",
+                        property.Value);
+                }
+
+                result.Append('}');
+                return;
+            }
+            case JsonArray value:
+            {
+                var items = new List<string>(value.Count);
+                foreach (var item in value)
+                {
+                    var itemFingerprint = new StringBuilder();
+                    AppendRawFactionTouchCanonicalNode(
+                        itemFingerprint,
+                        sourceIdentity,
+                        $"{path}[]",
+                        item);
+                    items.Add(itemFingerprint.ToString());
+                }
+
+                if (RawFactionTouchArrayIsContractUnordered(
+                        sourceIdentity,
+                        path))
+                {
+                    items.Sort(StringComparer.Ordinal);
+                }
+
+                result.Append('[');
+                for (var index = 0; index < items.Count; index++)
+                {
+                    if (index > 0)
+                        result.Append(',');
+                    result.Append(items[index]);
+                }
+
+                result.Append(']');
+                return;
+            }
+            default:
+                result.Append(node.ToJsonString());
+                return;
+        }
+    }
+
+    private static bool RawFactionTouchArrayIsContractUnordered(
+        string sourceIdentity,
+        string path)
+    {
+        if (string.Equals(
+                sourceIdentity,
+                $"{MortalFactionStructurePath}.entries",
+                StringComparison.Ordinal))
+        {
+            return path is
+                "$.leadership.leaderNpcIds" or
+                "$.ranks.branches" or
+                "$.ranks.branches[].ranks" or
+                "$.ranks.branches[].ranks[].availableBranches" or
+                "$.structuredBonuses";
+        }
+
+        if (string.Equals(
+                sourceIdentity,
+                $"{MortalFactionResourcesPath}.entries",
+                StringComparison.Ordinal))
+        {
+            return path is
+                "$.metaResources" or
+                "$.strategicGoods";
+        }
+
+        if (string.Equals(
+                sourceIdentity,
+                $"{MortalFactionCustomPath}.entries",
+                StringComparison.Ordinal))
+        {
+            return path == "$.customStates";
+        }
+
+        if (sourceIdentity is
+                "game_state/factions/faction_projects.json.activeProjects" or
+                "game_state/factions/faction_projects.json.completedProjects")
+        {
+            return path is
+                "$.totalResourceCost" or
+                "$.resourcesSpent";
+        }
+
+        return false;
     }
 
     private static string? ReadNonEmptyFactionString(
@@ -1094,5 +1229,10 @@ public partial class ValidationService
 
     private sealed record RawFactionTouchEvidence(
         string SourceIdentity,
-        JsonNode Payload);
+        JsonNode Payload,
+        string ComparisonFingerprint);
+
+    private readonly record struct RawFactionTouchComparisonKey(
+        string SourceIdentity,
+        string ComparisonFingerprint);
 }

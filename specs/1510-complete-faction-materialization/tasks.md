@@ -549,6 +549,23 @@ without player-facing harness leakage.
   faction coordinate while preserving the `FactionCoreChanges` guard,
   untouched legacy compatibility, and documented Shining client-derived-only
   projections.
+- [x] T078d1 Complete raw legacy-touch carrier and comparator coverage across
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
+  and
+  `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`:
+  project Mortal `NPCCoreChanges[].factionAffiliationsToUpsert` and Shining
+  `UpdateGuardianAbodeResidents`, `sarefMainStoryUpdate`, and
+  `UpdateGuardians` from validated pre-turn exact identity; emit old and new
+  source/target legacy coordinates without unrelated coordinates; treat
+  political current-faction moves separately from immutable origin links;
+  preserve identity-upsert omission and unrelated Guardian controls; and use
+  duplicate-sensitive counted/indexed canonical projections for only the
+  contract-defined unordered collections so reorder-only changes do not
+  promote while duplicate or same-identity semantic changes do. Record exact
+  RED/GREEN/build evidence and superseded T078d rationale in
+  `sdd/task-11-fix4b-touch-carriers-report.md`.
 - [x] T078e Reject Mortal legacy promotions that rewrite validated historical
   authority across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
