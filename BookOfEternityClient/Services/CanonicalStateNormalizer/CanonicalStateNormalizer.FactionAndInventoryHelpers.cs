@@ -51,6 +51,35 @@ public partial class CanonicalStateNormalizer
         return entry;
     }
 
+    private static void RemoveMaterializedFactionCarrierFields(JsonObject entry)
+    {
+        if (entry[FactionMaterializationContract.PropertyName] is not JsonObject)
+            return;
+
+        foreach (var field in new[]
+                 {
+                     "governance",
+                     "leadership",
+                     "ranks",
+                     "structuredBonuses",
+                     "resources",
+                     "activeProjects",
+                     "completedProjects",
+                     "customStates",
+                     "scribeChronicle"
+                 })
+        {
+            entry.Remove(field);
+        }
+    }
+
+    private static JsonObject NormalizeFactionCoreForStorage(JsonObject rawEntry)
+    {
+        var entry = NormalizeFactionCoreEntry(rawEntry);
+        RemoveMaterializedFactionCarrierFields(entry);
+        return entry;
+    }
+
     private static bool LooksLikeCanonicalNewFactionEntry(JsonObject entry)
     {
         return !string.IsNullOrWhiteSpace(GetNodeString(entry["name"])) &&
@@ -65,6 +94,40 @@ public partial class CanonicalStateNormalizer
                entry["level"] != null &&
                entry["experience"] != null &&
                entry["experienceForNextLevel"] != null;
+    }
+
+    private static IEnumerable<JsonObject> CollectInitialFactionChronicleEntries(
+        JsonNode? factionCoreRoot)
+    {
+        foreach (var rawFaction in CollectFactionEntryObjects(
+                     factionCoreRoot,
+                     "factionDataChanges"))
+        {
+            var faction = NormalizeFactionCoreEntry(rawFaction);
+            var factionId = GetNodeString(faction["factionId"]);
+            var factionName =
+                GetNodeString(faction["factionName"]) ??
+                GetNodeString(faction["name"]);
+            if (string.IsNullOrWhiteSpace(factionId) ||
+                faction["scribeChronicle"] is not JsonArray entries)
+            {
+                continue;
+            }
+
+            foreach (var entryNode in entries)
+            {
+                var entry = GetNodeString(entryNode);
+                if (string.IsNullOrWhiteSpace(entry))
+                    continue;
+
+                yield return new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["factionName"] = factionName,
+                    ["entry"] = entry
+                };
+            }
+        }
     }
 
     private static void ApplyInventoryResourceCommands(JsonArray entries, JsonArray commands)
@@ -175,46 +238,74 @@ public partial class CanonicalStateNormalizer
         foreach (var rawEntry in CollectFactionEntryObjects(root, "factions"))
         {
             var entry = NormalizeFactionCoreEntry(rawEntry);
+            var hasGovernance = entry["governance"] is JsonObject;
+            var hasLeadership = entry["leadership"] is JsonObject;
             var hasRanks = entry["ranks"] is JsonObject;
             var hasStructuredBonuses = entry["structuredBonuses"] is JsonArray;
-            if (!hasRanks && !hasStructuredBonuses)
+            if (!hasGovernance &&
+                !hasLeadership &&
+                !hasRanks &&
+                !hasStructuredBonuses)
+            {
                 continue;
+            }
 
             var result = new JsonObject
             {
                 ["factionId"] = entry["factionId"]?.DeepClone(),
                 ["factionName"] = entry["factionName"]?.DeepClone() ?? entry["name"]?.DeepClone(),
-                ["name"] = entry["name"]?.DeepClone(),
-                ["structuredBonuses"] = new JsonArray()
+                ["name"] = entry["name"]?.DeepClone()
             };
 
-            if (hasRanks && entry["ranks"] is JsonObject ranks)
-                result["ranks"] = ranks.DeepClone();
-            if (hasStructuredBonuses && entry["structuredBonuses"] is JsonArray structuredBonuses)
-                result["structuredBonuses"] = structuredBonuses.DeepClone();
+            if (hasGovernance)
+                result["governance"] = entry["governance"]!.DeepClone();
+            if (hasLeadership)
+                result["leadership"] = entry["leadership"]!.DeepClone();
+            if (hasRanks)
+                result["ranks"] = entry["ranks"]!.DeepClone();
+            if (hasStructuredBonuses)
+            {
+                result["structuredBonuses"] =
+                    entry["structuredBonuses"]!.DeepClone();
+            }
+
             yield return result;
         }
 
         foreach (var rawEntry in CollectFactionEntryObjects(root, "factionDataChanges"))
         {
             var entry = NormalizeFactionCoreEntry(rawEntry);
+            var hasGovernance = entry["governance"] is JsonObject;
+            var hasLeadership = entry["leadership"] is JsonObject;
             var hasRanks = entry["ranks"] is JsonObject;
             var hasStructuredBonuses = entry["structuredBonuses"] is JsonArray;
-            if (!hasRanks && !hasStructuredBonuses)
+            if (!hasGovernance &&
+                !hasLeadership &&
+                !hasRanks &&
+                !hasStructuredBonuses)
+            {
                 continue;
+            }
 
             var result = new JsonObject
             {
                 ["factionId"] = entry["factionId"]?.DeepClone(),
                 ["factionName"] = entry["factionName"]?.DeepClone() ?? entry["name"]?.DeepClone(),
-                ["name"] = entry["name"]?.DeepClone(),
-                ["structuredBonuses"] = new JsonArray()
+                ["name"] = entry["name"]?.DeepClone()
             };
 
-            if (hasRanks && entry["ranks"] is JsonObject ranks)
-                result["ranks"] = ranks.DeepClone();
-            if (hasStructuredBonuses && entry["structuredBonuses"] is JsonArray structuredBonuses)
-                result["structuredBonuses"] = structuredBonuses.DeepClone();
+            if (hasGovernance)
+                result["governance"] = entry["governance"]!.DeepClone();
+            if (hasLeadership)
+                result["leadership"] = entry["leadership"]!.DeepClone();
+            if (hasRanks)
+                result["ranks"] = entry["ranks"]!.DeepClone();
+            if (hasStructuredBonuses)
+            {
+                result["structuredBonuses"] =
+                    entry["structuredBonuses"]!.DeepClone();
+            }
+
             yield return result;
         }
     }
@@ -282,6 +373,25 @@ public partial class CanonicalStateNormalizer
                 }
             }
         }
+    }
+
+    private static bool HasExplicitMaterializedFactionProjectSurface(JsonNode? root)
+    {
+        foreach (var propName in new[] { "factions", "factionDataChanges" })
+        {
+            foreach (var rawEntry in CollectFactionEntryObjects(root, propName))
+            {
+                var entry = NormalizeFactionCoreEntry(rawEntry);
+                if (entry[FactionMaterializationContract.PropertyName] is JsonObject &&
+                    entry["activeProjects"] is JsonArray &&
+                    entry["completedProjects"] is JsonArray)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private static IEnumerable<JsonObject> CollectFactionCustomEntriesFromCore(JsonNode? root)

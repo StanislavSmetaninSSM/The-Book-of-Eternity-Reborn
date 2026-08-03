@@ -18,9 +18,15 @@ public partial class CanonicalStateNormalizer
         var factions = new List<JsonObject>();
 
         foreach (var faction in CollectFactionCoreEntries(previous))
-            UpsertByIdentity(factions, NormalizeFactionCoreEntry(faction), "factionId");
+            UpsertByIdentity(
+                factions,
+                NormalizeFactionCoreForStorage(faction),
+                "factionId");
         foreach (var faction in CollectFactionCoreEntries(currentNode))
-            UpsertByIdentity(factions, NormalizeFactionCoreEntry(faction), "factionId");
+            UpsertByIdentity(
+                factions,
+                NormalizeFactionCoreForStorage(faction),
+                "factionId");
 
         result["factions"] = ToArray(factions);
         result.Remove("factionDataChanges");
@@ -122,6 +128,9 @@ public partial class CanonicalStateNormalizer
         var result = CloneObject(previous ?? new JsonObject());
         var activeProjects = new List<JsonObject>();
         var completedProjects = new List<JsonObject>();
+        var hasExplicitProjectSurface =
+            HasExplicitMaterializedFactionProjectSurface(factionCorePrevious) ||
+            HasExplicitMaterializedFactionProjectSurface(factionCoreCurrent);
 
         CollectFactionProjectObjects(previous, "activeProjects", activeProjects);
         CollectFactionProjectObjects(previous, "completedProjects", completedProjects);
@@ -144,8 +153,14 @@ public partial class CanonicalStateNormalizer
             CollectFactionProjectObjects(currentNode, "completedProjects", completedProjects);
         }
 
-        if (currentNode == null && previous == null && activeProjects.Count == 0 && completedProjects.Count == 0)
+        if (currentNode == null &&
+            previous == null &&
+            activeProjects.Count == 0 &&
+            completedProjects.Count == 0 &&
+            !hasExplicitProjectSurface)
+        {
             return;
+        }
 
         result["activeProjects"] = ToArray(activeProjects);
         result["completedProjects"] = ToArray(completedProjects);
@@ -198,15 +213,36 @@ public partial class CanonicalStateNormalizer
     {
         const string path = "game_state/factions/faction_chronicles.json";
         var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null) return;
+        var factionCoreCurrent =
+            await ReadNodeAsync("game_state/factions/faction_core.json");
+        var factionCorePrevious =
+            await ReadBackupObjectAsync(
+                "game_state/factions/faction_core.json",
+                backups);
 
         var previous = await ReadBackupObjectAsync(path, backups);
+        var initialPreviousEntries =
+            CollectInitialFactionChronicleEntries(factionCorePrevious).ToArray();
+        var initialCurrentEntries =
+            CollectInitialFactionChronicleEntries(factionCoreCurrent).ToArray();
+        if (currentNode == null &&
+            previous == null &&
+            initialPreviousEntries.Length == 0 &&
+            initialCurrentEntries.Length == 0)
+        {
+            return;
+        }
+
         var result = CloneObject(previous ?? new JsonObject());
         var entries = EnsureArray(result, "entries");
 
         foreach (var entry in CollectFactionChronicleEntries(previous))
             AddUniqueNode(entries, entry);
         foreach (var entry in CollectFactionChronicleEntries(currentNode))
+            AddUniqueNode(entries, entry);
+        foreach (var entry in initialPreviousEntries)
+            AddUniqueNode(entries, entry);
+        foreach (var entry in initialCurrentEntries)
             AddUniqueNode(entries, entry);
 
         result.Remove("factionChronicleUpdates");
