@@ -12,6 +12,7 @@ public sealed class ShiningAbodeStateTests
     [InlineData("hidden", false)]
     [InlineData("rumored", false)]
     [InlineData("revealed", true)]
+    [InlineData("public", false)]
     public void GetPlayerVisibleShiningFactions_UsesCanonicalVisibility(
         string visibility,
         bool expectedVisible)
@@ -21,7 +22,41 @@ public sealed class ShiningAbodeStateTests
             ["factionId"] = "shine_faction_story",
             ["originType"] = ShiningAbodeState.OriginTypeAscendedGuardian,
             ["hallId"] = "hall_story",
-            ["visibility"] = visibility
+            ["visibility"] = visibility,
+            ["materialization"] = new JsonObject
+            {
+                ["materializationId"] = "mat_shine_faction_story"
+            }
+        };
+        var root = new JsonObject
+        {
+            ["factions"] = new JsonArray(faction)
+        };
+
+        Assert.Equal(
+            expectedVisible,
+            SarefMainStoryState
+                .GetPlayerVisibleShiningFactions(root)
+                .Any());
+    }
+
+    [Theory]
+    [InlineData(null, null, true)]
+    [InlineData("wings_of_angels", "hidden", false)]
+    public void GetPlayerVisibleShiningFactions_LegacyPublicVisibilityUsesSarefFallback(
+        string? sarefFactionRole,
+        string? sarefVisibility,
+        bool expectedVisible)
+    {
+        var faction = new JsonObject
+        {
+            ["factionId"] = "legacy_public_faction",
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = "legacy_public_hall",
+            ["visibility"] = "public",
+            ["isPlayerVisible"] = true,
+            ["sarefFactionRole"] = sarefFactionRole,
+            ["sarefVisibility"] = sarefVisibility
         };
         var root = new JsonObject
         {

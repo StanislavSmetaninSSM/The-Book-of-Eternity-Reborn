@@ -495,6 +495,13 @@ without player-facing harness leakage.
 - [ ] T078 Request code review of the implementation, reconcile every Critical
   or Important finding in #1510, and create a linked follow-up issue only for a
   truly unrelated or explicitly deferred non-blocking finding.
+- [x] T078a Correct the T065 legacy visibility compatibility regression in
+  `BookOfEternityClient/Services/SarefMainStoryState.cs` and add exact
+  materialized strict-visibility plus untouched-legacy fallback coverage in
+  `BookOfEternityClient.Tests/ShiningAbodeStateTests.cs`: factions carrying a
+  materialization envelope remain revealed-only/fail-closed, while a legacy
+  faction without materialization and with `visibility=public` remains visible
+  unless the preexisting Saref Wings fallback hides it.
 - [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.

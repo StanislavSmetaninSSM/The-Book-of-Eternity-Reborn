@@ -1188,11 +1188,11 @@ internal static class SarefMainStoryState
         if (faction == null)
             return false;
 
-        var visibility = GetNodeString(faction["visibility"]);
-        if (!string.IsNullOrWhiteSpace(visibility))
+        if (faction.ContainsKey(
+                FactionMaterializationContract.PropertyName))
         {
             return string.Equals(
-                visibility,
+                GetNodeString(faction["visibility"]),
                 FactionVisibilityRevealed,
                 StringComparison.OrdinalIgnoreCase);
         }
