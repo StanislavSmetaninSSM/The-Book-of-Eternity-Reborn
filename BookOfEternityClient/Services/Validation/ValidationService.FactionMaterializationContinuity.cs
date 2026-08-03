@@ -227,6 +227,9 @@ public partial class ValidationService
             return;
         }
 
+        var externalTouchIds = rawBeforeNormalization
+            ? await ReadRawMortalExternalFactionTouchIdsAsync(issues)
+            : new HashSet<string>(StringComparer.Ordinal);
         var factionIds = currentCanonical.Keys
             .Concat(currentFull.Keys)
             .Distinct(StringComparer.Ordinal)
@@ -262,6 +265,7 @@ public partial class ValidationService
             var gmAuthoredTouch =
                 fullCarrier != null ||
                 preTurnFaction == null ||
+                externalTouchIds.Contains(factionId) ||
                 !FactionJsonSemanticallyEqual(
                     carrier.Faction,
                     preTurnFaction.Faction);
@@ -405,6 +409,12 @@ public partial class ValidationService
             return;
         }
 
+        var externalTouchIds = rawBeforeNormalization
+            ? await ReadRawShiningExternalFactionTouchIdsAsync(
+                currentDocument.RootElement,
+                preTurnDocument.RootElement,
+                issues)
+            : new HashSet<string>(StringComparer.Ordinal);
         foreach (var (factionId, carrier) in currentFactions)
         {
             preTurnFactions.TryGetValue(factionId, out var preTurnFaction);
@@ -418,13 +428,20 @@ public partial class ValidationService
                 ShiningFactionJsonEqualIgnoringDerivedFields(
                     carrier.Faction,
                     preTurnFaction.Faction);
-            var clientDerivedOnly = !exactEquality && derivedEquality;
+            var externallyTouched = externalTouchIds.Contains(factionId);
+            var clientDerivedOnly =
+                !externallyTouched &&
+                !exactEquality &&
+                derivedEquality;
             ValidateFactionContinuity(
                 carrier,
                 preTurnFaction,
                 FactionMaterializationFamily.Shining,
                 "shining_faction",
-                gmAuthoredTouch: preTurnFaction == null || !derivedEquality,
+                gmAuthoredTouch:
+                    preTurnFaction == null ||
+                    externallyTouched ||
+                    !derivedEquality,
                 clientDerivedOnly,
                 issues,
                 materializedFactions);
@@ -687,6 +704,26 @@ public partial class ValidationService
             hadReceiptPreTurn,
             gmAuthoredTouch,
             clientDerivedOnly);
+        var hasCurrentEnvelope = current.Faction.TryGetProperty(
+            FactionMaterializationContract.PropertyName,
+            out _);
+        if (touchKind == FactionTouchKind.LegacyPromotion &&
+            !hasCurrentEnvelope)
+        {
+            issues.Add(new ValidationIssue(
+                current.Context,
+                IssueSeverity.Error,
+                "A GM-authored change to a legacy faction requires complete same-turn promotion.",
+                code: "faction_legacy_promotion_required",
+                actor: $"{factionType}:{current.FactionId}",
+                section: "FactionMaterialization",
+                expected:
+                    "one complete same-turn materialization envelope for this exact legacy faction",
+                actual: "legacy faction touched without complete promotion",
+                repairHint:
+                    "Promote this exact faction through its complete full materialization carrier in the same accepted turn."));
+        }
+
         var requireEnvelope = touchKind is
             FactionTouchKind.New or
             FactionTouchKind.LegacyPromotion or
@@ -883,6 +920,84 @@ public partial class ValidationService
         }
     }
 
+    private static void AddRawFactionTouchEvidence(
+        Dictionary<string, List<RawFactionTouchEvidence>> evidenceByFaction,
+        string? factionId,
+        string sourceIdentity,
+        JsonNode? payload)
+    {
+        if (string.IsNullOrWhiteSpace(factionId) || payload == null)
+            return;
+        if (!evidenceByFaction.TryGetValue(factionId, out var evidence))
+        {
+            evidence = new List<RawFactionTouchEvidence>();
+            evidenceByFaction[factionId] = evidence;
+        }
+
+        evidence.Add(new RawFactionTouchEvidence(
+            sourceIdentity,
+            payload.DeepClone()));
+    }
+
+    private static HashSet<string> FindChangedRawFactionTouchIds(
+        IReadOnlyDictionary<string, List<RawFactionTouchEvidence>> current,
+        IReadOnlyDictionary<string, List<RawFactionTouchEvidence>> preTurn)
+    {
+        var changed = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var factionId in current.Keys
+                     .Concat(preTurn.Keys)
+                     .Distinct(StringComparer.Ordinal))
+        {
+            current.TryGetValue(factionId, out var currentEvidence);
+            preTurn.TryGetValue(factionId, out var preTurnEvidence);
+            if (!RawFactionTouchEvidenceMultisetEquals(
+                    currentEvidence ?? [],
+                    preTurnEvidence ?? []))
+            {
+                changed.Add(factionId);
+            }
+        }
+
+        return changed;
+    }
+
+    private static bool RawFactionTouchEvidenceMultisetEquals(
+        IReadOnlyList<RawFactionTouchEvidence> left,
+        IReadOnlyList<RawFactionTouchEvidence> right)
+    {
+        if (left.Count != right.Count)
+            return false;
+
+        var matched = new bool[right.Count];
+        foreach (var leftItem in left)
+        {
+            var found = false;
+            for (var index = 0; index < right.Count; index++)
+            {
+                if (matched[index] ||
+                    !string.Equals(
+                        leftItem.SourceIdentity,
+                        right[index].SourceIdentity,
+                        StringComparison.Ordinal) ||
+                    !JsonNode.DeepEquals(
+                        leftItem.Payload,
+                        right[index].Payload))
+                {
+                    continue;
+                }
+
+                matched[index] = true;
+                found = true;
+                break;
+            }
+
+            if (!found)
+                return false;
+        }
+
+        return true;
+    }
+
     private static string? ReadNonEmptyFactionString(
         JsonElement value,
         string propertyName)
@@ -976,4 +1091,8 @@ public partial class ValidationService
         JsonElement Faction,
         string Context,
         string FactionId);
+
+    private sealed record RawFactionTouchEvidence(
+        string SourceIdentity,
+        JsonNode Payload);
 }

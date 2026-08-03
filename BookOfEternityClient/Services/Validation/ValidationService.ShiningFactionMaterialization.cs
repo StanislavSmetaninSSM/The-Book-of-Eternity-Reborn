@@ -283,6 +283,295 @@ public partial class ValidationService
         return result;
     }
 
+    private async Task<HashSet<string>>
+        ReadRawShiningExternalFactionTouchIdsAsync(
+            JsonElement currentRootElement,
+            JsonElement preTurnRootElement,
+            List<ValidationIssue> issues)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            lookup.Manifest == null)
+        {
+            return new HashSet<string>(StringComparer.Ordinal);
+        }
+
+        var currentEvidence =
+            new Dictionary<string, List<RawFactionTouchEvidence>>(
+                StringComparer.Ordinal);
+        var preTurnEvidence =
+            new Dictionary<string, List<RawFactionTouchEvidence>>(
+                StringComparer.Ordinal);
+        var currentRoot =
+            JsonNode.Parse(currentRootElement.GetRawText()) as JsonObject;
+        var preTurnRoot =
+            JsonNode.Parse(preTurnRootElement.GetRawText()) as JsonObject;
+        CollectRawShiningRootTouchEvidence(
+            currentRoot,
+            currentEvidence);
+        CollectRawShiningRootTouchEvidence(
+            preTurnRoot,
+            preTurnEvidence);
+
+        var currentResidents = await ReadRawShiningTouchRootAsync(
+            lookup.Manifest,
+            GuardianAbodeResidentState.StatePath,
+            preTurn: false,
+            issues);
+        var preTurnResidents = await ReadRawShiningTouchRootAsync(
+            lookup.Manifest,
+            GuardianAbodeResidentState.StatePath,
+            preTurn: true,
+            issues);
+        CollectRawShiningResidentTouchEvidence(
+            currentResidents,
+            currentEvidence);
+        CollectRawShiningResidentTouchEvidence(
+            preTurnResidents,
+            preTurnEvidence);
+
+        var currentStory = await ReadRawShiningTouchRootAsync(
+            lookup.Manifest,
+            SarefMainStoryState.StatePath,
+            preTurn: false,
+            issues);
+        var preTurnStory = await ReadRawShiningTouchRootAsync(
+            lookup.Manifest,
+            SarefMainStoryState.StatePath,
+            preTurn: true,
+            issues);
+        CollectRawShiningStoryTouchEvidence(
+            currentStory,
+            currentEvidence);
+        CollectRawShiningStoryTouchEvidence(
+            preTurnStory,
+            preTurnEvidence);
+
+        var currentGuardians = await ReadRawShiningTouchRootAsync(
+            lookup.Manifest,
+            "game_state/meta/guardians.json",
+            preTurn: false,
+            issues);
+        var preTurnGuardians = await ReadRawShiningTouchRootAsync(
+            lookup.Manifest,
+            "game_state/meta/guardians.json",
+            preTurn: true,
+            issues);
+        CollectRawShiningGuardianStoryTouchEvidence(
+            currentRoot,
+            currentGuardians,
+            currentEvidence);
+        CollectRawShiningGuardianStoryTouchEvidence(
+            preTurnRoot,
+            preTurnGuardians,
+            preTurnEvidence);
+
+        return FindChangedRawFactionTouchIds(
+            currentEvidence,
+            preTurnEvidence);
+    }
+
+    private async Task<JsonObject?> ReadRawShiningTouchRootAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string path,
+        bool preTurn,
+        List<ValidationIssue> issues)
+    {
+        var json = preTurn
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(
+                manifest,
+                path)
+            : await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        using var document = TryParseFactionMaterializationDocument(
+            json,
+            path,
+            currentAuthority: !preTurn,
+            issues);
+        return document == null
+            ? null
+            : JsonNode.Parse(
+                document.RootElement.GetRawText()) as JsonObject;
+    }
+
+    private static void CollectRawShiningRootTouchEvidence(
+        JsonObject? root,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        CollectRawShiningTargetArray(
+            root,
+            "shiningPoliticalActors",
+            ["originFactionId", "currentFactionId"],
+            evidence);
+        CollectRawShiningTargetArray(
+            root,
+            ShiningAbodeState.FactionConflictCampaignsProperty,
+            ["targetFactionId"],
+            evidence);
+        CollectRawShiningTargetArray(
+            root,
+            "coreActionReceipts",
+            ["factionId", "resolvedFactionId", "targetFactionId"],
+            evidence);
+        CollectRawShiningTargetArray(
+            root,
+            "factionFoundingReceipts",
+            ["factionId", "proposedFactionId"],
+            evidence);
+        CollectRawShiningTargetArray(
+            root,
+            "factionRealignmentReceipts",
+            ["sourceFactionId", "targetFactionId"],
+            evidence);
+    }
+
+    private static void CollectRawShiningTargetArray(
+        JsonObject? root,
+        string arrayName,
+        IReadOnlyList<string> factionIdFields,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        if (root?[arrayName] is not JsonArray rows)
+            return;
+
+        foreach (var row in rows.OfType<JsonObject>())
+        {
+            foreach (var factionIdField in factionIdFields)
+            {
+                AddRawFactionTouchEvidence(
+                    evidence,
+                    ReadShiningMaterializationString(
+                        row,
+                        factionIdField),
+                    $"{ShiningAbodeState.StatePath}.{arrayName}",
+                    row);
+            }
+        }
+    }
+
+    private static void CollectRawShiningResidentTouchEvidence(
+        JsonObject? root,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        if (root?["entries"] is not JsonArray residents)
+            return;
+
+        foreach (var resident in residents.OfType<JsonObject>())
+        {
+            var factionId = ReadShiningMaterializationString(
+                resident,
+                "shiningFactionId");
+            if (factionId == null)
+                continue;
+
+            var affiliation = new JsonObject();
+            foreach (var field in new[]
+                     {
+                         "residentId",
+                         "shiningFactionId"
+                     })
+            {
+                if (resident.TryGetPropertyValue(field, out var value))
+                    affiliation[field] = value?.DeepClone();
+            }
+
+            AddRawFactionTouchEvidence(
+                evidence,
+                factionId,
+                $"{GuardianAbodeResidentState.StatePath}.entries",
+                affiliation);
+        }
+    }
+
+    private static void CollectRawShiningStoryTouchEvidence(
+        JsonObject? root,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        if (root?["factionLinks"] is not JsonObject factionLinks)
+            return;
+
+        AddRawFactionTouchEvidence(
+            evidence,
+            ReadShiningMaterializationString(
+                factionLinks,
+                "wingsFactionId"),
+            $"{SarefMainStoryState.StatePath}.factionLinks",
+            factionLinks);
+    }
+
+    private static void CollectRawShiningGuardianStoryTouchEvidence(
+        JsonObject? shiningRoot,
+        JsonObject? guardiansRoot,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        if (shiningRoot?["factions"] is not JsonArray factions ||
+            guardiansRoot == null)
+        {
+            return;
+        }
+
+        foreach (var faction in factions.OfType<JsonObject>())
+        {
+            var factionId = ReadShiningMaterializationString(
+                faction,
+                "factionId");
+            if (faction["storyAuthority"] is not JsonObject authority ||
+                !string.Equals(
+                    ReadShiningMaterializationString(
+                        authority,
+                        "authorityType"),
+                    "guardian_ascension",
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var guardianId = ReadShiningMaterializationString(
+                authority,
+                "authorityId");
+            if (guardianId == null)
+                continue;
+
+            if (guardiansRoot["activeGuardian"] is JsonObject active &&
+                string.Equals(
+                    ReadShiningMaterializationString(
+                        active,
+                        "guardianId"),
+                    guardianId,
+                    StringComparison.Ordinal))
+            {
+                AddRawFactionTouchEvidence(
+                    evidence,
+                    factionId,
+                    $"game_state/meta/guardians.json.activeGuardian:{guardianId}",
+                    active);
+            }
+
+            if (guardiansRoot["guardians"] is not JsonArray guardians)
+                continue;
+            foreach (var guardian in guardians.OfType<JsonObject>())
+            {
+                if (!string.Equals(
+                        ReadShiningMaterializationString(
+                            guardian,
+                            "guardianId"),
+                        guardianId,
+                        StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                AddRawFactionTouchEvidence(
+                    evidence,
+                    factionId,
+                    $"game_state/meta/guardians.json.guardians:{guardianId}",
+                    guardian);
+            }
+        }
+    }
+
     private static bool
         ShiningFactionNodesEqualIgnoringDerivedFields(
             JsonObject current,

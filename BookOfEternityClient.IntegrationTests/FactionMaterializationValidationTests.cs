@@ -82,6 +82,20 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         { "unrelated_resident_rewrite", "faction_materialization_shining_route_resident_affiliation_invalid" }
     };
 
+    public static TheoryData<string> LegacyMortalExternalTouchChannels => new()
+    {
+        "factionRankChanges",
+        "factionBonusChanges",
+        "factionResourceChanges",
+        "factionProjectUpdates",
+        "completeFactionProjects",
+        "factionCustomStateChanges",
+        "factionChronicleUpdates",
+        "current_location_factionControl",
+        "world_map_factionControl",
+        "npc_factionAffiliations"
+    };
+
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ValidationService _validator;
@@ -397,6 +411,162 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue =>
             issue.Actor == "shining_faction:order_dawn" &&
             issue.Code == "faction_materialization_missing");
+    }
+
+    [Theory]
+    [MemberData(nameof(LegacyMortalExternalTouchChannels))]
+    public async Task Validate_LegacyMortalExternalTouchWithoutPromotion_ReportsPromotionRequired(
+        string channel)
+    {
+        await WriteLegacyMortalExternalTouchAsync(channel);
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_legacy_promotion_required" &&
+            issue.Actor == "mortal_faction:faction_watch");
+    }
+
+    [Fact]
+    public async Task Validate_LegacyShiningResidentRealignmentWithoutPromotion_ReportsPromotionRequired()
+    {
+        const string sourceFactionId = "order_twilight";
+        const string targetFactionId = "order_dawn";
+        const string residentId = "resident_liora";
+        const string requestId = "realign_req_liora";
+        const string historyEntryId = "history_realign_liora";
+
+        var preTurnShining = ShiningRoot(
+            LegacyShiningFaction(sourceFactionId, factionStrength: 30),
+            LegacyShiningFaction(targetFactionId, factionStrength: 30));
+        var currentShining = CloneJsonObject(preTurnShining);
+        currentShining["factionRealignmentReceipts"] = new JsonArray(
+            new JsonObject
+            {
+                ["requestId"] = requestId,
+                ["residentId"] = residentId,
+                ["residentName"] = "Liora",
+                ["sourceFactionId"] = sourceFactionId,
+                ["targetFactionId"] = targetFactionId,
+                ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
+                ["realignmentMode"] =
+                    ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                ["residentHistoryEntryId"] = historyEntryId,
+                ["resolvedAtTurn"] = 12,
+                ["resolvedAtUtc"] = "2026-08-03T12:00:00Z",
+                ["reason"] = "accepted_by_target_faction"
+            });
+
+        var preTurnResidents = BuildRouteResidentRoot(
+            BuildRouteResident(residentId, sourceFactionId));
+        var currentResidents = BuildRouteResidentRoot(
+            BuildRouteResident(residentId, targetFactionId));
+        ((JsonArray)currentResidents[
+            GuardianAbodeResidentState.HistoryLogProperty]!).Add(
+            new JsonObject
+            {
+                ["entryId"] = historyEntryId,
+                ["residentId"] = residentId,
+                ["title"] = "A new radiant allegiance",
+                ["summary"] = "Liora joined the Dawn order.",
+                ["revealedAtTurn"] = 12,
+                ["revealedAtUtc"] = "2026-08-03T12:00:00Z",
+                ["tags"] = new JsonArray("faction", "realignment")
+            });
+        var pendingRealignment = new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(
+                new JsonObject
+                {
+                    ["requestId"] = requestId,
+                    ["residentId"] = residentId,
+                    ["residentName"] = "Liora",
+                    ["sourceFactionId"] = sourceFactionId,
+                    ["sourceFactionName"] = "Twilight Order",
+                    ["targetFactionId"] = targetFactionId,
+                    ["targetFactionName"] = "Dawn Order",
+                    ["realignmentMode"] =
+                        ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                    ["factionLoyaltyLevel"] = 14,
+                    ["factionLoyaltyTier"] =
+                        ShiningAbodeState.FactionLoyaltyTierAlienated,
+                    ["factionRestlessness"] = 76,
+                    ["factionRealignmentState"] =
+                        ShiningAbodeState.FactionRealignmentStateReadyToRealign,
+                    ["createdAtTurn"] = 12,
+                    ["createdAtUtc"] = "2026-08-03T11:59:00Z"
+                })
+        };
+
+        await WriteCurrentAndSnapshotAsync(
+            (ShiningPath, currentShining.ToJsonString()),
+            (ResidentPath, currentResidents.ToJsonString()),
+            (ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                pendingRealignment.ToJsonString()),
+            (ShiningPath, preTurnShining.ToJsonString()),
+            (ResidentPath, preTurnResidents.ToJsonString()),
+            (ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                pendingRealignment.ToJsonString()));
+
+        var issues = (await _validator
+                .ValidateAcceptedTurnRawFactionMaterializationAsync())
+            .ToList();
+        await InvokeRouteValidationAsync(
+            "ValidatePendingShiningRealignmentResolutionAsync",
+            issues);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith(
+                "shining_realignment_",
+                StringComparison.Ordinal) == true);
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_legacy_promotion_required" &&
+            issue.Actor == $"shining_faction:{sourceFactionId}");
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_legacy_promotion_required" &&
+            issue.Actor == $"shining_faction:{targetFactionId}");
+    }
+
+    [Theory]
+    [InlineData("untouched_mortal")]
+    [InlineData("shining_derived_only")]
+    public async Task Validate_LegacyExternalTouchControls_DoNotPromote(
+        string control)
+    {
+        if (string.Equals(
+                control,
+                "untouched_mortal",
+                StringComparison.Ordinal))
+        {
+            var faction = LegacyMortalFaction("faction_watch");
+            await WriteCurrentAndSnapshotAsync(
+                (MortalPath, MortalRoot(
+                    CloneJsonObject(faction)).ToJsonString()),
+                (MortalPath, MortalRoot(faction).ToJsonString()));
+        }
+        else
+        {
+            var preTurnFaction = LegacyShiningFaction(
+                "order_dawn",
+                factionStrength: 30);
+            var currentFaction = LegacyShiningFaction(
+                "order_dawn",
+                factionStrength: 31);
+            preTurnFaction["derivedTier"] = 1;
+            currentFaction["derivedTier"] = 2;
+            preTurnFaction["serviceMultiplier"] = 1.0;
+            currentFaction["serviceMultiplier"] = 1.25;
+            await WriteCurrentAndSnapshotAsync(
+                (ShiningPath, ShiningRoot(currentFaction).ToJsonString()),
+                (ShiningPath, ShiningRoot(preTurnFaction).ToJsonString()));
+        }
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "faction_legacy_promotion_required");
     }
 
     [Theory]
@@ -1538,6 +1708,221 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (MortalPath, current.ToJsonString()),
             (MortalPath, MortalRoot(
                 LegacyMortalFaction("faction_watch")).ToJsonString()));
+    }
+
+    private async Task WriteLegacyMortalExternalTouchAsync(string channel)
+    {
+        const string factionId = "faction_watch";
+        var preTurnCore = MortalRoot(LegacyMortalFaction(factionId));
+        var currentCore = CloneJsonObject(preTurnCore);
+        string path;
+        JsonObject preTurnAuthority;
+        JsonObject currentAuthority;
+
+        switch (channel)
+        {
+            case "factionRankChanges":
+                path = "game_state/factions/faction_structure.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["entries"] = new JsonArray()
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                currentAuthority[channel] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["branchesToAdd"] = new JsonArray(new JsonObject
+                    {
+                        ["branchId"] = "road_scouts",
+                        ["displayName"] = "Road Scouts",
+                        ["ranks"] = new JsonArray()
+                    })
+                });
+                break;
+            case "factionBonusChanges":
+                path = "game_state/factions/faction_structure.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["entries"] = new JsonArray()
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                currentAuthority[channel] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["bonusesToAddOrUpdate"] = new JsonArray(new JsonObject
+                    {
+                        ["bonusId"] = null,
+                        ["name"] = "Roadwise",
+                        ["description"] = "Wardens read the old roads well."
+                    })
+                });
+                break;
+            case "factionResourceChanges":
+                path = "game_state/factions/faction_resources.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["entries"] = new JsonArray()
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                currentAuthority[channel] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["resourceChanges"] = new JsonArray(new JsonObject
+                    {
+                        ["resourceName"] = "timber",
+                        ["changeAmount"] = 4
+                    })
+                });
+                break;
+            case "factionProjectUpdates":
+                path = "game_state/factions/faction_projects.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["activeProjects"] = new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["projectId"] = "project_watchtower",
+                        ["projectName"] = "Raise the Watchtower",
+                        ["activeState"] = "Active"
+                    }),
+                    ["completedProjects"] = new JsonArray()
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                currentAuthority[channel] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["projectUpdate"] = new JsonObject
+                    {
+                        ["projectId"] = "project_watchtower",
+                        ["currentStep"] = 2
+                    }
+                });
+                break;
+            case "completeFactionProjects":
+                path = "game_state/factions/faction_projects.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["activeProjects"] = new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["projectId"] = "project_watchtower",
+                        ["projectName"] = "Raise the Watchtower",
+                        ["activeState"] = "Active"
+                    }),
+                    ["completedProjects"] = new JsonArray()
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                currentAuthority[channel] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["projectId"] = "project_watchtower",
+                    ["projectName"] = "Raise the Watchtower",
+                    ["finalState"] = "Completed"
+                });
+                break;
+            case "factionCustomStateChanges":
+                path = "game_state/factions/faction_custom.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["entries"] = new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["customStates"] = new JsonArray(new JsonObject
+                        {
+                            ["stateId"] = "watch_priority",
+                            ["name"] = "Watch Priority",
+                            ["value"] = "bridge"
+                        })
+                    })
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                currentAuthority[channel] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["statesToRemove"] = new JsonArray("watch_priority")
+                });
+                break;
+            case "factionChronicleUpdates":
+                path = "game_state/factions/faction_chronicles.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["entries"] = new JsonArray()
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                currentAuthority[channel] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["factionName"] = "Wayfarer Watch",
+                    ["entryToAppend"] =
+                        "#12 - The watch renewed its western-road patrol."
+                });
+                break;
+            case "current_location_factionControl":
+                path = "game_state/world/current_location.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["locationId"] = "location_watch_road",
+                    ["locationName"] = "Western Road",
+                    ["factionControl"] = new JsonArray()
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                ((JsonArray)currentAuthority["factionControl"]!).Add(
+                    new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["controlLevel"] = 35
+                    });
+                break;
+            case "world_map_factionControl":
+                path = "game_state/world/world_map.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["locations"] = new JsonArray(new JsonObject
+                    {
+                        ["locationId"] = "location_watch_road",
+                        ["locationName"] = "Western Road",
+                        ["factionControl"] = new JsonArray()
+                    })
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                ((JsonArray)currentAuthority["locations"]![0]![
+                    "factionControl"]!).Add(new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["controlLevel"] = 35
+                    });
+                break;
+            case "npc_factionAffiliations":
+                path = "game_state/npcs/npc_core.json";
+                preTurnAuthority = new JsonObject
+                {
+                    ["npcs"] = new JsonArray(new JsonObject
+                    {
+                        ["NPCId"] = "npc_watch_captain",
+                        ["name"] = "Captain Mira",
+                        ["factionAffiliations"] = new JsonArray()
+                    })
+                };
+                currentAuthority = CloneJsonObject(preTurnAuthority);
+                ((JsonArray)currentAuthority["npcs"]![0]![
+                    "factionAffiliations"]!).Add(new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["role"] = "captain"
+                    });
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(channel),
+                    channel,
+                    "Unsupported legacy Mortal external touch channel.");
+        }
+
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, currentCore.ToJsonString()),
+            (path, currentAuthority.ToJsonString()),
+            (MortalPath, preTurnCore.ToJsonString()),
+            (path, preTurnAuthority.ToJsonString()));
     }
 
     private async Task<IReadOnlyList<ValidationIssue>> ValidateNativeDiscoveryRouteAsync()

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
 namespace BookOfEternityClient.Services;
@@ -1127,6 +1128,291 @@ public partial class ValidationService
             "faction_materialization_mortal_player_membership_incomplete",
             factionId,
             "Mortal player membership must be populated consistently or carry every exact non-member value."));
+    }
+
+    private async Task<HashSet<string>>
+        ReadRawMortalExternalFactionTouchIdsAsync(
+            List<ValidationIssue> issues)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            lookup.Manifest == null)
+        {
+            return new HashSet<string>(StringComparer.Ordinal);
+        }
+
+        var currentEvidence =
+            new Dictionary<string, List<RawFactionTouchEvidence>>(
+                StringComparer.Ordinal);
+        var preTurnEvidence =
+            new Dictionary<string, List<RawFactionTouchEvidence>>(
+                StringComparer.Ordinal);
+        var commandTouches = new HashSet<string>(StringComparer.Ordinal);
+        var sidecarSurfaces = new[]
+        {
+            (
+                MortalFactionStructurePath,
+                CanonicalArrays: new[] { "entries" },
+                CommandArrays: new[]
+                {
+                    "factionRankChanges",
+                    "factionBonusChanges"
+                }),
+            (
+                MortalFactionResourcesPath,
+                CanonicalArrays: new[] { "entries" },
+                CommandArrays: new[] { "factionResourceChanges" }),
+            (
+                MortalFactionProjectsPath,
+                CanonicalArrays: new[]
+                {
+                    "activeProjects",
+                    "completedProjects"
+                },
+                CommandArrays: new[]
+                {
+                    "factionProjectUpdates",
+                    "completeFactionProjects"
+                }),
+            (
+                MortalFactionCustomPath,
+                CanonicalArrays: new[] { "entries" },
+                CommandArrays: new[] { "factionCustomStateChanges" }),
+            (
+                MortalFactionChroniclesPath,
+                CanonicalArrays: new[] { "entries" },
+                CommandArrays: new[] { "factionChronicleUpdates" })
+        };
+
+        foreach (var surface in sidecarSurfaces)
+        {
+            var currentRoot = await ReadRawMortalTouchRootAsync(
+                lookup.Manifest,
+                surface.Item1,
+                preTurn: false,
+                issues);
+            var preTurnRoot = await ReadRawMortalTouchRootAsync(
+                lookup.Manifest,
+                surface.Item1,
+                preTurn: true,
+                issues);
+            CollectRawMortalTargetArrays(
+                currentRoot,
+                surface.Item1,
+                surface.CanonicalArrays,
+                currentEvidence);
+            CollectRawMortalTargetArrays(
+                preTurnRoot,
+                surface.Item1,
+                surface.CanonicalArrays,
+                preTurnEvidence);
+            CollectRawMortalCommandTouches(
+                currentRoot,
+                surface.CommandArrays,
+                commandTouches);
+        }
+
+        foreach (var path in new[]
+                 {
+                     "game_state/world/current_location.json",
+                     "game_state/world/world_map.json"
+                 })
+        {
+            CollectRawMortalLocationTouchEvidence(
+                await ReadRawMortalTouchRootAsync(
+                    lookup.Manifest,
+                    path,
+                    preTurn: false,
+                    issues),
+                currentEvidence);
+            CollectRawMortalLocationTouchEvidence(
+                await ReadRawMortalTouchRootAsync(
+                    lookup.Manifest,
+                    path,
+                    preTurn: true,
+                    issues),
+                preTurnEvidence);
+        }
+
+        CollectRawMortalNpcTouchEvidence(
+            await ReadRawMortalTouchRootAsync(
+                lookup.Manifest,
+                MortalNpcCorePath,
+                preTurn: false,
+                issues),
+            currentEvidence);
+        CollectRawMortalNpcTouchEvidence(
+            await ReadRawMortalTouchRootAsync(
+                lookup.Manifest,
+                MortalNpcCorePath,
+                preTurn: true,
+                issues),
+            preTurnEvidence);
+
+        commandTouches.UnionWith(
+            FindChangedRawFactionTouchIds(
+                currentEvidence,
+                preTurnEvidence));
+        return commandTouches;
+    }
+
+    private async Task<JsonElement?> ReadRawMortalTouchRootAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string path,
+        bool preTurn,
+        List<ValidationIssue> issues)
+    {
+        var json = preTurn
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(
+                manifest,
+                path)
+            : await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        using var document = TryParseFactionMaterializationDocument(
+            json,
+            path,
+            currentAuthority: !preTurn,
+            issues);
+        return document?.RootElement.Clone();
+    }
+
+    private static void CollectRawMortalTargetArrays(
+        JsonElement? root,
+        string path,
+        IReadOnlyList<string> arrayNames,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        if (root is not { ValueKind: JsonValueKind.Object })
+            return;
+
+        foreach (var arrayName in arrayNames)
+        {
+            if (!root.Value.TryGetProperty(arrayName, out var rows) ||
+                rows.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            foreach (var row in rows.EnumerateArray())
+            {
+                if (row.ValueKind != JsonValueKind.Object)
+                    continue;
+                AddRawFactionTouchEvidence(
+                    evidence,
+                    ReadMortalString(row, "factionId"),
+                    $"{path}.{arrayName}",
+                    JsonNode.Parse(row.GetRawText()));
+            }
+        }
+    }
+
+    private static void CollectRawMortalCommandTouches(
+        JsonElement? root,
+        IReadOnlyList<string> commandArrays,
+        HashSet<string> touchedFactionIds)
+    {
+        if (root is not { ValueKind: JsonValueKind.Object })
+            return;
+
+        foreach (var arrayName in commandArrays)
+        {
+            if (!root.Value.TryGetProperty(arrayName, out var commands) ||
+                commands.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            foreach (var command in commands.EnumerateArray())
+            {
+                if (command.ValueKind != JsonValueKind.Object)
+                    continue;
+                var factionId = ReadFirstMortalString(
+                    command,
+                    "factionId",
+                    "initialFactionId");
+                if (!string.IsNullOrWhiteSpace(factionId))
+                    touchedFactionIds.Add(factionId);
+            }
+        }
+    }
+
+    private static void CollectRawMortalLocationTouchEvidence(
+        JsonElement? root,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        if (root == null)
+            return;
+
+        foreach (var location in EnumerateLocationLikeObjects(root.Value))
+        {
+            if (!location.TryGetProperty(
+                    "factionControl",
+                    out var controls) ||
+                controls.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            var locationId =
+                ReadMortalString(location, "locationId") ??
+                "unknown-location";
+            foreach (var control in controls.EnumerateArray())
+            {
+                if (control.ValueKind != JsonValueKind.Object)
+                    continue;
+                AddRawFactionTouchEvidence(
+                    evidence,
+                    ReadMortalString(control, "factionId"),
+                    $"location:{locationId}.factionControl",
+                    JsonNode.Parse(control.GetRawText()));
+            }
+        }
+    }
+
+    private static void CollectRawMortalNpcTouchEvidence(
+        JsonElement? root,
+        Dictionary<string, List<RawFactionTouchEvidence>> evidence)
+    {
+        if (root is not { ValueKind: JsonValueKind.Object })
+            return;
+
+        foreach (var property in root.Value.EnumerateObject())
+        {
+            if (property.Value.ValueKind != JsonValueKind.Array)
+                continue;
+            foreach (var npc in property.Value.EnumerateArray())
+            {
+                if (npc.ValueKind != JsonValueKind.Object ||
+                    !npc.TryGetProperty(
+                        "factionAffiliations",
+                        out var affiliations) ||
+                    affiliations.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                var npcId = ReadFirstMortalString(
+                    npc,
+                    "NPCId",
+                    "npcId",
+                    "id",
+                    "initialId") ?? "unknown-npc";
+                foreach (var affiliation in affiliations.EnumerateArray())
+                {
+                    if (affiliation.ValueKind != JsonValueKind.Object)
+                        continue;
+                    AddRawFactionTouchEvidence(
+                        evidence,
+                        ReadMortalString(
+                            affiliation,
+                            "factionId"),
+                        $"npc:{npcId}.factionAffiliations",
+                        JsonNode.Parse(affiliation.GetRawText()));
+                }
+            }
+        }
     }
 
     private async Task<MortalFactionSidecars> ReadMortalFactionSidecarsAsync(

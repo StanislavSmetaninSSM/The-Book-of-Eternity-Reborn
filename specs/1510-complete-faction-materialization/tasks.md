@@ -521,6 +521,24 @@ without player-facing harness leakage.
   `factionStrength` values whose independently derived strengths cross the
   trade threshold in the opposite direction, plus linked non-player Actor
   Materialization trade-authority parity, without changing Guardian authority.
+- [x] T078d Require complete same-turn promotion for every externally touched
+  receipt-less legacy faction across
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
+  and
+  `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`:
+  classify raw duplicate-sensitive touches from Mortal `factionRankChanges`,
+  `factionBonusChanges`, `factionResourceChanges`, `factionProjectUpdates`,
+  `completeFactionProjects`, `factionCustomStateChanges`,
+  `factionChronicleUpdates`, current-location/world-map `factionControl`, and
+  NPC faction-affiliation authority, plus Shining resident
+  affiliation/realignment and other governed political, story, leadership,
+  memory, influence, resource, project, and supported-route authority; emit
+  stable `faction_legacy_promotion_required` at the exact Mortal or Shining
+  faction coordinate while preserving the `FactionCoreChanges` guard,
+  untouched legacy compatibility, and documented Shining client-derived-only
+  projections.
 - [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.
