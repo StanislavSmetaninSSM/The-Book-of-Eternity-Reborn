@@ -307,6 +307,9 @@ public sealed partial class CanonicalStateNormalizerTests
             $"Expected untouched legacy core to remain unchanged.{Environment.NewLine}" +
             $"Expected: {legacyFaction.ToJsonString()}{Environment.NewLine}" +
             $"Actual: {normalized.ToJsonString()}");
+        Assert.False(
+            _fs.FileExists(MortalFactionChroniclesPath),
+            "Untouched receipt-less legacy chronicles must remain embedded.");
     }
 
     [Fact]
@@ -400,6 +403,384 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.False(storedFaction.ContainsKey("leadership"));
     }
 
+    [Fact]
+    public async Task Normalize_MaterializedPromotion_StripsMergedLegacyCarrierAndPreservesSidecars()
+    {
+        const string factionId = "faction_wayfarer_watch";
+        var legacyFaction = BuildCarrierShapedLegacyMortalFaction(factionId);
+        var promotion = BuildCompletePopulatedMortalCreation();
+        promotion["factionId"] = factionId;
+        promotion.Remove("initialId");
+        promotion.Remove("isNewFaction");
+        promotion["materialization"]!["factionId"] = factionId;
+        promotion["materialization"]!["materializationId"] =
+            "fmat_wayfarer_watch_promotion";
+
+        foreach (var field in new[]
+                 {
+                     "governance",
+                     "leadership",
+                     "ranks",
+                     "structuredBonuses",
+                     "resources",
+                     "activeProjects",
+                     "completedProjects",
+                     "customStates",
+                     "scribeChronicle"
+                 })
+        {
+            promotion[field] = legacyFaction[field]!.DeepClone();
+        }
+
+        var backups = await WriteFactionCoreAsync(
+            promotion,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray(legacyFaction)
+            });
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(backups);
+
+        var core = await ReadFactionObjectAsync(MortalFactionCorePath);
+        var storedFaction = Assert.IsType<JsonObject>(
+            Assert.Single(core["factions"]!.AsArray()));
+        Assert.Equal(
+            "preserve-me",
+            storedFaction["legacyMarker"]!.GetValue<string>());
+        Assert.NotNull(storedFaction["materialization"]);
+        foreach (var field in new[]
+                 {
+                     "governance",
+                     "leadership",
+                     "ranks",
+                     "structuredBonuses",
+                     "resources",
+                     "activeProjects",
+                     "completedProjects",
+                     "customStates",
+                     "scribeChronicle"
+                 })
+        {
+            Assert.False(
+                storedFaction.ContainsKey(field),
+                $"Expected materialized core to omit carrier field '{field}'.");
+        }
+
+        var structure = await ReadFactionObjectAsync(
+            MortalFactionStructurePath);
+        var structureEntry = Assert.IsType<JsonObject>(
+            Assert.Single(structure["entries"]!.AsArray()));
+        Assert.Equal(
+            "Legacy council",
+            structureEntry["governance"]!["model"]!.GetValue<string>());
+        Assert.Single(structureEntry["ranks"]!["branches"]!.AsArray());
+        Assert.Single(structureEntry["structuredBonuses"]!.AsArray());
+
+        var resources = await ReadFactionObjectAsync(
+            MortalFactionResourcesPath);
+        var resourceEntry = Assert.IsType<JsonObject>(
+            Assert.Single(resources["entries"]!.AsArray()));
+        Assert.Single(resourceEntry["metaResources"]!.AsArray());
+        Assert.Single(resourceEntry["strategicGoods"]!.AsArray());
+
+        var projects = await ReadFactionObjectAsync(
+            MortalFactionProjectsPath);
+        Assert.Single(projects["activeProjects"]!.AsArray());
+        Assert.Single(projects["completedProjects"]!.AsArray());
+
+        var custom = await ReadFactionObjectAsync(MortalFactionCustomPath);
+        var customEntry = Assert.IsType<JsonObject>(
+            Assert.Single(custom["entries"]!.AsArray()));
+        Assert.Single(customEntry["customStates"]!.AsArray());
+
+        var chronicles = await ReadFactionObjectAsync(
+            MortalFactionChroniclesPath);
+        Assert.Contains(
+            chronicles["entries"]!.AsArray().OfType<JsonObject>(),
+            entry => entry["entry"]!.GetValue<string>() ==
+                "#3 - The old watch survived the winter.");
+    }
+
+    [Fact]
+    public async Task Normalize_MaterializedPromotion_MigratesEmbeddedLegacyChroniclesAndDeduplicatesByIdentityAndText()
+    {
+        const string factionId = "faction_wayfarer_watch";
+        const string duplicateEntry =
+            "#4 - Caravan survivors founded the first road watch.";
+        const string embeddedOnlyEntry =
+            "#8 - The old watch reopened the mountain road.";
+        const string promotionEntry =
+            "#12 - The Wayfarer Watch adopted a permanent charter.";
+
+        var legacyFaction = BuildCarrierShapedLegacyMortalFaction(factionId);
+        legacyFaction["scribeChronicle"] = new JsonArray(
+            duplicateEntry,
+            embeddedOnlyEntry);
+
+        var promotion = BuildCompleteMinimalMortalCreation();
+        promotion["factionId"] = factionId;
+        promotion.Remove("initialId");
+        promotion.Remove("isNewFaction");
+        promotion["materialization"]!["factionId"] = factionId;
+        promotion["materialization"]!["materializationId"] =
+            "fmat_wayfarer_watch_promotion";
+        promotion["scribeChronicle"] = new JsonArray(promotionEntry);
+
+        var backups = await WriteFactionCoreAsync(
+            promotion,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray(legacyFaction)
+            });
+        await AddFactionBackupAsync(
+            backups,
+            MortalFactionChroniclesPath,
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["factionName"] = "Wayfarer Watch",
+                    ["entry"] = duplicateEntry,
+                    ["timestamp"] = "2026-07-01T00:00:00Z",
+                    ["source"] = "legacy-import"
+                })
+            });
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(backups);
+
+        var chronicles = await ReadFactionObjectAsync(
+            MortalFactionChroniclesPath);
+        var entries = chronicles["entries"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(3, entries.Length);
+        var deduplicated = Assert.Single(entries, entry =>
+            entry["factionId"]!.GetValue<string>() == factionId &&
+            entry["entry"]!.GetValue<string>() == duplicateEntry);
+        Assert.Equal(
+            "2026-07-01T00:00:00Z",
+            deduplicated["timestamp"]!.GetValue<string>());
+        Assert.Equal(
+            "legacy-import",
+            deduplicated["source"]!.GetValue<string>());
+        Assert.Contains(entries, entry =>
+            entry["factionId"]!.GetValue<string>() == factionId &&
+            entry["entry"]!.GetValue<string>() == embeddedOnlyEntry);
+        Assert.Contains(entries, entry =>
+            entry["factionId"]!.GetValue<string>() == factionId &&
+            entry["entry"]!.GetValue<string>() == promotionEntry);
+    }
+
+    [Fact]
+    public async Task Normalize_MaterializedCreations_SameNameDistinctIdsRemainSeparate()
+    {
+        var east = BuildPopulatedCreationForIdentity(
+            "temp-faction-east",
+            "fmat_shared_watch_east",
+            "Shared Watch");
+        var west = BuildPopulatedCreationForIdentity(
+            "temp-faction-west",
+            "fmat_shared_watch_west",
+            "Shared Watch");
+        var backups = await WriteFactionCoreChangesAsync(east, west);
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(backups);
+
+        await AssertEveryFactionSurfaceHasExactIdsAsync(
+            "temp-faction-east",
+            "temp-faction-west");
+    }
+
+    [Fact]
+    public async Task Normalize_MaterializedCreations_CaseOnlyDistinctIdsRemainSeparate()
+    {
+        var lower = BuildPopulatedCreationForIdentity(
+            "temp-faction-watch",
+            "fmat_case_watch_lower",
+            "Lowercase Watch");
+        var upper = BuildPopulatedCreationForIdentity(
+            "TEMP-FACTION-WATCH",
+            "fmat_case_watch_upper",
+            "Uppercase Watch");
+        var backups = await WriteFactionCoreChangesAsync(lower, upper);
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(backups);
+
+        await AssertEveryFactionSurfaceHasExactIdsAsync(
+            "TEMP-FACTION-WATCH",
+            "temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task Normalize_TransientGovernanceAndLeadership_WinOverLiveStructureWhileCommandsRemainLast()
+    {
+        const string factionId = "faction_wayfarer_watch";
+        var currentFaction = BuildStoredMaterializedMortalFaction(factionId);
+        currentFaction["governance"] = new JsonObject
+        {
+            ["model"] = "Transient road council"
+        };
+        currentFaction["leadership"] = new JsonObject
+        {
+            ["leadershipState"] = "collective",
+            ["summary"] = "Transient patrol delegates lead together.",
+            ["leaderNpcIds"] = new JsonArray()
+        };
+        currentFaction["ranks"] = new JsonObject
+        {
+            ["branches"] = new JsonArray(new JsonObject
+            {
+                ["branchId"] = "command_branch",
+                ["displayName"] = "Stale transient branch",
+                ["ranks"] = new JsonArray()
+            })
+        };
+        currentFaction["structuredBonuses"] = new JsonArray(new JsonObject
+        {
+            ["bonusId"] = "command_bonus",
+            ["description"] = "Stale transient bonus."
+        });
+        await _fs.WriteFileAtomicAsync(
+            MortalFactionCorePath,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray(currentFaction)
+            }.ToJsonString());
+
+        var liveStructure = new JsonObject
+        {
+            ["entries"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = "Wayfarer Watch",
+                ["governance"] = new JsonObject
+                {
+                    ["model"] = "Stale live council"
+                },
+                ["leadership"] = new JsonObject
+                {
+                    ["leadershipState"] = "vacant",
+                    ["summary"] = "The live sidecar has not caught up.",
+                    ["leaderNpcIds"] = new JsonArray()
+                },
+                ["ranks"] = new JsonObject
+                {
+                    ["branches"] = new JsonArray(new JsonObject
+                    {
+                        ["branchId"] = "baseline_branch",
+                        ["displayName"] = "Baseline Branch",
+                        ["ranks"] = new JsonArray()
+                    })
+                },
+                ["structuredBonuses"] = new JsonArray(new JsonObject
+                {
+                    ["bonusId"] = "baseline_bonus",
+                    ["description"] = "Preserved live bonus."
+                })
+            }),
+            ["factionRankChanges"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["branchesToAdd"] = new JsonArray(new JsonObject
+                {
+                    ["branchId"] = "command_branch",
+                    ["displayName"] = "Command-applied Branch",
+                    ["ranks"] = new JsonArray()
+                })
+            }),
+            ["factionBonusChanges"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["bonusesToAddOrUpdate"] = new JsonArray(new JsonObject
+                {
+                    ["bonusId"] = "command_bonus",
+                    ["description"] = "Command-applied bonus."
+                })
+            })
+        };
+        await _fs.WriteFileAtomicAsync(
+            MortalFactionStructurePath,
+            liveStructure.ToJsonString());
+
+        var backups = new Dictionary<string, string>(
+            StringComparer.OrdinalIgnoreCase);
+        await AddFactionBackupAsync(
+            backups,
+            MortalFactionCorePath,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray(
+                    BuildStoredMaterializedMortalFaction(factionId))
+            });
+        await AddFactionBackupAsync(
+            backups,
+            MortalFactionStructurePath,
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["factionName"] = "Wayfarer Watch",
+                    ["governance"] = new JsonObject
+                    {
+                        ["model"] = "Historic council"
+                    },
+                    ["leadership"] = new JsonObject
+                    {
+                        ["leadershipState"] = "vacant",
+                        ["summary"] = "Historic leadership.",
+                        ["leaderNpcIds"] = new JsonArray()
+                    },
+                    ["ranks"] = new JsonObject
+                    {
+                        ["branches"] = new JsonArray()
+                    },
+                    ["structuredBonuses"] = new JsonArray()
+                })
+            });
+
+        await CreateFactionNormalizer().NormalizeAccumulatedStateAsync(backups);
+
+        var structure = await ReadFactionObjectAsync(
+            MortalFactionStructurePath);
+        var entry = Assert.IsType<JsonObject>(
+            Assert.Single(structure["entries"]!.AsArray()));
+        Assert.Equal(
+            "Transient road council",
+            entry["governance"]!["model"]!.GetValue<string>());
+        Assert.Equal(
+            "Transient patrol delegates lead together.",
+            entry["leadership"]!["summary"]!.GetValue<string>());
+
+        var branches = entry["ranks"]!["branches"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(2, branches.Length);
+        Assert.Contains(branches, branch =>
+            branch["branchId"]!.GetValue<string>() == "baseline_branch");
+        var commandBranch = Assert.Single(branches, branch =>
+            branch["branchId"]!.GetValue<string>() == "command_branch");
+        Assert.Equal(
+            "Command-applied Branch",
+            commandBranch["displayName"]!.GetValue<string>());
+
+        var bonuses = entry["structuredBonuses"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(2, bonuses.Length);
+        Assert.Contains(bonuses, bonus =>
+            bonus["bonusId"]!.GetValue<string>() == "baseline_bonus");
+        var commandBonus = Assert.Single(bonuses, bonus =>
+            bonus["bonusId"]!.GetValue<string>() == "command_bonus");
+        Assert.Equal(
+            "Command-applied bonus.",
+            commandBonus["description"]!.GetValue<string>());
+    }
+
     private CanonicalStateNormalizer CreateFactionNormalizer() =>
         new(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
 
@@ -426,6 +807,32 @@ public sealed partial class CanonicalStateNormalizerTests
         return backups;
     }
 
+    private async Task<Dictionary<string, string>> WriteFactionCoreChangesAsync(
+        params JsonObject[] factions)
+    {
+        var changes = new JsonArray();
+        foreach (var faction in factions)
+            changes.Add(faction);
+
+        await _fs.WriteFileAtomicAsync(
+            MortalFactionCorePath,
+            new JsonObject
+            {
+                ["factionDataChanges"] = changes
+            }.ToJsonString());
+
+        var backups = new Dictionary<string, string>(
+            StringComparer.OrdinalIgnoreCase);
+        await AddFactionBackupAsync(
+            backups,
+            MortalFactionCorePath,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray()
+            });
+        return backups;
+    }
+
     private async Task AddFactionBackupAsync(
         IDictionary<string, string> backups,
         string originalPath,
@@ -445,6 +852,49 @@ public sealed partial class CanonicalStateNormalizerTests
             string.IsNullOrWhiteSpace(json),
             $"Expected {path} to exist and contain JSON.");
         return Assert.IsType<JsonObject>(JsonNode.Parse(json!));
+    }
+
+    private async Task AssertEveryFactionSurfaceHasExactIdsAsync(
+        params string[] expectedIds)
+    {
+        var core = await ReadFactionObjectAsync(MortalFactionCorePath);
+        AssertExactFactionIds(core["factions"]!.AsArray(), expectedIds);
+
+        foreach (var path in new[]
+                 {
+                     MortalFactionStructurePath,
+                     MortalFactionResourcesPath,
+                     MortalFactionCustomPath,
+                     MortalFactionChroniclesPath
+                 })
+        {
+            var sidecar = await ReadFactionObjectAsync(path);
+            AssertExactFactionIds(sidecar["entries"]!.AsArray(), expectedIds);
+        }
+
+        var projects = await ReadFactionObjectAsync(
+            MortalFactionProjectsPath);
+        AssertExactFactionIds(
+            projects["activeProjects"]!.AsArray(),
+            expectedIds);
+        AssertExactFactionIds(
+            projects["completedProjects"]!.AsArray(),
+            expectedIds);
+    }
+
+    private static void AssertExactFactionIds(
+        JsonArray entries,
+        params string[] expectedIds)
+    {
+        var expected = expectedIds
+            .OrderBy(id => id, StringComparer.Ordinal)
+            .ToArray();
+        var actual = entries
+            .OfType<JsonObject>()
+            .Select(entry => entry["factionId"]!.GetValue<string>())
+            .OrderBy(id => id, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(expected, actual);
     }
 
     private static void AssertExactEmptyStructure(JsonObject actual)
@@ -583,6 +1033,88 @@ public sealed partial class CanonicalStateNormalizerTests
             populated: true);
         return faction;
     }
+
+    private static JsonObject BuildPopulatedCreationForIdentity(
+        string initialId,
+        string materializationId,
+        string name)
+    {
+        var faction = BuildCompletePopulatedMortalCreation();
+        faction["initialId"] = initialId;
+        faction["name"] = name;
+        faction["scribeChronicle"] = new JsonArray(
+            $"#12 - {name} completed its materialization.");
+        faction["materialization"]!["factionId"] = initialId;
+        faction["materialization"]!["materializationId"] = materializationId;
+        return faction;
+    }
+
+    private static JsonObject BuildCarrierShapedLegacyMortalFaction(
+        string factionId) =>
+        new()
+        {
+            ["factionId"] = factionId,
+            ["name"] = "Wayfarer Watch",
+            ["description"] = "The old road watch before materialization.",
+            ["legacyMarker"] = "preserve-me",
+            ["governance"] = new JsonObject
+            {
+                ["model"] = "Legacy council",
+                ["decisionProcess"] = "The longest-serving wardens vote."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["leadershipState"] = "collective",
+                ["summary"] = "Veteran wardens lead together.",
+                ["leaderNpcIds"] = new JsonArray()
+            },
+            ["ranks"] = new JsonObject
+            {
+                ["branches"] = new JsonArray(new JsonObject
+                {
+                    ["branchId"] = "legacy_wardens",
+                    ["name"] = "Legacy Wardens",
+                    ["ranks"] = new JsonArray()
+                })
+            },
+            ["structuredBonuses"] = new JsonArray(new JsonObject
+            {
+                ["bonusId"] = "legacy_safe_passage",
+                ["description"] = "The old watch knows the safest paths."
+            }),
+            ["resources"] = new JsonObject
+            {
+                ["metaResources"] = new JsonArray(new JsonObject
+                {
+                    ["resourceId"] = "legacy_trust",
+                    ["name"] = "Legacy Trust",
+                    ["amount"] = 4
+                }),
+                ["strategicGoods"] = new JsonArray(new JsonObject
+                {
+                    ["goodId"] = "legacy_timbers",
+                    ["name"] = "Legacy Timbers",
+                    ["amount"] = 6
+                })
+            },
+            ["activeProjects"] = new JsonArray(new JsonObject
+            {
+                ["projectId"] = "legacy_watchtower",
+                ["name"] = "Repair the Old Watchtower"
+            }),
+            ["completedProjects"] = new JsonArray(new JsonObject
+            {
+                ["projectId"] = "legacy_bridge_survey",
+                ["name"] = "Survey the Old Bridge"
+            }),
+            ["customStates"] = new JsonArray(new JsonObject
+            {
+                ["stateId"] = "legacy_bridge_priority",
+                ["value"] = "urgent"
+            }),
+            ["scribeChronicle"] = new JsonArray(
+                "#3 - The old watch survived the winter.")
+        };
 
     private static JsonObject BuildCompleteMinimalMortalCreation() =>
         new()

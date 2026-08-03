@@ -51,6 +51,71 @@ public partial class CanonicalStateNormalizer
         return entry;
     }
 
+    private static bool FactionEntriesShareIdentity(
+        JsonObject left,
+        JsonObject right)
+    {
+        var leftId = ResolveFactionIdentity(
+            GetNodeString(left["factionId"]),
+            GetNodeString(left["initialFactionId"]));
+        var rightId = ResolveFactionIdentity(
+            GetNodeString(right["factionId"]),
+            GetNodeString(right["initialFactionId"]));
+
+        if (!string.IsNullOrWhiteSpace(leftId) ||
+            !string.IsNullOrWhiteSpace(rightId))
+        {
+            return !string.IsNullOrWhiteSpace(leftId) &&
+                   !string.IsNullOrWhiteSpace(rightId) &&
+                   string.Equals(leftId, rightId, StringComparison.Ordinal);
+        }
+
+        var leftName =
+            GetNodeString(left["factionName"]) ??
+            GetNodeString(left["name"]);
+        var rightName =
+            GetNodeString(right["factionName"]) ??
+            GetNodeString(right["name"]);
+        return !string.IsNullOrWhiteSpace(leftName) &&
+               !string.IsNullOrWhiteSpace(rightName) &&
+               string.Equals(
+                   leftName,
+                   rightName,
+                   StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void UpsertFactionByIdentity(
+        List<JsonObject> entries,
+        JsonObject candidate)
+    {
+        var existing = entries.FirstOrDefault(entry =>
+            FactionEntriesShareIdentity(entry, candidate));
+        if (existing != null)
+        {
+            MergeObject(existing, candidate);
+            return;
+        }
+
+        entries.Add(CloneObject(candidate));
+    }
+
+    private static void UpsertFactionByIdentity(
+        JsonArray entries,
+        JsonObject candidate)
+    {
+        var existing = entries
+            .OfType<JsonObject>()
+            .FirstOrDefault(entry =>
+                FactionEntriesShareIdentity(entry, candidate));
+        if (existing != null)
+        {
+            MergeObject(existing, candidate);
+            return;
+        }
+
+        entries.Add(candidate.DeepClone());
+    }
+
     private static void RemoveMaterializedFactionCarrierFields(JsonObject entry)
     {
         if (entry[FactionMaterializationContract.PropertyName] is not JsonObject)
@@ -71,13 +136,6 @@ public partial class CanonicalStateNormalizer
         {
             entry.Remove(field);
         }
-    }
-
-    private static JsonObject NormalizeFactionCoreForStorage(JsonObject rawEntry)
-    {
-        var entry = NormalizeFactionCoreEntry(rawEntry);
-        RemoveMaterializedFactionCarrierFields(entry);
-        return entry;
     }
 
     private static bool LooksLikeCanonicalNewFactionEntry(JsonObject entry)
@@ -128,6 +186,87 @@ public partial class CanonicalStateNormalizer
                 };
             }
         }
+    }
+
+    private static IEnumerable<JsonObject>
+        CollectPromotedLegacyFactionChronicleEntries(
+            JsonNode? previousFactionCore,
+            JsonNode? currentFactionCore)
+    {
+        var promotedFactionIds = CollectFactionEntryObjects(
+                currentFactionCore,
+                "factionDataChanges")
+            .Select(NormalizeFactionCoreEntry)
+            .Where(faction =>
+                faction[FactionMaterializationContract.PropertyName]
+                    is JsonObject)
+            .Select(faction => GetNodeString(faction["factionId"]))
+            .Where(factionId => !string.IsNullOrWhiteSpace(factionId))
+            .Select(factionId => factionId!)
+            .ToHashSet(StringComparer.Ordinal);
+
+        if (promotedFactionIds.Count == 0)
+            yield break;
+
+        foreach (var rawFaction in CollectFactionEntryObjects(
+                     previousFactionCore,
+                     "factions"))
+        {
+            var faction = NormalizeFactionCoreEntry(rawFaction);
+            var factionId = GetNodeString(faction["factionId"]);
+            var factionName =
+                GetNodeString(faction["factionName"]) ??
+                GetNodeString(faction["name"]);
+            if (string.IsNullOrWhiteSpace(factionId) ||
+                !promotedFactionIds.Contains(factionId) ||
+                faction[FactionMaterializationContract.PropertyName]
+                    is JsonObject ||
+                faction["scribeChronicle"] is not JsonArray entries)
+            {
+                continue;
+            }
+
+            foreach (var entryNode in entries)
+            {
+                var entry = GetNodeString(entryNode);
+                if (string.IsNullOrWhiteSpace(entry))
+                    continue;
+
+                yield return new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["factionName"] = factionName,
+                    ["entry"] = entry
+                };
+            }
+        }
+    }
+
+    private static void AddUniqueFactionChronicleEntry(
+        JsonArray entries,
+        JsonNode candidate)
+    {
+        if (candidate is JsonObject candidateObject)
+        {
+            var factionId = GetNodeString(candidateObject["factionId"]);
+            var entryText = GetNodeString(candidateObject["entry"]);
+            if (!string.IsNullOrWhiteSpace(factionId) &&
+                !string.IsNullOrWhiteSpace(entryText) &&
+                entries.OfType<JsonObject>().Any(existing =>
+                    string.Equals(
+                        GetNodeString(existing["factionId"]),
+                        factionId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        GetNodeString(existing["entry"]),
+                        entryText,
+                        StringComparison.Ordinal)))
+            {
+                return;
+            }
+        }
+
+        AddUniqueNode(entries, candidate);
     }
 
     private static void ApplyInventoryResourceCommands(JsonArray entries, JsonArray commands)
@@ -307,6 +446,54 @@ public partial class CanonicalStateNormalizer
             }
 
             yield return result;
+        }
+    }
+
+    private static IEnumerable<JsonObject>
+        CollectMaterializedFactionGovernanceAndLeadershipFromCore(
+            JsonNode? root)
+    {
+        foreach (var propName in new[] { "factions", "factionDataChanges" })
+        {
+            foreach (var rawEntry in CollectFactionEntryObjects(
+                         root,
+                         propName))
+            {
+                var entry = NormalizeFactionCoreEntry(rawEntry);
+                if (entry[FactionMaterializationContract.PropertyName]
+                        is not JsonObject)
+                {
+                    continue;
+                }
+
+                var hasGovernance = entry["governance"] is JsonObject;
+                var hasLeadership = entry["leadership"] is JsonObject;
+                if (!hasGovernance && !hasLeadership)
+                    continue;
+
+                var result = new JsonObject
+                {
+                    ["factionId"] = entry["factionId"]?.DeepClone(),
+                    ["factionName"] =
+                        entry["factionName"]?.DeepClone() ??
+                        entry["name"]?.DeepClone(),
+                    ["name"] = entry["name"]?.DeepClone()
+                };
+
+                if (hasGovernance)
+                {
+                    result["governance"] =
+                        entry["governance"]!.DeepClone();
+                }
+
+                if (hasLeadership)
+                {
+                    result["leadership"] =
+                        entry["leadership"]!.DeepClone();
+                }
+
+                yield return result;
+            }
         }
     }
 
@@ -631,7 +818,7 @@ public partial class CanonicalStateNormalizer
 
             var existing = activeProjects.FirstOrDefault(project =>
                 string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase) &&
-                FactionIdentityMatches(project, effectiveFactionId));
+                FactionEntriesShareIdentity(project, command));
 
             var completed = existing != null ? CloneObject(existing) : new JsonObject();
             completed["factionId"] = effectiveFactionId;
@@ -682,7 +869,8 @@ public partial class CanonicalStateNormalizer
         var factionId = ResolveFactionIdentity(GetNodeString(source["factionId"]), GetNodeString(source["initialFactionId"]));
         var existing = entries
             .OfType<JsonObject>()
-            .FirstOrDefault(item => FactionIdentityMatches(item, factionId));
+            .FirstOrDefault(item =>
+                FactionEntriesShareIdentity(item, source));
         if (existing != null)
         {
             if (!string.IsNullOrWhiteSpace(factionId))
@@ -841,10 +1029,9 @@ public partial class CanonicalStateNormalizer
     private static void UpsertProjectByIdentity(List<JsonObject> projects, JsonObject candidate)
     {
         NormalizeStoredFactionReference(candidate);
-        var candidateFactionId = GetNodeString(candidate["factionId"]);
         var existing = projects.FirstOrDefault(project =>
             MatchesByAnyIdentity(project, candidate, "projectId") &&
-            FactionIdentityMatches(project, candidateFactionId));
+            FactionEntriesShareIdentity(project, candidate));
 
         if (existing != null)
         {
