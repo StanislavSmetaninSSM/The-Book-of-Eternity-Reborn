@@ -403,6 +403,57 @@ public sealed class FactionCoreChangesTests : IDisposable
             entries);
     }
 
+    [Fact]
+    public async Task Validate_SameTurnPromotionWithValidatedCoreChange_AllowsCommandedProfileAndPreservesUnrelatedPurpose()
+    {
+        var fixture = await WritePromotionFixtureAsync();
+
+        var commandIssues =
+            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+        var materializationIssues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Empty(commandIssues);
+        Assert.DoesNotContain(materializationIssues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed");
+
+        await CreateNormalizer().NormalizeAccumulatedStateAsync(
+            fixture.Backups);
+        var core = await ReadObjectAsync(CorePath);
+        var watch = FindFaction(core, "faction_watch");
+        Assert.Equal(
+            "Promoted Bridge Watch",
+            watch["name"]!.GetValue<string>());
+        Assert.Equal(
+            "Keep the old road open.",
+            watch["purpose"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task Validate_SameTurnPromotionWithInvalidCoreChange_DoesNotAuthorizeHistoricalDelta()
+    {
+        await WritePromotionFixtureAsync(current =>
+        {
+            current["factionDataChanges"]![0]!["name"] =
+                "Promoted Bridge Watch";
+            current[FactionCoreChangesContract.PropertyName]![0]![
+                "reason"] = " ";
+        });
+
+        var commandIssues =
+            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+        var materializationIssues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(commandIssues, issue =>
+            issue.Code == "faction_core_changes_reason_required");
+        Assert.Contains(materializationIssues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed" &&
+            issue.Actor == "mortal_faction:faction_watch");
+    }
+
     [Theory]
     [InlineData("duplicate_factions")]
     [InlineData("duplicate_carrier")]
@@ -646,10 +697,14 @@ public sealed class FactionCoreChangesTests : IDisposable
             "faction_watch",
             "Wayfarer Watch",
             "fmat_promoted_watch");
-        promoted["governance"] = BuildCompleteGroup(
-            "governanceAndLeadership")["governance"]!.DeepClone();
-        promoted["leadership"] = BuildCompleteGroup(
-            "governanceAndLeadership")["leadership"]!.DeepClone();
+        promoted["materialization"]!["materializedAtTurn"] = 12;
+        var historicalStructure = BuildStructureEntry(
+            "faction_watch",
+            "Wayfarer Watch");
+        promoted["governance"] =
+            historicalStructure["governance"]!.DeepClone();
+        promoted["leadership"] =
+            historicalStructure["leadership"]!.DeepClone();
         promoted["ranks"] = new JsonObject
         {
             ["branches"] = new JsonArray()

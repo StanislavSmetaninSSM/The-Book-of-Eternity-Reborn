@@ -549,6 +549,24 @@ without player-facing harness leakage.
   faction coordinate while preserving the `FactionCoreChanges` guard,
   untouched legacy compatibility, and documented Shining client-derived-only
   projections.
+- [x] T078e Reject Mortal legacy promotions that rewrite validated historical
+  authority across
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
+  `BookOfEternityClient.IntegrationTests/FactionCoreChangesTests.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
+  and, only if required for safe reuse,
+  `BookOfEternityClient/Services/FactionCoreChangesContract.cs` or
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`:
+  before normalization preserve representative pre-turn core/profile,
+  progression/power, governance/leadership/ranks, resources,
+  relations/projects/custom state, chronicle, current-location/world-map
+  `factionControl`, and NPC affiliation values; allow promotion to add missing
+  required semantics, receipt/disposition, and explicit-empty evidence; allow
+  a simultaneous delta only when an existing successfully validated narrow
+  command proves that exact change; emit stable
+  `faction_materialization_promotion_history_changed` at the exact Mortal
+  faction coordinate; and record bounded RED/GREEN/build evidence in
+  `sdd/task-11-fix5-promotion-history-report.md`.
 - [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.

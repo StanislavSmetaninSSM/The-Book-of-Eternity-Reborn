@@ -10,6 +10,22 @@ namespace BookOfEternityClient.Tests;
 public sealed class FactionMaterializationValidationTests : IDisposable
 {
     private const string MortalPath = "game_state/factions/faction_core.json";
+    private const string MortalStructurePath =
+        "game_state/factions/faction_structure.json";
+    private const string MortalResourcesPath =
+        "game_state/factions/faction_resources.json";
+    private const string MortalProjectsPath =
+        "game_state/factions/faction_projects.json";
+    private const string MortalCustomPath =
+        "game_state/factions/faction_custom.json";
+    private const string MortalChroniclesPath =
+        "game_state/factions/faction_chronicles.json";
+    private const string CurrentLocationPath =
+        "game_state/world/current_location.json";
+    private const string WorldMapPath =
+        "game_state/world/world_map.json";
+    private const string NpcCorePath =
+        "game_state/npcs/npc_core.json";
     private const string ShiningPath = "game_state/meta/shining_abode_state.json";
     private const string ResidentPath = "game_state/meta/guardian_abode_residents.json";
     private const string SoulPath = "game_state/meta/soul_state.json";
@@ -95,6 +111,23 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         "world_map_factionControl",
         "npc_factionAffiliations"
     };
+
+    public static TheoryData<string>
+        MortalPromotionHistoricalMutationSurfaces => new()
+        {
+            "core_profile",
+            "progression_power",
+            "governance",
+            "leadership",
+            "ranks",
+            "resources",
+            "relations",
+            "projects",
+            "custom_state",
+            "current_location_faction_control",
+            "world_map_faction_control",
+            "npc_affiliation"
+        };
 
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -1361,6 +1394,72 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Theory]
+    [MemberData(nameof(MortalPromotionHistoricalMutationSurfaces))]
+    public async Task Validate_MortalPromotion_UncommandedHistoricalMutation_ReportsPreservationFailure(
+        string surface)
+    {
+        await WriteMortalPromotionHistoryFixtureAsync(surface);
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed" &&
+            issue.Actor == "mortal_faction:faction_watch");
+    }
+
+    [Fact]
+    public async Task Validate_MortalPromotion_AddsMissingSemanticsAndReceiptWithoutRewritingHistory()
+    {
+        await WriteMortalPromotionHistoryFixtureAsync();
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Empty(issues);
+    }
+
+    [Fact]
+    public async Task Validate_MortalPromotion_AddsPopulatedRowsWhereNoHistoricalValueExisted()
+    {
+        await WriteMortalPromotionHistoryFixtureAsync(
+            includeHistoricalGovernedRows: false);
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Empty(issues);
+    }
+
+    [Fact]
+    public async Task Validate_MortalPromotion_ChronicleAdditionDoesNotReplaceHistoricalEntry()
+    {
+        await WriteMortalPromotionHistoryFixtureAsync("chronicle");
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed");
+    }
+
+    [Fact]
+    public async Task Validate_MortalPromotion_OmittedExternalRowsRemainMergePreserved()
+    {
+        await WriteMortalPromotionHistoryFixtureAsync(
+            "omit_external_history");
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed");
+    }
+
+    [Theory]
     [InlineData("omitted")]
     [InlineData("empty")]
     [InlineData("whitespace")]
@@ -1761,10 +1860,311 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     {
         var current = MortalRoot();
         current["factionDataChanges"] = new JsonArray(faction);
+        var legacy = LegacyMortalFaction("faction_watch");
+        legacy["name"] = faction["name"]?.DeepClone();
         await WriteCurrentAndSnapshotAsync(
             (MortalPath, current.ToJsonString()),
             (MortalPath, MortalRoot(
-                LegacyMortalFaction("faction_watch")).ToJsonString()));
+                legacy).ToJsonString()));
+    }
+
+    private async Task WriteMortalPromotionHistoryFixtureAsync(
+        string? mutationSurface = null,
+        bool includeHistoricalGovernedRows = true)
+    {
+        const string factionId = "faction_watch";
+        var promotion = BuildCompleteMortalCreation();
+        promotion["factionId"] = factionId;
+        promotion.Remove("initialId");
+        promotion.Remove("isNewFaction");
+        promotion["relations"]![0]!["targetFactionId"] =
+            "faction_allies";
+        promotion["controlledTerritories"] = new JsonArray(
+            new JsonObject
+            {
+                ["locationId"] = "location_watch_road",
+                ["locationName"] = "Western Road"
+            },
+            new JsonObject
+            {
+                ["locationId"] = "location_watch_crossing",
+                ["locationName"] = "Old Crossing"
+            });
+        promotion["scribeChronicle"] = new JsonArray();
+        promotion["materialization"] =
+            BuildPopulatedMortalEnvelope(
+                factionId,
+                "fmat_watch_promotion_history");
+
+        var legacy = new JsonObject
+        {
+            ["factionId"] = factionId,
+            ["name"] = promotion["name"]!.DeepClone(),
+            ["description"] = promotion["description"]!.DeepClone(),
+            ["purpose"] = promotion["purpose"]!.DeepClone(),
+            ["level"] = promotion["level"]!.DeepClone(),
+            ["experience"] = promotion["experience"]!.DeepClone(),
+            ["experienceForNextLevel"] =
+                promotion["experienceForNextLevel"]!.DeepClone(),
+            ["developmentArchetype"] =
+                promotion["developmentArchetype"]!.DeepClone(),
+            ["powerProfile"] = promotion["powerProfile"]!.DeepClone()
+        };
+        if (includeHistoricalGovernedRows)
+        {
+            legacy["relations"] = promotion["relations"]!.DeepClone();
+            legacy["controlledTerritories"] =
+                promotion["controlledTerritories"]!.DeepClone();
+        }
+        var preTurnCore = MortalRoot(
+            legacy,
+            new JsonObject
+            {
+                ["factionId"] = "faction_allies",
+                ["name"] = "Road Allies"
+            });
+
+        var preTurnStructure = new JsonObject
+        {
+            ["entries"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = promotion["name"]!.DeepClone(),
+                ["name"] = promotion["name"]!.DeepClone(),
+                ["governance"] = promotion["governance"]!.DeepClone(),
+                ["leadership"] = promotion["leadership"]!.DeepClone()
+            })
+        };
+        if (includeHistoricalGovernedRows)
+        {
+            preTurnStructure["entries"]![0]!["ranks"] =
+                promotion["ranks"]!.DeepClone();
+            preTurnStructure["entries"]![0]!["structuredBonuses"] =
+                promotion["structuredBonuses"]!.DeepClone();
+        }
+        var promotionResources = promotion["resources"]!.AsObject();
+        var preTurnResources = new JsonObject
+        {
+            ["entries"] = new JsonArray()
+        };
+        if (includeHistoricalGovernedRows)
+        {
+            preTurnResources["entries"]!.AsArray().Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = promotion["name"]!.DeepClone(),
+                ["name"] = promotion["name"]!.DeepClone(),
+                ["metaResources"] =
+                    promotionResources["metaResources"]!.DeepClone(),
+                ["strategicGoods"] =
+                    promotionResources["strategicGoods"]!.DeepClone()
+            });
+        }
+        var historicalProject =
+            promotion["activeProjects"]![0]!.DeepClone().AsObject();
+        historicalProject["factionId"] = factionId;
+        historicalProject["factionName"] =
+            promotion["name"]!.DeepClone();
+        var preTurnProjects = new JsonObject
+        {
+            ["activeProjects"] = includeHistoricalGovernedRows
+                ? new JsonArray(historicalProject)
+                : new JsonArray(),
+            ["completedProjects"] = new JsonArray()
+        };
+        var preTurnCustom = new JsonObject
+        {
+            ["entries"] = new JsonArray()
+        };
+        if (includeHistoricalGovernedRows)
+        {
+            preTurnCustom["entries"]!.AsArray().Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = promotion["name"]!.DeepClone(),
+                ["name"] = promotion["name"]!.DeepClone(),
+                ["customStates"] =
+                    promotion["customStates"]!.DeepClone()
+            });
+        }
+        var preTurnChronicles = new JsonObject
+        {
+            ["entries"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = promotion["name"]!.DeepClone(),
+                ["entry"] =
+                    "#7 - The old watch held the western road through winter."
+            })
+        };
+        var preTurnCurrentLocation = new JsonObject
+        {
+            ["locationId"] = "location_watch_road",
+            ["locationName"] = "Western Road",
+            ["factionControl"] = includeHistoricalGovernedRows
+                ? new JsonArray(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["controlLevel"] = 35
+                })
+                : new JsonArray()
+        };
+        var preTurnWorldMap = new JsonObject
+        {
+            ["locations"] = new JsonArray(new JsonObject
+            {
+                ["locationId"] = "location_watch_crossing",
+                ["locationName"] = "Old Crossing",
+                ["factionControl"] = includeHistoricalGovernedRows
+                    ? new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["controlLevel"] = 20
+                    })
+                    : new JsonArray()
+            })
+        };
+        var preTurnNpcCore = new JsonObject
+        {
+            ["npcs"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_watch_veteran",
+                ["name"] = "Veteran Ilya",
+                ["factionAffiliations"] = includeHistoricalGovernedRows
+                    ? new JsonArray(new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["role"] = "road_veteran"
+                    })
+                    : new JsonArray()
+            })
+        };
+
+        var currentStructure = CloneJsonObject(preTurnStructure);
+        var currentResources = CloneJsonObject(preTurnResources);
+        var currentProjects = CloneJsonObject(preTurnProjects);
+        var currentCustom = CloneJsonObject(preTurnCustom);
+        var currentChronicles = CloneJsonObject(preTurnChronicles);
+        var currentLocation = CloneJsonObject(preTurnCurrentLocation);
+        var currentWorldMap = CloneJsonObject(preTurnWorldMap);
+        var currentNpcCore = CloneJsonObject(preTurnNpcCore);
+        if (!includeHistoricalGovernedRows)
+        {
+            currentLocation["factionControl"]!.AsArray().Add(
+                new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["controlLevel"] = 35
+                });
+            currentWorldMap["locations"]![0]!["factionControl"]!
+                .AsArray()
+                .Add(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["controlLevel"] = 20
+                });
+            currentNpcCore["npcs"]![0]!["factionAffiliations"]!
+                .AsArray()
+                .Add(new JsonObject
+                {
+                    ["factionId"] = factionId,
+                    ["role"] = "road_veteran"
+                });
+        }
+
+        switch (mutationSurface)
+        {
+            case null:
+                break;
+            case "core_profile":
+                promotion["name"] = "Rewritten Wayfarer Watch";
+                break;
+            case "progression_power":
+                promotion["powerProfile"]!["military"] = 9;
+                break;
+            case "governance":
+                promotion["governance"]!["model"] =
+                    "Unhistorical commandery";
+                break;
+            case "leadership":
+                promotion["leadership"]!["summary"] =
+                    "An unrelated captain now rules.";
+                break;
+            case "ranks":
+                promotion["ranks"]!["branches"]![0]!["ranks"]![0]![
+                    "name"] = "Rewritten Warden";
+                break;
+            case "resources":
+                promotion["resources"]!["metaResources"]![0]!["amount"] =
+                    99;
+                break;
+            case "relations":
+                promotion["relations"]![0]!["status"] = "Hostile";
+                break;
+            case "projects":
+                promotion["activeProjects"]![0]!["name"] =
+                    "Replace the Historical Watchtower";
+                break;
+            case "custom_state":
+                promotion["customStates"]![0]!["value"] = "discarded";
+                break;
+            case "chronicle":
+                currentChronicles["entries"]![0]!["entry"] =
+                    "#7 - Rewritten historical chronicle.";
+                break;
+            case "omit_external_history":
+                currentStructure["entries"] = new JsonArray();
+                currentResources["entries"] = new JsonArray();
+                currentProjects["activeProjects"] = new JsonArray();
+                currentProjects["completedProjects"] = new JsonArray();
+                currentCustom["entries"] = new JsonArray();
+                currentChronicles["entries"] = new JsonArray();
+                currentLocation["factionControl"] = new JsonArray();
+                currentWorldMap["locations"]![0]!["factionControl"] =
+                    new JsonArray();
+                currentNpcCore["npcs"]![0]!["factionAffiliations"] =
+                    new JsonArray();
+                break;
+            case "current_location_faction_control":
+                currentLocation["factionControl"]![0]!["controlLevel"] =
+                    80;
+                break;
+            case "world_map_faction_control":
+                currentWorldMap["locations"]![0]!["factionControl"]![0]![
+                    "controlLevel"] = 75;
+                break;
+            case "npc_affiliation":
+                currentNpcCore["npcs"]![0]!["factionAffiliations"]![0]![
+                    "role"] = "rewritten_role";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(mutationSurface),
+                    mutationSurface,
+                    "Unsupported promotion-history mutation surface.");
+        }
+
+        var currentCore = MortalRoot();
+        currentCore["factionDataChanges"] = new JsonArray(promotion);
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, currentCore.ToJsonString()),
+            (MortalStructurePath, currentStructure.ToJsonString()),
+            (MortalResourcesPath, currentResources.ToJsonString()),
+            (MortalProjectsPath, currentProjects.ToJsonString()),
+            (MortalCustomPath, currentCustom.ToJsonString()),
+            (MortalChroniclesPath, currentChronicles.ToJsonString()),
+            (CurrentLocationPath, currentLocation.ToJsonString()),
+            (WorldMapPath, currentWorldMap.ToJsonString()),
+            (NpcCorePath, currentNpcCore.ToJsonString()),
+            (MortalPath, preTurnCore.ToJsonString()),
+            (MortalStructurePath, preTurnStructure.ToJsonString()),
+            (MortalResourcesPath, preTurnResources.ToJsonString()),
+            (MortalProjectsPath, preTurnProjects.ToJsonString()),
+            (MortalCustomPath, preTurnCustom.ToJsonString()),
+            (MortalChroniclesPath, preTurnChronicles.ToJsonString()),
+            (CurrentLocationPath, preTurnCurrentLocation.ToJsonString()),
+            (WorldMapPath, preTurnWorldMap.ToJsonString()),
+            (NpcCorePath, preTurnNpcCore.ToJsonString()));
     }
 
     private async Task WriteLegacyMortalExternalTouchAsync(string channel)

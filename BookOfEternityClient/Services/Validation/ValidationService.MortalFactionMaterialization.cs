@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -118,6 +119,18 @@ public partial class ValidationService
             : await ReadMortalFactionSidecarsAsync(
                 effectiveFactionIds,
                 issues);
+        if (rawBeforeNormalization &&
+            snapshotLookup.Status ==
+                ValidatedPendingTurnSnapshotStatus.Usable &&
+            snapshotLookup.Manifest != null)
+        {
+            await ValidateRawMortalPromotionHistoryAsync(
+                currentRoot.Value,
+                full,
+                preTurn,
+                snapshotLookup.Manifest,
+                issues);
+        }
 
         foreach (var factionId in canonical.Keys
                      .Concat(full.Keys)
@@ -374,6 +387,664 @@ public partial class ValidationService
             requireEnvelope: isCreationOrPromotion ||
                              HasMortalMaterializationReceipt(target.Faction),
             deferEvidenceConsistency: false));
+    }
+
+    private async Task ValidateRawMortalPromotionHistoryAsync(
+        JsonElement currentRoot,
+        IReadOnlyDictionary<string, MortalFactionMaterializationTarget>
+            fullTargets,
+        IReadOnlyDictionary<string, MortalFactionMaterializationTarget>
+            preTurnTargets,
+        ValidationPendingTurnSnapshotManifest manifest,
+        List<ValidationIssue> issues)
+    {
+        var promotionIds = fullTargets
+            .Where(entry =>
+                preTurnTargets.TryGetValue(entry.Key, out var previous) &&
+                !HasMortalMaterializationReceipt(previous.Faction))
+            .Select(entry => entry.Key)
+            .ToHashSet(StringComparer.Ordinal);
+        if (promotionIds.Count == 0)
+            return;
+
+        var preTurnRootElement = await ReadRawMortalTouchRootAsync(
+            manifest,
+            MortalFactionMaterializationPath,
+            preTurn: true,
+            issues);
+        if (preTurnRootElement is not
+            { ValueKind: JsonValueKind.Object })
+        {
+            return;
+        }
+
+        var currentRootNode = JsonNode.Parse(
+            currentRoot.GetRawText()) as JsonObject;
+        var preTurnRootNode = JsonNode.Parse(
+            preTurnRootElement.Value.GetRawText()) as JsonObject;
+        if (currentRootNode == null || preTurnRootNode == null)
+            return;
+
+        FactionCoreChangesContract.Evaluation? coreEvaluation = null;
+        var projectedCurrentRoot = currentRootNode
+            .DeepClone()
+            .AsObject();
+        if (FactionCoreChangesContract.HasCommandLikeProperty(
+                currentRootNode))
+        {
+            var authority = await ReadFactionCoreChangesAuthorityAsync(
+                currentRootNode,
+                preTurnRootNode,
+                manifest);
+            coreEvaluation = FactionCoreChangesContract.Evaluate(
+                currentRootNode,
+                preTurnRootNode,
+                authority);
+            if (coreEvaluation.CanApply)
+            {
+                FactionCoreChangesContract.Apply(
+                    projectedCurrentRoot,
+                    coreEvaluation);
+            }
+        }
+
+        Dictionary<string, MortalFactionMaterializationTarget>
+            projectedFullTargets;
+        using (var projectedDocument = JsonDocument.Parse(
+                   projectedCurrentRoot.ToJsonString()))
+        {
+            projectedFullTargets = ReadMortalFactionTargets(
+                projectedDocument.RootElement,
+                "factionDataChanges",
+                useInitialId: true);
+        }
+
+        var preTurnStructure = await ReadRawMortalTouchRootAsync(
+            manifest,
+            MortalFactionStructurePath,
+            preTurn: true,
+            issues);
+        var preTurnResources = await ReadRawMortalTouchRootAsync(
+            manifest,
+            MortalFactionResourcesPath,
+            preTurn: true,
+            issues);
+        var preTurnProjects = await ReadRawMortalTouchRootAsync(
+            manifest,
+            MortalFactionProjectsPath,
+            preTurn: true,
+            issues);
+        var preTurnCustom = await ReadRawMortalTouchRootAsync(
+            manifest,
+            MortalFactionCustomPath,
+            preTurn: true,
+            issues);
+        var externalTouches =
+            await ReadRawMortalExternalFactionTouchSummaryAsync(issues);
+
+        foreach (var factionId in promotionIds)
+        {
+            if (!preTurnTargets.TryGetValue(
+                    factionId,
+                    out var previous) ||
+                !projectedFullTargets.TryGetValue(
+                    factionId,
+                    out var promoted))
+            {
+                continue;
+            }
+
+            var historicalCore = JsonNode.Parse(
+                previous.Faction.GetRawText()) as JsonObject;
+            var promotedCore = JsonNode.Parse(
+                promoted.Faction.GetRawText()) as JsonObject;
+            if (historicalCore == null || promotedCore == null)
+                continue;
+
+            var expectedCore = historicalCore
+                .DeepClone()
+                .AsObject();
+            if (coreEvaluation?.CanApply == true)
+            {
+                var expectedRoot = new JsonObject
+                {
+                    ["factions"] = new JsonArray(expectedCore)
+                };
+                FactionCoreChangesContract.Apply(
+                    expectedRoot,
+                    coreEvaluation);
+                expectedCore = expectedRoot["factions"]![0]!
+                    .AsObject();
+            }
+
+            var changedPath = FindMortalPromotionHistoryChange(
+                factionId,
+                promoted.Context,
+                historicalCore,
+                expectedCore,
+                promotedCore,
+                preTurnStructure,
+                preTurnResources,
+                preTurnProjects,
+                preTurnCustom,
+                coreEvaluation,
+                externalTouches);
+            if (changedPath == null)
+                continue;
+
+            issues.Add(FactionIssue(
+                changedPath,
+                "faction_materialization_promotion_history_changed",
+                factionId,
+                "Mortal legacy promotion must preserve every validated pre-turn historical value except a delta proven by a successfully validated narrow command."));
+        }
+    }
+
+    private static string? FindMortalPromotionHistoryChange(
+        string factionId,
+        string promotionContext,
+        JsonObject historicalCore,
+        JsonObject expectedCore,
+        JsonObject promotedCore,
+        JsonElement? preTurnStructure,
+        JsonElement? preTurnResources,
+        JsonElement? preTurnProjects,
+        JsonElement? preTurnCustom,
+        FactionCoreChangesContract.Evaluation? coreEvaluation,
+        RawMortalExternalFactionTouchSummary externalTouches)
+    {
+        foreach (var property in historicalCore)
+        {
+            if (string.Equals(
+                    property.Key,
+                    "scribeChronicle",
+                    StringComparison.Ordinal) ||
+                !promotedCore.TryGetPropertyValue(
+                    property.Key,
+                    out var promotedValue) ||
+                MortalHistoricalValueIsSubset(
+                    expectedCore[property.Key],
+                    promotedValue))
+            {
+                continue;
+            }
+
+            return $"{promotionContext}.{property.Key}";
+        }
+
+        var structure = FindMortalHistoryEntry(
+            preTurnStructure,
+            "entries",
+            factionId);
+        foreach (var field in new[]
+                 {
+                     "governance",
+                     "leadership",
+                     "ranks",
+                     "structuredBonuses"
+                 })
+        {
+            JsonNode? expected = null;
+            if (historicalCore.ContainsKey(field) ||
+                ValidatedCoreChangeSuppliesField(
+                    coreEvaluation,
+                    factionId,
+                    field))
+            {
+                expected = expectedCore[field];
+            }
+            else if (structure?.TryGetProperty(
+                         field,
+                         out var historicalValue) == true)
+            {
+                expected = JsonNode.Parse(
+                    historicalValue.GetRawText());
+            }
+
+            if (expected == null)
+                continue;
+            if (!promotedCore.TryGetPropertyValue(
+                    field,
+                    out var promotedValue) ||
+                !MortalHistoricalValueIsSubset(
+                    expected,
+                    promotedValue))
+            {
+                return $"{promotionContext}.{field}";
+            }
+        }
+
+        var expectedResources = historicalCore["resources"]?.DeepClone();
+        if (expectedResources == null)
+        {
+            expectedResources = BuildMortalHistoricalResources(
+                FindMortalHistoryEntry(
+                    preTurnResources,
+                    "entries",
+                    factionId));
+        }
+        if (expectedResources != null &&
+            (!promotedCore.TryGetPropertyValue(
+                 "resources",
+                 out var promotedResourceValue) ||
+             !MortalHistoricalValueIsSubset(
+                 expectedResources,
+                 promotedResourceValue)))
+        {
+            return $"{promotionContext}.resources";
+        }
+
+        var expectedActiveProjects =
+            BuildMortalHistoricalProjectArray(
+                historicalCore["activeProjects"],
+                preTurnProjects,
+                "activeProjects",
+                factionId);
+        var expectedCompletedProjects =
+            BuildMortalHistoricalProjectArray(
+                historicalCore["completedProjects"],
+                preTurnProjects,
+                "completedProjects",
+                factionId);
+        if (!MortalHistoricalProjectRowsPreserved(
+                expectedActiveProjects,
+                promotedCore["activeProjects"]))
+        {
+            return $"{promotionContext}.activeProjects";
+        }
+
+        if (!MortalHistoricalProjectRowsPreserved(
+                expectedCompletedProjects,
+                promotedCore["completedProjects"]))
+        {
+            return $"{promotionContext}.completedProjects";
+        }
+
+        var expectedCustomStates =
+            historicalCore["customStates"]?.DeepClone();
+        if (expectedCustomStates == null)
+        {
+            var historicalCustom = FindMortalHistoryEntry(
+                preTurnCustom,
+                "entries",
+                factionId);
+            expectedCustomStates =
+                historicalCustom?.TryGetProperty(
+                    "customStates",
+                    out var customStates) == true
+                    ? JsonNode.Parse(customStates.GetRawText())
+                    : null;
+        }
+        if (expectedCustomStates != null &&
+            (!promotedCore.TryGetPropertyValue(
+                 "customStates",
+                 out var promotedCustomStates) ||
+             !MortalHistoricalValueIsSubset(
+                 expectedCustomStates,
+                 promotedCustomStates)))
+        {
+            return $"{promotionContext}.customStates";
+        }
+
+        if (externalTouches.RewrittenHistoricalSources.TryGetValue(
+                factionId,
+                out var changedSource))
+        {
+            return changedSource;
+        }
+
+        return null;
+    }
+
+    private static bool ValidatedCoreChangeSuppliesField(
+        FactionCoreChangesContract.Evaluation? evaluation,
+        string factionId,
+        string field) =>
+        evaluation?.CanApply == true &&
+        evaluation.Plans.Any(plan =>
+            string.Equals(
+                plan.FactionId,
+                factionId,
+                StringComparison.Ordinal) &&
+            plan.Command["governanceAndLeadership"]
+                is JsonObject governance &&
+            governance.ContainsKey(field));
+
+    private static JsonElement? FindMortalHistoryEntry(
+        JsonElement? root,
+        string propertyName,
+        string factionId)
+    {
+        if (root is not { ValueKind: JsonValueKind.Object } ||
+            !root.Value.TryGetProperty(propertyName, out var entries) ||
+            entries.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        foreach (var entry in entries.EnumerateArray())
+        {
+            if (entry.ValueKind == JsonValueKind.Object &&
+                string.Equals(
+                    ReadMortalString(entry, "factionId"),
+                    factionId,
+                    StringComparison.Ordinal))
+            {
+                return entry.Clone();
+            }
+        }
+
+        return null;
+    }
+
+    private static JsonObject? BuildMortalHistoricalResources(
+        JsonElement? entry)
+    {
+        if (entry is not { ValueKind: JsonValueKind.Object })
+            return null;
+
+        var result = new JsonObject
+        {
+            ["metaResources"] = new JsonArray(),
+            ["strategicGoods"] = new JsonArray()
+        };
+        foreach (var field in new[]
+                 {
+                     "metaResources",
+                     "strategicGoods"
+                 })
+        {
+            if (entry.Value.TryGetProperty(field, out var value))
+            {
+                result[field] = JsonNode.Parse(
+                    value.GetRawText());
+            }
+        }
+
+        return result;
+    }
+
+    private static JsonArray BuildMortalHistoricalProjectArray(
+        JsonNode? coreProjects,
+        JsonElement? projectRoot,
+        string propertyName,
+        string factionId)
+    {
+        if (coreProjects is JsonArray coreArray)
+            return coreArray.DeepClone().AsArray();
+
+        var result = new JsonArray();
+        if (projectRoot is not { ValueKind: JsonValueKind.Object } ||
+            !projectRoot.Value.TryGetProperty(
+                propertyName,
+                out var projects) ||
+            projects.ValueKind != JsonValueKind.Array)
+        {
+            return result;
+        }
+
+        foreach (var project in projects.EnumerateArray())
+        {
+            if (project.ValueKind == JsonValueKind.Object &&
+                string.Equals(
+                    ReadMortalString(project, "factionId"),
+                    factionId,
+                    StringComparison.Ordinal))
+            {
+                result.Add(JsonNode.Parse(project.GetRawText()));
+            }
+        }
+
+        return result;
+    }
+
+    private static bool MortalHistoricalProjectRowsPreserved(
+        JsonNode? historical,
+        JsonNode? promoted)
+    {
+        if (historical is not JsonArray historicalArray ||
+            promoted is not JsonArray promotedArray)
+        {
+            return true;
+        }
+
+        var promotedByIdentity =
+            new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        foreach (var entry in promotedArray)
+        {
+            var normalized =
+                NormalizeMortalProjectHistoryEntry(entry);
+            var identity = MortalHistoryIdentityKey(normalized);
+            if (identity != null)
+                promotedByIdentity.TryAdd(identity, normalized);
+        }
+
+        foreach (var entry in historicalArray)
+        {
+            var normalized =
+                NormalizeMortalProjectHistoryEntry(entry);
+            var identity = MortalHistoryIdentityKey(normalized);
+            if (identity == null ||
+                !promotedByIdentity.TryGetValue(
+                    identity,
+                    out var promotedEntry))
+            {
+                continue;
+            }
+
+            if (!MortalHistoricalValueIsSubset(
+                    normalized,
+                    promotedEntry))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static JsonNode? NormalizeMortalProjectHistoryEntry(
+        JsonNode? entry)
+    {
+        var clone = entry?.DeepClone();
+        if (clone is not JsonObject value)
+            return clone;
+
+        value.Remove("factionId");
+        value.Remove("initialFactionId");
+        value.Remove("factionName");
+        return value;
+    }
+
+    private static bool MortalHistoricalValueIsSubset(
+        JsonNode? historical,
+        JsonNode? promoted)
+    {
+        if (historical == null)
+            return true;
+        if (promoted == null)
+            return false;
+
+        if (historical is JsonObject historicalObject)
+        {
+            if (promoted is not JsonObject promotedObject)
+                return false;
+            foreach (var property in historicalObject)
+            {
+                if (property.Value == null)
+                    continue;
+                if (!promotedObject.TryGetPropertyValue(
+                        property.Key,
+                        out var promotedValue) ||
+                    !MortalHistoricalValueIsSubset(
+                        property.Value,
+                        promotedValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if (historical is JsonArray historicalArray)
+        {
+            return promoted is JsonArray promotedArray &&
+                   MortalHistoricalArrayIsSubset(
+                       historicalArray,
+                       promotedArray);
+        }
+
+        return JsonNode.DeepEquals(historical, promoted);
+    }
+
+    private static bool MortalHistoricalArrayIsSubset(
+        JsonArray historical,
+        JsonArray promoted)
+    {
+        var promotedByIdentity =
+            new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        var promotedUnidentified =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var entry in promoted)
+        {
+            var identity = MortalHistoryIdentityKey(entry);
+            if (identity != null)
+            {
+                promotedByIdentity.TryAdd(identity, entry);
+                continue;
+            }
+
+            IncrementMortalHistoryFingerprint(
+                promotedUnidentified,
+                MortalCanonicalHistoryFingerprint(entry));
+        }
+
+        foreach (var entry in historical)
+        {
+            var identity = MortalHistoryIdentityKey(entry);
+            if (identity != null)
+            {
+                if (!promotedByIdentity.TryGetValue(
+                        identity,
+                        out var promotedEntry) ||
+                    !MortalHistoricalValueIsSubset(
+                        entry,
+                        promotedEntry))
+                {
+                    return false;
+                }
+
+                continue;
+            }
+
+            var fingerprint =
+                MortalCanonicalHistoryFingerprint(entry);
+            if (!promotedUnidentified.TryGetValue(
+                    fingerprint,
+                    out var count) ||
+                count == 0)
+            {
+                return false;
+            }
+
+            promotedUnidentified[fingerprint] = count - 1;
+        }
+
+        return true;
+    }
+
+    private static string? MortalHistoryIdentityKey(JsonNode? entry)
+    {
+        if (entry is not JsonObject value)
+            return null;
+
+        foreach (var field in new[]
+                 {
+                     "branchId",
+                     "rankId",
+                     "bonusId",
+                     "resourceId",
+                     "goodId",
+                     "projectId",
+                     "stateId",
+                     "targetFactionId",
+                     "locationId"
+                 })
+        {
+            if (!value.TryGetPropertyValue(field, out var identity) ||
+                identity == null)
+            {
+                continue;
+            }
+
+            return $"{field}:{MortalCanonicalHistoryFingerprint(identity)}";
+        }
+
+        return null;
+    }
+
+    private static void IncrementMortalHistoryFingerprint(
+        Dictionary<string, int> counts,
+        string fingerprint)
+    {
+        counts.TryGetValue(fingerprint, out var count);
+        counts[fingerprint] = count + 1;
+    }
+
+    private static string MortalCanonicalHistoryFingerprint(
+        JsonNode? value)
+    {
+        var builder = new StringBuilder();
+        AppendMortalCanonicalHistoryFingerprint(builder, value);
+        return builder.ToString();
+    }
+
+    private static void AppendMortalCanonicalHistoryFingerprint(
+        StringBuilder builder,
+        JsonNode? value)
+    {
+        switch (value)
+        {
+            case null:
+                builder.Append("null");
+                return;
+            case JsonObject obj:
+                builder.Append('{');
+                var firstProperty = true;
+                foreach (var property in obj.OrderBy(
+                             property => property.Key,
+                             StringComparer.Ordinal))
+                {
+                    if (!firstProperty)
+                        builder.Append(',');
+                    firstProperty = false;
+                    builder.Append(JsonSerializer.Serialize(property.Key));
+                    builder.Append(':');
+                    AppendMortalCanonicalHistoryFingerprint(
+                        builder,
+                        property.Value);
+                }
+
+                builder.Append('}');
+                return;
+            case JsonArray array:
+                builder.Append('[');
+                for (var index = 0; index < array.Count; index++)
+                {
+                    if (index > 0)
+                        builder.Append(',');
+                    AppendMortalCanonicalHistoryFingerprint(
+                        builder,
+                        array[index]);
+                }
+
+                builder.Append(']');
+                return;
+            default:
+                builder.Append(value.ToJsonString());
+                return;
+        }
     }
 
     private void ValidateCanonicalMortalFactionMaterialization(
@@ -1134,11 +1805,24 @@ public partial class ValidationService
         ReadRawMortalExternalFactionTouchIdsAsync(
             List<ValidationIssue> issues)
     {
+        var summary =
+            await ReadRawMortalExternalFactionTouchSummaryAsync(issues);
+        var touched = new HashSet<string>(
+            summary.CommandTargetIds,
+            StringComparer.Ordinal);
+        touched.UnionWith(summary.ChangedAuthorityIds);
+        return touched;
+    }
+
+    private async Task<RawMortalExternalFactionTouchSummary>
+        ReadRawMortalExternalFactionTouchSummaryAsync(
+            List<ValidationIssue> issues)
+    {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
         {
-            return new HashSet<string>(StringComparer.Ordinal);
+            return RawMortalExternalFactionTouchSummary.Empty;
         }
 
         var currentEvidence =
@@ -1249,11 +1933,102 @@ public partial class ValidationService
                 issues),
             preTurnEvidence);
 
-        commandTouches.UnionWith(
+        return new RawMortalExternalFactionTouchSummary(
             FindChangedRawFactionTouchIds(
                 currentEvidence,
-                preTurnEvidence));
-        return commandTouches;
+                preTurnEvidence),
+            FindRewrittenRawMortalHistorySources(
+                currentEvidence,
+                preTurnEvidence),
+            commandTouches);
+    }
+
+    private static Dictionary<string, string>
+        FindRewrittenRawMortalHistorySources(
+            IReadOnlyDictionary<string, List<RawFactionTouchEvidence>>
+                current,
+            IReadOnlyDictionary<string, List<RawFactionTouchEvidence>>
+                preTurn)
+    {
+        var result = new Dictionary<string, string>(
+            StringComparer.Ordinal);
+        foreach (var (factionId, historicalItems) in preTurn)
+        {
+            current.TryGetValue(factionId, out var currentItems);
+            var currentByIdentity =
+                new Dictionary<string, JsonNode>(
+                    StringComparer.Ordinal);
+            foreach (var item in currentItems ?? [])
+            {
+                currentByIdentity.TryAdd(
+                    MortalRawHistoryEvidenceIdentity(item),
+                    item.Payload);
+            }
+
+            foreach (var historical in historicalItems)
+            {
+                if (historical.SourceIdentity.StartsWith(
+                        MortalFactionChroniclesPath,
+                        StringComparison.Ordinal))
+                {
+                    // Chronicle normalization is additive and always begins
+                    // from the validated snapshot, so a raw entry cannot
+                    // replace or remove historical text.
+                    continue;
+                }
+
+                var identity =
+                    MortalRawHistoryEvidenceIdentity(historical);
+                if (!currentByIdentity.TryGetValue(
+                        identity,
+                        out var currentPayload))
+                {
+                    continue;
+                }
+
+                if (MortalHistoricalValueIsSubset(
+                        historical.Payload,
+                        currentPayload))
+                {
+                    continue;
+                }
+
+                result[factionId] = historical.SourceIdentity;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    private static string MortalRawHistoryEvidenceIdentity(
+        RawFactionTouchEvidence evidence)
+    {
+        var identity = MortalHistoryIdentityKey(evidence.Payload);
+        if (identity == null &&
+            evidence.Payload is JsonObject value)
+        {
+            if (value.TryGetPropertyValue(
+                    "entry",
+                    out var chronicleEntry) &&
+                chronicleEntry != null)
+            {
+                identity =
+                    $"entry:{MortalCanonicalHistoryFingerprint(chronicleEntry)}";
+            }
+            else if (value.TryGetPropertyValue(
+                         "factionId",
+                         out var factionId) &&
+                     factionId != null)
+            {
+                identity =
+                    $"factionId:{MortalCanonicalHistoryFingerprint(factionId)}";
+            }
+        }
+
+        identity ??= MortalCanonicalHistoryFingerprint(
+            evidence.Payload);
+        return $"{evidence.SourceIdentity}\u001f{identity}";
     }
 
     private async Task<JsonElement?> ReadRawMortalTouchRootAsync(
@@ -2225,6 +3000,18 @@ public partial class ValidationService
     private sealed record MortalNpcAuthority(
         HashSet<string> NpcIds,
         IReadOnlyList<JsonElement> Npcs);
+
+    private sealed record RawMortalExternalFactionTouchSummary(
+        IReadOnlySet<string> ChangedAuthorityIds,
+        IReadOnlyDictionary<string, string> RewrittenHistoricalSources,
+        IReadOnlySet<string> CommandTargetIds)
+    {
+        internal static RawMortalExternalFactionTouchSummary Empty { get; } =
+            new(
+                new HashSet<string>(StringComparer.Ordinal),
+                new Dictionary<string, string>(StringComparer.Ordinal),
+                new HashSet<string>(StringComparer.Ordinal));
+    }
 
     private sealed record MortalFactionSidecars(
         IReadOnlyDictionary<string, JsonElement> Structure,
