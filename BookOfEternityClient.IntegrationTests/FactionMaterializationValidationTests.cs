@@ -330,6 +330,40 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task NewMortalFaction_CurrentChronicleCannotReplaceRawCreationChronicle()
+    {
+        var faction = BuildCompleteMinimalMortalCreation();
+        faction.Remove("scribeChronicle");
+        var current = new JsonObject
+        {
+            ["factionDataChanges"] = new JsonArray(faction)
+        };
+        var currentChronicles = new JsonObject
+        {
+            ["entries"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "temp-faction-watch",
+                ["entry"] = "#12 - The Wayfarer Watch took responsibility for the western road."
+            })
+        };
+        var preTurnChronicles = new JsonObject
+        {
+            ["entries"] = new JsonArray()
+        };
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, current.ToJsonString()),
+            ("game_state/factions/faction_chronicles.json", currentChronicles.ToJsonString()),
+            (MortalPath, MortalRoot().ToJsonString()),
+            ("game_state/factions/faction_chronicles.json", preTurnChronicles.ToJsonString()));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_mortal_chronicle_missing" &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
     public async Task NewMortalFaction_AllSevenExactEmptySurfaces_Passes()
     {
         await WriteMortalCreationAsync(BuildCompleteMinimalMortalCreation());

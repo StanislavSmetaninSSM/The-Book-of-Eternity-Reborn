@@ -165,7 +165,8 @@ public partial class ValidationService
                 ValidateRawMortalFactionMaterialization(
                     fullTarget,
                     fullIsCreationOrPromotion,
-                    currentChronicleIds.Contains(factionId) ||
+                    fullIsCreationOrPromotion &&
+                    previous != null &&
                     preTurnChronicleIds.Contains(factionId),
                     effectiveFactionIds,
                     locationAuthority,
