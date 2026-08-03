@@ -7,6 +7,125 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private async Task NormalizeFactionCoreChangesAsync(
+        IReadOnlyDictionary<string, string>? backups)
+    {
+        var currentNode =
+            await ReadNodeAsync(
+                FactionCoreChangesContract.FactionCorePath);
+        if (currentNode is not JsonObject currentRoot ||
+            !currentRoot.ContainsKey(
+                FactionCoreChangesContract.PropertyName))
+        {
+            return;
+        }
+
+        var preTurnRoot = await ReadBackupObjectAsync(
+            FactionCoreChangesContract.FactionCorePath,
+            backups);
+        if (preTurnRoot == null)
+            return;
+
+        var authority =
+            await ReadFactionCoreChangesAuthorityAsync(
+                currentRoot,
+                preTurnRoot,
+                backups);
+        var evaluation = FactionCoreChangesContract.Evaluate(
+            currentRoot,
+            preTurnRoot,
+            authority);
+        if (!evaluation.CanApply)
+            return;
+
+        var result = CloneObject(currentRoot);
+        FactionCoreChangesContract.Apply(result, evaluation);
+        await WriteIfChangedAsync(
+            FactionCoreChangesContract.FactionCorePath,
+            currentNode,
+            result);
+    }
+
+    private async Task<FactionCoreChangesContract.Authority>
+        ReadFactionCoreChangesAuthorityAsync(
+            JsonObject currentRoot,
+            JsonObject preTurnRoot,
+            IReadOnlyDictionary<string, string>? backups)
+    {
+        var factionIds = new HashSet<string>(
+            StringComparer.Ordinal);
+        CollectFactionCoreChangesFactionIds(
+            currentRoot,
+            factionIds);
+        CollectFactionCoreChangesFactionIds(
+            preTurnRoot,
+            factionIds);
+
+        const string npcCorePath =
+            "game_state/npcs/npc_core.json";
+        var npcIds = new HashSet<string>(StringComparer.Ordinal);
+        CollectFactionCoreChangesNpcIds(
+            await ReadNodeAsync(npcCorePath),
+            npcIds);
+        CollectFactionCoreChangesNpcIds(
+            await ReadBackupObjectAsync(
+                npcCorePath,
+                backups),
+            npcIds);
+        return new FactionCoreChangesContract.Authority(
+            factionIds,
+            npcIds);
+    }
+
+    private static void CollectFactionCoreChangesFactionIds(
+        JsonObject root,
+        HashSet<string> result)
+    {
+        foreach (var section in new[]
+                 {
+                     "factions",
+                     "factionDataChanges"
+                 })
+        {
+            if (root[section] is not JsonArray factions)
+                continue;
+            foreach (var faction in factions.OfType<JsonObject>())
+            {
+                var factionId = GetNodeString(
+                    faction["factionId"]);
+                if (!string.IsNullOrWhiteSpace(factionId))
+                    result.Add(factionId);
+            }
+        }
+    }
+
+    private static void CollectFactionCoreChangesNpcIds(
+        JsonNode? node,
+        HashSet<string> result)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                if (GuardianPolicyContracts
+                    .TryResolveStrictPermanentNpcId(
+                        obj,
+                        out var npcId))
+                {
+                    result.Add(npcId);
+                }
+
+                foreach (var property in obj)
+                    CollectFactionCoreChangesNpcIds(
+                        property.Value,
+                        result);
+                break;
+            case JsonArray array:
+                foreach (var item in array)
+                    CollectFactionCoreChangesNpcIds(item, result);
+                break;
+        }
+    }
+
     private async Task NormalizeFactionCoreAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/factions/faction_core.json";
@@ -31,6 +150,14 @@ public partial class CanonicalStateNormalizer
 
         result["factions"] = ToArray(factions);
         result.Remove("factionDataChanges");
+        if (currentNode is JsonObject currentRoot &&
+            currentRoot.ContainsKey(
+                FactionCoreChangesContract.PropertyName))
+        {
+            result[FactionCoreChangesContract.PropertyName] =
+                currentRoot[FactionCoreChangesContract.PropertyName]
+                    ?.DeepClone();
+        }
         await WriteIfChangedAsync(path, currentNode, result);
     }
 

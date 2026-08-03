@@ -189,6 +189,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeAfterlifeGlobalFlagsAsync(backups);
         await NormalizeAfterlifeStoryOutlineAsync(backups);
         await NormalizeSarefMainStoryStateAsync(backups);
+        await NormalizeFactionCoreChangesAsync(backups);
         await NormalizeFactionStructureAsync(backups);
         await NormalizeFactionResourcesAsync(backups);
         await NormalizeFactionProjectsAsync(backups);

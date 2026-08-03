@@ -204,7 +204,7 @@ public partial class ValidationService
             ValidateWorldQuestCombatFactionContract);
 
         await ValidateFlexibleStateFile("game_state/factions/faction_core.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "factionDataChanges", "factions" }, issues,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "factionCoreChanges", "factionDataChanges", "factions" }, issues,
             ValidateWorldQuestCombatFactionContract);
         await ValidateFlexibleStateFile("game_state/factions/faction_structure.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "factionRankChanges", "factionBonusChanges", "entries" }, issues,

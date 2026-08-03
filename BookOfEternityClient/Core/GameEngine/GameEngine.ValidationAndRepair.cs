@@ -367,6 +367,7 @@ public partial class GameEngine
     {
         var issues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
         issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
+        issues.AddRange(await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync());
         return issues;
     }

@@ -342,6 +342,9 @@ public class GameResponse
     [JsonPropertyName("factionDataChanges")]
     public JsonElement[]? FactionDataChanges { get; set; }
 
+    [JsonPropertyName("factionCoreChanges")]
+    public JsonElement[]? FactionCoreChanges { get; set; }
+
     [JsonPropertyName("factionRankChanges")]
     public JsonElement[]? FactionRankChanges { get; set; }
 
