@@ -106,7 +106,9 @@ public partial class ValidationService
             issues);
 
         var currentChronicleIds = await ReadMortalChronicleFactionIdsAsync(
-            preTurn: false);
+            preTurn: false,
+            effectiveFactionIds,
+            issues);
         var preTurnChronicleIds = await ReadMortalChronicleFactionIdsAsync(
             preTurn: true);
 
@@ -423,6 +425,12 @@ public partial class ValidationService
                 structure,
                 sidecars.StructureContexts[factionId],
                 factionId,
+                issues);
+            ValidateMortalLeaderNpcReferences(
+                structure,
+                sidecars.StructureContexts[factionId],
+                factionId,
+                npcAuthority,
                 issues);
             if (!structure.TryGetProperty("ranks", out var ranks) ||
                 ranks.ValueKind != JsonValueKind.Object ||
@@ -1020,7 +1028,24 @@ public partial class ValidationService
             }
         }
 
-        if (!faction.TryGetProperty("leadership", out var leadership) ||
+        ValidateMortalLeaderNpcReferences(
+            faction,
+            context,
+            factionId,
+            npcAuthority,
+            issues);
+    }
+
+    private static void ValidateMortalLeaderNpcReferences(
+        JsonElement factionOrStructure,
+        string context,
+        string factionId,
+        MortalNpcAuthority npcAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!factionOrStructure.TryGetProperty(
+                "leadership",
+                out var leadership) ||
             leadership.ValueKind != JsonValueKind.Object ||
             !leadership.TryGetProperty(
                 "leaderNpcIds",
@@ -1302,7 +1327,8 @@ public partial class ValidationService
                     npc,
                     "NPCId",
                     "npcId",
-                    "id"))
+                    "id",
+                    "initialId"))
                 .Where(id => !string.IsNullOrWhiteSpace(id))
                 .Cast<string>()
                 .ToHashSet(StringComparer.Ordinal),
@@ -1362,7 +1388,8 @@ public partial class ValidationService
                 npc,
                 "NPCId",
                 "npcId",
-                "id") ?? "unknown-npc";
+                "id",
+                "initialId") ?? "unknown-npc";
             var index = 0;
             foreach (var affiliation in affiliations.EnumerateArray())
             {
@@ -1385,7 +1412,9 @@ public partial class ValidationService
     }
 
     private async Task<HashSet<string>> ReadMortalChronicleFactionIdsAsync(
-        bool preTurn)
+        bool preTurn,
+        IReadOnlySet<string>? effectiveFactionIds = null,
+        List<ValidationIssue>? issues = null)
     {
         var json = preTurn
             ? await ReadPreTurnTrackedFileAsync(MortalFactionChroniclesPath)
@@ -1405,10 +1434,14 @@ public partial class ValidationService
                 return result;
             }
 
+            var index = 0;
             foreach (var entry in entries.EnumerateArray())
             {
                 if (entry.ValueKind != JsonValueKind.Object)
+                {
+                    index++;
                     continue;
+                }
                 var factionId = ReadMortalString(entry, "factionId");
                 var text = ReadFirstMortalString(
                     entry,
@@ -1416,10 +1449,25 @@ public partial class ValidationService
                     "chronicle",
                     "text");
                 if (!string.IsNullOrWhiteSpace(factionId) &&
+                    effectiveFactionIds != null &&
+                    !effectiveFactionIds.Contains(factionId))
+                {
+                    issues?.Add(FactionIssue(
+                        $"{MortalFactionChroniclesPath}.entries[{index}].factionId",
+                        "faction_materialization_mortal_orphaned_chronicle",
+                        factionId,
+                        "Mortal chronicle entries must use one exact effective faction ID."));
+                    index++;
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(factionId) &&
                     !string.IsNullOrWhiteSpace(text))
                 {
                     result.Add(factionId);
                 }
+
+                index++;
             }
         }
         catch (JsonException)
