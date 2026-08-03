@@ -93,6 +93,58 @@ public sealed class ShiningTradeRequestStateTests
         }
     }
 
+    [Theory]
+    [InlineData(ShiningAbodeState.LeadershipStateSecure, true)]
+    [InlineData(ShiningAbodeState.LeadershipStateVacant, false)]
+    public async Task RequestInventoryAsync_ManualRequestRequiresAvailableTradeCapability(
+        string leadershipState,
+        bool expectedSuccess)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            var shiningRoot = JsonNode.Parse(
+                (await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+            var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
+            var leadership = faction["leadership"]!.AsObject();
+            leadership["leadershipState"] = leadershipState;
+            if (string.Equals(
+                    leadershipState,
+                    ShiningAbodeState.LeadershipStateVacant,
+                    StringComparison.Ordinal))
+            {
+                leadership["headActorType"] = null;
+                leadership["headActorId"] = null;
+            }
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                shiningRoot.ToJsonString());
+
+            var result = await ShiningTradeService.RequestInventoryAsync(
+                fs,
+                "faction_old",
+                currentTurn: 11);
+
+            Assert.Equal(expectedSuccess, result.Success);
+            Assert.Equal(expectedSuccess, result.StateChanged);
+            Assert.Equal(
+                expectedSuccess,
+                fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+            var requests = await ShiningTradeRequestState.ReadRequestsAsync(fs);
+            if (expectedSuccess)
+                Assert.Equal("faction_old", Assert.Single(requests).FactionId);
+            else
+                Assert.Empty(requests);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     [Fact]
     public async Task RequestInventoryAsync_ShiningScopeChangesBeforeCommit_BlocksWithoutMutation()
     {
