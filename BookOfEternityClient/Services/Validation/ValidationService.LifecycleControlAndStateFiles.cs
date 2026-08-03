@@ -1263,6 +1263,7 @@ public partial class ValidationService
                         route: "player_founding",
                         authorityType: "shining_founding_request",
                         authorityId: request.RequestId,
+                        expectedFactionId: request.ProposedFactionId,
                         faction: currentFaction,
                         hallId: request.ProposedHallId,
                         residentIds: request.SupportingResidentIds
@@ -9790,6 +9791,7 @@ public partial class ValidationService
             route: "native_discovery",
             authorityType: "shining_core_action_request",
             authorityId: request.RequestId,
+            expectedFactionId: factionId,
             faction: currentFaction,
             hallId: hallId,
             residentIds: residentIds,

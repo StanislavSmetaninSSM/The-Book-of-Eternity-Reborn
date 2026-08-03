@@ -318,6 +318,7 @@ public partial class ValidationService
         string route,
         string authorityType,
         string authorityId,
+        string expectedFactionId,
         JsonObject? faction,
         string hallId,
         IReadOnlySet<string> residentIds,
@@ -330,11 +331,88 @@ public partial class ValidationService
 
         var factionId =
             ReadShiningMaterializationString(faction, "factionId");
+        var actualHallId =
+            ReadShiningMaterializationString(faction, "hallId");
+        var issueFactionId = factionId ?? expectedFactionId;
+        var context =
+            $"{ShiningAbodeState.StatePath}.factions[{issueFactionId}]";
+        if (!string.Equals(
+                factionId,
+                expectedFactionId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                actualHallId,
+                hallId,
+                StringComparison.Ordinal))
+        {
+            issues.Add(
+                ShiningFactionMaterializationIssue(
+                    $"{context}.factionId",
+                    "faction_materialization_shining_route_identity_invalid",
+                    issueFactionId,
+                    "Shining creation route must materialize the exact resolved faction and hall identities.",
+                    expected:
+                        $"{expectedFactionId} / hall {hallId}",
+                    actual:
+                        $"{factionId ?? "missing"} / hall {actualHallId ?? "missing"}"));
+        }
+
         if (string.IsNullOrWhiteSpace(factionId))
             return;
 
-        var context =
-            $"{ShiningAbodeState.StatePath}.factions[{factionId}]";
+        var actualProjectIds =
+            new HashSet<string>(StringComparer.Ordinal);
+        var projects = faction["projects"] as JsonArray;
+        var projectShapeValid = projects != null;
+        if (projects != null)
+        {
+            foreach (var projectNode in projects)
+            {
+                if (projectNode is not JsonObject project)
+                {
+                    projectShapeValid = false;
+                    continue;
+                }
+
+                var projectId =
+                    ReadShiningMaterializationString(
+                        project,
+                        "projectId");
+                if (projectId == null ||
+                    !actualProjectIds.Add(projectId))
+                {
+                    projectShapeValid = false;
+                }
+            }
+        }
+
+        if (!projectShapeValid ||
+            !actualProjectIds.SetEquals(projectIds))
+        {
+            var actualProjectSet =
+                string.Join(
+                    ",",
+                    actualProjectIds.OrderBy(
+                        value => value,
+                        StringComparer.Ordinal));
+            issues.Add(
+                ShiningFactionMaterializationIssue(
+                    $"{context}.projects",
+                    "faction_materialization_shining_route_project_set_invalid",
+                    factionId,
+                    "Shining creation route projects must match the exact resolved project set.",
+                    expected:
+                        string.Join(
+                            ",",
+                            projectIds.OrderBy(
+                                value => value,
+                                StringComparer.Ordinal)),
+                    actual:
+                        projectShapeValid
+                            ? actualProjectSet
+                            : $"malformed or duplicate projectId entries; ids={actualProjectSet}"));
+        }
+
         var provenance = faction["creationProvenance"] as JsonObject;
         if (provenance == null ||
             !string.Equals(
@@ -428,9 +506,6 @@ public partial class ValidationService
                             "missing"));
             }
         }
-
-        _ = hallId;
-        _ = projectIds;
     }
 
     private void ValidateShiningFactionMaterializationReferences(

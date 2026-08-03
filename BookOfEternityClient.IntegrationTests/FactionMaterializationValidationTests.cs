@@ -49,10 +49,13 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         { "resident_count_high", "shining_discovery_invalid_new_resident_count" },
         { "project_count", "shining_discovery_invalid_seeded_project_count" },
         { "project_not_completed", "shining_discovery_missing_seeded_project" },
+        { "extra_unlisted_project", "faction_materialization_shining_route_project_set_invalid" },
         { "reuse_hall", "shining_discovery_reused_existing_hall_id" },
         { "reuse_faction", "shining_discovery_reused_existing_faction_id" },
         { "reuse_resident", "shining_discovery_invalid_new_resident_materialization" },
         { "reuse_project", "shining_discovery_reused_existing_project_id" },
+        { "case_variant_faction_id", "faction_materialization_shining_route_identity_invalid" },
+        { "case_variant_hall_id", "faction_materialization_shining_route_identity_invalid" },
         { "missing_actor_envelope", "actor_materialization_missing" },
         { "wrong_cost", "shining_discovery_light_sparks_cost_mismatch" },
         { "wrong_receipt", "shining_core_action_receipt_mismatch" },
@@ -71,6 +74,8 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         { "reserved_feathers", "shining_founding_reserved_ink_feathers_rollback" },
         { "missing_root_receipt", "shining_founding_missing_resolution" },
         { "missing_history", "faction_materialization_shining_route_history_invalid" },
+        { "case_variant_faction_id", "faction_materialization_shining_route_identity_invalid" },
+        { "case_variant_hall_id", "faction_materialization_shining_route_identity_invalid" },
         { "unrelated_resident_rewrite", "faction_materialization_shining_route_resident_affiliation_invalid" }
     };
 
@@ -1060,6 +1065,20 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         var factionId = string.Equals(mutation, "reuse_faction", StringComparison.Ordinal)
             ? existingFactionId
             : nativeFactionId;
+        var materializedHallId =
+            string.Equals(
+                mutation,
+                "case_variant_hall_id",
+                StringComparison.Ordinal)
+                ? hallId.ToUpperInvariant()
+                : hallId;
+        var materializedFactionId =
+            string.Equals(
+                mutation,
+                "case_variant_faction_id",
+                StringComparison.Ordinal)
+                ? factionId.ToUpperInvariant()
+                : factionId;
         var residentIds = Enumerable.Range(1, residentCount)
             .Select(index => $"resident_native_{index}")
             .ToArray();
@@ -1090,7 +1109,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         if (!string.Equals(mutation, "reuse_hall", StringComparison.Ordinal))
         {
             ((JsonArray)currentShining["halls"]!).Add(
-                BuildShiningHall(nativeHallId, "Native Hall"));
+                BuildShiningHall(materializedHallId, "Native Hall"));
         }
         if (string.Equals(mutation, "duplicate_hall", StringComparison.Ordinal))
         {
@@ -1107,9 +1126,19 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                         ? "active"
                         : ShiningAbodeState.ProjectStatusCompleted))
                 .ToArray());
+        if (string.Equals(
+                mutation,
+                "extra_unlisted_project",
+                StringComparison.Ordinal))
+        {
+            projects.Add(
+                BuildRouteProject(
+                    "project_native_unlisted",
+                    ShiningAbodeState.ProjectStatusCompleted));
+        }
         var faction = BuildCompleteNativeRouteFaction(
-            factionId,
-            hallId,
+            materializedFactionId,
+            materializedHallId,
             requestId,
             residentIds[0],
             projects);
@@ -1123,7 +1152,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             {
                 ["factionId"] = "shine_faction_unexpected",
                 ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
-                ["hallId"] = hallId
+                ["hallId"] = materializedHallId
             });
         }
 
@@ -1135,11 +1164,15 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         {
             if (string.Equals(residentId, existingResidentId, StringComparison.Ordinal))
             {
-                currentResidentEntries[0]!["shiningFactionId"] = factionId;
+                currentResidentEntries[0]!["shiningFactionId"] =
+                    materializedFactionId;
                 continue;
             }
 
-            currentResidentEntries.Add(BuildRouteResident(residentId, factionId));
+            currentResidentEntries.Add(
+                BuildRouteResident(
+                    residentId,
+                    materializedFactionId));
         }
         if (string.Equals(mutation, "unrelated_resident_rewrite", StringComparison.Ordinal))
             currentResidentEntries[0]!["displayName"] = "Rewritten Existing Resident";
@@ -1196,6 +1229,20 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         const string hallId = "hall_player";
         const string factionId = "shine_faction_player";
         var supporterIds = new[] { "resident_supporter_1", "resident_supporter_2" };
+        var materializedHallId =
+            string.Equals(
+                mutation,
+                "case_variant_hall_id",
+                StringComparison.Ordinal)
+                ? hallId.ToUpperInvariant()
+                : hallId;
+        var materializedFactionId =
+            string.Equals(
+                mutation,
+                "case_variant_faction_id",
+                StringComparison.Ordinal)
+                ? factionId.ToUpperInvariant()
+                : factionId;
 
         var request = BuildPlayerFoundingRequest(
             requestId,
@@ -1204,10 +1251,10 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             supporterIds);
         var preTurnShining = BuildRouteShiningRoot();
         var currentShining = CloneJsonObject(preTurnShining);
-        var hall = BuildPlayerFoundingHall(hallId);
+        var hall = BuildPlayerFoundingHall(materializedHallId);
         var faction = BuildCompletePlayerFoundedRouteFaction(
-            factionId,
-            hallId,
+            materializedFactionId,
+            materializedHallId,
             requestId);
         if (string.Equals(mutation, "request_id", StringComparison.Ordinal))
             faction["creationProvenance"]!["authorityId"] = "request_other";
@@ -1244,12 +1291,13 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         {
             var residentId = resident["residentId"]!.GetValue<string>();
             if (supporterIds.Contains(residentId, StringComparer.Ordinal))
-                resident["shiningFactionId"] = factionId;
+                resident["shiningFactionId"] = materializedFactionId;
         }
         if (string.Equals(mutation, "supporters", StringComparison.Ordinal))
             currentEntries[0]!["shiningFactionId"] = "shine_faction_old";
         else if (string.Equals(mutation, "unrelated_resident_rewrite", StringComparison.Ordinal))
-            currentEntries[2]!["shiningFactionId"] = factionId;
+            currentEntries[2]!["shiningFactionId"] =
+                materializedFactionId;
 
         var preTurnSoul = BuildRouteSoulRoot(currentFeathers: 75);
         var currentSoul = CloneJsonObject(preTurnSoul);
