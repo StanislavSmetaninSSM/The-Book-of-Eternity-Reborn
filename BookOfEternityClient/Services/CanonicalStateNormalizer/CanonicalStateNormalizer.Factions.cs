@@ -64,10 +64,10 @@ public partial class CanonicalStateNormalizer
         const string npcCorePath =
             "game_state/npcs/npc_core.json";
         var npcIds = new HashSet<string>(StringComparer.Ordinal);
-        CollectFactionCoreChangesNpcIds(
+        FactionCoreChangesContract.CollectKnownMortalNpcIds(
             await ReadNodeAsync(npcCorePath),
             npcIds);
-        CollectFactionCoreChangesNpcIds(
+        FactionCoreChangesContract.CollectKnownMortalNpcIds(
             await ReadBackupObjectAsync(
                 npcCorePath,
                 backups),
@@ -96,33 +96,6 @@ public partial class CanonicalStateNormalizer
                 if (!string.IsNullOrWhiteSpace(factionId))
                     result.Add(factionId);
             }
-        }
-    }
-
-    private static void CollectFactionCoreChangesNpcIds(
-        JsonNode? node,
-        HashSet<string> result)
-    {
-        switch (node)
-        {
-            case JsonObject obj:
-                if (GuardianPolicyContracts
-                    .TryResolveStrictPermanentNpcId(
-                        obj,
-                        out var npcId))
-                {
-                    result.Add(npcId);
-                }
-
-                foreach (var property in obj)
-                    CollectFactionCoreChangesNpcIds(
-                        property.Value,
-                        result);
-                break;
-            case JsonArray array:
-                foreach (var item in array)
-                    CollectFactionCoreChangesNpcIds(item, result);
-                break;
         }
     }
 

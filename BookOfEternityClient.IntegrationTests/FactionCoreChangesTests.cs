@@ -364,12 +364,16 @@ public sealed class FactionCoreChangesTests : IDisposable
     }
 
     [Fact]
-    public async Task Normalize_SameTurnPromotionPlusCommand_AppliesAndPreservesHistory()
+    public async Task Normalize_SameTurnPromotionOverlayReviewRegression_AppliesToPromotedEffectiveRowAndPreservesHistory()
     {
         var fixture = await WritePromotionFixtureAsync();
 
         var issues =
             await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is
+                "faction_core_changes_duplicate_effective_identity" or
+                "faction_core_changes_ambiguous_target");
         Assert.Empty(issues);
         await CreateNormalizer().NormalizeAccumulatedStateAsync(
             fixture.Backups);
@@ -397,6 +401,124 @@ public sealed class FactionCoreChangesTests : IDisposable
         Assert.Contains(
             "#12 - The promoted watch ratified its complete charter.",
             entries);
+    }
+
+    [Theory]
+    [InlineData("duplicate_factions")]
+    [InlineData("duplicate_carrier")]
+    [InlineData("mutated_baseline")]
+    public async Task Validate_InvalidPromotionOverlayReviewRegression_FailsClosed(
+        string variation)
+    {
+        await WritePromotionFixtureAsync(current =>
+        {
+            switch (variation)
+            {
+                case "duplicate_factions":
+                    current["factions"]!.AsArray().Add(
+                        current["factions"]![0]!.DeepClone());
+                    break;
+                case "duplicate_carrier":
+                    current["factionDataChanges"]!.AsArray().Add(
+                        current["factionDataChanges"]![0]!.DeepClone());
+                    break;
+                case "mutated_baseline":
+                    current["factions"]![0]!["name"] =
+                        "Mutated legacy baseline";
+                    break;
+            }
+        });
+
+        var issues =
+            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+            "faction_core_changes_duplicate_effective_identity");
+    }
+
+    [Fact]
+    public async Task Validate_NestedGenericNpcIdAuthorityReviewRegression_IsRejectedByValidatorAndNormalizer()
+    {
+        const string nestedItemId = "npc_nested_inventory_item";
+        var governance =
+            BuildCompleteGroup("governanceAndLeadership");
+        governance["leadership"]!["leaderNpcIds"] =
+            new JsonArray(nestedItemId);
+        var fixture = await WriteExistingFixtureAsync(
+            current =>
+                current[FactionCoreChangesContract.PropertyName] =
+                    new JsonArray(BuildCommand(
+                        "faction_watch",
+                        "governanceAndLeadership",
+                        governance)),
+            mutateNpcCore: npcCore =>
+            {
+                var npc = npcCore["NPCsInScene"]![0]!.AsObject();
+                npc["inventory"] = new JsonObject
+                {
+                    ["items"] = new JsonArray(new JsonObject
+                    {
+                        ["id"] = nestedItemId,
+                        ["name"] = "Captain's bridge token"
+                    })
+                };
+            });
+
+        var issues =
+            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_core_changes_governance_and_leadership_invalid" &&
+            issue.FilePath.Contains(
+                "leaderNpcIds",
+                StringComparison.Ordinal));
+
+        await CreateNormalizer().NormalizeAccumulatedStateAsync(
+            fixture.Backups);
+        var core = await ReadObjectAsync(CorePath);
+        Assert.True(core.ContainsKey(
+            FactionCoreChangesContract.PropertyName));
+        var structure = await ReadObjectAsync(StructurePath);
+        var watch = FindEntry(
+            structure,
+            "entries",
+            "faction_watch");
+        Assert.Equal(
+            "vacant",
+            watch["leadership"]!["leadershipState"]!
+                .GetValue<string>());
+    }
+
+    [Theory]
+    [InlineData("NPCId")]
+    [InlineData("npcId")]
+    [InlineData("id")]
+    public async Task Validate_RecognizedNpcCarrierIdentityAliasReviewRegression_IsAccepted(
+        string identityAlias)
+    {
+        await WriteExistingFixtureAsync(
+            current =>
+                current[FactionCoreChangesContract.PropertyName] =
+                    new JsonArray(BuildCommand(
+                        "faction_watch",
+                        "governanceAndLeadership",
+                        BuildCompleteGroup(
+                            "governanceAndLeadership"))),
+            mutateNpcCore: npcCore =>
+            {
+                var npc = npcCore["NPCsInScene"]![0]!.AsObject();
+                npc.Remove("NPCId");
+                npc[identityAlias] = "npc_watch_captain";
+            });
+
+        var issues =
+            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code ==
+            "faction_core_changes_governance_and_leadership_invalid");
     }
 
     [Fact]
@@ -461,7 +583,8 @@ public sealed class FactionCoreChangesTests : IDisposable
 
     private async Task<FactionFixture> WriteExistingFixtureAsync(
         Action<JsonObject>? mutateCurrent = null,
-        Action<JsonObject>? mutatePreTurn = null)
+        Action<JsonObject>? mutatePreTurn = null,
+        Action<JsonObject>? mutateNpcCore = null)
     {
         var preTurnCore = BuildMaterializedCore();
         mutatePreTurn?.Invoke(preTurnCore);
@@ -478,6 +601,7 @@ public sealed class FactionCoreChangesTests : IDisposable
         var custom = BuildCustomRoot();
         var chronicles = BuildChroniclesRoot();
         var npcCore = BuildNpcCoreRoot();
+        mutateNpcCore?.Invoke(npcCore);
         var state = new Dictionary<string, JsonObject>(
             StringComparer.OrdinalIgnoreCase)
         {
@@ -509,7 +633,8 @@ public sealed class FactionCoreChangesTests : IDisposable
             BuildBackupMap(snapshots.Keys));
     }
 
-    private async Task<FactionFixture> WritePromotionFixtureAsync()
+    private async Task<FactionFixture> WritePromotionFixtureAsync(
+        Action<JsonObject>? mutateCurrent = null)
     {
         var preTurnCore = BuildMaterializedCore();
         var legacy = FindFaction(preTurnCore, "faction_watch");
@@ -542,6 +667,7 @@ public sealed class FactionCoreChangesTests : IDisposable
             "#12 - The promoted watch ratified its complete charter.");
         var currentCore = new JsonObject
         {
+            ["factions"] = preTurnCore["factions"]!.DeepClone(),
             ["factionDataChanges"] = new JsonArray(promoted),
             [FactionCoreChangesContract.PropertyName] =
                 new JsonArray(BuildCommand(
@@ -557,6 +683,7 @@ public sealed class FactionCoreChangesTests : IDisposable
                         ["factionColor"] = "#315A88"
                     }))
         };
+        mutateCurrent?.Invoke(currentCore);
 
         var structure = BuildStructureRoot();
         var resources = BuildResourcesRoot();

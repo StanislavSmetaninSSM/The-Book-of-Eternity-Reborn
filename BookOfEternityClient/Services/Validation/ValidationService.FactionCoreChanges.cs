@@ -210,7 +210,9 @@ public partial class ValidationService
         {
             if (!TryParseUniqueJsonNode(json, out var root))
                 continue;
-            CollectFactionCoreChangesNpcIds(root, npcIds);
+            FactionCoreChangesContract.CollectKnownMortalNpcIds(
+                root,
+                npcIds);
         }
 
         return new FactionCoreChangesContract.Authority(
@@ -269,33 +271,6 @@ public partial class ValidationService
                     result.Add(factionId!);
                 }
             }
-        }
-    }
-
-    private static void CollectFactionCoreChangesNpcIds(
-        JsonNode? node,
-        HashSet<string> result)
-    {
-        switch (node)
-        {
-            case JsonObject obj:
-                if (GuardianPolicyContracts
-                    .TryResolveStrictPermanentNpcId(
-                        obj,
-                        out var npcId))
-                {
-                    result.Add(npcId);
-                }
-
-                foreach (var property in obj)
-                    CollectFactionCoreChangesNpcIds(
-                        property.Value,
-                        result);
-                break;
-            case JsonArray array:
-                foreach (var item in array)
-                    CollectFactionCoreChangesNpcIds(item, result);
-                break;
         }
     }
 

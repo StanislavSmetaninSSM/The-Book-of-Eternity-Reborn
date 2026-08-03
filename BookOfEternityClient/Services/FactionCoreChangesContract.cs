@@ -207,7 +207,7 @@ internal static class FactionCoreChangesContract
         {
             HasCommand = HasCommandLikeProperty(currentRoot)
         };
-        var currentFactions = CollectFactions(currentRoot);
+        var currentCarrierFactions = CollectFactions(currentRoot);
         var preTurnFactions = CollectFactions(
             preTurnRoot,
             includeFullCarrier: false);
@@ -215,8 +215,9 @@ internal static class FactionCoreChangesContract
             currentRoot,
             preTurnFactions,
             evaluation.Issues);
-        ValidateDuplicateEffectiveIdentities(
-            currentFactions,
+        var currentFactions = ResolveEffectiveFactions(
+            currentCarrierFactions,
+            preTurnFactions,
             evaluation.Issues);
         evaluation.Issues.AddRange(
             ValidateCommandTopLevelNames(currentRoot));
@@ -574,23 +575,106 @@ internal static class FactionCoreChangesContract
         }
     }
 
-    private static void ValidateDuplicateEffectiveIdentities(
+    private static IReadOnlyList<FactionReference>
+        ResolveEffectiveFactions(
         IReadOnlyList<FactionReference> currentFactions,
+        IReadOnlyList<FactionReference> preTurnFactions,
         List<ValidationIssue> issues)
     {
+        var result = currentFactions
+            .Where(reference => reference.FactionId == null)
+            .ToList();
         foreach (var group in currentFactions
                      .Where(reference => reference.FactionId != null)
                      .GroupBy(
                          reference => reference.FactionId!,
-                         StringComparer.Ordinal)
-                     .Where(group => group.Count() > 1))
+                         StringComparer.Ordinal))
         {
+            var candidates = group.ToList();
+            if (candidates.Count == 1)
+            {
+                result.Add(candidates[0]);
+                continue;
+            }
+
+            if (TryResolveSameTurnPromotionOverlay(
+                    candidates,
+                    preTurnFactions,
+                    out var promoted))
+            {
+                result.Add(promoted);
+                continue;
+            }
+
             issues.Add(Error(
-                group.Skip(1).First().Path,
+                candidates[1].Path,
                 "faction_core_changes_duplicate_effective_identity",
                 "Current faction core carriers contain a duplicate exact effective factionId.",
                 group.Key));
+            result.AddRange(candidates);
         }
+
+        return result;
+    }
+
+    private static bool TryResolveSameTurnPromotionOverlay(
+        IReadOnlyList<FactionReference> candidates,
+        IReadOnlyList<FactionReference> preTurnFactions,
+        out FactionReference promoted)
+    {
+        promoted = null!;
+        if (candidates.Count != 2)
+            return false;
+
+        var baselines = candidates
+            .Where(reference => string.Equals(
+                reference.Section,
+                "factions",
+                StringComparison.Ordinal))
+            .ToList();
+        var promotions = candidates
+            .Where(reference => string.Equals(
+                reference.Section,
+                "factionDataChanges",
+                StringComparison.Ordinal))
+            .ToList();
+        if (baselines.Count != 1 ||
+            promotions.Count != 1)
+        {
+            return false;
+        }
+
+        var baseline = baselines[0];
+        var promotion = promotions[0];
+        var factionId = baseline.FactionId;
+        if (factionId == null)
+            return false;
+
+        var previous = preTurnFactions
+            .Where(reference => string.Equals(
+                reference.FactionId,
+                factionId,
+                StringComparison.Ordinal))
+            .ToList();
+        if (previous.Count != 1 ||
+            HasCompleteMortalReceipt(
+                previous[0].Faction,
+                factionId) ||
+            HasCompleteMortalReceipt(
+                baseline.Faction,
+                factionId) ||
+            !HasCompleteMortalReceipt(
+                promotion.Faction,
+                factionId) ||
+            !JsonNode.DeepEquals(
+                baseline.Faction,
+                previous[0].Faction))
+        {
+            return false;
+        }
+
+        promoted = promotion;
+        return true;
     }
 
     private static void ValidateProfile(
@@ -1197,7 +1281,7 @@ internal static class FactionCoreChangesContract
         JsonObject root,
         string factionId)
     {
-        foreach (var section in new[] { "factions", "factionDataChanges" })
+        foreach (var section in new[] { "factionDataChanges", "factions" })
         {
             if (root[section] is not JsonArray factions)
                 continue;
@@ -1240,6 +1324,27 @@ internal static class FactionCoreChangesContract
         }
 
         return result;
+    }
+
+    internal static void CollectKnownMortalNpcIds(
+        JsonNode? node,
+        HashSet<string> result)
+    {
+        if (node is not JsonObject root)
+            return;
+
+        foreach (var npc in
+                 GuardianPolicyContracts.EnumerateCanonicalNpcObjects(
+                     root))
+        {
+            if (GuardianPolicyContracts
+                .TryResolveStrictPermanentNpcId(
+                    npc,
+                    out var npcId))
+            {
+                result.Add(npcId);
+            }
+        }
     }
 
     private static bool HasCompleteMortalReceipt(
