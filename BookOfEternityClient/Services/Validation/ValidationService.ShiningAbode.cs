@@ -21,6 +21,15 @@ public partial class ValidationService
             "hidden"
         };
 
+    private static readonly HashSet<string>
+        ShiningClientDerivedFactionFields =
+            new(StringComparer.Ordinal)
+            {
+                "factionStrength",
+                "derivedTier",
+                "serviceMultiplier"
+            };
+
     private void ValidateShiningAbodeStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         RequireString(root, contextPrefix, issues, "availability");

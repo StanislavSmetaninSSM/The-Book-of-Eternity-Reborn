@@ -14,6 +14,8 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     private const string ResidentPath = "game_state/meta/guardian_abode_residents.json";
     private const string SoulPath = "game_state/meta/soul_state.json";
     private const string AfterlifeProfilesPath = "game_state/meta/afterlife_entity_profiles.json";
+    private const string GuardiansPath = "game_state/meta/guardians.json";
+    private const string SarefStoryPath = "game_state/meta/main_story_saref_state.json";
 
     public static TheoryData<string, string> MissingMortalSemantics => new()
     {
@@ -353,10 +355,14 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task Validate_ShiningDerivedStrengthOnly_DoesNotPromoteLegacyFaction()
+    public async Task Validate_ShiningExactDerivedProjectionFieldsOnly_DoesNotPromoteLegacyFaction()
     {
         var preTurnFaction = LegacyShiningFaction("order_dawn", factionStrength: 30);
         var currentFaction = LegacyShiningFaction("order_dawn", factionStrength: 31);
+        preTurnFaction["derivedTier"] = 1;
+        currentFaction["derivedTier"] = 2;
+        preTurnFaction["serviceMultiplier"] = 1.0;
+        currentFaction["serviceMultiplier"] = 1.25;
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, ShiningRoot(currentFaction).ToJsonString()),
             (ShiningPath, ShiningRoot(preTurnFaction).ToJsonString()));
@@ -364,6 +370,30 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue =>
+            issue.Actor == "shining_faction:order_dawn" &&
+            issue.Code == "faction_materialization_missing");
+    }
+
+    [Fact]
+    public async Task Validate_ShiningNestedServiceMultiplierSnapshot_IsGmAuthoredTouch()
+    {
+        var preTurnFaction = LegacyShiningFaction("order_dawn", factionStrength: 30);
+        var currentFaction = LegacyShiningFaction("order_dawn", factionStrength: 30);
+        preTurnFaction["tradeInventory"] = new JsonObject
+        {
+            ["serviceMultiplierSnapshot"] = 1.0
+        };
+        currentFaction["tradeInventory"] = new JsonObject
+        {
+            ["serviceMultiplierSnapshot"] = 1.25
+        };
+        await WriteCurrentAndSnapshotAsync(
+            (ShiningPath, ShiningRoot(currentFaction).ToJsonString()),
+            (ShiningPath, ShiningRoot(preTurnFaction).ToJsonString()));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
             issue.Actor == "shining_faction:order_dawn" &&
             issue.Code == "faction_materialization_missing");
     }
@@ -551,6 +581,265 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         Assert.Contains(issues, issue =>
             issue.Code == expectedCode &&
             issue.Actor == "shining_faction:shine_faction_dawn_archive");
+    }
+
+    [Theory]
+    [InlineData("hidden")]
+    [InlineData("rumored")]
+    [InlineData("revealed")]
+    public async Task StoryFaction_ExactAuthorityAndVisibility_Passes(
+        string visibility)
+    {
+        var faction = BuildCompleteSarefStoryFaction(visibility);
+        var sarefRoot = BuildSarefStoryRoot(visibility);
+        await WriteStoryFactionOutcomeAsync(
+            faction,
+            sarefRoot: sarefRoot);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Actor == "shining_faction:shine_faction_wings");
+    }
+
+    [Fact]
+    public async Task StoryFaction_SecretiveNameWithoutAuthority_Fails()
+    {
+        var faction = BuildCompleteSarefStoryFaction("hidden");
+        faction["charter"]!["factionName"] = "The Hidden Wings";
+        faction["charter"]!["summary"] =
+            "A secret order concealed from all.";
+        faction["storyAuthority"] = null;
+        await WriteStoryFactionOutcomeAsync(
+            faction,
+            sarefRoot: BuildSarefStoryRoot("hidden"));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "faction_materialization_shining_story_authority_invalid" &&
+            issue.Actor == "shining_faction:shine_faction_wings");
+    }
+
+    [Theory]
+    [InlineData("missing_authority_id")]
+    [InlineData("wrong_authority_id")]
+    [InlineData("wrong_role")]
+    [InlineData("wrong_story_visibility")]
+    [InlineData("wrong_faction_visibility")]
+    [InlineData("wrong_legacy_visibility")]
+    [InlineData("wrong_faction_role")]
+    [InlineData("provenance_mismatch")]
+    public async Task StoryFaction_MissingOrWrongCanonicalBinding_Fails(
+        string mutation)
+    {
+        var faction = BuildCompleteSarefStoryFaction("hidden");
+        var sarefRoot = BuildSarefStoryRoot("hidden");
+        ApplySarefStoryMutation(faction, sarefRoot, mutation);
+        await WriteStoryFactionOutcomeAsync(
+            faction,
+            sarefRoot: sarefRoot);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Actor == "shining_faction:shine_faction_wings" &&
+            issue.Code is
+                "faction_materialization_shining_story_authority_invalid" or
+                "faction_materialization_shining_story_authority_reference_invalid");
+    }
+
+    [Fact]
+    public async Task GuardianStoryFaction_ExactAuthorityLeaderAndProfile_Passes()
+    {
+        var faction = BuildCompleteGuardianStoryFaction();
+        await WriteStoryFactionOutcomeAsync(
+            faction,
+            guardiansRoot: BuildGuardianStoryRoot(),
+            profiles: new[]
+            {
+                BuildRouteAfterlifeProfile(
+                    "guardian_dawn",
+                    includeEnvelope: true,
+                    actorType: ShiningAbodeState.HeadActorTypeGuardian,
+                    canTrade: true)
+            });
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Actor == "shining_faction:shine_faction_guardian_dawn");
+    }
+
+    [Theory]
+    [InlineData("wrong_authority_id", "faction_materialization_shining_story_authority_reference_invalid")]
+    [InlineData("wrong_role", "faction_materialization_shining_story_authority_reference_invalid")]
+    [InlineData("wrong_visibility", "faction_materialization_shining_story_authority_reference_invalid")]
+    [InlineData("wrong_head_type", "faction_materialization_shining_story_authority_reference_invalid")]
+    [InlineData("wrong_head_id", "faction_materialization_shining_story_authority_reference_invalid")]
+    [InlineData("missing_profile", "faction_materialization_shining_actor_profile_invalid")]
+    [InlineData("incomplete_profile", "actor_materialization_missing")]
+    [InlineData("duplicate_guardian", "faction_materialization_shining_story_authority_reference_invalid")]
+    public async Task GuardianStoryFaction_InvalidAuthorityLeaderOrProfile_Fails(
+        string mutation,
+        string expectedCode)
+    {
+        var faction = BuildCompleteGuardianStoryFaction();
+        var guardiansRoot = BuildGuardianStoryRoot(
+            duplicateGuardian:
+                string.Equals(
+                    mutation,
+                    "duplicate_guardian",
+                    StringComparison.Ordinal));
+        var profiles = new List<JsonObject>
+        {
+            BuildRouteAfterlifeProfile(
+                "guardian_dawn",
+                includeEnvelope:
+                    !string.Equals(
+                        mutation,
+                        "incomplete_profile",
+                        StringComparison.Ordinal),
+                actorType: ShiningAbodeState.HeadActorTypeGuardian,
+                canTrade: true)
+        };
+        ApplyGuardianStoryMutation(faction, mutation);
+        if (string.Equals(
+                mutation,
+                "missing_profile",
+                StringComparison.Ordinal))
+        {
+            profiles.Clear();
+        }
+
+        await WriteStoryFactionOutcomeAsync(
+            faction,
+            guardiansRoot: guardiansRoot,
+            profiles: profiles);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode);
+    }
+
+    [Theory]
+    [InlineData("head")]
+    [InlineData("resident")]
+    [InlineData("political")]
+    public async Task ShiningRequiredActor_CompleteEnvelope_Passes(
+        string actorKind)
+    {
+        await WriteRequiredShiningActorOutcomeAsync(
+            actorKind,
+            includeProfile: true,
+            includeEnvelope: true);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code ==
+                "faction_materialization_shining_actor_profile_invalid" ||
+            issue.Code?.StartsWith(
+                "actor_materialization_",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Theory]
+    [InlineData("head", false, false, "faction_materialization_shining_actor_profile_invalid")]
+    [InlineData("head", true, false, "actor_materialization_missing")]
+    [InlineData("resident", false, false, "faction_materialization_shining_actor_profile_invalid")]
+    [InlineData("resident", true, false, "actor_materialization_missing")]
+    [InlineData("political", false, false, "faction_materialization_shining_actor_profile_invalid")]
+    [InlineData("political", true, false, "actor_materialization_missing")]
+    public async Task ShiningRequiredActor_MissingOrIncompleteEnvelope_Fails(
+        string actorKind,
+        bool includeProfile,
+        bool includeEnvelope,
+        string expectedCode)
+    {
+        await WriteRequiredShiningActorOutcomeAsync(
+            actorKind,
+            includeProfile,
+            includeEnvelope);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode);
+    }
+
+    [Theory]
+    [InlineData("player_soul")]
+    [InlineData("vacant")]
+    public async Task ShiningHeadActor_ExactDocumentedException_Passes(
+        string exceptionKind)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        var leadership = faction["leadership"]!.AsObject();
+        if (string.Equals(
+                exceptionKind,
+                "vacant",
+                StringComparison.Ordinal))
+        {
+            leadership["leadershipState"] =
+                ShiningAbodeState.LeadershipStateVacant;
+            leadership["headActorType"] = null;
+            leadership["headActorId"] = null;
+            faction["materialization"]!["capabilities"]!["canTrade"] =
+                false;
+        }
+
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code ==
+                "faction_materialization_shining_actor_profile_invalid" ||
+            issue.Code ==
+                "faction_materialization_shining_leadership_reference_invalid" ||
+            issue.Code?.StartsWith(
+                "actor_materialization_",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public async Task ShiningHeadActor_PlayerSoulExceptionRequiresExactPair()
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["leadership"]!["headActorId"] = "not_player_soul";
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+            "faction_materialization_shining_leadership_reference_invalid");
+    }
+
+    [Fact]
+    public async Task ShiningHeadActor_VacantExceptionRequiresNullPair()
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["leadership"]!["leadershipState"] =
+            ShiningAbodeState.LeadershipStateVacant;
+        faction["leadership"]!["headActorType"] =
+            ShiningAbodeState.HeadActorTypePlayerSoul;
+        faction["leadership"]!["headActorId"] =
+            ShiningAbodeState.HeadActorTypePlayerSoul;
+        faction["materialization"]!["capabilities"]!["canTrade"] = false;
+        await WriteNativeDiscoveryOutcomeAsync(faction);
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_shining_leadership_invalid" &&
+            issue.Actor ==
+                "shining_faction:shine_faction_dawn_archive");
     }
 
     [Fact]
@@ -1198,7 +1487,12 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                     residentId,
                     includeEnvelope:
                         !string.Equals(mutation, "missing_actor_envelope", StringComparison.Ordinal) ||
-                        !string.Equals(residentId, residentIds[0], StringComparison.Ordinal)))
+                        !string.Equals(residentId, residentIds[0], StringComparison.Ordinal),
+                    canTrade:
+                        string.Equals(
+                            residentId,
+                            residentIds[0],
+                            StringComparison.Ordinal)))
                 .ToArray());
         var profileRoot = new JsonObject
         {
@@ -1308,18 +1602,18 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             [ShiningFactionRequestState.RequestsProperty] =
                 new JsonArray(request)
         };
-        var emptyProfiles = new JsonObject
-        {
-            ["schemaVersion"] = 1,
-            [AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray()
-        };
+        var supporterProfiles = BuildAfterlifeProfileRoot(
+            supporterIds.Select(residentId =>
+                BuildRouteAfterlifeProfile(
+                    residentId,
+                    includeEnvelope: true)));
 
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, currentShining.ToJsonString()),
             (ResidentPath, currentResidents.ToJsonString()),
             (SoulPath, currentSoul.ToJsonString()),
             (ShiningFactionRequestState.PendingFoundingsRequestPath, requestRoot.ToJsonString()),
-            (AfterlifeProfilesPath, emptyProfiles.ToJsonString()),
+            (AfterlifeProfilesPath, supporterProfiles.ToJsonString()),
             (ShiningPath, preTurnShining.ToJsonString()),
             (ResidentPath, preTurnResidents.ToJsonString()),
             (SoulPath, preTurnSoul.ToJsonString()),
@@ -1335,6 +1629,108 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 "Dawn Archive"));
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, current.ToJsonString()),
+            (ShiningPath, ShiningRoot().ToJsonString()));
+    }
+
+    private async Task WriteStoryFactionOutcomeAsync(
+        JsonObject faction,
+        JsonObject? sarefRoot = null,
+        JsonObject? guardiansRoot = null,
+        IEnumerable<JsonObject>? profiles = null)
+    {
+        var current = ShiningRoot(faction);
+        current["halls"] = new JsonArray(
+            BuildShiningHall(
+                faction["hallId"]!.GetValue<string>(),
+                "Story Hall"));
+        current["shiningPoliticalActors"] = new JsonArray();
+        await WriteCurrentAndSnapshotAsync(
+            (ShiningPath, current.ToJsonString()),
+            (ResidentPath, BuildRouteResidentRoot().ToJsonString()),
+            (AfterlifeProfilesPath,
+                BuildAfterlifeProfileRoot(
+                    profiles ?? Array.Empty<JsonObject>())
+                    .ToJsonString()),
+            (SarefStoryPath,
+                (sarefRoot ?? new JsonObject()).ToJsonString()),
+            (GuardiansPath,
+                (guardiansRoot ?? BuildGuardianStoryRoot())
+                    .ToJsonString()),
+            (ShiningPath, ShiningRoot().ToJsonString()));
+    }
+
+    private async Task WriteRequiredShiningActorOutcomeAsync(
+        string actorKind,
+        bool includeProfile,
+        bool includeEnvelope)
+    {
+        const string factionId = "shine_faction_dawn_archive";
+        var actorId = $"required_{actorKind}";
+        var faction = BuildCompleteNativeShiningFaction();
+        var residentRoot = BuildRouteResidentRoot();
+        var current = ShiningRoot(faction);
+        current["halls"] = new JsonArray(
+            BuildShiningHall(
+                "hall_dawn_archive",
+                "Dawn Archive"));
+        current["shiningPoliticalActors"] = new JsonArray();
+
+        string actorType;
+        var canTrade = false;
+        switch (actorKind)
+        {
+            case "head":
+                actorType = ShiningAbodeState.HeadActorTypeResident;
+                canTrade = true;
+                faction["leadership"] = new JsonObject
+                {
+                    ["leadershipState"] =
+                        ShiningAbodeState.LeadershipStateSecure,
+                    ["headActorType"] = actorType,
+                    ["headActorId"] = actorId
+                };
+                ((JsonArray)residentRoot["entries"]!).Add(
+                    BuildRouteResident(actorId, factionId));
+                MarkResidentAffiliationsPopulated(faction);
+                break;
+            case "resident":
+                actorType = ShiningAbodeState.HeadActorTypeResident;
+                ((JsonArray)residentRoot["entries"]!).Add(
+                    BuildRouteResident(actorId, factionId));
+                MarkResidentAffiliationsPopulated(faction);
+                break;
+            case "political":
+                actorType = ShiningAbodeState.HeadActorTypeRadiantActor;
+                ((JsonArray)current["shiningPoliticalActors"]!).Add(
+                    new JsonObject
+                    {
+                        ["actorId"] = actorId,
+                        ["actorType"] = actorType,
+                        ["currentFactionId"] = factionId
+                    });
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(actorKind),
+                    actorKind,
+                    "Unsupported required actor test kind.");
+        }
+
+        var profiles = includeProfile
+            ? new[]
+            {
+                BuildRouteAfterlifeProfile(
+                    actorId,
+                    includeEnvelope,
+                    actorType,
+                    canTrade)
+            }
+            : Array.Empty<JsonObject>();
+        await WriteCurrentAndSnapshotAsync(
+            (ShiningPath, current.ToJsonString()),
+            (ResidentPath, residentRoot.ToJsonString()),
+            (AfterlifeProfilesPath,
+                BuildAfterlifeProfileRoot(profiles).ToJsonString()),
             (ShiningPath, ShiningRoot().ToJsonString()));
     }
 
@@ -1894,11 +2290,13 @@ public sealed class FactionMaterializationValidationTests : IDisposable
 
     private static JsonObject BuildRouteAfterlifeProfile(
         string actorId,
-        bool includeEnvelope)
+        bool includeEnvelope,
+        string actorType = ShiningAbodeState.HeadActorTypeResident,
+        bool canTrade = false)
     {
         var profile = new JsonObject
         {
-            ["actorType"] = ShiningAbodeState.HeadActorTypeResident,
+            ["actorType"] = actorType,
             ["actorId"] = actorId,
             ["displayName"] = $"Resident {actorId}",
             ["appearanceDescription"] =
@@ -1971,8 +2369,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 {
                     ["schemaVersion"] = 1,
                     ["materializationId"] = $"mat_resident_{actorId}_12",
-                    ["actorType"] =
-                        ShiningAbodeState.HeadActorTypeResident,
+                    ["actorType"] = actorType,
                     ["actorId"] = actorId,
                     ["materializedAtTurn"] = 12,
                     ["state"] = "complete",
@@ -1980,7 +2377,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                     {
                         ["canFight"] = true,
                         ["canTeach"] = false,
-                        ["canTrade"] = false
+                        ["canTrade"] = canTrade
                     },
                     ["sections"] = new JsonObject
                     {
@@ -2001,6 +2398,219 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         }
 
         return profile;
+    }
+
+    private static JsonObject BuildAfterlifeProfileRoot(
+        IEnumerable<JsonObject> profiles) =>
+        new()
+        {
+            ["schemaVersion"] = 1,
+            [AfterlifeEntityProfileState.ProfilesProperty] =
+                new JsonArray(
+                    profiles
+                        .Select(profile => (JsonNode?)profile)
+                        .ToArray())
+        };
+
+    private static JsonObject BuildCompleteSarefStoryFaction(
+        string visibility)
+    {
+        const string factionId = "shine_faction_wings";
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["factionId"] = factionId;
+        faction["hallId"] = "hall_wings_beneath_abyss";
+        faction["creationProvenance"] = new JsonObject
+        {
+            ["route"] = "story",
+            ["authorityType"] = "saref_main_story",
+            ["authorityId"] = factionId
+        };
+        faction["visibility"] = visibility;
+        faction["storyAuthority"] = new JsonObject
+        {
+            ["authorityType"] = "saref_main_story",
+            ["authorityId"] = factionId,
+            ["factionRole"] = "wings_of_angels"
+        };
+        faction["sarefFactionRole"] = "wings_of_angels";
+        faction["sarefVisibility"] = visibility;
+        faction["materialization"] = BuildShiningEnvelope(
+            factionId,
+            "fmat_shine_faction_wings_12",
+            canTrade: true);
+        MarkStoryStatePopulated(faction);
+        return faction;
+    }
+
+    private static JsonObject BuildSarefStoryRoot(
+        string visibility) =>
+        new()
+        {
+            ["factionLinks"] = new JsonObject
+            {
+                ["wingsFactionId"] = "shine_faction_wings",
+                ["visibility"] = visibility
+            },
+            ["wingsInfiltration"] = null
+        };
+
+    private static void ApplySarefStoryMutation(
+        JsonObject faction,
+        JsonObject sarefRoot,
+        string mutation)
+    {
+        var authority = faction["storyAuthority"]!.AsObject();
+        var provenance = faction["creationProvenance"]!.AsObject();
+        switch (mutation)
+        {
+            case "missing_authority_id":
+                authority.Remove("authorityId");
+                break;
+            case "wrong_authority_id":
+                authority["authorityId"] = "shine_faction_other";
+                provenance["authorityId"] = "shine_faction_other";
+                break;
+            case "wrong_role":
+                authority["factionRole"] = "hidden_order";
+                faction["sarefFactionRole"] = "hidden_order";
+                break;
+            case "wrong_story_visibility":
+                sarefRoot["factionLinks"]!["visibility"] = "rumored";
+                break;
+            case "wrong_faction_visibility":
+                faction["visibility"] = "rumored";
+                break;
+            case "wrong_legacy_visibility":
+                faction["sarefVisibility"] = "rumored";
+                break;
+            case "wrong_faction_role":
+                faction["sarefFactionRole"] = "hidden_order";
+                break;
+            case "provenance_mismatch":
+                provenance["authorityId"] = "shine_faction_other";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(mutation),
+                    mutation,
+                    "Unsupported Saref story mutation.");
+        }
+    }
+
+    private static JsonObject BuildCompleteGuardianStoryFaction()
+    {
+        const string factionId =
+            "shine_faction_guardian_dawn";
+        const string guardianId = "guardian_dawn";
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["factionId"] = factionId;
+        faction["originType"] =
+            ShiningAbodeState.OriginTypeAscendedGuardian;
+        faction["hallId"] = "hall_guardian_dawn";
+        faction["creationProvenance"] = new JsonObject
+        {
+            ["route"] = "story",
+            ["authorityType"] = "guardian_ascension",
+            ["authorityId"] = guardianId
+        };
+        faction["visibility"] = "revealed";
+        faction["storyAuthority"] = new JsonObject
+        {
+            ["authorityType"] = "guardian_ascension",
+            ["authorityId"] = guardianId,
+            ["factionRole"] = "patron_guardian"
+        };
+        faction["leadership"] = new JsonObject
+        {
+            ["leadershipState"] =
+                ShiningAbodeState.LeadershipStateSecure,
+            ["headActorType"] =
+                ShiningAbodeState.HeadActorTypeGuardian,
+            ["headActorId"] = guardianId
+        };
+        faction["materialization"] = BuildShiningEnvelope(
+            factionId,
+            "fmat_shine_faction_guardian_dawn_12",
+            canTrade: true);
+        MarkStoryStatePopulated(faction);
+        return faction;
+    }
+
+    private static JsonObject BuildGuardianStoryRoot(
+        bool duplicateGuardian = false)
+    {
+        static JsonObject Guardian() =>
+            new()
+            {
+                ["guardianId"] = "guardian_dawn",
+                ["name"] = "Dawn Guardian"
+            };
+
+        var guardians = new JsonArray(Guardian());
+        if (duplicateGuardian)
+            guardians.Add(Guardian());
+
+        return new JsonObject
+        {
+            ["activeGuardian"] = Guardian(),
+            ["guardians"] = guardians
+        };
+    }
+
+    private static void ApplyGuardianStoryMutation(
+        JsonObject faction,
+        string mutation)
+    {
+        var authority = faction["storyAuthority"]!.AsObject();
+        var provenance = faction["creationProvenance"]!.AsObject();
+        var leadership = faction["leadership"]!.AsObject();
+        switch (mutation)
+        {
+            case "wrong_authority_id":
+                authority["authorityId"] = "guardian_other";
+                provenance["authorityId"] = "guardian_other";
+                break;
+            case "wrong_role":
+                authority["factionRole"] = "story_patron";
+                break;
+            case "wrong_visibility":
+                faction["visibility"] = "hidden";
+                break;
+            case "wrong_head_type":
+                leadership["headActorType"] =
+                    ShiningAbodeState.HeadActorTypeResident;
+                break;
+            case "wrong_head_id":
+                leadership["headActorId"] = "guardian_other";
+                break;
+            case "missing_profile":
+            case "incomplete_profile":
+            case "duplicate_guardian":
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(mutation),
+                    mutation,
+                    "Unsupported Guardian story mutation.");
+        }
+    }
+
+    private static void MarkStoryStatePopulated(
+        JsonObject faction)
+    {
+        faction["materialization"]!["capabilities"]![
+            "usesStoryState"] = true;
+        faction["materialization"]!["sections"]!["storyState"] =
+            PopulatedDisposition();
+    }
+
+    private static void MarkResidentAffiliationsPopulated(
+        JsonObject faction)
+    {
+        faction["materialization"]!["capabilities"]![
+            "hasResidentAffiliations"] = true;
+        faction["materialization"]!["sections"]![
+            "residentAffiliations"] = PopulatedDisposition();
     }
 
     private static JsonObject CloneJsonObject(JsonObject source) =>

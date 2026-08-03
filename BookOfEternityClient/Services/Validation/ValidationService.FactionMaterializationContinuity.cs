@@ -866,8 +866,12 @@ public partial class ValidationService
             if (leftNode == null || rightNode == null)
                 return false;
 
-            leftNode.Remove("factionStrength");
-            rightNode.Remove("factionStrength");
+            foreach (var field in ShiningClientDerivedFactionFields)
+            {
+                leftNode.Remove(field);
+                rightNode.Remove(field);
+            }
+
             return JsonNode.DeepEquals(leftNode, rightNode);
         }
         catch (Exception exception) when (

@@ -38,6 +38,8 @@ public partial class ValidationService
             AfterlifeEntityProfileState.StatePath);
         var sarefStoryRoot = await ReadJsonObjectAsync(
             SarefMainStoryState.StatePath);
+        var currentTradeAuthorities =
+            await LoadCurrentAfterlifeActorTradeAuthoritiesAsync();
 
         foreach (var target in currentFactions)
         {
@@ -94,6 +96,9 @@ public partial class ValidationService
                 guardiansRoot,
                 afterlifeProfilesRoot,
                 sarefStoryRoot,
+                isCreationOrPromotion,
+                affiliatedResidentIds,
+                currentTradeAuthorities,
                 issues);
 
             if (!rawBeforeNormalization || !isCreationOrPromotion)
@@ -277,8 +282,12 @@ public partial class ValidationService
     {
         var currentClone = current.DeepClone().AsObject();
         var previousClone = previous.DeepClone().AsObject();
-        currentClone.Remove("factionStrength");
-        previousClone.Remove("factionStrength");
+        foreach (var field in ShiningClientDerivedFactionFields)
+        {
+            currentClone.Remove(field);
+            previousClone.Remove(field);
+        }
+
         return JsonNode.DeepEquals(currentClone, previousClone);
     }
 
@@ -515,6 +524,9 @@ public partial class ValidationService
         JsonObject? guardiansRoot,
         JsonObject? afterlifeProfilesRoot,
         JsonObject? sarefStoryRoot,
+        bool isCreationOrPromotion,
+        IReadOnlySet<string> affiliatedResidentIds,
+        IReadOnlySet<string> currentTradeAuthorities,
         List<ValidationIssue> issues)
     {
         var hallId = ReadShiningMaterializationString(
@@ -546,17 +558,74 @@ public partial class ValidationService
             }
         }
 
-        if (target.Faction["storyAuthority"] is
-            JsonObject storyAuthority)
+        var requiredActors =
+            new Dictionary<string, AfterlifeActorBinding>(
+                StringComparer.Ordinal);
+        var route = ReadShiningMaterializationString(
+            target.Faction["creationProvenance"] as JsonObject,
+            "route");
+        if (string.Equals(
+                route,
+                "story",
+                StringComparison.Ordinal) ||
+            target.Faction["storyAuthority"] is JsonObject)
         {
             ValidateShiningStoryAuthorityReference(
                 target,
-                storyAuthority,
                 guardiansRoot,
                 sarefStoryRoot,
                 issues);
+            AddShiningGuardianStoryAuthorityActor(
+                target,
+                guardiansRoot,
+                requiredActors);
         }
 
+        AddShiningHeadActor(
+            target,
+            currentRoot,
+            residentRoot,
+            guardiansRoot,
+            requiredActors,
+            issues);
+
+        if (isCreationOrPromotion)
+        {
+            foreach (var residentId in affiliatedResidentIds)
+            {
+                AddRequiredShiningActor(
+                    requiredActors,
+                    ShiningAbodeState.HeadActorTypeResident,
+                    residentId,
+                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentId}]");
+            }
+
+            AddNewlySignificantShiningPoliticalActors(
+                target,
+                currentRoot,
+                requiredActors,
+                issues);
+        }
+
+        foreach (var actor in requiredActors.Values)
+        {
+            ValidateRequiredShiningActorMaterializationProfile(
+                afterlifeProfilesRoot,
+                actor,
+                target,
+                currentTradeAuthorities,
+                issues);
+        }
+    }
+
+    private static void AddShiningHeadActor(
+        ShiningFactionMaterializationTarget target,
+        JsonObject currentRoot,
+        JsonObject? residentRoot,
+        JsonObject? guardiansRoot,
+        Dictionary<string, AfterlifeActorBinding> requiredActors,
+        List<ValidationIssue> issues)
+    {
         if (target.Faction["leadership"] is not
             JsonObject leadership)
         {
@@ -572,6 +641,23 @@ public partial class ValidationService
                 ShiningAbodeState.LeadershipStateVacant,
                 StringComparison.Ordinal))
         {
+            if (leadership.ContainsKey("headActorType") &&
+                leadership["headActorType"] is null &&
+                leadership.ContainsKey("headActorId") &&
+                leadership["headActorId"] is null)
+            {
+                return;
+            }
+
+            issues.Add(
+                ShiningFactionMaterializationIssue(
+                    $"{target.Context}.leadership",
+                    "faction_materialization_shining_leadership_reference_invalid",
+                    target.FactionId,
+                    "Vacant Shining leadership skips Actor Materialization only with exact null head fields.",
+                    expected:
+                        "leadershipState=vacant, headActorType=null, headActorId=null",
+                    actual: leadership.ToJsonString()));
             return;
         }
 
@@ -586,11 +672,24 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(headActorType) ||
             string.IsNullOrWhiteSpace(headActorId))
         {
+            issues.Add(
+                ShiningFactionMaterializationIssue(
+                    $"{target.Context}.leadership",
+                    "faction_materialization_shining_leadership_reference_invalid",
+                    target.FactionId,
+                    "A non-vacant Shining faction head requires exact actor type and ID.",
+                    expected:
+                        "non-empty headActorType and headActorId",
+                    actual: leadership.ToJsonString()));
             return;
         }
 
         if (string.Equals(
                 headActorType,
+                ShiningAbodeState.HeadActorTypePlayerSoul,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                headActorId,
                 ShiningAbodeState.HeadActorTypePlayerSoul,
                 StringComparison.Ordinal))
         {
@@ -629,11 +728,11 @@ public partial class ValidationService
             return;
         }
 
-        ValidateShiningHeadActorMaterializationProfile(
-            afterlifeProfilesRoot,
+        AddRequiredShiningActor(
+            requiredActors,
+            headActorType,
             headActorId,
-            target,
-            issues);
+            $"{target.Context}.leadership");
     }
 
     private static bool HasExactResidentLeadershipBinding(
@@ -641,7 +740,7 @@ public partial class ValidationService
         string actorId,
         string factionId) =>
         residentRoot?["entries"] is JsonArray residents &&
-        residents.OfType<JsonObject>().Any(resident =>
+        residents.OfType<JsonObject>().Count(resident =>
             string.Equals(
                 ReadShiningMaterializationString(
                     resident,
@@ -653,14 +752,14 @@ public partial class ValidationService
                     resident,
                     "shiningFactionId"),
                 factionId,
-                StringComparison.Ordinal));
+                StringComparison.Ordinal)) == 1;
 
     private static bool HasExactPoliticalActorLeadershipBinding(
         JsonObject currentRoot,
         string actorId,
         string factionId) =>
         currentRoot["shiningPoliticalActors"] is JsonArray actors &&
-        actors.OfType<JsonObject>().Any(actor =>
+        actors.OfType<JsonObject>().Count(actor =>
             string.Equals(
                 ReadShiningMaterializationString(
                     actor,
@@ -672,85 +771,240 @@ public partial class ValidationService
                     actor,
                     "currentFactionId"),
                 factionId,
-                StringComparison.Ordinal));
+                StringComparison.Ordinal)) == 1;
 
     private static bool HasExactGuardianIdentity(
         JsonObject? guardiansRoot,
-        string guardianId)
-    {
-        if (guardiansRoot == null)
-            return false;
+        string guardianId) =>
+        TryResolveUniqueGuardianIdentity(
+            guardiansRoot,
+            guardianId,
+            out _);
 
-        if (guardiansRoot["activeGuardian"] is JsonObject active &&
+    private static bool TryResolveUniqueGuardianIdentity(
+        JsonObject? guardiansRoot,
+        string guardianId,
+        out JsonObject? guardian)
+    {
+        guardian = null;
+        var activeMatch =
+            guardiansRoot?["activeGuardian"] is JsonObject active &&
             string.Equals(
                 ReadShiningMaterializationString(
                     active,
                     "guardianId"),
                 guardianId,
-                StringComparison.Ordinal))
+                StringComparison.Ordinal)
+                ? active
+                : null;
+        var guardianMatches =
+            guardiansRoot?["guardians"] is JsonArray guardians
+                ? guardians
+                    .OfType<JsonObject>()
+                    .Where(candidate => string.Equals(
+                        ReadShiningMaterializationString(
+                            candidate,
+                            "guardianId"),
+                        guardianId,
+                        StringComparison.Ordinal))
+                    .ToArray()
+                : Array.Empty<JsonObject>();
+        if (guardianMatches.Length > 1)
         {
-            return true;
+            return false;
         }
 
-        return guardiansRoot["guardians"] is JsonArray guardians &&
-               guardians.OfType<JsonObject>().Any(guardian =>
-                   string.Equals(
-                       ReadShiningMaterializationString(
-                           guardian,
-                           "guardianId"),
-                       guardianId,
-                       StringComparison.Ordinal));
+        guardian = guardianMatches.SingleOrDefault() ?? activeMatch;
+        return guardian != null;
     }
 
-    private static void ValidateShiningHeadActorMaterializationProfile(
-        JsonObject? profilesRoot,
-        string actorId,
+    private static void AddShiningGuardianStoryAuthorityActor(
         ShiningFactionMaterializationTarget target,
+        JsonObject? guardiansRoot,
+        Dictionary<string, AfterlifeActorBinding> requiredActors)
+    {
+        if (target.Faction["storyAuthority"] is not
+                JsonObject storyAuthority ||
+            !string.Equals(
+                ReadShiningMaterializationString(
+                    storyAuthority,
+                    "authorityType"),
+                "guardian_ascension",
+                StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        var authorityId =
+            ReadShiningMaterializationString(
+                storyAuthority,
+                "authorityId");
+        if (authorityId == null ||
+            !TryResolveUniqueGuardianIdentity(
+                guardiansRoot,
+                authorityId,
+                out _))
+        {
+            return;
+        }
+
+        AddRequiredShiningActor(
+            requiredActors,
+            ShiningAbodeState.HeadActorTypeGuardian,
+            authorityId,
+            $"{target.Context}.storyAuthority");
+    }
+
+    private static void AddNewlySignificantShiningPoliticalActors(
+        ShiningFactionMaterializationTarget target,
+        JsonObject currentRoot,
+        Dictionary<string, AfterlifeActorBinding> requiredActors,
+        List<ValidationIssue> issues)
+    {
+        if (currentRoot["shiningPoliticalActors"] is not
+            JsonArray actors)
+        {
+            return;
+        }
+
+        for (var index = 0; index < actors.Count; index++)
+        {
+            if (actors[index] is not JsonObject actor ||
+                !string.Equals(
+                    ReadShiningMaterializationString(
+                        actor,
+                        "currentFactionId"),
+                    target.FactionId,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var actorId =
+                ReadShiningMaterializationString(
+                    actor,
+                    "actorId");
+            var actorType =
+                ReadShiningMaterializationString(
+                    actor,
+                    "actorType");
+            if (actorId == null ||
+                !string.Equals(
+                    actorType,
+                    ShiningAbodeState.HeadActorTypeRadiantActor,
+                    StringComparison.Ordinal))
+            {
+                issues.Add(
+                    ShiningFactionMaterializationIssue(
+                        $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[{index}]",
+                        "faction_materialization_shining_actor_profile_invalid",
+                        target.FactionId,
+                        "A newly significant political actor requires exact radiant_actor identity.",
+                        expected:
+                            "actorType=radiant_actor and non-empty actorId",
+                        actual: actor.ToJsonString()));
+                continue;
+            }
+
+            AddRequiredShiningActor(
+                requiredActors,
+                ShiningAbodeState.HeadActorTypeRadiantActor,
+                actorId,
+                $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[{index}]");
+        }
+    }
+
+    private static void AddRequiredShiningActor(
+        Dictionary<string, AfterlifeActorBinding> requiredActors,
+        string actorType,
+        string actorId,
+        string context)
+    {
+        var binding = new AfterlifeActorBinding(
+            actorType,
+            actorId,
+            context,
+            HasTypeSpecificMemory: false);
+        requiredActors.TryAdd(binding.IdentityKey, binding);
+    }
+
+    private static void ValidateRequiredShiningActorMaterializationProfile(
+        JsonObject? profilesRoot,
+        AfterlifeActorBinding actor,
+        ShiningFactionMaterializationTarget target,
+        IReadOnlySet<string> currentTradeAuthorities,
         List<ValidationIssue> issues)
     {
         var profiles =
             profilesRoot?[AfterlifeEntityProfileState.ProfilesProperty]
                 is JsonArray profileArray
                 ? profileArray
-                    .OfType<JsonObject>()
-                    .Where(profile => string.Equals(
-                        ReadShiningMaterializationString(
-                            profile,
-                            "actorId"),
-                        actorId,
-                        StringComparison.Ordinal))
+                    .Select((node, index) =>
+                        (Profile: node as JsonObject, Index: index))
+                    .Where(candidate =>
+                        candidate.Profile != null &&
+                        string.Equals(
+                            ReadShiningMaterializationString(
+                                candidate.Profile,
+                                "actorId"),
+                            actor.ActorId,
+                            StringComparison.Ordinal))
                     .ToArray()
-                : Array.Empty<JsonObject>();
-        if (profiles.Length != 1)
+                : Array.Empty<(JsonObject? Profile, int Index)>();
+        if (profiles.Length != 1 ||
+            !string.Equals(
+                ReadShiningMaterializationString(
+                    profiles.SingleOrDefault().Profile,
+                    "actorType"),
+                actor.ActorType,
+                StringComparison.Ordinal))
         {
             issues.Add(
                 ShiningFactionMaterializationIssue(
-                    $"{target.Context}.leadership.headActorId",
+                    actor.Context,
                     "faction_materialization_shining_actor_profile_invalid",
                     target.FactionId,
-                    "A non-player Shining faction head requires one exact afterlife Actor Materialization profile.",
-                    expected: $"one profile for actorId={actorId}",
-                    actual: profiles.Length.ToString()));
+                    "A required Shining actor needs one exact afterlife Actor Materialization profile.",
+                    expected:
+                        $"one {actor.ActorType}:{actor.ActorId} profile",
+                    actual:
+                        $"{profiles.Length} actorId candidates"));
             return;
         }
 
+        var profile = profiles[0];
+        var profileElement =
+            JsonSerializer.SerializeToElement(profile.Profile);
         var profileContext =
-            $"{AfterlifeEntityProfileState.StatePath}.{AfterlifeEntityProfileState.ProfilesProperty}";
+            $"{AfterlifeEntityProfileState.StatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{profile.Index}]";
         issues.AddRange(
             ActorMaterializationContract.ValidateAfterlifeProfile(
-                JsonSerializer.SerializeToElement(profiles[0]),
+                profileElement,
                 profileContext,
                 requireEnvelope: true,
-                canTradeEvidence: null));
+                canTradeEvidence:
+                    HasCurrentAfterlifeActorTradeAuthority(
+                        profileElement,
+                        currentTradeAuthorities)));
     }
 
     private static void ValidateShiningStoryAuthorityReference(
         ShiningFactionMaterializationTarget target,
-        JsonObject storyAuthority,
         JsonObject? guardiansRoot,
         JsonObject? sarefStoryRoot,
         List<ValidationIssue> issues)
     {
+        if (TryResolveShiningStoryAuthority(
+                target.Faction,
+                sarefStoryRoot,
+                guardiansRoot,
+                out var actual))
+        {
+            return;
+        }
+
+        var storyAuthority =
+            target.Faction["storyAuthority"] as JsonObject;
         var authorityType =
             ReadShiningMaterializationString(
                 storyAuthority,
@@ -759,88 +1013,6 @@ public partial class ValidationService
             ReadShiningMaterializationString(
                 storyAuthority,
                 "authorityId");
-        var role = ReadShiningMaterializationString(
-            storyAuthority,
-            "factionRole");
-        var visibility =
-            ReadShiningMaterializationString(
-                target.Faction,
-                "visibility");
-        var valid = authorityType switch
-        {
-            "guardian_ascension" =>
-                !string.IsNullOrWhiteSpace(authorityId) &&
-                HasExactGuardianIdentity(
-                    guardiansRoot,
-                    authorityId) &&
-                string.Equals(
-                    ReadShiningMaterializationString(
-                        target.Faction,
-                        "originType"),
-                    ShiningAbodeState.OriginTypeAscendedGuardian,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    role,
-                    "patron_guardian",
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    visibility,
-                    "revealed",
-                    StringComparison.Ordinal) &&
-                target.Faction["leadership"] is
-                    JsonObject guardianLeadership &&
-                string.Equals(
-                    ReadShiningMaterializationString(
-                        guardianLeadership,
-                        "headActorType"),
-                    ShiningAbodeState.HeadActorTypeGuardian,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    ReadShiningMaterializationString(
-                        guardianLeadership,
-                        "headActorId"),
-                    authorityId,
-                    StringComparison.Ordinal),
-            "saref_main_story" =>
-                !string.IsNullOrWhiteSpace(authorityId) &&
-                string.Equals(
-                    authorityId,
-                    target.FactionId,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    ReadShiningMaterializationString(
-                        sarefStoryRoot?["factionLinks"]
-                            as JsonObject,
-                        "wingsFactionId"),
-                    target.FactionId,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    ReadShiningMaterializationString(
-                        sarefStoryRoot?["factionLinks"]
-                            as JsonObject,
-                        "visibility"),
-                    visibility,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    role,
-                    "wings_of_angels",
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    ReadShiningMaterializationString(
-                        target.Faction,
-                        "sarefFactionRole"),
-                    role,
-                    StringComparison.Ordinal) &&
-                string.Equals(
-                    ReadShiningMaterializationString(
-                        target.Faction,
-                        "sarefVisibility"),
-                    visibility,
-                    StringComparison.Ordinal),
-            _ => false
-        };
-        if (valid)
-            return;
 
         issues.Add(
             ShiningFactionMaterializationIssue(
@@ -851,8 +1023,201 @@ public partial class ValidationService
                 expected:
                     "matching saref_main_story or guardian_ascension authority",
                 actual:
-                    $"{authorityType ?? "missing"}:{authorityId ?? "missing"}"));
+                    $"{authorityType ?? "missing"}:{authorityId ?? "missing"} ({actual})"));
     }
+
+    private static bool TryResolveShiningStoryAuthority(
+        JsonObject shiningFaction,
+        JsonObject? sarefRoot,
+        JsonObject? guardiansRoot,
+        out string actual)
+    {
+        actual = "missing or mismatched story authority";
+        if (shiningFaction["storyAuthority"] is not
+            JsonObject authority)
+        {
+            return false;
+        }
+
+        var authorityType =
+            ReadShiningMaterializationString(
+                authority,
+                "authorityType");
+        var authorityId =
+            ReadShiningMaterializationString(
+                authority,
+                "authorityId");
+        var factionRole =
+            ReadShiningMaterializationString(
+                authority,
+                "factionRole");
+        var factionId =
+            ReadShiningMaterializationString(
+                shiningFaction,
+                "factionId");
+        if (shiningFaction["creationProvenance"] is not
+                JsonObject provenance ||
+            !string.Equals(
+                ReadShiningMaterializationString(
+                    provenance,
+                    "route"),
+                "story",
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                ReadShiningMaterializationString(
+                    provenance,
+                    "authorityType"),
+                authorityType,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                ReadShiningMaterializationString(
+                    provenance,
+                    "authorityId"),
+                authorityId,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        if (string.Equals(
+                authorityType,
+                "saref_main_story",
+                StringComparison.Ordinal))
+        {
+            var valid = SarefStoryAuthorizesFaction(
+                sarefRoot,
+                authorityId,
+                factionId,
+                factionRole,
+                ReadShiningMaterializationString(
+                    shiningFaction,
+                    "visibility"),
+                ReadShiningMaterializationString(
+                    shiningFaction,
+                    "sarefFactionRole"),
+                ReadShiningMaterializationString(
+                    shiningFaction,
+                    "sarefVisibility"));
+            actual = valid
+                ? "matched saref_main_story"
+                : actual;
+            return valid;
+        }
+
+        if (string.Equals(
+                authorityType,
+                "guardian_ascension",
+                StringComparison.Ordinal))
+        {
+            var valid = GuardianAscensionAuthorizesFaction(
+                guardiansRoot,
+                authorityId,
+                factionId,
+                factionRole,
+                ReadShiningMaterializationString(
+                    shiningFaction,
+                    "originType"),
+                ReadShiningMaterializationString(
+                    shiningFaction,
+                    "visibility"),
+                shiningFaction["leadership"] as JsonObject);
+            actual = valid
+                ? "matched guardian_ascension"
+                : actual;
+            return valid;
+        }
+
+        return false;
+    }
+
+    private static bool SarefStoryAuthorizesFaction(
+        JsonObject? sarefRoot,
+        string? authorityId,
+        string? factionId,
+        string? factionRole,
+        string? visibility,
+        string? sarefFactionRole,
+        string? sarefVisibility)
+    {
+        var factionLinks =
+            sarefRoot?["factionLinks"] as JsonObject;
+        return authorityId != null &&
+               factionId != null &&
+               visibility != null &&
+               string.Equals(
+                   authorityId,
+                   factionId,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   ReadShiningMaterializationString(
+                       factionLinks,
+                       "wingsFactionId"),
+                   factionId,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   ReadShiningMaterializationString(
+                       factionLinks,
+                       "visibility"),
+                   visibility,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   factionRole,
+                   "wings_of_angels",
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   sarefFactionRole,
+                   "wings_of_angels",
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   sarefVisibility,
+                   visibility,
+                   StringComparison.Ordinal);
+    }
+
+    private static bool GuardianAscensionAuthorizesFaction(
+        JsonObject? guardiansRoot,
+        string? authorityId,
+        string? factionId,
+        string? factionRole,
+        string? originType,
+        string? visibility,
+        JsonObject? leadership) =>
+        authorityId != null &&
+        factionId != null &&
+        TryResolveUniqueGuardianIdentity(
+            guardiansRoot,
+            authorityId,
+            out _) &&
+        string.Equals(
+            originType,
+            ShiningAbodeState.OriginTypeAscendedGuardian,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            factionRole,
+            "patron_guardian",
+            StringComparison.Ordinal) &&
+        string.Equals(
+            visibility,
+            "revealed",
+            StringComparison.Ordinal) &&
+        string.Equals(
+            ReadShiningMaterializationString(
+                leadership,
+                "leadershipState"),
+            ShiningAbodeState.LeadershipStateSecure,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            ReadShiningMaterializationString(
+                leadership,
+                "headActorType"),
+            ShiningAbodeState.HeadActorTypeGuardian,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            ReadShiningMaterializationString(
+                leadership,
+                "headActorId"),
+            authorityId,
+            StringComparison.Ordinal);
 
     private static string? ReadShiningMaterializationString(
         JsonObject? owner,
