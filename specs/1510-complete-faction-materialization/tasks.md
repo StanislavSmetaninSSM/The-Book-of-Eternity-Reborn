@@ -584,6 +584,19 @@ without player-facing harness leakage.
   `faction_materialization_promotion_history_changed` at the exact Mortal
   faction coordinate; and record bounded RED/GREEN/build evidence in
   `sdd/task-11-fix5-promotion-history-report.md`.
+- [x] T078e1 Make Mortal promotion-history preservation duplicate-safe and
+  bounded across
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
+  and
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`:
+  fold repeated project, structure, resource, and custom-state authority in
+  encounter order with the normalizer's exact identity and shallow
+  last-property merge semantics; preserve exact validator-owned
+  relation/territory multiplicity; build one pre-turn sidecar/project index
+  before the promotion loop so no per-promotion method can rescan global
+  arrays; retain addition, omission, chronicle, and valid/invalid
+  `FactionCoreChanges` boundaries; and record exact RED/GREEN/build evidence
+  in `sdd/task-11-fix5b-history-index-report.md`.
 - [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.

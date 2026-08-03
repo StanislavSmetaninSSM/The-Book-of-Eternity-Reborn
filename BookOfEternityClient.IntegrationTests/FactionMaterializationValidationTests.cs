@@ -1542,6 +1542,105 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 "faction_materialization_promotion_history_changed");
     }
 
+    [Fact]
+    public async Task Validate_MortalPromotion_LateDuplicateProjectRewrite_ReportsPreservationFailure()
+    {
+        await WriteMortalPromotionHistoryFixtureAsync(
+            "late_duplicate_project_rewrite");
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed" &&
+            issue.Actor == "mortal_faction:faction_watch");
+    }
+
+    [Theory]
+    [InlineData("structure")]
+    [InlineData("resources")]
+    [InlineData("custom")]
+    public async Task Validate_MortalPromotion_LateDuplicateSidecarRewrite_ReportsPreservationFailure(
+        string sidecar)
+    {
+        await WriteMortalPromotionHistoryFixtureAsync(
+            $"late_sidecar_{sidecar}_rewrite");
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed" &&
+            issue.Actor == "mortal_faction:faction_watch");
+    }
+
+    [Theory]
+    [InlineData("branch_display_name")]
+    [InlineData("rank_name_male")]
+    [InlineData("rank_name_female")]
+    [InlineData("rank_name")]
+    [InlineData("bonus_description")]
+    [InlineData("bonus_type")]
+    [InlineData("bonus_target")]
+    [InlineData("resource_name")]
+    [InlineData("custom_name")]
+    [InlineData("custom_title")]
+    [InlineData("project_id_case")]
+    public async Task Validate_MortalPromotion_LateNormalizerIdentityFallbackRewrite_ReportsPreservationFailure(
+        string identitySurface)
+    {
+        await WriteMortalPromotionHistoryFixtureAsync(
+            $"identity_{identitySurface}");
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed" &&
+            issue.Actor == "mortal_faction:faction_watch");
+    }
+
+    [Theory]
+    [InlineData("identical")]
+    [InlineData("additive")]
+    public async Task Validate_MortalPromotion_LateDuplicateAdditiveMerge_PreservesHistory(
+        string duplicateKind)
+    {
+        await WriteMortalPromotionHistoryFixtureAsync(
+            $"duplicate_{duplicateKind}");
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code ==
+                "faction_materialization_promotion_history_changed");
+    }
+
+    [Fact]
+    public async Task Validate_ManyMortalPromotions_TailDuplicateRewrite_UsesExactIndexedHistory()
+    {
+        const int promotionCount = 64;
+        await WriteManyMortalPromotionHistoryFixtureAsync(promotionCount);
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        var actors = issues
+            .Where(issue =>
+                issue.Code ==
+                "faction_materialization_promotion_history_changed")
+            .Select(issue => issue.Actor)
+            .OrderBy(actor => actor, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(
+            new[] { "mortal_faction:faction_many_063" },
+            actors);
+    }
+
     [Theory]
     [InlineData("omitted")]
     [InlineData("empty")]
@@ -1978,6 +2077,9 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             BuildPopulatedMortalEnvelope(
                 factionId,
                 "fmat_watch_promotion_history");
+        ConfigureMortalPromotionIdentityFixture(
+            promotion,
+            mutationSurface);
 
         var legacy = new JsonObject
         {
@@ -2220,6 +2322,73 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 currentNpcCore["npcs"]![0]!["factionAffiliations"]![0]![
                     "role"] = "rewritten_role";
                 break;
+            case "late_duplicate_project_rewrite":
+            {
+                var duplicate = promotion["activeProjects"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["name"] =
+                    "Replace the Historical Watchtower";
+                promotion["activeProjects"]!.AsArray().Add(duplicate);
+                break;
+            }
+            case "late_sidecar_structure_rewrite":
+            {
+                var duplicate = currentStructure["entries"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["governance"]!["model"] =
+                    "Unhistorical duplicate commandery";
+                currentStructure["entries"]!.AsArray().Add(duplicate);
+                break;
+            }
+            case "late_sidecar_resources_rewrite":
+            {
+                var duplicate = currentResources["entries"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["metaResources"]![0]!["amount"] = 99;
+                currentResources["entries"]!.AsArray().Add(duplicate);
+                break;
+            }
+            case "late_sidecar_custom_rewrite":
+            {
+                var duplicate = currentCustom["entries"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["customStates"]![0]!["value"] =
+                    "discarded";
+                currentCustom["entries"]!.AsArray().Add(duplicate);
+                break;
+            }
+            case "identity_branch_display_name":
+            case "identity_rank_name_male":
+            case "identity_rank_name_female":
+            case "identity_rank_name":
+            case "identity_bonus_description":
+            case "identity_bonus_type":
+            case "identity_bonus_target":
+            case "identity_resource_name":
+            case "identity_custom_name":
+            case "identity_custom_title":
+            case "identity_project_id_case":
+                AddMortalPromotionIdentityRewrite(
+                    promotion,
+                    mutationSurface);
+                break;
+            case "duplicate_identical":
+                currentStructure["entries"]!.AsArray().Add(
+                    currentStructure["entries"]![0]!.DeepClone());
+                break;
+            case "duplicate_additive":
+                currentStructure["entries"]!.AsArray().Add(
+                    new JsonObject
+                    {
+                        ["factionId"] = factionId,
+                        ["inspectionNote"] =
+                            "The later row only adds non-historical metadata."
+                    });
+                break;
             default:
                 throw new ArgumentOutOfRangeException(
                     nameof(mutationSurface),
@@ -2248,6 +2417,338 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (CurrentLocationPath, preTurnCurrentLocation.ToJsonString()),
             (WorldMapPath, preTurnWorldMap.ToJsonString()),
             (NpcCorePath, preTurnNpcCore.ToJsonString()));
+    }
+
+    private static void ConfigureMortalPromotionIdentityFixture(
+        JsonObject promotion,
+        string? scenario)
+    {
+        if (scenario == null ||
+            !scenario.StartsWith(
+                "identity_",
+                StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        var branch = promotion["ranks"]!["branches"]![0]!
+            .AsObject();
+        var rank = branch["ranks"]![0]!.AsObject();
+        var bonus = promotion["structuredBonuses"]![0]!
+            .AsObject();
+        var resource = promotion["resources"]!["metaResources"]![0]!
+            .AsObject();
+        var custom = promotion["customStates"]![0]!
+            .AsObject();
+
+        switch (scenario)
+        {
+            case "identity_branch_display_name":
+                branch.Remove("branchId");
+                branch.Remove("name");
+                branch["displayName"] = "Road Wardens";
+                branch["doctrine"] = "Historical road patrol";
+                break;
+            case "identity_rank_name_male":
+                rank.Remove("rankId");
+                rank.Remove("name");
+                rank["rankNameMale"] = "Warden";
+                rank["authority"] = "Historical road patrol";
+                break;
+            case "identity_rank_name_female":
+                rank.Remove("rankId");
+                rank.Remove("name");
+                rank["rankNameFemale"] = "Warden";
+                rank["authority"] = "Historical road patrol";
+                break;
+            case "identity_rank_name":
+                rank.Remove("rankId");
+                rank["authority"] = "Historical road patrol";
+                break;
+            case "identity_bonus_description":
+                bonus.Remove("bonusId");
+                bonus["magnitude"] = 1;
+                break;
+            case "identity_bonus_type":
+                bonus.Remove("bonusId");
+                bonus.Remove("description");
+                bonus["bonusType"] = "travel";
+                bonus["magnitude"] = 1;
+                break;
+            case "identity_bonus_target":
+                bonus.Remove("bonusId");
+                bonus.Remove("description");
+                bonus["target"] = "watched_roads";
+                bonus["magnitude"] = 1;
+                break;
+            case "identity_resource_name":
+                resource.Remove("resourceId");
+                resource.Remove("name");
+                resource["resourceName"] = "Warden Trust";
+                break;
+            case "identity_custom_name":
+                custom.Remove("stateId");
+                custom["name"] = "Bridge Repair Priority";
+                break;
+            case "identity_custom_title":
+                custom.Remove("stateId");
+                custom["title"] = "Bridge Repair Priority";
+                break;
+            case "identity_project_id_case":
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(scenario),
+                    scenario,
+                    "Unsupported Mortal history identity fixture.");
+        }
+    }
+
+    private static void AddMortalPromotionIdentityRewrite(
+        JsonObject promotion,
+        string scenario)
+    {
+        switch (scenario)
+        {
+            case "identity_branch_display_name":
+            {
+                var duplicate = promotion["ranks"]!["branches"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["doctrine"] =
+                    "Rewritten road command";
+                promotion["ranks"]!["branches"]!.AsArray().Add(
+                    duplicate);
+                return;
+            }
+            case "identity_rank_name_male":
+            case "identity_rank_name_female":
+            case "identity_rank_name":
+            {
+                var ranks = promotion["ranks"]!["branches"]![0]![
+                    "ranks"]!.AsArray();
+                var duplicate = ranks[0]!.DeepClone().AsObject();
+                duplicate["authority"] =
+                    "Rewritten road command";
+                ranks.Add(duplicate);
+                return;
+            }
+            case "identity_bonus_description":
+            case "identity_bonus_type":
+            case "identity_bonus_target":
+            {
+                var duplicate = promotion["structuredBonuses"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["magnitude"] = 99;
+                promotion["structuredBonuses"]!.AsArray().Add(
+                    duplicate);
+                return;
+            }
+            case "identity_resource_name":
+            {
+                var duplicate = promotion["resources"]![
+                    "metaResources"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["resourceName"] = "warden trust";
+                duplicate["amount"] = 99;
+                promotion["resources"]!["metaResources"]!.AsArray().Add(
+                    duplicate);
+                return;
+            }
+            case "identity_custom_name":
+            case "identity_custom_title":
+            {
+                var duplicate = promotion["customStates"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["value"] = "discarded";
+                promotion["customStates"]!.AsArray().Add(duplicate);
+                return;
+            }
+            case "identity_project_id_case":
+            {
+                var duplicate = promotion["activeProjects"]![0]!
+                    .DeepClone()
+                    .AsObject();
+                duplicate["projectId"] = "PROJECT_WATCHTOWER";
+                duplicate["name"] =
+                    "Replace the Historical Watchtower";
+                promotion["activeProjects"]!.AsArray().Add(duplicate);
+                return;
+            }
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(scenario),
+                    scenario,
+                    "Unsupported Mortal history identity rewrite.");
+        }
+    }
+
+    private async Task WriteManyMortalPromotionHistoryFixtureAsync(
+        int promotionCount)
+    {
+        var promotions = new JsonArray();
+        var legacyFactions = new JsonArray();
+        var structureEntries = new JsonArray();
+        var resourceEntries = new JsonArray();
+        var activeProjects = new JsonArray();
+        var completedProjects = new JsonArray();
+        var customEntries = new JsonArray();
+
+        for (var index = 0; index < promotionCount; index++)
+        {
+            var suffix = index.ToString("D3");
+            var factionId = $"faction_many_{suffix}";
+            var factionName = $"Indexed Watch {suffix}";
+            var projectId = $"project_many_{suffix}";
+            var promotion = BuildCompleteMinimalMortalCreation();
+            promotion["factionId"] = factionId;
+            promotion.Remove("initialId");
+            promotion.Remove("isNewFaction");
+            promotion["name"] = factionName;
+            promotion["description"] =
+                $"A legacy watch promoted at indexed coordinate {suffix}.";
+            promotion["scribeChronicle"] = new JsonArray(
+                $"#12 - {factionName} completed materialization.");
+            promotion["activeProjects"] = new JsonArray(
+                new JsonObject
+                {
+                    ["projectId"] = projectId,
+                    ["name"] = $"Preserve Watchtower {suffix}"
+                });
+            var envelope = BuildMortalEnvelope(
+                factionId,
+                $"fmat_many_{suffix}");
+            envelope["capabilities"]!["runsProjects"] = true;
+            envelope["sections"]!["projects"] =
+                PopulatedDisposition();
+            promotion["materialization"] = envelope;
+            promotions.Add(promotion);
+
+            legacyFactions.Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["name"] = factionName,
+                ["description"] =
+                    promotion["description"]!.DeepClone(),
+                ["purpose"] = promotion["purpose"]!.DeepClone(),
+                ["level"] = 1
+            });
+            structureEntries.Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = factionName,
+                ["governance"] =
+                    promotion["governance"]!.DeepClone(),
+                ["leadership"] =
+                    promotion["leadership"]!.DeepClone(),
+                ["ranks"] = promotion["ranks"]!.DeepClone(),
+                ["structuredBonuses"] =
+                    promotion["structuredBonuses"]!.DeepClone()
+            });
+            resourceEntries.Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = factionName,
+                ["metaResources"] =
+                    promotion["resources"]!["metaResources"]!
+                        .DeepClone(),
+                ["strategicGoods"] =
+                    promotion["resources"]!["strategicGoods"]!
+                        .DeepClone()
+            });
+            activeProjects.Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = factionName,
+                ["projectId"] = projectId,
+                ["name"] = $"Preserve Watchtower {suffix}"
+            });
+            completedProjects.Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = factionName,
+                ["projectId"] = $"completed_many_{suffix}",
+                ["name"] = $"Historical Milestone {suffix}"
+            });
+            customEntries.Add(new JsonObject
+            {
+                ["factionId"] = factionId,
+                ["factionName"] = factionName,
+                ["customStates"] =
+                    promotion["customStates"]!.DeepClone()
+            });
+        }
+
+        var finalPromotion = promotions[promotionCount - 1]!
+            .AsObject();
+        var tailRewrite = finalPromotion["activeProjects"]![0]!
+            .DeepClone()
+            .AsObject();
+        tailRewrite["name"] =
+            "Rewrite Only the Final Historical Watchtower";
+        finalPromotion["activeProjects"]!.AsArray().Add(tailRewrite);
+
+        var currentCore = MortalRoot();
+        currentCore["factionDataChanges"] = promotions;
+        var preTurnCore = MortalRoot();
+        preTurnCore["factions"] = legacyFactions;
+        var preTurnStructure = new JsonObject
+        {
+            ["entries"] = structureEntries
+        };
+        var preTurnResources = new JsonObject
+        {
+            ["entries"] = resourceEntries
+        };
+        var preTurnProjects = new JsonObject
+        {
+            ["activeProjects"] = activeProjects,
+            ["completedProjects"] = completedProjects
+        };
+        var preTurnCustom = new JsonObject
+        {
+            ["entries"] = customEntries
+        };
+        var emptyChronicles = new JsonObject
+        {
+            ["entries"] = new JsonArray()
+        };
+        var emptyCurrentLocation = new JsonObject
+        {
+            ["locationId"] = "location_many",
+            ["factionControl"] = new JsonArray()
+        };
+        var emptyWorldMap = new JsonObject
+        {
+            ["locations"] = new JsonArray()
+        };
+        var emptyNpcCore = new JsonObject
+        {
+            ["npcs"] = new JsonArray()
+        };
+
+        await WriteCurrentAndSnapshotAsync(
+            (MortalPath, currentCore.ToJsonString()),
+            (MortalStructurePath, preTurnStructure.ToJsonString()),
+            (MortalResourcesPath, preTurnResources.ToJsonString()),
+            (MortalProjectsPath, preTurnProjects.ToJsonString()),
+            (MortalCustomPath, preTurnCustom.ToJsonString()),
+            (MortalChroniclesPath, emptyChronicles.ToJsonString()),
+            (CurrentLocationPath, emptyCurrentLocation.ToJsonString()),
+            (WorldMapPath, emptyWorldMap.ToJsonString()),
+            (NpcCorePath, emptyNpcCore.ToJsonString()),
+            (MortalPath, preTurnCore.ToJsonString()),
+            (MortalStructurePath, preTurnStructure.ToJsonString()),
+            (MortalResourcesPath, preTurnResources.ToJsonString()),
+            (MortalProjectsPath, preTurnProjects.ToJsonString()),
+            (MortalCustomPath, preTurnCustom.ToJsonString()),
+            (MortalChroniclesPath, emptyChronicles.ToJsonString()),
+            (CurrentLocationPath, emptyCurrentLocation.ToJsonString()),
+            (WorldMapPath, emptyWorldMap.ToJsonString()),
+            (NpcCorePath, emptyNpcCore.ToJsonString()));
     }
 
     private async Task WriteLegacyMortalExternalTouchAsync(string channel)
