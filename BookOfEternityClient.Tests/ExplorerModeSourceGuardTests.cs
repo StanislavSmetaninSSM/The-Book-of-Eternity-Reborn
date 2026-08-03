@@ -4,6 +4,14 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ExplorerModeSourceGuardTests
 {
+    private static readonly string[] PrivateFactionMaterializationTokens =
+    {
+        "materializationId",
+        "schemaVersion",
+        "empty_by_design",
+        "materializedAtTurn"
+    };
+
     private static string ReadGameEngineSource()
     {
         var rootFile = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
@@ -746,6 +754,58 @@ public sealed class ExplorerModeSourceGuardTests
 
         Assert.Contains("await ShowTeacherTrainingOffersAsync(teacher);", afterlifeTraining, StringComparison.Ordinal);
         Assert.Contains("if (!string.IsNullOrWhiteSpace(_pendingGmAction))", afterlifeTraining, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OrdinaryFactionReaders_DoNotRenderPrivateFactionMaterializationTokens()
+    {
+        var mortalConsole = ReadUiSourceFile(Path.Combine(
+            "ExplorerMode",
+            "ExplorerMode.FactionsAndWorldNews.cs"));
+        var mortalBrowserSource = ReadUiSourceFile(
+            "ExplorerMortalWorldCommandResultBuilder.cs");
+        var mortalBrowserFactionReader = string.Join(
+            Environment.NewLine,
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static UiEntityDossierBlock BuildFactionReferenceOverviewCard"),
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static UiEntityDossierBlock BuildFactionReferenceDetailPanel"),
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static List<UiEntityDossierSection> BuildFactionSections"),
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static List<UiKeyValueItem> BuildFactionOverviewItems"));
+        var shiningConsole = ReadUiSourceFile(Path.Combine(
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.ShiningAbode.cs"));
+        var shiningBrowser = ReadUiSourceFile(
+            "ExplorerShiningAbodeCommandResultBuilder.cs");
+        var ordinaryReaders = new[]
+        {
+            ("Mortal console", mortalConsole),
+            ("Mortal browser", mortalBrowserFactionReader),
+            ("Shining console", shiningConsole),
+            ("Shining browser", shiningBrowser)
+        };
+
+        Assert.All(ordinaryReaders, reader =>
+            Assert.All(PrivateFactionMaterializationTokens, token =>
+                Assert.DoesNotContain(
+                    token,
+                    reader.Item2,
+                    StringComparison.Ordinal)));
+
+        Assert.Contains(
+            "RemovePrivateFactionMaterialization(clone);",
+            shiningConsole,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "obj.Remove(FactionMaterializationContract.PropertyName);",
+            shiningConsole,
+            StringComparison.Ordinal);
     }
 
     [Fact]

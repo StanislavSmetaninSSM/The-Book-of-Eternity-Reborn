@@ -174,7 +174,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     ("Сияние", DescribeRadiance(shining.Node)),
                     ("Искры Света", GetNumberOrString(shining.Node, "lightSparks", "0")),
                     ("Залов", CountArray(shining.Node, "halls").ToString()),
-                    ("Фракций", CountArray(shining.Node, "factions").ToString()),
+                    ("Фракций", SarefMainStoryState.GetPlayerVisibleShiningFactions(shining.Node as JsonObject).Count().ToString()),
                     ("Резидентов", CountArray(residents.Node, GuardianAbodeResidentState.EntriesProperty).ToString()),
                     ("Открытый черновик Врат", GetBoolText(shining.Node?["gates"]?["hasOpenDraft"])),
                     ("Ожиданий Обители", CountRequests(core).ToString()),
@@ -234,7 +234,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         {
             Panel("Политика Сияющей Обители",
                 Grid(
-                    ("Фракций", CountArray(shining.Node, "factions").ToString()),
+                    ("Фракций", SarefMainStoryState.GetPlayerVisibleShiningFactions(shining.Node as JsonObject).Count().ToString()),
                     ("Светозарных акторов", CountArray(shining.Node, "shiningPoliticalActors").ToString()),
                     ("Кампаний против фракций", CountArray(shining.Node, ShiningAbodeState.FactionConflictCampaignsProperty).ToString()),
                     ("Резидентов", CountArray(residents.Node, GuardianAbodeResidentState.EntriesProperty).ToString()),
@@ -1736,10 +1736,9 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                 yield return receipt;
         }
 
-        if (root["factions"] is not JsonArray factions)
-            yield break;
-
-        foreach (var faction in factions.OfType<JsonObject>().Where(IsPlayerVisibleMemoryObject))
+        foreach (var faction in SarefMainStoryState
+                     .GetPlayerVisibleShiningFactions(root)
+                     .Where(IsPlayerVisibleMemoryObject))
         {
             foreach (var receipt in EnumerateObjects(faction["leadershipReceipts"] as JsonArray))
                 yield return receipt;
@@ -2983,10 +2982,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
 
     private static bool IsCurrentResidentHead(JsonObject shiningRoot, string residentId)
     {
-        if (string.IsNullOrWhiteSpace(residentId) || shiningRoot["factions"] is not JsonArray factions)
+        if (string.IsNullOrWhiteSpace(residentId))
             return false;
 
-        return factions.OfType<JsonObject>().Any(faction =>
+        return SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot).Any(faction =>
             string.Equals(GetString(faction["leadership"], "headActorType", string.Empty), ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(GetString(faction["leadership"], "headActorId", string.Empty), residentId, StringComparison.OrdinalIgnoreCase));
     }

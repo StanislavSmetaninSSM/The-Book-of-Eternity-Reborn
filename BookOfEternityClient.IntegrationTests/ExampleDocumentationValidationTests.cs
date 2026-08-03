@@ -159,6 +159,82 @@ public sealed class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void FactionMaterializationManifest_CoversEightWorkedExampleFamiliesWithBothRepairVariants()
+    {
+        var manifestPath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "example_validation_manifest.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(manifestPath));
+        var coverageEntries = document.RootElement
+            .EnumerateObject()
+            .Where(property => property.Value.ValueKind == JsonValueKind.Array)
+            .SelectMany(property => property.Value.EnumerateArray())
+            .Where(entry => entry.ValueKind == JsonValueKind.Object &&
+                            entry.TryGetProperty("contractId", out _))
+            .ToArray();
+        var entriesByContractId = coverageEntries.ToDictionary(
+            entry => entry.GetProperty("contractId").GetString() ?? string.Empty,
+            StringComparer.Ordinal);
+        var requiredEntries = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["mortal_faction_materialization_populated_creation_v1"] = "E_Block_21.txt",
+            ["mortal_faction_materialization_seven_empty_creation_v1"] = "E_Block_21.txt",
+            ["mortal_faction_materialization_legacy_promotion_v1"] = "E_CLI_Step_Main.txt",
+            ["mortal_faction_core_changes_update_v1"] = "E_CLI_Step_Main.txt",
+            ["shining_faction_materialization_native_discovery_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["shining_faction_materialization_player_founding_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["shining_faction_materialization_story_hidden_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["mortal_faction_materialization_repair_v1"] = "E_Block_21.txt",
+            ["shining_faction_materialization_repair_v1"] = "E_CLI_Afterlife_Turns.txt"
+        };
+
+        foreach (var (contractId, expectedFile) in requiredEntries)
+        {
+            Assert.True(
+                entriesByContractId.TryGetValue(contractId, out var entry),
+                $"Missing manifest coverage for {contractId}.");
+            Assert.Equal(expectedFile, entry.GetProperty("file").GetString());
+            Assert.True(
+                File.Exists(Path.Combine(
+                    TestRepoPaths.RepoRoot,
+                    "Examples",
+                    expectedFile)));
+
+            var validationKind = entry.GetProperty("validationKind").GetString();
+            Assert.Contains(
+                validationKind,
+                new[] { "production-validator", "focused-fragment" });
+            Assert.False(string.IsNullOrWhiteSpace(
+                entry.GetProperty("coverageLimit").GetString()));
+
+            if (string.Equals(
+                    validationKind,
+                    "production-validator",
+                    StringComparison.Ordinal))
+            {
+                Assert.False(string.IsNullOrWhiteSpace(
+                    entry.GetProperty("validationRoute").GetString()));
+            }
+
+            var requiredText = entry.GetProperty("requiredText")
+                .EnumerateArray()
+                .Select(value => value.GetString() ?? string.Empty)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .ToArray();
+            Assert.NotEmpty(requiredText);
+            var example = File.ReadAllText(Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "Examples",
+                expectedFile));
+            Assert.All(requiredText, token =>
+                Assert.Contains(token, example, StringComparison.Ordinal));
+        }
+
+        Assert.Equal(requiredEntries.Count, requiredEntries.Keys.Distinct().Count());
+    }
+
+    [Fact]
     public void HarnessContractManifestCoverage_IsTypedAndReferencesExistingExamples()
     {
         var manifest = ExampleValidationManifest.Load();

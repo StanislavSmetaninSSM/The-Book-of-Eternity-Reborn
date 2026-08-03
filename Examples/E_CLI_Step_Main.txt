@@ -24,6 +24,100 @@ $narrative = [ordered]@{
 Write-BoeJson -RelativePath 'output/narrative_response.json' -Data $narrative
 ```
 
+Faction Materialization worked-example coverage:
+mortal_faction_materialization_populated_creation_v1
+mortal_faction_materialization_seven_empty_creation_v1
+mortal_faction_materialization_legacy_promotion_v1
+mortal_faction_core_changes_update_v1
+mortal_faction_materialization_repair_v1
+
+### mortal_faction_materialization_legacy_promotion_v1
+
+This legacy faction is promoted through the full `factionDataChanges` carrier in the same accepted turn that it first gains a formal project and resource ledger.
+
+```json
+{
+  "factionDataChanges": [
+    {
+      "factionId": "faction_old_ferry_circle",
+      "name": "Старый перевозный круг",
+      "purpose": "Сохранять безопасную переправу через Серую реку.",
+      "currentAgenda": "Собрать запас дерева для весеннего ремонта.",
+      "principles": ["Никого не бросать на воде"],
+      "memory": {
+        "summary": "Прежде круг существовал только как местное прозвище.",
+        "lastUpdatedTurn": 27,
+        "enduringFacts": ["Перевозчики отвечают на три колокольных удара."],
+        "openThreads": ["Кто будет хранить общий фонд?"]
+      },
+      "governance": {"model": "совет перевозчиков", "decisionProcess": "Единогласие дежурных капитанов."},
+      "leadership": {"leadershipState": "collective", "summary": "Два дежурных капитана.", "leaderNpcIds": ["npc_ferry_ada", "npc_ferry_borin"]},
+      "hierarchy": [{"branchId": "core", "name": "Дежурные капитаны"}],
+      "resources": {"timber": 8},
+      "relations": [],
+      "projects": [{"projectId": "project_repair_ferry", "status": "active"}],
+      "territoryAndInfluence": [],
+      "playerMembership": {},
+      "customStates": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_faction_old_ferry_circle_turn_27",
+        "factionType": "mortal_faction",
+        "factionId": "faction_old_ferry_circle",
+        "materializedAtTurn": 27,
+        "state": "complete",
+        "capabilities": {
+          "hasFormalHierarchy": true,
+          "usesFactionResources": true,
+          "maintainsRelations": false,
+          "runsProjects": true,
+          "holdsTerritoryOrInfluence": false,
+          "supportsPlayerMembership": false,
+          "usesCustomMechanics": false
+        },
+        "sections": {
+          "hierarchy": {"state": "populated"},
+          "resources": {"state": "populated"},
+          "relations": {"state": "empty_by_design", "reason": "Круг ещё не заключал соглашений с другими фракциями."},
+          "projects": {"state": "populated"},
+          "territoryAndInfluence": {"state": "empty_by_design", "reason": "Круг обслуживает путь, но не заявляет контроль над ним."},
+          "playerMembership": {"state": "empty_by_design", "reason": "Вступление пока определяется только личным доверием."},
+          "customStates": {"state": "empty_by_design", "reason": "Отдельной механики круга пока нет."}
+        }
+      }
+    }
+  ]
+}
+```
+
+### mortal_faction_core_changes_update_v1
+
+An ordinary update preserves historical materialization and sends only bounded semantic groups. `scribeChronicle` is extracted to the dedicated chronicle surface by the client contract.
+
+```json
+{
+  "factionCoreChanges": [
+    {
+      "factionId": "faction_old_ferry_circle",
+      "reason": "Совет завершил сбор древесины и выбрал следующую цель.",
+      "purposeAndPrinciples": {
+        "currentAgenda": "Укрепить восточную опору до половодья."
+      },
+      "progressionAndPower": {
+        "progressionSummary": "Подготовка перешла от сбора материалов к строительству."
+      },
+      "governanceAndLeadership": {
+        "leadershipState": "collective",
+        "summary": "Два капитана продолжают совместное руководство."
+      },
+      "scribeChronicle": {
+        "summary": "Общий запас дерева собран."
+      }
+    }
+  ]
+}
+```
+
 ==================================================
 1. SCENE-LOCAL TURN WITH NPC SCOPE
 ==================================================

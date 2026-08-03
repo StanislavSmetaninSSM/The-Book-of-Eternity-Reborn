@@ -284,4 +284,32 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.DoesNotContain("Light Sparks state", source, StringComparison.Ordinal);
         Assert.DoesNotContain("client-local mutation", source, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void ShiningOrdinaryFactionEnumerations_MustUseCanonicalPlayerVisibility()
+    {
+        var consoleSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.cs");
+        var browserSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerShiningAbodeCommandResultBuilder.cs"));
+
+        Assert.Contains(
+            "var factions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root)",
+            consoleSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "SarefMainStoryState.GetPlayerVisibleShiningFactions",
+            browserSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "RemoveHiddenSarefWingsFactions",
+            consoleSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "SarefMainStoryState.IsPlayerVisibleShiningFaction(faction)",
+            consoleSource,
+            StringComparison.Ordinal);
+    }
 }

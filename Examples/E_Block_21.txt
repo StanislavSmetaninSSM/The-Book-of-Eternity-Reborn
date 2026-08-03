@@ -1752,3 +1752,144 @@
   </example>
  </rule>
 </instructionblock>
+
+Faction Materialization worked-example coverage:
+mortal_faction_materialization_populated_creation_v1
+mortal_faction_materialization_seven_empty_creation_v1
+mortal_faction_materialization_legacy_promotion_v1
+mortal_faction_core_changes_update_v1
+mortal_faction_materialization_repair_v1
+
+### mortal_faction_materialization_populated_creation_v1
+
+The full `factionDataChanges` carrier creates a structured faction. This extracted object shows the complete faction payload carried by that command.
+
+```json
+{
+  "factionId": "faction_tideward_compact",
+  "name": "Береговой союз",
+  "purpose": "Защищать прибрежные поселения и сохранять свободную навигацию.",
+  "currentAgenda": "Восстановить три маяка до зимних штормов.",
+  "principles": ["Взаимная помощь", "Открытая навигация"],
+  "memory": {
+    "summary": "Союз возник после Великого шторма.",
+    "lastUpdatedTurn": 18,
+    "enduringFacts": ["Каждый порт имеет один голос."],
+    "openThreads": ["Кто саботирует северный маяк?"]
+  },
+  "governance": {
+    "model": "совет портов",
+    "decisionProcess": "Решения принимаются большинством представителей."
+  },
+  "leadership": {
+    "leadershipState": "collective",
+    "summary": "Совет из трёх портовых представителей.",
+    "leaderNpcIds": ["npc_mara_quay", "npc_orel_beacon", "npc_sima_reef"]
+  },
+  "hierarchy": [{"branchId": "core", "name": "Совет портов"}],
+  "resources": {"supplies": 24},
+  "relations": [{"targetFactionId": "faction_salt_court", "stance": "wary"}],
+  "projects": [{"projectId": "project_restore_beacons", "status": "active"}],
+  "territoryAndInfluence": [{"locationId": "location_north_harbor", "influence": "strong"}],
+  "playerMembership": {"isSupported": true, "entryCondition": "Заслужить доверие одного порта."},
+  "customStates": [{"stateId": "storm_readiness", "currentValue": 2}],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_faction_tideward_compact_turn_18",
+    "factionType": "mortal_faction",
+    "factionId": "faction_tideward_compact",
+    "materializedAtTurn": 18,
+    "state": "complete",
+    "capabilities": {
+      "hasFormalHierarchy": true,
+      "usesFactionResources": true,
+      "maintainsRelations": true,
+      "runsProjects": true,
+      "holdsTerritoryOrInfluence": true,
+      "supportsPlayerMembership": true,
+      "usesCustomMechanics": true
+    },
+    "sections": {
+      "hierarchy": {"state": "populated"},
+      "resources": {"state": "populated"},
+      "relations": {"state": "populated"},
+      "projects": {"state": "populated"},
+      "territoryAndInfluence": {"state": "populated"},
+      "playerMembership": {"state": "populated"},
+      "customStates": {"state": "populated"}
+    }
+  }
+}
+```
+
+### mortal_faction_materialization_seven_empty_creation_v1
+
+All seven optional mechanical sections may be empty only when each canonical surface is present and each disposition explains why.
+
+```json
+{
+  "factionId": "faction_window_watch",
+  "name": "Наблюдатели окна",
+  "purpose": "Собирать свидетельства о необычном свете над городом.",
+  "currentAgenda": "Сверить записи очевидцев за последнюю неделю.",
+  "principles": ["Не искажать свидетельства"],
+  "memory": {
+    "summary": "Неформальная группа свидетелей только что получила имя.",
+    "lastUpdatedTurn": 6,
+    "enduringFacts": [],
+    "openThreads": ["Повторится ли свет?"]
+  },
+  "governance": {"model": "неформальный круг", "decisionProcess": "Согласие присутствующих."},
+  "leadership": {"leadershipState": "vacant", "summary": "Постоянного лидера пока нет.", "leaderNpcIds": []},
+  "hierarchy": [],
+  "resources": {},
+  "relations": [],
+  "projects": [],
+  "territoryAndInfluence": [],
+  "playerMembership": {},
+  "customStates": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_faction_window_watch_turn_6",
+    "factionType": "mortal_faction",
+    "factionId": "faction_window_watch",
+    "materializedAtTurn": 6,
+    "state": "complete",
+    "capabilities": {
+      "hasFormalHierarchy": false,
+      "usesFactionResources": false,
+      "maintainsRelations": false,
+      "runsProjects": false,
+      "holdsTerritoryOrInfluence": false,
+      "supportsPlayerMembership": false,
+      "usesCustomMechanics": false
+    },
+    "sections": {
+      "hierarchy": {"state": "empty_by_design", "reason": "Группа ещё не установила формальные роли."},
+      "resources": {"state": "empty_by_design", "reason": "Общего фонда пока нет."},
+      "relations": {"state": "empty_by_design", "reason": "Группа ещё не вступала в отношения с организациями."},
+      "projects": {"state": "empty_by_design", "reason": "Пока ведётся только разовый сбор свидетельств."},
+      "territoryAndInfluence": {"state": "empty_by_design", "reason": "Группа не контролирует территорию и не заявляет влияние."},
+      "playerMembership": {"state": "empty_by_design", "reason": "Формальная процедура вступления ещё не существует."},
+      "customStates": {"state": "empty_by_design", "reason": "Собственная механика группы ещё не определена."}
+    }
+  }
+}
+```
+
+### mortal_faction_materialization_repair_v1
+
+A bounded repair replaces only the rejected `sections.resources` disposition and its canonical empty `resources` surface. It preserves `materializationId`, identity, semantic core, and every unrelated section.
+
+```json
+{
+  "factionId": "faction_window_watch",
+  "repairScope": "materialization.sections.resources",
+  "preserveMaterializationId": "mat_faction_window_watch_turn_6",
+  "resources": {},
+  "replacement": {
+    "state": "empty_by_design",
+    "reason": "Общего фонда пока нет."
+  }
+}
+```

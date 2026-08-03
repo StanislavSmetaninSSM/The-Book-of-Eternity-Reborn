@@ -1178,9 +1178,26 @@ internal static class SarefMainStoryState
 
         foreach (var faction in factions.OfType<JsonObject>())
         {
-            if (!IsHiddenWingsFaction(faction))
+            if (IsPlayerVisibleShiningFaction(faction))
                 yield return faction;
         }
+    }
+
+    public static bool IsPlayerVisibleShiningFaction(JsonObject? faction)
+    {
+        if (faction == null)
+            return false;
+
+        var visibility = GetNodeString(faction["visibility"]);
+        if (!string.IsNullOrWhiteSpace(visibility))
+        {
+            return string.Equals(
+                visibility,
+                FactionVisibilityRevealed,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        return !IsHiddenWingsFaction(faction);
     }
 
     public static bool IsHiddenWingsFaction(JsonObject? faction)

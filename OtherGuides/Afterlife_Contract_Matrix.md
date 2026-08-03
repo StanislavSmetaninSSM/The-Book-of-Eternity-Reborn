@@ -537,3 +537,17 @@ For freeform Chaos Sea Abode search, see example 23 before deciding whether the 
 | Freeform Chaos Sea Abode search from `/обители` | 23 |
 | `afterlifeArchiveUpdates`, derived notification triggers, post-bootstrap Shining blessing effects, and resident companion manifestation handoff notes | 22 |
 
+## Faction Materialization v1 — Shining Abode
+
+Faction Materialization applies only when exact Shining faction authority exists. The supported authoring routes are:
+
+- `native_discovery -> shining_core_action_request -> native_radiant`
+- `player_founding -> shining_founding_request -> player_founded`
+- `story -> exact story authority -> supported visibility`
+
+The materialization identity is `shining_faction:<factionId>`. A complete faction carries `purpose`, `currentAgenda`, principles, memory, governance, leadership, origin and visibility plus exact capability booleans `runsProjects`, `holdsTerritorialInfluence`, `usesResourceLedger`, `hasResidentAffiliations`, `canTrade`, `hasLeadershipHistory`, and `usesStoryState`. Its exact sections are `projects`, `territorialInfluence`, `resourceLedger`, `residentAffiliations`, `trade`, `leadershipHistory`, and `storyState`; every section is `populated` or `empty_by_design` with a reason and the canonical empty surface present.
+
+An existing accepted Shining faction preserves its materialization envelope. Repairs are bounded to the exact named section. Ordinary readers expose only `visibility = revealed`; missing or blank visibility uses the legacy Wings fallback. Hidden faction objects and every faction materialization envelope remain GM-private.
+
+Actor Materialization is separate. An active Guardian supplies actor/living-world authority but never creates Shining faction authority by implication.
+

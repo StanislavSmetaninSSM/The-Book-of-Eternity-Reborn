@@ -1388,4 +1388,12 @@
    </content>
   </rule>
  </content>
+ <rule id="CLI.11">
+  <description>Faction Materialization routing</description>
+  <content>
+   <![CDATA[
+   Faction Materialization v1 is mandatory for Mortal faction creation and legacy promotion. Read the compact Mortal faction template first. Full factionDataChanges is limited to those lifecycle routes and carries exact populated/empty_by_design dispositions. Preserve the envelope after acceptance; use factionCoreChanges for an ordinary semantic faction update and keep dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands on their existing surfaces.
+   ]]>
+  </content>
+ </rule>
 </instructionblock>

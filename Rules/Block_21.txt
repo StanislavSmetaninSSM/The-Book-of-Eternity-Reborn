@@ -2536,4 +2536,21 @@
    </content>
   </rule>
  </content>
+
+ <rule id="21.10">
+  <description>Faction Materialization v1 and semantic faction-core authority</description>
+  <content>
+   <![CDATA[
+   Every newly created Mortal faction, and every legacy faction promoted into structured play, MUST carry one complete `"materialization"` envelope in its full `factionDataChanges` object. The envelope has exactly `schemaVersion`, `materializationId`, `factionType`, `factionId`, `materializedAtTurn`, `state`, `capabilities`, and `sections`. Use `factionType = "mortal_faction"` and `state = "complete"`.
+
+   The semantic core is setting-neutral and mandatory: `"purpose"` and `"currentAgenda"` are non-empty strings; `"principles"` contains one or more unique non-empty principles; `"memory"` contains `summary`, `lastUpdatedTurn`, `enduringFacts`, and `openThreads`; `"governance"` contains `model` and `decisionProcess`; `"leadership"` contains `leadershipState` (`headed`, `collective`, or `vacant`), `summary`, and `leaderNpcIds`.
+
+   Capabilities are exact booleans: `hasFormalHierarchy`, `usesFactionResources`, `maintainsRelations`, `runsProjects`, `holdsTerritoryOrInfluence`, `supportsPlayerMembership`, and `usesCustomMechanics`. Sections are exact dispositions: `hierarchy`, `resources`, `relations`, `projects`, `territoryAndInfluence`, `playerMembership`, and `customStates`. Each disposition is `populated`, or `"empty_by_design"` with a non-empty in-world reason and the corresponding canonical empty surface physically present.
+
+   Full `factionDataChanges` is reserved for faction creation and legacy promotion. A legacy promotion occurs when an existing prose/minimal faction first gains structured hierarchy, resources, relations, projects, territory/influence, player membership, or custom mechanics. After materialization, preserve the historical envelope and use `"factionCoreChanges"` for ordinary semantic changes. Each core-change command has an exact faction id, non-empty reason, and one or more of the bounded groups `profile`, `purposeAndPrinciples`, `progressionAndPower`, `governanceAndLeadership`, `playerMembership`, or `relations`. Extract `scribeChronicle` into the faction chronicle instead of leaving history inside mutable core state.
+
+   Dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands remain authoritative for their own surfaces. A bounded repair changes only the named invalid materialization/core section, preserves unrelated faction state and accepted materialization identity, and never broadens authority.
+   ]]>
+  </content>
+ </rule>
 </instructionblock>

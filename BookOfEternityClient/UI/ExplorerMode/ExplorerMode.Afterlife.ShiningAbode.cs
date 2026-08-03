@@ -85,9 +85,10 @@ public partial class ExplorerMode
                 choices.Add("📝 Осмотреть ожидающие действия Обители");
                 choices.Add("🔧 Аудит ожидающих действий Обители");
             }
-            if ((context.Root["factions"] as JsonArray)?.Count > 0)
+            if (SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root).Any())
                 choices.Add("🧾 Осмотреть торговые циклы");
-            if ((context.Root["factions"] as JsonArray)?.Count > 0 || (context.ResidentRoot?["entries"] as JsonArray)?.Count > 0)
+            if (SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root).Any() ||
+                (context.ResidentRoot?["entries"] as JsonArray)?.Count > 0)
                 choices.Add("🧭 Сводный аудит резидентов и проектов");
 
             choices.Add("🏛 Политика");
@@ -205,7 +206,7 @@ public partial class ExplorerMode
             "[bold]Фракции, резиденты, проекты:[/] [dim](без перехода в отдельные карточки)[/]"
         };
 
-        var factions = (context.Root["factions"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+        var factions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root).ToList();
         if (factions.Count == 0)
         {
             lines.Add("  • Фракции пока не материализованы.");
@@ -413,9 +414,9 @@ public partial class ExplorerMode
                     lines.Add($"  • {Markup.Escape(BuildShiningRealignmentReceiptSummary(receipt))}");
             }
 
-            if (context?.Root["factions"] is JsonArray resolvedFactions)
+            if (context != null)
             {
-                var latestLeadershipReceipts = resolvedFactions.OfType<JsonObject>()
+                var latestLeadershipReceipts = visibleFactions
                     .SelectMany(faction =>
                     {
                         var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
@@ -464,7 +465,7 @@ public partial class ExplorerMode
                 choices.Add("📝 Осмотреть ожидающие политические запросы");
             if ((context?.Root["factionFoundingReceipts"] as JsonArray)?.Count > 0 ||
                 (context?.Root["factionRealignmentReceipts"] as JsonArray)?.Count > 0 ||
-                (context?.Root["factions"] as JsonArray)?.OfType<JsonObject>().Any(faction => (faction["leadershipReceipts"] as JsonArray)?.Count > 0) == true)
+                visibleFactions.Any(faction => (faction["leadershipReceipts"] as JsonArray)?.Count > 0))
             {
                 choices.Add("📜 Осмотреть решения фракций");
             }
@@ -859,17 +860,20 @@ public partial class ExplorerMode
         if (shiningRoot["gates"] is JsonObject gates && GetNodeBool(gates["isStale"]))
             blockers.Add($"Черновик Врат устарел: открой Врата заново [версия {GetNodeInt(gates["draftVersion"])}].");
 
-        if (shiningRoot["factions"] is JsonArray factions && factions.Count > 0)
+        var visibleFactions = SarefMainStoryState
+            .GetPlayerVisibleShiningFactions(shiningRoot)
+            .ToList();
+        if (visibleFactions.Count > 0)
         {
-            var dormantTradeCount = factions.OfType<JsonObject>()
+            var dormantTradeCount = visibleFactions
                 .Count(faction => ShiningAbodeState.GetTradeTier(GetNodeInt(faction["factionStrength"])) < 1);
             if (dormantTradeCount > 0)
-                blockers.Add($"Торговля спит у {dormantTradeCount} из {factions.Count} фракций.");
+                blockers.Add($"Торговля спит у {dormantTradeCount} из {visibleFactions.Count} фракций.");
 
-            var blockedForgeCount = factions.OfType<JsonObject>()
+            var blockedForgeCount = visibleFactions
                 .Count(faction => !ShiningAbodeState.FactionHasSupportedProjectArchetype(faction, ShiningAbodeState.ProjectArchetypeRefinement));
             if (blockedForgeCount > 0)
-                blockers.Add($"Кузня пока не раскрыта у {blockedForgeCount} из {factions.Count} фракций: нет завершённого проекта очищения.");
+                blockers.Add($"Кузня пока не раскрыта у {blockedForgeCount} из {visibleFactions.Count} фракций: нет завершённого проекта очищения.");
         }
 
         var nextStep = DetermineNextShiningStep(
@@ -1104,17 +1108,12 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(factionId))
             return "?";
 
-        if (shiningRoot?["factions"] is JsonArray factions)
+        if (shiningRoot != null)
         {
-            var faction = factions.OfType<JsonObject>()
+            var faction = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
                 .FirstOrDefault(item => string.Equals(GetNodeString(item["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
             if (faction != null)
-            {
-                if (SarefMainStoryState.IsHiddenWingsFaction(faction))
-                    return "скрытая фракция";
-
                 return GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
-            }
         }
 
         return factionId;
@@ -1141,13 +1140,14 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(projectId))
             return "project";
 
-        IEnumerable<JsonObject> factions = Enumerable.Empty<JsonObject>();
-        if (shiningRoot?["factions"] is JsonArray factionArray)
-            factions = factionArray.OfType<JsonObject>();
+        var factions = SarefMainStoryState
+            .GetPlayerVisibleShiningFactions(shiningRoot)
+            .ToList();
 
         if (!string.IsNullOrWhiteSpace(factionId))
             factions = factions.Where(item => string.Equals(GetNodeString(item["factionId"]), factionId, StringComparison.OrdinalIgnoreCase))
-                .Concat((shiningRoot?["factions"] as JsonArray)?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>());
+                .Concat(SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot))
+                .ToList();
 
         foreach (var faction in factions)
         {
@@ -1184,10 +1184,10 @@ public partial class ExplorerMode
                     .Where(node => node.TryGetValue<string>(out _))
                     .Select(node => DescribeShiningHallServiceTag(node.GetValue<string>()))
                     .ToList() ?? new List<string>();
-                var boundFactions = (context.Root["factions"] as JsonArray)?.OfType<JsonObject>()
+                var boundFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root)
                     .Where(faction => string.Equals(GetNodeString(faction["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
                     .Select(faction => GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?")
-                    .ToList() ?? new List<string>();
+                    .ToList();
 
                 lines.Add($"  • {Markup.Escape(hallName)}");
                 if (!string.IsNullOrWhiteSpace(description))
@@ -2153,30 +2153,50 @@ public partial class ExplorerMode
             return null;
 
         var clone = node.DeepClone();
+        RemovePrivateFactionMaterialization(clone);
         RemoveShiningBlessingRuntimePayloads(clone);
-        RemoveHiddenSarefWingsFactions(clone);
+        RemovePlayerHiddenShiningFactions(clone);
         return clone;
     }
 
-    private static void RemoveHiddenSarefWingsFactions(JsonNode? node)
+    private static void RemovePrivateFactionMaterialization(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                obj.Remove(FactionMaterializationContract.PropertyName);
+                foreach (var child in obj.Select(pair => pair.Value).ToList())
+                    RemovePrivateFactionMaterialization(child);
+                break;
+            case JsonArray array:
+                foreach (var child in array)
+                    RemovePrivateFactionMaterialization(child);
+                break;
+        }
+    }
+
+    private static void RemovePlayerHiddenShiningFactions(JsonNode? node)
     {
         switch (node)
         {
             case JsonObject obj:
                 foreach (var child in obj.Select(pair => pair.Value).ToList())
-                    RemoveHiddenSarefWingsFactions(child);
+                    RemovePlayerHiddenShiningFactions(child);
                 break;
             case JsonArray array:
                 for (var index = array.Count - 1; index >= 0; index--)
                 {
                     if (array[index] is JsonObject faction &&
-                        SarefMainStoryState.IsHiddenWingsFaction(faction))
+                        faction.ContainsKey("factionId") &&
+                        faction.ContainsKey("originType") &&
+                        faction.ContainsKey("hallId") &&
+                        !SarefMainStoryState.IsPlayerVisibleShiningFaction(faction))
                     {
                         array.RemoveAt(index);
                         continue;
                     }
 
-                    RemoveHiddenSarefWingsFactions(array[index]);
+                    RemovePlayerHiddenShiningFactions(array[index]);
                 }
                 break;
         }
@@ -3012,7 +3032,7 @@ public partial class ExplorerMode
             }
         }
 
-        if ((shiningRoot["factions"] as JsonArray)?.Count is 0)
+        if (!SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot).Any())
             return "Сначала запроси открытие нативной фракции.";
 
         return "Проверь фракции, проекты и Врата: Обитель готова к следующему шагу.";

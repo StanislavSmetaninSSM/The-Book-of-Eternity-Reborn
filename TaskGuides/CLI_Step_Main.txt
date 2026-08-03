@@ -741,4 +741,9 @@
         **Reference CLI_Example_Soul_System.md for complete workflow example**
         ]]>
     </ExistingRulesCompatibility>
+    <FactionMaterialization>
+        <![CDATA[
+        Faction Materialization v1: use the compact Mortal faction template for every faction creation, legacy promotion, or ordinary faction update. Creation and legacy promotion use a full factionDataChanges carrier with the complete materialization envelope and explicit populated/empty_by_design dispositions. Preserve an accepted envelope on later turns and route ordinary semantic changes through factionCoreChanges. Dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands remain separate.
+        ]]>
+    </FactionMaterialization>
 </InstructionBlock>

@@ -2186,6 +2186,12 @@ See `Examples/CLI_Example_Soul_System.md` for complete Soul Relic distribution e
 
 ---
 
+## Faction Materialization v1
+
+For Mortal faction creation or legacy promotion, return a complete `factionDataChanges` object with an immutable Faction Materialization envelope. Every exact capability and section must be declared; an `empty_by_design` section needs an in-world reason and its canonical empty surface. Once accepted, preserve the envelope and send ordinary semantic changes through `factionCoreChanges`. Continue to use the dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands for those surfaces.
+
+---
+
 **🎮 END OF CLI API SPECIFICATION**
 
 *This document provides comprehensive guidance for CLI agents working with The Book of Eternity Reborn game system. For implementation questions, refer to the detailed rule blocks and examples in the Rules/ and Examples/ directories.*

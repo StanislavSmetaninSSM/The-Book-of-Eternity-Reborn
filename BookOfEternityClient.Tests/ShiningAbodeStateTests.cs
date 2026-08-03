@@ -6,6 +6,33 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ShiningAbodeStateTests
 {
+    [Theory]
+    [InlineData("hidden", false)]
+    [InlineData("rumored", false)]
+    [InlineData("revealed", true)]
+    public void GetPlayerVisibleShiningFactions_UsesCanonicalVisibility(
+        string visibility,
+        bool expectedVisible)
+    {
+        var faction = new JsonObject
+        {
+            ["factionId"] = "shine_faction_story",
+            ["originType"] = ShiningAbodeState.OriginTypeAscendedGuardian,
+            ["hallId"] = "hall_story",
+            ["visibility"] = visibility
+        };
+        var root = new JsonObject
+        {
+            ["factions"] = new JsonArray(faction)
+        };
+
+        Assert.Equal(
+            expectedVisible,
+            SarefMainStoryState
+                .GetPlayerVisibleShiningFactions(root)
+                .Any());
+    }
+
     [Fact]
     public void NormalizeStateRoot_DerivesRadianceTierAndFactionStrength()
     {
@@ -741,7 +768,7 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void ActivateForAscension_WithGuardiansRoot_MaterializesActiveGuardianFaction()
+    public void ActivateForAscension_WithGuardiansRoot_DoesNotMaterializeActiveGuardianFaction()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         var guardiansRoot = JsonNode.Parse("""
@@ -759,10 +786,10 @@ public sealed class ShiningAbodeStateTests
 
         var activated = ShiningAbodeState.ActivateForAscension(root, residentRoot: null, guardiansRoot);
 
-        Assert.True(activated["halls"] is JsonArray halls && halls.Count == 1);
-        Assert.True(activated["factions"] is JsonArray factions && factions.Count == 1);
-        Assert.Equal("guardian", activated["factions"]?[0]?["leadership"]?["headActorType"]?.GetValue<string>());
-        Assert.Equal("guardian_azalia", activated["factions"]?[0]?["leadership"]?["headActorId"]?.GetValue<string>());
+        Assert.Equal(ShiningAbodeState.AvailabilityActive, activated["availability"]?.GetValue<string>());
+        Assert.Equal(100, activated["lightSparks"]?.GetValue<int>());
+        Assert.Empty(activated["halls"]!.AsArray());
+        Assert.Empty(activated["factions"]!.AsArray());
     }
 
     [Fact]
@@ -790,7 +817,7 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void ActivateForAscension_WithFoundedGuardian_MaterializesPlayerFoundedProjection()
+    public void ActivateForAscension_WithFoundedGuardian_DoesNotMaterializePlayerFoundedProjection()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         var guardiansRoot = JsonNode.Parse($$"""
@@ -809,11 +836,10 @@ public sealed class ShiningAbodeStateTests
 
         var activated = ShiningAbodeState.ActivateForAscension(root, residentRoot: null, guardiansRoot);
 
-        Assert.Equal(ShiningAbodeState.OriginTypePlayerFounded, activated["factions"]?[0]?["originType"]?.GetValue<string>());
-        Assert.Equal("guardian", activated["factions"]?[0]?["leadership"]?["headActorType"]?.GetValue<string>());
-        Assert.Equal("guardian_founder", activated["factions"]?[0]?["leadership"]?["headActorId"]?.GetValue<string>());
-        Assert.Equal("Фракция, восходящая к основанному Хранителю Северин.", activated["factions"]?[0]?["charter"]?["summary"]?.GetValue<string>());
-        Assert.Equal("Обитель основанного Хранителя Северин внутри Сияющей Обители.", activated["halls"]?[0]?["description"]?.GetValue<string>());
+        Assert.Equal(ShiningAbodeState.AvailabilityActive, activated["availability"]?.GetValue<string>());
+        Assert.Equal(100, activated["lightSparks"]?.GetValue<int>());
+        Assert.Empty(activated["halls"]!.AsArray());
+        Assert.Empty(activated["factions"]!.AsArray());
     }
 
     [Fact]

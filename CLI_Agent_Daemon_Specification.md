@@ -733,3 +733,7 @@ $guardian | ConvertTo-Json -Depth 100 | Set-Content "game_state/meta/guardians.j
 
 Полные схемы данных — см. `CLI_API_Specification.md`.
 Оглавление правил — см. `CLI_Rules_Index.md`.
+
+## Faction Materialization
+
+The daemon always routes a Mortal faction creation, legacy promotion, or ordinary faction update through the compact Mortal faction template. Creation/promotion uses a full object with a complete materialization envelope and explicit `populated`/`empty_by_design` section dispositions. An already materialized faction keeps its accepted envelope and uses `factionCoreChanges` for ordinary semantic updates; large examples are opened only when compact guidance does not cover the route-specific shape.

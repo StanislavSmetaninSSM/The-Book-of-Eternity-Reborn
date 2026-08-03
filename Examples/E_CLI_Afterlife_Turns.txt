@@ -10710,6 +10710,182 @@ Afterlife spiritual conflict margin:
 }
 ```
 
+## Shining Faction Materialization worked examples
+
+### shining_faction_materialization_native_discovery_v1
+
+The validated `native_discovery -> shining_core_action_request -> native_radiant` route authors the faction; discovery is not inferred from a Guardian title or prose.
+
+```json
+{
+  "factionId": "faction_dawn_reed",
+  "originType": "native_radiant",
+  "visibility": "revealed",
+  "hallId": "hall_dawn_reed",
+  "purpose": "Проводить заблудшие души к тихому свету.",
+  "currentAgenda": "Открыть безопасный путь через поющие сады.",
+  "principles": ["Свет должен указывать путь, а не ослеплять"],
+  "memory": {"summary": "Фракция открылась после завершённого поиска.", "lastUpdatedTurn": 31, "enduringFacts": ["Зал существовал до прибытия игрока."], "openThreads": ["Кому принадлежит дальний звон?"]},
+  "governance": {"model": "круг наставников", "decisionProcess": "Согласие трёх старших голосов."},
+  "leadership": {"leadershipState": "headed", "summary": "Зал возглавляет хранительница троп.", "leaderActorIds": ["radiant_ilan"]},
+  "projects": [{"projectId": "project_singing_path", "status": "active"}],
+  "territorialInfluence": [{"hallId": "hall_dawn_reed", "tier": 1}],
+  "resourceLedger": [],
+  "residentAffiliations": [{"actorId": "radiant_ilan", "role": "head"}],
+  "trade": {"tier": 0, "inventory": []},
+  "leadershipHistory": [{"turn": 31, "summary": "Илан признана главой открытого зала."}],
+  "storyState": {"discoveryState": "revealed"},
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_dawn_reed_turn_31",
+    "factionType": "shining_faction",
+    "factionId": "faction_dawn_reed",
+    "materializedAtTurn": 31,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": true,
+      "holdsTerritorialInfluence": true,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": true,
+      "canTrade": false,
+      "hasLeadershipHistory": true,
+      "usesStoryState": true
+    },
+    "sections": {
+      "projects": {"state": "populated"},
+      "territorialInfluence": {"state": "populated"},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Открытый зал ещё не провёл ни одной ресурсной операции."},
+      "residentAffiliations": {"state": "populated"},
+      "trade": {"state": "empty_by_design", "reason": "Торговая витрина зала ещё не учреждена."},
+      "leadershipHistory": {"state": "populated"},
+      "storyState": {"state": "populated"}
+    }
+  }
+}
+```
+
+### shining_faction_materialization_player_founding_v1
+
+The `player_founding -> shining_founding_request -> player_founded` route consumes exact founding authority and supporter evidence.
+
+```json
+{
+  "factionId": "faction_lantern_covenant",
+  "originType": "player_founded",
+  "visibility": "revealed",
+  "hallId": "hall_lantern_covenant",
+  "purpose": "Создать открытый приют для недавно вознесённых душ.",
+  "currentAgenda": "Закрепить хартию и подготовить первый зал.",
+  "principles": ["Приют прежде власти"],
+  "memory": {"summary": "Хартия принята тремя согласными жителями.", "lastUpdatedTurn": 44, "enduringFacts": ["Игрок является основателем."], "openThreads": ["Кто станет первым неигровым главой?"]},
+  "governance": {"model": "хартийный круг", "decisionProcess": "Основатель предлагает, круг жителей утверждает."},
+  "leadership": {"leadershipState": "collective", "summary": "Временный круг основателей.", "leaderActorIds": ["player_soul", "resident_vesna", "resident_tao", "resident_mir"]},
+  "projects": [],
+  "territorialInfluence": [],
+  "resourceLedger": [],
+  "residentAffiliations": [{"actorId": "resident_vesna", "role": "founder"}, {"actorId": "resident_tao", "role": "founder"}, {"actorId": "resident_mir", "role": "founder"}],
+  "trade": {"tier": 0, "inventory": []},
+  "leadershipHistory": [{"turn": 44, "summary": "Хартийный круг основан."}],
+  "storyState": {"foundingRequestId": "shining_founding_request_44"},
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_lantern_covenant_turn_44",
+    "factionType": "shining_faction",
+    "factionId": "faction_lantern_covenant",
+    "materializedAtTurn": 44,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": false,
+      "holdsTerritorialInfluence": false,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": true,
+      "canTrade": false,
+      "hasLeadershipHistory": true,
+      "usesStoryState": true
+    },
+    "sections": {
+      "projects": {"state": "empty_by_design", "reason": "Первый проект будет выбран после учреждения зала."},
+      "territorialInfluence": {"state": "empty_by_design", "reason": "Новая хартия ещё не закрепила влияние."},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Ресурсных операций ещё не было."},
+      "residentAffiliations": {"state": "populated"},
+      "trade": {"state": "empty_by_design", "reason": "Торговля ещё не учреждена."},
+      "leadershipHistory": {"state": "populated"},
+      "storyState": {"state": "populated"}
+    }
+  }
+}
+```
+
+### shining_faction_materialization_story_hidden_v1
+
+Exact story authority may create a hidden faction. Ordinary reader projections omit this entire faction object and strip every materialization envelope from visible factions.
+
+```json
+{
+  "factionId": "faction_veiled_prism",
+  "originType": "story",
+  "visibility": "hidden",
+  "hallId": "hall_veiled_prism",
+  "purpose": "Наблюдать за разломами света, не раскрывая своего присутствия.",
+  "currentAgenda": "Проверить источник искажённого сияния.",
+  "principles": ["Невидимость сохраняет свидетельство"],
+  "memory": {"summary": "Существование подтверждено точной сюжетной властью.", "lastUpdatedTurn": 52, "enduringFacts": ["Фракция скрыта от игрока."], "openThreads": ["Кто создал первый разлом?"]},
+  "governance": {"model": "тайный синклит", "decisionProcess": "Решение фиксируется единогласным знаком."},
+  "leadership": {"leadershipState": "headed", "summary": "Скрытая глава установлена сюжетной властью.", "leaderActorIds": ["radiant_prism_warden"]},
+  "projects": [],
+  "territorialInfluence": [],
+  "resourceLedger": [],
+  "residentAffiliations": [],
+  "trade": {"tier": 0, "inventory": []},
+  "leadershipHistory": [],
+  "storyState": {"authorityId": "story_authority_veiled_prism"},
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_veiled_prism_turn_52",
+    "factionType": "shining_faction",
+    "factionId": "faction_veiled_prism",
+    "materializedAtTurn": 52,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": false,
+      "holdsTerritorialInfluence": false,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": false,
+      "canTrade": false,
+      "hasLeadershipHistory": false,
+      "usesStoryState": true
+    },
+    "sections": {
+      "projects": {"state": "empty_by_design", "reason": "Сюжетная власть пока не объявила проект."},
+      "territorialInfluence": {"state": "empty_by_design", "reason": "Скрытая фракция не заявляет видимого влияния."},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Ресурсная история ещё не раскрыта автору."},
+      "residentAffiliations": {"state": "empty_by_design", "reason": "Участники пока не установлены точной властью."},
+      "trade": {"state": "empty_by_design", "reason": "Торговая власть отсутствует."},
+      "leadershipHistory": {"state": "empty_by_design", "reason": "До текущего подтверждения история главы не определена."},
+      "storyState": {"state": "populated"}
+    }
+  }
+}
+```
+
+### shining_faction_materialization_repair_v1
+
+A bounded Shining repair targets only the rejected disposition/canonical surface and preserves hidden visibility, identity, route authority, and unrelated fields.
+
+```json
+{
+  "factionId": "faction_veiled_prism",
+  "repairScope": "materialization.sections.trade",
+  "preserveMaterializationId": "mat_shining_faction_veiled_prism_turn_52",
+  "visibility": "hidden",
+  "trade": {"tier": 0, "inventory": []},
+  "replacement": {
+    "state": "empty_by_design",
+    "reason": "Торговая власть отсутствует."
+  }
+}
+```
+
 Shining treasury interest:
 
 ```json
