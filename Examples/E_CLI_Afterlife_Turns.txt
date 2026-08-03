@@ -10786,7 +10786,7 @@ The validated `native_discovery -> shining_core_action_request -> native_radiant
       "holdsTerritorialInfluence": true,
       "usesResourceLedger": false,
       "hasResidentAffiliations": true,
-      "canTrade": false,
+      "canTrade": true,
       "hasLeadershipHistory": false,
       "usesStoryState": false
     },
@@ -10800,6 +10800,36 @@ The validated `native_discovery -> shining_core_action_request -> native_radiant
       "storyState": {"state": "empty_by_design", "reason": "Фракция создана нативным открытием, а не сюжетной властью."}
     }
   }
+}
+```
+
+Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "resident_dawn_reed_guide",
+      "displayName": "Проводник Тростника",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_reed",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_dawn_reed_singer",
+      "displayName": "Певчая Рассвета",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_reed",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    }
+  ],
+  "historyLog": []
 }
 ```
 
@@ -10880,9 +10910,9 @@ The `player_founding -> shining_founding_request -> player_founded` route consum
       "holdsTerritorialInfluence": false,
       "usesResourceLedger": false,
       "hasResidentAffiliations": true,
-      "canTrade": false,
+      "canTrade": true,
       "hasLeadershipHistory": true,
-      "usesStoryState": true
+      "usesStoryState": false
     },
     "sections": {
       "projects": {"state": "empty_by_design", "reason": "Первый проект будет выбран после учреждения зала."},
@@ -10894,6 +10924,46 @@ The `player_founding -> shining_founding_request -> player_founded` route consum
       "storyState": {"state": "empty_by_design", "reason": "Фракция создана игроком, а не сюжетной властью."}
     }
   }
+}
+```
+
+Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "resident_lantern_supporter_1",
+      "displayName": "Первый хранитель Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_lantern_supporter_2",
+      "displayName": "Вторая хранительница Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_lantern_supporter_3",
+      "displayName": "Третий хранитель Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    }
+  ],
+  "historyLog": []
 }
 ```
 
@@ -10940,7 +11010,16 @@ Exact story authority may create a hidden faction. Ordinary reader projections o
     "alliances": [],
     "enemies": []
   },
-  "chronicle": [],
+  "chronicle": [
+    {
+      "entryId": "chronicle_veiled_prism_confirmation",
+      "turnNumber": 52,
+      "eventType": "faction_materialized",
+      "summary": "Скрытая Призма закрепила тайное присутствие в своём зале.",
+      "visibility": "hidden",
+      "consequences": []
+    }
+  ],
   "baseStrength": 30,
   "factionStrength": 30,
   "investCountThisAscension": 0,
@@ -10964,7 +11043,7 @@ Exact story authority may create a hidden faction. Ordinary reader projections o
       "holdsTerritorialInfluence": false,
       "usesResourceLedger": false,
       "hasResidentAffiliations": false,
-      "canTrade": false,
+      "canTrade": true,
       "hasLeadershipHistory": false,
       "usesStoryState": true
     },

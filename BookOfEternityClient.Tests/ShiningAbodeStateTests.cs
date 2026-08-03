@@ -152,6 +152,87 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void BuildShiningActionChoices_HiddenSupportedProjectsDoNotConsumePlayerVisibleSupportCap()
+    {
+        var root = new JsonObject
+        {
+            ["radiance"] = new JsonObject
+            {
+                ["tier"] = 1
+            },
+            ["lightSparks"] = 0,
+            ["factions"] = new JsonArray(
+                new JsonObject
+                {
+                    ["factionId"] = "faction_revealed",
+                    ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+                    ["hallId"] = "hall_revealed",
+                    ["visibility"] = "revealed",
+                    ["projects"] = new JsonArray(
+                        new JsonObject
+                        {
+                            ["projectId"] = "project_visible_eligible",
+                            ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+                            ["isSupported"] = false
+                        })
+                },
+                new JsonObject
+                {
+                    ["factionId"] = "faction_hidden",
+                    ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+                    ["hallId"] = "hall_hidden",
+                    ["visibility"] = "hidden",
+                    ["projects"] = new JsonArray(
+                        new JsonObject
+                        {
+                            ["projectId"] = "project_hidden_supported",
+                            ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+                            ["isSupported"] = true
+                        })
+                })
+        };
+        var contextType = typeof(ExplorerMode).GetNestedType(
+            "ShiningContext",
+            BindingFlags.NonPublic);
+        var method = typeof(ExplorerMode).GetMethod(
+            "BuildShiningActionChoices",
+            BindingFlags.NonPublic | BindingFlags.Static);
+
+        Assert.NotNull(contextType);
+        Assert.NotNull(method);
+        var context = Activator.CreateInstance(
+            contextType!,
+            root,
+            null,
+            null,
+            null,
+            null);
+        Assert.NotNull(context);
+        var choices = Assert.IsAssignableFrom<IReadOnlyList<string>>(
+            method!.Invoke(
+                null,
+                new object?[]
+                {
+                    context,
+                    0,
+                    Array.Empty<ShiningCoreActionRequestState.PendingShiningCoreActionRequest>()
+                }));
+
+        var supportChoice = Assert.Single(
+            choices,
+            choice => choice.Contains("Поддержать проект", StringComparison.Ordinal));
+        Assert.Contains("[green]доступно[/]", supportChoice, StringComparison.Ordinal);
+        Assert.Contains(
+            $"support cap 0/{ShiningAbodeState.GetSupportedProjectCap(1)}",
+            supportChoice,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "лимит поддерживаемых проектов исчерпан",
+            supportChoice,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NormalizeStateRoot_DerivesRadianceTierAndFactionStrength()
     {
         var root = JsonNode.Parse("""

@@ -498,7 +498,7 @@ public partial class ExplorerMode
             !GetNodeBool(project["isSupported"]));
         var supportedProjects = CountShiningProjects(shiningRoot, project => GetNodeBool(project["isSupported"]));
         var supportedProjectCap = ShiningAbodeState.GetSupportedProjectCap(radianceTier);
-        var supportCapAvailable = ShiningAbodeState.CountSupportedProjectsAcrossState(shiningRoot) < supportedProjectCap;
+        var supportCapAvailable = supportedProjects < supportedProjectCap;
 
         choices.AddRange(new[]
         {
