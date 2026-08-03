@@ -3246,10 +3246,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         const string coordinate = "mortal_faction:faction_watch";
         const string resourcePath =
             "game_state/factions/faction_resources.json.entries[0].materialization.sections.resources";
+        const string resourceLinkMissingPath =
+            "game_state/factions/faction_resources.json.entries[0].materialization.requiredLinks[0]";
         const string resourceMismatchPath =
             "game_state/factions/faction_resources.json.entries[0].materialization.sections.strategicGoods";
         const string npcLinkPath =
-            "game_state/npcs/npc_core.json.UpdateNPCs[0].factionIds[0]";
+            "game_state/npcs/npc_core.json:npc_watch_captain.factionAffiliations[0].factionId";
         var engine = CreateGameEngine();
         var issues = new List<ValidationIssue>
         {
@@ -3263,6 +3265,15 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 expected: "populated or exact empty section",
                 actual: "missing"),
             new(
+                resourceLinkMissingPath,
+                IssueSeverity.Error,
+                "Faction materialization is missing its exact resource-sidecar link.",
+                code: "faction_materialization_link_missing",
+                actor: coordinate,
+                section: "FactionMaterialization",
+                expected: coordinate,
+                actual: "missing"),
+            new(
                 resourceMismatchPath,
                 IssueSeverity.Error,
                 "Faction materialization contradicts the strategic-goods sidecar.",
@@ -3274,12 +3285,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             new(
                 npcLinkPath,
                 IssueSeverity.Error,
-                "Faction materialization is missing its exact NPC cross-link.",
-                code: "faction_materialization_actor_link_missing",
+                "Mortal NPC affiliation references an unknown effective faction ID.",
+                code: "faction_materialization_mortal_npc_affiliation_unknown_faction",
                 actor: coordinate,
                 section: "FactionMaterialization",
-                expected: coordinate,
-                actual: "missing")
+                expected: "one exact effective faction ID",
+                actual: "faction_unknown")
         };
 
         var method = typeof(GameEngine).GetMethod(
@@ -3327,7 +3338,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.DoesNotContain(targetFiles, path => path.Contains("world_map.json", StringComparison.Ordinal));
 
         Assert.Equal(
-            new[] { resourcePath, npcLinkPath },
+            new[] { resourceLinkMissingPath, resourcePath },
             packet.GetProperty("missingFields").EnumerateArray().Select(item => item.GetString()));
 
         var correctionKeys = packet.GetProperty("exactFieldCorrections")
@@ -3338,9 +3349,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal(
             new[]
             {
+                $"{resourceLinkMissingPath}|faction_materialization_link_missing",
                 $"{resourcePath}|faction_materialization_section_missing",
                 $"{resourceMismatchPath}|faction_materialization_section_content_mismatch",
-                $"{npcLinkPath}|faction_materialization_actor_link_missing"
+                $"{npcLinkPath}|faction_materialization_mortal_npc_affiliation_unknown_faction"
             },
             correctionKeys);
 
@@ -3652,6 +3664,15 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 expected: "exact machine coordinate",
                 actual: "empty suffix"),
             new(
+                "game_state/factions/faction_core.json.factions[9]",
+                IssueSeverity.Error,
+                "Faction materialization actor has an extra coordinate suffix.",
+                code: "faction_materialization_section_missing",
+                actor: "mortal_faction:faction_bad:extra",
+                section: "FactionMaterialization",
+                expected: "exact machine coordinate",
+                actual: "extra colon suffix"),
+            new(
                 "game_state/factions/faction_chronicles.json.entries[0]",
                 IssueSeverity.Error,
                 "Faction materialization actor uses the wrong case.",
@@ -3700,6 +3721,302 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             packet.GetProperty("exactFieldCorrections")
                 .EnumerateArray()
                 .Select(correction => correction.GetProperty("path").GetString()));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_NonOrdinalIssueCodes_DoNotRoute()
+    {
+        const string coordinate = "mortal_faction:faction_issue_code_guard";
+        var issueCodes = new[]
+        {
+            "Faction_materialization_section_missing",
+            "faction_Materialization_section_missing",
+            "faction_materialization",
+            "factionmaterialization_section_missing",
+            "faction_legacy_Promotion_required",
+            "faction_legacy_promotion_required_extra",
+            "faction_existing_full_resend_Forbidden",
+            "faction_existing_full_resend_forbidden_extra"
+        };
+        var engine = CreateGameEngine();
+        var issues = issueCodes
+            .Select((code, index) => new ValidationIssue(
+                $"game_state/factions/faction_core.json.factions[{index}].materialization",
+                IssueSeverity.Error,
+                "Near-match Faction Materialization issue code must not route.",
+                code: code,
+                actor: coordinate,
+                section: "FactionMaterialization",
+                expected: "exact ordinal closed issue family",
+                actual: code))
+            .ToList();
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        Assert.Empty(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_ClassificationPropagation_UsesOnlyExactTrimmedValuesPerCoordinate()
+    {
+        const string acceptedCoordinate = "mortal_faction:faction_classifications_accepted";
+        const string rejectedCoordinate = "mortal_faction:faction_classifications_rejected";
+        const string shiningCoordinate = "shining_faction:faction_classifications_new";
+        var acceptedCases = new[]
+        {
+            (Expected: " new ", Actual: "not a classification"),
+            (Expected: "not a classification", Actual: "\tlegacy_promotion\r\n"),
+            (Expected: " already_materialized ", Actual: "not a classification"),
+            (Expected: "not a classification", Actual: "\tclient_derived_only "),
+            (Expected: "untouched_legacy", Actual: "not a classification")
+        };
+        var rejectedValues = new[]
+        {
+            "New",
+            "LEGACY_PROMOTION",
+            "already_materialized because a receipt exists",
+            "client_derived_only-ish",
+            "untouched legacy"
+        };
+        var issues = new List<ValidationIssue>();
+        for (var index = 0; index < acceptedCases.Length; index++)
+        {
+            issues.Add(new ValidationIssue(
+                $"game_state/factions/faction_core.json.factions[0].materialization.classification[{index}]",
+                IssueSeverity.Error,
+                "Exact Faction Materialization classification evidence.",
+                code: "faction_materialization_classification_invalid",
+                actor: acceptedCoordinate,
+                section: "FactionMaterialization",
+                expected: acceptedCases[index].Expected,
+                actual: acceptedCases[index].Actual));
+        }
+
+        for (var index = 0; index < rejectedValues.Length; index++)
+        {
+            issues.Add(new ValidationIssue(
+                $"game_state/factions/faction_core.json.factions[1].materialization.classification[{index}]",
+                IssueSeverity.Error,
+                "Non-ordinal or fuzzy classification evidence.",
+                code: "faction_materialization_classification_invalid",
+                actor: rejectedCoordinate,
+                section: "FactionMaterialization",
+                expected: "one exact closed classification",
+                actual: rejectedValues[index]));
+        }
+
+        const string shiningPath =
+            "game_state/meta/shining_abode_state.json.factions[0].materialization.classification";
+        issues.Add(new ValidationIssue(
+            shiningPath,
+            IssueSeverity.Error,
+            "Exact Shining Faction Materialization classification evidence.",
+            code: "faction_materialization_classification_invalid",
+            actor: shiningCoordinate,
+            section: "FactionMaterialization",
+            expected: " new ",
+            actual: "not a classification"));
+
+        var engine = CreateGameEngine();
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packets = doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray().ToArray();
+        Assert.Equal(3, packets.Length);
+        Assert.All(
+            packets,
+            packet => Assert.Equal(
+                "faction_materialization_repair",
+                packet.GetProperty("kind").GetString()));
+
+        var acceptedPacket = Assert.Single(
+            packets,
+            packet => packet.GetProperty("canonicalActorNames")
+                .EnumerateArray()
+                .Any(item => item.GetString() == acceptedCoordinate));
+        var rejectedPacket = Assert.Single(
+            packets,
+            packet => packet.GetProperty("canonicalActorNames")
+                .EnumerateArray()
+                .Any(item => item.GetString() == rejectedCoordinate));
+        var shiningPacket = Assert.Single(
+            packets,
+            packet => packet.GetProperty("canonicalActorNames")
+                .EnumerateArray()
+                .Any(item => item.GetString() == shiningCoordinate));
+
+        Assert.Equal(
+            new[] { acceptedCoordinate },
+            acceptedPacket.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            new[] { rejectedCoordinate },
+            rejectedPacket.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            new[] { shiningCoordinate },
+            shiningPacket.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            new[] { "game_state/factions/faction_core.json" },
+            acceptedPacket.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            new[] { "game_state/factions/faction_core.json" },
+            rejectedPacket.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            new[] { "game_state/meta/shining_abode_state.json" },
+            shiningPacket.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+
+        var acceptedPaths = Enumerable.Range(0, acceptedCases.Length)
+            .Select(index =>
+                $"game_state/factions/faction_core.json.factions[0].materialization.classification[{index}]")
+            .ToArray();
+        var rejectedPaths = Enumerable.Range(0, rejectedValues.Length)
+            .Select(index =>
+                $"game_state/factions/faction_core.json.factions[1].materialization.classification[{index}]")
+            .ToArray();
+        Assert.Equal(
+            acceptedPaths,
+            acceptedPacket.GetProperty("exactFieldCorrections")
+                .EnumerateArray()
+                .Select(correction => correction.GetProperty("path").GetString()));
+        Assert.Equal(
+            rejectedPaths,
+            rejectedPacket.GetProperty("exactFieldCorrections")
+                .EnumerateArray()
+                .Select(correction => correction.GetProperty("path").GetString()));
+        Assert.Equal(
+            new[] { shiningPath },
+            shiningPacket.GetProperty("exactFieldCorrections")
+                .EnumerateArray()
+                .Select(correction => correction.GetProperty("path").GetString()));
+
+        var exactClassifications = new[]
+        {
+            "already_materialized",
+            "client_derived_only",
+            "legacy_promotion",
+            "new",
+            "untouched_legacy"
+        };
+        var acceptedExpectedShape = acceptedPacket.GetProperty("expectedShape")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        var rejectedExpectedShape = rejectedPacket.GetProperty("expectedShape")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        var shiningExpectedShape = shiningPacket.GetProperty("expectedShape")
+            .EnumerateArray()
+            .Select(item => item.GetString() ?? string.Empty)
+            .ToArray();
+        Assert.Equal(
+            exactClassifications,
+            acceptedExpectedShape.Where(item =>
+                exactClassifications.Contains(item, StringComparer.Ordinal)));
+        Assert.DoesNotContain(
+            rejectedExpectedShape,
+            item => exactClassifications.Contains(item, StringComparer.Ordinal));
+        Assert.Equal(
+            new[] { "new" },
+            shiningExpectedShape.Where(item =>
+                exactClassifications.Contains(item, StringComparer.Ordinal)));
+        Assert.All(
+            rejectedValues,
+            rejectedValue => Assert.DoesNotContain(rejectedValue, rejectedExpectedShape));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_MissingFields_RequireExactLowercaseMissingComponent()
+    {
+        const string coordinate = "mortal_faction:faction_missing_components";
+        var cases = new[]
+        {
+            (
+                Path: "game_state/factions/faction_core.json.factions[0].materialization.components[0]",
+                Code: "faction_materialization_section_missing"),
+            (
+                Path: "game_state/factions/faction_core.json.factions[0].materialization.components[1]",
+                Code: "faction_materialization_missing_section"),
+            (
+                Path: "game_state/factions/faction_core.json.factions[0].materialization.components[2]",
+                Code: "faction_materialization_section_Missing"),
+            (
+                Path: "game_state/factions/faction_core.json.factions[0].materialization.components[3]",
+                Code: "faction_materialization_section_missingness"),
+            (
+                Path: "game_state/factions/faction_core.json.factions[0].materialization.components[4]",
+                Code: "faction_materialization_section_notmissing"),
+            (
+                Path: "game_state/factions/faction_core.json.factions[0].materialization.components[5]",
+                Code: "faction_materialization_section_premissingpost")
+        };
+        var issues = cases
+            .Select(item => new ValidationIssue(
+                item.Path,
+                IssueSeverity.Error,
+                "Faction Materialization missing-component boundary.",
+                code: item.Code,
+                actor: coordinate,
+                section: "FactionMaterialization",
+                expected: "exact lowercase missing component",
+                actual: "invalid"))
+            .ToList();
+        var engine = CreateGameEngine();
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(doc.RootElement.GetProperty("harnessRepairPackets").EnumerateArray());
+        Assert.Equal("faction_materialization_repair", packet.GetProperty("kind").GetString());
+        Assert.Equal(
+            new[] { coordinate },
+            packet.GetProperty("canonicalActorNames").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            new[] { "game_state/factions/faction_core.json" },
+            packet.GetProperty("targetFiles").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            new[] { cases[0].Path, cases[1].Path },
+            packet.GetProperty("missingFields").EnumerateArray().Select(item => item.GetString()));
+        Assert.Equal(
+            cases.Select(item => item.Path),
+            packet.GetProperty("exactFieldCorrections")
+                .EnumerateArray()
+                .Select(correction => correction.GetProperty("path").GetString()));
+        Assert.Equal(
+            cases.Select(item => item.Code),
+            packet.GetProperty("exactFieldCorrections")
+                .EnumerateArray()
+                .Select(correction => correction.GetProperty("code").GetString()));
     }
 
     [Theory]

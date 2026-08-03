@@ -3201,7 +3201,7 @@ public partial class GameEngine
         }
 
         return issuePath.Length == targetRoot.Length ||
-               issuePath[targetRoot.Length] is '.' or '[';
+               issuePath[targetRoot.Length] is '.' or '[' or ':';
     }
 
     private static bool HasExactMissingCodeComponent(string? issueCode) =>
