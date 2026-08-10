@@ -29,14 +29,15 @@ implementation planning
 ## Feature Readiness
 
 - [x] All functional requirements have clear acceptance evidence
-- [x] User scenarios cover the primary Mortal, Shining, legacy, repair, and GM
-  contract flows
+- [x] User scenarios cover the primary Mortal, Shining, strict current-schema,
+  repair, and GM contract flows
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation structure leaks into the product specification
 
 ## Notes
 
-- Review iteration 1 passed all 16 items.
+- Review iteration 2 passed all 16 items after the pre-release save policy was
+  clarified.
 - The exact state-field and command names retained in the specification are
   public GM/canonical contract vocabulary, not an implementation-language
   choice.

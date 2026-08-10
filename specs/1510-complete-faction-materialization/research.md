@@ -49,17 +49,19 @@ from synthesized defaults.
 **Rejected alternatives**:
 
 - Tighten only post-normalization validation: it cannot prove authorship.
-- Remove all normalization defaults globally: untouched legacy saves and
-  client-owned projections would regress.
+- Remove all normalization defaults without separating authored semantics from
+  client-owned mechanical containers: valid current projections would regress.
 - Infer missing semantics from names, tags, or actor descriptions: this violates
   issue #1510 and makes genre vocabulary into hidden authority.
 
 ## Decision 3: Classify touches against validated pre-turn authority
 
 **Decision**: Build exact, case-sensitive identity maps from duplicate-sensitive
-validated pre-turn snapshots and classify each target as:
-`new`, `legacy_promotion`, `already_materialized`, `client_derived_only`, or
-`untouched_legacy`.
+validated pre-turn snapshots and classify each target as `new` or
+`already_materialized`. A canonical pre-turn or current faction without a
+complete receipt is invalid current-schema state, not a runtime lifecycle.
+Documented client-owned projections remain changes of an already materialized
+faction and preserve its receipt.
 
 **Rationale**: Current full carriers accept several aliases and same-turn
 temporary IDs. A permanent-looking ID, repeated display name, or normalized
@@ -69,12 +71,12 @@ object shape is not reliable evidence of newness.
 
 - Use `isNewFaction` alone: it is GM-authored and can lie.
 - Compare names: names are mutable and non-unique.
-- Promote every legacy faction at load: this would fabricate semantic content
-  and break backward compatibility.
+- Add a runtime promotion/migration path for receipt-less factions: there is no
+  released save population to justify its bypasses and maintenance cost.
 
 ## Decision 4: Keep one embedded immutable receipt
 
-**Decision**: Every new/promoted canonical faction stores exactly one private
+**Decision**: Every canonical faction stores exactly one private
 `materialization` object with schema version 1, stable ID, exact domain/type and
 faction ID, accepted turn, `complete` state, closed capability snapshot, and
 closed section dispositions. Once present in validated history, it is
@@ -124,9 +126,8 @@ leadership represents a real vacancy or collective without inventing a person.
 ## Decision 6: Make `scribeChronicle` real creation authority
 
 **Decision**: Preserve the existing creation field name `scribeChronicle`. A new
-Mortal faction must supply at least one non-empty turn-prefixed entry. A legacy
-promotion may rely on an existing canonical chronicle; if none exists, it must
-supply at least one entry. The normalizer extracts these entries to
+Mortal faction must supply at least one non-empty turn-prefixed entry. The
+normalizer extracts these entries to
 `faction_chronicles.json` with the exact faction ID and consumes the carrier
 field. Later history still uses `factionChronicleUpdates`.
 
@@ -175,7 +176,7 @@ deliberate emptiness without creating a duplicate project index.
 
 - Add a redundant project-state registry: it could diverge from actual project
   rows.
-- Reshape all legacy project storage to per-faction objects: high migration
+- Reshape all current project storage to per-faction objects: high migration
   risk with no additional gameplay authority.
 - Let missing sidecars count as empty: this recreates the original defect.
 
@@ -231,7 +232,7 @@ rules. Reimplementation would risk divergence and duplicate issue families.
 
 ## Decision 10: Add explicit Shining provenance, agenda, visibility, and story authority
 
-**Decision**: New/promoted Shining factions require:
+**Decision**: New Shining factions require:
 
 - `creationProvenance` with route, authority type, and exact authority ID;
 - `currentAgenda`;
@@ -264,21 +265,24 @@ exists, whether it may be hidden, or which contract owns its story state.
 
 ## Decision 11: Preserve only mechanical Shining normalization
 
-**Decision**: For every faction carrying a receipt, normalization may
+**Decision**: For every canonical faction, normalization may
 canonicalize already-present values, ensure explicitly client-owned containers, and compute
 `factionStrength`, tier, and service multiplier. It may not create or replace
 origin, charter specialization, leadership, lifecycle, agenda, visibility,
 provenance, strategic-memory semantics, chronicle prose, story authority,
 receipt, capabilities, dispositions, or reasons.
 
-Untouched legacy factions retain current load compatibility. The raw classifier
-determines when strict behavior applies.
+Receipt-less canonical factions fail before normalization. Normalization never
+creates a receipt, authored semantic field, or player-visible compatibility
+fallback.
 
-**Rationale**: This removes semantic laundering without forcing eager migration.
+**Rationale**: This removes semantic laundering and the unsupported parallel
+runtime schema while preserving explicitly client-owned projections.
 
 **Rejected alternatives**:
 
-- Globally delete all defaulting logic: legacy and local UI flows would break.
+- Delete documented client-owned mechanical normalization together with
+  semantic defaults: valid current gameplay projections would regress.
 - Accept defaults but mark the receipt complete: a receipt would no longer
   prove GM-authored completeness.
 
@@ -322,9 +326,12 @@ use the default Focused project, while equivalence and boundary tests use
 ## Decision 14: Route repair by stable faction coordinate
 
 **Decision**: Extend the existing validation repair harness with faction issue
-recognition, exact target-file resolution, and bounded packets for
-`mortal_faction:<id>` and `shining_faction:<id>`. Packets include preserved
-sections and prohibited roots and never ask for an unrelated full-state rewrite.
+recognition, exact typed target metadata, and bounded packets for
+`mortal_faction:<id>` and `shining_faction:<id>`. Repair construction consumes
+that metadata instead of reconstructing scope from issue-code prose. Packets
+include preserved sections and prohibited roots, include exact Mortal location
+or Shining actor-profile roots when required, and never ask for an unrelated
+full-state rewrite.
 
 **Rationale**: Strict validation is usable only if repair can target the exact
 missing or contradictory authority.

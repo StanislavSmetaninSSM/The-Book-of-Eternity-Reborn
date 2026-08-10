@@ -28,13 +28,21 @@ suite.
 - A test task must reach an observed RED result before its paired production
   task begins.
 
+> **2026-08-10 authoritative amendment:** The game has not shipped and old-save
+> compatibility is not required. T001–T078e1 are retained as the historical
+> execution record for the implementation already present on this branch;
+> unchecked boxes in that range are not instructions to restore old behavior.
+> Every legacy-promotion, untouched receipt-less, or compatibility-normalizer
+> clause in that historical range is superseded by T078f–T078n. Only those
+> correction tasks and T079–T081 are executable remaining work.
+
 ## Phase 1: Setup and baseline
 
 - [ ] T001 Confirm branch/worktree, run `git status --short`, read issue #1510,
   `AGENTS.md`, `.specify/memory/constitution.md`, this feature directory, and
   `docs/testing.md`; preserve unrelated/untracked `.serena/`, `bin/`, and
   `obj/` artifacts.
-- [ ] T001a Record the user-approved pre-release save policy in
+- [x] T001a Record the user-approved pre-release save policy in
   `.specify/memory/constitution.md`, `.specify/templates/plan-template.md`,
   `.specify/templates/spec-template.md`, `.specify/templates/tasks-template.md`,
   and `AGENTS.md`: the game has not shipped, backward compatibility with old
@@ -503,7 +511,7 @@ without player-facing harness leakage.
 - [ ] T078 Request code review of the implementation, reconcile every Critical
   or Important finding in #1510, and create a linked follow-up issue only for a
   truly unrelated or explicitly deferred non-blocking finding.
-- [x] T078a Correct the T065 legacy visibility compatibility regression in
+- [x] T078a **SUPERSEDED 2026-08-10 — historical evidence only.** Correct the T065 legacy visibility compatibility regression in
   `BookOfEternityClient/Services/SarefMainStoryState.cs` and add exact
   materialized strict-visibility plus untouched-legacy fallback coverage in
   `BookOfEternityClient.Tests/ShiningAbodeStateTests.cs`: factions carrying a
@@ -539,7 +547,7 @@ without player-facing harness leakage.
   threshold in the opposite direction, plus linked non-player Actor
   Materialization parity, by using the same tier-to-reward projection as
   normalization.
-- [x] T078d Require complete same-turn promotion for every externally touched
+- [x] T078d **SUPERSEDED 2026-08-10 — remove this runtime path in T078h.** Require complete same-turn promotion for every externally touched
   receipt-less legacy faction across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
@@ -557,7 +565,7 @@ without player-facing harness leakage.
   faction coordinate while preserving the `FactionCoreChanges` guard,
   untouched legacy compatibility, and documented Shining client-derived-only
   projections.
-- [x] T078d1 Complete raw legacy-touch carrier and comparator coverage across
+- [x] T078d1 **SUPERSEDED 2026-08-10 — historical evidence only.** Complete raw legacy-touch carrier and comparator coverage across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
@@ -574,7 +582,7 @@ without player-facing harness leakage.
   promote while duplicate or same-identity semantic changes do. Record exact
   RED/GREEN/build evidence and superseded T078d rationale in
   `sdd/task-11-fix4b-touch-carriers-report.md`.
-- [x] T078d2 Close omitted Shining legacy-target touch classification across
+- [x] T078d2 **SUPERSEDED 2026-08-10 — historical evidence only.** Close omitted Shining legacy-target touch classification across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
@@ -591,7 +599,7 @@ without player-facing harness leakage.
   affiliation, Guardian-existence, and Guardian-count lookups without changing
   identity semantics. Record exact RED/GREEN/build evidence in
   `sdd/task-11-fix4c-omitted-shining-touch-report.md`.
-- [x] T078e Reject Mortal legacy promotions that rewrite validated historical
+- [x] T078e **SUPERSEDED 2026-08-10 — remove promotion in T078h.** Reject Mortal legacy promotions that rewrite validated historical
   authority across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
   `BookOfEternityClient.IntegrationTests/FactionCoreChangesTests.cs`,
@@ -609,7 +617,7 @@ without player-facing harness leakage.
   `faction_materialization_promotion_history_changed` at the exact Mortal
   faction coordinate; and record bounded RED/GREEN/build evidence in
   `sdd/task-11-fix5-promotion-history-report.md`.
-- [x] T078e1 Make Mortal promotion-history preservation duplicate-safe and
+- [x] T078e1 **SUPERSEDED 2026-08-10 — remove promotion in T078h.** Make Mortal promotion-history preservation duplicate-safe and
   bounded across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
   and
@@ -622,6 +630,82 @@ without player-facing harness leakage.
   arrays; retain addition, omission, chronicle, and valid/invalid
   `FactionCoreChanges` boundaries; and record exact RED/GREEN/build evidence
   in `sdd/task-11-fix5b-history-index-report.md`.
+
+### 2026-08-10 strict current-schema correction
+
+- [x] T078f [US3] Reconcile the user-approved pre-release save decision across
+  `.specify/memory/constitution.md`, `AGENTS.md`,
+  `docs/superpowers/specs/2026-08-03-faction-materialization-design.md`,
+  `docs/superpowers/plans/2026-08-03-faction-materialization.md`, and every
+  artifact under `specs/1510-complete-faction-materialization/`; preserve the
+  historical task record but remove it as current acceptance authority.
+- [ ] T078g [US3] Add and observe RED strict-schema regressions in
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
+  `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Factions.cs`,
+  `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.ShiningAbode.cs`,
+  and `BookOfEternityClient.Tests/ShiningAbodeStateTests.cs`: receipt-less
+  Mortal/Shining canonical state fails with and without a validated snapshot,
+  normalization never adds a receipt, revealed-only visibility fails closed,
+  and a fresh empty-faction bootstrap remains valid. Record the existing
+  failing Fast visibility test as RED evidence rather than patching its fixture
+  back to compatibility behavior.
+- [ ] T078h [US3] Remove receipt-less/promotion runtime branches from
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`,
+  `BookOfEternityClient/Services/FactionCoreChangesContract.cs`,
+  `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Factions.cs`,
+  `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs`,
+  `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.ShiningAbode.cs`,
+  `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`, and
+  `BookOfEternityClient/Services/SarefMainStoryState.cs`; require a complete
+  receipt for every canonical faction, allow the full Mortal carrier only for
+  a genuinely absent ID, retain only current-schema immutable/narrow-update
+  validation, and make T078g GREEN without weakening current receipt integrity.
+- [ ] T078i [P] [US2] Add and observe RED exact-identity regressions in
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
+  for a resident whose `shiningFactionId` differs only by case: it must not
+  satisfy resident materialization evidence or contribute derived strength,
+  tier, service multiplier, or trade authority.
+- [ ] T078j [US2] Make all Shining resident/derived-strength joins exact and
+  case-sensitive in `BookOfEternityClient/Services/ShiningAbodeState.cs` and
+  `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`,
+  then run the exact T078i filter to GREEN without changing Guardian identity
+  authority.
+- [ ] T078k [P] [US4] Add and observe RED repair regressions in
+  `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs` for a
+  missing/ambiguous Shining actor profile and a Mortal location-control defect;
+  assert typed classification plus the exact
+  `afterlife_entity_profiles.json`, current-location, world-map, and location
+  roots with no unrelated writable root.
+- [ ] T078l [US4] Add typed faction repair-target metadata in
+  `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`,
+  emit it from
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
+  and `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`,
+  and consume it in
+  `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` so
+  repair scope no longer depends on issue-hint prose; run T078k to GREEN.
+- [ ] T078m [US4] Migrate or remove compatibility-only positive fixtures and
+  synchronize strict-current-schema GM guidance, worked examples, manifests,
+  and source guards in `Rules/Block_21.txt`, `Examples/E_Block_21.txt`,
+  `TaskGuides/CLI_Step_Main.txt`, `Examples/E_CLI_Step_Main.txt`,
+  `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`,
+  `Rules/Block_CLI_Operations.txt`,
+  `BookOfEternityClient/game_master_daemon.ps1`,
+  `OtherGuides/Afterlife_Contract_Matrix.md`,
+  `docs/audits/afterlife/shining-abode/Shining_Abode_Faction_Politics_Addendum.md`,
+  `Examples/E_CLI_Afterlife_Turns.txt`,
+  `Examples/example_validation_manifest.json`, and their focused
+  documentation/example tests; keep deliberately receipt-less data only as
+  named negative validation fixtures.
+- [ ] T078n Run the strict focused selections from `quickstart.md`, including
+  `GameEngineTurnLifecycleTests` and the exact previously failing
+  `ShiningAbodeStateTests.BuildShiningActionChoices_HiddenSupportedProjectsDoNotConsumePlayerVisibleSupportCap`,
+  then run one Fast checkpoint and request a fresh full-range code review;
+  record counts, duration, timeout/duplicate/cleanup status, and resolve every
+  Critical or Important current-schema finding before T079.
 - [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.
@@ -643,10 +727,12 @@ green within existing limits, and issue #1510 is ready for PR/integration.
 Phase 1 setup
   └─ Phase 2 common contract/raw fence/phase
        ├─ Phase 3 Mortal creation + bundle
-       │    └─ Phase 4 legacy promotion + FactionCoreChanges
+       │    └─ Phase 4 historical implementation + FactionCoreChanges
        └─ Phase 5 Shining routes
             └─ Phase 6 repair/docs/privacy
-                 └─ Phase 7 bounded verification/review
+                 └─ Phase 7 historical verification/review
+                      └─ T078f–T078n strict current-schema correction
+                           └─ T079–T081 final integration
 ```
 
 - Phase 2 blocks every user story.
@@ -658,6 +744,9 @@ Phase 1 setup
 - Documentation work may begin in parallel after exact contracts stabilize,
   but its tests and examples cannot be marked complete before runtime shapes are
   final.
+- T078g must reach RED before T078h; T078i before T078j; and T078k before
+  T078l. T078m follows the runtime contract, and T078n blocks final hygiene and
+  PreMerge.
 
 ## Parallel opportunities
 
@@ -667,6 +756,9 @@ Phase 1 setup
 - T064 and T067 target privacy versus documentation guards.
 - Documentation files T068–T071 can be edited independently after the runtime
   contract is frozen.
+- T078i and T078k are parallel RED investigations in separate test/production
+  surfaces after T078f; T078h remains the integration owner for shared
+  continuity/normalizer files.
 
 Do not parallelize edits to shared validator/normalizer files without isolated
 worktrees and an explicit integration owner.
@@ -676,11 +768,13 @@ worktrees and an explicit integration owner.
 The recommended delivery is incremental:
 
 1. common receipt and raw fence;
-2. complete Mortal creation/promotion bundle;
+2. complete Mortal creation bundle;
 3. narrow existing-Mortal updates;
 4. complete Shining route materialization;
 5. repair, docs, examples, manifests, and privacy;
-6. bounded cross-domain verification and review.
+6. strict current-schema cleanup, exact Shining identity, and typed repair
+   targets;
+7. bounded cross-domain verification and review.
 
 Each slice ends in focused GREEN tests and a small issue-linked commit. Fast,
 FullValidation, and PreMerge remain checkpoints, not per-edit loops.

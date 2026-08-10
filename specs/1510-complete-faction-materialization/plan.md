@@ -1,6 +1,6 @@
 # Implementation Plan: Complete Faction Materialization
 
-**Branch**: `1510-faction-materialization-design` | **Date**: 2026-08-03 | **Spec**: [spec.md](./spec.md)
+**Branch**: `1510-faction-materialization-design` | **Date**: 2026-08-10 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from
 `/specs/1510-complete-faction-materialization/spec.md`
@@ -8,18 +8,19 @@
 ## Summary
 
 Implement one immutable, embedded Faction Materialization receipt with separate
-Mortal and Shining evidence profiles. The accepted-turn pipeline will compare
+Mortal and Shining evidence profiles. Every canonical faction must satisfy the
+current receipt contract. The accepted-turn pipeline compares
 duplicate-sensitive current output with the validated pre-turn snapshot,
-classify each faction as new, legacy promotion, already materialized,
-client-derived-only, or untouched legacy, and reject incomplete GM-authored
-state before semantic normalization can fill defaults.
+classifies a faction as genuinely new or already materialized, and rejects
+receipt-less or incomplete state before semantic normalization can fill
+defaults.
 
-Mortal first creation and promotion continue through the full
-`factionDataChanges` carrier, but the resulting canonical bundle must contain
-the complete semantic core and exact faction-bound sidecar surfaces. Ordinary
-updates move to closed `FactionCoreChanges` groups or the existing dedicated
-commands. The existing `scribeChronicle` creation field becomes an actual input
-to `faction_chronicles.json` instead of validated-but-discarded data.
+Mortal first creation alone uses the full `factionDataChanges` carrier, and the
+resulting canonical bundle must contain the complete semantic core and exact
+faction-bound sidecar surfaces. Ordinary updates use closed
+`FactionCoreChanges` groups or the existing dedicated commands. The existing
+`scribeChronicle` creation field becomes an actual input to
+`faction_chronicles.json` instead of validated-but-discarded data.
 
 Shining creation retains native-discovery, player-founding, and
 story/hidden route authority. Each route must create a complete hall-bound
@@ -58,10 +59,12 @@ the number of factions and related records; no new unbounded scan or extra test
 lane; Fast remains under 5 minutes and PreMerge under 15 minutes, preferably
 under 10
 
-**Constraints**: Preserve untouched legacy saves; reject duplicate JSON members;
-no semantic default laundering; no private materialization metadata in ordinary
-player UI; no timeout or concurrency widening; no #1222 worker,
-#1462 living-world scheduler, or #1368 Guardian-politics implementation
+**Constraints**: The game is unreleased and old-save compatibility is not
+required; migrate active repository fixtures and remove receipt-less runtime
+fallbacks; reject duplicate JSON members; no semantic default laundering; no
+private materialization metadata in ordinary player UI; no timeout or
+concurrency widening; no #1222 worker, #1462 living-world scheduler, or #1368
+Guardian-politics implementation
 
 **Scale/Scope**: Two faction domains, six Mortal faction files plus exact
 location/NPC references, one composite Shining state plus resident/actor/story
@@ -113,12 +116,15 @@ before integration and replaces a duplicate final Fast run.
 - **Spec Kit fit — PASS**: This is a multi-session validation, canonical-state,
   normalizer, GM-contract, Mortal World, and Shining Abode change.
 - **Player-facing integrity — PASS**: No UI redesign is planned. Existing
-  console/browser readers remain compatible and receive source guards proving
-  that private envelope fields and reasons are not rendered.
+  console/browser behavior is preserved for valid current-schema state, and
+  source guards prove that private envelope fields and reasons are not rendered.
 - **Contract/state authority — PASS**: Runtime, prompts, rules, examples,
   manifest, Afterlife Contract Matrix, and documentation/source guards change
   together. The canonical authority for every new field is defined in
   [data-model.md](./data-model.md).
+- **Pre-release save policy — PASS**: No released save population exists.
+  Receipt-less faction fixtures are migrated or removed, and production code
+  contains no promotion or compatibility lifecycle for obsolete faction state.
 - **Test-first path — PASS**: Each contract and route starts with a focused
   failing test. Production edits follow the RED/GREEN order in `tasks.md`.
 - **Verification evidence — PASS**: Focused selections, one Fast checkpoint,
@@ -244,11 +250,15 @@ Research decisions and rejected alternatives are recorded in
 6. Native discovery and player founding already have strict request/receipt
    diff checks. Faction Materialization composes with those checks and does not
    replace them.
+7. Repository bootstrap contains no canonical faction that needs migration;
+   receipt-less faction data exists only in development fixtures. Current
+   fixtures can therefore be migrated or made explicitly invalid without a
+   shipping compatibility path.
 
 ## Phase 1: Design Outcome
 
 - [data-model.md](./data-model.md) defines the exact envelope, semantic cores,
-  canonical surfaces, touch classification, and state transitions.
+  canonical surfaces, strict state classification, and state transitions.
 - [contracts/faction-materialization-envelope.md](./contracts/faction-materialization-envelope.md)
   defines the shared immutable receipt.
 - [contracts/mortal-faction-authority.md](./contracts/mortal-faction-authority.md)
@@ -274,11 +284,13 @@ Research decisions and rejected alternatives are recorded in
    already-materialized full resends.
 5. Add Shining semantic-core/provenance validation, then cover native,
    founding, and story/hidden routes plus actor/resident/hall links.
-6. Restrict Shining normalization to mechanical work for new/promoted
-   candidates while preserving legacy load compatibility.
-7. Add immutable-continuity checks, repair packet routing, metadata privacy,
-   docs/examples/manifests, and source guards.
-8. Run the bounded verification ladder and reconcile every Spec Kit task before
+6. Reject every receipt-less canonical faction, remove Mortal/Shining
+   promotion and compatibility branches, and migrate repository fixtures.
+7. Restrict Shining normalization to mechanical work for complete current
+   factions; fail closed for receipt-less visibility and identity evidence.
+8. Add immutable-continuity checks, typed repair target routing, metadata
+   privacy, docs/examples/manifests, and source guards.
+9. Run the bounded verification ladder and reconcile every Spec Kit task before
    merge.
 
 ## Complexity Tracking

@@ -6,9 +6,9 @@
 
 **Status**: Approved
 
-**Input**: Enforce complete first creation and legacy promotion for Mortal
-World and Shining Abode factions using the approved Faction Materialization
-design.
+**Input**: Enforce complete current-schema materialization for Mortal World and
+Shining Abode factions. The game is unreleased, so no runtime compatibility or
+promotion path is required for obsolete save schemas or test fixtures.
 
 ## Source Issues & Scope
 
@@ -23,23 +23,34 @@ design.
 - **Issue type**: P1 Harness/RLM enhancement, canonical-state hardening, and
   validation epic.
 - **Spec Kit justification**: The work spans two realms, multiple canonical
-  files, creation and migration state transitions, validators, normalization,
+  files, creation and update state transitions, validators, normalization,
   rollback and repair, GM authoring contracts, examples, documentation guards,
   and bounded verification across multiple sessions.
 - **Contract scope**: GM-facing prompts, runtime state, validation,
   normalization, repair packets, Mortal World faction authority, Shining Abode
   faction authority, documentation, examples, manifests, console and browser
   metadata privacy, and automated verification.
+- **Save compatibility**: Not required. The game has not had a public release;
+  active bootstrap state, templates, examples, and tests migrate to the current
+  contract, and obsolete runtime compatibility branches are removed.
 - **Out of scope**: The faction-content worker from #1222; autonomous
   living-world scheduling; Mortal living-world behavior from #1462; Chaos Sea
   Guardian politics except for an explicit non-faction boundary; player-facing
-  UI redesign; a universal genre-specific faction model; eager migration of
-  every untouched historical faction; wider test timeouts or concurrency.
+  UI redesign; a universal genre-specific faction model; runtime readers,
+  promotion flows, or fallbacks for obsolete faction save schemas; wider test
+  timeouts or concurrency.
 - **Follow-up issue policy**: Any missing requirement, Critical or Important
   review finding, authority bypass, data-loss risk, or failed required
   verification remains blocking in #1510. Only unrelated or explicitly
   deferred non-blocking work may move to a follow-up, and only after a linked
   GitHub issue is created and recorded in `tasks.md` and the final PR summary.
+
+## Clarifications
+
+### Session 2026-08-10
+
+- Q: Must #1510 preserve old save schemas or legacy test fixtures? → A: No. The
+  game is unreleased; strict current materialization is authoritative.
 
 ## User Scenarios & Testing
 
@@ -117,36 +128,36 @@ projection behavior.
 5. **Given** non-vacant non-player leadership or newly significant residents,
    **when** an exact actor lacks complete Actor Materialization authority,
    **then** the faction creation is rejected.
-6. **Given** an untouched historical Shining faction, **when** only
+6. **Given** a complete materialized Shining faction, **when** only
    client-owned strength, tier, or service projections are recalculated,
-   **then** the faction is not forced through promotion.
+   **then** authored semantics and the immutable receipt remain unchanged.
 
 ---
 
-### User Story 3 - Safe Legacy Promotion and Existing Updates (Priority: P1)
+### User Story 3 - Strict Current Schema and Existing Updates (Priority: P1)
 
-As a returning player, I can load an older save without fabricated faction
-content, while the first real GM-authored change upgrades only the touched
-faction and later changes use narrow commands instead of full-object rewrites.
+As a player of the current unreleased build, every canonical faction is already
+complete, while later changes use narrow commands instead of full-object
+rewrites.
 
-**Why this priority**: Unconditional migration would break old saves, while an
-unrestricted full carrier would let ordinary updates bypass ownership and
+**Why this priority**: There are no released saves to preserve. Runtime legacy
+branches would add bypasses, false compatibility constraints, and maintenance
+cost, while an unrestricted full carrier would still let ordinary updates
 overwrite unrelated faction history.
 
-**Independent Test**: Load untouched legacy Mortal and Shining factions, mutate
-one legacy faction, update one already materialized Mortal faction through the
-closed core command and dedicated commands, and attempt forbidden full-object
-resends.
+**Independent Test**: Reject receipt-less canonical Mortal and Shining
+factions, verify a fresh bootstrap with no factions remains valid, update one
+materialized Mortal faction through the closed core and dedicated commands,
+and attempt forbidden full-object resends.
 
 **Acceptance Scenarios**:
 
-1. **Given** a legacy faction without materialization authority, **when** the
-   save is loaded and the faction is untouched, **then** the faction remains
-   readable and unchanged.
-2. **Given** that legacy faction, **when** any GM-authored core, sidecar,
-   affiliation, memory, leadership, influence, resource, or project mutation
-   is accepted, **then** the same turn must provide a complete promotion.
-3. **Given** a promoted or newly materialized faction, **when** its historical
+1. **Given** a canonical faction without materialization authority, **when**
+   current state is validated, **then** it is rejected as an obsolete schema.
+2. **Given** active bootstrap state, templates, examples, and tests, **when**
+   they contain a faction, **then** that faction uses the complete current
+   materialization contract rather than a runtime migration fallback.
+3. **Given** a materialized faction, **when** its historical
    materialization receipt is changed or removed, **then** validation rejects
    the turn.
 4. **Given** an already materialized Mortal faction, **when** an allowed core
@@ -155,9 +166,9 @@ resends.
 5. **Given** an already materialized faction, **when** the GM resends a full
    faction object or places a dedicated-command field inside
    `FactionCoreChanges`, **then** validation rejects the bypass.
-6. **Given** a legacy faction promoted in the same turn as a supported gameplay
-   mutation, **when** unrelated historical state also changes, **then** the
-   promotion fails and repair preserves the validated history.
+6. **Given** an obsolete receipt-less fixture, **when** it is encountered in
+   the repository, **then** the fixture is migrated or removed rather than
+   gaining a shipping compatibility path.
 
 ---
 
@@ -191,7 +202,7 @@ privacy.
 4. **Given** a complete envelope, **when** console and browser faction views
    render, **then** schema versions, receipt IDs, disposition tokens, and
    private empty-state reasons remain hidden in ordinary player-facing output.
-5. **Given** a GM authoring a supported creation, promotion, update, or repair,
+5. **Given** a GM authoring a supported creation, update, or repair,
    **when** the relevant guidance is followed, **then** a worked example exists
    for that route and agrees with validation.
 
@@ -219,8 +230,9 @@ privacy.
 - One accepted turn may combine a Shining creation route with independent
   scheduler or pending work only when every contract and receipt remains
   complete and mutually consistent.
-- Loading, rendering, save/archive handling, and client-derived recomputation
-  do not trigger legacy promotion.
+- Loading, rendering, save/archive handling, and normalization never add a
+  missing receipt or turn an obsolete receipt-less faction into valid current
+  state.
 - Chaos Sea Guardian relations, projects, influence, and chronicles never
   become Mortal or Shining faction records.
 
@@ -228,7 +240,7 @@ privacy.
 
 ### Functional Requirements
 
-- **FR-001**: Every newly created or promoted faction MUST contain exactly one
+- **FR-001**: Every canonical faction MUST contain exactly one
   complete, versioned, faction-bound materialization receipt with a stable
   unique materialization identity, exact faction type and identity, accepted
   turn, capability snapshot, and governed section dispositions.
@@ -240,18 +252,22 @@ privacy.
   reason and the exact canonical empty surface.
 - **FR-004**: Historical materialization receipts MUST remain semantically
   unchanged after first acceptance.
-- **FR-005**: Newness, promotion, and current-turn touches MUST be classified
-  against exact duplicate-sensitive validated pre-turn authority rather than
-  names, prose, tags, or inferred identity.
-- **FR-006**: An untouched legacy faction without a receipt MUST remain loadable
-  and unchanged.
-- **FR-007**: Any accepted GM-authored mutation of a legacy faction MUST require
-  full same-turn promotion of that exact faction.
+- **FR-005**: Newness and current-turn touches MUST be classified against exact
+  duplicate-sensitive validated pre-turn authority rather than names, prose,
+  tags, or inferred identity.
+- **FR-006**: A canonical Mortal or Shining faction without a complete receipt
+  MUST fail current-schema validation; runtime loading, rendering,
+  normalization, and repair MUST NOT preserve or promote it through a legacy
+  compatibility path.
+- **FR-007**: Active bootstrap state, templates, examples, and test fixtures
+  MUST migrate to the current contract. Obsolete fixtures MUST NOT establish a
+  compatibility requirement.
 - **FR-008**: Loading, rendering, and explicitly client-owned derived
-  recomputation MUST NOT trigger promotion.
-- **FR-009**: New and promoted candidate state MUST be semantically validated
-  before normalization, and normalization MUST NOT create missing authored
-  semantics, receipts, dispositions, reasons, or authority links.
+  recomputation MUST preserve complete authored state and MUST NOT manufacture
+  missing materialization authority.
+- **FR-009**: New and current canonical candidate state MUST be semantically
+  validated before normalization, and normalization MUST NOT create missing
+  authored semantics, receipts, dispositions, reasons, or authority links.
 - **FR-010**: A materialization bundle MUST be accepted atomically or rejected
   without partial persistence.
 - **FR-011**: A Mortal materialization MUST always populate identity and visual
@@ -264,7 +280,7 @@ privacy.
   structure, resources, projects, custom state, chronicles, location control,
   and NPC affiliation authority, including exact empty records where required.
 - **FR-014**: The full Mortal faction carrier MUST be accepted only for genuine
-  first creation or exact legacy promotion.
+  first creation. Existing factions MUST use narrow commands.
 - **FR-015**: Ordinary existing Mortal core updates MUST use a closed
   `FactionCoreChanges` command with exact permanent identity, non-empty reason,
   absolute resulting values, reviewed core groups, protected identity and
@@ -309,21 +325,22 @@ privacy.
 - **FR-027**: Validation and repair MUST use stable
   `mortal_faction:<id>` and `shining_faction:<id>` coordinates plus stable issue
   families for missing/invalid receipts, identity, sections, dispositions,
-  capabilities, bundle links, required promotion, and forbidden full resends.
+  capabilities, bundle links, obsolete receipt-less state, and forbidden full
+  resends.
 - **FR-028**: Repair packets MUST identify exact target files or state subtrees,
   exact defects, allowed correction shapes, required links, preserved valid
   sections, and prohibited unrelated roots.
 - **FR-029**: Repair and normalization MUST NOT invent narrative or mechanical
   faction content from names, descriptions, IDs, tags, or genre vocabulary.
 - **FR-030**: Ordinary console and browser views MUST hide materialization
-  schema, IDs, disposition tokens, and private reasons while preserving legacy
-  faction readability.
+  schema, IDs, disposition tokens, and private reasons. Receipt-less obsolete
+  factions MUST fail validation rather than receive a player-facing fallback.
 - **FR-031**: GM prompts, Mortal faction rules, Shining contract guidance,
   worked examples, example manifests, documentation tests, and source guards
   MUST remain synchronized with the runtime contract.
-- **FR-032**: Worked guidance MUST cover populated and deliberately minimal
-  Mortal creation, Mortal promotion, `FactionCoreChanges`, all three Shining
-  creation routes, and bounded repair in both domains.
+- **FR-032**: Eight worked-example families MUST cover populated and
+  deliberately minimal Mortal creation, `FactionCoreChanges`, all three
+  Shining creation routes, and bounded repair in both domains.
 - **FR-033**: Chaos Sea Guardian politics MUST remain actor/living-world
   authority under #1500 and #1368 and MUST NOT be represented as a Mortal or
   Shining faction.
@@ -346,9 +363,9 @@ privacy.
 - **Shining Faction**: Hall-bound afterlife political entity with provenance,
   charter, lifecycle, leadership, memory, visibility, projects, affiliations,
   political state, trade, and receipts.
-- **Faction Touch Classification**: New, legacy promotion, already materialized,
-  client-derived-only, or untouched legacy state determined from validated
-  pre-turn authority.
+- **Faction State Classification**: New or already materialized state determined
+  from exact validated pre-turn authority; receipt-less canonical state is
+  invalid rather than a third runtime lifecycle.
 - **Faction Core Change**: Narrow ordinary-existing Mortal command for reviewed
   core groups that cannot mutate identity, receipt, or dedicated-command
   domains.
@@ -368,9 +385,9 @@ privacy.
 - **SC-003**: All three Shining creation routes pass independently, including
   native discovery with exactly one hall, one faction, two through four
   residents, and two completed seed projects.
-- **SC-004**: In legacy compatibility scenarios, 100% of untouched legacy
-  factions load unchanged, while 100% of GM-mutated legacy factions without a
-  complete promotion are rejected.
+- **SC-004**: 100% of receipt-less canonical Mortal and Shining factions are
+  rejected, while fresh bootstrap state with no factions remains valid and
+  repository-owned fixtures contain no compatibility-only faction state.
 - **SC-005**: In ordinary-update scenarios, 100% of full-object resends for
   already materialized factions are rejected and all supported narrow updates
   preserve unrelated faction data and the historical receipt.
@@ -378,8 +395,8 @@ privacy.
   faction coordinate and a repair scope containing no unrelated faction or
   state root.
 - **SC-007**: Eight reviewed worked-example families cover both Mortal creation
-  forms, Mortal promotion, Mortal core update, all three Shining routes, and
-  bounded repair in both domains.
+  forms, Mortal core update, all three Shining routes, and bounded repair in
+  both domains.
 - **SC-008**: Ordinary console and browser faction views expose zero private
   materialization field names or reason text.
 - **SC-009**: No accepted test scenario derives faction semantics or capability
@@ -405,7 +422,7 @@ privacy.
   `pwsh .\scripts\test-csharp.ps1 -Lane FullValidation` before final
   integration.
 - **Frontend verification**: No frontend behavior is planned. Existing focused
-  console/browser metadata-privacy tests prove readers remain compatible; run
+  console/browser metadata-privacy tests prove strict current-state readers; run
   frontend verification only if implementation discovers an actual frontend
   source change, and update the plan first.
 - **Manual/player-facing verification**: Inspect representative Mortal and
@@ -423,7 +440,7 @@ privacy.
 - The materialization receipt records the accepted first-complete state and is
   immutable during ordinary later gameplay updates.
 - Exact client-owned derived values remain recalculable without GM authorship
-  and without legacy promotion.
+  and without manufacturing missing receipt authority.
 - Existing repair and rollback infrastructure is reused; #1510 extends its
   faction issue and packet vocabulary but does not implement the #1222 worker.
 - The approved design at

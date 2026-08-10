@@ -1,8 +1,8 @@
 # Faction Materialization Design
 
-Date: 2026-08-03
+Date: 2026-08-03; amended 2026-08-10
 
-Status: Approved for implementation planning
+Status: Approved for implementation; pre-release save policy amended
 
 Issue: [#1510](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1510)
 
@@ -20,9 +20,11 @@ Contract with a shared kernel and two domain profiles:
 2. Shining Abode factions stored inside canonical Shining Abode state.
 
 Every newly created faction must be semantically complete on the accepted turn
-that creates it. Every legacy faction without materialization authority remains
-loadable while untouched, but its first accepted GM-authored mutation must
-promote it to the current complete contract in that same turn.
+that creates it, and every canonical faction must carry that complete current
+materialization authority. The game has not shipped and has no player saves to
+preserve, so receipt-less faction state is rejected rather than loaded,
+promoted, or completed by a runtime compatibility path. Repository bootstrap
+data, examples, and test fixtures move to the current schema.
 
 Completeness does not require every optional collection to contain invented
 content. A governed section may be empty only when its canonical empty surface
@@ -63,7 +65,7 @@ particular, normalization can currently supply semantic-looking defaults or
 empty surfaces before final validation. This can launder a hollow creation into
 a structurally valid canonical faction.
 
-The absence of a creation/promotion boundary also leaves full-object carriers
+The absence of a strict creation/existing-state boundary also leaves full-object carriers
 available as an accidental update channel for existing factions, bypassing
 narrower mutation authority.
 
@@ -73,10 +75,10 @@ narrower mutation authority.
   by gameplay systems on its first accepted turn.
 - Permit legitimate empty sections without forcing the client or GM to invent
   content.
-- Preserve load compatibility for untouched legacy saves.
-- Require complete, bounded promotion when a legacy faction first receives an
-  accepted GM-authored mutation.
-- Separate first creation/promotion from ordinary existing-faction updates.
+- Reject every receipt-less canonical faction as obsolete current-schema state.
+- Migrate repository bootstrap data, examples, and positive test fixtures
+  instead of shipping compatibility readers or promotion flows.
+- Separate first creation from ordinary existing-faction updates.
 - Validate raw authored semantics before normalization.
 - Bind all domain files, receipts, actors, halls, residents, locations, and NPC
   affiliations through exact IDs.
@@ -94,7 +96,8 @@ narrower mutation authority.
 - Changing player-facing faction UI or exposing materialization metadata.
 - Defining a universal fantasy hierarchy, economy, government, power model, or
   ideology.
-- Migrating every historical faction eagerly during load.
+- Runtime migration, promotion, or compatibility readers for obsolete faction
+  schemas and development fixtures.
 - Increasing test timeouts, increasing test-process concurrency, or restoring
   an unbounded all-tests workflow.
 
@@ -164,8 +167,7 @@ Common fields have these rules:
 For a new same-turn Mortal faction, raw validation binds
 `materialization.factionId` to the carrier's exact `initialId`. Canonicalization
 must then leave the envelope bound to the exact resulting permanent
-`factionId`. Existing and promoted factions always use their permanent
-`factionId`.
+`factionId`. Existing factions always use their permanent `factionId`.
 
 Unknown envelope members, unknown capabilities, unknown section names,
 duplicate JSON members, empty reasons, and identity mismatches fail closed.
@@ -204,33 +206,29 @@ receipt is not silently rewritten to describe later history.
 
 ### Classification
 
-Before normalization, every touched faction is classified against the
+Before normalization, every faction is classified against the
 duplicate-sensitive validated pre-turn snapshot:
 
 | Classification | Required behavior |
 |---|---|
 | New | No exact pre-turn faction exists; require the complete domain profile and new envelope |
-| Legacy promotion | Exact pre-turn faction exists without an envelope and receives a GM-authored mutation; require one complete promotion |
 | Already materialized | Exact pre-turn faction has an envelope; reject full-object resend and use narrow commands |
-| Client-derived only | Only explicitly client-owned projections are recomputed; preserve authored state and do not force promotion |
-| Untouched legacy | Load and preserve without inventing data or requiring migration |
+| Invalid receipt-less | Exact faction exists without a complete envelope; reject before normalization, rendering, or update |
 
-Newness and promotion are determined only from exact validated pre-turn
-authority and accepted mutation channels. A permanent-looking ID, reused name,
-description, tag, or temporary-ID collision cannot disguise an existing
-faction as new.
+Newness is determined only from exact validated pre-turn authority and accepted
+creation channels. A permanent-looking ID, reused name, description, tag, or
+temporary-ID collision cannot disguise an existing faction as new. A
+receipt-less existing ID cannot re-enter through a creation carrier.
 
-Loading a save, rendering UI, rebuilding read models, and recalculating
-explicit client-owned projections do not trigger promotion. Any accepted
-GM-authored change to faction core, structure, resources, relations, projects,
-custom state, chronicle, territory/influence, location control, membership,
-leadership, Shining political memory, or exact faction-owned affiliation does.
+Loading, rendering, rebuilding read models, and recalculating explicit
+client-owned projections preserve an existing receipt. None may manufacture a
+missing receipt or make receipt-less canonical state readable.
 
 ## Mortal Faction Profile
 
 ### Always-populated semantic core
 
-A new or promoted Mortal faction must always contain:
+A new Mortal faction must always contain:
 
 - exact identity, display profile, description, color/visual identity, and the
   existing production-valid English `image_prompt` where required;
@@ -296,20 +294,11 @@ record cannot be omitted merely because its arrays are empty. Every populated
 cross-file reference resolves to the same permanent or same-turn effective
 identity, and no orphaned mirror is accepted.
 
-### Creation, promotion, and ordinary updates
+### Creation and ordinary updates
 
 `factionDataChanges` remains the full Mortal faction carrier, but it is legal
-only for:
-
-1. genuine first creation; or
-2. the first complete promotion of an exact legacy faction.
-
-Promotion preserves every valid historical field and sidecar entry. It may add
-the missing semantic core, exact empty surfaces, envelope, and required
-cross-file bindings. A simultaneous gameplay mutation still uses its dedicated
-command when one exists; promotion is not authority to rewrite unrelated
-history, resources, ranks, projects, custom states, affiliations, or
-chronicles.
+only for genuine first creation. An exact pre-turn ID without a complete receipt
+is invalid and cannot use this carrier as a migration or promotion route.
 
 Ordinary existing-faction core updates use a new closed
 `FactionCoreChanges` command. Each entry:
@@ -337,7 +326,7 @@ already materialized faction is rejected even when most values are unchanged.
 
 ### Always-populated semantic core
 
-A new or promoted Shining faction must always contain:
+A new Shining faction must always contain:
 
 - exact identity and supported creation provenance;
 - exact binding to one canonical hall;
@@ -402,7 +391,7 @@ An accepted `discover_native_faction` closure must atomically create:
 - two through four new ascended residents;
 - exactly two seeded completed faction projects;
 - the matching request/receipt and cost audit required by the active core-action
-  or legacy native-discovery contract;
+  or direct native-discovery contract;
 - complete Actor Materialization authority for every newly significant
   non-player actor.
 
@@ -443,7 +432,8 @@ leadership resolves to the existing client-owned player profile.
 Resident membership remains resident-owned. The faction envelope proves the
 resident-affiliation section and exact cross-links, but it does not duplicate
 an independent resident roster inside the faction merely to satisfy
-materialization.
+materialization. Resident links and all derived-strength/trade joins are exact
+and case-sensitive; a case-insensitive-only faction ID contributes no evidence.
 
 Each faction binds to exactly one existing or same-turn new hall. A hall cannot
 be silently selected by display name. Project, influence, ledger, trade,
@@ -452,8 +442,8 @@ leadership-history, and receipt records all target the same exact faction ID.
 ### Derived values
 
 `factionStrength`, derived faction tier, and service multiplier remain
-client-owned projections of canonical authored inputs. Recalculation alone is
-`client-derived only` and does not promote an untouched legacy faction.
+client-owned projections of canonical authored inputs. Recalculation preserves
+the complete existing receipt and cannot manufacture missing authority.
 
 Normalization may:
 
@@ -478,11 +468,11 @@ The accepted-turn pipeline is:
 
 1. Parse current and validated pre-turn faction authority with duplicate-member
    detection and exact identity maps.
-2. Classify each touched faction as new, legacy promotion, already
-   materialized, client-derived-only, or untouched legacy.
+2. Classify each faction as new, already materialized, or invalid receipt-less
+   current-schema state.
 3. Validate raw GM-authored carriers and candidate state before semantic
    normalization.
-4. For new and promoted factions, require the complete envelope, domain
+4. Reject receipt-less canonical state; for new factions require the complete envelope, domain
    semantic core, governed dispositions, capabilities, all required sidecars,
    route receipts, and cross-file bindings in the same turn.
 5. Reject an already materialized full-object resend and require the exact
@@ -516,7 +506,7 @@ The initial stable issue-code families are:
 - `faction_materialization_capability_mismatch`;
 - `faction_materialization_bundle_incomplete`;
 - `faction_materialization_cross_reference_invalid`;
-- `faction_legacy_promotion_required`;
+- `faction_materialization_obsolete_receiptless_state`;
 - `faction_existing_full_resend_forbidden`.
 
 Domain-specific validation may add a suffix or a narrower code, but repair
@@ -526,7 +516,7 @@ surface rather than display names.
 A repair packet identifies:
 
 - faction type and exact identity;
-- creation/promotion classification;
+- creation/current-state classification;
 - stable issue code;
 - exact target file and faction selector;
 - exact missing or contradictory semantic section;
@@ -534,6 +524,12 @@ A repair packet identifies:
 - required route, receipt, actor, hall, resident, location, or NPC references;
 - read-only valid sections that must be preserved;
 - prohibited unrelated roots and commands.
+
+Validation issues carry typed repair-target metadata. Packet construction does
+not reconstruct classification or writable roots by mining human-readable
+issue prose. A Mortal location defect includes its exact location plus required
+current-location/world-map roots; a Shining actor defect includes the exact
+afterlife profile root.
 
 For Mortal factions, a packet may target one or more exact faction sidecars
 only when the same materialization bundle requires them. For Shining factions,
@@ -583,7 +579,7 @@ Worked examples must include:
 - one populated Mortal first materialization;
 - one minimal Mortal first materialization with exact empty surfaces and
   meaningful reasons;
-- one Mortal legacy promotion;
+- receipt-less Mortal and Shining rejection plus an empty fresh bootstrap;
 - one ordinary `FactionCoreChanges` update;
 - one Shining native discovery;
 - one player-founded Shining faction;
@@ -593,7 +589,8 @@ Worked examples must include:
 Console and browser readers continue to consume canonical gameplay state. They
 must not display schema version, materialization ID, section-state tokens,
 private empty-by-design reasons, or other harness metadata in ordinary
-player-facing views. Existing readable legacy factions remain compatible.
+player-facing views. Receipt-less state fails closed and receives no UI or Saref
+visibility fallback.
 
 ## Verification Strategy
 
@@ -602,13 +599,13 @@ Implementation follows focused RED/GREEN work:
 1. Add failing focused tests for common envelope parsing, exact identity,
    duplicate members, capabilities, dispositions, classification, and
    normalization ordering.
-2. Add Mortal creation, promotion, atomic-bundle, full-resend, and
+2. Add Mortal creation, strict receipt-less rejection, atomic-bundle, full-resend, and
    `FactionCoreChanges` tests before implementing each behavior.
 3. Add Shining native-discovery, player-founding, story/hidden, Actor
    Materialization binding, and semantic-default laundering tests before
    implementing each behavior.
-4. Add focused repair-packet, documentation, manifest, metadata-privacy, and
-   legacy-compatibility tests.
+4. Add focused repair-packet, documentation, manifest, metadata-privacy,
+   strict-current-schema, exact-resident-identity, and bootstrap tests.
 5. Run the default Fast lane once when the focused implementation is stable.
 6. Run the relevant bounded FullValidation/documentation selection when the
    afterlife contract boundary changes or focused evidence requires it.
@@ -634,8 +631,7 @@ The implementation is acceptable when:
   cross-file bundle;
 - a valid minimal Mortal faction passes with exact empty surfaces and
   meaningful `empty_by_design` reasons;
-- full Mortal faction objects are accepted only for genuine creation or legacy
-  promotion;
+- full Mortal faction objects are accepted only for genuine creation;
 - `FactionCoreChanges` and existing dedicated commands cover ordinary
   existing-faction updates without exposing protected fields;
 - every new Shining faction satisfies its exact native-discovery,
@@ -645,10 +641,10 @@ The implementation is acceptable when:
   when applicable;
 - raw validation proves that normalization cannot launder missing Shining
   semantics;
-- untouched legacy factions remain readable;
-- the first accepted GM-authored mutation of a legacy faction requires a
-  complete same-turn promotion;
-- client-derived-only recomputation does not force promotion;
+- receipt-less canonical Mortal and Shining factions are rejected before
+  normalization or rendering, while a fresh empty bootstrap remains valid;
+- client-derived recomputation preserves an existing immutable receipt and
+  never creates missing authority;
 - repair packets are exact, bounded, preservation-oriented, and incapable of
   inventing content;
 - Chaos Sea Guardian politics remains outside the faction entity contract;
@@ -665,8 +661,8 @@ Before production edits, #1510 requires a dedicated Spec Kit feature at
 data model, contracts, implementation plan, and task list must trace this
 design and preserve the Mortal/Shining/Guardian-politics boundaries above.
 
-The detailed plan should sequence the common classifier and raw validation
-fence first, then the Mortal profile and update authority, then the Shining
+The detailed plan should sequence strict current-state classification and raw
+validation first, then the Mortal profile and update authority, then the Shining
 routes and cross-links, followed by repair/docs/client privacy and bounded
 verification. This document authorizes planning; it does not itself authorize
 implementation shortcuts or schema changes outside issue #1510.

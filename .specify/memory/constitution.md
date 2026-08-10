@@ -14,8 +14,8 @@ Templates requiring updates:
 - .specify/templates/tasks-template.md: updated
 - AGENTS.md: updated
 Follow-up TODOs:
-- Reconcile the active #1510 feature artifacts that still require legacy-save
-  compatibility before implementation resumes.
+- None. The active #1510 specification, plan, research, data model, contracts,
+  quickstart, tasks, and Superpowers design/plan were reconciled on 2026-08-10.
 -->
 
 # The Book of Eternity Reborn Constitution

@@ -5,19 +5,19 @@
 | Route | Full `factionDataChanges` legal? | Receipt required? |
 |---|---:|---:|
 | Genuine new faction | Yes | Yes |
-| First GM-authored mutation of legacy faction | Yes, as complete promotion | Yes |
 | Already materialized faction | No | Existing receipt must be preserved |
-| Untouched legacy load | No mutation carrier required | No |
-| Client-owned projection only | No | Preserve existing state |
+| Receipt-less canonical faction | No | Invalid current-schema state |
+| Client-owned projection only | No | Preserve the existing receipt |
 
-Newness and promotion are decided from validated pre-turn exact IDs, never from
-`isNewFaction`, names, or prose.
+Newness is decided from validated pre-turn exact IDs, never from `isNewFaction`,
+names, or prose. An existing receipt-less ID is rejected; it cannot re-enter
+through the creation carrier.
 
 ## Mandatory full-carrier groups
 
 The raw full carrier must include:
 
-1. exact creation/promotion identity;
+1. exact creation identity;
 2. display profile: `name`, `description`, `image_prompt`, `factionColor`;
 3. `purpose`, `currentAgenda`, and non-empty `principles[]`;
 4. complete power/progression authority;
@@ -158,16 +158,13 @@ The validator requires one exact identity across:
 An omitted structure/resource/custom entry is not deliberate emptiness. A
 single incomplete member rejects the entire accepted turn and enters repair.
 
-## Promotion
+## Obsolete receipt-less state
 
-Promotion:
-
-- preserves all validated historical core/sidecar/chronicle/reference data;
-- adds missing semantic core and receipt;
-- supplies exact empty carriers only where the target truly has no content;
-- uses a dedicated command for any simultaneous gameplay mutation when one
-  exists;
-- may not overwrite another faction or unrelated history.
+A canonical faction without a complete receipt fails current-schema validation.
+Runtime loading, normalization, repair, or a full carrier must not promote,
+preserve, or silently complete it. Repository-owned bootstrap data, templates,
+examples, and tests are migrated to the current schema; deliberately malformed
+fixtures remain isolated as negative validation inputs.
 
 ## Ordinary updates
 

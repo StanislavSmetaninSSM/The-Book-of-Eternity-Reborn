@@ -167,14 +167,14 @@ reason, missing member, or removed envelope yields an immutable-continuity
 failure.
 
 Full capability/disposition-to-content evidence is evaluated against the raw
-full carrier only when a faction is `new` or `legacy_promotion`. Canonical
-post-normalization validation and every `already_materialized` check still
-validate the closed envelope shape and exact pre-turn equality but defer live
-evidence consistency: the same-turn mutation that triggered promotion, or a
-later narrow command, may legitimately add the first project, relation,
-resource, trade receipt, or other mutable content without rewriting the
-historical snapshot. Ordinary canonical validators continue to validate that
-live content.
+full carrier when a faction is `new`. Canonical post-normalization validation
+and every `already_materialized` check still validate the closed envelope shape
+and exact pre-turn equality but do not reinterpret the historical creation
+snapshot: a later narrow command may legitimately add the first project,
+relation, resource, trade receipt, or other mutable content without rewriting
+the receipt. Ordinary canonical validators continue to validate that live
+content. Any canonical faction without a complete envelope is rejected before
+normalization; there is no promotion or compatibility route.
 
 ## Required issue families
 
@@ -187,7 +187,7 @@ faction_materialization_disposition_mismatch
 faction_materialization_capability_mismatch
 faction_materialization_bundle_incomplete
 faction_materialization_cross_reference_invalid
-faction_legacy_promotion_required
+faction_materialization_obsolete_receiptless_state
 faction_existing_full_resend_forbidden
 ```
 

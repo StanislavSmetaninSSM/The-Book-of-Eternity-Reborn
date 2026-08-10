@@ -2,7 +2,7 @@
 
 ## 1. Common receipt
 
-Every new or promoted faction contains exactly one private
+Every canonical faction contains exactly one private
 `materialization` object:
 
 ```json
@@ -37,16 +37,14 @@ The envelope rejects unknown or duplicate members at every closed level. Its
 semantic JSON value is immutable after first acceptance. Formatting and object
 member order are not semantic.
 
-Capabilities and dispositions describe the accepted creation/promotion
-snapshot, not live mutable faction content. Their evidence is checked with full
-consistency against the raw full carrier only on
-`new`/`legacy_promotion`, before same-turn narrow commands normalize. Canonical
-post-normalization validation checks receipt shape/continuity and complete live
-state but defers snapshot-to-live evidence, because the supported gameplay
-mutation that triggered promotion may already have changed a section in that
-same accepted turn. Later narrow updates likewise preserve the receipt
-semantically while existing live-state validators govern changed projects,
-relations, resources, leadership, memory, trade, and other runtime surfaces.
+Capabilities and dispositions describe the accepted creation snapshot, not live
+mutable faction content. Their evidence is checked with full consistency
+against the raw full carrier for `new` factions, before same-turn normalization.
+Canonical post-normalization validation checks receipt shape/continuity and
+complete live state but does not reinterpret the historical snapshot after
+later narrow updates. Those updates preserve the receipt semantically while
+existing live-state validators govern changed projects, relations, resources,
+leadership, memory, trade, and other runtime surfaces.
 
 ### Section disposition
 
@@ -69,35 +67,32 @@ or:
 setting-authored reason and exact canonical emptiness. Unknown members,
 additional states, `null`, omission, and contradictory content fail.
 
-## 2. Touch classification
+## 2. State classification
 
 The classifier consumes duplicate-sensitive validated pre-turn authority plus
-raw current output.
+raw current output. Receipt-less canonical state is rejected independently of
+whether the current turn touched it.
 
 | Classification | Pre-turn state | Current accepted-turn evidence | Required behavior |
 |---|---|---|---|
 | `new` | Exact ID absent | Supported creation carrier/route creates the ID | Complete materialization required |
-| `legacy_promotion` | Exact ID present without receipt | Any GM-authored semantic or gameplay mutation touches the faction | Complete materialization required in the same turn |
 | `already_materialized` | Exact ID present with receipt | Any current state, including a GM-authored mutation | Historical receipt unchanged; any authored update uses only narrow command/route authority |
-| `client_derived_only` | Exact ID present | Only documented client-owned projections change | Preserve receipt/legacy state; no promotion |
-| `untouched_legacy` | Exact ID present without receipt | No GM-authored touch | Load and preserve without receipt |
+| `invalid_receiptless` | Exact ID present without a complete receipt | Any current evidence, including no mutation | Reject as obsolete current-schema state; do not normalize, render, preserve, or promote it |
 
-GM-authored touch includes core fields, structure, resources, relations,
-projects, custom state, chronicles, location control, NPC affiliation,
-leadership, Shining political memory, story state, resident affiliation, or a
-supported creation/political route.
-
-Load, render, save/archive handling, container canonicalization, and
-recalculation of `factionStrength`, derived tier, and service multiplier are not
-GM-authored touches.
+For an already materialized faction, GM-authored changes to core fields,
+structure, resources, relations, projects, custom state, chronicles, location
+control, NPC affiliation, leadership, Shining political memory, story state,
+or resident affiliation require the appropriate narrow authority. Loading,
+rendering, save/archive handling, container canonicalization, and recalculation
+of documented client-owned projections preserve the immutable receipt.
 
 ## 3. Mortal faction model
 
 ### 3.1 Full raw carrier
 
 `factionDataChanges[]` remains the only full Mortal carrier. It is legal only
-for `new` or `legacy_promotion`. In addition to the existing production fields,
-it requires these semantic objects:
+for `new`. In addition to the existing production fields, it requires these
+semantic objects:
 
 ```json
 {
@@ -190,17 +185,13 @@ reputation, and player-faction invariants determine which values are required.
 | Mortal location authority | Exact faction-control/territory references |
 | Mortal NPC authority | Exact faction affiliation IDs and roles |
 
-For a new/promoted faction, carrier-only sidecar payloads are extracted and
-removed from canonical core. Untouched legacy faction objects retain their
-read-compatible shape until promotion.
+For a new faction, carrier-only sidecar payloads are extracted and removed from
+canonical core. Every existing canonical faction already uses this current
+shape.
 
 ### 3.4 Chronicle transition
 
 - New faction: `scribeChronicle` contains at least one valid entry.
-- Promotion with existing history: existing target-bound canonical chronicle
-  satisfies initial-memory history; carrier must not resend that history.
-- Promotion without history: `scribeChronicle` contains at least one valid
-  promotion/initial entry.
 - Ordinary update: `scribeChronicle` is forbidden;
   `factionChronicleUpdates[]` appends one entry.
 
@@ -246,14 +237,13 @@ unknown members, `factionId` changes, `initialId`, `isNewFaction`,
 affiliation payloads are forbidden.
 
 Command targets must already be materialized permanent Mortal factions. A
-legacy target must be promoted through the full carrier in the same turn before
-an independent gameplay mutation may apply.
+receipt-less target is rejected before any update can apply.
 
 ## 5. Shining faction model
 
 ### 5.1 Mandatory semantic core
 
-A new/promoted Shining faction requires:
+A new Shining faction requires:
 
 ```json
 {
@@ -308,7 +298,7 @@ The route is closed to `native_discovery`, `player_founding`, and `story`.
 
 | Route | Authority |
 |---|---|
-| `native_discovery` | Exact core-action or legacy native-discovery request/receipt ID |
+| `native_discovery` | Exact core-action or direct native-discovery request/receipt ID |
 | `player_founding` | Exact pending founding request/receipt ID |
 | `story` | Exact supported story contract ID, including guardian-ascension authority where applicable |
 
@@ -327,7 +317,7 @@ Supported authority types are closed:
 
 | Type | Authority ID | Additional exact proof |
 |---|---|---|
-| `saref_main_story` | `main_story_saref_state.json.factionLinks.wingsFactionId` | The authority ID also equals the enclosing faction ID; `factionLinks.visibility`, generic `visibility`, and legacy `sarefVisibility` match; `storyAuthority.factionRole=sarefFactionRole=wings_of_angels`, including before reveal |
+| `saref_main_story` | `main_story_saref_state.json.factionLinks.wingsFactionId` | The authority ID also equals the enclosing faction ID; `factionLinks.visibility`, generic `visibility`, and story-specific `sarefVisibility` match; `storyAuthority.factionRole=sarefFactionRole=wings_of_angels`, including before reveal |
 | `guardian_ascension` | Exact `guardianId` from canonical `guardians.json.activeGuardian`/`guardians[]` union | `originType=ascended_guardian`, role is `patron_guardian`, visibility is `revealed`, leadership points to that Guardian, and its Actor Materialization is complete |
 
 `creationProvenance.authorityType/authorityId` and
@@ -346,6 +336,11 @@ derivation is accepted.
 | `canTrade` | `trade` | Operational lifecycle, leadership, derived tier, and realm-local trade rules; not a direct disposition bit |
 | `hasLeadershipHistory` | `leadershipHistory` | Direct evidence from `leadershipHistory[]` and `leadershipReceipts[]` |
 | `usesStoryState` | `storyState` | Direct evidence from non-null exact `storyAuthority` and matching canonical story state |
+
+All resident affiliation and derived-strength joins use exact case-sensitive
+faction identity. A case-insensitive-only match is invalid evidence and cannot
+contribute a resident, capability bit, strength, tier, service multiplier, or
+trade eligibility.
 
 Exact empty surfaces are:
 
@@ -370,7 +365,7 @@ from `canTrade`. For example, an eligible new faction may have
 - exactly one `native_radiant` faction;
 - two through four new ascended residents targeting the faction;
 - exactly two newly identified completed projects;
-- exact core-action/legacy request, receipt, costs, and constrained diff;
+- exact core-action or direct request, receipt, costs, and constrained diff;
 - complete Actor Materialization for new residents, non-player head, and new
   political actors.
 
@@ -425,9 +420,8 @@ match the stable family and coordinate.
 absent
   └─ supported creation + complete bundle ─> materialized
 
-legacy (no receipt)
-  ├─ load/client projection ───────────────> legacy
-  └─ GM touch + complete promotion ────────> materialized
+receipt-less canonical state
+  └─ load/validation/update ───────────────> rejected/repair
 
 materialized
   ├─ narrow valid command/route ───────────> materialized
@@ -436,6 +430,6 @@ materialized
   └─ full-object resend ───────────────────> rejected/repair
 ```
 
-Acceptance is atomic. Any failed member of the new/promotion bundle enters the
+Acceptance is atomic. Any failed member of the new-faction bundle enters the
 existing repair/rollback loop; no partial faction or sidecar persistence is
 accepted.

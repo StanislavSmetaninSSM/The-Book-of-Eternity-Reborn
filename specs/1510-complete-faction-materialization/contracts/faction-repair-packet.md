@@ -47,7 +47,9 @@ For an unbound same-turn Mortal faction, `<factionId>` is the exact effective
 ```
 
 The runtime packet may use its existing text/task representation, but it must
-carry the same semantics.
+carry the same semantics. Validation issues provide typed repair-target metadata
+for classification and target roots; packet construction must not depend on
+mining exact prose tokens from a human-readable repair hint.
 
 ## Mortal targets
 
@@ -65,7 +67,10 @@ exact Mortal location file(s)
 exact Mortal NPC file(s)
 ```
 
-The packet names the exact faction selector and valid sections to preserve.
+The packet names the exact faction selector and valid sections to preserve. A
+location-control defect includes both the exact location authority and the
+current-location/world-map roots needed to prove the link; it must not silently
+drop those roots from the allowlist.
 
 ## Shining targets
 
@@ -85,7 +90,9 @@ the exact canonical story-state file
 ```
 
 No unrelated afterlife root is writable merely because it appears in the same
-composite state.
+composite state. A missing or ambiguous actor-profile defect includes the exact
+`afterlife_entity_profiles.json` root rather than only the Shining state and
+resident files.
 
 ## Preservation rules
 

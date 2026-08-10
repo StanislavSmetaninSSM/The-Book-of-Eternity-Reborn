@@ -32,6 +32,10 @@ Use the task order in `tasks.md`. For each behavior:
    and unrelated state mutation.
 6. Commit one coherent slice with `(#1510)` in the message.
 
+Treat every receipt-less canonical faction as an intentionally invalid fixture.
+Do not add runtime readers, promotion, or normalization fallbacks for old test
+data; migrate positive fixtures to the current contract.
+
 Never use an unbounded full-solution or full-suite `dotnet test` command.
 Focused defaults to the fast project. Pass `-FocusedProject Integration` for
 classes owned by `BookOfEternityClient.IntegrationTests`, and never mix test
@@ -120,7 +124,8 @@ should also be easy to reason about:
 
 - populated Mortal first creation;
 - seven-section empty-by-design Mortal creation;
-- legacy Mortal promotion with preserved history;
+- receipt-less Mortal and Shining state rejected before normalization;
+- fresh bootstrap with no factions accepted;
 - `FactionCoreChanges.relations` absolute update;
 - forbidden full resend of an already materialized faction;
 - native Shining discovery with 1/1/2–4/2 counts;
@@ -128,8 +133,10 @@ should also be easy to reason about:
 - hidden story faction with exact story authority;
 - missing Shining agenda before normalization;
 - immutable receipt mutation;
-- bounded Mortal and Shining repair packets;
-- untouched legacy load and derived-only recomputation.
+- bounded Mortal and Shining repair packets with exact location/profile roots;
+- derived-only recomputation preserving an existing receipt;
+- case-variant Shining resident affiliation rejected instead of contributing
+  materialization or derived-strength evidence.
 
 Do not manually alter a real user save for these probes. Use isolated test
 fixtures and the existing test filesystem.

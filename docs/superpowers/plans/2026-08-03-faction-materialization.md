@@ -2,13 +2,32 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Enforce complete first creation and first-touch legacy promotion for every Mortal and Shining faction while preserving untouched saves, narrow update authority, bounded repair, and fast development feedback.
+**Goal:** Enforce complete current-schema materialization for every Mortal and
+Shining faction, narrow update authority, bounded repair, and fast development
+feedback. Receipt-less canonical factions are invalid; the unreleased game has
+no old-save compatibility requirement.
 
-**Architecture:** Add a pure closed Faction Materialization kernel modeled after Actor Materialization, then compose it with separate Mortal and Shining evidence builders at the accepted-turn raw and canonical validation seams. Mortal full carriers are creation/promotion-only and normalize atomically into existing sidecars; existing factions use a closed `FactionCoreChanges` command. Shining route validators remain authoritative, while raw semantic checks prevent `ShiningAbodeState` defaults from manufacturing completeness.
+**Architecture:** Add a pure closed Faction Materialization kernel modeled after
+Actor Materialization, then compose it with separate Mortal and Shining evidence
+builders at the accepted-turn raw and canonical validation seams. Mortal full
+carriers are creation-only and normalize atomically into existing sidecars;
+existing factions use a closed `FactionCoreChanges` command. Shining route
+validators remain authoritative, while raw semantic checks prevent
+`ShiningAbodeState` defaults from manufacturing completeness.
 
 **Tech Stack:** C#/.NET 8, `System.Text.Json`/`System.Text.Json.Nodes`, xUnit, file-backed canonical JSON state, PowerShell 7 bounded test lanes, existing `ValidationService`, `CanonicalStateNormalizer`, and `GameEngine` repair loop.
 
 ## Global Constraints
+
+> **Authoritative amendment — 2026-08-10:** The detailed Tasks 0–11 below are
+> retained as the historical execution record for the already implemented
+> slice. Every instruction, example, classifier value, test, or code fragment
+> that preserves receipt-less factions, introduces legacy promotion, or enables
+> compatibility normalization is superseded and MUST NOT be implemented or
+> restored. Remaining correction work is defined in the current
+> `specs/1510-complete-faction-materialization/tasks.md` amendment and uses TDD
+> to remove those paths, migrate positive fixtures, enforce exact Shining
+> resident identity, and complete typed repair targets.
 
 - Source issue is [#1510](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1510); every implementation commit includes `(#1510)`.
 - The authoritative feature artifacts are
@@ -16,10 +35,10 @@
   and `contracts/*.md`.
 - Support exactly `mortal_faction` and `shining_faction`; unknown envelope,
   capability, section, disposition, and command members fail closed.
-- Untouched legacy factions remain loadable; only an accepted GM-authored touch
-  requires same-turn promotion.
+- Every canonical faction has a complete receipt. Receipt-less state is rejected
+  before normalization/rendering; repository fixtures migrate to current state.
 - `factionStrength`, derived Shining tier, and service multiplier remain
-  client-owned projections and do not trigger promotion.
+  client-owned projections and preserve an existing immutable receipt.
 - The normalizer and repair loop never invent narrative semantics or infer
   faction behavior from names, descriptions, IDs, tags, or genre vocabulary.
 - Chaos Sea Guardian Politics stays outside #1510 and remains under #1500/#1368;
@@ -77,8 +96,8 @@
 - `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.ShiningAbode.cs`
   plus `BookOfEternityClient/Services/ShiningAbodeState.cs` and
   `BookOfEternityClient/Services/ShiningAbodeState.Gameplay.cs` — strict
-  authored versus legacy-compatible Shining normalization and no semantic
-  auto-creation.
+  strict current-schema Shining normalization and no semantic auto-creation or
+  receipt-less fallback.
 - `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`,
   `ValidationService.ValidationPhases.cs`, and
   `BookOfEternityClient.IntegrationTests/IntegrationValidationProfiles.cs` —

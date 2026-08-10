@@ -2,8 +2,8 @@
 
 ## Common raw requirement
 
-Before `ShiningAbodeState.NormalizeStateRoot` runs, every new/promoted Shining
-faction must already contain exact authored:
+Before `ShiningAbodeState.NormalizeStateRoot` runs, every new Shining faction
+must already contain exact authored:
 
 - `factionId`, supported `originType`, and `creationProvenance`;
 - one exact `hallId`;
@@ -24,7 +24,7 @@ The normalizer cannot satisfy these requirements by creating defaults.
 
 | Route | Required origin | Exact authority | Additional result |
 |---|---|---|---|
-| `native_discovery` | `native_radiant` | Matching core-action/legacy discovery request and receipt | 1 hall, 1 faction, 2–4 new ascended residents, exactly 2 new completed projects, costs and constrained diff |
+| `native_discovery` | `native_radiant` | Matching core-action or direct discovery request and receipt | 1 hall, 1 faction, 2–4 new ascended residents, exactly 2 new completed projects, costs and constrained diff |
 | `player_founding` | `player_founded` | Matching pending founding request and root founding receipt | Exact proposed hall/charter/supporters, player-soul leadership, reserved costs, history |
 | `story` | Supported story-owned origin | Matching canonical story authority ID | Supported visibility and story role; no inferred hidden state |
 
@@ -64,7 +64,7 @@ Supported story authorities are closed:
 
 | `authorityType` | Exact `authorityId` | Required binding |
 |---|---|---|
-| `saref_main_story` | `main_story_saref_state.json.factionLinks.wingsFactionId` | The authority ID also equals the enclosing faction ID; generic/legacy visibility match and `storyAuthority.factionRole=sarefFactionRole=wings_of_angels`, even before reveal |
+| `saref_main_story` | `main_story_saref_state.json.factionLinks.wingsFactionId` | The authority ID also equals the enclosing faction ID; generic and story-specific visibility match and `storyAuthority.factionRole=sarefFactionRole=wings_of_angels`, even before reveal |
 | `guardian_ascension` | Exact `guardianId` in the canonical union of `guardians.json.activeGuardian` and `guardians[]` | `originType=ascended_guardian`, `factionRole=patron_guardian`, `visibility=revealed`, and secure Guardian leadership uses the same ID |
 
 The Guardian authority object itself must pass Actor Materialization. No
@@ -86,7 +86,9 @@ Materialization. The only exceptions are:
 
 Resident membership remains authoritative in
 `guardian_abode_residents.json.entries[].shiningFactionId`. The faction does not
-copy a resident roster.
+copy a resident roster. This link and every derived-strength/trade join are
+exact and case-sensitive; a case-insensitive-only ID match is rejected and
+contributes no resident or mechanical evidence.
 
 ## Hall and local records
 
@@ -126,5 +128,6 @@ lifecycle semantics, agenda, visibility, provenance, story authority, strategic
 memory summary, chronicle prose, envelope, dispositions, capabilities, and
 empty reasons.
 
-Untouched legacy factions remain loadable and may retain existing compatibility
-normalization until their first GM-authored touch.
+Every canonical Shining faction must already carry the complete current receipt.
+Receipt-less state fails before normalization and receives no visibility,
+reader, or story fallback.
