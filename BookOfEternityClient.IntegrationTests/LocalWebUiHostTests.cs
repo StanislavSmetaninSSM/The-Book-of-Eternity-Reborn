@@ -732,7 +732,7 @@ public sealed class LocalWebUiHostTests : IDisposable
           "radiance": { "experience": 120, "tier": 2 },
           "lightSparks": 4,
           "halls": [{ "hallId": "hall_dawn" }],
-          "factions": [{ "factionId": "faction_scribes" }]
+          "factions": []
         }
         """);
         WriteSessionFile("game_state/world/current_location.json", """

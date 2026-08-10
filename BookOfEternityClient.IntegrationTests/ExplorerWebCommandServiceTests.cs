@@ -8539,10 +8539,13 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           ]
         }
         """);
+
+        await MaterializeShiningWebFixtureAsync(materializedAtTurn: 1);
     }
 
-    private Task WriteShiningFactionPoliticalMemoryRawLeakFixtureAsync() =>
-        _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+    private async Task WriteShiningFactionPoliticalMemoryRawLeakFixtureAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
         {
           "availability": "active",
           "lightSparks": 7,
@@ -8639,6 +8642,78 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "sourceOfLightCapstone": { "completed": false }
         }
         """);
+
+        await MaterializeShiningWebFixtureAsync(materializedAtTurn: 45);
+    }
+
+    private async Task MaterializeShiningWebFixtureAsync(
+        int materializedAtTurn)
+    {
+        var root = JsonNode.Parse(
+            (await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!
+            .AsObject();
+        foreach (var faction in root["factions"]!.AsArray()
+                     .OfType<JsonObject>())
+        {
+            var factionId = faction["factionId"]!.GetValue<string>();
+            faction["originType"] ??=
+                ShiningAbodeState.OriginTypeNativeRadiant;
+            faction["visibility"] = "revealed";
+            faction["baseStrength"] ??= 37;
+            faction["investCountThisAscension"] ??= 0;
+            faction["projectArchetypesCountedThisAscension"] ??=
+                new JsonArray();
+            faction["factionLifecycle"] = new JsonObject
+            {
+                ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+            };
+
+            var charter = faction["charter"]!.AsObject();
+            charter["favoredArchetype"] ??=
+                ShiningAbodeState.ProjectArchetypeAccord;
+            charter["patronEffectFamily"] ??=
+                ShiningAbodeState.EffectFamilySocial;
+            charter["summary"] ??=
+                "Тестовая сияющая фракция хранит безопасный путь.";
+
+            foreach (var project in faction["projects"]!.AsArray()
+                         .OfType<JsonObject>())
+            {
+                project["summary"] ??=
+                    "Тестовый проект поддерживает путь фракции.";
+                project["projectArchetype"] ??=
+                    ShiningAbodeState.ProjectArchetypeAccord;
+                project["outputEffectFamily"] ??=
+                    ShiningAbodeState.EffectFamilySocial;
+                project["isSupported"] ??= false;
+                project["strengthReward"] ??= 8;
+            }
+
+            faction[ShiningAbodeState.FactionChronicleProperty] ??=
+                new JsonArray();
+            faction[ShiningAbodeState.FactionInfluenceProperty] ??=
+                new JsonArray();
+            faction[ShiningAbodeState.FactionResourceLedgerProperty] ??=
+                new JsonArray();
+            faction["tradeInventoryReceipts"] ??= new JsonArray();
+            faction["leadershipReceipts"] ??= new JsonArray();
+            faction["leadershipHistory"] ??= new JsonArray();
+
+            ShiningFactionTestMaterialization.Apply(
+                faction,
+                materializedAtTurn,
+                hasResidentAffiliations: string.Equals(
+                    factionId,
+                    "faction_lanterns",
+                    StringComparison.Ordinal),
+                canTrade: false);
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            ShiningAbodeState.StatePath,
+            root.ToJsonString(
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
 
     private async Task SeedAfterlifeCombatAndEntityFilesAsync()
     {
