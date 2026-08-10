@@ -32,7 +32,9 @@ internal enum GameStateValidationPhase : uint
     RealmSegregation = 1u << 25,
     RivalAndResidentCrossReferences = 1u << 26,
     GuardianProjectStateFiles = 1u << 27,
-    All = (1u << 26) - 1,
+    AcceptedTurnFactionMaterializationCompleteness = 1u << 28,
+    All = ((1u << 26) - 1) |
+          AcceptedTurnFactionMaterializationCompleteness,
     Selectable = All | RivalAndResidentCrossReferences | GuardianProjectStateFiles
 }
 

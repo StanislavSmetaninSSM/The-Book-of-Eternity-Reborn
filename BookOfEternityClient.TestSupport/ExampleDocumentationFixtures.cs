@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace BookOfEternityClient.Tests;
@@ -134,6 +135,7 @@ internal enum ExampleExpected
     Invalid
 }
 
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
 internal sealed class ExampleValidationManifest
 {
     public int Version { get; set; }
@@ -145,6 +147,7 @@ internal sealed class ExampleValidationManifest
     public List<ActorMaterializationExampleCoverage> MortalActorMaterializationCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> MortalNpcCoreChangesCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> AfterlifeEntityProfileCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> FactionMaterializationCoverage { get; set; } = new();
     public List<ExampleContractCoverage> TrainingShowcaseCoverage { get; set; } = new();
     public List<ExampleContractCoverage> GmWorkerBridgeCoverage { get; set; } = new();
 

@@ -7,6 +7,98 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private async Task NormalizeFactionCoreChangesAsync(
+        IReadOnlyDictionary<string, string>? backups)
+    {
+        var currentNode =
+            await ReadNodeAsync(
+                FactionCoreChangesContract.FactionCorePath);
+        if (currentNode is not JsonObject currentRoot ||
+            !currentRoot.ContainsKey(
+                FactionCoreChangesContract.PropertyName))
+        {
+            return;
+        }
+
+        var preTurnRoot = await ReadBackupObjectAsync(
+            FactionCoreChangesContract.FactionCorePath,
+            backups);
+        if (preTurnRoot == null)
+            return;
+
+        var authority =
+            await ReadFactionCoreChangesAuthorityAsync(
+                currentRoot,
+                preTurnRoot,
+                backups);
+        var evaluation = FactionCoreChangesContract.Evaluate(
+            currentRoot,
+            preTurnRoot,
+            authority);
+        if (!evaluation.CanApply)
+            return;
+
+        var result = CloneObject(currentRoot);
+        FactionCoreChangesContract.Apply(result, evaluation);
+        await WriteIfChangedAsync(
+            FactionCoreChangesContract.FactionCorePath,
+            currentNode,
+            result);
+    }
+
+    private async Task<FactionCoreChangesContract.Authority>
+        ReadFactionCoreChangesAuthorityAsync(
+            JsonObject currentRoot,
+            JsonObject preTurnRoot,
+            IReadOnlyDictionary<string, string>? backups)
+    {
+        var factionIds = new HashSet<string>(
+            StringComparer.Ordinal);
+        CollectFactionCoreChangesFactionIds(
+            currentRoot,
+            factionIds);
+        CollectFactionCoreChangesFactionIds(
+            preTurnRoot,
+            factionIds);
+
+        const string npcCorePath =
+            "game_state/npcs/npc_core.json";
+        var npcIds = new HashSet<string>(StringComparer.Ordinal);
+        FactionCoreChangesContract.CollectKnownMortalNpcIds(
+            await ReadNodeAsync(npcCorePath),
+            npcIds);
+        FactionCoreChangesContract.CollectKnownMortalNpcIds(
+            await ReadBackupObjectAsync(
+                npcCorePath,
+                backups),
+            npcIds);
+        return new FactionCoreChangesContract.Authority(
+            factionIds,
+            npcIds);
+    }
+
+    private static void CollectFactionCoreChangesFactionIds(
+        JsonObject root,
+        HashSet<string> result)
+    {
+        foreach (var section in new[]
+                 {
+                     "factions",
+                     "factionDataChanges"
+                 })
+        {
+            if (root[section] is not JsonArray factions)
+                continue;
+            foreach (var faction in factions.OfType<JsonObject>())
+            {
+                var factionId = GetNodeString(
+                    faction["factionId"]);
+                if (!string.IsNullOrWhiteSpace(factionId))
+                    result.Add(factionId);
+            }
+        }
+    }
+
     private async Task NormalizeFactionCoreAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/factions/faction_core.json";
@@ -18,12 +110,27 @@ public partial class CanonicalStateNormalizer
         var factions = new List<JsonObject>();
 
         foreach (var faction in CollectFactionCoreEntries(previous))
-            UpsertByIdentity(factions, NormalizeFactionCoreEntry(faction), "factionId");
+            UpsertFactionByIdentity(
+                factions,
+                NormalizeFactionCoreEntry(faction));
         foreach (var faction in CollectFactionCoreEntries(currentNode))
-            UpsertByIdentity(factions, NormalizeFactionCoreEntry(faction), "factionId");
+            UpsertFactionByIdentity(
+                factions,
+                NormalizeFactionCoreEntry(faction));
+
+        foreach (var faction in factions)
+            RemoveMaterializedFactionCarrierFields(faction);
 
         result["factions"] = ToArray(factions);
         result.Remove("factionDataChanges");
+        if (currentNode is JsonObject currentRoot &&
+            currentRoot.ContainsKey(
+                FactionCoreChangesContract.PropertyName))
+        {
+            result[FactionCoreChangesContract.PropertyName] =
+                currentRoot[FactionCoreChangesContract.PropertyName]
+                    ?.DeepClone();
+        }
         await WriteIfChangedAsync(path, currentNode, result);
     }
 
@@ -40,26 +147,43 @@ public partial class CanonicalStateNormalizer
         var entries = new JsonArray();
 
         foreach (var entry in CollectFactionEntryObjects(previous, "entries"))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
         foreach (var entry in CollectFactionStructureEntriesFromCore(factionCorePrevious))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
         foreach (var entry in CollectFactionStructureEntriesFromCore(factionCoreCurrent))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
 
         if (currentNode is JsonObject currentObj)
         {
             foreach (var entry in CollectFactionEntryObjects(currentObj, "entries"))
-                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
-
-            if (currentObj["factionRankChanges"] is JsonArray factionRankChanges)
-                ApplyFactionRankChangeCommands(entries, factionRankChanges);
-            if (currentObj["factionBonusChanges"] is JsonArray factionBonusChanges)
-                ApplyFactionBonusChangeCommands(entries, factionBonusChanges);
+                UpsertFactionByIdentity(entries, entry);
         }
         else
         {
             foreach (var entry in CollectFactionEntryObjects(currentNode, "entries"))
-                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+                UpsertFactionByIdentity(entries, entry);
+        }
+
+        foreach (var entry in
+                 CollectMaterializedFactionGovernanceAndLeadershipFromCore(
+                     factionCoreCurrent))
+        {
+            UpsertFactionByIdentity(entries, entry);
+        }
+
+        if (currentNode is JsonObject currentWithCommands)
+        {
+            if (currentWithCommands["factionRankChanges"]
+                    is JsonArray factionRankChanges)
+            {
+                ApplyFactionRankChangeCommands(entries, factionRankChanges);
+            }
+
+            if (currentWithCommands["factionBonusChanges"]
+                    is JsonArray factionBonusChanges)
+            {
+                ApplyFactionBonusChangeCommands(entries, factionBonusChanges);
+            }
         }
 
         if (currentNode == null && previous == null && entries.Count == 0)
@@ -83,16 +207,16 @@ public partial class CanonicalStateNormalizer
         var entries = new JsonArray();
 
         foreach (var entry in CollectFactionEntryObjects(previous, "entries"))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
         foreach (var entry in CollectFactionResourceEntriesFromCore(factionCorePrevious))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
         foreach (var entry in CollectFactionResourceEntriesFromCore(factionCoreCurrent))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
 
         if (currentNode is JsonObject currentObj)
         {
             foreach (var entry in CollectFactionEntryObjects(currentObj, "entries"))
-                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+                UpsertFactionByIdentity(entries, entry);
 
             if (currentObj["factionResourceChanges"] is JsonArray factionResourceChanges)
                 ApplyFactionResourceChangeCommands(entries, factionResourceChanges);
@@ -100,7 +224,7 @@ public partial class CanonicalStateNormalizer
         else
         {
             foreach (var entry in CollectFactionEntryObjects(currentNode, "entries"))
-                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+                UpsertFactionByIdentity(entries, entry);
         }
 
         if (currentNode == null && previous == null && entries.Count == 0)
@@ -122,6 +246,9 @@ public partial class CanonicalStateNormalizer
         var result = CloneObject(previous ?? new JsonObject());
         var activeProjects = new List<JsonObject>();
         var completedProjects = new List<JsonObject>();
+        var hasExplicitProjectSurface =
+            HasExplicitMaterializedFactionProjectSurface(factionCorePrevious) ||
+            HasExplicitMaterializedFactionProjectSurface(factionCoreCurrent);
 
         CollectFactionProjectObjects(previous, "activeProjects", activeProjects);
         CollectFactionProjectObjects(previous, "completedProjects", completedProjects);
@@ -144,8 +271,14 @@ public partial class CanonicalStateNormalizer
             CollectFactionProjectObjects(currentNode, "completedProjects", completedProjects);
         }
 
-        if (currentNode == null && previous == null && activeProjects.Count == 0 && completedProjects.Count == 0)
+        if (currentNode == null &&
+            previous == null &&
+            activeProjects.Count == 0 &&
+            completedProjects.Count == 0 &&
+            !hasExplicitProjectSurface)
+        {
             return;
+        }
 
         result["activeProjects"] = ToArray(activeProjects);
         result["completedProjects"] = ToArray(completedProjects);
@@ -166,16 +299,16 @@ public partial class CanonicalStateNormalizer
         var entries = new JsonArray();
 
         foreach (var entry in CollectFactionEntryObjects(previous, "entries"))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
         foreach (var entry in CollectFactionCustomEntriesFromCore(factionCorePrevious))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
         foreach (var entry in CollectFactionCustomEntriesFromCore(factionCoreCurrent))
-            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+            UpsertFactionByIdentity(entries, entry);
 
         if (currentNode is JsonObject currentObj)
         {
             foreach (var entry in CollectFactionEntryObjects(currentObj, "entries"))
-                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+                UpsertFactionByIdentity(entries, entry);
 
             if (currentObj["factionCustomStateChanges"] is JsonArray factionCustomStateChanges)
                 ApplyFactionCustomStateCommands(entries, factionCustomStateChanges);
@@ -183,7 +316,7 @@ public partial class CanonicalStateNormalizer
         else
         {
             foreach (var entry in CollectFactionEntryObjects(currentNode, "entries"))
-                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+                UpsertFactionByIdentity(entries, entry);
         }
 
         if (currentNode == null && previous == null && entries.Count == 0)
@@ -198,9 +331,26 @@ public partial class CanonicalStateNormalizer
     {
         const string path = "game_state/factions/faction_chronicles.json";
         var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null) return;
+        var factionCoreCurrent =
+            await ReadNodeAsync("game_state/factions/faction_core.json");
+        var factionCorePrevious =
+            await ReadBackupObjectAsync(
+                "game_state/factions/faction_core.json",
+                backups);
 
         var previous = await ReadBackupObjectAsync(path, backups);
+        var initialPreviousEntries =
+            CollectInitialFactionChronicleEntries(factionCorePrevious).ToArray();
+        var initialCurrentEntries =
+            CollectInitialFactionChronicleEntries(factionCoreCurrent).ToArray();
+        if (currentNode == null &&
+            previous == null &&
+            initialPreviousEntries.Length == 0 &&
+            initialCurrentEntries.Length == 0)
+        {
+            return;
+        }
+
         var result = CloneObject(previous ?? new JsonObject());
         var entries = EnsureArray(result, "entries");
 
@@ -208,6 +358,10 @@ public partial class CanonicalStateNormalizer
             AddUniqueNode(entries, entry);
         foreach (var entry in CollectFactionChronicleEntries(currentNode))
             AddUniqueNode(entries, entry);
+        foreach (var entry in initialPreviousEntries)
+            AddUniqueFactionChronicleEntry(entries, entry);
+        foreach (var entry in initialCurrentEntries)
+            AddUniqueFactionChronicleEntry(entries, entry);
 
         result.Remove("factionChronicleUpdates");
         await WriteIfChangedAsync(path, currentNode, result);

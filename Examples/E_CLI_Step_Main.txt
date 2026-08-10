@@ -24,6 +24,159 @@ $narrative = [ordered]@{
 Write-BoeJson -RelativePath 'output/narrative_response.json' -Data $narrative
 ```
 
+Faction Materialization worked-example coverage:
+mortal_faction_materialization_populated_creation_v1
+mortal_faction_materialization_seven_empty_creation_v1
+mortal_faction_materialized_existing_state_v1
+mortal_faction_core_changes_update_v1
+mortal_faction_materialization_repair_v1
+
+### mortal_faction_materialized_existing_state_v1
+
+This is the canonical pre-turn state of an already materialized faction. It is state authority for the narrow update below, not a `factionDataChanges` response carrier. Existing factions preserve this accepted envelope; receipt-less state and full resends are invalid.
+
+```json
+{
+  "factions": [
+    {
+      "factionId": "faction_old_ferry_circle",
+      "name": "Старый перевозный круг",
+      "description": "Старинный круг перевозчиков, который поддерживает безопасную переправу.",
+      "image_prompt": "old river ferrymen repairing a broad wooden ferry at dawn",
+      "factionColor": "#6F7958",
+      "purpose": "Сохранять безопасную переправу через Серую реку.",
+      "currentAgenda": "Собрать запас дерева для весеннего ремонта.",
+      "principles": ["Никого не бросать на воде"],
+      "memory": {
+        "summary": "Прежде круг существовал только как местное прозвище.",
+        "lastUpdatedTurn": 27,
+        "enduringFacts": ["Перевозчики отвечают на три колокольных удара."],
+        "openThreads": ["Кто будет хранить общий фонд?"]
+      },
+      "governance": {"model": "совет перевозчиков", "decisionProcess": "Единогласие дежурных капитанов."},
+      "leadership": {"leadershipState": "collective", "summary": "Два дежурных капитана.", "leaderNpcIds": ["npc_ferry_ada", "npc_ferry_borin"]},
+      "powerProfile": {
+        "military": 1,
+        "economic": 2,
+        "social": 3,
+        "covert": 0,
+        "logistics": 4,
+        "stability": 3,
+        "arcane_tech": 0,
+        "exploration": 2
+      },
+      "ranks": {
+        "branches": [
+          {
+            "branchId": "ferry_captains",
+            "name": "Дежурные капитаны",
+            "ranks": [{"rankId": "captain", "name": "Капитан переправы"}]
+          }
+        ]
+      },
+      "structuredBonuses": [
+        {"bonusId": "river_crossing", "description": "Круг знает безопасные переправы через Серую реку."}
+      ],
+      "resources": {
+        "metaResources": [{"resourceId": "ferry_trust", "name": "Доверие перевозчиков", "amount": 8}],
+        "strategicGoods": [{"goodId": "repair_timber", "name": "Ремонтная древесина", "amount": 8}]
+      },
+      "relations": [],
+      "activeProjects": [{"projectId": "project_repair_ferry", "name": "Ремонт старой переправы"}],
+      "completedProjects": [],
+      "controlledTerritories": [],
+      "customStates": [],
+      "scribeChronicle": ["#27 — Круг учредил общий фонд ремонта переправы."],
+      "isPlayerFaction": false,
+      "isPlayerMember": false,
+      "playerRank": null,
+      "playerBranch": null,
+      "playerStrategyDirective": null,
+      "reputation": 6,
+      "reputationDescription": "Знакомый перевозчикам путник",
+      "level": 1,
+      "experience": 20,
+      "experienceForNextLevel": 100,
+      "developmentArchetype": "Custodian",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_faction_old_ferry_circle_turn_27",
+        "factionType": "mortal_faction",
+        "factionId": "faction_old_ferry_circle",
+        "materializedAtTurn": 27,
+        "state": "complete",
+        "capabilities": {
+          "hasFormalHierarchy": true,
+          "usesFactionResources": true,
+          "maintainsRelations": false,
+          "runsProjects": true,
+          "holdsTerritoryOrInfluence": false,
+          "supportsPlayerMembership": false,
+          "usesCustomMechanics": false
+        },
+        "sections": {
+          "hierarchy": {"state": "populated"},
+          "resources": {"state": "populated"},
+          "relations": {"state": "empty_by_design", "reason": "Круг ещё не заключал соглашений с другими фракциями."},
+          "projects": {"state": "populated"},
+          "territoryAndInfluence": {"state": "empty_by_design", "reason": "Круг обслуживает путь, но не заявляет контроль над ним."},
+          "playerMembership": {"state": "empty_by_design", "reason": "Вступление пока определяется только личным доверием."},
+          "customStates": {"state": "empty_by_design", "reason": "Отдельной механики круга пока нет."}
+        }
+      }
+    }
+  ]
+}
+```
+
+### mortal_faction_core_changes_update_v1
+
+An ordinary update preserves historical materialization and sends only bounded semantic groups. Chronicle changes use the dedicated `factionChronicleUpdates` surface, not this command.
+
+```json
+{
+  "factionCoreChanges": [
+    {
+      "factionId": "faction_old_ferry_circle",
+      "reason": "Совет завершил сбор древесины и выбрал следующую цель.",
+      "purposeAndPrinciples": {
+        "purpose": "Сохранять безопасную переправу через Серую реку.",
+        "currentAgenda": "Укрепить восточную опору до половодья.",
+        "principles": ["Никого не бросать на воде"]
+      },
+      "progressionAndPower": {
+        "level": 2,
+        "experience": 0,
+        "experienceForNextLevel": 140,
+        "developmentArchetype": "Custodian",
+        "customArchetypePriorities": null,
+        "powerProfile": {
+          "military": 1,
+          "economic": 3,
+          "social": 3,
+          "covert": 0,
+          "logistics": 5,
+          "stability": 4,
+          "arcane_tech": 0,
+          "exploration": 2
+        }
+      },
+      "governanceAndLeadership": {
+        "governance": {
+          "model": "совет перевозчиков",
+          "decisionProcess": "Единогласие дежурных капитанов."
+        },
+        "leadership": {
+          "leadershipState": "collective",
+          "summary": "Два капитана продолжают совместное руководство.",
+          "leaderNpcIds": ["npc_ferry_ada", "npc_ferry_borin"]
+        }
+      }
+    }
+  ]
+}
+```
+
 ==================================================
 1. SCENE-LOCAL TURN WITH NPC SCOPE
 ==================================================

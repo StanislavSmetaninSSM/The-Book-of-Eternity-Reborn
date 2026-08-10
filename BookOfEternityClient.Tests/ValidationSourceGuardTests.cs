@@ -1094,4 +1094,31 @@ public sealed class ValidationSourceGuardTests
             acceptedTurnSource,
             StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void CanonicalShiningVisibility_MustFailClosedWithoutRevealed()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "SarefMainStoryState.cs"));
+
+        Assert.Contains(
+            "public static bool IsPlayerVisibleShiningFaction(JsonObject? faction)",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "FactionVisibilityRevealed",
+            source,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "return !IsHiddenWingsFaction(faction);",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "if (IsPlayerVisibleShiningFaction(faction))",
+            source,
+            StringComparison.Ordinal);
+    }
 }

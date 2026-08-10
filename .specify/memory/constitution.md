@@ -1,18 +1,21 @@
 <!--
 Sync Impact Report
-Version change: 1.0.0 -> 1.1.0
-Source task: GitHub issue #862
+Version change: 1.1.0 -> 1.2.0
+Source task: GitHub issue #1510 and direct user instruction on 2026-08-10
 Modified principles:
-- III. Contract and State Authority: expanded GM prompt/docs/examples synchronization to Mortal World and afterlife
-Added sections:
 - None
+Added sections:
+- Pre-Release Save Compatibility Policy
 Removed sections:
 - None
 Templates requiring updates:
-- .specify/templates/spec-template.md: updated
 - .specify/templates/plan-template.md: updated
+- .specify/templates/spec-template.md: updated
 - .specify/templates/tasks-template.md: updated
-Follow-up TODOs: none
+- AGENTS.md: updated
+Follow-up TODOs:
+- None. The active #1510 specification, plan, research, data model, contracts,
+  quickstart, tasks, and Superpowers design/plan were reconciled on 2026-08-10.
 -->
 
 # The Book of Eternity Reborn Constitution
@@ -129,6 +132,26 @@ Work MUST respect existing repository instructions in `AGENTS.md`, local
 Superpowers plans/specs, GitHub issue acceptance criteria, and established code
 patterns. Do not revert unrelated dirty worktree changes.
 
+## Pre-Release Save Compatibility Policy
+
+The game has not had a public release. Until a first public release baseline is
+explicitly declared by a tracked issue and accepted specification, backward
+compatibility with earlier save files, canonical JSON schemas, development
+snapshots, or obsolete test fixtures is NOT a project requirement.
+
+When a current contract or state schema changes, implementation MUST migrate
+the repository's active bootstrap state, templates, examples, and tests to the
+new authority. Agents MUST prefer removing legacy fallbacks and compatibility
+branches over adding complexity for hypothetical old saves. An old test or
+fixture proves only historical development behavior; it MUST NOT establish a
+compatibility requirement by itself.
+
+Any exception MUST be explicit in a tracked issue and Spec Kit artifact and
+MUST define the concrete save population, migration/reader behavior,
+verification, and removal or support horizon. This policy does not weaken
+same-turn atomicity, current canonical-state integrity, immutable accepted
+receipts, or preservation rules inside the current supported schema.
+
 ## Spec Kit Usage Policy
 
 Create or update a Spec Kit feature directory when a GitHub issue or user task
@@ -215,4 +238,4 @@ delegating to Codex, and before reporting completion. If a task conflicts with
 this constitution, the agent must report the conflict and either update the
 Spec Kit artifacts through the proper phase or ask the user for direction.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-05 | **Last Amended**: 2026-06-05
+**Version**: 1.2.0 | **Ratified**: 2026-06-05 | **Last Amended**: 2026-08-10

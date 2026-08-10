@@ -432,6 +432,21 @@ public sealed class BrowserShiningActionsParityTests : IDisposable
         {
             CreateProject("project_hidden", "Скрытый проект", ShiningAbodeState.ProjectStatusCompleted, supported: false)
         };
+        ShiningFactionTestMaterialization.Apply(
+            lanterns,
+            materializedAtTurn: 88,
+            hasResidentAffiliations: true,
+            canTrade: false);
+        ShiningFactionTestMaterialization.Apply(
+            capped,
+            materializedAtTurn: 88,
+            hasResidentAffiliations: false,
+            canTrade: false);
+        ShiningFactionTestMaterialization.Apply(
+            hidden,
+            materializedAtTurn: 88,
+            hasResidentAffiliations: false,
+            canTrade: false);
 
         var root = new JsonObject
         {
@@ -554,7 +569,8 @@ public sealed class BrowserShiningActionsParityTests : IDisposable
         ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
         ["hallId"] = hallId,
         ["isPlayerVisible"] = true,
-        ["visibility"] = "public",
+        ["visibility"] = "revealed",
+        ["baseStrength"] = 58,
         ["factionStrength"] = 58,
         ["investCountThisAscension"] = investCount,
         ["factionLifecycle"] = new JsonObject

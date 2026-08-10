@@ -7001,6 +7001,42 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 }
                 : null
         });
+
+        var materializedRoot = JsonNode.Parse(
+            (await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!
+            .AsObject();
+        foreach (var faction in materializedRoot["factions"]!.AsArray()
+                     .OfType<JsonObject>())
+        {
+            var factionId = faction["factionId"]!.GetValue<string>();
+            faction["visibility"] = "revealed";
+            faction["factionLifecycle"] = new JsonObject
+            {
+                ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+            };
+            faction[ShiningAbodeState.FactionChronicleProperty] ??=
+                new JsonArray();
+            faction[ShiningAbodeState.FactionInfluenceProperty] ??=
+                new JsonArray();
+            faction[ShiningAbodeState.FactionResourceLedgerProperty] ??=
+                new JsonArray();
+            faction["projectArchetypesCountedThisAscension"] ??=
+                new JsonArray();
+
+            ShiningFactionTestMaterialization.Apply(
+                faction,
+                materializedAtTurn: 153,
+                hasResidentAffiliations: true,
+                canTrade: string.Equals(
+                    factionId,
+                    "faction_dawn",
+                    StringComparison.Ordinal));
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            ShiningAbodeState.StatePath,
+            materializedRoot.ToJsonString(
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteJsonAsync(ShiningTradeRequestState.PendingRequestsPath, new
         {
             requests = new object[]

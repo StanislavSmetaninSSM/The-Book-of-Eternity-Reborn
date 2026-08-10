@@ -189,6 +189,12 @@ public partial class CanonicalStateNormalizer
         await NormalizeAfterlifeGlobalFlagsAsync(backups);
         await NormalizeAfterlifeStoryOutlineAsync(backups);
         await NormalizeSarefMainStoryStateAsync(backups);
+        await NormalizeFactionCoreChangesAsync(backups);
+        await NormalizeFactionStructureAsync(backups);
+        await NormalizeFactionResourcesAsync(backups);
+        await NormalizeFactionProjectsAsync(backups);
+        await NormalizeFactionCustomAsync(backups);
+        await NormalizeFactionChroniclesAsync(backups);
         await NormalizeFactionCoreAsync(backups);
         await NormalizeNpcCoreChangesAsync(backups);
         await NormalizeNpcTradeCoreAsync(backups);
@@ -201,10 +207,5 @@ public partial class CanonicalStateNormalizer
         await NormalizeItemJournalsAsync(backups);
         await NormalizeGuardianThoughtJournalAsync(backups);
         await NormalizeGuardianSocialJournalAsync(backups);
-        await NormalizeFactionStructureAsync(backups);
-        await NormalizeFactionResourcesAsync(backups);
-        await NormalizeFactionProjectsAsync(backups);
-        await NormalizeFactionCustomAsync(backups);
-        await NormalizeFactionChroniclesAsync(backups);
     }
 }

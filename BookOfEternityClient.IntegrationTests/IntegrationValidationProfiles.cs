@@ -4,6 +4,9 @@ namespace BookOfEternityClient.Tests;
 
 internal static class IntegrationValidationProfiles
 {
+    public const GameStateValidationPhase FactionMaterialization =
+        GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness;
+
     internal static readonly GameStateValidationSelection ActorMaterialization = Select(
         GameStateValidationPhase.RequiredFields |
         GameStateValidationPhase.CrossReferences |
@@ -67,7 +70,8 @@ internal static class IntegrationValidationProfiles
 
     internal static readonly GameStateValidationSelection FactionState = Select(
         GameStateValidationPhase.CrossReferences |
-        GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
+        GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+        FactionMaterialization);
 
     internal static readonly GameStateValidationSelection GuardianArchiveTrade = Select(
         GameStateValidationPhase.CrossReferences |
@@ -172,7 +176,8 @@ internal static class IntegrationValidationProfiles
         GameStateValidationPhase.ShiningLeadershipHeadReferences |
         GameStateValidationPhase.ShiningTreasuryClientOwnedState |
         GameStateValidationPhase.ClientOwnedControlFiles |
-        GameStateValidationPhase.RealmSegregation);
+        GameStateValidationPhase.RealmSegregation |
+        FactionMaterialization);
 
     internal static readonly GameStateValidationSelection SoulIdentity = Select(
         GameStateValidationPhase.SoulStateConsistency |

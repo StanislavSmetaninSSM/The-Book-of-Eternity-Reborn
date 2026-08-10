@@ -228,11 +228,13 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
               "factionId": "wings_of_angels",
               "sarefFactionRole": "wings_of_angels",
               "sarefVisibility": "hidden",
+              "visibility": "hidden",
               "charter": { "factionName": "Крылья Ангелов" },
               "factionStrength": 99
             },
             {
               "factionId": "radiant_accord",
+              "visibility": "revealed",
               "charter": { "factionName": "Сияющий Договор" },
               "factionStrength": 20
             }
@@ -240,12 +242,67 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """)!.AsObject();
 
+        foreach (var faction in shiningRoot["factions"]!
+                     .AsArray()
+                     .OfType<JsonObject>())
+        {
+            var factionId = faction["factionId"]!.GetValue<string>();
+            faction["materialization"] =
+                BuildVisibilityTestFactionMaterialization(factionId);
+        }
+
         var visibleFactionIds = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .Select(faction => SarefMainStoryState.GetNodeString(faction["factionId"]))
             .ToList();
 
         Assert.Equal(["radiant_accord"], visibleFactionIds);
     }
+
+    private static JsonObject BuildVisibilityTestFactionMaterialization(
+        string factionId) =>
+        new()
+        {
+            ["schemaVersion"] = 1,
+            ["materializationId"] = $"mat_visibility_{factionId}_turn_1",
+            ["factionType"] = "shining_faction",
+            ["factionId"] = factionId,
+            ["materializedAtTurn"] = 1,
+            ["state"] = "complete",
+            ["capabilities"] = new JsonObject
+            {
+                ["runsProjects"] = false,
+                ["holdsTerritorialInfluence"] = false,
+                ["usesResourceLedger"] = false,
+                ["hasResidentAffiliations"] = false,
+                ["canTrade"] = false,
+                ["hasLeadershipHistory"] = false,
+                ["usesStoryState"] = false
+            },
+            ["sections"] = new JsonObject
+            {
+                ["projects"] = VisibilityTestEmptyDisposition(
+                    "No projects are needed for visibility filtering."),
+                ["territorialInfluence"] = VisibilityTestEmptyDisposition(
+                    "No influence is needed for visibility filtering."),
+                ["resourceLedger"] = VisibilityTestEmptyDisposition(
+                    "No resources are needed for visibility filtering."),
+                ["residentAffiliations"] = VisibilityTestEmptyDisposition(
+                    "No residents are needed for visibility filtering."),
+                ["trade"] = VisibilityTestEmptyDisposition(
+                    "No trade is needed for visibility filtering."),
+                ["leadershipHistory"] = VisibilityTestEmptyDisposition(
+                    "No leadership history is needed for visibility filtering."),
+                ["storyState"] = VisibilityTestEmptyDisposition(
+                    "Story visibility is carried by the tested fields.")
+            }
+        };
+
+    private static JsonObject VisibilityTestEmptyDisposition(string reason) =>
+        new()
+        {
+            ["state"] = "empty_by_design",
+            ["reason"] = reason
+        };
 
     [Fact]
     public async Task ValidateGameStateAsync_InvalidSarefState_ReportsShapeAndDuplicateIssues()

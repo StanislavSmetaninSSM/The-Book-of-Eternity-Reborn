@@ -671,54 +671,82 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
         ["serviceTags"] = new JsonArray(ShiningAbodeState.HallServiceTagRelic)
     };
 
-    private static JsonObject CreateFaction(string factionId, string factionName, string hallId, bool visible) => new()
+    private static JsonObject CreateFaction(
+        string factionId,
+        string factionName,
+        string hallId,
+        bool visible)
     {
-        ["factionId"] = factionId,
-        ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
-        ["hallId"] = hallId,
-        ["isPlayerVisible"] = visible,
-        ["playerVisible"] = visible,
-        ["visibility"] = visible ? "public" : "hidden",
-        ["factionStrength"] = 64,
-        ["investCountThisAscension"] = 1,
-        ["factionLifecycle"] = new JsonObject
+        var faction = new JsonObject
         {
-            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
-        },
-        ["charter"] = new JsonObject
-        {
-            ["factionName"] = factionName,
-            ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeRefinement,
-            ["patronEffectFamily"] = ShiningAbodeState.EffectFamilyRelic,
-            ["summary"] = "Тестовая сияющая фракция кузнецов."
-        },
-        ["leadership"] = new JsonObject
-        {
-            ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure,
-            ["headActorType"] = ShiningAbodeState.HeadActorTypeResident,
-            ["headActorId"] = "resident_alen"
-        },
-        ["projects"] = new JsonArray
-        {
-            new JsonObject
+            ["factionId"] = factionId,
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = hallId,
+            ["isPlayerVisible"] = visible,
+            ["playerVisible"] = visible,
+            ["visibility"] = visible ? "revealed" : "hidden",
+            ["baseStrength"] = visible ? 41 : 44,
+            ["factionStrength"] = 64,
+            ["investCountThisAscension"] = 1,
+            ["projectArchetypesCountedThisAscension"] =
+                new JsonArray(ShiningAbodeState.ProjectArchetypeRefinement),
+            ["factionLifecycle"] = new JsonObject
             {
-                ["projectId"] = $"project_refinement_{factionId}",
-                ["displayName"] = "Проект Огранки",
-                ["summary"] = "Поддерживает кузню реликвий.",
-                ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeRefinement,
-                ["outputEffectFamily"] = ShiningAbodeState.EffectFamilyRelic,
-                ["tier"] = 2,
-                ["status"] = ShiningAbodeState.ProjectStatusCompleted,
-                ["isSupported"] = true,
-                ["strengthReward"] = 8,
-                ["completedAtTurn"] = 77,
-                ["completedAtUtc"] = "2026-06-01T00:00:00.0000000Z"
-            }
-        },
-        [ShiningAbodeState.FactionChronicleProperty] = new JsonArray(),
-        [ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(),
-        [ShiningAbodeState.FactionResourceLedgerProperty] = new JsonArray()
-    };
+                ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+            },
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = factionName,
+                ["favoredArchetype"] =
+                    ShiningAbodeState.ProjectArchetypeRefinement,
+                ["patronEffectFamily"] =
+                    ShiningAbodeState.EffectFamilyRelic,
+                ["summary"] = "Тестовая сияющая фракция кузнецов."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["leadershipState"] =
+                    ShiningAbodeState.LeadershipStateSecure,
+                ["headActorType"] =
+                    ShiningAbodeState.HeadActorTypeResident,
+                ["headActorId"] = "resident_alen"
+            },
+            ["projects"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["projectId"] = $"project_refinement_{factionId}",
+                    ["displayName"] = "Проект Огранки",
+                    ["summary"] = "Поддерживает кузню реликвий.",
+                    ["projectArchetype"] =
+                        ShiningAbodeState.ProjectArchetypeRefinement,
+                    ["outputEffectFamily"] =
+                        ShiningAbodeState.EffectFamilyRelic,
+                    ["tier"] = 2,
+                    ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+                    ["isSupported"] = true,
+                    ["strengthReward"] = 8,
+                    ["completedAtTurn"] = 77,
+                    ["completedAtUtc"] =
+                        "2026-06-01T00:00:00.0000000Z"
+                }
+            },
+            [ShiningAbodeState.FactionChronicleProperty] = new JsonArray(),
+            [ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(),
+            [ShiningAbodeState.FactionResourceLedgerProperty] =
+                new JsonArray(),
+            ["tradeInventory"] = null,
+            ["tradeInventoryReceipts"] = new JsonArray(),
+            ["leadershipReceipts"] = new JsonArray(),
+            ["leadershipHistory"] = new JsonArray()
+        };
+
+        return ShiningFactionTestMaterialization.Apply(
+            faction,
+            materializedAtTurn: 1,
+            hasResidentAffiliations: visible,
+            canTrade: true);
+    }
 
     private static JsonObject CreateResident(
         string residentId,

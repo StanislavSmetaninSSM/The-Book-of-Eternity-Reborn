@@ -98,19 +98,26 @@ public partial class ExplorerMode
     private async Task ShowShiningTradeLifecycleInspectionAsync(ShiningContext context)
     {
         var tradeRequests = await ShiningTradeRequestState.ReadRequestsAsync(_fs);
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root)
+            .ToList();
+        var visibleFactionIds = visibleFactions
+            .Select(faction => GetNodeString(faction["factionId"]))
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Cast<string>()
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var lines = new List<string>
         {
             "[bold yellow]🧾 Полный осмотр торговых циклов[/]"
         };
 
-        if (context.Root["factions"] is not JsonArray factions || factions.Count == 0)
+        if (visibleFactions.Count == 0)
         {
             lines.Add("");
-            lines.Add("[dim]Материализованных сияющих фракций пока нет.[/]");
+            lines.Add("[dim]Раскрытых сияющих фракций пока нет.[/]");
         }
         else
         {
-            foreach (var faction in factions.OfType<JsonObject>()
+            foreach (var faction in visibleFactions
                          .OrderByDescending(item => GetNodeInt(item["factionStrength"])))
             {
                 var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
@@ -274,6 +281,12 @@ public partial class ExplorerMode
             lines.Add("");
             lines.Add("[bold]Полная история сияющих призывов:[/]");
             foreach (var entry in gachaHistory.OfType<JsonObject>()
+                         .Select(item => CloneShiningJsonForPlayerFacingAuditWithAuthority(item, context.Root))
+                         .OfType<JsonObject>()
+                         .Where(item => TryResolvePlayerVisibleShiningFactionLabel(
+                             context.Root,
+                             GetNodeString(item["factionId"]),
+                             out _))
                          .OrderByDescending(item => GetNodeInt(item["turnNumber"]))
                          .ThenByDescending(item => GetNodeString(item["timestamp"]), StringComparer.OrdinalIgnoreCase))
             {
@@ -303,16 +316,25 @@ public partial class ExplorerMode
         });
 
         var requestAudit = new JsonArray();
-        foreach (var request in tradeRequests)
-            requestAudit.Add(JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        foreach (var request in tradeRequests.Where(request => visibleFactionIds.Contains(request.FactionId)))
+        {
+            var requestNode = JsonSerializer.SerializeToNode(
+                request,
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            requestAudit.Add(CloneShiningJsonForPlayerFacingAuditWithAuthority(requestNode, context.Root));
+        }
         if (requestAudit.Count > 0)
             WriteJsonAuditPanel("Полный JSON pending Shining trade requests", requestAudit, Color.Cyan1);
 
-        if (context.Root["factions"] is JsonArray factionAudit)
-            WriteJsonAuditPanel("Полный JSON сияющих фракций: tradeInventory, receipts, gacha history", factionAudit, Color.Gold1);
+        WriteJsonAuditPanel(
+            "Полный JSON сияющих фракций: tradeInventory, receipts, gacha history",
+            CloneShiningJsonForPlayerFacingAuditWithAuthority(
+                new JsonArray(visibleFactions.Select(faction => faction.DeepClone()).ToArray<JsonNode?>()),
+                context.Root),
+            Color.Gold1);
 
         if (context.Root["gachaSystem"] is JsonObject gachaAudit)
-            WriteJsonAuditPanel("Полный JSON Shining gachaSystem", gachaAudit, Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining gachaSystem", CloneShiningJsonForPlayerFacingAuditWithAuthority(gachaAudit, context.Root), Color.Gold1);
     }
 
     private static string DescribeShiningTradeSlotLabel(string? slotId)
@@ -355,13 +377,15 @@ public partial class ExplorerMode
         var gachaCost = ShiningAbodeState.GetShiningGachaPullCost();
         lines.Add($"[bold]Сияющая гача:[/] призыв реликвии за {gachaCost.Feathers} 🪶, попыток {remainingCharges}/{chargesPerReturn}, состояние цикла: [dim]{Markup.Escape(DescribeReturnCycleStatus(currentReturnCycleId))}[/]");
 
-        if (shiningRoot["factions"] is not JsonArray factions || factions.Count == 0)
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+            .ToList();
+        if (visibleFactions.Count == 0)
         {
-            lines.Add("[dim]Сияющие фракции ещё не проявлены.[/]");
+            lines.Add("[dim]Раскрытые сияющие фракции ещё не проявлены.[/]");
         }
         else
         {
-            foreach (var faction in factions.OfType<JsonObject>()
+            foreach (var faction in visibleFactions
                          .OrderByDescending(item => GetNodeInt(item["factionStrength"])))
             {
                 var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
@@ -413,6 +437,12 @@ public partial class ExplorerMode
             lines.Add("");
             lines.Add("[bold]Все призывы реликвий:[/] [dim](без сокращения)[/]");
             foreach (var entry in history.OfType<JsonObject>()
+                         .Select(item => CloneShiningJsonForPlayerFacingAuditWithAuthority(item, shiningRoot))
+                         .OfType<JsonObject>()
+                         .Where(item => TryResolvePlayerVisibleShiningFactionLabel(
+                             shiningRoot,
+                             GetNodeString(item["factionId"]),
+                             out _))
                          .OrderByDescending(item => GetNodeInt(item["turnNumber"])))
             {
                 var factionName = GetNodeString(entry["factionName"]) ?? GetNodeString(entry["factionId"]) ?? "фракция";
@@ -562,7 +592,7 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("Полный JSON фракции-кузницы", faction, Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON фракции-кузницы", CloneShiningJsonForPlayerFacingAudit(faction), Color.Gold1);
         WriteJsonAuditPanel("Полный JSON реликвии до перековки", relicChoice.Relic, Color.Gold1);
         WriteJsonAuditPanel(
             "Полный JSON forge request payload preview",

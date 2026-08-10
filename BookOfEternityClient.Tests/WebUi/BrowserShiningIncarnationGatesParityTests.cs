@@ -406,8 +406,18 @@ public sealed class BrowserShiningIncarnationGatesParityTests : IDisposable
             },
             ["factions"] = new JsonArray
             {
-                CreateFaction("faction_lanterns", "Дом Фонарей", "hall_lanterns", "project_memory"),
-                CreateFaction("faction_mirrors", "Дом Зеркал", "hall_mirrors", "project_route")
+                CreateFaction(
+                    "faction_lanterns",
+                    "Дом Фонарей",
+                    "hall_lanterns",
+                    "resident_alen",
+                    "project_memory"),
+                CreateFaction(
+                    "faction_mirrors",
+                    "Дом Зеркал",
+                    "hall_mirrors",
+                    "resident_mira",
+                    "project_route")
             },
             ["shiningPoliticalActors"] = new JsonArray(),
             ["gates"] = CreateGates(hasOpenDraft, selectedIds, rerollsRemaining)
@@ -571,53 +581,68 @@ public sealed class BrowserShiningIncarnationGatesParityTests : IDisposable
         ["serviceTags"] = new JsonArray(ShiningAbodeState.HallServiceTagSocial)
     };
 
-    private static JsonObject CreateFaction(string factionId, string factionName, string hallId, string projectId) => new()
+    private static JsonObject CreateFaction(
+        string factionId,
+        string factionName,
+        string hallId,
+        string headActorId,
+        string projectId)
     {
-        ["factionId"] = factionId,
-        ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
-        ["hallId"] = hallId,
-        ["isPlayerVisible"] = true,
-        ["visibility"] = "public",
-        ["factionStrength"] = 58,
-        ["investCountThisAscension"] = 1,
-        ["factionLifecycle"] = new JsonObject
+        var faction = new JsonObject
         {
-            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
-        },
-        ["charter"] = new JsonObject
-        {
-            ["factionName"] = factionName,
-            ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
-            ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
-            ["summary"] = "Тестовая сияющая фракция."
-        },
-        ["leadership"] = new JsonObject
-        {
-            ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure,
-            ["headActorType"] = ShiningAbodeState.HeadActorTypeResident,
-            ["headActorId"] = "resident_alen"
-        },
-        ["projects"] = new JsonArray
-        {
-            new JsonObject
+            ["factionId"] = factionId,
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = hallId,
+            ["isPlayerVisible"] = true,
+            ["visibility"] = "revealed",
+            ["baseStrength"] = 58,
+            ["factionStrength"] = 77,
+            ["investCountThisAscension"] = 1,
+            ["factionLifecycle"] = new JsonObject
             {
-                ["projectId"] = projectId,
-                ["displayName"] = "Проект Памяти",
-                ["summary"] = "Даёт Вратам материал для благословений.",
-                ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeRemembrance,
-                ["outputEffectFamily"] = ShiningAbodeState.EffectFamilyMemory,
-                ["tier"] = 1,
-                ["status"] = ShiningAbodeState.ProjectStatusCompleted,
-                ["isSupported"] = true,
-                ["strengthReward"] = 5,
-                ["completedAtTurn"] = 77,
-                ["completedAtUtc"] = "2026-06-01T00:00:00.0000000Z"
-            }
-        },
-        [ShiningAbodeState.FactionChronicleProperty] = new JsonArray(),
-        [ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(),
-        [ShiningAbodeState.FactionResourceLedgerProperty] = new JsonArray()
-    };
+                ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+            },
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = factionName,
+                ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+                ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+                ["summary"] = "Тестовая сияющая фракция."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure,
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeResident,
+                ["headActorId"] = headActorId
+            },
+            ["projects"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["projectId"] = projectId,
+                    ["displayName"] = "Проект Памяти",
+                    ["summary"] = "Даёт Вратам материал для благословений.",
+                    ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeRemembrance,
+                    ["outputEffectFamily"] = ShiningAbodeState.EffectFamilyMemory,
+                    ["tier"] = 1,
+                    ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+                    ["isSupported"] = true,
+                    ["strengthReward"] = 8,
+                    ["completedAtTurn"] = 77,
+                    ["completedAtUtc"] = "2026-06-01T00:00:00.0000000Z"
+                }
+            },
+            [ShiningAbodeState.FactionChronicleProperty] = new JsonArray(),
+            [ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(),
+            [ShiningAbodeState.FactionResourceLedgerProperty] = new JsonArray()
+        };
+
+        return ShiningFactionTestMaterialization.Apply(
+            faction,
+            materializedAtTurn: 77,
+            hasResidentAffiliations: true,
+            canTrade: false);
+    }
 
     private static JsonObject CreateResident(
         string residentId,

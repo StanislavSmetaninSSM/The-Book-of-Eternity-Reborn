@@ -204,7 +204,7 @@ public partial class ValidationService
             ValidateWorldQuestCombatFactionContract);
 
         await ValidateFlexibleStateFile("game_state/factions/faction_core.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "factionDataChanges", "factions" }, issues,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "factionCoreChanges", "factionDataChanges", "factions" }, issues,
             ValidateWorldQuestCombatFactionContract);
         await ValidateFlexibleStateFile("game_state/factions/faction_structure.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "factionRankChanges", "factionBonusChanges", "entries" }, issues,
@@ -1198,7 +1198,9 @@ public partial class ValidationService
                 }
 
                 var status = GetNodeString(receipt["status"]) ?? string.Empty;
-                var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, request.ProposedFactionId);
+                var currentFaction = FindShiningFactionForRouteValidation(
+                    currentShiningRoot,
+                    request.ProposedFactionId);
                 var currentHall = FindShiningHall(currentShiningRoot, request.ProposedHallId);
                 if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
                 {
@@ -1239,11 +1241,11 @@ public partial class ValidationService
 
                     foreach (var supporterId in request.SupportingResidentIds
                                  .Where(id => !string.IsNullOrWhiteSpace(id))
-                                 .Distinct(StringComparer.OrdinalIgnoreCase))
+                                 .Distinct(StringComparer.Ordinal))
                     {
-                        var resident = GuardianAbodeResidentState.FindResident(currentResidentsRoot, supporterId);
+                        var resident = FindShiningResidentByExactId(currentResidentsRoot, supporterId);
                         if (resident != null &&
-                            string.Equals(GetNodeString(resident["shiningFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase))
+                            string.Equals(GetNodeString(resident["shiningFactionId"]), request.ProposedFactionId, StringComparison.Ordinal))
                         {
                             continue;
                         }
@@ -1258,6 +1260,22 @@ public partial class ValidationService
                             actual: resident == null ? "resident_missing" : (GetNodeString(resident["shiningFactionId"]) ?? "null"),
                             repairHint: "После accepted founding обнови resident.shiningFactionId для каждого supporter из request."));
                     }
+
+                    ValidateShiningRouteMaterialization(
+                        route: "player_founding",
+                        authorityType: "shining_founding_request",
+                        authorityId: request.RequestId,
+                        expectedFactionId: request.ProposedFactionId,
+                        faction: currentFaction,
+                        hallId: request.ProposedHallId,
+                        residentIds: request.SupportingResidentIds
+                            .Where(id => !string.IsNullOrWhiteSpace(id))
+                            .Select(id => id.Trim())
+                            .ToHashSet(StringComparer.Ordinal),
+                        projectIds: new HashSet<string>(
+                            StringComparer.Ordinal),
+                        currentResidentsRoot: currentResidentsRoot,
+                        issues: issues);
                 }
                 else if (currentFaction != null || currentHall != null)
                 {
@@ -1771,7 +1789,7 @@ public partial class ValidationService
                 }
 
                 var status = GetNodeString(receipt["status"]) ?? string.Empty;
-                var resident = GuardianAbodeResidentState.FindResident(currentResidentsRoot, request.ResidentId);
+                var resident = FindShiningResidentByExactId(currentResidentsRoot, request.ResidentId);
                 if (resident == null)
                 {
                     issues.Add(new ValidationIssue(
@@ -1799,7 +1817,7 @@ public partial class ValidationService
                             repairHint: "При accepted_transfer resident может перейти только в существующую target faction."));
                     }
 
-                    if (!string.Equals(residentFactionId, request.TargetFactionId, StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(residentFactionId, request.TargetFactionId, StringComparison.Ordinal))
                     {
                         issues.Add(new ValidationIssue(
                             ShiningFactionRequestState.PendingRealignmentsRequestPath,
@@ -1851,7 +1869,7 @@ public partial class ValidationService
                             repairHint: "После departed_to_neutral запиши residentHistoryEntryId в receipt и matching historyLog entry."));
                     }
                 }
-                else if (!string.Equals(residentFactionId, request.SourceFactionId, StringComparison.OrdinalIgnoreCase))
+                else if (!string.Equals(residentFactionId, request.SourceFactionId, StringComparison.Ordinal))
                 {
                     issues.Add(new ValidationIssue(
                         ShiningFactionRequestState.PendingRealignmentsRequestPath,
@@ -1983,7 +2001,7 @@ public partial class ValidationService
 
     private static HashSet<string> CollectOwnedSoulRelicIds(JsonObject? soulRoot)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new HashSet<string>(StringComparer.Ordinal);
         var soulRelics = soulRoot?["soulRelics"];
         if (soulRelics is JsonObject soulRelicsObject)
         {
@@ -2201,7 +2219,7 @@ public partial class ValidationService
                     }
                 }
                 else if (string.Equals(GetNodeString(leadership["headActorType"]), request.IncumbentHeadActorType, StringComparison.OrdinalIgnoreCase) &&
-                         string.Equals(GetNodeString(leadership["headActorId"]), request.IncumbentHeadActorId, StringComparison.OrdinalIgnoreCase))
+                         string.Equals(GetNodeString(leadership["headActorId"]), request.IncumbentHeadActorId, StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -7504,11 +7522,19 @@ public partial class ValidationService
                 continue;
 
             ValidateCanonicalFactionIdentity(item, itemContext, issues);
+            var requiredStructureFields = new[]
+            {
+                "governance",
+                "leadership",
+                "ranks",
+                "structuredBonuses"
+            };
             var missingStructureFields = new List<string>();
-            if (!item.TryGetProperty("ranks", out var ranks))
-                missingStructureFields.Add("ranks");
-            if (!item.TryGetProperty("structuredBonuses", out var structuredBonuses))
-                missingStructureFields.Add("structuredBonuses");
+            foreach (var requiredField in requiredStructureFields)
+            {
+                if (!item.TryGetProperty(requiredField, out _))
+                    missingStructureFields.Add(requiredField);
+            }
 
             if (missingStructureFields.Count > 0)
             {
@@ -7518,12 +7544,16 @@ public partial class ValidationService
                     "Canonical faction_structure entry не содержит обязательные корневые поля",
                     code: "canonical_faction_structure_missing_required_fields",
                     section: "Factions",
-                    expected: "ranks and structuredBonuses in each entries[] item",
+                    expected:
+                        "governance, leadership, ranks, and structuredBonuses in current-schema entries[] items",
                     actual: string.Join(", ", missingStructureFields),
-                    repairHint: "Для canonical faction_structure.json каждая запись в entries[] должна хранить полные ranks и structuredBonuses, а не partial fragment."));
+                    repairHint:
+                        "Для current-schema faction_structure.json записи сохрани полные governance, leadership, ranks и structuredBonuses."));
                 continue;
             }
 
+            var ranks = item.GetProperty("ranks");
+            var structuredBonuses = item.GetProperty("structuredBonuses");
             if (RequireObject(ranks, $"{itemContext}.ranks", issues))
             {
                 if (!TryGetArray(ranks, "branches", $"{itemContext}.ranks.branches", issues, out var branches))
@@ -8604,8 +8634,37 @@ public partial class ValidationService
     {
         return shiningRoot["halls"] is JsonArray halls
             ? halls.OfType<JsonObject>().FirstOrDefault(hall =>
-                string.Equals(GetNodeString(hall["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
+                string.Equals(GetNodeString(hall["hallId"]), hallId, StringComparison.Ordinal))
             : null;
+    }
+
+    private static JsonObject? FindShiningFactionForRouteValidation(
+        JsonObject shiningRoot,
+        string factionId) =>
+        ShiningAbodeState.FindFaction(shiningRoot, factionId) ??
+        (shiningRoot["factions"] as JsonArray)?
+            .OfType<JsonObject>()
+            .FirstOrDefault(faction =>
+                string.Equals(
+                    GetNodeString(faction["factionId"]),
+                    factionId,
+                    StringComparison.Ordinal));
+
+    private static JsonObject? FindShiningResidentByExactId(
+        JsonObject? residentsRoot,
+        string residentId)
+    {
+        if (residentsRoot?["entries"] is not JsonArray residents ||
+            string.IsNullOrWhiteSpace(residentId))
+        {
+            return null;
+        }
+
+        return residents.OfType<JsonObject>().FirstOrDefault(resident =>
+            string.Equals(
+                GetNodeString(resident["residentId"]),
+                residentId,
+                StringComparison.Ordinal));
     }
 
     private static bool ShiningFoundingReceiptMatchesRequest(
@@ -8621,18 +8680,19 @@ public partial class ValidationService
             !HasCanonicalShiningPoliticalClosure(receipt))
             return false;
 
-        var receiptSupporters = ReadStringSet(receipt["supportingResidentIds"]);
+        var receiptSupporters =
+            ReadOrdinalStringSet(receipt["supportingResidentIds"]);
         var requestSupporters = request.SupportingResidentIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .Select(id => id.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
 
-        return string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+        return string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(receipt["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
-               string.Equals(GetNodeString(receipt["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["factionId"]), request.ProposedFactionId, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(receipt["hallId"]), request.ProposedHallId, StringComparison.Ordinal) &&
                request.QuotedCostFeathers == ShiningFactionRequestState.FactionFoundingCostFeathers &&
                request.QuotedCostLightSparks == ShiningFactionRequestState.FactionFoundingCostLightSparks &&
                GetNodeInt(receipt["quotedCostFeathers"]) == ShiningFactionRequestState.FactionFoundingCostFeathers &&
@@ -8692,7 +8752,7 @@ public partial class ValidationService
         actual =
             $"{GetNodeString(hall["hallId"])} / {GetNodeString(hall["hallName"])} / {string.Join(",", ReadStringSet(hall["serviceTags"]).OrderBy(value => value, StringComparer.OrdinalIgnoreCase))}";
 
-        return string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+        return string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(hall["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(hall["description"]), request.ProposedHallDescription, StringComparison.Ordinal) &&
                ReadStringSet(hall["serviceTags"]).SetEquals(request.ProposedHallServiceTags.Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()));
@@ -8707,8 +8767,8 @@ public partial class ValidationService
         actual =
             $"{GetNodeString(faction["factionId"])} / {GetNodeString(faction["originType"])} / {GetNodeString(leadership["headActorType"])}:{GetNodeString(leadership["headActorId"])} / {GetNodeString(leadership["leadershipState"])}";
 
-        return string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(faction["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+        return string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(faction["hallId"]), request.ProposedHallId, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(faction["originType"]), ShiningAbodeState.OriginTypePlayerFounded, StringComparison.OrdinalIgnoreCase) &&
                GetNodeInt(faction["baseStrength"]) == 35 &&
                string.Equals(GetNodeString(faction["charter"]?["factionName"]), request.Charter.FactionName, StringComparison.Ordinal) &&
@@ -8716,7 +8776,7 @@ public partial class ValidationService
                string.Equals(GetNodeString(faction["charter"]?["patronEffectFamily"]), request.Charter.PatronEffectFamily, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(faction["charter"]?["summary"]), request.Charter.Summary, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(leadership["headActorType"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(leadership["headActorId"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["headActorId"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -8731,15 +8791,15 @@ public partial class ValidationService
         var status = GetNodeString(receipt["status"]);
         if (!ShiningFactionRequestState.IsSupportedRealignmentStatus(status) ||
             !HasCanonicalShiningPoliticalClosure(receipt) ||
-            !string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(receipt["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(receipt["sourceFactionId"]), request.SourceFactionId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.Ordinal) ||
+            !string.Equals(GetNodeString(receipt["residentId"]), request.ResidentId, StringComparison.Ordinal) ||
+            !string.Equals(GetNodeString(receipt["sourceFactionId"]), request.SourceFactionId, StringComparison.Ordinal) ||
             !string.Equals(GetNodeString(receipt["realignmentMode"]), request.RealignmentMode, StringComparison.OrdinalIgnoreCase))
         {
             return false;
         }
 
-        if (!string.Equals(GetNodeString(receipt["targetFactionId"]) ?? string.Empty, request.TargetFactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(GetNodeString(receipt["targetFactionId"]) ?? string.Empty, request.TargetFactionId ?? string.Empty, StringComparison.Ordinal))
             return false;
 
         return (status ?? string.Empty).Trim().ToLowerInvariant() switch
@@ -8763,10 +8823,10 @@ public partial class ValidationService
         var status = GetNodeString(receipt["status"]);
         if (!ShiningFactionRequestState.IsSupportedLeadershipStatus(status) ||
             !HasCanonicalShiningPoliticalClosure(receipt) ||
-            !string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.Ordinal) ||
             !string.Equals(GetNodeString(receipt["transitionMode"]), request.TransitionMode, StringComparison.OrdinalIgnoreCase) ||
             !string.Equals(GetNodeString(receipt["previousHeadActorType"]) ?? string.Empty, request.IncumbentHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(receipt["previousHeadActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(GetNodeString(receipt["previousHeadActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.Ordinal))
         {
             return false;
         }
@@ -8783,7 +8843,7 @@ public partial class ValidationService
         }
 
         return string.Equals(GetNodeString(receipt["newHeadActorType"]) ?? string.Empty, expectedCandidateType, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["newHeadActorId"]) ?? string.Empty, expectedCandidateId, StringComparison.OrdinalIgnoreCase);
+               string.Equals(GetNodeString(receipt["newHeadActorId"]) ?? string.Empty, expectedCandidateId, StringComparison.Ordinal);
     }
 
     private static bool ShiningLeadershipMatchesAcceptedOutcome(
@@ -8802,7 +8862,7 @@ public partial class ValidationService
         }
 
         return string.Equals(GetNodeString(leadership["headActorType"]) ?? string.Empty, request.CandidateHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(leadership["headActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["headActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -8817,7 +8877,7 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(expectedEventType))
             return true;
 
-        return string.Equals(GetNodeString(historyEntry["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+        return string.Equals(GetNodeString(historyEntry["requestId"]), request.RequestId, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(historyEntry["eventType"]), expectedEventType, StringComparison.OrdinalIgnoreCase) &&
                GetNodeInt(historyEntry["turnNumber"]) == GetNodeInt(receipt["resolvedAtTurn"]);
     }
@@ -9250,7 +9310,7 @@ public partial class ValidationService
             .Select(node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
             .Where(value => !string.IsNullOrWhiteSpace(value))
             .ToList();
-        if (normalizedSelectedCardIds.Count != normalizedSelectedCardIds.Distinct(StringComparer.OrdinalIgnoreCase).Count())
+        if (normalizedSelectedCardIds.Count != normalizedSelectedCardIds.Distinct(StringComparer.Ordinal).Count())
         {
             issues.Add(new ValidationIssue(
                 ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -9416,7 +9476,9 @@ public partial class ValidationService
 
         var preTurnRelicIds = CollectSoulRelicIds(preTurnSoulRoot);
         var currentRelicIds = CollectSoulRelicIds(currentSoulRoot);
-        var newRelicIds = currentRelicIds.Except(preTurnRelicIds, StringComparer.OrdinalIgnoreCase).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var newRelicIds = currentRelicIds
+            .Except(preTurnRelicIds, StringComparer.Ordinal)
+            .ToHashSet(StringComparer.Ordinal);
         if (!preTurnRelicIds.IsSubsetOf(currentRelicIds))
         {
             issues.Add(new ValidationIssue(
@@ -9554,10 +9616,14 @@ public partial class ValidationService
     {
         var hallId = GetNodeString(receipt["hallId"]) ?? string.Empty;
         var factionId = GetNodeString(receipt["resolvedFactionId"]) ?? string.Empty;
-        var residentIds = ReadStringSet(receipt["newResidentIds"]);
-        var projectIds = ReadStringSet(receipt["seededProjectIds"]);
+        var residentIds =
+            ReadOrdinalStringSet(receipt["newResidentIds"]);
+        var projectIds =
+            ReadOrdinalStringSet(receipt["seededProjectIds"]);
         var currentHall = FindShiningHall(currentShiningRoot, hallId);
-        var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, factionId);
+        var currentFaction = FindShiningFactionForRouteValidation(
+            currentShiningRoot,
+            factionId);
         if (currentShiningRoot["pendingNativeFactionDiscovery"] is not null)
         {
             issues.Add(new ValidationIssue(
@@ -9612,7 +9678,7 @@ public partial class ValidationService
 
         if (string.IsNullOrWhiteSpace(factionId) || currentFaction == null ||
             !string.Equals(GetNodeString(currentFaction?["originType"]), ShiningAbodeState.OriginTypeNativeRadiant, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(currentFaction?["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(GetNodeString(currentFaction?["hallId"]), hallId, StringComparison.Ordinal))
         {
             issues.Add(new ValidationIssue(
                 ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -9640,12 +9706,12 @@ public partial class ValidationService
 
         foreach (var residentId in residentIds)
         {
-            var previousResident = GuardianAbodeResidentState.FindResident(preTurnResidentsRoot, residentId);
-            var currentResident = GuardianAbodeResidentState.FindResident(currentResidentsRoot, residentId);
+            var previousResident = FindShiningResidentByExactId(preTurnResidentsRoot, residentId);
+            var currentResident = FindShiningResidentByExactId(currentResidentsRoot, residentId);
             if (previousResident != null ||
                 currentResident == null ||
                 !string.Equals(GetNodeString(currentResident["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) ||
-                !string.Equals(GetNodeString(currentResident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(GetNodeString(currentResident["shiningFactionId"]), factionId, StringComparison.Ordinal))
             {
                 issues.Add(new ValidationIssue(
                     GuardianAbodeResidentState.StatePath,
@@ -9690,7 +9756,7 @@ public partial class ValidationService
                 }
 
                 var project = currentProjects.OfType<JsonObject>().FirstOrDefault(item =>
-                    string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+                    string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.Ordinal));
                 if (project == null ||
                     !string.Equals(GetNodeString(project["status"]), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase))
                 {
@@ -9746,6 +9812,18 @@ public partial class ValidationService
                 actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
                 repairHint: "Списывай Ink Feathers exactly по quotedCostFeathers из discovery request."));
         }
+
+        ValidateShiningRouteMaterialization(
+            route: "native_discovery",
+            authorityType: "shining_core_action_request",
+            authorityId: request.RequestId,
+            expectedFactionId: factionId,
+            faction: currentFaction,
+            hallId: hallId,
+            residentIds: residentIds,
+            projectIds: projectIds,
+            currentResidentsRoot: currentResidentsRoot,
+            issues: issues);
 
         ValidateAcceptedShiningNativeDiscoveryConstrainedDiff(
             request,
@@ -9948,11 +10026,11 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         string repairHint)
     {
-        var expectedIds = IndexObjectsById(expectedNode, idProperty).Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var expectedIds = IndexObjectsById(expectedNode, idProperty).Keys.ToHashSet(StringComparer.Ordinal);
         var actualIds = IndexObjectsById(actualNode, idProperty).Keys.ToList();
         var allowed = allowedNewIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
 
         foreach (var id in actualIds)
         {
@@ -9973,7 +10051,7 @@ public partial class ValidationService
 
     private static Dictionary<string, JsonObject> IndexObjectsById(JsonNode? node, string idProperty)
     {
-        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        var result = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         if (node is not JsonArray array)
             return result;
 
@@ -9994,7 +10072,7 @@ public partial class ValidationService
         string filePath,
         List<ValidationIssue> issues)
     {
-        var expectedIds = IndexObjectsById(expectedNode, "actorId").Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var expectedIds = IndexObjectsById(expectedNode, "actorId").Keys.ToHashSet(StringComparer.Ordinal);
         var actualById = IndexObjectsById(actualNode, "actorId");
         foreach (var (id, actor) in actualById)
         {
@@ -10003,8 +10081,8 @@ public partial class ValidationService
 
             var currentFactionId = GetNodeString(actor["currentFactionId"]);
             var originFactionId = GetNodeString(actor["originFactionId"]);
-            if (string.Equals(currentFactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(originFactionId, factionId, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(currentFactionId, factionId, StringComparison.Ordinal) &&
+                string.Equals(originFactionId, factionId, StringComparison.Ordinal))
             {
                 continue;
             }
@@ -10032,7 +10110,7 @@ public partial class ValidationService
                 continue;
 
             var project = projects.OfType<JsonObject>().FirstOrDefault(item =>
-                string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+                string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.Ordinal));
             if (project != null)
                 return project;
         }
@@ -10080,12 +10158,12 @@ public partial class ValidationService
         return ShiningCoreActionRequestState.IsSupportedStatus(status) &&
                GetNodeInt(receipt["resolvedAtTurn"]) > 0 &&
                !string.IsNullOrWhiteSpace(GetNodeString(receipt["resolvedAtUtc"])) &&
-               string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(receipt["actionType"]), request.ActionType, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["factionId"]) ?? string.Empty, request.FactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["factionId"]) ?? string.Empty, request.FactionId ?? string.Empty, StringComparison.Ordinal) &&
                ShiningCoreActionProjectIdentityMatches(request, GetNodeString(receipt["projectId"])) &&
                ShiningCoreActionRelicIdentityMatches(request, GetNodeString(receipt["relicId"]), status) &&
-               string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostFeathers", request.QuotedCostFeathers) &&
                OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostLightSparks", request.QuotedCostLightSparks) &&
@@ -10096,7 +10174,7 @@ public partial class ValidationService
                    : -1) == request.PropertyIndex &&
                ReadOrderedStringList(receipt["selectedCardIds"]).SequenceEqual(
                    request.SelectedCardIds.Where(id => !string.IsNullOrWhiteSpace(id)).Select(id => id.Trim()),
-                   StringComparer.OrdinalIgnoreCase);
+                   StringComparer.Ordinal);
     }
 
     private static bool OptionalCoreActionReceiptIntAuditMatches(JsonObject receipt, string propertyName, int expected)
@@ -10209,7 +10287,7 @@ public partial class ValidationService
             return !string.IsNullOrWhiteSpace(receiptProjectId);
         }
 
-        return string.Equals(receiptProjectId ?? string.Empty, request.ProjectId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(receiptProjectId ?? string.Empty, request.ProjectId ?? string.Empty, StringComparison.Ordinal);
     }
 
     private static bool ShiningCoreActionRelicIdentityMatches(
@@ -10220,14 +10298,14 @@ public partial class ValidationService
         if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
         {
             if (!string.IsNullOrWhiteSpace(request.RelicId))
-                return string.Equals(receiptRelicId, request.RelicId, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(receiptRelicId, request.RelicId, StringComparison.Ordinal);
 
             return string.Equals(receiptStatus, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase)
                 ? !string.IsNullOrWhiteSpace(receiptRelicId)
                 : string.IsNullOrWhiteSpace(receiptRelicId);
         }
 
-        return string.Equals(receiptRelicId ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(receiptRelicId ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.Ordinal);
     }
 
     private async Task<bool> TryApplyConcurrentShiningClosuresAsync(
@@ -10357,7 +10435,7 @@ public partial class ValidationService
         var supporterIds = request.SupportingResidentIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .Select(id => id.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
         if (expectedResidentsRoot["entries"] is JsonArray entries)
         {
             foreach (var resident in entries.OfType<JsonObject>())
@@ -10386,7 +10464,7 @@ public partial class ValidationService
             request.RequestId);
 
         var status = GetNodeString(receipt["status"]) ?? string.Empty;
-        var resident = GuardianAbodeResidentState.FindResident(expectedResidentsRoot, request.ResidentId);
+        var resident = FindShiningResidentByExactId(expectedResidentsRoot, request.ResidentId);
         if (resident != null)
         {
             if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
@@ -10422,7 +10500,7 @@ public partial class ValidationService
         var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, request.FactionId);
         var currentHistory = currentFaction?["leadershipHistory"] as JsonArray;
         var historyEntry = currentHistory?.OfType<JsonObject>()
-            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["requestId"]), request.RequestId, StringComparison.Ordinal));
         if (historyEntry != null)
         {
             AddUniqueReceipt(
@@ -10503,7 +10581,7 @@ public partial class ValidationService
             return null;
 
         return actors.OfType<JsonObject>()
-            .FirstOrDefault(actor => string.Equals(GetNodeString(actor["actorId"]), actorId, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(actor => string.Equals(GetNodeString(actor["actorId"]), actorId, StringComparison.Ordinal));
     }
 
     private static bool ApplyTradeInventoryToComposite(
@@ -10543,7 +10621,7 @@ public partial class ValidationService
 
         var currentHistoryLog = currentResidentsRoot[GuardianAbodeResidentState.HistoryLogProperty] as JsonArray;
         var historyEntry = currentHistoryLog?.OfType<JsonObject>()
-            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["entryId"]), historyEntryId, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["entryId"]), historyEntryId, StringComparison.Ordinal));
         if (historyEntry != null)
         {
             AddUniqueReceipt(
@@ -10578,7 +10656,7 @@ public partial class ValidationService
                 continue;
             }
 
-            if (string.Equals(GetNodeString(existing[idProperty]), requestId, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(GetNodeString(existing[idProperty]), requestId, StringComparison.Ordinal))
                 receipts.RemoveAt(i);
         }
 
@@ -10623,7 +10701,7 @@ public partial class ValidationService
 
     private static HashSet<string> CollectSoulRelicIds(JsonObject soulRoot)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new HashSet<string>(StringComparer.Ordinal);
         if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
         {
             foreach (var collectionName in new[] { "equipped", "stored" })
@@ -10668,7 +10746,7 @@ public partial class ValidationService
                 foreach (var candidate in collection.OfType<JsonObject>())
                 {
                     var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
-                    if (!string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(candidateId, relicId, StringComparison.Ordinal))
                         continue;
 
                     relic = candidate;
@@ -10681,7 +10759,7 @@ public partial class ValidationService
             foreach (var candidate in flatCollection.OfType<JsonObject>())
             {
                 var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
-                if (!string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(candidateId, relicId, StringComparison.Ordinal))
                     continue;
 
                 relic = candidate;
@@ -10707,7 +10785,7 @@ public partial class ValidationService
                     !currentCollection.OfType<JsonObject>().Any(candidate =>
                     {
                         var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
-                        return string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase);
+                        return string.Equals(candidateId, relicId, StringComparison.Ordinal);
                     }))
                 {
                     continue;
@@ -10728,7 +10806,7 @@ public partial class ValidationService
                  currentFlatCollection.OfType<JsonObject>().Any(candidate =>
                  {
                      var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
-                     return string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase);
+                     return string.Equals(candidateId, relicId, StringComparison.Ordinal);
                  }))
         {
             expectedFlatCollection.Add(materializedRelic.DeepClone());
@@ -10749,9 +10827,17 @@ public partial class ValidationService
         soulRoot["inkFeathers"] = inkFeathers;
     }
 
-    private static HashSet<string> ReadStringSet(JsonNode? node)
+    private static HashSet<string> ReadStringSet(JsonNode? node) =>
+        ReadStringSet(node, StringComparer.OrdinalIgnoreCase);
+
+    private static HashSet<string> ReadOrdinalStringSet(JsonNode? node) =>
+        ReadStringSet(node, StringComparer.Ordinal);
+
+    private static HashSet<string> ReadStringSet(
+        JsonNode? node,
+        StringComparer comparer)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new HashSet<string>(comparer);
         if (node is not JsonArray array)
             return result;
 

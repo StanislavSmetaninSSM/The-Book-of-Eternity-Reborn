@@ -17,7 +17,51 @@
         {
           "stateId": "state_public_tension"
         }
-      ]
+      ],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "fmat_fixture_silver_circle_project",
+        "factionType": "mortal_faction",
+        "factionId": "faction_silver_circle",
+        "materializedAtTurn": 0,
+        "state": "complete",
+        "capabilities": {
+          "hasFormalHierarchy": true,
+          "usesFactionResources": false,
+          "maintainsRelations": false,
+          "runsProjects": true,
+          "holdsTerritoryOrInfluence": false,
+          "supportsPlayerMembership": false,
+          "usesCustomMechanics": true
+        },
+        "sections": {
+          "hierarchy": {
+            "state": "populated"
+          },
+          "resources": {
+            "state": "empty_by_design",
+            "reason": "The Silver Circle tracks no formal resource ledger."
+          },
+          "relations": {
+            "state": "empty_by_design",
+            "reason": "The Silver Circle has no formal diplomatic relation."
+          },
+          "projects": {
+            "state": "populated"
+          },
+          "territoryAndInfluence": {
+            "state": "empty_by_design",
+            "reason": "The Silver Circle claims no territory."
+          },
+          "playerMembership": {
+            "state": "empty_by_design",
+            "reason": "The player is not a member of the Silver Circle."
+          },
+          "customStates": {
+            "state": "populated"
+          }
+        }
+      }
     }
   ]
 }

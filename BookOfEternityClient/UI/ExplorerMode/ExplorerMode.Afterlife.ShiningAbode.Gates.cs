@@ -252,6 +252,7 @@ public partial class ExplorerMode
                 if (!ConfirmShiningGatesLocalMutationPreview(
                         "Подтвердить обновление набора Врат",
                         BuildShiningGatesRerollPreviewLines(context.Root, projectedRoot),
+                        context.Root,
                         projectedRoot["gates"] as JsonObject))
                 {
                     continue;
@@ -370,13 +371,17 @@ public partial class ExplorerMode
             var summary = GetNodeString(card["displaySummary"]) ?? string.Empty;
             var sourceType = GetNodeString(card["sourceType"]) ?? string.Empty;
             var sourceFactionId = GetNodeString(card["sourceFactionId"]) ?? string.Empty;
+            var hasVisibleSourceFaction = TryResolvePlayerVisibleShiningFactionLabel(
+                shiningRoot,
+                sourceFactionId,
+                out var sourceFactionLabel);
             var sourceActorId = GetNodeString(card["sourceActorId"]) ?? string.Empty;
             var dedupeKey = GetNodeString(card["dedupeKey"]) ?? string.Empty;
             var sourceParts = new[]
                 {
                     string.IsNullOrWhiteSpace(cardId) ? "" : $"cardId={cardId}",
                     string.IsNullOrWhiteSpace(sourceType) ? "" : $"sourceType={sourceType}",
-                    string.IsNullOrWhiteSpace(sourceFactionId) ? "" : $"sourceFactionId={sourceFactionId}",
+                    hasVisibleSourceFaction ? $"sourceFaction={sourceFactionLabel}" : "",
                     string.IsNullOrWhiteSpace(sourceActorId) ? "" : $"sourceActorId={sourceActorId}",
                     string.IsNullOrWhiteSpace(dedupeKey) ? "" : $"dedupeKey={dedupeKey}"
                 }
@@ -410,6 +415,7 @@ public partial class ExplorerMode
         if (!ConfirmShiningGatesLocalMutationPreview(
                 toggledOff ? "Подтвердить снятие благословения" : "Подтвердить выбор благословения",
                 BuildShiningBlessingSelectionPreviewLines(shiningRoot, projectedRoot!, selectedCard, cardId, toggledOff),
+                shiningRoot,
                 projectedRoot!["gates"] as JsonObject,
                 selectedCard))
         {
@@ -553,15 +559,16 @@ public partial class ExplorerMode
         });
 
         if (includeAuditPayloads && context.Root["gates"] is JsonObject gatesAudit)
-            WriteJsonAuditPanel("Полный canonical JSON Врат", gatesAudit, Color.Gold1);
+            WriteJsonAuditPanel("Полный canonical JSON Врат", CloneShiningJsonForPlayerFacingAuditWithAuthority(gatesAudit, context.Root), Color.Gold1);
 
         if (includeAuditPayloads && context.Root["preparedIncarnationPackage"] is JsonObject packageAudit)
-            WriteJsonAuditPanel("Полный frozen JSON preparedIncarnationPackage", packageAudit, Color.Khaki1);
+            WriteJsonAuditPanel("Полный frozen JSON preparedIncarnationPackage", CloneShiningJsonForPlayerFacingAuditWithAuthority(packageAudit, context.Root), Color.Khaki1);
     }
 
     private bool ConfirmShiningGatesLocalMutationPreview(
         string confirmationTitle,
         IReadOnlyList<string> lines,
+        JsonObject authorityRoot,
         JsonObject? projectedGates,
         JsonObject? focusedCard = null)
     {
@@ -576,8 +583,8 @@ public partial class ExplorerMode
         });
 
         if (focusedCard != null)
-            WriteJsonAuditPanel("Полный JSON выбранной blessing card", focusedCard, Color.Khaki1);
-        WriteJsonAuditPanel("Projected canonical JSON gates после подтверждения", projectedGates, Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON выбранной blessing card", CloneShiningJsonForPlayerFacingAuditWithAuthority(focusedCard, authorityRoot), Color.Khaki1);
+        WriteJsonAuditPanel("Projected canonical JSON gates после подтверждения", CloneShiningJsonForPlayerFacingAuditWithAuthority(projectedGates, authorityRoot), Color.Gold1);
 
         var choice = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]{Markup.Escape(confirmationTitle)}[/]")
@@ -627,7 +634,13 @@ public partial class ExplorerMode
                 new ShiningContext(beforeRoot, null, null, null),
                 !toggledOff).Select(line => $"  {line}"));
             lines.Add($"  sourceType: [dim]{Markup.Escape(GetNodeString(card["sourceType"]) ?? string.Empty)}[/]");
-            lines.Add($"  sourceFactionId: [dim]{Markup.Escape(GetNodeString(card["sourceFactionId"]) ?? string.Empty)}[/]");
+            if (TryResolvePlayerVisibleShiningFactionLabel(
+                    beforeRoot,
+                    GetNodeString(card["sourceFactionId"]),
+                    out var sourceFactionLabel))
+            {
+                lines.Add($"  sourceFaction: [dim]{Markup.Escape(sourceFactionLabel)}[/]");
+            }
             lines.Add($"  sourceActorId: [dim]{Markup.Escape(GetNodeString(card["sourceActorId"]) ?? string.Empty)}[/]");
             lines.Add($"  dedupeKey: [dim]{Markup.Escape(GetNodeString(card["dedupeKey"]) ?? string.Empty)}[/]");
             lines.Add("  Скрытый `effectPayload` в JSON-панели редактируется: player-facing audit показывает только safeEffectDetails и стабильные поля карты.");
@@ -877,9 +890,12 @@ public partial class ExplorerMode
     private static string BuildShiningBlessingSourceLabel(JsonObject card, ShiningContext context)
     {
         var sourceType = (GetNodeString(card["sourceType"]) ?? string.Empty).Trim().ToLowerInvariant();
-        var sourceFactionName = GetNodeString(card["sourceFactionName"]) ??
-                                GetNodeString(card["sourceFactionId"]) ??
-                                ResolveShiningFactionLabel(context.Root, GetNodeString(card["sourceFactionId"]));
+        var hasVisibleSourceFaction = TryResolvePlayerVisibleShiningFactionLabel(
+            context.Root,
+            GetNodeString(card["sourceFactionId"]),
+            out var sourceFactionName);
+        if (!hasVisibleSourceFaction)
+            sourceFactionName = "нераскрытая фракция";
         var sourceActorName = GetNodeString(card["sourceActorName"]);
         var sourceActorId = GetNodeString(card["sourceActorId"]) ?? string.Empty;
         var sourceActorLabel = string.IsNullOrWhiteSpace(sourceActorName)
@@ -918,10 +934,10 @@ public partial class ExplorerMode
 
     private static string ResolveShiningBlessingProjectLabel(JsonObject shiningRoot, string projectId)
     {
-        if (string.IsNullOrWhiteSpace(projectId) || shiningRoot["factions"] is not JsonArray factions)
+        if (string.IsNullOrWhiteSpace(projectId))
             return string.Empty;
 
-        foreach (var faction in factions.OfType<JsonObject>())
+        foreach (var faction in SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot))
         {
             if (faction["projects"] is not JsonArray projects)
                 continue;
@@ -1116,15 +1132,17 @@ public partial class ExplorerMode
 
     private (JsonObject? Project, string FactionId, string ProjectId) PromptForProject(JsonObject shiningRoot, string title, bool requireCompleted)
     {
-        if (shiningRoot["factions"] is not JsonArray factions || factions.Count == 0)
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+            .ToList();
+        if (visibleFactions.Count == 0)
         {
-            MarkupLine("[yellow]В Сияющей Обители пока нет фракций и проектов.[/]");
+            MarkupLine("[yellow]В Сияющей Обители пока нет раскрытых фракций и проектов.[/]");
             WaitForKey();
             return (null, "", "");
         }
 
         var options = new List<(string Label, JsonObject Project, string FactionId, string ProjectId)>();
-        foreach (var faction in factions.OfType<JsonObject>())
+        foreach (var faction in visibleFactions)
         {
             var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
             var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;

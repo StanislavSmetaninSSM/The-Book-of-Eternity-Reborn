@@ -20,7 +20,6 @@ public partial class CanonicalStateNormalizer
             return;
 
         ShiningAbodeState.ApplyFactionPoliticalUpdateSurfaces(result);
-
         JsonObject? residentRoot = null;
         if (await ReadNodeAsync(GuardianAbodeResidentState.StatePath) is JsonObject currentResidentObject)
         {
@@ -32,7 +31,10 @@ public partial class CanonicalStateNormalizer
         if (await ReadNodeAsync("game_state/meta/guardians.json") is JsonObject currentGuardiansObject)
             guardiansRoot = CloneObject(currentGuardiansObject);
 
-        ShiningAbodeState.NormalizeStateRoot(result, residentRoot, guardiansRoot);
+        ShiningAbodeState.NormalizeStateRoot(
+            result,
+            residentRoot,
+            guardiansRoot);
         await WriteIfChangedAsync(path, currentNode, result);
     }
 

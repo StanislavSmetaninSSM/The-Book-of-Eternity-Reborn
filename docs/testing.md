@@ -20,6 +20,7 @@ evidence.
 ```powershell
 .\scripts\test-csharp.ps1
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~IntegrationTestBoundaryTests.CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge"
 .\scripts\test-csharp.ps1 -Lane FullValidation
 .\scripts\test-csharp.ps1 -Lane RegressionIntegration
 .\scripts\test-csharp.ps1 -Lane ProcessIntegration
@@ -38,7 +39,7 @@ the same 15-minute hard limit. New automation and documentation should use
 | Lane | Project/selection | Hard limit | Intended use |
 |---|---|---:|---|
 | `Fast` (default) | Entire `BookOfEternityClient.Tests` project, with no category filter | 5 min | Ordinary post-edit feedback |
-| `Focused` | Caller-supplied VSTest filter in the fast project | 5 min | One class, method, or domain during implementation |
+| `Focused` | Caller-supplied VSTest filter in the selected fast or integration project | 5 min | One class, method, or domain during implementation |
 | `FullValidation` | Integration project, `Category=FullValidation` | 15 min | Diagnostic full-pipeline checks |
 | `RegressionIntegration` | Integration project, `Category=RegressionIntegration` | 15 min | Diagnostic file-backed workflow checks |
 | `ProcessIntegration` | Integration project, `Category=ProcessIntegration` | 15 min | Diagnostic real-process checks |
@@ -56,6 +57,18 @@ The diagnostic lanes select
 `BookOfEternityClient.IntegrationTests.csproj`. They are available when a
 focused failure or a change in that boundary needs diagnosis; they are not
 ordinary post-edit controls.
+
+Focused defaults to `BookOfEternityClient.Tests`. Pass
+`-FocusedProject Integration` to select
+`BookOfEternityClient.IntegrationTests`. The selector accepts only `Fast` or
+`Integration` and is valid only with `-Lane Focused`. Never combine fast and
+integration class names in one filter; run one focused command per selected
+project. Both variants retain the five-minute hard limit and require `-Filter`:
+
+```powershell
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~IntegrationTestBoundaryTests.CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge"
+```
 
 PreMerge uses one deadline across frontend verification, both test-project
 builds, discovery, all tests, and owned-tree cleanup. It runs the full fast

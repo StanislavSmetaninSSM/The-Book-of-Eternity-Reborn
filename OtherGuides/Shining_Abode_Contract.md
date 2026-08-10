@@ -62,6 +62,14 @@ faction loyalty, restlessness, and realignment state.
 Do not duplicate resident membership into `faction.residents[]`; faction
 membership is derived from resident state.
 
+Every canonical Shining faction must carry one complete immutable
+`materialization` envelope. Receipt-less faction state is invalid and is not
+promoted or migrated at runtime. Resident membership, materialization evidence,
+and derived faction strength use an exact, case-sensitive
+`guardian_abode_residents.json.entries[].shiningFactionId == factionId` match.
+Ordinary readers expose only exact `visibility = revealed`; missing or blank
+visibility fails closed.
+
 ## Current Hall Local Interactions
 
 `shining_abode_state.currentHallId` is the location authority for local

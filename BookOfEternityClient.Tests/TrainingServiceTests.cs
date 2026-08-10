@@ -757,15 +757,23 @@ public sealed class TrainingServiceTests : IDisposable
         hiddenFactionMentor.Remove("mentorTrainingShowcase");
 
         var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
-        shiningRoot["factions"]!.AsArray().Add(new JsonObject
+        var hiddenFaction = new JsonObject
         {
             ["factionId"] = "faction_hidden_wings",
             ["hallId"] = "hall_lanterns",
             ["sarefFactionRole"] = SarefMainStoryState.WingsFactionRole,
             ["sarefVisibility"] = "hidden",
+            ["visibility"] = "hidden",
             ["charter"] = new JsonObject { ["factionName"] = "Скрытые Крылья" },
             ["leadership"] = new JsonObject { ["headActorId"] = "resident_hidden_wings" }
-        });
+        };
+        ShiningFactionTestMaterialization.Apply(
+            hiddenFaction,
+            materializedAtTurn: 30,
+            hasResidentAffiliations: true,
+            canTrade: false,
+            usesStoryState: true);
+        shiningRoot["factions"]!.AsArray().Add(hiddenFaction);
         await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", shiningRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(
             "game_state/meta/afterlife_entity_profiles.json",
@@ -2463,7 +2471,7 @@ public sealed class TrainingServiceTests : IDisposable
           }
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+        var shiningRoot = JsonNode.Parse("""
         {
           "availability": "active",
           "currentHallId": "hall_lanterns",
@@ -2477,20 +2485,32 @@ public sealed class TrainingServiceTests : IDisposable
             {
               "factionId": "faction_lanterns",
               "hallId": "hall_lanterns",
-              "isPlayerVisible": true,
+              "visibility": "revealed",
               "charter": { "factionName": "Дом Фонарей" },
               "leadership": { "headActorId": "resident_shining" }
             },
             {
               "factionId": "faction_forge",
               "hallId": "hall_forge",
-              "isPlayerVisible": true,
+              "visibility": "revealed",
               "charter": { "factionName": "Дом Ремесла" },
               "leadership": { "headActorId": "resident_remote_shining" }
             }
           ]
         }
-        """);
+        """)!.AsObject();
+        foreach (var faction in shiningRoot["factions"]!.AsArray().OfType<JsonObject>())
+        {
+            ShiningFactionTestMaterialization.Apply(
+                faction,
+                materializedAtTurn: 30,
+                hasResidentAffiliations: true,
+                canTrade: false);
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/shining_abode_state.json",
+            shiningRoot.ToJsonString());
     }
 
     private static SystemGuardianLibraryService.SystemGuardianPresetDescriptor CreateSystemGuardianPreset(

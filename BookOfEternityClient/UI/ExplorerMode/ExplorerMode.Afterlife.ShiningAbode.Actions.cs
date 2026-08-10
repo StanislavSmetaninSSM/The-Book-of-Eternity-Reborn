@@ -178,6 +178,8 @@ public partial class ExplorerMode
 
     private Panel BuildShiningOverviewPanel(JsonObject shiningRoot, JsonObject? residentRoot, JsonObject? guardiansRoot)
     {
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+            .ToList();
         var lines = new List<string>
         {
             "[bold yellow]✨ Сияющая Обитель[/]",
@@ -190,7 +192,7 @@ public partial class ExplorerMode
             BuildShiningTreasuryOverviewLine(shiningRoot),
             $"  • Сияющая гача: [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(shiningRoot)}[/]/[white]{GetNodeInt(shiningRoot["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(shiningRoot)})[/]",
             $"  • Залов: [white]{(shiningRoot["halls"] as JsonArray)?.Count ?? 0}[/]",
-            $"  • Фракций: [white]{(shiningRoot["factions"] as JsonArray)?.Count ?? 0}[/]",
+            $"  • Раскрытых фракций: [white]{visibleFactions.Count}[/]",
             $"  • Политических акторов: [white]{(shiningRoot["shiningPoliticalActors"] as JsonArray)?.Count ?? 0}[/]"
         };
 
@@ -295,19 +297,22 @@ public partial class ExplorerMode
                 var actorIdSuffix = string.IsNullOrWhiteSpace(actorId)
                     ? string.Empty
                     : $" [dim](actorId={Markup.Escape(actorId)})[/]";
-                var factionName = ResolveShiningFactionLabel(shiningRoot, currentFactionId);
-                var factionSuffix = !string.IsNullOrWhiteSpace(factionName) && factionName != "?"
-                    ? $" [dim](сейчас: {Markup.Escape(factionName)}; currentFactionId={Markup.Escape(string.IsNullOrWhiteSpace(currentFactionId) ? "none" : currentFactionId)})[/]"
+                var hasVisibleFaction = TryResolvePlayerVisibleShiningFactionLabel(
+                    shiningRoot,
+                    currentFactionId,
+                    out var factionName);
+                var factionSuffix = hasVisibleFaction
+                    ? $" [dim](сейчас: {Markup.Escape(factionName)}; currentFactionId={Markup.Escape(currentFactionId)})[/]"
                     : string.Empty;
                 lines.Add($"  • {Markup.Escape(actorName)}{actorIdSuffix} — {Markup.Escape(string.IsNullOrWhiteSpace(summary) ? "без сводки" : summary)} [dim]({Markup.Escape(status)})[/]{factionSuffix}");
             }
         }
 
-        if (shiningRoot["factions"] is JsonArray factions && factions.Count > 0)
+        if (visibleFactions.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Сильнейшие фракции:[/] [dim](показаны все без сокращения)[/]");
-            foreach (var faction in factions.OfType<JsonObject>()
+            lines.Add("[bold]Раскрытые сильнейшие фракции:[/] [dim](показаны все доступные игроку без сокращения)[/]");
+            foreach (var faction in visibleFactions
                          .OrderByDescending(item => GetNodeInt(item["factionStrength"])))
             {
                 var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
@@ -329,7 +334,7 @@ public partial class ExplorerMode
                 lines.Add($"  • {Markup.Escape(factionName)} [dim]({idSuffix})[/] — сила [white]{strength}[/] [dim]({Markup.Escape(band)})[/], участников {memberCount}, торговля {tradeState} [dim](уровень торговли {tradeTier}, витрина {tradeStock}, потолок {Markup.Escape(tradeRarity)})[/], услуги x{serviceMultiplier:0.00}, глава {Markup.Escape(BuildHeadActorLabel(leaderType, leaderId, residentRoot, guardiansRoot, shiningRoot))}");
             }
 
-            var latestTradeReceipts = factions.OfType<JsonObject>()
+            var latestTradeReceipts = visibleFactions
                 .SelectMany(faction =>
                 {
                     var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
@@ -354,7 +359,10 @@ public partial class ExplorerMode
             lines.Add("[bold]Все исходы Обители:[/] [dim](без сокращения)[/]");
             foreach (var receipt in receipts.OfType<JsonObject>()
                          .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"])))
-                lines.Add($"  • {Markup.Escape(BuildShiningCoreReceiptSummary(receipt, shiningRoot))}");
+            {
+                if (CloneShiningJsonForPlayerFacingAuditWithAuthority(receipt, shiningRoot) is JsonObject projectedReceipt)
+                    lines.Add($"  • {Markup.Escape(BuildShiningCoreReceiptSummary(projectedReceipt, shiningRoot))}");
+            }
         }
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -477,10 +485,12 @@ public partial class ExplorerMode
         if (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
             choices.Add("🔎 Осмотреть ожидающее открытие нативной фракции");
 
-        var factionCount = (shiningRoot["factions"] as JsonArray)?.OfType<JsonObject>().Count() ?? 0;
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+            .ToList();
+        var factionCount = visibleFactions.Count;
         var investCost = ShiningAbodeState.GetFactionInvestmentCost();
-        var investEligibleCount = (shiningRoot["factions"] as JsonArray)?.OfType<JsonObject>()
-            .Count(faction => GetNodeInt(faction["investCountThisAscension"]) < 3) ?? 0;
+        var investEligibleCount = visibleFactions
+            .Count(faction => GetNodeInt(faction["investCountThisAscension"]) < 3);
         var completedProjects = CountShiningProjects(shiningRoot, project =>
             string.Equals(GetNodeString(project["status"]), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase));
         var supportEligible = CountShiningProjects(shiningRoot, project =>
@@ -488,7 +498,7 @@ public partial class ExplorerMode
             !GetNodeBool(project["isSupported"]));
         var supportedProjects = CountShiningProjects(shiningRoot, project => GetNodeBool(project["isSupported"]));
         var supportedProjectCap = ShiningAbodeState.GetSupportedProjectCap(radianceTier);
-        var supportCapAvailable = ShiningAbodeState.CountSupportedProjectsAcrossState(shiningRoot) < supportedProjectCap;
+        var supportCapAvailable = supportedProjects < supportedProjectCap;
 
         choices.AddRange(new[]
         {
@@ -532,10 +542,7 @@ public partial class ExplorerMode
 
     private static int CountShiningProjects(JsonObject shiningRoot, Func<JsonObject, bool> predicate)
     {
-        if (shiningRoot["factions"] is not JsonArray factions)
-            return 0;
-
-        return factions.OfType<JsonObject>()
+        return SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .SelectMany(faction => (faction["projects"] as JsonArray)?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>())
             .Count(predicate);
     }
@@ -667,14 +674,16 @@ public partial class ExplorerMode
 
     private JsonObject? PromptForFaction(JsonObject shiningRoot, string title)
     {
-        if (shiningRoot["factions"] is not JsonArray factions || factions.Count == 0)
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+            .ToList();
+        if (visibleFactions.Count == 0)
         {
-            MarkupLine("[yellow]В Сияющей Обители пока нет материализованных фракций.[/]");
+            MarkupLine("[yellow]В Сияющей Обители пока нет раскрытых фракций, доступных для этого действия.[/]");
             WaitForKey();
             return null;
         }
 
-        var options = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+        var options = visibleFactions
             .OrderByDescending(faction => GetNodeInt(faction["factionStrength"]))
             .Select(faction =>
             {

@@ -663,6 +663,148 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void MortalFactionMaterializationGuidance_CoversLifecycleCoreChangesAndDaemonRouting()
+    {
+        var factionRules = ReadRepoFile("Rules", "Block_21.txt");
+        var factionExample = ReadRepoFile("Examples", "E_Block_21.txt");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var stepExample = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        foreach (var requiredText in new[]
+                 {
+                     "\"purpose\"",
+                     "\"currentAgenda\"",
+                     "\"principles\"",
+                     "\"memory\"",
+                     "\"governance\"",
+                     "\"leadership\"",
+                     "\"materialization\"",
+                     "hasFormalHierarchy",
+                     "usesFactionResources",
+                     "maintainsRelations",
+                     "runsProjects",
+                     "holdsTerritoryOrInfluence",
+                     "supportsPlayerMembership",
+                     "usesCustomMechanics",
+                     "hierarchy",
+                     "resources",
+                     "relations",
+                     "projects",
+                     "territoryAndInfluence",
+                     "playerMembership",
+                     "customStates",
+                     "scribeChronicle",
+                     "factionCoreChanges",
+                     "purposeAndPrinciples",
+                     "progressionAndPower",
+                     "governanceAndLeadership"
+                 })
+        {
+            Assert.Contains(requiredText, factionRules, StringComparison.Ordinal);
+        }
+
+        foreach (var example in new[] { factionExample, stepExample })
+        {
+            foreach (var contractId in new[]
+                     {
+                         "mortal_faction_materialization_populated_creation_v1",
+                         "mortal_faction_materialization_seven_empty_creation_v1",
+                         "mortal_faction_materialized_existing_state_v1",
+                         "mortal_faction_core_changes_update_v1",
+                         "mortal_faction_materialization_repair_v1"
+                     })
+            {
+                Assert.Contains(contractId, example, StringComparison.Ordinal);
+            }
+        }
+
+        foreach (var guidance in new[] { stepGuide, apiSpec, daemonSpec, operations })
+        {
+            Assert.Contains("Faction Materialization", guidance, StringComparison.Ordinal);
+            Assert.Contains("factionCoreChanges", guidance, StringComparison.Ordinal);
+            Assert.Contains("receipt-less", guidance, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("empty_by_design", guidance, StringComparison.Ordinal);
+        }
+
+        Assert.Contains(
+            "faction creation or ordinary faction update",
+            daemon,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("$script:CompactMortalFactionTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("Faction Materialization", daemon, StringComparison.Ordinal);
+        Assert.Contains(
+            "use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape",
+            daemon,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void CompactMortalFactionTemplate_UsesExecutableMaterializationAndCoreChangeCarriers()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        const string templateMarker =
+            "-RelativePath \"Templates\\MORTAL_FACTION_UPDATE_TEMPLATE.md\"";
+        var markerIndex = daemon.IndexOf(templateMarker, StringComparison.Ordinal);
+        Assert.True(markerIndex >= 0, "Compact Mortal faction template marker is missing.");
+        var contentStart = daemon.IndexOf("-Content @'", markerIndex, StringComparison.Ordinal);
+        Assert.True(contentStart >= 0, "Compact Mortal faction template content is missing.");
+        contentStart += "-Content @'".Length;
+        var contentEnd = daemon.IndexOf("\n'@", contentStart, StringComparison.Ordinal);
+        Assert.True(contentEnd > contentStart, "Compact Mortal faction template terminator is missing.");
+        var template = daemon[contentStart..contentEnd];
+
+        foreach (var requiredText in new[]
+                 {
+                     "\"factionDataChanges\"",
+                     "\"factionId\": null",
+                     "\"initialId\"",
+                     "\"isNewFaction\": true",
+                     "\"purpose\"",
+                     "\"currentAgenda\"",
+                     "\"memory\"",
+                     "\"governance\"",
+                     "\"leadership\"",
+                     "\"materialization\"",
+                     "\"ranks\"",
+                     "\"branches\"",
+                     "\"metaResources\"",
+                     "\"strategicGoods\"",
+                     "\"activeProjects\"",
+                     "\"completedProjects\"",
+                     "\"controlledTerritories\"",
+                     "\"isPlayerFaction\"",
+                     "\"isPlayerMember\"",
+                     "\"playerRank\"",
+                     "\"playerBranch\"",
+                     "\"playerStrategyDirective\"",
+                     "\"factionCoreChanges\"",
+                     "\"purposeAndPrinciples\"",
+                     "\"progressionAndPower\"",
+                     "\"governanceAndLeadership\"",
+                     "\"factionRankChanges\"",
+                     "\"factionResourceChanges\"",
+                     "\"factionProjectUpdates\"",
+                     "\"factionChronicleUpdates\"",
+                     "targetFiles",
+                     "game_state/world/current_location.json",
+                     "game_state/world/world_map.json"
+                 })
+        {
+            Assert.Contains(requiredText, template, StringComparison.Ordinal);
+        }
+
+        Assert.DoesNotContain("Minimal durable faction object", template, StringComparison.Ordinal);
+        Assert.DoesNotContain("Add a complete `factions[]` object", template, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"rankBranches\"", template, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"projects\": []", template, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"wealth\"", template, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalNpcCoreChangesContract_IsDocumentedAcrossGmAndCliSurfaces()
     {
         var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");

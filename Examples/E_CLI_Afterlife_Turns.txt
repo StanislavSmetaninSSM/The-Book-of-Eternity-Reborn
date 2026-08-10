@@ -3854,7 +3854,7 @@ Canonical Shining owner-state invariants:
 - `halls[].hallId`, `factions[].factionId`, `shiningPoliticalActors[].actorId`, and every `projects[].projectId` across all factions must be unique. Duplicate ids make runtime helpers choose the first match and are invalid.
 - Supported completed projects are globally capped by Radiance tier: tier `0..1` allows `1`, tier `2..3` allows `2`, tier `4` allows `3`. If more completed projects have `isSupported = true`, preserve for repair or close an explicit `unsupport_project`; do not keep the over-cap state.
 - `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. While it is empty, `gachaSystem.chargesUsedThisReturn` must be `0`; positive used charges without a cycle id are stale state.
-- Every Shining faction has a canonical `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing legacy lifecycle is read as `active`, but new faction updates should write the field explicitly.
+- Every current-schema Shining faction requires explicit `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing, blank, or unsupported lifecycle fails raw owner-state validation before normalization and never defaults to `active`.
 - Do not delete defeated factions from `factions[]`. `broken` and `dissolved` keep history/remnants through `factionLifecycle.defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, while `factionStrength=0`, `leadership.leadershipState=vacant`, `tradeInventory=null`, and all projects have `isSupported=false`.
 - `leaderless` also requires vacant leadership and does not behave like a normally headed active faction until a later explicit leadership restoration. `active` and `weakened` are the operational lifecycle states.
 
@@ -10707,6 +10707,488 @@ Afterlife spiritual conflict margin:
       "warnings": []
     }
   ]
+}
+```
+
+## Shining Faction Materialization worked examples
+
+Every canonical Shining faction already has one complete materialization envelope. Receipt-less state is invalid and is not promoted or repaired into the current schema at runtime. Ordinary readers reveal only exact `visibility = "revealed"`; missing or blank visibility fails closed.
+
+Resident membership and materialization evidence use an exact, case-sensitive `guardian_abode_residents.json.entries[].shiningFactionId == factionId` match. A case variant contributes neither resident evidence nor derived faction strength, tier, service multiplier, or trade authority.
+
+### shining_faction_materialization_native_discovery_v1
+
+The validated `native_discovery -> shining_core_action_request -> native_radiant` route authors the faction; discovery is not inferred from a Guardian title or prose.
+
+```json
+{
+  "factionId": "faction_dawn_reed",
+  "originType": "native_radiant",
+  "hallId": "hall_dawn_reed",
+  "creationProvenance": {
+    "route": "native_discovery",
+    "authorityType": "shining_core_action_request",
+    "authorityId": "request_discover_dawn_reed"
+  },
+  "charter": {
+    "factionName": "Тростник Рассвета",
+    "favoredArchetype": "remembrance",
+    "patronEffectFamily": "memory",
+    "summary": "Проводит заблудшие души к тихому свету."
+  },
+  "currentAgenda": "Открыть безопасный путь через поющие сады.",
+  "visibility": "revealed",
+  "storyAuthority": null,
+  "factionLifecycle": {"state": "active"},
+  "leadership": {
+    "leadershipState": "secure",
+    "headActorType": "radiant_actor",
+    "headActorId": "radiant_ilan"
+  },
+  "strategicMemory": {
+    "summary": "Фракция открылась после завершённого поиска.",
+    "lastUpdatedTurn": 31,
+    "recentCampaigns": [],
+    "losses": [],
+    "alliances": [],
+    "enemies": []
+  },
+  "chronicle": [
+    {
+      "entryId": "chronicle_dawn_reed_discovery",
+      "turnNumber": 31,
+      "eventType": "faction_materialized",
+      "summary": "Тростник Рассвета открыл свой зал.",
+      "visibility": "known",
+      "consequences": []
+    }
+  ],
+  "baseStrength": 55,
+  "factionStrength": 55,
+  "investCountThisAscension": 0,
+  "projectArchetypesCountedThisAscension": [],
+  "projects": [
+    {"projectId": "project_singing_path", "displayName": "Поющая тропа", "status": "completed", "isSupported": false},
+    {"projectId": "project_dawn_memory", "displayName": "Память рассвета", "status": "completed", "isSupported": false}
+  ],
+  "territorialInfluence": [
+    {"zoneId": "zone_dawn_reed_hall", "scopeType": "hall", "scopeId": "hall_dawn_reed", "displayName": "Зал Тростника", "controlLevel": "anchored", "influenceValue": 55, "publicStatus": "known", "updatedAtTurn": 31}
+  ],
+  "resourceLedger": [],
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "leadershipReceipts": [],
+  "leadershipHistory": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_dawn_reed_turn_31",
+    "factionType": "shining_faction",
+    "factionId": "faction_dawn_reed",
+    "materializedAtTurn": 31,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": true,
+      "holdsTerritorialInfluence": true,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": true,
+      "canTrade": true,
+      "hasLeadershipHistory": false,
+      "usesStoryState": false
+    },
+    "sections": {
+      "projects": {"state": "populated"},
+      "territorialInfluence": {"state": "populated"},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Открытый зал ещё не провёл ни одной ресурсной операции."},
+      "residentAffiliations": {"state": "populated"},
+      "trade": {"state": "empty_by_design", "reason": "Торговая витрина зала ещё не учреждена."},
+      "leadershipHistory": {"state": "empty_by_design", "reason": "Смена главы ещё не происходила."},
+      "storyState": {"state": "empty_by_design", "reason": "Фракция создана нативным открытием, а не сюжетной властью."}
+    }
+  }
+}
+```
+
+Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "resident_dawn_reed_guide",
+      "displayName": "Проводник Тростника",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_reed",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_dawn_reed_singer",
+      "displayName": "Певчая Рассвета",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_reed",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    }
+  ],
+  "historyLog": []
+}
+```
+
+Exact pre-turn authority in `game_state/control/pending_shining_abode_actions.json`:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "request_discover_dawn_reed",
+      "actionType": "discover_native_faction",
+      "radianceTierAtRequest": 2,
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
+      "sourceDraftVersion": 0,
+      "selectedCardIds": [],
+      "createdAtTurn": 31,
+      "createdAtUtc": "2026-08-03T00:00:00Z"
+    }
+  ]
+}
+```
+
+Matching accepted receipt in current `shining_abode_state.json.coreActionReceipts[]`:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "request_discover_dawn_reed",
+      "actionType": "discover_native_faction",
+      "status": "accepted",
+      "selectedCardIds": [],
+      "newResidentIds": ["resident_dawn_reed_guide", "resident_dawn_reed_singer"],
+      "seededProjectIds": ["project_singing_path", "project_dawn_memory"],
+      "resolvedFactionId": "faction_dawn_reed",
+      "hallId": "hall_dawn_reed",
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 31,
+      "resolvedAtUtc": "2026-08-03T00:05:00Z",
+      "reason": "native_discovery_accepted"
+    }
+  ]
+}
+```
+
+### shining_faction_materialization_player_founding_v1
+
+The `player_founding -> shining_founding_request -> player_founded` route consumes exact founding authority and supporter evidence.
+
+```json
+{
+  "factionId": "faction_lantern_covenant",
+  "originType": "player_founded",
+  "hallId": "hall_lantern_covenant",
+  "creationProvenance": {
+    "route": "player_founding",
+    "authorityType": "shining_founding_request",
+    "authorityId": "shining_founding_request_44"
+  },
+  "charter": {
+    "factionName": "Союз Фонарей",
+    "favoredArchetype": "accord",
+    "patronEffectFamily": "social",
+    "summary": "Открытый приют для недавно вознесённых душ."
+  },
+  "currentAgenda": "Закрепить хартию и подготовить первый зал.",
+  "visibility": "revealed",
+  "storyAuthority": null,
+  "factionLifecycle": {"state": "active"},
+  "leadership": {
+    "leadershipState": "secure",
+    "headActorType": "player_soul",
+    "headActorId": "player_soul"
+  },
+  "strategicMemory": {
+    "summary": "Хартия принята тремя согласными жителями.",
+    "lastUpdatedTurn": 44,
+    "recentCampaigns": [],
+    "losses": [],
+    "alliances": [],
+    "enemies": []
+  },
+  "chronicle": [
+    {
+      "entryId": "chronicle_lantern_covenant_founding",
+      "turnNumber": 44,
+      "eventType": "faction_materialized",
+      "summary": "Союз Фонарей учредил новый зал.",
+      "visibility": "known",
+      "consequences": []
+    }
+  ],
+  "baseStrength": 35,
+  "factionStrength": 35,
+  "investCountThisAscension": 0,
+  "projectArchetypesCountedThisAscension": [],
+  "projects": [],
+  "territorialInfluence": [],
+  "resourceLedger": [],
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "leadershipReceipts": [],
+  "leadershipHistory": [
+    {
+      "requestId": "shining_founding_request_44",
+      "eventType": "founded",
+      "turnNumber": 44,
+      "summary": "Игрок основал Союз Фонарей."
+    }
+  ],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_lantern_covenant_turn_44",
+    "factionType": "shining_faction",
+    "factionId": "faction_lantern_covenant",
+    "materializedAtTurn": 44,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": false,
+      "holdsTerritorialInfluence": false,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": true,
+      "canTrade": true,
+      "hasLeadershipHistory": true,
+      "usesStoryState": false
+    },
+    "sections": {
+      "projects": {"state": "empty_by_design", "reason": "Первый проект будет выбран после учреждения зала."},
+      "territorialInfluence": {"state": "empty_by_design", "reason": "Новая хартия ещё не закрепила влияние."},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Ресурсных операций ещё не было."},
+      "residentAffiliations": {"state": "populated"},
+      "trade": {"state": "empty_by_design", "reason": "Торговля ещё не учреждена."},
+      "leadershipHistory": {"state": "populated"},
+      "storyState": {"state": "empty_by_design", "reason": "Фракция создана игроком, а не сюжетной властью."}
+    }
+  }
+}
+```
+
+Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "resident_lantern_supporter_1",
+      "displayName": "Первый хранитель Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_lantern_supporter_2",
+      "displayName": "Вторая хранительница Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    },
+    {
+      "residentId": "resident_lantern_supporter_3",
+      "displayName": "Третий хранитель Фонаря",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_lantern_covenant",
+      "factionLoyaltyLevel": 50,
+      "factionLoyaltyTier": "attached",
+      "factionRestlessness": 0,
+      "factionRealignmentState": "wavering"
+    }
+  ],
+  "historyLog": []
+}
+```
+
+Exact pre-turn authority in `game_state/control/pending_shining_faction_foundings.json`:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "shining_founding_request_44",
+      "proposedFactionId": "faction_lantern_covenant",
+      "proposedHallId": "hall_lantern_covenant",
+      "proposedHallName": "Зал Союза Фонарей",
+      "proposedHallDescription": "Открытый зал для недавно вознесённых душ.",
+      "proposedHallServiceTags": ["social", "memory"],
+      "charter": {
+        "factionName": "Союз Фонарей",
+        "favoredArchetype": "accord",
+        "patronEffectFamily": "social",
+        "summary": "Открытый приют для недавно вознесённых душ."
+      },
+      "supportingResidentIds": [
+        "resident_lantern_supporter_1",
+        "resident_lantern_supporter_2",
+        "resident_lantern_supporter_3"
+      ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "createdAtTurn": 44,
+      "createdAtUtc": "2026-08-03T00:00:00Z"
+    }
+  ]
+}
+```
+
+Matching accepted receipt in current `shining_abode_state.json.factionFoundingReceipts[]`:
+
+```json
+{
+  "factionFoundingReceipts": [
+    {
+      "requestId": "shining_founding_request_44",
+      "proposedFactionId": "faction_lantern_covenant",
+      "proposedHallId": "hall_lantern_covenant",
+      "hallName": "Зал Союза Фонарей",
+      "factionId": "faction_lantern_covenant",
+      "hallId": "hall_lantern_covenant",
+      "status": "accepted",
+      "supportingResidentIds": [
+        "resident_lantern_supporter_1",
+        "resident_lantern_supporter_2",
+        "resident_lantern_supporter_3"
+      ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "resolvedAtTurn": 44,
+      "resolvedAtUtc": "2026-08-03T00:05:00Z",
+      "reason": "founding_accepted"
+    }
+  ]
+}
+```
+
+### shining_faction_materialization_story_hidden_v1
+
+Exact story authority may create a hidden faction. Ordinary reader projections omit this entire faction object and strip every materialization envelope from visible factions.
+
+```json
+{
+  "factionId": "faction_veiled_prism",
+  "originType": "native_radiant",
+  "hallId": "hall_veiled_prism",
+  "creationProvenance": {
+    "route": "story",
+    "authorityType": "saref_main_story",
+    "authorityId": "faction_veiled_prism"
+  },
+  "charter": {
+    "factionName": "Скрытая Призма",
+    "favoredArchetype": "subversion",
+    "patronEffectFamily": "route",
+    "summary": "Наблюдает за разломами света, не раскрывая присутствия."
+  },
+  "currentAgenda": "Проверить источник искажённого сияния.",
+  "visibility": "hidden",
+  "storyAuthority": {
+    "authorityType": "saref_main_story",
+    "authorityId": "faction_veiled_prism",
+    "factionRole": "wings_of_angels"
+  },
+  "sarefFactionRole": "wings_of_angels",
+  "sarefVisibility": "hidden",
+  "factionLifecycle": {"state": "active"},
+  "leadership": {
+    "leadershipState": "secure",
+    "headActorType": "radiant_actor",
+    "headActorId": "radiant_prism_warden"
+  },
+  "strategicMemory": {
+    "summary": "Существование подтверждено точной сюжетной властью.",
+    "lastUpdatedTurn": 52,
+    "recentCampaigns": [],
+    "losses": [],
+    "alliances": [],
+    "enemies": []
+  },
+  "chronicle": [
+    {
+      "entryId": "chronicle_veiled_prism_confirmation",
+      "turnNumber": 52,
+      "eventType": "faction_materialized",
+      "summary": "Скрытая Призма закрепила тайное присутствие в своём зале.",
+      "visibility": "hidden",
+      "consequences": []
+    }
+  ],
+  "baseStrength": 30,
+  "factionStrength": 30,
+  "investCountThisAscension": 0,
+  "projectArchetypesCountedThisAscension": [],
+  "projects": [],
+  "territorialInfluence": [],
+  "resourceLedger": [],
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "leadershipReceipts": [],
+  "leadershipHistory": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mat_shining_faction_veiled_prism_turn_52",
+    "factionType": "shining_faction",
+    "factionId": "faction_veiled_prism",
+    "materializedAtTurn": 52,
+    "state": "complete",
+    "capabilities": {
+      "runsProjects": false,
+      "holdsTerritorialInfluence": false,
+      "usesResourceLedger": false,
+      "hasResidentAffiliations": false,
+      "canTrade": true,
+      "hasLeadershipHistory": false,
+      "usesStoryState": true
+    },
+    "sections": {
+      "projects": {"state": "empty_by_design", "reason": "Сюжетная власть пока не объявила проект."},
+      "territorialInfluence": {"state": "empty_by_design", "reason": "Скрытая фракция не заявляет видимого влияния."},
+      "resourceLedger": {"state": "empty_by_design", "reason": "Ресурсная история ещё не раскрыта автору."},
+      "residentAffiliations": {"state": "empty_by_design", "reason": "Участники пока не установлены точной властью."},
+      "trade": {"state": "empty_by_design", "reason": "Торговая власть отсутствует."},
+      "leadershipHistory": {"state": "empty_by_design", "reason": "До текущего подтверждения история главы не определена."},
+      "storyState": {"state": "populated"}
+    }
+  }
+}
+```
+
+### shining_faction_materialization_repair_v1
+
+A bounded Shining repair targets only the rejected disposition/canonical surface and preserves hidden visibility, identity, route authority, and unrelated fields. `targetFiles` is the exact writable allowlist. If the defect is a missing or ambiguous required actor profile, the packet also names `game_state/meta/afterlife_entity_profiles.json`; do not add that root to an unrelated trade-only repair.
+
+```json
+{
+  "factionId": "faction_veiled_prism",
+  "repairScope": "materialization.sections.trade",
+  "targetFiles": [
+    "game_state/meta/shining_abode_state.json"
+  ],
+  "preserveMaterializationId": "mat_shining_faction_veiled_prism_turn_52",
+  "visibility": "hidden",
+  "tradeInventory": null,
+  "tradeInventoryReceipts": [],
+  "replacement": {
+    "state": "empty_by_design",
+    "reason": "Торговая власть отсутствует."
+  }
 }
 ```
 

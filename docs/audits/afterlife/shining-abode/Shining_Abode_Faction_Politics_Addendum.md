@@ -569,3 +569,11 @@ Recommended causes:
 - resident faction switching внутри Shining Abode uses explicit realignment flow
 - player capture of an existing faction can be `peaceful_succession` or `revolt`
 - old rule “current head fully defines faction patron identity” считается устаревшим; стабильную mechanical identity теперь хранит `charter`
+
+## Authority boundary
+
+Faction Materialization requires an exact native discovery, player-founding, or story-authority route. Merely making a Guardian active does not authorize a charter: an active Guardian does not cause the client to invent a faction charter. If the story requires a Guardian-sponsored Shining faction, the GM must author that faction through a supported route and separately bind the head or other significant actors through Actor Materialization.
+
+Every canonical Shining faction must carry one complete immutable materialization envelope. Receipt-less factions are invalid; the client does not promote or migrate them at runtime. Ordinary readers expose only exact `visibility = revealed`, while missing or blank visibility fails closed. Resident membership and derived faction strength use an exact, case-sensitive `guardian_abode_residents.json.entries[].shiningFactionId == factionId` match.
+
+Chaos Sea Guardian Politics is Actor Materialization/living-world authority under #1500/#1368, not a Mortal or Shining faction.

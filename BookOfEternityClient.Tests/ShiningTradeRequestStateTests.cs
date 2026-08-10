@@ -69,6 +69,79 @@ public sealed class ShiningTradeRequestStateTests
         }
     }
 
+    [Theory]
+    [InlineData("current_hall_id")]
+    [InlineData("faction_hall_id")]
+    public async Task GetCurrentRealmTradeTargetsAsync_CaseVariantHallIdentityFailsClosed(
+        string mutation)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(
+                fs,
+                factionStrength: 62,
+                withReadyInventory: true);
+            var shiningRoot = JsonNode.Parse(
+                (await fs.ReadFileAsync(
+                    ShiningAbodeState.StatePath))!)!.AsObject();
+            if (string.Equals(
+                    mutation,
+                    "current_hall_id",
+                    StringComparison.Ordinal))
+            {
+                shiningRoot["currentHallId"] = "HALL_OLD";
+            }
+            else
+            {
+                shiningRoot["factions"]!.AsArray()[0]!["hallId"] =
+                    "HALL_OLD";
+            }
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                shiningRoot.ToJsonString());
+
+            var scope =
+                await new LocalInteractionScopeService(fs).ResolveAsync();
+            if (string.Equals(
+                    mutation,
+                    "current_hall_id",
+                    StringComparison.Ordinal))
+            {
+                Assert.False(scope.IsResolved);
+            }
+            else
+            {
+                Assert.True(scope.IsResolved);
+                Assert.DoesNotContain(
+                    "faction_old",
+                    scope.LocalFactionIds);
+            }
+
+            var targets =
+                await ShiningTradeService.GetCurrentRealmTradeTargetsAsync(
+                    fs);
+            var request = await ShiningTradeService.RequestInventoryAsync(
+                fs,
+                "faction_old",
+                currentTurn: 11);
+
+            Assert.Empty(targets);
+            Assert.False(request.Success);
+            Assert.False(request.StateChanged);
+            Assert.False(fs.FileExists(
+                ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     [Fact]
     public async Task RequestInventoryAsync_RemoteHallFactionFailsWithoutPendingMutation()
     {
@@ -86,6 +159,58 @@ public sealed class ShiningTradeRequestStateTests
             Assert.False(result.StateChanged);
             Assert.Contains("текущ", result.Message, StringComparison.OrdinalIgnoreCase);
             Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData(ShiningAbodeState.LeadershipStateSecure, true)]
+    [InlineData(ShiningAbodeState.LeadershipStateVacant, false)]
+    public async Task RequestInventoryAsync_ManualRequestRequiresAvailableTradeCapability(
+        string leadershipState,
+        bool expectedSuccess)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            var shiningRoot = JsonNode.Parse(
+                (await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+            var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
+            var leadership = faction["leadership"]!.AsObject();
+            leadership["leadershipState"] = leadershipState;
+            if (string.Equals(
+                    leadershipState,
+                    ShiningAbodeState.LeadershipStateVacant,
+                    StringComparison.Ordinal))
+            {
+                leadership["headActorType"] = null;
+                leadership["headActorId"] = null;
+            }
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                shiningRoot.ToJsonString());
+
+            var result = await ShiningTradeService.RequestInventoryAsync(
+                fs,
+                "faction_old",
+                currentTurn: 11);
+
+            Assert.Equal(expectedSuccess, result.Success);
+            Assert.Equal(expectedSuccess, result.StateChanged);
+            Assert.Equal(
+                expectedSuccess,
+                fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+            var requests = await ShiningTradeRequestState.ReadRequestsAsync(fs);
+            if (expectedSuccess)
+                Assert.Equal("faction_old", Assert.Single(requests).FactionId);
+            else
+                Assert.Empty(requests);
         }
         finally
         {
@@ -1771,6 +1896,11 @@ public sealed class ShiningTradeRequestStateTests
                 ["factionId"] = "faction_old",
                 ["originType"] = ShiningAbodeState.OriginTypeAscendedGuardian,
                 ["hallId"] = "hall_old",
+                ["visibility"] = "revealed",
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+                },
                 ["charter"] = new JsonObject
                 {
                     ["factionName"] = "Старый Дом",
@@ -1789,9 +1919,12 @@ public sealed class ShiningTradeRequestStateTests
                 ["investCountThisAscension"] = 0,
                 ["projectArchetypesCountedThisAscension"] = new JsonArray(),
                 ["projects"] = new JsonArray(),
+                ["tradeInventory"] = null,
                 ["tradeInventoryReceipts"] = new JsonArray(),
                 ["leadershipReceipts"] = new JsonArray(),
-                ["leadershipHistory"] = new JsonArray()
+                ["leadershipHistory"] = new JsonArray(),
+                ["materialization"] = BuildCompleteShiningMaterialization(
+                    "faction_old")
             }
         };
 
@@ -1930,6 +2063,10 @@ public sealed class ShiningTradeRequestStateTests
 
         var remoteFaction = root["factions"]!.AsArray()[0]!.DeepClone().AsObject();
         remoteFaction["factionId"] = "faction_remote";
+        remoteFaction["materialization"]!["factionId"] =
+            "faction_remote";
+        remoteFaction["materialization"]!["materializationId"] =
+            "mat_faction_remote";
         remoteFaction["hallId"] = "hall_remote";
         remoteFaction["charter"]!["factionName"] = "Дальний Дом";
         remoteFaction["leadership"]!["headActorId"] = "guardian_remote";
@@ -1960,7 +2097,12 @@ public sealed class ShiningTradeRequestStateTests
         var root = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
         var hiddenFaction = root["factions"]!.AsArray()[0]!.DeepClone().AsObject();
         hiddenFaction["factionId"] = "faction_hidden_wings";
+        hiddenFaction["materialization"]!["factionId"] =
+            "faction_hidden_wings";
+        hiddenFaction["materialization"]!["materializationId"] =
+            "mat_faction_hidden_wings";
         hiddenFaction["hallId"] = "hall_old";
+        hiddenFaction["visibility"] = "hidden";
         hiddenFaction["sarefFactionRole"] = SarefMainStoryState.WingsFactionRole;
         hiddenFaction["sarefVisibility"] = "hidden";
         hiddenFaction["charter"]!["factionName"] = "Скрытые Крылья";
@@ -1988,6 +2130,43 @@ public sealed class ShiningTradeRequestStateTests
         ["generatedFromDraftVersion"] = 1,
         ["preparedAtTurn"] = 10,
         ["preparedAtUtc"] = "2026-04-17T00:10:00Z"
+    };
+
+    private static JsonObject BuildCompleteShiningMaterialization(
+        string factionId) => new()
+    {
+        ["schemaVersion"] = FactionMaterializationContract.SchemaVersion,
+        ["materializationId"] = $"mat_{factionId}",
+        ["factionType"] = "shining_faction",
+        ["factionId"] = factionId,
+        ["materializedAtTurn"] = 1,
+        ["state"] = "complete",
+        ["capabilities"] = new JsonObject
+        {
+            ["runsProjects"] = false,
+            ["holdsTerritorialInfluence"] = false,
+            ["usesResourceLedger"] = false,
+            ["hasResidentAffiliations"] = false,
+            ["canTrade"] = false,
+            ["hasLeadershipHistory"] = false,
+            ["usesStoryState"] = false
+        },
+        ["sections"] = new JsonObject
+        {
+            ["projects"] = EmptyShiningDisposition(),
+            ["territorialInfluence"] = EmptyShiningDisposition(),
+            ["resourceLedger"] = EmptyShiningDisposition(),
+            ["residentAffiliations"] = EmptyShiningDisposition(),
+            ["trade"] = EmptyShiningDisposition(),
+            ["leadershipHistory"] = EmptyShiningDisposition(),
+            ["storyState"] = EmptyShiningDisposition()
+        }
+    };
+
+    private static JsonObject EmptyShiningDisposition() => new()
+    {
+        ["state"] = "empty_by_design",
+        ["reason"] = "The faction has not established this capability."
     };
 
     private static string CreateTempRoot()

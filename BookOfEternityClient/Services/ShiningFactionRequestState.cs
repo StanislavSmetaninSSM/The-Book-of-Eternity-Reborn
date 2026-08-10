@@ -307,14 +307,14 @@ internal static class ShiningFactionRequestState
 
         var currentFactions = shiningRoot["factions"] as JsonArray ?? new JsonArray();
         if (currentFactions.OfType<JsonObject>().Any(faction =>
-                string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase)))
+                string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.Ordinal)))
         {
             return "Фракция с таким proposedFactionId уже materialized в Сияющей Обители.";
         }
 
         var currentHalls = shiningRoot["halls"] as JsonArray ?? new JsonArray();
         if (currentHalls.OfType<JsonObject>().Any(hall =>
-                string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase)))
+                string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.Ordinal)))
         {
             return "Зал с таким proposedHallId уже materialized в Сияющей Обители.";
         }
@@ -323,7 +323,7 @@ internal static class ShiningFactionRequestState
         if (!string.IsNullOrWhiteSpace(request.RequestId))
         {
             var duplicateRequestIdEntries = foundingRequests
-                .Where(existing => string.Equals(existing.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase))
+                .Where(existing => string.Equals(existing.RequestId, request.RequestId, StringComparison.Ordinal))
                 .ToList();
             if (duplicateRequestIdEntries.Count > 1 ||
                 duplicateRequestIdEntries.Any(existing => !IsSameFoundingLogicalRequest(existing, request)))
@@ -336,13 +336,13 @@ internal static class ShiningFactionRequestState
             .Where(existing => !IsSameFoundingLogicalRequest(existing, request))
             .ToList();
         if (otherFoundings.Any(existing =>
-                string.Equals(existing.ProposedFactionId, request.ProposedFactionId, StringComparison.OrdinalIgnoreCase)))
+                string.Equals(existing.ProposedFactionId, request.ProposedFactionId, StringComparison.Ordinal)))
         {
             return "Pending founding request уже использует этот proposedFactionId. Дождитесь закрытия текущего founding request или выберите другой factionId.";
         }
 
         if (otherFoundings.Any(existing =>
-                string.Equals(existing.ProposedHallId, request.ProposedHallId, StringComparison.OrdinalIgnoreCase)))
+                string.Equals(existing.ProposedHallId, request.ProposedHallId, StringComparison.Ordinal)))
         {
             return "Pending founding request уже использует этот proposedHallId. Дождитесь закрытия текущего founding request или выберите другой hallId.";
         }
@@ -369,7 +369,7 @@ internal static class ShiningFactionRequestState
         var supporterIds = request.SupportingResidentIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .Select(id => id.Trim())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Distinct(StringComparer.Ordinal)
             .ToList();
         if (supporterIds.Count < 3)
             return "Для founding нужны минимум 3 уникальных ascended supporters.";
@@ -444,7 +444,7 @@ internal static class ShiningFactionRequestState
             return "Current resident-head не может открыть Shining faction realignment до leadership resolution.";
 
         var actualSourceFactionId = GetNodeString(resident["shiningFactionId"]) ?? string.Empty;
-        if (!string.Equals(actualSourceFactionId, request.SourceFactionId, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(actualSourceFactionId, request.SourceFactionId, StringComparison.Ordinal))
             return "Resident уже не принадлежит указанной source faction.";
 
         var actualRealignmentState = GetNodeString(resident["factionRealignmentState"]) ?? string.Empty;
@@ -471,7 +471,7 @@ internal static class ShiningFactionRequestState
         {
             if (string.IsNullOrWhiteSpace(request.TargetFactionId))
                 return "Целевая фракция обязательна для направленного перехода.";
-            if (string.Equals(request.TargetFactionId, request.SourceFactionId, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(request.TargetFactionId, request.SourceFactionId, StringComparison.Ordinal))
                 return "Целевая фракция должна отличаться от исходной фракции.";
             if (FindFaction(shiningRoot, request.TargetFactionId) == null)
                 return "targetFactionId не найден в текущем Shining state.";
@@ -542,7 +542,7 @@ internal static class ShiningFactionRequestState
         var actualIncumbentType = GetNodeString(leadership["headActorType"]) ?? string.Empty;
         var actualIncumbentId = GetNodeString(leadership["headActorId"]) ?? string.Empty;
         if (!string.Equals(actualIncumbentType, request.IncumbentHeadActorType, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(actualIncumbentId, request.IncumbentHeadActorId, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(actualIncumbentId, request.IncumbentHeadActorId, StringComparison.Ordinal))
         {
             return "Leadership request должен ссылаться на текущего incumbent head из faction.leadership.";
         }
@@ -573,7 +573,7 @@ internal static class ShiningFactionRequestState
             if (string.IsNullOrWhiteSpace(request.CandidateHeadActorId))
                 return "candidateHeadActorId обязателен для указанного transitionMode.";
             if (string.Equals(request.CandidateHeadActorType, request.IncumbentHeadActorType, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(request.CandidateHeadActorId, request.IncumbentHeadActorId, StringComparison.OrdinalIgnoreCase))
+                string.Equals(request.CandidateHeadActorId, request.IncumbentHeadActorId, StringComparison.Ordinal))
             {
                 return "Candidate должен отличаться от incumbent.";
             }
@@ -584,7 +584,7 @@ internal static class ShiningFactionRequestState
 
             if (string.Equals(request.CandidateHeadActorType, ShiningAbodeState.HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase) &&
                 IsActiveGuardianAutoFaction(faction, guardiansRoot, out var activeGuardianId) &&
-                !string.Equals(request.CandidateHeadActorId, activeGuardianId, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(request.CandidateHeadActorId, activeGuardianId, StringComparison.Ordinal))
             {
                 return "Active-guardian auto faction не может передать leadership другому guardian: normalizer вернёт headActorId к activeGuardianId.";
             }
@@ -616,12 +616,12 @@ internal static class ShiningFactionRequestState
         var supporterIds = request.SupportingResidentIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .Select(id => id.Trim())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Distinct(StringComparer.Ordinal)
             .ToList();
 
         if (string.Equals(request.TransitionMode, TransitionModeRevolt, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(request.IncumbentHeadActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
-            supporterIds.Contains(request.IncumbentHeadActorId, StringComparer.OrdinalIgnoreCase))
+            supporterIds.Contains(request.IncumbentHeadActorId, StringComparer.Ordinal))
         {
             return "Incumbent resident не может быть listed supporter собственного revolt.";
         }
@@ -643,15 +643,15 @@ internal static class ShiningFactionRequestState
                 return $"Supporter resident '{supporterId}' не найден.";
             if (!string.Equals(GetNodeString(supporter["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase))
                 return $"Supporter resident '{supporterId}' не находится в ascended state.";
-            if (!string.Equals(GetNodeString(supporter["shiningFactionId"]), request.FactionId, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(GetNodeString(supporter["shiningFactionId"]), request.FactionId, StringComparison.Ordinal))
                 return $"Supporter resident '{supporterId}' не принадлежит той же фракции.";
 
             var isRequestResident = string.Equals(request.CandidateHeadActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
-                                    string.Equals(request.CandidateHeadActorId, supporterId, StringComparison.OrdinalIgnoreCase);
+                                    string.Equals(request.CandidateHeadActorId, supporterId, StringComparison.Ordinal);
             var isIncumbentResident = string.Equals(request.IncumbentHeadActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
-                                      string.Equals(request.IncumbentHeadActorId, supporterId, StringComparison.OrdinalIgnoreCase);
+                                      string.Equals(request.IncumbentHeadActorId, supporterId, StringComparison.Ordinal);
             if (TryGetCurrentResidentHeadFactionId(shiningRoot, supporterId, out var headFactionId) &&
-                !string.Equals(headFactionId, request.FactionId, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(headFactionId, request.FactionId, StringComparison.Ordinal) &&
                 !isRequestResident &&
                 !isIncumbentResident)
             {
@@ -731,8 +731,8 @@ internal static class ShiningFactionRequestState
             PendingRealignmentsRequestPath,
             request,
             static (existing, pending) =>
-                string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(existing.ResidentId, pending.ResidentId, StringComparison.OrdinalIgnoreCase));
+                string.Equals(existing.RequestId, pending.RequestId, StringComparison.Ordinal) ||
+                string.Equals(existing.ResidentId, pending.ResidentId, StringComparison.Ordinal));
 
     internal static Task WriteRealignmentRequestAsync(
         FileSystemManager fs,
@@ -744,8 +744,8 @@ internal static class ShiningFactionRequestState
             PendingRealignmentsRequestPath,
             request,
             static (existing, pending) =>
-                string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(existing.ResidentId, pending.ResidentId, StringComparison.OrdinalIgnoreCase));
+                string.Equals(existing.RequestId, pending.RequestId, StringComparison.Ordinal) ||
+                string.Equals(existing.ResidentId, pending.ResidentId, StringComparison.Ordinal));
 
     public static Task WriteLeadershipTransitionRequestAsync(FileSystemManager fs, PendingShiningFactionLeadershipTransitionRequest request) =>
         WriteSingleRequestAsync(fs, PendingLeadershipTransitionsRequestPath, request, static item => item.FactionId);
@@ -760,8 +760,8 @@ internal static class ShiningFactionRequestState
             PendingLeadershipTransitionsRequestPath,
             request,
             static (existing, pending) =>
-                string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(existing.FactionId, pending.FactionId, StringComparison.OrdinalIgnoreCase));
+                string.Equals(existing.RequestId, pending.RequestId, StringComparison.Ordinal) ||
+                string.Equals(existing.FactionId, pending.FactionId, StringComparison.Ordinal));
 
     public static void ClearFoundingRequests(FileSystemManager fs) => fs.DeleteFile(PendingFoundingsRequestPath);
     public static void ClearRealignmentRequests(FileSystemManager fs) => fs.DeleteFile(PendingRealignmentsRequestPath);
@@ -1135,7 +1135,7 @@ internal static class ShiningFactionRequestState
             return null;
 
         return factions.OfType<JsonObject>()
-            .FirstOrDefault(faction => string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(faction => string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.Ordinal));
     }
 
     private static JsonObject? FindResident(JsonObject? residentRoot, string residentId)
@@ -1144,7 +1144,7 @@ internal static class ShiningFactionRequestState
             return null;
 
         return entries.OfType<JsonObject>()
-            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.Ordinal));
     }
 
     private static JsonObject? FindRadiantActor(JsonObject? shiningRoot, string actorId)
@@ -1153,7 +1153,7 @@ internal static class ShiningFactionRequestState
             return null;
 
         return actors.OfType<JsonObject>()
-            .FirstOrDefault(actor => string.Equals(GetNodeString(actor["actorId"]), actorId, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(actor => string.Equals(GetNodeString(actor["actorId"]), actorId, StringComparison.Ordinal));
     }
 
     private static bool GuardianExists(JsonObject? guardiansRoot, string guardianId)
@@ -1162,14 +1162,14 @@ internal static class ShiningFactionRequestState
             return false;
 
         if (guardiansRoot["activeGuardian"] is JsonObject activeGuardian &&
-            string.Equals(GetNodeString(activeGuardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase))
+            string.Equals(GetNodeString(activeGuardian["guardianId"]), guardianId, StringComparison.Ordinal))
         {
             return true;
         }
 
         return guardiansRoot["guardians"] is JsonArray guardians &&
                    guardians.OfType<JsonObject>()
-                   .Any(guardian => string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+                   .Any(guardian => string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.Ordinal));
     }
 
     private static bool IsActiveGuardianAutoFaction(JsonObject faction, JsonObject? guardiansRoot, out string activeGuardianId)
@@ -1191,8 +1191,8 @@ internal static class ShiningFactionRequestState
             string.Equals(originType, ShiningAbodeState.OriginTypePlayerFounded, StringComparison.OrdinalIgnoreCase);
 
         return hasAutoOrigin &&
-               (string.Equals(GetNodeString(faction["factionId"]), expectedFactionId, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(GetNodeString(faction["hallId"]), expectedHallId, StringComparison.OrdinalIgnoreCase));
+               (string.Equals(GetNodeString(faction["factionId"]), expectedFactionId, StringComparison.Ordinal) ||
+                string.Equals(GetNodeString(faction["hallId"]), expectedHallId, StringComparison.Ordinal));
     }
 
     private static string Slugify(string? value)
@@ -1238,13 +1238,13 @@ internal static class ShiningFactionRequestState
         {
             var currentFactionId = GetNodeString(faction["factionId"]) ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(excludingFactionId) &&
-                string.Equals(currentFactionId, excludingFactionId, StringComparison.OrdinalIgnoreCase))
+                string.Equals(currentFactionId, excludingFactionId, StringComparison.Ordinal))
             {
                 continue;
             }
 
             if (!string.Equals(GetNodeString(faction["leadership"]?["headActorType"]), actorType, StringComparison.OrdinalIgnoreCase) ||
-                !string.Equals(GetNodeString(faction["leadership"]?["headActorId"]), actorId, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(GetNodeString(faction["leadership"]?["headActorId"]), actorId, StringComparison.Ordinal) ||
                 string.Equals(GetNodeString(faction["leadership"]?["leadershipState"]), ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
@@ -1264,7 +1264,7 @@ internal static class ShiningFactionRequestState
 
         return entries.OfType<JsonObject>().Count(entry =>
             string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+            string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.Ordinal));
     }
 
     private static Task<bool> HasForeignPendingRealignmentForResidentAsync(
@@ -1286,8 +1286,8 @@ internal static class ShiningFactionRequestState
             ? await ReadRealignmentRequestsAsync(fs)
             : await ReadRealignmentRequestsAsync(fs, writeLease);
         return requests.Any(request =>
-            string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(request.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
+            string.Equals(request.ResidentId, residentId, StringComparison.Ordinal) &&
+            !string.Equals(request.RequestId, requestId, StringComparison.Ordinal));
     }
 
     private static Task<bool> HasForeignPendingLeadershipForFactionAsync(
@@ -1309,8 +1309,8 @@ internal static class ShiningFactionRequestState
             ? await ReadLeadershipTransitionRequestsAsync(fs)
             : await ReadLeadershipTransitionRequestsAsync(fs, writeLease);
         return requests.Any(request =>
-            string.Equals(request.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(request.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
+            string.Equals(request.FactionId, factionId, StringComparison.Ordinal) &&
+            !string.Equals(request.RequestId, requestId, StringComparison.Ordinal));
     }
 
     private static Task<bool> HasPendingOrdinaryTransferAsync(
@@ -1329,7 +1329,7 @@ internal static class ShiningFactionRequestState
         var transferRequests = writeLease == null
             ? await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(fs)
             : await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(fs, writeLease);
-        return transferRequests.Any(request => string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase));
+        return transferRequests.Any(request => string.Equals(request.ResidentId, residentId, StringComparison.Ordinal));
     }
 
     private static Task<bool> IsResidentLockedByPendingFlowInternalAsync(
@@ -1361,16 +1361,16 @@ internal static class ShiningFactionRequestState
             ? await ReadRealignmentRequestsAsync(fs)
             : await ReadRealignmentRequestsAsync(fs, writeLease);
         if (realignmentRequests.Any(request =>
-                !string.Equals(request.ResidentId, excludeRealignmentResidentId, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase)))
+                !string.Equals(request.ResidentId, excludeRealignmentResidentId, StringComparison.Ordinal) &&
+                string.Equals(request.ResidentId, residentId, StringComparison.Ordinal)))
         {
             return true;
         }
 
         var foundingRequests = await ReadFoundingRequestsCoreAsync(fs, writeLease);
         if (foundingRequests.Any(request =>
-                !string.Equals(request.ProposedFactionId, excludeFoundingFactionId, StringComparison.OrdinalIgnoreCase) &&
-                request.SupportingResidentIds.Any(id => string.Equals(id, residentId, StringComparison.OrdinalIgnoreCase))))
+                !string.Equals(request.ProposedFactionId, excludeFoundingFactionId, StringComparison.Ordinal) &&
+                request.SupportingResidentIds.Any(id => string.Equals(id, residentId, StringComparison.Ordinal))))
         {
             return true;
         }
@@ -1379,13 +1379,13 @@ internal static class ShiningFactionRequestState
             ? await ReadLeadershipTransitionRequestsAsync(fs)
             : await ReadLeadershipTransitionRequestsAsync(fs, writeLease);
         return leadershipRequests.Any(request =>
-            !string.Equals(request.FactionId, excludeLeadershipFactionId, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.FactionId, excludeLeadershipFactionId, StringComparison.Ordinal) &&
             (
-                request.SupportingResidentIds.Any(id => string.Equals(id, residentId, StringComparison.OrdinalIgnoreCase)) ||
+                request.SupportingResidentIds.Any(id => string.Equals(id, residentId, StringComparison.Ordinal)) ||
                 (string.Equals(request.CandidateHeadActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
-                 string.Equals(request.CandidateHeadActorId, residentId, StringComparison.OrdinalIgnoreCase)) ||
+                 string.Equals(request.CandidateHeadActorId, residentId, StringComparison.Ordinal)) ||
                 (string.Equals(request.IncumbentHeadActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
-                 string.Equals(request.IncumbentHeadActorId, residentId, StringComparison.OrdinalIgnoreCase))
+                 string.Equals(request.IncumbentHeadActorId, residentId, StringComparison.Ordinal))
             ));
     }
 
@@ -1428,7 +1428,7 @@ internal static class ShiningFactionRequestState
             ? await ReadLeadershipTransitionRequestsAsync(fs)
             : await ReadLeadershipTransitionRequestsAsync(fs, writeLease);
         return leadershipRequests.Any(request =>
-            !string.Equals(request.FactionId, currentFactionId, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.FactionId, currentFactionId, StringComparison.Ordinal) &&
             LeadershipRequestReferencesActor(request, actorType, actorId))
             ? $"{label} actor '{actorType}:{actorId}' уже заблокирован другим pending Shining leadership flow."
             : null;
@@ -1444,9 +1444,9 @@ internal static class ShiningFactionRequestState
 
         return
             (string.Equals(request.CandidateHeadActorType, actorType, StringComparison.OrdinalIgnoreCase) &&
-             string.Equals(request.CandidateHeadActorId, actorId, StringComparison.OrdinalIgnoreCase)) ||
+             string.Equals(request.CandidateHeadActorId, actorId, StringComparison.Ordinal)) ||
             (string.Equals(request.IncumbentHeadActorType, actorType, StringComparison.OrdinalIgnoreCase) &&
-             string.Equals(request.IncumbentHeadActorId, actorId, StringComparison.OrdinalIgnoreCase));
+             string.Equals(request.IncumbentHeadActorId, actorId, StringComparison.Ordinal));
     }
 
     private static string? ValidateLeadershipCandidate(
@@ -1459,7 +1459,7 @@ internal static class ShiningFactionRequestState
     {
         if (string.Equals(candidateHeadActorType, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase))
         {
-            return string.Equals(candidateHeadActorId, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase)
+            return string.Equals(candidateHeadActorId, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.Ordinal)
                 ? null
                 : "candidateHeadActorId для player_soul должен быть ровно 'player_soul'.";
         }
@@ -1474,7 +1474,7 @@ internal static class ShiningFactionRequestState
                 return "candidate resident не найден.";
             if (!string.Equals(GetNodeString(resident["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase))
                 return "candidate resident должен быть ascended.";
-            if (!string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.Ordinal))
                 return "candidate resident должен принадлежать той же фракции.";
             return null;
         }
@@ -1486,7 +1486,7 @@ internal static class ShiningFactionRequestState
                 return "candidate radiant_actor не найден в shiningPoliticalActors[].";
             var currentFactionId = GetNodeString(radiantActor["currentFactionId"]);
             if (!string.IsNullOrWhiteSpace(currentFactionId) &&
-                !string.Equals(currentFactionId, factionId, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(currentFactionId, factionId, StringComparison.Ordinal))
             {
                 return "candidate radiant_actor уже принадлежит другой текущей фракции.";
             }
@@ -1550,7 +1550,7 @@ internal static class ShiningFactionRequestState
             (existing, pending) => string.Equals(
                 identitySelector(existing),
                 identitySelector(pending),
-                StringComparison.OrdinalIgnoreCase));
+                StringComparison.Ordinal));
 
     private static async Task WriteSingleRequestAsync<TRequest>(
         FileSystemManager fs,
@@ -1566,7 +1566,7 @@ internal static class ShiningFactionRequestState
         var requestId = GetPoliticalRequestId(request);
         if (existingState.Requests.Any(existingRequest =>
                 conflictSelector(existingRequest, request) &&
-                !string.Equals(GetPoliticalRequestId(existingRequest), requestId, StringComparison.OrdinalIgnoreCase)))
+                !string.Equals(GetPoliticalRequestId(existingRequest), requestId, StringComparison.Ordinal)))
         {
             throw new InvalidOperationException($"{Path.GetFileName(path)} уже содержит live foreign Shining political contract with the same target identity; guarded writer не заменяет unresolved contract.");
         }
@@ -1597,7 +1597,7 @@ internal static class ShiningFactionRequestState
         var requestId = GetPoliticalRequestId(request);
         if (existingState.Requests.Any(existingRequest =>
                 conflictSelector(existingRequest, request) &&
-                !string.Equals(GetPoliticalRequestId(existingRequest), requestId, StringComparison.OrdinalIgnoreCase)))
+                !string.Equals(GetPoliticalRequestId(existingRequest), requestId, StringComparison.Ordinal)))
         {
             throw new InvalidOperationException($"{Path.GetFileName(path)} уже содержит live foreign Shining political contract with the same target identity; guarded writer не заменяет unresolved contract.");
         }
@@ -1662,14 +1662,16 @@ internal static class ShiningFactionRequestState
         if (receipt == null || !HasCanonicalResolutionMarkers(receipt) || !IsSupportedFoundingStatus(GetNodeString(receipt["status"])))
             return false;
 
-        var receiptSupporters = ReadStringSet(receipt["supportingResidentIds"]);
+        var receiptSupporters = ReadStringSet(
+            receipt["supportingResidentIds"],
+            StringComparer.Ordinal);
         var requestSupporters = request.SupportingResidentIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .Select(id => id.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
 
-        if (!string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) ||
+        if (!string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.Ordinal) ||
+            !string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.Ordinal) ||
             GetNodeInt(receipt["quotedCostFeathers"]) != request.QuotedCostFeathers ||
             GetNodeInt(receipt["quotedCostLightSparks"]) != request.QuotedCostLightSparks ||
             !receiptSupporters.SetEquals(requestSupporters))
@@ -1692,12 +1694,12 @@ internal static class ShiningFactionRequestState
 
         return request.SupportingResidentIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Distinct(StringComparer.Ordinal)
             .All(supporterId =>
             {
                 var resident = FindResident(residentRoot, supporterId);
                 return resident != null &&
-                       string.Equals(GetNodeString(resident["shiningFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase);
+                       string.Equals(GetNodeString(resident["shiningFactionId"]), request.ProposedFactionId, StringComparison.Ordinal);
             });
     }
 
@@ -1707,9 +1709,9 @@ internal static class ShiningFactionRequestState
         if (receipt == null || !HasCanonicalResolutionMarkers(receipt) || !IsSupportedRealignmentStatus(GetNodeString(receipt["status"])))
             return false;
 
-        if (!string.Equals(GetNodeString(receipt["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(receipt["sourceFactionId"]), request.SourceFactionId, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(receipt["targetFactionId"]) ?? string.Empty, request.TargetFactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
+        if (!string.Equals(GetNodeString(receipt["residentId"]), request.ResidentId, StringComparison.Ordinal) ||
+            !string.Equals(GetNodeString(receipt["sourceFactionId"]), request.SourceFactionId, StringComparison.Ordinal) ||
+            !string.Equals(GetNodeString(receipt["targetFactionId"]) ?? string.Empty, request.TargetFactionId ?? string.Empty, StringComparison.Ordinal) ||
             !string.Equals(GetNodeString(receipt["realignmentMode"]), request.RealignmentMode, StringComparison.OrdinalIgnoreCase))
         {
             return false;
@@ -1729,7 +1731,7 @@ internal static class ShiningFactionRequestState
             var historyEntryId = GetNodeString(receipt["residentHistoryEntryId"]);
             return !string.IsNullOrWhiteSpace(request.TargetFactionId) &&
                    FindFaction(shiningRoot, request.TargetFactionId) != null &&
-                   string.Equals(residentFactionId, request.TargetFactionId, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(residentFactionId, request.TargetFactionId, StringComparison.Ordinal) &&
                    HasResidentHistoryEntry(residentRoot, historyEntryId);
         }
 
@@ -1737,7 +1739,7 @@ internal static class ShiningFactionRequestState
             return string.IsNullOrWhiteSpace(residentFactionId) &&
                    HasResidentHistoryEntry(residentRoot, GetNodeString(receipt["residentHistoryEntryId"]));
 
-        return string.Equals(residentFactionId, request.SourceFactionId, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(residentFactionId, request.SourceFactionId, StringComparison.Ordinal);
     }
 
     private static bool HasMatchingLeadershipClosure(JsonObject shiningRoot, PendingShiningFactionLeadershipTransitionRequest request)
@@ -1752,7 +1754,7 @@ internal static class ShiningFactionRequestState
 
         if (!string.Equals(GetNodeString(receipt["transitionMode"]), request.TransitionMode, StringComparison.OrdinalIgnoreCase) ||
             !string.Equals(GetNodeString(receipt["previousHeadActorType"]) ?? string.Empty, request.IncumbentHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetNodeString(receipt["previousHeadActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(GetNodeString(receipt["previousHeadActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.Ordinal))
         {
             return false;
         }
@@ -1761,7 +1763,7 @@ internal static class ShiningFactionRequestState
         if (string.Equals(status, RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
         {
             if (!string.Equals(GetNodeString(receipt["newHeadActorType"]) ?? string.Empty, request.CandidateHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
-                !string.Equals(GetNodeString(receipt["newHeadActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(GetNodeString(receipt["newHeadActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.Ordinal))
             {
                 return false;
             }
@@ -1783,7 +1785,7 @@ internal static class ShiningFactionRequestState
             }
 
             return string.Equals(GetNodeString(leadership["headActorType"]) ?? string.Empty, request.CandidateHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(GetNodeString(leadership["headActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetNodeString(leadership["headActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.Ordinal) &&
                    string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -1796,7 +1798,7 @@ internal static class ShiningFactionRequestState
 
         var currentLeadership = faction["leadership"] as JsonObject ?? new JsonObject();
         return string.Equals(GetNodeString(currentLeadership["headActorType"]) ?? string.Empty, request.IncumbentHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(currentLeadership["headActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+               string.Equals(GetNodeString(currentLeadership["headActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.Ordinal);
     }
 
     private static JsonObject? FindHall(JsonObject? shiningRoot, string hallId)
@@ -1805,15 +1807,17 @@ internal static class ShiningFactionRequestState
             return null;
 
         return halls.OfType<JsonObject>()
-            .FirstOrDefault(hall => string.Equals(GetNodeString(hall["hallId"]), hallId, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(hall => string.Equals(GetNodeString(hall["hallId"]), hallId, StringComparison.Ordinal));
     }
 
     private static bool HallMatchesFoundingRequest(JsonObject hall, PendingShiningFactionFoundingRequest request)
     {
-        return string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+        return string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(hall["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(hall["description"]), request.ProposedHallDescription, StringComparison.Ordinal) &&
-               ReadStringSet(hall["serviceTags"]).SetEquals(request.ProposedHallServiceTags
+               ReadStringSet(
+                   hall["serviceTags"],
+                   StringComparer.OrdinalIgnoreCase).SetEquals(request.ProposedHallServiceTags
                    .Where(tag => !string.IsNullOrWhiteSpace(tag))
                    .Select(tag => tag.Trim()));
     }
@@ -1821,8 +1825,8 @@ internal static class ShiningFactionRequestState
     private static bool FactionMatchesAcceptedFounding(JsonObject faction, PendingShiningFactionFoundingRequest request)
     {
         var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
-        return string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(faction["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+        return string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(faction["hallId"]), request.ProposedHallId, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(faction["originType"]), ShiningAbodeState.OriginTypePlayerFounded, StringComparison.OrdinalIgnoreCase) &&
                GetNodeInt(faction["baseStrength"]) == 35 &&
                string.Equals(GetNodeString(faction["charter"]?["factionName"]), request.Charter.FactionName, StringComparison.Ordinal) &&
@@ -1830,7 +1834,7 @@ internal static class ShiningFactionRequestState
                string.Equals(GetNodeString(faction["charter"]?["patronEffectFamily"]), request.Charter.PatronEffectFamily, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(faction["charter"]?["summary"]), request.Charter.Summary, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(leadership["headActorType"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(leadership["headActorId"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["headActorId"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -1847,9 +1851,11 @@ internal static class ShiningFactionRequestState
         GetNodeInt(receipt["resolvedAtTurn"], 0) > 0 &&
         !string.IsNullOrWhiteSpace(GetNodeString(receipt["resolvedAtUtc"]));
 
-    private static HashSet<string> ReadStringSet(JsonNode? node)
+    private static HashSet<string> ReadStringSet(
+        JsonNode? node,
+        StringComparer comparer)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new HashSet<string>(comparer);
         if (node is not JsonArray array)
             return result;
 
@@ -1902,9 +1908,9 @@ internal static class ShiningFactionRequestState
     private static bool IsSameFoundingLogicalRequest(
         PendingShiningFactionFoundingRequest existing,
         PendingShiningFactionFoundingRequest pending) =>
-        string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(existing.ProposedFactionId, pending.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(existing.ProposedHallId, pending.ProposedHallId, StringComparison.OrdinalIgnoreCase);
+        string.Equals(existing.RequestId, pending.RequestId, StringComparison.Ordinal) &&
+        string.Equals(existing.ProposedFactionId, pending.ProposedFactionId, StringComparison.Ordinal) &&
+        string.Equals(existing.ProposedHallId, pending.ProposedHallId, StringComparison.Ordinal);
 
     private static bool IsShiningRealm(string? currentRealm) => RealmSemantics.IsShiningRealm(currentRealm);
 }

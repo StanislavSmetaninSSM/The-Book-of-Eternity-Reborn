@@ -6,6 +6,19 @@ Do not implement project changes without a tracked task.
 
 Before editing code, tests, prompts, documentation, examples, or game contracts, first ensure there is an explicit task for the work. If the user asks to implement something and no task exists, create or request a task record before making repository changes. Small exploratory reads, reviews, and planning may happen without a task, but implementation work must be tied to a task.
 
+## Pre-release save compatibility guardrail
+
+The game has not had a public release. Backward compatibility with older save
+files, development snapshots, canonical-state schemas, and obsolete test
+fixtures is not a requirement unless a tracked issue and accepted spec make a
+specific exception. Migrate active bootstrap state, templates, examples, and
+tests to the current contract and remove legacy fallbacks instead of adding
+complexity for hypothetical saves. Old tests and fixtures do not establish a
+compatibility contract by themselves.
+
+This does not relax atomic accepted-turn behavior, current canonical-state
+integrity, or immutable receipt/history guarantees inside the supported schema.
+
 ## C# test execution policy
 
 Use PowerShell 7 and `.\scripts\test-csharp.ps1` as the normal bounded entry
@@ -14,6 +27,12 @@ result artifacts, and failure diagnosis.
 
 - During implementation, run the smallest relevant `Focused` selection, then
   one `Fast` control at a meaningful checkpoint.
+- `Focused` targets the fast test project by default. To run an exact class or
+  method from `BookOfEternityClient.IntegrationTests`, pass
+  `-FocusedProject Integration`.
+- Never mix fast-project and integration-project test classes in one
+  `Focused` filter. Run one bounded command per selected project so a
+  successful result proves that every requested test was discoverable.
 - Immediately before merge, run one `PreMerge` control. Do not add duplicate
   Fast runs immediately before it because PreMerge already includes the full
   fast project.
@@ -134,5 +153,5 @@ affected; it remains a conditional diagnostic lane.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs\1505-test-suite-performance\plan.md
+at specs/1510-complete-faction-materialization/plan.md
 <!-- SPECKIT END -->

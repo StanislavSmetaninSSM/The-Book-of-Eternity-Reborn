@@ -252,6 +252,69 @@ public partial class ValidationService
                 repairHint: "Если фракция уже существует в canonical faction_core.json, передай её permanent factionId. initialId оставляй только для genuinely new same-turn faction."));
         }
 
+        var isMortalFullCarrier = itemContext.Contains(
+            ".factionDataChanges[",
+            StringComparison.Ordinal);
+        var isCreation = false;
+        var existingPreTurn = false;
+        var existingPreTurnHadReceipt = false;
+        var collidesWithPreTurnId = false;
+        var materializationFactionId = string.Empty;
+        if (isMortalFullCarrier)
+        {
+            isCreation = TryClassifyMortalFullCarrier(
+                item,
+                out materializationFactionId,
+                out existingPreTurn,
+                out existingPreTurnHadReceipt,
+                out collidesWithPreTurnId);
+        }
+
+        var factionIssueStart = issues.Count;
+        if (isCreation)
+        {
+            if (collidesWithPreTurnId)
+            {
+                issues.Add(FactionIssue(
+                    $"{itemContext}.initialId",
+                    "faction_materialization_mortal_initial_id_collision",
+                    materializationFactionId,
+                    "A Mortal creation initialId must not collide with a pre-turn permanent factionId."));
+            }
+
+            ValidateMortalSemanticCore(
+                item,
+                itemContext,
+                materializationFactionId,
+                hasExistingChronicle: false,
+                issues);
+        }
+        else if (isMortalFullCarrier && existingPreTurn)
+        {
+            AddExistingFactionFullResendIssue(
+                itemContext,
+                "mortal_faction",
+                materializationFactionId,
+                existingPreTurnHadReceipt
+                    ? FactionTouchKind.AlreadyMaterialized
+                    : FactionTouchKind.InvalidReceiptless,
+                issues);
+        }
+
+        if (isMortalFullCarrier &&
+            !string.IsNullOrWhiteSpace(materializationFactionId))
+        {
+            ApplyFactionRepairClassification(
+                issues,
+                factionIssueStart,
+                $"mortal_faction:{materializationFactionId}",
+                isCreation
+                    ? FactionTouchKind.New
+                    : existingPreTurnHadReceipt
+                        ? FactionTouchKind.AlreadyMaterialized
+                        : FactionTouchKind.InvalidReceiptless);
+        }
+
         RequireString(item, itemContext, issues, "name");
         RequireString(item, itemContext, issues, "description");
         ValidateOptionalString(item, itemContext, issues, "factionColor");

@@ -586,36 +586,56 @@ public sealed class BrowserShiningPoliticsParityTests : IDisposable
         string headActorType,
         string headActorId,
         string leadershipState,
-        int strength) => new()
+        int strength)
     {
-        ["factionId"] = factionId,
-        ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
-        ["hallId"] = hallId,
-        ["isPlayerVisible"] = true,
-        ["visibility"] = "public",
-        ["factionStrength"] = strength,
-        ["factionLifecycle"] = new JsonObject
+        var faction = new JsonObject
         {
-            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
-        },
-        ["charter"] = new JsonObject
-        {
-            ["factionName"] = factionName,
-            ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
-            ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
-            ["summary"] = "Тестовая сияющая фракция."
-        },
-        ["leadership"] = new JsonObject
-        {
-            ["leadershipState"] = leadershipState,
-            ["headActorType"] = headActorType,
-            ["headActorId"] = headActorId
-        },
-        ["projects"] = new JsonArray(),
-        [ShiningAbodeState.FactionChronicleProperty] = new JsonArray(),
-        [ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(),
-        [ShiningAbodeState.FactionResourceLedgerProperty] = new JsonArray()
-    };
+            ["factionId"] = factionId,
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = hallId,
+            ["isPlayerVisible"] = true,
+            ["playerVisible"] = true,
+            ["visibility"] = "revealed",
+            ["baseStrength"] = strength,
+            ["factionStrength"] = strength,
+            ["investCountThisAscension"] = 0,
+            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+            ["factionLifecycle"] = new JsonObject
+            {
+                ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+            },
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = factionName,
+                ["favoredArchetype"] =
+                    ShiningAbodeState.ProjectArchetypeAccord,
+                ["patronEffectFamily"] =
+                    ShiningAbodeState.EffectFamilySocial,
+                ["summary"] = "Тестовая сияющая фракция."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["leadershipState"] = leadershipState,
+                ["headActorType"] = headActorType,
+                ["headActorId"] = headActorId
+            },
+            ["projects"] = new JsonArray(),
+            [ShiningAbodeState.FactionChronicleProperty] = new JsonArray(),
+            [ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(),
+            [ShiningAbodeState.FactionResourceLedgerProperty] =
+                new JsonArray(),
+            ["tradeInventory"] = null,
+            ["tradeInventoryReceipts"] = new JsonArray(),
+            ["leadershipReceipts"] = new JsonArray(),
+            ["leadershipHistory"] = new JsonArray()
+        };
+
+        return ShiningFactionTestMaterialization.Apply(
+            faction,
+            materializedAtTurn: 1,
+            hasResidentAffiliations: true,
+            canTrade: true);
+    }
 
     private static JsonObject CreateResident(
         string residentId,
@@ -656,10 +676,13 @@ public sealed class BrowserShiningPoliticsParityTests : IDisposable
         var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
         var faction = shiningRoot["factions"]!.AsArray()
             .OfType<JsonObject>()
-            .First(item => string.Equals(item["factionId"]!.GetValue<string>(), factionId, StringComparison.OrdinalIgnoreCase));
+            .First(item => string.Equals(
+                item["factionId"]!.GetValue<string>(),
+                factionId,
+                StringComparison.Ordinal));
         faction["isPlayerVisible"] = visible;
         faction["playerVisible"] = visible;
-        faction["visibility"] = visible ? "public" : "hidden";
+        faction["visibility"] = visible ? "revealed" : "hidden";
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 

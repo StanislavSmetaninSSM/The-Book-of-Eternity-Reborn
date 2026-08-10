@@ -87,6 +87,7 @@ $script:AfterlifeRealmGateDirective = " Realm Gate is mandatory before broad sta
 $script:AfterlifeExamplesDirective = " If game_state/meta/soul_state.json.currentRealm is Chaos Sea or Shining Abode, or progressionControl contains any afterlife mustEvaluate*/afterlifeCatchup debt, read compact templates first and use '$($script:AfterlifeMatrixPath)' to select exact canonical afterlife surfaces/receipts. Open '$($script:AfterlifeTurnsExamplePath)' only when the compact templates and matrix do not cover the route-specific contract you need; do not open the huge example file for basic terminal, progression_report, actor reasoning, repair, or tempoAdvantage field names. Route references when needed: example 14 for Shining core action fragments, examples 16-18 for combined scheduler + pending contract + player-action turns, example 19 for ordinary scheduler-only Chaos Sea living-world turns, example 20 for system Guardian attraction, example 21 for protected return guard turns, example 22 for direct resident action / hidden pending-backed routing tags, example 23 for freeform Chaos Sea Abode search with reason/source=chaos_sea_abode_search, example 24 for afterlife spiritual conflict with diceAudit on contested exchange/resolve and either specialArtAudit/effectNote/specialCostMultiplierPercent or specialArtAudits[] when both sides use named special arts; never write both special-art audit fields on one exchange. Non-player special arts must match the resolved opposition operation used for actionCostAudit.opposition, not the player's exchange.operationType or a stale incomingAction candidate; incomingAction.finalOperationType is authoritative when present, and terminal/free player operations must not include actionCostAudit.player. Use example 25 for Source of Light capstone closure from game_state/control/pending_source_of_light_capstone.json into sourceOfLightCapstone, light_incarnate, and source_of_light_incarnated_light. Scheduler allowance is scheduler-owned only: progressionProcessingReport permits only scheduler-owned Shining/resident/trade progression fields and does not authorize availability, coreActionReceipts, gates, gachaSystem.gachaHistory, pendingNativeFactionDiscovery, preparedIncarnationPackage, lightSparks, treasury, or sourceOfLightCapstone unless that surface has its own client-authored contract closed in the same turn. Use example 26 for afterlifeEntityProfileUpdates / afterlifeEntityCustomStateChanges / afterlifeFateCardUnlocks / afterlifeActorGoalUpdates / afterlifeActorQuestUpdates / afterlifeActorActivityUpdates / completeAfterlifeActorActivities / afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates / afterlifeActorMaskAdds / afterlifeActorMaskUpdates / afterlifeActorMaskRemovals / afterlifeActorActiveMaskChanges / afterlifeEntityProgressionOverrides / afterlifeSpecialArtLearningReceipts / game_state/meta/afterlife_entity_profiles.json, including fateCards, guardianEffects, playerUnlocks, politicalEffects, combatEffects, trainingUnlocks, relationships, relationshipLock, breakthroughQuestId, redemptionQuestId, pointOfNoReturn, _clear_, masks, activeMaskId, concealedTruth, directives, revealConditions, deceptionRisk, linkedThreatId, linkedSarefAgentId, goals, personalQuests, currentActivity, completedActivities, gmThoughtsSummary, specialArts, upgradeCost with only inkFeathers/lightSparks and at least one positive value, no progression via initialTier in learning receipts, trainingConditions, costMultiplierPercent, customStates, statesToRemove, progressionLedger, lastAutoProgressionCycleKey, soulDissipationProof, targetStabilityCoefficient, and terminalGameOver. Use _true_self_ rather than null for active mask removal, keep hidden mask truth out of normal player UI until isRevealed=true, and never use Mortal NPCMaskAdds. Use example 26D for afterlifeThreatsToAdd / afterlifeThreatsToUpdate / completeAfterlifeThreatActivities / afterlifeThreatsToRemove / game_state/meta/afterlife_active_threats.json persistent threats: use threats[], currentActivity, impactProfile, visibleToPlayer, optional sarefLink, close currentActivity only through completion, do not leak hidden threats, and never use Mortal worldMapUpdates.activeThreats. Use example 26B for afterlifeChronicleUpdates / game_state/meta/afterlife_chronicles.json external memory: write lastEventsDescription only, never eventDescriptions[] in updates, and do not substitute worldEventsLog/currentLocationData/worldMapUpdates. Use example 28 for afterlifeGlobalFlagUpdates / game_state/meta/afterlife_global_flags.json global facts: use flags[] with visibility hidden/gm_only for private facts, include gmThoughtsSummary and obsoleteReason for obsolete flags, and never use Mortal worldStateFlags. If resolving afterlife spiritual conflict, Spiritual Arts, Source of Light capstone rewards, or afterlife entity profiles, also read '$($script:AfterlifeCombatGlossaryPath)' for Russian labels while keeping JSON keys/enums English."
 $script:ActorMaterializationDirective = " Actor Materialization v1 is mandatory for every newly significant Mortal NPC or non-player afterlife actor. Bind one materializationId and materializedAtTurn to one exact actorType:actorId; do not infer identity, skills, inventory, arts, or authority from a display name, prose, occupation, or setting genre. Names, archetype prose, item types, and genre keywords never grant mechanics. Record capabilities and every required sections disposition as populated or empty_by_design; every empty_by_design entry needs an in-world reason and keeps the real canonical empty field physically present as its exact empty array, object, or null. A legacy actor that first gains teacher, merchant/trade, combat, Actor Brain, or non-vacant leadership authority is promoted into significant structured play and must receive a complete materialization envelope in that same accepted turn. A new Mortal UpdateNPCs actor has exactly one non-empty location authority: a known currentLocationId or a valid same-turn initialLocationId, never neither or both. A new afterlife actor explicitly carries appearanceDescription, profileSummary, personalityProfile.archetype, motivation, personalityProfile.worldview, realm, locationId, goals with a non-empty plan, and exact actor-owned memory. Positive afterlife trade authority is exact and realm-local: in the Chaos Sea use canTrade=true only for the one active Guardian bound to the exact current abode; in the Shining Abode use it only for a non-player faction head whose leadership is secure or contested, whose faction is operational, and whose trade tier is at least 1. When authoritative trade evidence is unavailable at the validation boundary, fail closed with canTrade=false; never infer trading from names, roles, descriptions, or genre vocabulary. A current materialized profile uses exactly one canonical actorType and actorId and no actorRef alias. The first envelope on an existing profile must validate current actor-owned memory; an untouched legacy profile without a new envelope remains readable. Route Guardian memory to the Guardian thought journal, resident memory to the resident thought journal, and common-profile actor memory to profile gmThoughtsSummary. A bounded common-profile repair may change only the exact actor's gmThoughtsSummary and must preserve unrelated actors, root data, currencies, progression, materialization, and scalar fields. A progression ledger or external chronicle is audit/history and never substitutes for actor-owned thought memory. Populated agency requires meaningful goals, non-empty personalQuests, meaningful currentActivity, or non-empty completedActivities; progressionStrategy or a mask alone is not agency. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for later changes. A legacy first-envelope migration may use the full carrier only when validated pre-turn authority proves every historical field unchanged. For an existing NPC or afterlife actor, preserve the historical envelope and use a dedicated delta rather than rewriting materialization. A bounded worker repair may alter only the exact named section; the apply gate mechanically rejects protected actor data changes outside that scope."
 $script:AfterlifeActorLifecycleDirective = " Afterlife actor lifecycle: accepted profile actor types are guardian, resident, shining_resident, shining_faction_head, radiant_actor, saref_agent, system_actor, and custom_afterlife_actor; source-backed actors still require exact canonical authority. canTeach=true requires a positive standard/special art tier or another supported positive lesson such as mentorTrainingShowcase sourceCap greater than zero; tier/cap zero and a bare mentor flag do not qualify. Remove a physical resident record only when the validated pre-turn snapshot contains its exact no-target departure_only request and current state contains the exact departed_only receipt plus referenced departure history. Ordinary player projections hide gmOnly, secret, non-player-visible, and system_actor profiles unless explicit diagnostics are enabled."
+$script:FactionMaterializationDirective = " Faction Materialization v1 is mandatory for faction creation or ordinary faction update. Only a genuinely new Mortal faction uses the full factionDataChanges carrier with one immutable envelope, exact capability flags, and every section declared populated or empty_by_design with its canonical surface present. Every existing faction must already carry and preserve its accepted envelope; receipt-less canonical faction state and a full resend of an existing identity are invalid. Use factionCoreChanges for ordinary semantic updates and the existing dedicated commands for rank, branch, resource, project, custom-state, reputation, membership, and chronicle changes. Always open the compact Mortal faction template/guidance first; open the large main example only when compact templates do not cover a route-specific shape. In the Shining Abode, only exact native_discovery, player_founding, or story authority may materialize a faction; an active Guardian never invents a faction charter."
 $script:AfterlifeExamplesDirective += $script:ActorMaterializationDirective
 $script:AfterlifeExamplesDirective += $script:AfterlifeActorLifecycleDirective
 $script:AfterlifeCombatConditionsDirective = " If an afterlife spiritual conflict uses combatConditions[], use only kinds mark, ward, burden, opening, or vow; each active condition needs source, target, affected operations, duration/uses, counterplay, and summary. Conditions may affect only condition-backed rollMode sources, conflictPosition, legal anti-control controlState softening/narrowing, side strain, tempoAdvantage, counterPayoff, actionCostAudit / OD costs, or specialArtAudit.effectNote. This is no generic passive stat stacking: create, consume, expire, or clear combatConditions explicitly. Show visible active combatConditions in ordinary conflict/log output and keep hidden/gm_only combatConditions private."
@@ -716,7 +717,7 @@ function New-GmExperienceLesson {
         "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids. Register durable destination locations in world_map first, then update current_location and NPC currentLocationId/currentLocationName only to known ids. Every world_map adjacency/link/storage/threat target must point to an existing locationId or a same-turn newLocations.initialId that is fully materialized in the same response; do not leave unknown target/source ids. Resolve duplicate coordinates in same-turn map updates. If the place is narrative color inside the current room, keep current_location unchanged and describe it as part of the existing location."
     }
     elseif ($hasMortalFactionIssue) {
-        "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction as a complete factions[] object when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
+        "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction through the complete factionDataChanges creation carrier when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
     }
     elseif ($hasMortalNpcIssue) {
         "Use MORTAL_NPC_UPDATE_TEMPLATE.md before editing game_state/npcs/npc_core.json or game_state/npcs/npc_journals.json. Materialize genuinely new or true legacy-promotion Mortal World NPCs through UpdateNPCs/NPCsInScene as complete objects with relationshipLock, goals, 3-5 integer-valued personalityTraits, attitude, and culturalStance. For an ordinary existing NPC, use dedicated commands and bounded NPCCoreChanges; never resend an unchanged or updated full object through UpdateNPCs. Direct-speaking or directly addressed Mortal actors must not be excluded only because their personal name is unknown; use a stable role-based visible name until the real name is learned. NPCsInScene is only for actors physically present in currentLocationData: voices behind a door, people near nearbyExitLocationId, nearby corridors, and route pressure stay in narrative/location/quest/faction memory or Actors outside scope until they are actually in the current scene. For NPCsInScene in a known current location, set currentLocationId to currentLocationData.locationId and initialLocationId to JSON null. For NPCsInScene in a same-turn new location, set initialLocationId to currentLocationData.initialId/newLocations.initialId and currentLocationId to JSON null. For NPCJournals, set lastJournalNote to the latest first-person thought and append journalEntries[] objects with fresh entryId, non-empty first-person description, and timestamp. If an NPC is only background-only color, move the name from Relevant actors to Actors outside scope instead of creating a partial NPC object."
@@ -1937,48 +1938,172 @@ Validation issue kinds usually mean one of three things:
 ## Choose exactly one correction path
 
 1. Reference an existing canonical factionId.
-   - Use this when the sidecar/full object was meant to update an already existing faction.
+   - Use this when a sidecar or bounded command was meant to update an already existing faction.
    - Replace the bad id with the exact `factionId` from `game_state/factions/faction_core.json`.
+   - If an existing identity was resent through full `factionDataChanges`, remove that full resend and express only the intended bounded command; do not relabel it as a creation.
 
 2. Create the missing faction.
    - Use this only when the story really introduced a durable faction.
-   - Add a complete `factions[]` object to `game_state/factions/faction_core.json` before sidecars reference it.
+   - Use the complete `factionDataChanges[]` creation carrier before sidecars reference it.
    - Keep the id stable, lowercase/snake-like, and based on the faction, not on one scene line.
 
 3. Remove or retarget the invalid sidecar.
    - Use this when the sidecar was speculative, duplicate, or belonged to a faction that should not exist.
    - Remove only the invalid sidecar entry, or retarget it to an existing canonical factionId.
 
-## Minimal durable faction object
+## Repair packet authority
+
+- In validation repair mode, `harnessRepairPackets[].targetFiles` is the exact writable allowlist. Do not edit an unlisted root even when it is related to the same faction.
+- A Mortal faction location-control defect may name the exact affected location authority together with `game_state/world/current_location.json` and/or `game_state/world/world_map.json`. Repair only the roots actually listed.
+- Preserve every unrelated faction, location, sidecar, receipt, and chronicle. Complete the whole listed faction bundle before signaling repair completion.
+
+## Faction Materialization v1 creation carrier
 
 ```json
 {
-  "factionId": "faction_<stable_slug>",
-  "name": "<Russian faction name>",
-  "displayName": "<Russian faction name>",
-  "description": "<what the faction wants and why it matters>",
-  "type": "organization",
-  "status": "active",
-  "visibility": "known",
-  "reputation": 0,
-  "influence": 10,
-  "resources": {
-    "wealth": 10,
-    "manpower": 10,
-    "information": 10,
-    "magic": 0
-  },
-  "ranks": [],
-  "rankBranches": [],
-  "relations": [],
-  "controlledTerritories": [],
-  "projects": [],
-  "chronicle": [],
-  "customStates": []
+  "factionDataChanges": [
+    {
+      "factionId": null,
+      "initialId": "faction_<stable_slug>",
+      "isNewFaction": true,
+      "name": "<Russian faction name>",
+      "description": "<what the faction wants and why it matters>",
+      "image_prompt": "<setting-aware visual prompt>",
+      "factionColor": "#6F7958",
+      "purpose": "<durable purpose>",
+      "currentAgenda": "<current concrete agenda>",
+      "principles": ["<principle>"],
+      "memory": {
+        "summary": "<durable memory>",
+        "lastUpdatedTurn": 1,
+        "enduringFacts": [],
+        "openThreads": []
+      },
+      "governance": {
+        "model": "<governance model>",
+        "decisionProcess": "<decision process>"
+      },
+      "leadership": {
+        "leadershipState": "vacant",
+        "summary": "<leadership summary>",
+        "leaderNpcIds": []
+      },
+      "powerProfile": {
+        "military": 0,
+        "economic": 0,
+        "social": 0,
+        "covert": 0,
+        "logistics": 0,
+        "stability": 0,
+        "arcane_tech": 0,
+        "exploration": 0
+      },
+      "ranks": {"branches": []},
+      "structuredBonuses": [],
+      "resources": {"metaResources": [], "strategicGoods": []},
+      "relations": [],
+      "activeProjects": [],
+      "completedProjects": [],
+      "controlledTerritories": [],
+      "customStates": [],
+      "scribeChronicle": ["#1 — <first durable faction event>"],
+      "isPlayerFaction": false,
+      "isPlayerMember": false,
+      "playerRank": null,
+      "playerBranch": null,
+      "playerStrategyDirective": null,
+      "reputation": 0,
+      "reputationDescription": null,
+      "level": 1,
+      "experience": 0,
+      "experienceForNextLevel": 100,
+      "developmentArchetype": "<archetype>",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_faction_<stable_slug>_turn_1",
+        "factionType": "mortal_faction",
+        "factionId": "faction_<stable_slug>",
+        "materializedAtTurn": 1,
+        "state": "complete",
+        "capabilities": {
+          "hasFormalHierarchy": false,
+          "usesFactionResources": false,
+          "maintainsRelations": false,
+          "runsProjects": false,
+          "holdsTerritoryOrInfluence": false,
+          "supportsPlayerMembership": false,
+          "usesCustomMechanics": false
+        },
+        "sections": {
+          "hierarchy": {"state": "empty_by_design", "reason": "<why no ranks exist>"},
+          "resources": {"state": "empty_by_design", "reason": "<why no common resources exist>"},
+          "relations": {"state": "empty_by_design", "reason": "<why no relations exist>"},
+          "projects": {"state": "empty_by_design", "reason": "<why no projects exist>"},
+          "territoryAndInfluence": {"state": "empty_by_design", "reason": "<why no territory is controlled>"},
+          "playerMembership": {"state": "empty_by_design", "reason": "<why membership is unavailable>"},
+          "customStates": {"state": "empty_by_design", "reason": "<why no custom mechanics exist>"}
+        }
+      }
+    }
+  ]
 }
 ```
 
-Preserve existing faction ranks, rankBranches, chronicles, relations, projects, resources, reputation, and custom states. Do not delete unrelated faction data to silence one identity error.
+Do not use this full carrier for an existing identity. Every existing faction must already have its accepted `materialization` envelope; receipt-less canonical state is invalid and is not promoted or migrated at runtime.
+
+## Ordinary existing faction update
+
+Use bounded `factionCoreChanges` only for semantic core groups. Keep rank/resource/project/chronicle mutations on their dedicated arrays.
+
+```json
+{
+  "factionCoreChanges": [
+    {
+      "factionId": "faction_<existing_id>",
+      "reason": "<why the semantic core changed>",
+      "purposeAndPrinciples": {
+        "purpose": "<complete current purpose>",
+        "currentAgenda": "<new current agenda>",
+        "principles": ["<complete current principle>"]
+      },
+      "progressionAndPower": {
+        "level": 2,
+        "experience": 0,
+        "experienceForNextLevel": 140,
+        "developmentArchetype": "<archetype>",
+        "customArchetypePriorities": null,
+        "powerProfile": {
+          "military": 0,
+          "economic": 0,
+          "social": 0,
+          "covert": 0,
+          "logistics": 0,
+          "stability": 0,
+          "arcane_tech": 0,
+          "exploration": 0
+        }
+      },
+      "governanceAndLeadership": {
+        "governance": {
+          "model": "<governance model>",
+          "decisionProcess": "<decision process>"
+        },
+        "leadership": {
+          "leadershipState": "vacant",
+          "summary": "<leadership summary>",
+          "leaderNpcIds": []
+        }
+      }
+    }
+  ],
+  "factionRankChanges": [],
+  "factionResourceChanges": [],
+  "factionProjectUpdates": [],
+  "factionChronicleUpdates": []
+}
+```
+
+Preserve existing ranks, branches, chronicles, relations, projects, resources, reputation, and the historical materialization envelope. Do not delete unrelated faction data to silence one identity error.
 '@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_LOCATION_TRANSITION_TEMPLATE.md" -Role "compact_mortal_location_transition_template" -Content @'
 # Compact Mortal Location Transition Template
@@ -2409,6 +2534,7 @@ Start here instead of browsing repository implementation code.
 
 Write-GmTurnHelperBootstrap
 Write-GmContextPack
+$script:GmCompactTemplateDirective += $script:FactionMaterializationDirective
 
 $script:LastRepairRequestWrite = [datetime]::MinValue
 $script:LastTerminalProtocolFailureWrite = [datetime]::MinValue

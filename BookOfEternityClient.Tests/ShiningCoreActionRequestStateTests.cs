@@ -1309,6 +1309,17 @@ public sealed class ShiningCoreActionRequestStateTests
                 ["leadershipHistory"] = new JsonArray()
             }
         };
+        var activeFaction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
+        activeFaction["visibility"] = "revealed";
+        activeFaction["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+        };
+        ShiningFactionTestMaterialization.Apply(
+            activeFaction,
+            materializedAtTurn: 4,
+            hasResidentAffiliations: false,
+            canTrade: false);
         shiningRoot["gates"] = new JsonObject
         {
             ["draftVersion"] = 1,

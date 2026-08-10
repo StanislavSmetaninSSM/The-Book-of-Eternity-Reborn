@@ -159,19 +159,25 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
 
         var directHallIds = GetNonEmptyStrings(
             actor,
+            StringComparer.Ordinal,
             "hallId",
             "currentHallId",
             "locationId",
             "currentLocationId");
         var directHallNames = GetNonEmptyStrings(
             actor,
+            StringComparer.OrdinalIgnoreCase,
             "hallName",
             "currentHallName",
             "locationName",
             "currentLocation");
         var hasDirectHallEvidence = directHallIds.Count > 0 || directHallNames.Count > 0;
         if (hasDirectHallEvidence &&
-            !AliasesMatchLocation(directHallIds, directHallNames, scope.LocationId, scope.LocationName))
+            !ShiningAliasesMatchLocation(
+                directHallIds,
+                directHallNames,
+                scope.LocationId,
+                scope.LocationName))
         {
             return false;
         }
@@ -192,11 +198,9 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
 
         var factionId = GetFirstString(faction, "factionId", "id", "initialId");
         return Contains(scope.LocalFactionIds, factionId) &&
-               MatchesLocation(
+               EqualsExactNonEmpty(
                    GetFirstString(faction, "hallId"),
-                   string.Empty,
-                   scope.LocationId,
-                   scope.LocationName);
+                   scope.LocationId);
     }
 
     public static bool MatchesLocation(
@@ -335,7 +339,9 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         var currentHallId = GetFirstString(root, "currentHallId", "activeHallId", "selectedHallId");
         var halls = root?["halls"] as JsonArray;
         var currentHall = EnumerateObjects(halls)
-            .FirstOrDefault(hall => EqualsNonEmpty(GetFirstString(hall, "hallId", "id"), currentHallId));
+            .FirstOrDefault(hall => EqualsExactNonEmpty(
+                GetFirstString(hall, "hallId", "id"),
+                currentHallId));
         if (string.IsNullOrWhiteSpace(currentHallId) || currentHall == null)
         {
             return LocalInteractionScope.Unresolved(
@@ -344,13 +350,15 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
                 resolvedSnapshots);
         }
 
-        var localFactions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var localActors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var localFactions = new HashSet<string>(StringComparer.Ordinal);
+        var localActors = new HashSet<string>(StringComparer.Ordinal);
         var currentHallName = GetFirstString(currentHall, "hallName", "name", "displayName");
         var factions = SarefMainStoryState.GetPlayerVisibleShiningFactions(root).ToList();
         foreach (var faction in factions)
         {
-            if (!EqualsNonEmpty(GetFirstString(faction, "hallId"), currentHallId))
+            if (!EqualsExactNonEmpty(
+                    GetFirstString(faction, "hallId"),
+                    currentHallId))
                 continue;
 
             var factionId = GetFirstString(faction, "factionId", "id", "initialId");
@@ -398,12 +406,14 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
 
             var directHallIds = GetNonEmptyStrings(
                 resident,
+                StringComparer.Ordinal,
                 "hallId",
                 "currentHallId",
                 "locationId",
                 "currentLocationId");
             var directHallNames = GetNonEmptyStrings(
                 resident,
+                StringComparer.OrdinalIgnoreCase,
                 "hallName",
                 "currentHallName",
                 "locationName",
@@ -411,7 +421,11 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
             var factionId = GetFirstString(resident, "shiningFactionId", "currentFactionId", "factionId");
             var hasDirectHallEvidence = directHallIds.Count > 0 || directHallNames.Count > 0;
             if (hasDirectHallEvidence &&
-                !AliasesMatchLocation(directHallIds, directHallNames, currentHallId, currentHallName))
+                !ShiningAliasesMatchLocation(
+                    directHallIds,
+                    directHallNames,
+                    currentHallId,
+                    currentHallName))
                 continue;
 
             if (hasDirectHallEvidence || Contains(localFactions, factionId))
@@ -467,12 +481,53 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         return string.Empty;
     }
 
-    private static IReadOnlySet<string> GetNonEmptyStrings(JsonObject root, params string[] names)
+    private static IReadOnlySet<string> GetNonEmptyStrings(
+        JsonObject root,
+        params string[] names) =>
+        GetNonEmptyStrings(
+            root,
+            StringComparer.OrdinalIgnoreCase,
+            names);
+
+    private static IReadOnlySet<string> GetNonEmptyStrings(
+        JsonObject root,
+        StringComparer comparer,
+        params string[] names)
     {
-        var values = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var values = new HashSet<string>(comparer);
         foreach (var name in names)
             AddNonEmpty(values, GetString(root[name]));
         return values;
+    }
+
+    private static bool ShiningAliasesMatchLocation(
+        IReadOnlySet<string> idAliases,
+        IReadOnlySet<string> nameAliases,
+        string? locationId,
+        string? locationName)
+    {
+        var hasComparableEvidence = false;
+        var locationIds = BuildAliasSet(
+            StringComparer.Ordinal,
+            locationId);
+        if (idAliases.Count > 0 && locationIds.Count > 0)
+        {
+            hasComparableEvidence = true;
+            if (!idAliases.All(locationIds.Contains))
+                return false;
+        }
+
+        var locationNames = BuildAliasSet(
+            StringComparer.OrdinalIgnoreCase,
+            locationName);
+        if (nameAliases.Count > 0 && locationNames.Count > 0)
+        {
+            hasComparableEvidence = true;
+            if (!nameAliases.All(locationNames.Contains))
+                return false;
+        }
+
+        return hasComparableEvidence;
     }
 
     private static bool AliasesMatchLocation(
@@ -522,6 +577,11 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         !string.IsNullOrWhiteSpace(right) &&
         string.Equals(left.Trim(), right.Trim(), StringComparison.OrdinalIgnoreCase);
 
+    private static bool EqualsExactNonEmpty(string? left, string? right) =>
+        !string.IsNullOrWhiteSpace(left) &&
+        !string.IsNullOrWhiteSpace(right) &&
+        string.Equals(left.Trim(), right.Trim(), StringComparison.Ordinal);
+
     private static bool LooksLikeNonCanonicalAfterlifeRealm(string? realm)
     {
         if (string.IsNullOrWhiteSpace(realm))
@@ -546,8 +606,13 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
     }
 
     private static HashSet<string> BuildAliasSet(params string?[] values)
+        => BuildAliasSet(StringComparer.OrdinalIgnoreCase, values);
+
+    private static HashSet<string> BuildAliasSet(
+        StringComparer comparer,
+        params string?[] values)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new HashSet<string>(comparer);
         foreach (var value in values)
             AddNonEmpty(result, value);
         return result;

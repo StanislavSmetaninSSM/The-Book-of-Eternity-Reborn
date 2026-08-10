@@ -114,6 +114,7 @@ public static class FileMapping
 
         // FACTION SYSTEM
         ["factionDataChanges"] = "game_state/factions/faction_core.json",
+        ["factionCoreChanges"] = "game_state/factions/faction_core.json",
         ["factionRankChanges"] = "game_state/factions/faction_structure.json",
         ["factionBonusChanges"] = "game_state/factions/faction_structure.json",
         ["factionResourceChanges"] = "game_state/factions/faction_resources.json",

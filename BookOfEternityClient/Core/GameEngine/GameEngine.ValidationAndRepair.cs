@@ -367,6 +367,8 @@ public partial class GameEngine
     {
         var issues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
         issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
+        issues.AddRange(await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync());
+        issues.AddRange(await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync());
         return issues;
     }
 
@@ -1754,8 +1756,26 @@ public partial class GameEngine
             .ToList();
         var actorMemoryPersistenceErrors = errors.Where(IsActorMemoryPersistenceRepairIssue).ToList();
         var actorMaterializationErrors = errors.Where(IsActorMaterializationRepairIssue).ToList();
-        var factionIdentityErrors = errors.Where(IsFactionIdentityRepairIssue).ToList();
-        var mortalFactionResourceErrors = errors.Where(IsMortalFactionResourceRepairIssue).ToList();
+        var factionMaterializationGroups = errors
+            .Where(IsFactionMaterializationRepairIssue)
+            .Select(issue => (
+                Issue: issue,
+                Coordinate: ResolveFactionMaterializationRepairCoordinate(issue)))
+            .Where(candidate => candidate.Coordinate != null)
+            .GroupBy(
+                candidate => candidate.Coordinate!,
+                candidate => candidate.Issue,
+                StringComparer.Ordinal)
+            .OrderBy(group => group.Key, StringComparer.Ordinal)
+            .ToList();
+        var factionIdentityErrors = errors
+            .Where(issue => !IsRoutableFactionMaterializationRepairIssue(issue))
+            .Where(IsFactionIdentityRepairIssue)
+            .ToList();
+        var mortalFactionResourceErrors = errors
+            .Where(issue => !IsRoutableFactionMaterializationRepairIssue(issue))
+            .Where(IsMortalFactionResourceRepairIssue)
+            .ToList();
         var mortalBootstrapMaterializationErrors = errors.Where(IsMortalBootstrapMaterializationRepairIssue).ToList();
         var mortalWorldMapAdjacencyErrors = errors.Where(IsMortalWorldMapAdjacencyRepairIssue).ToList();
         var mortalLocationTransitionErrors = errors.Where(IsMortalLocationTransitionRepairIssue).ToList();
@@ -1801,6 +1821,13 @@ public partial class GameEngine
 
         if (actorMaterializationErrors.Count > 0)
             packets.Add(BuildActorMaterializationRepairPacket(actorMaterializationErrors));
+
+        foreach (var factionMaterializationGroup in factionMaterializationGroups)
+        {
+            packets.Add(BuildFactionMaterializationRepairPacket(
+                factionMaterializationGroup.Key,
+                factionMaterializationGroup.ToList()));
+        }
 
         if (factionIdentityErrors.Count > 0)
             packets.Add(BuildFactionIdentityRepairPacket(factionIdentityErrors));
@@ -1935,6 +1962,42 @@ public partial class GameEngine
             "npc_new_update_current_location_unknown" => true,
             _ => false
         };
+    }
+
+    private static bool IsFactionMaterializationRepairIssue(ValidationIssue issue) =>
+        issue.Code?.StartsWith(
+            "faction_materialization_",
+            StringComparison.Ordinal) == true ||
+        string.Equals(
+            issue.Code,
+            "faction_existing_full_resend_forbidden",
+            StringComparison.Ordinal);
+
+    private static bool IsRoutableFactionMaterializationRepairIssue(ValidationIssue issue) =>
+        IsFactionMaterializationRepairIssue(issue) &&
+        ResolveFactionMaterializationRepairCoordinate(issue) != null;
+
+    private static string? ResolveFactionMaterializationRepairCoordinate(ValidationIssue issue)
+    {
+        var actor = issue.Actor;
+        if (string.IsNullOrEmpty(actor))
+            return null;
+
+        var prefix = actor.StartsWith("mortal_faction:", StringComparison.Ordinal)
+            ? "mortal_faction:"
+            : actor.StartsWith("shining_faction:", StringComparison.Ordinal)
+                ? "shining_faction:"
+                : null;
+        if (prefix == null || actor.Length == prefix.Length)
+            return null;
+
+        for (var index = prefix.Length; index < actor.Length; index++)
+        {
+            if (char.IsWhiteSpace(actor[index]) || actor[index] == ':')
+                return null;
+        }
+
+        return actor;
     }
 
     private static bool IsGuardianThoughtJournalShapeRepairIssue(ValidationIssue issue)
@@ -2991,6 +3054,177 @@ public partial class GameEngine
             }
         };
     }
+
+    private static ValidationRepairHarnessPacket BuildFactionMaterializationRepairPacket(
+        string coordinate,
+        IReadOnlyList<ValidationIssue> factionIssues)
+    {
+        var isMortal = coordinate.StartsWith("mortal_faction:", StringComparison.Ordinal);
+        var targetFiles = ResolveFactionMaterializationRepairTargetFiles(
+            coordinate,
+            factionIssues);
+        var missingFields = factionIssues
+            .Where(issue => HasExactMissingCodeComponent(issue.Code))
+            .Select(issue => issue.FilePath)
+            .Where(path => !string.IsNullOrEmpty(path))
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToList();
+        var expectedShape = new List<string>
+        {
+            "The exact faction coordinate has one immutable Faction Materialization v1 receipt; an accepted materializationId remains unchanged.",
+            "Every governed materialization section is physically present in its exact state=populated or exact empty_by_design shape.",
+            "Every faction-bound actor, location, and sidecar link resolves to the exact packet coordinate without changing another faction."
+        };
+        expectedShape.AddRange(
+            factionIssues
+                .Where(issue => issue.FactionRepairClassification.HasValue)
+                .Select(issue => GetFactionMaterializationRepairClassification(
+                    issue.FactionRepairClassification!.Value))
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(classification => classification, StringComparer.Ordinal));
+
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = "faction_materialization_repair",
+            Priority = "critical",
+            Title = $"Bounded Faction Materialization repair for {coordinate}",
+            TargetFiles = targetFiles,
+            TemplateRefs = isMortal
+                ? new List<string> { "Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md" }
+                : new List<string>
+                {
+                    "OtherGuides/Afterlife_Contract_Matrix.md",
+                    "Examples/E_CLI_Afterlife_Turns.txt"
+                },
+            CanonicalActorNames = new List<string> { coordinate },
+            MissingFields = missingFields.Count == 0 ? null : missingFields,
+            ExactFieldCorrections = factionIssues
+                .Select(BuildExactFieldCorrection)
+                .OrderBy(correction => correction.Path, StringComparer.Ordinal)
+                .ThenBy(correction => correction.Code, StringComparer.Ordinal)
+                .ToList(),
+            ExpectedShape = expectedShape,
+            SafeCorrectionRules = new List<string>
+            {
+                $"Change only the listed coordinate {coordinate} and the exact listed targetFiles; no other domain root is writable.",
+                "Preserve all valid sections, accepted receipts, validated histories, chronicles, and every unrelated faction.",
+                "Restore a missing bounded surface in place and keep every valid populated or exact empty governed section unchanged.",
+                "Apply only corrections supported by the current validation issue and canonical evidence in the listed targets."
+            },
+            Steps = new List<string>
+            {
+                "Open game_state/control/validation_repair_request.json and only this packet's listed targetFiles and templateRefs.",
+                $"Locate only the exact coordinate {coordinate}; do not resolve a faction from a display name, prose, file path, or another issue.",
+                "Apply exactFieldCorrections one by one, changing only the named coordinate, path, and listed target root.",
+                "Rerun raw Faction Materialization validation before normalization and do not accept a partially repaired bundle.",
+                "After every exact repair passes, call Complete-BoeValidationRepair as the final action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
+            },
+            DoNotDo = new List<string>
+            {
+                "Do not change another faction or broaden this repair to an unlisted target root.",
+                "Do not change an accepted materializationId or replace an accepted historical receipt.",
+                "Do not rewrite validated history, chronicles, or valid governed sections.",
+                "Do not use whole-file replacement to repair one exact faction surface.",
+                "Do not invent faction identity, links, sections, or content from names, tags, descriptions, or genre.",
+                "Do not create a new turn or write ready/turn_complete.json during validation repair."
+            }
+        };
+    }
+
+    private static List<string> ResolveFactionMaterializationRepairTargetFiles(
+        string coordinate,
+        IReadOnlyList<ValidationIssue> factionIssues)
+    {
+        var targetFiles = new SortedSet<string>(StringComparer.Ordinal);
+        string[] allowedTargets;
+        if (coordinate.StartsWith("mortal_faction:", StringComparison.Ordinal))
+        {
+            targetFiles.Add("game_state/factions/faction_core.json");
+            allowedTargets =
+            [
+                "game_state/factions/faction_core.json",
+                "game_state/factions/faction_structure.json",
+                "game_state/factions/faction_resources.json",
+                "game_state/factions/faction_projects.json",
+                "game_state/factions/faction_custom.json",
+                "game_state/factions/faction_chronicles.json",
+                "game_state/npcs/npc_core.json",
+                "game_state/npcs/npc_journals.json",
+                "game_state/npcs/npc_interaction_journal.json",
+                "game_state/npcs/npc_masks.json",
+                "game_state/npcs/npc_memory.json",
+                "game_state/world/current_location.json",
+                "game_state/world/world_map.json"
+            ];
+        }
+        else
+        {
+            targetFiles.Add("game_state/meta/shining_abode_state.json");
+            allowedTargets =
+            [
+                "game_state/meta/shining_abode_state.json",
+                "game_state/meta/guardian_abode_residents.json",
+                "game_state/meta/afterlife_entity_profiles.json",
+                "game_state/meta/main_story_saref_state.json"
+            ];
+        }
+
+        foreach (var issue in factionIssues)
+        {
+            foreach (var repairTarget in issue.RepairTargetFiles)
+            {
+                if (allowedTargets.Contains(
+                        repairTarget,
+                        StringComparer.Ordinal))
+                {
+                    targetFiles.Add(repairTarget);
+                }
+            }
+
+            foreach (var allowedTarget in allowedTargets)
+            {
+                if (IssuePathNamesExactRepairRoot(issue.FilePath, allowedTarget))
+                    targetFiles.Add(allowedTarget);
+            }
+        }
+
+        return targetFiles.ToList();
+    }
+
+    private static bool IssuePathNamesExactRepairRoot(
+        string? issuePath,
+        string targetRoot)
+    {
+        if (issuePath == null ||
+            !issuePath.StartsWith(targetRoot, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return issuePath.Length == targetRoot.Length ||
+               issuePath[targetRoot.Length] is '.' or '[' or ':';
+    }
+
+    private static bool HasExactMissingCodeComponent(string? issueCode) =>
+        (issueCode ?? string.Empty)
+        .Split('_')
+        .Contains("missing", StringComparer.Ordinal);
+
+    private static string GetFactionMaterializationRepairClassification(
+        FactionTouchKind classification) =>
+        classification switch
+        {
+            FactionTouchKind.New => "new",
+            FactionTouchKind.AlreadyMaterialized =>
+                "already_materialized",
+            FactionTouchKind.InvalidReceiptless =>
+                "invalid_receiptless",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(classification),
+                classification,
+                "Unsupported faction repair classification.")
+        };
 
     private static ValidationRepairHarnessPacket BuildFactionIdentityRepairPacket(
         IReadOnlyList<ValidationIssue> factionIdentityErrors)

@@ -1,9 +1,18 @@
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class ExplorerModeSourceGuardTests
 {
+    private static readonly string[] PrivateFactionMaterializationTokens =
+    {
+        "materializationId",
+        "schemaVersion",
+        "empty_by_design",
+        "materializedAtTurn"
+    };
+
     private static string ReadGameEngineSource()
     {
         var rootFile = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
@@ -746,6 +755,121 @@ public sealed class ExplorerModeSourceGuardTests
 
         Assert.Contains("await ShowTeacherTrainingOffersAsync(teacher);", afterlifeTraining, StringComparison.Ordinal);
         Assert.Contains("if (!string.IsNullOrWhiteSpace(_pendingGmAction))", afterlifeTraining, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OrdinaryFactionReaders_DoNotRenderPrivateFactionMaterializationTokens()
+    {
+        var mortalConsole = ReadUiSourceFile(Path.Combine(
+            "ExplorerMode",
+            "ExplorerMode.FactionsAndWorldNews.cs"));
+        var mortalBrowserSource = ReadUiSourceFile(
+            "ExplorerMortalWorldCommandResultBuilder.cs");
+        var mortalBrowserFactionReader = string.Join(
+            Environment.NewLine,
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static UiEntityDossierBlock BuildFactionReferenceOverviewCard"),
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static UiEntityDossierBlock BuildFactionReferenceDetailPanel"),
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static List<UiEntityDossierSection> BuildFactionSections"),
+            ExtractMethodSource(
+                mortalBrowserSource,
+                "private static List<UiKeyValueItem> BuildFactionOverviewItems"));
+        var shiningConsoleFiles = new[]
+        {
+            "ExplorerMode.Afterlife.ShiningAbode.cs",
+            "ExplorerMode.Afterlife.ShiningAbode.Actions.cs",
+            "ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs",
+            "ExplorerMode.Afterlife.ShiningAbode.Gates.cs",
+            "ExplorerMode.Afterlife.ShiningAbode.Politics.cs",
+            "ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs",
+            "ExplorerMode.Afterlife.ShiningAbode.Treasury.cs"
+        };
+        var shiningConsoleSources = shiningConsoleFiles.ToDictionary(
+            file => file,
+            file => ReadUiSourceFile(Path.Combine("ExplorerMode", file)),
+            StringComparer.Ordinal);
+        var shiningConsole = string.Join(
+            Environment.NewLine,
+            shiningConsoleFiles.Select(file => shiningConsoleSources[file]));
+        var shiningBrowser = ReadUiSourceFile(
+            "ExplorerShiningAbodeCommandResultBuilder.cs");
+        var ordinaryReaders = new[]
+        {
+            ("Mortal console", mortalConsole),
+            ("Mortal browser", mortalBrowserFactionReader),
+            ("Shining console", shiningConsole),
+            ("Shining browser", shiningBrowser)
+        };
+
+        Assert.All(ordinaryReaders, reader =>
+            Assert.All(PrivateFactionMaterializationTokens, token =>
+                Assert.DoesNotContain(
+                    token,
+                    reader.Item2,
+                    StringComparison.Ordinal)));
+
+        Assert.Contains(
+            "RemovePrivateFactionMaterialization(clone);",
+            shiningConsole,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "obj.Remove(FactionMaterializationContract.PropertyName);",
+            shiningConsole,
+            StringComparison.Ordinal);
+
+        foreach (var source in shiningConsoleSources
+                     .Where(pair => !string.Equals(
+                         pair.Key,
+                         "ExplorerMode.Afterlife.ShiningAbode.Treasury.cs",
+                         StringComparison.Ordinal))
+                     .Select(pair => pair.Value))
+        {
+            Assert.DoesNotMatch(
+                new Regex(
+                    @"WriteJsonAuditPanel\([\s\S]{0,240}?,\s*(?:context\.Root|factionAudit|faction)\s*,",
+                    RegexOptions.CultureInvariant),
+                source);
+        }
+
+        var treasuryAudit = ExtractMethodSource(
+            shiningConsoleSources[
+                "ExplorerMode.Afterlife.ShiningAbode.Treasury.cs"],
+            "private static JsonObject BuildShiningTreasuryAuditNode");
+        Assert.Contains(
+            "ShiningAbodeState.GetSoulSpendableInkFeathers",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ShiningAbodeState.TreasuryProperty",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.Contains("[\"lightSparks\"]", treasuryAudit, StringComparison.Ordinal);
+        Assert.DoesNotContain("[\"factions\"]", treasuryAudit, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "FactionMaterializationContract.PropertyName",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "beforeShiningRoot.DeepClone",
+            treasuryAudit,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "afterShiningRoot.DeepClone",
+            treasuryAudit,
+            StringComparison.Ordinal);
+
+        var factionLabelResolver = ExtractMethodSource(
+            shiningConsoleSources["ExplorerMode.Afterlife.ShiningAbode.cs"],
+            "private static string ResolveShiningFactionLabel");
+        Assert.DoesNotContain(
+            "return factionId;",
+            factionLabelResolver,
+            StringComparison.Ordinal);
     }
 
     [Fact]

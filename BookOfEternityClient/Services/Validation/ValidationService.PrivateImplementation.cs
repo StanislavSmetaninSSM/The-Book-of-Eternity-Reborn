@@ -629,6 +629,8 @@ public class ValidationIssue
     public string? Expected { get; }
     public string? Actual { get; }
     public string? RepairHint { get; }
+    internal IReadOnlyList<string> RepairTargetFiles { get; }
+    internal FactionTouchKind? FactionRepairClassification { get; set; }
 
     public ValidationIssue(
         string filePath,
@@ -640,7 +642,8 @@ public class ValidationIssue
         string? expected = null,
         string? actual = null,
         string? repairHint = null,
-        IssueCategory? category = null)
+        IssueCategory? category = null,
+        IReadOnlyList<string>? repairTargetFiles = null)
     {
         FilePath = filePath;
         Severity = severity;
@@ -652,6 +655,39 @@ public class ValidationIssue
         Expected = expected;
         Actual = actual;
         RepairHint = repairHint;
+        RepairTargetFiles = repairTargetFiles?
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray() ?? Array.Empty<string>();
+    }
+
+    internal ValidationIssue(
+        string filePath,
+        IssueSeverity severity,
+        string message,
+        FactionTouchKind factionRepairClassification,
+        string? code = null,
+        string? actor = null,
+        string? section = null,
+        string? expected = null,
+        string? actual = null,
+        string? repairHint = null,
+        IssueCategory? category = null,
+        IReadOnlyList<string>? repairTargetFiles = null)
+        : this(
+            filePath,
+            severity,
+            message,
+            code,
+            actor,
+            section,
+            expected,
+            actual,
+            repairHint,
+            category,
+            repairTargetFiles)
+    {
+        FactionRepairClassification = factionRepairClassification;
     }
 
     public override string ToString() =>

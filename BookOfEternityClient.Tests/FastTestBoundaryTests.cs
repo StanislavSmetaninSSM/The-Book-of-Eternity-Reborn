@@ -28,6 +28,48 @@ public sealed class FastTestBoundaryTests
     ];
 
     [Fact]
+    public void CSharpLaneRunner_FocusedProjectSelectorIsClosedScopedAndApplied()
+    {
+        var runnerPath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "scripts",
+            "test-csharp.ps1");
+        var source = File.ReadAllText(runnerPath);
+        var normalized = Regex.Replace(source, @"\s+", " ");
+
+        Assert.Contains(
+            "[ValidateSet(\"Fast\", \"Integration\")] " +
+            "[string]$FocusedProject = \"Fast\"",
+            normalized,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$PSBoundParameters.ContainsKey(\"FocusedProject\")",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "-FocusedProject is supported only with -Lane Focused.",
+            source,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$selectedProject = if ($effectiveLane -eq \"Focused\") " +
+            "{ $FocusedProject } else { $laneDefinition.Project }",
+            normalized,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "$projectPath = if ($selectedProject -eq \"Fast\")",
+            normalized,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "if ($selectedProject -eq \"Both\")",
+            normalized,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "elseif ($selectedProject -eq \"Fast\")",
+            normalized,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CSharpLaneRunner_RoutesFastWorkToFastProjectWithBoundedOwnedProcesses()
     {
         var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");

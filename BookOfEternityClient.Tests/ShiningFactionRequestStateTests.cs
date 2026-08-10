@@ -794,6 +794,254 @@ public sealed class ShiningFactionRequestStateTests
         }
     }
 
+    [Theory]
+    [InlineData("request_id")]
+    [InlineData("faction_id")]
+    [InlineData("hall_id")]
+    [InlineData("supporter_id")]
+    public async Task EnsureHealthyAsync_FoundingCaseVariantIdentity_DoesNotClearPending(
+        string mutation)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var request =
+                new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+                {
+                    RequestId = "founding_exact_identity",
+                    ProposedFactionId = "faction_new",
+                    ProposedHallId = "hall_new",
+                    ProposedHallName = "Новый Зал",
+                    ProposedHallDescription = "Описание",
+                    ProposedHallServiceTags = { "lore", "memory" },
+                    Charter = new ShiningFactionRequestState.FactionCharterPayload
+                    {
+                        FactionName = "Новый Дом",
+                        FavoredArchetype =
+                            ShiningAbodeState.ProjectArchetypeRevelation,
+                        PatronEffectFamily =
+                            ShiningAbodeState.EffectFamilyLore,
+                        Summary = "Новая сияющая фракция."
+                    },
+                    SupportingResidentIds =
+                    {
+                        "resident_liora",
+                        "resident_mael",
+                        "resident_serit"
+                    }
+                };
+            await ShiningFactionRequestState.WriteFoundingRequestAsync(
+                fs,
+                request);
+
+            var shiningRoot =
+                await ReadJsonAsync(fs, ShiningAbodeState.StatePath) ??
+                throw new InvalidOperationException("Expected shining state.");
+            var faction = shiningRoot["factions"]!.AsArray()
+                .OfType<JsonObject>()
+                .Single(item => item["factionId"]!.GetValue<string>() ==
+                                "faction_new");
+            faction["originType"] =
+                ShiningAbodeState.OriginTypePlayerFounded;
+            faction["baseStrength"] = 35;
+            faction["leadership"] = new JsonObject
+            {
+                ["headActorType"] =
+                    ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["headActorId"] =
+                    ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["leadershipState"] =
+                    ShiningAbodeState.LeadershipStateSecure
+            };
+            var receipt = new JsonObject
+            {
+                ["requestId"] = request.RequestId,
+                ["proposedFactionId"] = request.ProposedFactionId,
+                ["proposedHallId"] = request.ProposedHallId,
+                ["hallName"] = request.ProposedHallName,
+                ["factionId"] = request.ProposedFactionId,
+                ["hallId"] = request.ProposedHallId,
+                ["status"] =
+                    ShiningFactionRequestState.RequestStatusAccepted,
+                ["supportingResidentIds"] = new JsonArray(
+                    "resident_liora",
+                    "resident_mael",
+                    "resident_serit"),
+                ["quotedCostFeathers"] =
+                    ShiningFactionRequestState.FactionFoundingCostFeathers,
+                ["quotedCostLightSparks"] =
+                    ShiningFactionRequestState.FactionFoundingCostLightSparks,
+                ["resolvedAtTurn"] = 42,
+                ["resolvedAtUtc"] = "2026-08-10T00:00:00Z"
+            };
+            switch (mutation)
+            {
+                case "request_id":
+                    receipt["requestId"] = "FOUNDING_EXACT_IDENTITY";
+                    break;
+                case "faction_id":
+                    receipt["proposedFactionId"] = "FACTION_NEW";
+                    receipt["factionId"] = "FACTION_NEW";
+                    break;
+                case "hall_id":
+                    receipt["proposedHallId"] = "HALL_NEW";
+                    receipt["hallId"] = "HALL_NEW";
+                    break;
+                case "supporter_id":
+                    receipt["supportingResidentIds"]![0] =
+                        "RESIDENT_LIORA";
+                    break;
+            }
+            ShiningAbodeState.EnsureFactionFoundingReceiptsArray(
+                shiningRoot).Add(receipt);
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                shiningRoot.ToJsonString());
+
+            var residents =
+                await ReadJsonAsync(
+                    fs,
+                    GuardianAbodeResidentState.StatePath) ??
+                throw new InvalidOperationException("Expected resident state.");
+            foreach (var resident in residents["entries"]!.AsArray()
+                         .OfType<JsonObject>())
+            {
+                if (request.SupportingResidentIds.Contains(
+                        resident["residentId"]!.GetValue<string>(),
+                        StringComparer.Ordinal))
+                {
+                    resident["shiningFactionId"] = "faction_new";
+                }
+            }
+            await fs.WriteFileAtomicAsync(
+                GuardianAbodeResidentState.StatePath,
+                residents.ToJsonString());
+
+            await ShiningFactionRequestState.EnsureHealthyAsync(
+                fs,
+                "Shining Abode");
+
+            Assert.Single(
+                await ShiningFactionRequestState
+                    .ReadFoundingRequestsAsync(fs));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Theory]
+    [InlineData("request_id")]
+    [InlineData("resident_id")]
+    [InlineData("source_faction_id")]
+    [InlineData("target_faction_id")]
+    public async Task EnsureHealthyAsync_RealignmentCaseVariantIdentity_DoesNotClearPending(
+        string mutation)
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var request =
+                new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
+                {
+                    RequestId = "realignment_exact_identity",
+                    ResidentId = "resident_liora",
+                    SourceFactionId = "faction_old",
+                    TargetFactionId = "faction_new",
+                    RealignmentMode =
+                        ShiningFactionRequestState.RealignmentModeAcceptedTransfer
+                };
+            await ShiningFactionRequestState.WriteRealignmentRequestAsync(
+                fs,
+                request);
+
+            var shiningRoot =
+                await ReadJsonAsync(fs, ShiningAbodeState.StatePath) ??
+                throw new InvalidOperationException("Expected shining state.");
+            var receipt = new JsonObject
+            {
+                ["requestId"] = request.RequestId,
+                ["residentId"] = request.ResidentId,
+                ["sourceFactionId"] = request.SourceFactionId,
+                ["targetFactionId"] = request.TargetFactionId,
+                ["status"] =
+                    ShiningFactionRequestState.RequestStatusAccepted,
+                ["realignmentMode"] = request.RealignmentMode,
+                ["residentHistoryEntryId"] =
+                    "history_exact_realignment",
+                ["resolvedAtTurn"] = 43,
+                ["resolvedAtUtc"] = "2026-08-10T00:05:00Z"
+            };
+            switch (mutation)
+            {
+                case "request_id":
+                    receipt["requestId"] =
+                        "REALIGNMENT_EXACT_IDENTITY";
+                    break;
+                case "resident_id":
+                    receipt["residentId"] = "RESIDENT_LIORA";
+                    break;
+                case "source_faction_id":
+                    receipt["sourceFactionId"] = "FACTION_OLD";
+                    break;
+                case "target_faction_id":
+                    receipt["targetFactionId"] = "FACTION_NEW";
+                    break;
+            }
+            ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(
+                shiningRoot).Add(receipt);
+            await fs.WriteFileAtomicAsync(
+                ShiningAbodeState.StatePath,
+                shiningRoot.ToJsonString());
+
+            var residents =
+                await ReadJsonAsync(
+                    fs,
+                    GuardianAbodeResidentState.StatePath) ??
+                throw new InvalidOperationException("Expected resident state.");
+            var resident = residents["entries"]!.AsArray()
+                .OfType<JsonObject>()
+                .Single(item => item["residentId"]!.GetValue<string>() ==
+                                request.ResidentId);
+            resident["shiningFactionId"] = request.TargetFactionId;
+            residents["historyLog"] = new JsonArray(new JsonObject
+            {
+                ["entryId"] = "history_exact_realignment",
+                ["residentId"] = request.ResidentId,
+                ["eventType"] = "faction_realignment",
+                ["turnNumber"] = 43
+            });
+            await fs.WriteFileAtomicAsync(
+                GuardianAbodeResidentState.StatePath,
+                residents.ToJsonString());
+
+            await ShiningFactionRequestState.EnsureHealthyAsync(
+                fs,
+                "Shining Abode");
+
+            Assert.Single(
+                await ShiningFactionRequestState
+                    .ReadRealignmentRequestsAsync(fs));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     [Fact]
     public async Task ValidateFoundingRequestAgainstCurrentStateAsync_WithThreeAscendedSupporters_Passes()
     {
@@ -1671,6 +1919,11 @@ public sealed class ShiningFactionRequestStateTests
                     ["headActorId"] = "guardian_old",
                     ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
                 },
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] =
+                        ShiningAbodeState.FactionLifecycleStateActive
+                },
                 ["baseStrength"] = 35,
                 ["factionStrength"] = 45,
                 ["investCountThisAscension"] = 0,
@@ -1696,6 +1949,11 @@ public sealed class ShiningFactionRequestStateTests
                     ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
                     ["headActorId"] = "radiant_actor_new_head",
                     ["leadershipState"] = ShiningAbodeState.LeadershipStateContested
+                },
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] =
+                        ShiningAbodeState.FactionLifecycleStateActive
                 },
                 ["baseStrength"] = 55,
                 ["factionStrength"] = 62,

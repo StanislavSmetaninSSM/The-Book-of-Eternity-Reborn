@@ -245,7 +245,7 @@ public sealed class ExplorerWebCommandServiceTestsShiningAbodeDrilldowns : IDisp
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+        var shiningRoot = JsonNode.Parse("""
         {
           "availability": "active",
           "lightSparks": 60,
@@ -333,7 +333,7 @@ public sealed class ExplorerWebCommandServiceTestsShiningAbodeDrilldowns : IDisp
               "originType": "native_radiant",
               "hallId": "hall_lanterns",
               "isPlayerVisible": true,
-              "visibility": "public",
+              "visibility": "revealed",
               "factionStrength": 58,
               "factionLifecycle": { "state": "active" },
               "charter": {
@@ -463,7 +463,22 @@ public sealed class ExplorerWebCommandServiceTestsShiningAbodeDrilldowns : IDisp
           ],
           "sourceOfLightCapstone": { "completed": false }
         }
-        """);
+        """)!.AsObject();
+
+        foreach (var faction in shiningRoot["factions"]!
+                     .AsArray()
+                     .OfType<JsonObject>())
+        {
+            ShiningFactionTestMaterialization.Apply(
+                faction,
+                materializedAtTurn: 90,
+                hasResidentAffiliations: true,
+                canTrade: true);
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/shining_abode_state.json",
+            shiningRoot.ToJsonString(JsonOptions));
 
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_shining_abode_actions.json",
