@@ -366,7 +366,7 @@ public partial class ValidationService
             preTurn: true,
             issues);
         CollectRawShiningGuardianStoryTouchEvidence(
-            currentRoot,
+            projectedCurrentRoot,
             ProjectRawShiningGuardianIdentitySurface(
                 currentGuardians,
                 preTurnGuardians),
@@ -412,6 +412,26 @@ public partial class ValidationService
     {
         var result = preTurn?.DeepClone().AsObject() ??
                      new JsonObject();
+        if (current?.TryGetPropertyValue(
+                "factions",
+                out var currentFactionNode) == true)
+        {
+            if (currentFactionNode is JsonArray factionUpserts)
+            {
+                var factions = result["factions"] as JsonArray ??
+                               new JsonArray();
+                result["factions"] = factions;
+                ApplyRawShiningFactionIdentityUpserts(
+                    factions,
+                    factionUpserts);
+            }
+            else
+            {
+                result["factions"] =
+                    currentFactionNode?.DeepClone();
+            }
+        }
+
         foreach (var (arrayName, identityField) in
                  new[]
                  {
@@ -536,6 +556,15 @@ public partial class ValidationService
         var guardians = result["guardians"] as JsonArray ??
                         new JsonArray();
         result["guardians"] = guardians;
+        var knownGuardianIds = guardians
+            .OfType<JsonObject>()
+            .Select(guardian =>
+                ReadShiningMaterializationString(
+                    guardian,
+                    "guardianId"))
+            .Where(guardianId => guardianId != null)
+            .Cast<string>()
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         if (current?["UpdateGuardians"] is JsonArray commands)
         {
             foreach (var command in commands.OfType<JsonObject>())
@@ -556,18 +585,14 @@ public partial class ValidationService
                         data,
                         "guardianId");
                 var alreadyExists = guardianId != null &&
-                    guardians.OfType<JsonObject>().Any(guardian =>
-                        string.Equals(
-                            ReadShiningMaterializationString(
-                                guardian,
-                                "guardianId"),
-                            guardianId,
-                            StringComparison.OrdinalIgnoreCase));
+                    knownGuardianIds.Contains(guardianId);
                 if (alreadyExists)
                     continue;
 
                 var created = data.DeepClone().AsObject();
                 guardians.Add(created);
+                if (guardianId != null)
+                    knownGuardianIds.Add(guardianId);
                 if (result["activeGuardian"] == null)
                     result["activeGuardian"] =
                         created.DeepClone();
@@ -596,6 +621,178 @@ public partial class ValidationService
         }
 
         return result;
+    }
+
+    private static void ApplyRawShiningFactionIdentityUpserts(
+        JsonArray target,
+        JsonArray source)
+    {
+        var byFactionId =
+            BuildFirstRawShiningObjectIdentityIndex(
+                target,
+                "factionId");
+        foreach (var sourceNode in source)
+        {
+            if (sourceNode is not JsonObject sourceFaction)
+            {
+                target.Add(sourceNode?.DeepClone());
+                continue;
+            }
+
+            var factionId = ReadShiningMaterializationString(
+                sourceFaction,
+                "factionId");
+            if (factionId == null)
+            {
+                target.Add(sourceFaction.DeepClone());
+                continue;
+            }
+
+            if (byFactionId.TryGetValue(
+                    factionId,
+                    out var existingFaction))
+            {
+                MergeRawShiningFactionObject(
+                    existingFaction,
+                    sourceFaction);
+                continue;
+            }
+
+            var addedFaction =
+                sourceFaction.DeepClone().AsObject();
+            target.Add(addedFaction);
+            byFactionId.TryAdd(factionId, addedFaction);
+        }
+    }
+
+    private static void MergeRawShiningFactionObject(
+        JsonObject target,
+        JsonObject source)
+    {
+        foreach (var property in source)
+        {
+            if (property.Value is JsonArray sourceArray &&
+                TryGetRawShiningFactionArrayIdentity(
+                    property.Key,
+                    out var identityField))
+            {
+                var targetArray =
+                    target[property.Key] as JsonArray ??
+                    new JsonArray();
+                target[property.Key] = targetArray;
+                MergeRawShiningObjectArrayByIdentity(
+                    targetArray,
+                    sourceArray,
+                    identityField);
+                continue;
+            }
+
+            if (property.Value is JsonObject sourceObject &&
+                target[property.Key] is JsonObject targetObject)
+            {
+                MergeRawShiningObject(
+                    targetObject,
+                    sourceObject);
+                continue;
+            }
+
+            target[property.Key] =
+                property.Value?.DeepClone();
+        }
+    }
+
+    private static bool TryGetRawShiningFactionArrayIdentity(
+        string propertyName,
+        out string identityField)
+    {
+        identityField = propertyName switch
+        {
+            "projects" => "projectId",
+            "tradeInventoryReceipts" => "requestId",
+            "leadershipReceipts" => "requestId",
+            "leadershipHistory" => "requestId",
+            ShiningAbodeState.FactionChronicleProperty =>
+                "entryId",
+            ShiningAbodeState.FactionInfluenceProperty =>
+                "zoneId",
+            ShiningAbodeState.FactionResourceLedgerProperty =>
+                "entryId",
+            _ => string.Empty
+        };
+        return identityField.Length > 0;
+    }
+
+    private static void MergeRawShiningObjectArrayByIdentity(
+        JsonArray target,
+        JsonArray source,
+        string identityField)
+    {
+        var byIdentity =
+            BuildFirstRawShiningObjectIdentityIndex(
+                target,
+                identityField);
+        foreach (var sourceNode in source)
+        {
+            if (sourceNode is not JsonObject sourceObject)
+            {
+                target.Add(sourceNode?.DeepClone());
+                continue;
+            }
+
+            var identity = ReadShiningMaterializationString(
+                sourceObject,
+                identityField);
+            if (identity == null)
+            {
+                target.Add(sourceObject.DeepClone());
+                continue;
+            }
+
+            if (byIdentity.TryGetValue(
+                    identity,
+                    out var existingObject))
+            {
+                MergeRawShiningObject(
+                    existingObject,
+                    sourceObject);
+                continue;
+            }
+
+            var addedObject =
+                sourceObject.DeepClone().AsObject();
+            target.Add(addedObject);
+            byIdentity.TryAdd(identity, addedObject);
+        }
+    }
+
+    private static Dictionary<string, JsonObject>
+        BuildFirstRawShiningObjectIdentityIndex(
+            JsonArray rows,
+            string identityField)
+    {
+        var result = new Dictionary<string, JsonObject>(
+            StringComparer.OrdinalIgnoreCase);
+        foreach (var row in rows.OfType<JsonObject>())
+        {
+            var identity = ReadShiningMaterializationString(
+                row,
+                identityField);
+            if (identity != null)
+                result.TryAdd(identity, row);
+        }
+
+        return result;
+    }
+
+    private static void MergeRawShiningObject(
+        JsonObject target,
+        JsonObject source)
+    {
+        foreach (var property in source)
+        {
+            target[property.Key] =
+                property.Value?.DeepClone();
+        }
     }
 
     private static void ApplyRawShiningIdentityUpserts(
@@ -825,6 +1022,15 @@ public partial class ValidationService
             return;
         }
 
+        var guardianIdentityCounts =
+            BuildRawShiningGuardianIdentityCounts(
+                guardiansRoot);
+        var activeGuardianId =
+            guardiansRoot["activeGuardian"] is JsonObject active
+                ? ReadShiningMaterializationString(
+                    active,
+                    "guardianId")
+                : null;
         foreach (var faction in factions.OfType<JsonObject>())
         {
             var factionId = ReadShiningMaterializationString(
@@ -853,11 +1059,53 @@ public partial class ValidationService
                 $"game_state/meta/guardians.json.storyAuthority:" +
                 guardianId,
                 JsonValue.Create(
-                    TryResolveUniqueGuardianIdentity(
-                        guardiansRoot,
+                    HasUniqueRawShiningGuardianIdentity(
                         guardianId,
-                        out _)));
+                        guardianIdentityCounts,
+                        activeGuardianId)));
         }
+    }
+
+    private static Dictionary<string, int>
+        BuildRawShiningGuardianIdentityCounts(
+            JsonObject guardiansRoot)
+    {
+        var counts = new Dictionary<string, int>(
+            StringComparer.Ordinal);
+        if (guardiansRoot["guardians"] is not JsonArray guardians)
+            return counts;
+
+        foreach (var guardian in guardians.OfType<JsonObject>())
+        {
+            var guardianId = ReadShiningMaterializationString(
+                guardian,
+                "guardianId");
+            if (guardianId == null)
+                continue;
+
+            counts.TryGetValue(guardianId, out var count);
+            counts[guardianId] = count + 1;
+        }
+
+        return counts;
+    }
+
+    private static bool HasUniqueRawShiningGuardianIdentity(
+        string guardianId,
+        IReadOnlyDictionary<string, int> guardianIdentityCounts,
+        string? activeGuardianId)
+    {
+        if (guardianIdentityCounts.TryGetValue(
+                guardianId,
+                out var count))
+        {
+            return count == 1;
+        }
+
+        return string.Equals(
+            activeGuardianId,
+            guardianId,
+            StringComparison.Ordinal);
     }
 
     private static bool

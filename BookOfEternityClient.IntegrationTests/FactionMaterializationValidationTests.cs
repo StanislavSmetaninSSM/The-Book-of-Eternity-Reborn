@@ -165,6 +165,23 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             { "shining_long_receipt_history_reorder", "" }
         };
 
+    public static TheoryData<string, string>
+        OmittedShiningTargetTouchCases => new()
+        {
+            {
+                "guardian_create",
+                "shining_faction:order_guardian"
+            },
+            {
+                "resident_move",
+                "shining_faction:order_new,shining_faction:order_old"
+            },
+            {
+                "saref_move",
+                "shining_faction:order_new,shining_faction:order_old"
+            }
+        };
+
     public static TheoryData<string>
         MortalPromotionHistoricalMutationSurfaces => new()
         {
@@ -673,6 +690,34 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .OrderBy(actor => actor, StringComparer.Ordinal)
                 .ToArray();
+        var actualActors = issues
+            .Where(issue =>
+                issue.Code == "faction_legacy_promotion_required")
+            .Select(issue => issue.Actor)
+            .Where(actor => actor != null)
+            .Cast<string>()
+            .OrderBy(actor => actor, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(expectedActors, actualActors);
+    }
+
+    [Theory]
+    [MemberData(nameof(OmittedShiningTargetTouchCases))]
+    public async Task
+        Validate_OmittedShiningTargetFaction_StillPromotesExternalTouches(
+            string scenario,
+            string expectedActorsCsv)
+    {
+        await WriteOmittedShiningTargetTouchCaseAsync(scenario);
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        var expectedActors = expectedActorsCsv
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .OrderBy(actor => actor, StringComparer.Ordinal)
+            .ToArray();
         var actualActors = issues
             .Where(issue =>
                 issue.Code == "faction_legacy_promotion_required")
@@ -2964,6 +3009,144 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (path, currentAuthority.ToJsonString()),
             (MortalPath, preTurnCore.ToJsonString()),
             (path, preTurnAuthority.ToJsonString()));
+    }
+
+    private async Task WriteOmittedShiningTargetTouchCaseAsync(
+        string scenario)
+    {
+        const string oldFactionId = "order_old";
+        const string newFactionId = "order_new";
+        const string unrelatedFactionId = "order_unrelated";
+        const string unrelatedMaterializationId =
+            "fmat_order_unrelated_12";
+
+        JsonObject BuildUnrelatedFaction() =>
+            MaterializedShiningFaction(
+                unrelatedFactionId,
+                unrelatedMaterializationId);
+
+        switch (scenario)
+        {
+            case "guardian_create":
+            {
+                const string targetFactionId = "order_guardian";
+                const string guardianId = "guardian_touch_target";
+                var targetFaction = LegacyShiningFaction(
+                    targetFactionId,
+                    factionStrength: 30);
+                targetFaction["storyAuthority"] = new JsonObject
+                {
+                    ["authorityType"] = "guardian_ascension",
+                    ["authorityId"] = guardianId
+                };
+                var preTurnShining = ShiningRoot(
+                    targetFaction,
+                    BuildUnrelatedFaction());
+                var currentShining = ShiningRoot(
+                    BuildUnrelatedFaction());
+                var preTurnGuardians = new JsonObject
+                {
+                    ["guardians"] = new JsonArray()
+                };
+                var currentGuardians = new JsonObject
+                {
+                    ["UpdateGuardians"] =
+                        new JsonArray(new JsonObject
+                        {
+                            ["command"] = "create",
+                            ["data"] = new JsonObject
+                            {
+                                ["guardianId"] = guardianId,
+                                ["name"] = "Touch Guardian"
+                            }
+                        })
+                };
+
+                await WriteCurrentAndSnapshotAsync(
+                    (ShiningPath, currentShining.ToJsonString()),
+                    (GuardiansPath, currentGuardians.ToJsonString()),
+                    (ShiningPath, preTurnShining.ToJsonString()),
+                    (GuardiansPath, preTurnGuardians.ToJsonString()));
+                return;
+            }
+            case "resident_move":
+            {
+                var preTurnShining = ShiningRoot(
+                    LegacyShiningFaction(
+                        oldFactionId,
+                        factionStrength: 30),
+                    LegacyShiningFaction(
+                        newFactionId,
+                        factionStrength: 30),
+                    BuildUnrelatedFaction());
+                var currentShining = ShiningRoot(
+                    BuildUnrelatedFaction());
+                var preTurnResidents = BuildRouteResidentRoot(
+                    BuildRouteResident(
+                        "resident_touch_target",
+                        oldFactionId));
+                var currentResidents = new JsonObject
+                {
+                    [GuardianAbodeResidentState.UpdateProperty] =
+                        new JsonArray(BuildRouteResident(
+                            "resident_touch_target",
+                            newFactionId))
+                };
+
+                await WriteCurrentAndSnapshotAsync(
+                    (ShiningPath, currentShining.ToJsonString()),
+                    (ResidentPath, currentResidents.ToJsonString()),
+                    (ShiningPath, preTurnShining.ToJsonString()),
+                    (ResidentPath, preTurnResidents.ToJsonString()));
+                return;
+            }
+            case "saref_move":
+            {
+                var preTurnShining = ShiningRoot(
+                    LegacyShiningFaction(
+                        oldFactionId,
+                        factionStrength: 30),
+                    LegacyShiningFaction(
+                        newFactionId,
+                        factionStrength: 30),
+                    BuildUnrelatedFaction());
+                var currentShining = ShiningRoot(
+                    BuildUnrelatedFaction());
+                var preTurnStory =
+                    SarefMainStoryState.CreateDefaultRoot();
+                preTurnStory["factionLinks"]!["wingsFactionId"] =
+                    oldFactionId;
+                var currentStory = new JsonObject
+                {
+                    [SarefMainStoryState.ResponseField] =
+                        new JsonObject
+                        {
+                            ["mode"] =
+                                SarefMainStoryState
+                                    .WingsUpdateModeReveal,
+                            ["requestId"] =
+                                "saref_omitted_touch_request",
+                            ["resolvedAtTurn"] = 12,
+                            ["factionLinks"] = new JsonObject
+                            {
+                                ["wingsFactionId"] = newFactionId
+                            }
+                        }
+                };
+
+                await WriteCurrentAndSnapshotAsync(
+                    (ShiningPath, currentShining.ToJsonString()),
+                    (SarefStoryPath, currentStory.ToJsonString()),
+                    (ShiningPath, preTurnShining.ToJsonString()),
+                    (SarefStoryPath, preTurnStory.ToJsonString()));
+                return;
+            }
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(scenario),
+                    scenario,
+                    "Unknown omitted Shining target touch scenario.");
+        }
     }
 
     private async Task WriteRawFactionTouchProjectionCaseAsync(

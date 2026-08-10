@@ -2664,33 +2664,46 @@ public partial class ValidationService
             return currentRoot;
         }
 
-        var preTurnActors =
-            EnumerateRawMortalNpcActors(preTurn).ToArray();
-        var currentActors =
-            EnumerateRawMortalNpcActors(projected).ToArray();
+        var preTurnActorIds =
+            EnumerateRawMortalNpcActors(preTurn)
+                .Select(actor => actor.NpcId)
+                .ToHashSet(StringComparer.Ordinal);
+        var currentActorsById =
+            new Dictionary<string, List<JsonObject>>(
+                StringComparer.Ordinal);
+        foreach (var actor in
+                 EnumerateRawMortalNpcActors(projected))
+        {
+            if (!currentActorsById.TryGetValue(
+                    actor.NpcId,
+                    out var actors))
+            {
+                actors = new List<JsonObject>();
+                currentActorsById[actor.NpcId] = actors;
+            }
+
+            actors.Add(actor.Actor);
+        }
+
+        var affiliationIndicesByActor =
+            new Dictionary<
+                JsonObject,
+                Dictionary<string, int>>(
+                ReferenceEqualityComparer.Instance);
         foreach (var command in commands.OfType<JsonObject>())
         {
             var npcId = ReadShiningMaterializationString(
                 command,
                 "NPCId");
             if (npcId == null ||
-                !preTurnActors.Any(actor =>
-                    string.Equals(
-                        actor.NpcId,
-                        npcId,
-                        StringComparison.Ordinal)))
+                !preTurnActorIds.Contains(npcId))
             {
                 continue;
             }
 
-            var targets = currentActors
-                .Where(actor => string.Equals(
-                    actor.NpcId,
+            if (!currentActorsById.TryGetValue(
                     npcId,
-                    StringComparison.Ordinal))
-                .Select(actor => actor.Actor)
-                .ToArray();
-            if (targets.Length == 0 ||
+                    out var targets) ||
                 command["factionAffiliationsToUpsert"]
                     is not JsonArray upserts)
             {
@@ -2703,6 +2716,39 @@ public partial class ValidationService
                     target["factionAffiliations"] as JsonArray ??
                     new JsonArray();
                 target["factionAffiliations"] = affiliations;
+                if (!affiliationIndicesByActor.TryGetValue(
+                        target,
+                        out var affiliationIndices))
+                {
+                    affiliationIndices =
+                        new Dictionary<string, int>(
+                            StringComparer.Ordinal);
+                    for (var index = 0;
+                         index < affiliations.Count;
+                         index++)
+                    {
+                        if (affiliations[index]
+                                is not JsonObject existing)
+                        {
+                            continue;
+                        }
+
+                        var existingFactionId =
+                            ReadShiningMaterializationString(
+                                existing,
+                                "factionId");
+                        if (existingFactionId != null)
+                        {
+                            affiliationIndices.TryAdd(
+                                existingFactionId,
+                                index);
+                        }
+                    }
+
+                    affiliationIndicesByActor[target] =
+                        affiliationIndices;
+                }
+
                 foreach (var upsert in upserts.OfType<JsonObject>())
                 {
                     var factionId =
@@ -2712,29 +2758,19 @@ public partial class ValidationService
                     if (factionId == null)
                         continue;
 
-                    var existingIndex = -1;
-                    for (var index = 0;
-                         index < affiliations.Count;
-                         index++)
+                    if (affiliationIndices.TryGetValue(
+                            factionId,
+                            out var existingIndex))
                     {
-                        if (affiliations[index] is JsonObject existing &&
-                            string.Equals(
-                                ReadShiningMaterializationString(
-                                    existing,
-                                    "factionId"),
-                                factionId,
-                                StringComparison.Ordinal))
-                        {
-                            existingIndex = index;
-                            break;
-                        }
-                    }
-
-                    if (existingIndex >= 0)
                         affiliations[existingIndex] =
                             upsert.DeepClone();
+                    }
                     else
+                    {
+                        affiliationIndices[factionId] =
+                            affiliations.Count;
                         affiliations.Add(upsert.DeepClone());
+                    }
                 }
             }
         }

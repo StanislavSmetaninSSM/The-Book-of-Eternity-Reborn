@@ -448,6 +448,32 @@ public partial class ValidationService
                 materializedFactions);
         }
 
+        foreach (var (factionId, preTurnFaction) in
+                 preTurnFactions)
+        {
+            if (currentFactions.ContainsKey(factionId) ||
+                !externalTouchIds.Contains(factionId) ||
+                preTurnFaction.Faction.TryGetProperty(
+                    FactionMaterializationContract.PropertyName,
+                    out _))
+            {
+                continue;
+            }
+
+            ValidateFactionContinuity(
+                new FactionCarrier(
+                    preTurnFaction.Faction.Clone(),
+                    preTurnFaction.Context,
+                    factionId),
+                preTurnFaction,
+                FactionMaterializationFamily.Shining,
+                "shining_faction",
+                gmAuthoredTouch: true,
+                clientDerivedOnly: false,
+                issues,
+                materializedFactions);
+        }
+
         AddMissingHistoricalFactionIssues(
             preTurnFactions,
             currentFactions,

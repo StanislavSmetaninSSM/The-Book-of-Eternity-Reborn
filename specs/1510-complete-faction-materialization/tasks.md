@@ -566,6 +566,23 @@ without player-facing harness leakage.
   promote while duplicate or same-identity semantic changes do. Record exact
   RED/GREEN/build evidence and superseded T078d rationale in
   `sdd/task-11-fix4b-touch-carriers-report.md`.
+- [x] T078d2 Close omitted Shining legacy-target touch classification across
+  `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
+  and
+  `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`:
+  project the raw Shining `factions` identity-upsert surface from validated
+  pre-turn authority with normalizer-equivalent nested merge semantics; feed
+  that effective root to Guardian story-authority touch collection; and
+  classify externally touched receipt-less pre-turn factions omitted from the
+  current raw `factions` array over a synthetic effective legacy carrier.
+  Cover Guardian create plus resident and Saref old/new moves with an
+  unrelated full faction upsert, exact promotion coordinates, and no unrelated
+  promotion. Replace nested linear projection scans with exact actor,
+  affiliation, Guardian-existence, and Guardian-count lookups without changing
+  identity semantics. Record exact RED/GREEN/build evidence in
+  `sdd/task-11-fix4c-omitted-shining-touch-report.md`.
 - [x] T078e Reject Mortal legacy promotions that rewrite validated historical
   authority across
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
