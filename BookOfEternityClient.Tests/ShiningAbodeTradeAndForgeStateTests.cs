@@ -100,6 +100,9 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                 ["leadershipHistory"] = new JsonArray()
             }
         };
+        CompleteOperationalFaction(
+            shiningRoot["factions"]!.AsArray()[0]!.AsObject(),
+            hasResidentAffiliations: true);
 
         var residentRoot = new JsonObject
         {
@@ -221,6 +224,9 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                 ["leadershipHistory"] = new JsonArray()
             }
         };
+        CompleteOperationalFaction(
+            shiningRoot["factions"]!.AsArray()[0]!.AsObject(),
+            hasResidentAffiliations: false);
 
         var soulRoot = new JsonObject
         {
@@ -427,6 +433,9 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                 ["leadershipHistory"] = new JsonArray()
             }
         };
+        CompleteOperationalFaction(
+            shiningRoot["factions"]!.AsArray()[0]!.AsObject(),
+            hasResidentAffiliations: true);
         var residentRoot = new JsonObject
         {
             ["entries"] = new JsonArray
@@ -638,8 +647,27 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
                 ["leadershipHistory"] = new JsonArray()
             }
         };
+        CompleteOperationalFaction(
+            shiningRoot["factions"]!.AsArray()[0]!.AsObject(),
+            hasResidentAffiliations: false);
 
         return shiningRoot;
+    }
+
+    private static void CompleteOperationalFaction(
+        JsonObject faction,
+        bool hasResidentAffiliations)
+    {
+        faction["visibility"] = "revealed";
+        faction["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+        };
+        ShiningFactionTestMaterialization.Apply(
+            faction,
+            materializedAtTurn: 1,
+            hasResidentAffiliations,
+            canTrade: false);
     }
 
     private static JsonObject CreateForgeSoulRoot(JsonObject relic) => new()

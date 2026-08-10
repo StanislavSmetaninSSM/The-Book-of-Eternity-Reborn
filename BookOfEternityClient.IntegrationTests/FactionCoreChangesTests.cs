@@ -283,8 +283,8 @@ public sealed class FactionCoreChangesTests : IDisposable
 
     [Theory]
     [InlineData("unknown", "faction_core_changes_target_not_existing")]
-    [InlineData("legacy", "faction_core_changes_target_not_materialized")]
-    public async Task Validate_UnknownOrUnpromotedLegacyTarget_IsRejected(
+    [InlineData("receiptless", "faction_core_changes_target_not_materialized")]
+    public async Task Validate_UnknownOrReceiptlessTarget_IsRejected(
         string variation,
         string expectedCode)
     {
@@ -299,7 +299,7 @@ public sealed class FactionCoreChangesTests : IDisposable
                         factionId,
                         "profile",
                         BuildCompleteGroup("profile")));
-                if (variation == "legacy")
+                if (variation == "receiptless")
                 {
                     FindFaction(current, "faction_watch")
                         .Remove("materialization");
@@ -307,7 +307,7 @@ public sealed class FactionCoreChangesTests : IDisposable
             },
             preTurn =>
             {
-                if (variation == "legacy")
+                if (variation == "receiptless")
                 {
                     FindFaction(preTurn, "faction_watch")
                         .Remove("materialization");
@@ -364,128 +364,112 @@ public sealed class FactionCoreChangesTests : IDisposable
     }
 
     [Fact]
-    public async Task Normalize_SameTurnPromotionOverlayReviewRegression_AppliesToPromotedEffectiveRowAndPreservesHistory()
+    public async Task Validate_DirectCanonicalMutationWithoutCommand_IsRejected()
     {
-        var fixture = await WritePromotionFixtureAsync();
-
-        var issues =
-            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
-        Assert.DoesNotContain(issues, issue =>
-            issue.Code is
-                "faction_core_changes_duplicate_effective_identity" or
-                "faction_core_changes_ambiguous_target");
-        Assert.Empty(issues);
-        await CreateNormalizer().NormalizeAccumulatedStateAsync(
-            fixture.Backups);
-
-        var core = await ReadObjectAsync(CorePath);
-        Assert.False(core.ContainsKey(
-            FactionCoreChangesContract.PropertyName));
-        var watch = FindFaction(core, "faction_watch");
-        Assert.Equal("Promoted Bridge Watch", watch["name"]!.GetValue<string>());
-        Assert.Equal(
-            "fmat_promoted_watch",
-            watch["materialization"]!["materializationId"]!.GetValue<string>());
-
-        var chronicles = await ReadObjectAsync(ChroniclesPath);
-        var entries = chronicles["entries"]!
-            .AsArray()
-            .OfType<JsonObject>()
-            .Where(entry =>
-                entry["factionId"]!.GetValue<string>() == "faction_watch")
-            .Select(entry => entry["entry"]!.GetValue<string>())
-            .ToArray();
-        Assert.Contains(
-            "#7 - The old watch kept the western bridge.",
-            entries);
-        Assert.Contains(
-            "#12 - The promoted watch ratified its complete charter.",
-            entries);
-    }
-
-    [Fact]
-    public async Task Validate_SameTurnPromotionWithValidatedCoreChange_AllowsCommandedProfileAndPreservesUnrelatedPurpose()
-    {
-        var fixture = await WritePromotionFixtureAsync();
-
-        var commandIssues =
-            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
-        var materializationIssues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Empty(commandIssues);
-        Assert.DoesNotContain(materializationIssues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed");
-
-        await CreateNormalizer().NormalizeAccumulatedStateAsync(
-            fixture.Backups);
-        var core = await ReadObjectAsync(CorePath);
-        var watch = FindFaction(core, "faction_watch");
-        Assert.Equal(
-            "Promoted Bridge Watch",
-            watch["name"]!.GetValue<string>());
-        Assert.Equal(
-            "Keep the old road open.",
-            watch["purpose"]!.GetValue<string>());
-    }
-
-    [Fact]
-    public async Task Validate_SameTurnPromotionWithInvalidCoreChange_DoesNotAuthorizeHistoricalDelta()
-    {
-        await WritePromotionFixtureAsync(current =>
-        {
-            current["factionDataChanges"]![0]!["name"] =
-                "Promoted Bridge Watch";
-            current[FactionCoreChangesContract.PropertyName]![0]![
-                "reason"] = " ";
-        });
-
-        var commandIssues =
-            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
-        var materializationIssues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(commandIssues, issue =>
-            issue.Code == "faction_core_changes_reason_required");
-        Assert.Contains(materializationIssues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed" &&
-            issue.Actor == "mortal_faction:faction_watch");
-    }
-
-    [Theory]
-    [InlineData("duplicate_factions")]
-    [InlineData("duplicate_carrier")]
-    [InlineData("mutated_baseline")]
-    public async Task Validate_InvalidPromotionOverlayReviewRegression_FailsClosed(
-        string variation)
-    {
-        await WritePromotionFixtureAsync(current =>
-        {
-            switch (variation)
-            {
-                case "duplicate_factions":
-                    current["factions"]!.AsArray().Add(
-                        current["factions"]![0]!.DeepClone());
-                    break;
-                case "duplicate_carrier":
-                    current["factionDataChanges"]!.AsArray().Add(
-                        current["factionDataChanges"]![0]!.DeepClone());
-                    break;
-                case "mutated_baseline":
-                    current["factions"]![0]!["name"] =
-                        "Mutated legacy baseline";
-                    break;
-            }
-        });
+        await WriteExistingFixtureAsync(current =>
+            FindFaction(current, "faction_watch")["name"] =
+                "Forged Direct Name");
 
         var issues =
             await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
 
         Assert.Contains(issues, issue =>
             issue.Code ==
-            "faction_core_changes_duplicate_effective_identity");
+                "faction_materialization_mortal_direct_canonical_mutation_forbidden" &&
+            issue.Actor == "mortal_faction:faction_watch" &&
+            issue.FilePath == $"{CorePath}.factions");
+    }
+
+    [Fact]
+    public async Task Validate_DirectCanonicalCreationOutsideFullCarrier_IsRejected()
+    {
+        await WriteExistingFixtureAsync(current =>
+            current["factions"]!.AsArray().Add(
+                BuildMaterializedFaction(
+                    "faction_direct_forgery",
+                    "Direct Forgery",
+                    "fmat_direct_forgery")));
+
+        var issues =
+            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_mortal_direct_canonical_creation_forbidden" &&
+            issue.Actor == "mortal_faction:faction_direct_forgery" &&
+            issue.FilePath == $"{CorePath}.factions");
+    }
+
+    [Theory]
+    [InlineData("structure")]
+    [InlineData("resources")]
+    [InlineData("projects")]
+    [InlineData("custom")]
+    [InlineData("chronicles")]
+    public async Task Validate_DirectSidecarMutationOutsideCommand_IsRejected(
+        string surface)
+    {
+        await WriteExistingFixtureAsync();
+        var path = surface switch
+        {
+            "structure" => StructurePath,
+            "resources" => ResourcesPath,
+            "projects" => ProjectsPath,
+            "custom" => CustomPath,
+            "chronicles" => ChroniclesPath,
+            _ => throw new ArgumentOutOfRangeException(nameof(surface))
+        };
+        var root = await ReadObjectAsync(path);
+        switch (surface)
+        {
+            case "structure":
+                FindEntry(root, "entries", "faction_watch")
+                    ["governance"]!["model"] = "Forged direct council";
+                break;
+            case "resources":
+                FindEntry(root, "entries", "faction_watch")
+                    ["metaResources"]!.AsArray().Add(new JsonObject
+                    {
+                        ["resourceName"] = "Forged Authority",
+                        ["currentStockpile"] = 99
+                    });
+                break;
+            case "projects":
+                root["activeProjects"]!.AsArray().Add(new JsonObject
+                {
+                    ["factionId"] = "faction_watch",
+                    ["projectId"] = "project_direct_forgery",
+                    ["name"] = "Direct Forgery"
+                });
+                break;
+            case "custom":
+                FindEntry(root, "entries", "faction_watch")
+                    ["customStates"]!.AsArray().Add(new JsonObject
+                    {
+                        ["stateId"] = "state_direct_forgery",
+                        ["value"] = 99
+                    });
+                break;
+            case "chronicles":
+                root["entries"]!.AsArray().Add(new JsonObject
+                {
+                    ["factionId"] = "faction_watch",
+                    ["factionName"] = "Wayfarer Watch",
+                    ["entry"] = "#12 - A forged direct chronicle appeared."
+                });
+                break;
+        }
+
+        await _fs.WriteFileAtomicAsync(path, root.ToJsonString());
+
+        var issues =
+            await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_mortal_direct_sidecar_mutation_forbidden" &&
+            issue.Actor == "mortal_faction:faction_watch" &&
+            issue.FilePath.StartsWith(path, StringComparison.Ordinal));
     }
 
     [Fact]
@@ -665,106 +649,6 @@ public sealed class FactionCoreChangesTests : IDisposable
             [NpcCorePath] = npcCore
         };
         foreach (var (path, root) in state)
-            await _fs.WriteFileAtomicAsync(path, root.ToJsonString());
-
-        var snapshots = new Dictionary<string, JsonObject>(
-            StringComparer.OrdinalIgnoreCase)
-        {
-            [CorePath] = preTurnCore,
-            [StructurePath] = structure.DeepClone().AsObject(),
-            [ResourcesPath] = resources.DeepClone().AsObject(),
-            [ProjectsPath] = projects.DeepClone().AsObject(),
-            [CustomPath] = custom.DeepClone().AsObject(),
-            [ChroniclesPath] = chronicles.DeepClone().AsObject(),
-            [NpcCorePath] = npcCore.DeepClone().AsObject()
-        };
-        await WriteValidatedSnapshotManifestAsync(snapshots);
-        return new FactionFixture(
-            preTurnCore,
-            BuildBackupMap(snapshots.Keys));
-    }
-
-    private async Task<FactionFixture> WritePromotionFixtureAsync(
-        Action<JsonObject>? mutateCurrent = null)
-    {
-        var preTurnCore = BuildMaterializedCore();
-        var legacy = FindFaction(preTurnCore, "faction_watch");
-        legacy.Remove("materialization");
-        legacy["scribeChronicle"] =
-            new JsonArray("#7 - The old watch kept the western bridge.");
-
-        var promoted = BuildMaterializedFaction(
-            "faction_watch",
-            "Wayfarer Watch",
-            "fmat_promoted_watch");
-        promoted["materialization"]!["materializedAtTurn"] = 12;
-        var historicalStructure = BuildStructureEntry(
-            "faction_watch",
-            "Wayfarer Watch");
-        promoted["governance"] =
-            historicalStructure["governance"]!.DeepClone();
-        promoted["leadership"] =
-            historicalStructure["leadership"]!.DeepClone();
-        promoted["ranks"] = new JsonObject
-        {
-            ["branches"] = new JsonArray()
-        };
-        promoted["structuredBonuses"] = new JsonArray();
-        promoted["resources"] = new JsonObject
-        {
-            ["metaResources"] = new JsonArray(),
-            ["strategicGoods"] = new JsonArray()
-        };
-        promoted["activeProjects"] = new JsonArray();
-        promoted["completedProjects"] = new JsonArray();
-        promoted["customStates"] = new JsonArray();
-        promoted["scribeChronicle"] = new JsonArray(
-            "#12 - The promoted watch ratified its complete charter.");
-        var currentCore = new JsonObject
-        {
-            ["factions"] = preTurnCore["factions"]!.DeepClone(),
-            ["factionDataChanges"] = new JsonArray(promoted),
-            [FactionCoreChangesContract.PropertyName] =
-                new JsonArray(BuildCommand(
-                    "faction_watch",
-                    "profile",
-                    new JsonObject
-                    {
-                        ["name"] = "Promoted Bridge Watch",
-                        ["description"] =
-                            "A legacy watch promoted under the complete charter.",
-                        ["image_prompt"] =
-                            "veteran bridge wardens raising a restored banner",
-                        ["factionColor"] = "#315A88"
-                    }))
-        };
-        mutateCurrent?.Invoke(currentCore);
-
-        var structure = BuildStructureRoot();
-        var resources = BuildResourcesRoot();
-        var projects = new JsonObject
-        {
-            ["activeProjects"] = new JsonArray(),
-            ["completedProjects"] = new JsonArray()
-        };
-        var custom = BuildCustomRoot();
-        var chronicles = new JsonObject
-        {
-            ["entries"] = new JsonArray()
-        };
-        var npcCore = BuildNpcCoreRoot();
-        var currentState = new Dictionary<string, JsonObject>(
-            StringComparer.OrdinalIgnoreCase)
-        {
-            [CorePath] = currentCore,
-            [StructurePath] = structure,
-            [ResourcesPath] = resources,
-            [ProjectsPath] = projects,
-            [CustomPath] = custom,
-            [ChroniclesPath] = chronicles,
-            [NpcCorePath] = npcCore
-        };
-        foreach (var (path, root) in currentState)
             await _fs.WriteFileAtomicAsync(path, root.ToJsonString());
 
         var snapshots = new Dictionary<string, JsonObject>(

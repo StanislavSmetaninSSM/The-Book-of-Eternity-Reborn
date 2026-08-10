@@ -26,16 +26,16 @@
       "requiredText": ["mortal_faction_materialization_seven_empty_creation_v1", "mat_faction_window_watch_turn_6", "\"empty_by_design\"", "\"customStates\": []"]
     },
     {
-      "contractId": "mortal_faction_materialization_legacy_promotion_v1",
+      "contractId": "mortal_faction_materialized_existing_state_v1",
       "file": "E_CLI_Step_Main.txt",
       "statePath": "game_state/factions/faction_core.json",
-      "responseSurface": "factionDataChanges[] legacy promotion carrier",
+      "responseSurface": "canonical factions[] pre-turn state for a narrow update",
       "realms": ["Mortal World"],
-      "description": "A formerly minimal faction gains formal project/resource authority and receives its first complete materialization envelope in the same turn.",
+      "description": "An existing current-schema faction preserves its accepted complete materialization envelope before a narrow semantic update.",
       "validationKind": "focused-fragment",
-      "focusedFragmentReason": "Legacy promotion requires historical pre-turn proof not embedded in a portable documentation snippet.",
-      "coverageLimit": "Syntax, full-carrier shape, immutable identity, and lifecycle distinction only.",
-      "requiredText": ["mortal_faction_materialization_legacy_promotion_v1", "mat_faction_old_ferry_circle_turn_27", "\"factionDataChanges\"", "\"usesFactionResources\": true"]
+      "focusedFragmentReason": "The canonical pre-turn object documents immutable current-schema authority without fabricating a full accepted-turn snapshot manifest.",
+      "coverageLimit": "Syntax, canonical state shape, immutable identity, and narrow-update linkage only.",
+      "requiredText": ["mortal_faction_materialized_existing_state_v1", "mat_faction_old_ferry_circle_turn_27", "\"factions\"", "\"usesFactionResources\": true"]
     },
     {
       "contractId": "mortal_faction_core_changes_update_v1",
@@ -46,7 +46,7 @@
       "description": "An ordinary post-materialization semantic update uses bounded core groups and preserves the historical envelope.",
       "validationKind": "production-validator",
       "validationRoute": "ExampleDocumentationValidationTests.MortalFactionMaterializationWorkedExamples_UseCanonicalRuntimeCarriersAndSurfaces -> FactionCoreChangesContract.Evaluate",
-      "coverageLimit": "Executes the extracted command against the documented complete pre-turn legacy faction through FactionCoreChangesContract.Evaluate; dedicated chronicle/resource/project/rank mutation surfaces remain outside this focused command example.",
+      "coverageLimit": "Executes the extracted command against the documented complete current-schema pre-turn faction through FactionCoreChangesContract.Evaluate; dedicated chronicle/resource/project/rank mutation surfaces remain outside this focused command example.",
       "requiredText": ["mortal_faction_core_changes_update_v1", "\"factionCoreChanges\"", "\"purposeAndPrinciples\"", "\"governanceAndLeadership\""]
     },
     {
@@ -94,8 +94,8 @@
       "description": "A bounded repair replaces one rejected materialization section disposition and its matching canonical surface.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The fragment demonstrates the repair allowlist, not a normal GameResponse or complete accepted-turn state.",
-      "coverageLimit": "Syntax, exact repair scope, historical identity preservation, and manifest linkage only.",
-      "requiredText": ["mortal_faction_materialization_repair_v1", "\"repairScope\": \"materialization.sections.resources\"", "\"preserveMaterializationId\""]
+      "coverageLimit": "Syntax, exact repair scope, exact writable roots, historical identity preservation, and manifest linkage only.",
+      "requiredText": ["mortal_faction_materialization_repair_v1", "\"repairScope\": \"materialization.sections.resources\"", "\"targetFiles\"", "\"preserveMaterializationId\""]
     },
     {
       "contractId": "shining_faction_materialization_repair_v1",
@@ -106,8 +106,8 @@
       "description": "A bounded Shining repair changes one rejected section while preserving identity, route authority, visibility, and unrelated state.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The fragment demonstrates exact repair scope without claiming ordinary-turn distribution.",
-      "coverageLimit": "Syntax, exact repair scope, hidden visibility preservation, and manifest linkage only.",
-      "requiredText": ["shining_faction_materialization_repair_v1", "\"repairScope\": \"materialization.sections.trade\"", "\"visibility\": \"hidden\""]
+      "coverageLimit": "Syntax, exact repair scope, exact writable roots, hidden visibility preservation, and manifest linkage only.",
+      "requiredText": ["shining_faction_materialization_repair_v1", "\"repairScope\": \"materialization.sections.trade\"", "\"targetFiles\"", "\"visibility\": \"hidden\""]
     }
   ],
   "mortalActorMaterializationCoverage": [

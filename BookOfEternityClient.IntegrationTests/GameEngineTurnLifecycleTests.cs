@@ -3506,10 +3506,79 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 .Select(correction => correction.GetProperty("path").GetString()));
     }
 
-    [Fact]
-    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_ExactGrouping_PreservesSameTurnInitialIdCoordinate()
+    [Theory]
+    [InlineData(
+        "shining_faction:faction_aurora_council",
+        "game_state/meta/guardian_abode_residents.json.entries[0]",
+        "game_state/meta/afterlife_entity_profiles.json",
+        "game_state/meta/shining_abode_state.json",
+        "game_state/meta/guardian_abode_residents.json")]
+    [InlineData(
+        "mortal_faction:faction_missing",
+        "location:location_watch_road.factionControl[0].factionId",
+        "game_state/world/current_location.json",
+        "game_state/factions/faction_core.json",
+        null)]
+    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_TypedTargetMetadataIsHonored(
+        string coordinate,
+        string issuePath,
+        string typedTarget,
+        string baseTarget,
+        string? pathDerivedTarget)
     {
-        const string mortalCoordinate = "mortal_faction:temp_watch_same_turn";
+        var engine = CreateGameEngine();
+        var issues = new List<ValidationIssue>
+        {
+            new(
+                issuePath,
+                IssueSeverity.Error,
+                "Faction repair requires one exact related authority root.",
+                code: "faction_materialization_section_missing",
+                actor: coordinate,
+                section: "FactionMaterialization",
+                expected: "exact current authority",
+                actual: "missing",
+                repairTargetFiles: new[] { typedTarget },
+                factionRepairClassification: FactionTouchKind.New)
+        };
+
+        var method = typeof(GameEngine).GetMethod(
+            "WriteValidationRepairRequestAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = Assert.IsAssignableFrom<Task>(method!.Invoke(
+            engine,
+            new object[] { "повторной проверки repair", issues, 1 })!);
+
+        await task;
+
+        var requestJson = await _fs.ReadFileAsync(
+            "game_state/control/validation_repair_request.json");
+        Assert.False(string.IsNullOrWhiteSpace(requestJson));
+        using var doc = JsonDocument.Parse(requestJson!);
+        var packet = Assert.Single(
+            doc.RootElement.GetProperty("harnessRepairPackets")
+                .EnumerateArray());
+        var targetFiles = packet.GetProperty("targetFiles")
+            .EnumerateArray()
+            .Select(item => item.GetString())
+            .ToArray();
+
+        Assert.Contains(baseTarget, targetFiles);
+        Assert.Contains(typedTarget, targetFiles);
+        if (pathDerivedTarget != null)
+            Assert.Contains(pathDerivedTarget, targetFiles);
+        Assert.Contains(
+            "new",
+            packet.GetProperty("expectedShape")
+                .EnumerateArray()
+                .Select(item => item.GetString()));
+    }
+
+    [Fact]
+    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_ExactGrouping_PreservesDistinctCoordinates()
+    {
+        const string mortalCoordinate = "mortal_faction:faction_receiptless_watch";
         const string shiningCoordinate = "shining_faction:faction_moon_choir";
         const string mortalPath =
             "game_state/factions/faction_custom.json.entries[0].materialization";
@@ -3521,12 +3590,14 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             new(
                 mortalPath,
                 IssueSeverity.Error,
-                "Same-turn Mortal faction requires its first immutable receipt.",
-                code: "faction_legacy_promotion_required",
+                "Receipt-less Mortal faction state is obsolete.",
+                code: "faction_materialization_obsolete_receiptless_state",
                 actor: mortalCoordinate,
                 section: "FactionMaterialization",
                 expected: "complete materialization receipt",
-                actual: "legacy_promotion"),
+                actual: "receipt-less obsolete faction state",
+                factionRepairClassification:
+                    FactionTouchKind.InvalidReceiptless),
             new(
                 shiningPath,
                 IssueSeverity.Error,
@@ -3535,7 +3606,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 actor: shiningCoordinate,
                 section: "FactionMaterialization",
                 expected: "complete materialization receipt",
-                actual: "new")
+                actual: "missing from a genuinely new faction",
+                factionRepairClassification: FactionTouchKind.New)
         };
 
         var method = typeof(GameEngine).GetMethod(
@@ -3605,8 +3677,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             .EnumerateArray()
             .Select(item => item.GetString())
             .ToArray();
-        Assert.Contains("legacy_promotion", mortalExpectedShape);
-        Assert.DoesNotContain("legacy_promotion", shiningExpectedShape);
+        Assert.Contains("invalid_receiptless", mortalExpectedShape);
+        Assert.DoesNotContain("invalid_receiptless", shiningExpectedShape);
         Assert.Contains("new", shiningExpectedShape);
     }
 
@@ -3733,8 +3805,6 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             "faction_Materialization_section_missing",
             "faction_materialization",
             "factionmaterialization_section_missing",
-            "faction_legacy_Promotion_required",
-            "faction_legacy_promotion_required_extra",
             "faction_existing_full_resend_Forbidden",
             "faction_existing_full_resend_forbidden_extra"
         };
@@ -3768,26 +3838,23 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_ClassificationPropagation_UsesOnlyExactTrimmedValuesPerCoordinate()
+    public async Task WriteValidationRepairRequestAsync_FactionMaterializationRepair_ClassificationPropagation_UsesOnlyTypedValuesPerCoordinate()
     {
         const string acceptedCoordinate = "mortal_faction:faction_classifications_accepted";
         const string rejectedCoordinate = "mortal_faction:faction_classifications_rejected";
         const string shiningCoordinate = "shining_faction:faction_classifications_new";
         var acceptedCases = new[]
         {
-            (Expected: " new ", Actual: "not a classification"),
-            (Expected: "not a classification", Actual: "\tlegacy_promotion\r\n"),
-            (Expected: " already_materialized ", Actual: "not a classification"),
-            (Expected: "not a classification", Actual: "\tclient_derived_only "),
-            (Expected: "untouched_legacy", Actual: "not a classification")
+            FactionTouchKind.New,
+            FactionTouchKind.AlreadyMaterialized,
+            FactionTouchKind.InvalidReceiptless
         };
         var rejectedValues = new[]
         {
             "New",
-            "LEGACY_PROMOTION",
+            "INVALID_RECEIPTLESS",
             "already_materialized because a receipt exists",
-            "client_derived_only-ish",
-            "untouched legacy"
+            "invalid receiptless"
         };
         var issues = new List<ValidationIssue>();
         for (var index = 0; index < acceptedCases.Length; index++)
@@ -3799,8 +3866,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 code: "faction_materialization_classification_invalid",
                 actor: acceptedCoordinate,
                 section: "FactionMaterialization",
-                expected: acceptedCases[index].Expected,
-                actual: acceptedCases[index].Actual));
+                expected: "not typed classification authority",
+                actual: "new",
+                factionRepairClassification: acceptedCases[index]));
         }
 
         for (var index = 0; index < rejectedValues.Length; index++)
@@ -3825,8 +3893,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             code: "faction_materialization_classification_invalid",
             actor: shiningCoordinate,
             section: "FactionMaterialization",
-            expected: " new ",
-            actual: "not a classification"));
+            expected: "not typed classification authority",
+            actual: "not a classification",
+            factionRepairClassification: FactionTouchKind.New));
 
         var engine = CreateGameEngine();
         var method = typeof(GameEngine).GetMethod(
@@ -3912,10 +3981,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var exactClassifications = new[]
         {
             "already_materialized",
-            "client_derived_only",
-            "legacy_promotion",
-            "new",
-            "untouched_legacy"
+            "invalid_receiptless",
+            "new"
         };
         var acceptedExpectedShape = acceptedPacket.GetProperty("expectedShape")
             .EnumerateArray()
@@ -4028,12 +4095,12 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         "game_state/factions/faction_projects.json",
         "new")]
     [InlineData(
-        "faction_legacy_promotion_required",
-        "shining_faction:faction_closed_legacy",
+        "faction_materialization_obsolete_receiptless_state",
+        "shining_faction:faction_closed_receiptless",
         "game_state/meta/shining_abode_state.json.factions[0].materialization",
         "game_state/meta/shining_abode_state.json",
         null,
-        "legacy_promotion")]
+        "invalid_receiptless")]
     [InlineData(
         "faction_existing_full_resend_forbidden",
         "mortal_faction:faction_closed_resend",
@@ -4060,7 +4127,17 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 actor: coordinate,
                 section: "FactionMaterialization",
                 expected: "one exact bounded repair",
-                actual: classification)
+                actual: "human-readable diagnostic prose",
+                factionRepairClassification: classification switch
+                {
+                    "new" => FactionTouchKind.New,
+                    "already_materialized" =>
+                        FactionTouchKind.AlreadyMaterialized,
+                    "invalid_receiptless" =>
+                        FactionTouchKind.InvalidReceiptless,
+                    _ => throw new InvalidOperationException(
+                        $"Unsupported test classification: {classification}")
+                })
         };
 
         var method = typeof(GameEngine).GetMethod(

@@ -1096,7 +1096,7 @@ public sealed class ValidationSourceGuardTests
     }
 
     [Fact]
-    public void CanonicalShiningVisibility_MustBeAuthoritativeBeforeLegacyWingsFallback()
+    public void CanonicalShiningVisibility_MustFailClosedWithoutRevealed()
     {
         var source = File.ReadAllText(Path.Combine(
             TestRepoPaths.RepoRoot,
@@ -1109,14 +1109,10 @@ public sealed class ValidationSourceGuardTests
             source,
             StringComparison.Ordinal);
         Assert.Contains(
-            "if (!string.IsNullOrWhiteSpace(visibility))",
-            source,
-            StringComparison.Ordinal);
-        Assert.Contains(
             "FactionVisibilityRevealed",
             source,
             StringComparison.Ordinal);
-        Assert.Contains(
+        Assert.DoesNotContain(
             "return !IsHiddenWingsFaction(faction);",
             source,
             StringComparison.Ordinal);

@@ -12,6 +12,8 @@ public sealed class ShiningAbodeStateTests
     [InlineData("hidden", false)]
     [InlineData("rumored", false)]
     [InlineData("revealed", true)]
+    [InlineData("Revealed", false)]
+    [InlineData("REVEALED", false)]
     [InlineData("public", false)]
     public void GetPlayerVisibleShiningFactions_UsesCanonicalVisibility(
         string visibility,
@@ -23,10 +25,8 @@ public sealed class ShiningAbodeStateTests
             ["originType"] = ShiningAbodeState.OriginTypeAscendedGuardian,
             ["hallId"] = "hall_story",
             ["visibility"] = visibility,
-            ["materialization"] = new JsonObject
-            {
-                ["materializationId"] = "mat_shine_faction_story"
-            }
+            ["materialization"] = BuildCompleteShiningMaterialization(
+                "shine_faction_story")
         };
         var root = new JsonObject
         {
@@ -40,34 +40,47 @@ public sealed class ShiningAbodeStateTests
                 .Any());
     }
 
-    [Theory]
-    [InlineData(null, null, true)]
-    [InlineData("wings_of_angels", "hidden", false)]
-    public void GetPlayerVisibleShiningFactions_LegacyPublicVisibilityUsesSarefFallback(
-        string? sarefFactionRole,
-        string? sarefVisibility,
-        bool expectedVisible)
+    [Fact]
+    public void GetPlayerVisibleShiningFactions_ReceiptlessRevealedStateFailsClosed()
     {
         var faction = new JsonObject
         {
-            ["factionId"] = "legacy_public_faction",
+            ["factionId"] = "receiptless_public_faction",
             ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
-            ["hallId"] = "legacy_public_hall",
-            ["visibility"] = "public",
+            ["hallId"] = "receiptless_public_hall",
+            ["visibility"] = "revealed",
             ["isPlayerVisible"] = true,
-            ["sarefFactionRole"] = sarefFactionRole,
-            ["sarefVisibility"] = sarefVisibility
+            ["sarefFactionRole"] = null,
+            ["sarefVisibility"] = null
         };
         var root = new JsonObject
         {
             ["factions"] = new JsonArray(faction)
         };
 
-        Assert.Equal(
-            expectedVisible,
-            SarefMainStoryState
-                .GetPlayerVisibleShiningFactions(root)
-                .Any());
+        Assert.Empty(SarefMainStoryState.GetPlayerVisibleShiningFactions(root));
+    }
+
+    [Fact]
+    public void GetPlayerVisibleShiningFactions_IncompleteReceiptFailsClosed()
+    {
+        var faction = new JsonObject
+        {
+            ["factionId"] = "incomplete_receipt_faction",
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = "incomplete_receipt_hall",
+            ["visibility"] = "revealed",
+            ["materialization"] = new JsonObject
+            {
+                ["materializationId"] = "incomplete_receipt"
+            }
+        };
+        var root = new JsonObject
+        {
+            ["factions"] = new JsonArray(faction)
+        };
+
+        Assert.Empty(SarefMainStoryState.GetPlayerVisibleShiningFactions(root));
     }
 
     [Fact]
@@ -156,6 +169,12 @@ public sealed class ShiningAbodeStateTests
           }
         }
         """)!.AsObject();
+        canonical["factions"]![0]!["materialization"] =
+            BuildCompleteShiningMaterialization(
+                "faction_revealed",
+                runsProjects: true);
+        canonical["factions"]![1]!["materialization"] =
+            BuildCompleteShiningMaterialization("faction_hidden");
         var before = canonical.DeepClone();
         var method = typeof(ExplorerMode).GetMethod(
             "CloneShiningJsonForPlayerFacingAudit",
@@ -226,6 +245,14 @@ public sealed class ShiningAbodeStateTests
                         })
                 })
         };
+        foreach (var faction in root["factions"]!.AsArray().OfType<JsonObject>())
+        {
+            var factionId = faction["factionId"]!.GetValue<string>();
+            faction["materialization"] =
+                BuildCompleteShiningMaterialization(
+                    factionId,
+                    runsProjects: true);
+        }
         var contextType = typeof(ExplorerMode).GetNestedType(
             "ShiningContext",
             BindingFlags.NonPublic);
@@ -291,6 +318,7 @@ public sealed class ShiningAbodeStateTests
               "factionId": "faction_dawn",
               "originType": "player_founded",
               "hallId": "hall_dawn",
+              "factionLifecycle": { "state": "active" },
               "charter": {
                 "factionName": "Хор Рассвета",
                 "favoredArchetype": "accord",
@@ -358,6 +386,33 @@ public sealed class ShiningAbodeStateTests
         Assert.True(root["halls"]?[0]?["serviceTags"] is JsonArray tags && tags.Count == 1);
         Assert.Equal(35, root["factions"]?[0]?["baseStrength"]?.GetValue<int>());
         Assert.Equal(69, root["factions"]?[0]?["factionStrength"]?.GetValue<int>());
+    }
+
+    [Fact]
+    public void CountAscendedResidentsForFaction_CaseVariantLinkDoesNotCount()
+    {
+        var residentRoot = JsonNode.Parse("""
+        {
+          "entries": [
+            {
+              "residentId": "resident_exact",
+              "ascensionState": "ascended",
+              "shiningFactionId": "faction_dawn"
+            },
+            {
+              "residentId": "resident_case_variant",
+              "ascensionState": "ascended",
+              "shiningFactionId": "Faction_Dawn"
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var count = ShiningAbodeState.CountAscendedResidentsForFaction(
+            residentRoot,
+            "faction_dawn");
+
+        Assert.Equal(1, count);
     }
 
     [Fact]
@@ -503,6 +558,7 @@ public sealed class ShiningAbodeStateTests
               "factionId": "faction_broken",
               "originType": "player_founded",
               "hallId": "hall_broken",
+              "factionLifecycle": { "state": "active" },
               "charter": {
                 "factionName": "Сломанная фракция",
                 "favoredArchetype": "accord",
@@ -545,6 +601,39 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void ValidateRawOwnerStateForActionableMode_MissingFactionLifecycle_FailsClosed()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        var faction = new JsonObject
+        {
+            ["factionId"] = "faction_without_lifecycle",
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = "hall_without_lifecycle",
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = "Дом без жизненного цикла",
+                ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+                ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+                ["summary"] = "Повреждённое состояние не должно становиться действующим."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["headActorId"] = "player_soul",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            },
+            ["projects"] = new JsonArray()
+        };
+        root["factions"] = new JsonArray(faction);
+
+        var error = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(root);
+
+        Assert.NotNull(error);
+        Assert.Contains("factionLifecycle", error, StringComparison.Ordinal);
+        Assert.False(ShiningAbodeState.IsFactionOperational(faction));
+    }
+
+    [Fact]
     public void ValidateRawOwnerStateForActionableMode_MalformedLegacyPendingDiscovery_FailsClosed()
     {
         var root = ShiningAbodeState.CreateDefaultState();
@@ -560,7 +649,7 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void ValidateRawOwnerStateForActionableMode_DuplicateHallIds_FailsClosed()
+    public void ValidateRawOwnerStateForActionableMode_DuplicateExactHallIds_FailsClosed()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["halls"] = new JsonArray(
@@ -572,7 +661,7 @@ public sealed class ShiningAbodeStateTests
             },
             new JsonObject
             {
-                ["hallId"] = "HALL_DAWN",
+                ["hallId"] = "hall_dawn",
                 ["hallName"] = "Дубликат Рассвета",
                 ["description"] = "Дубликат не должен authorise actions."
             });
@@ -584,7 +673,7 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void ValidateRawOwnerStateForActionableMode_DuplicatePoliticalActorIds_FailsClosed()
+    public void ValidateRawOwnerStateForActionableMode_DuplicateExactPoliticalActorIds_FailsClosed()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["shiningPoliticalActors"] = new JsonArray(
@@ -597,7 +686,7 @@ public sealed class ShiningAbodeStateTests
             },
             new JsonObject
             {
-                ["actorId"] = "RADIANT_ACTOR_DAWN",
+                ["actorId"] = "radiant_actor_dawn",
                 ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
                 ["displayName"] = "Дубликат Глашатая",
                 ["politicalStatus"] = ShiningAbodeState.PoliticalStatusClaimant
@@ -607,6 +696,44 @@ public sealed class ShiningAbodeStateTests
 
         Assert.NotNull(error);
         Assert.Contains("duplicate actorId", error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ValidateRawOwnerStateForActionableMode_CaseVariantHallAndActorIds_AreDistinct()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["halls"] = new JsonArray(
+            new JsonObject
+            {
+                ["hallId"] = "hall_dawn",
+                ["hallName"] = "Зал Рассвета",
+                ["description"] = "Первый зал."
+            },
+            new JsonObject
+            {
+                ["hallId"] = "HALL_DAWN",
+                ["hallName"] = "Верхний Рассвет",
+                ["description"] = "Отдельный зал с отдельной identity."
+            });
+        root["shiningPoliticalActors"] = new JsonArray(
+            new JsonObject
+            {
+                ["actorId"] = "radiant_actor_dawn",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Глашатай Рассвета",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusElder
+            },
+            new JsonObject
+            {
+                ["actorId"] = "RADIANT_ACTOR_DAWN",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Глашатай Верхнего Рассвета",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusClaimant
+            });
+
+        var error = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(root);
+
+        Assert.Null(error);
     }
 
     [Fact]
@@ -715,6 +842,7 @@ public sealed class ShiningAbodeStateTests
               "factionId": "faction_dawn",
               "originType": "player_founded",
               "hallId": "hall_dawn",
+              "factionLifecycle": { "state": "active" },
               "charter": {
                 "factionName": "Хор Рассвета",
                 "favoredArchetype": "accord",
@@ -797,6 +925,7 @@ public sealed class ShiningAbodeStateTests
               "factionId": "faction_dawn",
               "originType": "player_founded",
               "hallId": "hall_dawn",
+              "factionLifecycle": { "state": "active" },
               "charter": {
                 "factionName": "Хор Рассвета",
                 "favoredArchetype": "accord",
@@ -999,6 +1128,10 @@ public sealed class ShiningAbodeStateTests
         resident["shiningFactionId"] = "missing";
         ShiningAbodeState.NormalizeResidentShiningFields(resident, shiningRoot);
         Assert.Null(resident["shiningFactionId"]);
+
+        resident["shiningFactionId"] = "Faction_Dawn";
+        ShiningAbodeState.NormalizeResidentShiningFields(resident, shiningRoot);
+        Assert.Null(resident["shiningFactionId"]);
     }
 
     [Fact]
@@ -1077,84 +1210,6 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void ReenterOrdinaryActiveState_UpgradesExistingFoundedGuardianProjection()
-    {
-        var root = JsonNode.Parse("""
-        {
-          "availability": "active",
-          "radiance": {
-            "experience": 0,
-            "tier": 0
-          },
-          "lightSparks": 63,
-          "halls": [
-            {
-              "hallId": "hall_guardian_founder",
-              "hallName": "Зал Основателя",
-              "description": "Обитель Хранителя Северин внутри Сияющей Обители.",
-              "serviceTags": ["memory", "social"]
-            }
-          ],
-          "factions": [
-            {
-              "factionId": "faction_guardian_founder",
-              "originType": "ascended_guardian",
-              "hallId": "hall_guardian_founder",
-              "charter": {
-                "factionName": "Северин",
-                "favoredArchetype": "remembrance",
-                "patronEffectFamily": "memory",
-                "summary": "Фракция, восходящая к Хранителю Северин."
-              },
-              "leadership": {
-                "headActorType": "guardian",
-                "headActorId": "guardian_founder",
-                "leadershipState": "secure"
-              },
-              "baseStrength": 35,
-              "factionStrength": 35,
-              "projects": [],
-              "leadershipReceipts": [],
-              "leadershipHistory": []
-            }
-          ],
-          "gates": {
-            "draftVersion": 0,
-            "hasOpenDraft": false,
-            "isStale": false,
-            "allCandidateBlessingCards": [],
-            "availableBlessingCards": [],
-            "shownBlessingCardIds": [],
-            "selectedBlessingCardIds": [],
-            "nextCandidateCursor": 0,
-            "rerollsRemaining": 0
-          },
-          "preparedIncarnationPackage": null
-        }
-        """)!.AsObject();
-        var guardiansRoot = JsonNode.Parse($$"""
-        {
-          "activeGuardian": {
-            "guardianId": "guardian_founder",
-            "canonicalName": "Северин",
-            "originType": "{{PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul}}",
-            "domain": "memory",
-            "abode": {
-              "abodeName": "Зал Основателя"
-            }
-          }
-        }
-        """)!.AsObject();
-
-        var reentered = ShiningAbodeState.ReenterOrdinaryActiveState(root, residentRoot: null, guardiansRoot);
-
-        Assert.Equal(ShiningAbodeState.OriginTypePlayerFounded, reentered["factions"]?[0]?["originType"]?.GetValue<string>());
-        Assert.Equal("Фракция, восходящая к основанному Хранителю Северин.", reentered["factions"]?[0]?["charter"]?["summary"]?.GetValue<string>());
-        Assert.Equal("Обитель основанного Хранителя Северин внутри Сияющей Обители.", reentered["halls"]?[0]?["description"]?.GetValue<string>());
-        Assert.True(reentered["factions"] is JsonArray factions && factions.Count == 1);
-    }
-
-    [Fact]
     public void ReenterOrdinaryActiveState_PreservesLeadershipOutcomeOnActiveGuardianFaction()
     {
         var root = JsonNode.Parse("""
@@ -1221,76 +1276,6 @@ public sealed class ShiningAbodeStateTests
 
         Assert.Equal(ShiningAbodeState.HeadActorTypePlayerSoul, reentered["factions"]?[0]?["leadership"]?["headActorType"]?.GetValue<string>());
         Assert.Equal("player_soul", reentered["factions"]?[0]?["leadership"]?["headActorId"]?.GetValue<string>());
-        Assert.Equal(ShiningAbodeState.LeadershipStateContested, reentered["factions"]?[0]?["leadership"]?["leadershipState"]?.GetValue<string>());
-    }
-
-    [Fact]
-    public void ReenterOrdinaryActiveState_RebindsMalformedGuardianHeadOnActiveGuardianFaction()
-    {
-        var root = JsonNode.Parse("""
-        {
-          "availability": "active",
-          "radiance": {
-            "experience": 160,
-            "tier": 1
-          },
-          "lightSparks": 75,
-          "halls": [],
-          "factions": [
-            {
-              "factionId": "faction_guardian_azalia",
-              "originType": "ascended_guardian",
-              "hallId": "hall_guardian_azalia",
-              "charter": {
-                "factionName": "Дом Азалии",
-                "favoredArchetype": "remembrance",
-                "patronEffectFamily": "memory",
-                "summary": "Хранит отзвуки памяти."
-              },
-              "leadership": {
-                "headActorType": "guardian",
-                "headActorId": "",
-                "leadershipState": "contested"
-              },
-              "baseStrength": 35,
-              "factionStrength": 48,
-              "investCountThisAscension": 0,
-              "projectArchetypesCountedThisAscension": [],
-              "projects": [],
-              "leadershipReceipts": [],
-              "leadershipHistory": []
-            }
-          ],
-          "gates": {
-            "draftVersion": 0,
-            "hasOpenDraft": false,
-            "isStale": false,
-            "allCandidateBlessingCards": [],
-            "availableBlessingCards": [],
-            "shownBlessingCardIds": [],
-            "selectedBlessingCardIds": [],
-            "nextCandidateCursor": 0,
-            "rerollsRemaining": 0
-          }
-        }
-        """)!.AsObject();
-        var guardiansRoot = JsonNode.Parse("""
-        {
-          "activeGuardian": {
-            "guardianId": "guardian_azalia",
-            "canonicalName": "Азалия",
-            "domain": "memory",
-            "abode": {
-              "abodeName": "Зал Тихой Памяти"
-            }
-          }
-        }
-        """)!.AsObject();
-
-        var reentered = ShiningAbodeState.ReenterOrdinaryActiveState(root, residentRoot: null, guardiansRoot);
-
-        Assert.Equal(ShiningAbodeState.HeadActorTypeGuardian, reentered["factions"]?[0]?["leadership"]?["headActorType"]?.GetValue<string>());
-        Assert.Equal("guardian_azalia", reentered["factions"]?[0]?["leadership"]?["headActorId"]?.GetValue<string>());
         Assert.Equal(ShiningAbodeState.LeadershipStateContested, reentered["factions"]?[0]?["leadership"]?["leadershipState"]?.GetValue<string>());
     }
 
@@ -1411,6 +1396,7 @@ public sealed class ShiningAbodeStateTests
               "factionId": "faction_dawn",
               "originType": "player_founded",
               "hallId": "hall_dawn",
+              "factionLifecycle": { "state": "active" },
               "charter": {
                 "factionName": "Хор Рассвета",
                 "favoredArchetype": "accord",
@@ -1466,6 +1452,7 @@ public sealed class ShiningAbodeStateTests
               "factionId": "faction_dawn",
               "originType": "player_founded",
               "hallId": "hall_dawn",
+              "factionLifecycle": { "state": "active" },
               "charter": {
                 "factionName": "Хор Рассвета",
                 "favoredArchetype": "accord",
@@ -2043,6 +2030,10 @@ public sealed class ShiningAbodeStateTests
                 ["factionId"] = "faction_dawn",
                 ["originType"] = ShiningAbodeState.OriginTypePlayerFounded,
                 ["hallId"] = "hall_dawn",
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+                },
                 ["charter"] = new JsonObject
                 {
                     ["factionName"] = "Хор Рассвета",
@@ -2226,6 +2217,10 @@ public sealed class ShiningAbodeStateTests
                 ["factionId"] = "faction_dawn",
                 ["originType"] = ShiningAbodeState.OriginTypePlayerFounded,
                 ["hallId"] = "hall_dawn",
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+                },
                 ["charter"] = new JsonObject
                 {
                     ["factionName"] = "Хор Рассвета",
@@ -2259,7 +2254,10 @@ public sealed class ShiningAbodeStateTests
                         ["isSupported"] = isSupported,
                         ["strengthReward"] = 8
                     }
-                }
+                },
+                ["materialization"] = BuildCompleteShiningMaterialization(
+                    "faction_dawn",
+                    runsProjects: true)
             }
         },
         ["gates"] = new JsonObject
@@ -2274,6 +2272,51 @@ public sealed class ShiningAbodeStateTests
             ["nextCandidateCursor"] = 0,
             ["rerollsRemaining"] = 0
         }
+    };
+
+    private static JsonObject BuildCompleteShiningMaterialization(
+        string factionId,
+        bool runsProjects = false) => new()
+    {
+        ["schemaVersion"] = FactionMaterializationContract.SchemaVersion,
+        ["materializationId"] = $"mat_{factionId}",
+        ["factionType"] = "shining_faction",
+        ["factionId"] = factionId,
+        ["materializedAtTurn"] = 1,
+        ["state"] = "complete",
+        ["capabilities"] = new JsonObject
+        {
+            ["runsProjects"] = runsProjects,
+            ["holdsTerritorialInfluence"] = false,
+            ["usesResourceLedger"] = false,
+            ["hasResidentAffiliations"] = false,
+            ["canTrade"] = false,
+            ["hasLeadershipHistory"] = false,
+            ["usesStoryState"] = false
+        },
+        ["sections"] = new JsonObject
+        {
+            ["projects"] = runsProjects
+                ? PopulatedShiningDisposition()
+                : EmptyShiningDisposition(),
+            ["territorialInfluence"] = EmptyShiningDisposition(),
+            ["resourceLedger"] = EmptyShiningDisposition(),
+            ["residentAffiliations"] = EmptyShiningDisposition(),
+            ["trade"] = EmptyShiningDisposition(),
+            ["leadershipHistory"] = EmptyShiningDisposition(),
+            ["storyState"] = EmptyShiningDisposition()
+        }
+    };
+
+    private static JsonObject EmptyShiningDisposition() => new()
+    {
+        ["state"] = "empty_by_design",
+        ["reason"] = "The faction has not established this capability."
+    };
+
+    private static JsonObject PopulatedShiningDisposition() => new()
+    {
+        ["state"] = "populated"
     };
 
     private static JsonObject BuildProjectDraft(string displayName, string archetype, string effectFamily, int tier) => new()

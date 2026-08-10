@@ -233,7 +233,7 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
-    public async Task NormalizeAccumulatedStateAsync_UntouchedLegacyGuardianFactionRemainsReadable()
+    public async Task NormalizeAccumulatedStateAsync_ReceiptlessGuardianFactionGetsNoCompatibilitySemantics()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", $$"""
         {
@@ -306,40 +306,41 @@ public sealed partial class CanonicalStateNormalizerTests
         }
         """);
 
-        var legacyShiningRoot = ShiningAbodeState.CreateDefaultState();
-        legacyShiningRoot["availability"] = ShiningAbodeState.AvailabilityActive;
-        legacyShiningRoot["lightSparks"] = 55;
-        legacyShiningRoot["halls"] = new JsonArray();
-        legacyShiningRoot["factions"] = new JsonArray(
+        var receiptlessShiningRoot = ShiningAbodeState.CreateDefaultState();
+        receiptlessShiningRoot["availability"] = ShiningAbodeState.AvailabilityActive;
+        receiptlessShiningRoot["lightSparks"] = 55;
+        receiptlessShiningRoot["halls"] = new JsonArray();
+        receiptlessShiningRoot["factions"] = new JsonArray(
             new JsonObject
             {
                 ["factionId"] = "faction_guardian_founder",
                 ["baseStrength"] = 35,
                 ["factionStrength"] = 35
             });
-        const string legacyBackupPath =
-            "test_backups/shining_abode_legacy_guardian.json";
+        const string receiptlessBackupPath =
+            "test_backups/shining_abode_receiptless_guardian.json";
         await _fs.WriteFileAtomicAsync(
-            legacyBackupPath,
-            legacyShiningRoot.ToJsonString());
+            receiptlessBackupPath,
+            receiptlessShiningRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(
             ShiningAbodeState.StatePath,
-            legacyShiningRoot.ToJsonString());
+            receiptlessShiningRoot.ToJsonString());
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await normalizer.NormalizeAccumulatedStateAsync(
             new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                [ShiningAbodeState.StatePath] = legacyBackupPath
+                [ShiningAbodeState.StatePath] = receiptlessBackupPath
             });
 
         using var shiningDoc = JsonDocument.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!);
-        var foundedFaction = Assert.Single(
+        var receiptlessFaction = Assert.Single(
             shiningDoc.RootElement.GetProperty("factions").EnumerateArray(),
             faction => string.Equals(faction.GetProperty("factionId").GetString(), "faction_guardian_founder", StringComparison.OrdinalIgnoreCase));
-        Assert.Equal(ShiningAbodeState.OriginTypePlayerFounded, foundedFaction.GetProperty("originType").GetString());
-        Assert.Equal("guardian", foundedFaction.GetProperty("leadership").GetProperty("headActorType").GetString());
-        Assert.Equal("guardian_founder", foundedFaction.GetProperty("leadership").GetProperty("headActorId").GetString());
+        Assert.False(receiptlessFaction.TryGetProperty("originType", out _));
+        Assert.False(receiptlessFaction.TryGetProperty("leadership", out _));
+        Assert.False(receiptlessFaction.TryGetProperty("charter", out _));
+        Assert.False(receiptlessFaction.TryGetProperty("materialization", out _));
     }
 
     [Fact]

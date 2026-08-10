@@ -96,33 +96,12 @@ internal static partial class ShiningAbodeState
     public static void NormalizeStateRoot(
         JsonObject root,
         JsonObject? residentRoot,
-        JsonObject? guardiansRoot) =>
-        NormalizeStateRoot(
-            root,
-            residentRoot,
-            guardiansRoot,
-            normalizationModes: null);
-
-    internal static void NormalizeStateRoot(
-        JsonObject root,
-        JsonObject? residentRoot,
-        JsonObject? guardiansRoot,
-        IReadOnlyDictionary<string, ShiningFactionNormalizationMode>?
-            normalizationModes)
+        JsonObject? guardiansRoot)
     {
-        NormalizeStateRootWithFactionModes(
+        NormalizeStateRootCore(
             root,
-            residentRoot,
-            normalizationModes);
+            residentRoot);
         HydrateLeadershipReceiptSnapshots(root, residentRoot, guardiansRoot);
-        if (EnsureActiveGuardianFactionMaterialized(root, guardiansRoot))
-        {
-            NormalizeStateRootWithFactionModes(
-                root,
-                residentRoot,
-                normalizationModes);
-            HydrateLeadershipReceiptSnapshots(root, residentRoot, guardiansRoot);
-        }
     }
 
     public static bool TryQueueNativeFactionDiscovery(JsonObject root, int currentTurnNumber, out string? error)
@@ -444,14 +423,14 @@ internal static partial class ShiningAbodeState
             return false;
 
         var availableCards = EnsureArray(gates, "availableBlessingCards");
-        if (!availableCards.OfType<JsonObject>().Any(card => string.Equals(GetNodeString(card["cardId"]), cardId, StringComparison.OrdinalIgnoreCase)))
+        if (!availableCards.OfType<JsonObject>().Any(card => string.Equals(GetNodeString(card["cardId"]), cardId, StringComparison.Ordinal)))
         {
             error = "Эта карта сейчас не находится в открытом draft.";
             return false;
         }
 
         var selected = EnsureArray(gates, "selectedBlessingCardIds");
-        if (selected.OfType<JsonValue>().Any(node => node.TryGetValue<string>(out var value) && string.Equals(value, cardId, StringComparison.OrdinalIgnoreCase)))
+        if (selected.OfType<JsonValue>().Any(node => node.TryGetValue<string>(out var value) && string.Equals(value, cardId, StringComparison.Ordinal)))
         {
             error = null;
             return true;
@@ -478,7 +457,7 @@ internal static partial class ShiningAbodeState
         {
             if (selected[i] is JsonValue node &&
                 node.TryGetValue<string>(out var value) &&
-                string.Equals(value, cardId, StringComparison.OrdinalIgnoreCase))
+                string.Equals(value, cardId, StringComparison.Ordinal))
             {
                 selected.RemoveAt(i);
             }
@@ -505,13 +484,13 @@ internal static partial class ShiningAbodeState
             .OfType<JsonValue>()
             .Where(node => node.TryGetValue<string>(out _))
             .Select(node => node.GetValue<string>())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
 
         var removable = availableCards
             .OfType<JsonObject>()
             .Where(card => !selectedIds.Contains(GetNodeString(card["cardId"]) ?? string.Empty))
             .OrderBy(card => GetRarityWeight(GetNodeString(card["rarity"])))
-            .ThenBy(card => GetNodeString(card["cardId"]), StringComparer.OrdinalIgnoreCase)
+            .ThenBy(card => GetNodeString(card["cardId"]), StringComparer.Ordinal)
             .Take(2)
             .ToList();
         if (removable.Count < 2)
@@ -525,7 +504,7 @@ internal static partial class ShiningAbodeState
         var shownIds = shown.OfType<JsonValue>()
             .Where(node => node.TryGetValue<string>(out _))
             .Select(node => node.GetValue<string>())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
         var nextCursor = Math.Clamp(GetNodeInt(gates["nextCandidateCursor"], 0), 0, allCandidates.Count);
 
         var replacements = new List<(JsonObject Card, string CardId)>();
@@ -550,7 +529,7 @@ internal static partial class ShiningAbodeState
             .Select(card => GetNodeString(card["cardId"]))
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .Cast<string>()
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
 
         for (var i = availableCards.Count - 1; i >= 0; i--)
         {
@@ -571,7 +550,7 @@ internal static partial class ShiningAbodeState
             .OrderByDescending(card => GetRarityWeight(GetNodeString(card["rarity"])))
             .ThenByDescending(card => GetNodeInt(card["_effectiveStrength"], 0))
             .ThenByDescending(card => GetSourceTypePriority(GetNodeString(card["sourceType"])))
-            .ThenBy(card => GetNodeString(card["cardId"]), StringComparer.OrdinalIgnoreCase)
+            .ThenBy(card => GetNodeString(card["cardId"]), StringComparer.Ordinal)
             .Select(CloneObject)
             .ToList();
 
@@ -609,7 +588,7 @@ internal static partial class ShiningAbodeState
         var selectedCards = new JsonArray();
         foreach (var selectedId in selectedIds)
         {
-            var card = availableCards.FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), selectedId, StringComparison.OrdinalIgnoreCase));
+            var card = availableCards.FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), selectedId, StringComparison.Ordinal));
             if (card == null)
             {
                 error = "Подготовка пакета требует, чтобы все выбранные карты были частью текущего draft.";
@@ -683,14 +662,14 @@ internal static partial class ShiningAbodeState
                 .Where(node => node.TryGetValue<string>(out _))
                 .Select(node => node.GetValue<string>().Trim())
                 .Where(value => !string.IsNullOrWhiteSpace(value))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Distinct(StringComparer.Ordinal)
                 .ToList();
         }
 
         if (string.Equals(projectArchetype, ProjectArchetypeSubversion, StringComparison.OrdinalIgnoreCase))
         {
             var sourceFactionId = GetNodeString(faction["factionId"]);
-            if (targetFactionIds.Count != 1 || string.Equals(targetFactionIds[0], sourceFactionId, StringComparison.OrdinalIgnoreCase) || !FactionExists(root, targetFactionIds[0]))
+            if (targetFactionIds.Count != 1 || string.Equals(targetFactionIds[0], sourceFactionId, StringComparison.Ordinal) || !FactionExists(root, targetFactionIds[0]))
             {
                 error = "Subversion project должен ссылаться ровно на одну существующую чужую фракцию.";
                 return false;
@@ -737,7 +716,7 @@ internal static partial class ShiningAbodeState
         }
 
         project = projects.OfType<JsonObject>().FirstOrDefault(item =>
-            string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.OrdinalIgnoreCase))!;
+            string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.Ordinal))!;
         if (project == null)
         {
             error = "Проект не найден в указанной фракции.";
@@ -789,7 +768,7 @@ internal static partial class ShiningAbodeState
 
         return entries.OfType<JsonObject>().Any(resident =>
             string.Equals(GetNodeString(resident["ascensionState"]), AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.Ordinal) &&
             string.Equals(GetNodeString(resident["residentRole"]), residentRole, StringComparison.OrdinalIgnoreCase));
     }
 
@@ -820,208 +799,6 @@ internal static partial class ShiningAbodeState
         var result = new string(buffer, 0, index).Trim('_');
         return string.IsNullOrWhiteSpace(result) ? "item" : result;
     }
-
-    private static bool EnsureActiveGuardianFactionMaterialized(JsonObject root, JsonObject? guardiansRoot)
-    {
-        if (!string.Equals(GetNodeString(root["availability"]), AvailabilityActive, StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        if (GetPreparedIncarnationPackageMode(root) != PreparedIncarnationPackageMode.Absent)
-            return false;
-
-        if (guardiansRoot?["activeGuardian"] is not JsonObject activeGuardian)
-            return false;
-
-        var guardianId = GetNodeString(activeGuardian["guardianId"]);
-        if (string.IsNullOrWhiteSpace(guardianId))
-            return false;
-
-        var factionId = $"faction_{Slugify(guardianId)}";
-        var hallId = $"hall_{Slugify(guardianId)}";
-        var faction = EnsureFactionsArray(root)
-            .OfType<JsonObject>()
-            .FirstOrDefault(item => string.Equals(
-                GetNodeString(item["factionId"]),
-                factionId,
-                StringComparison.Ordinal));
-        if (faction == null)
-            return false;
-
-        if (faction.ContainsKey(
-                FactionMaterializationContract.PropertyName))
-        {
-            return false;
-        }
-
-        var guardianName = GuardianManifestation.GetDisplayName(activeGuardian) ??
-                           GetNodeString(activeGuardian["canonicalName"]) ??
-                           GetNodeString(activeGuardian["name"]) ??
-                           guardianId;
-        var abodeName = GetNodeString(activeGuardian["abode"]?["abodeName"]) ??
-                        GetNodeString(activeGuardian["abode"]?["name"]) ??
-                        $"Зал {guardianName}";
-        var isFoundedGuardian = PlayerGuardianFoundationState.IsPlayerFoundedGuardian(activeGuardian);
-        var derivedOriginType = isFoundedGuardian ? OriginTypePlayerFounded : OriginTypeAscendedGuardian;
-        var favoredArchetype = DeriveGuardianFavoredArchetype(activeGuardian);
-        var patronEffectFamily = DeriveGuardianPatronEffectFamily(activeGuardian);
-        var hallDescription = isFoundedGuardian
-            ? $"Обитель основанного Хранителя {guardianName} внутри Сияющей Обители."
-            : $"Обитель Хранителя {guardianName} внутри Сияющей Обители.";
-        var charterSummary = isFoundedGuardian
-            ? $"Фракция, восходящая к основанному Хранителю {guardianName}."
-            : $"Фракция, восходящая к Хранителю {guardianName}.";
-
-        var changed = false;
-        var halls = EnsureHallsArray(root);
-        var hall = halls.OfType<JsonObject>().FirstOrDefault(item => string.Equals(GetNodeString(item["hallId"]), hallId, StringComparison.OrdinalIgnoreCase));
-        if (hall == null)
-        {
-            hall = new JsonObject
-            {
-                ["hallId"] = hallId,
-                ["hallName"] = abodeName,
-                ["description"] = hallDescription,
-                ["serviceTags"] = new JsonArray(GetPrimaryServiceTagForFamily(patronEffectFamily), GetSecondaryServiceTagForArchetype(favoredArchetype))
-            };
-            halls.Add(hall);
-            changed = true;
-        }
-        else
-        {
-            if (!string.Equals(GetNodeString(hall["hallName"]), abodeName, StringComparison.Ordinal))
-            {
-                hall["hallName"] = abodeName;
-                changed = true;
-            }
-
-            if (!string.Equals(GetNodeString(hall["description"]), hallDescription, StringComparison.Ordinal))
-            {
-                hall["description"] = hallDescription;
-                changed = true;
-            }
-
-            var expectedServiceTags = new[]
-            {
-                GetPrimaryServiceTagForFamily(patronEffectFamily),
-                GetSecondaryServiceTagForArchetype(favoredArchetype)
-            };
-            if (hall["serviceTags"] is not JsonArray serviceTags ||
-                !serviceTags.OfType<JsonValue>()
-                    .Select(value => value.TryGetValue<string>(out var tag) ? tag : string.Empty)
-                    .Where(tag => !string.IsNullOrWhiteSpace(tag))
-                    .SequenceEqual(expectedServiceTags, StringComparer.OrdinalIgnoreCase))
-            {
-                hall["serviceTags"] = new JsonArray(expectedServiceTags[0], expectedServiceTags[1]);
-                changed = true;
-            }
-        }
-
-        if (!string.Equals(GetNodeString(faction["originType"]), derivedOriginType, StringComparison.OrdinalIgnoreCase))
-        {
-            faction["originType"] = derivedOriginType;
-            changed = true;
-        }
-
-        if (!string.Equals(GetNodeString(faction["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
-        {
-            faction["hallId"] = hallId;
-            changed = true;
-        }
-
-        if (faction["charter"] is not JsonObject charter)
-        {
-            charter = new JsonObject();
-            faction["charter"] = charter;
-            changed = true;
-        }
-
-        if (!string.Equals(GetNodeString(charter["factionName"]), guardianName, StringComparison.Ordinal))
-        {
-            charter["factionName"] = guardianName;
-            changed = true;
-        }
-
-        if (!string.Equals(GetNodeString(charter["favoredArchetype"]), favoredArchetype, StringComparison.OrdinalIgnoreCase))
-        {
-            charter["favoredArchetype"] = favoredArchetype;
-            changed = true;
-        }
-
-        if (!string.Equals(GetNodeString(charter["patronEffectFamily"]), patronEffectFamily, StringComparison.OrdinalIgnoreCase))
-        {
-            charter["patronEffectFamily"] = patronEffectFamily;
-            changed = true;
-        }
-
-        if (!string.Equals(GetNodeString(charter["summary"]), charterSummary, StringComparison.Ordinal))
-        {
-            charter["summary"] = charterSummary;
-            changed = true;
-        }
-
-        if (faction["leadership"] is not JsonObject leadership)
-        {
-            leadership = new JsonObject();
-            faction["leadership"] = leadership;
-            changed = true;
-        }
-
-        if (!string.Equals(GetNodeString(leadership["leadershipState"]), LeadershipStateVacant, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(GetNodeString(leadership["headActorType"]), HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(GetNodeString(leadership["headActorId"]), guardianId, StringComparison.OrdinalIgnoreCase))
-        {
-            leadership["headActorId"] = guardianId;
-            changed = true;
-        }
-
-        return changed;
-    }
-
-    private static string DeriveGuardianFavoredArchetype(JsonObject guardian)
-    {
-        var signature = $"{GetNodeString(guardian["domain"])} {GetNodeString(guardian["personalityProfile"]?["archetype"])}".ToLowerInvariant();
-        if (signature.Contains("memory") || signature.Contains("archive") || signature.Contains("remembrance")) return ProjectArchetypeRemembrance;
-        if (signature.Contains("lore") || signature.Contains("knowledge") || signature.Contains("revelation")) return ProjectArchetypeRevelation;
-        if (signature.Contains("trade") || signature.Contains("resource") || signature.Contains("wealth")) return ProjectArchetypeProvision;
-        if (signature.Contains("forge") || signature.Contains("craft") || signature.Contains("relic")) return ProjectArchetypeRefinement;
-        if (signature.Contains("road") || signature.Contains("journey") || signature.Contains("passage") || signature.Contains("gate")) return ProjectArchetypePassage;
-        if (signature.Contains("ward") || signature.Contains("protect") || signature.Contains("shield")) return ProjectArchetypeWarding;
-        if (signature.Contains("shadow") || signature.Contains("subversion") || signature.Contains("intrigue")) return ProjectArchetypeSubversion;
-        return ProjectArchetypeAccord;
-    }
-
-    private static string DeriveGuardianPatronEffectFamily(JsonObject guardian)
-    {
-        var signature = $"{GetNodeString(guardian["domain"])} {GetNodeString(guardian["personalityProfile"]?["archetype"])}".ToLowerInvariant();
-        if (signature.Contains("memory") || signature.Contains("archive")) return EffectFamilyMemory;
-        if (signature.Contains("lore") || signature.Contains("knowledge")) return EffectFamilyLore;
-        if (signature.Contains("trade") || signature.Contains("resource") || signature.Contains("wealth")) return EffectFamilyResource;
-        if (signature.Contains("forge") || signature.Contains("relic")) return EffectFamilyRelic;
-        if (signature.Contains("road") || signature.Contains("journey") || signature.Contains("passage")) return EffectFamilyDescent;
-        if (signature.Contains("ward") || signature.Contains("protect")) return EffectFamilySurvival;
-        if (signature.Contains("route")) return EffectFamilyRoute;
-        return EffectFamilySocial;
-    }
-
-    private static string GetPrimaryServiceTagForFamily(string effectFamily) => effectFamily switch
-    {
-        EffectFamilyLore => HallServiceTagLore,
-        EffectFamilyMemory => HallServiceTagMemory,
-        EffectFamilyResource => HallServiceTagResource,
-        EffectFamilyRelic => HallServiceTagRelic,
-        EffectFamilyDescent or EffectFamilyRoute => HallServiceTagDescent,
-        _ => HallServiceTagSocial
-    };
-
-    private static string GetSecondaryServiceTagForArchetype(string archetype) => archetype switch
-    {
-        ProjectArchetypeRevelation => HallServiceTagLore,
-        ProjectArchetypeProvision => HallServiceTagResource,
-        ProjectArchetypeRemembrance => HallServiceTagMemory,
-        ProjectArchetypeRefinement => HallServiceTagRelic,
-        ProjectArchetypePassage => HallServiceTagDescent,
-        _ => HallServiceTagSocial
-    };
 
     private static bool TryGetOpenFreshGates(JsonObject root, out JsonObject gates, out string? error)
     {
@@ -1122,7 +899,7 @@ internal static partial class ShiningAbodeState
             foreach (var resident in residentEntries.OfType<JsonObject>())
             {
                 if (!string.Equals(GetNodeString(resident["ascensionState"]), AscensionStateAscended, StringComparison.OrdinalIgnoreCase) ||
-                    !string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase) ||
+                    !string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.Ordinal) ||
                     string.IsNullOrWhiteSpace(GetNodeString(resident["grantedRelicId"])))
                 {
                     continue;
@@ -1150,23 +927,23 @@ internal static partial class ShiningAbodeState
         }
 
         return candidates
-            .GroupBy(candidate => candidate.DedupeKey, StringComparer.OrdinalIgnoreCase)
+            .GroupBy(candidate => candidate.DedupeKey, StringComparer.Ordinal)
             .Select(group => group
                 .OrderByDescending(candidate => candidate.RarityWeight)
                 .ThenByDescending(candidate => candidate.EffectiveStrength)
                 .ThenByDescending(candidate => candidate.SourcePriority)
-                .ThenBy(candidate => GetNodeString(candidate.Card["cardId"]), StringComparer.OrdinalIgnoreCase)
+                .ThenBy(candidate => GetNodeString(candidate.Card["cardId"]), StringComparer.Ordinal)
                 .First())
             .OrderByDescending(candidate => candidate.RarityWeight)
             .ThenByDescending(candidate => candidate.EffectiveStrength)
             .ThenByDescending(candidate => candidate.SourcePriority)
-            .ThenBy(candidate => GetNodeString(candidate.Card["cardId"]), StringComparer.OrdinalIgnoreCase)
+            .ThenBy(candidate => GetNodeString(candidate.Card["cardId"]), StringComparer.Ordinal)
             .ToList();
     }
 
     private static Dictionary<string, int> BuildSubversionPenaltyLookup(JsonObject root)
     {
-        var penalties = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var penalties = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var faction in EnsureFactionsArray(root).OfType<JsonObject>())
         {
             if (faction["projects"] is not JsonArray projects)
@@ -1194,14 +971,14 @@ internal static partial class ShiningAbodeState
 
     private static HashSet<string> CollectFactionRoles(JsonObject? residentRoot, string factionId)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new HashSet<string>(StringComparer.Ordinal);
         if (residentRoot?["entries"] is not JsonArray entries)
             return result;
 
         foreach (var resident in entries.OfType<JsonObject>())
         {
             if (!string.Equals(GetNodeString(resident["ascensionState"]), AscensionStateAscended, StringComparison.OrdinalIgnoreCase) ||
-                !string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.Ordinal))
             {
                 continue;
             }

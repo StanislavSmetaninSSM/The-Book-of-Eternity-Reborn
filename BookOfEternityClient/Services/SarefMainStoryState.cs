@@ -1188,16 +1188,21 @@ internal static class SarefMainStoryState
         if (faction == null)
             return false;
 
-        if (faction.ContainsKey(
-                FactionMaterializationContract.PropertyName))
-        {
-            return string.Equals(
+        if (!string.Equals(
                 GetNodeString(faction["visibility"]),
                 FactionVisibilityRevealed,
-                StringComparison.OrdinalIgnoreCase);
+                StringComparison.Ordinal))
+        {
+            return false;
         }
 
-        return !IsHiddenWingsFaction(faction);
+        var factionId = GetNodeString(faction["factionId"]);
+        return !string.IsNullOrWhiteSpace(factionId) &&
+               FactionMaterializationContract.HasCompleteEnvelope(
+                   JsonSerializer.SerializeToElement(faction),
+                   FactionMaterializationFamily.Shining,
+                   "shining_faction",
+                   factionId);
     }
 
     public static bool IsHiddenWingsFaction(JsonObject? faction)

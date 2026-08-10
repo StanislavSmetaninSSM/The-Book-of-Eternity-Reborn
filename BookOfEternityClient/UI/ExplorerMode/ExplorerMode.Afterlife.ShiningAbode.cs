@@ -289,7 +289,7 @@ public partial class ExplorerMode
                 if (string.IsNullOrWhiteSpace(factionId))
                     return true;
 
-                return string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.Ordinal);
             })
             .OrderBy(resident => GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? GetNodeString(resident["residentId"]))
             .ToList();
@@ -1374,7 +1374,7 @@ public partial class ExplorerMode
         var residents = (context.ResidentRoot?["entries"] as JsonArray)?.OfType<JsonObject>()
             .Where(entry =>
                 string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase))
+                string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.Ordinal))
             .OrderByDescending(entry => GetNodeInt(entry["factionLoyaltyLevel"]))
             .ThenBy(entry => GetNodeInt(entry["factionRestlessness"]))
             .ToList() ?? new List<JsonObject>();
@@ -2788,7 +2788,7 @@ public partial class ExplorerMode
             return 0;
 
         return entries.OfType<JsonObject>()
-            .Count(entry => string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+            .Count(entry => string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.Ordinal));
     }
 
     private static int CountAscendedShiningResidents(JsonObject? residentRoot)

@@ -73,7 +73,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         { "reuse_faction", "shining_discovery_reused_existing_faction_id" },
         { "reuse_resident", "shining_discovery_invalid_new_resident_materialization" },
         { "reuse_project", "shining_discovery_reused_existing_project_id" },
-        { "case_variant_faction_id", "faction_materialization_shining_route_identity_invalid" },
+        { "case_variant_faction_id", "faction_materialization_shining_route_authority_invalid" },
         { "case_variant_hall_id", "faction_materialization_shining_route_identity_invalid" },
         { "missing_actor_envelope", "actor_materialization_missing" },
         { "wrong_cost", "shining_discovery_light_sparks_cost_mismatch" },
@@ -93,111 +93,10 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         { "reserved_feathers", "shining_founding_reserved_ink_feathers_rollback" },
         { "missing_root_receipt", "shining_founding_missing_resolution" },
         { "missing_history", "faction_materialization_shining_route_history_invalid" },
-        { "case_variant_faction_id", "faction_materialization_shining_route_identity_invalid" },
+        { "case_variant_faction_id", "faction_materialization_shining_route_authority_invalid" },
         { "case_variant_hall_id", "faction_materialization_shining_route_identity_invalid" },
         { "unrelated_resident_rewrite", "faction_materialization_shining_route_resident_affiliation_invalid" }
     };
-
-    public static TheoryData<string> LegacyMortalExternalTouchChannels => new()
-    {
-        "factionRankChanges",
-        "factionBonusChanges",
-        "factionResourceChanges",
-        "factionProjectUpdates",
-        "completeFactionProjects",
-        "factionCustomStateChanges",
-        "factionChronicleUpdates",
-        "current_location_factionControl",
-        "world_map_factionControl",
-        "npc_factionAffiliations"
-    };
-
-    public static TheoryData<string, string>
-        RawFactionTouchProjectionCases => new()
-        {
-            {
-                "mortal_npc_affiliation_upsert",
-                "mortal_faction:faction_target"
-            },
-            {
-                "shining_resident_update_move",
-                "shining_faction:order_new,shining_faction:order_old"
-            },
-            {
-                "shining_saref_update_move",
-                "shining_faction:order_new,shining_faction:order_old"
-            },
-            {
-                "shining_guardian_create",
-                "shining_faction:order_guardian"
-            },
-            {
-                "shining_political_current_move",
-                "shining_faction:order_new,shining_faction:order_old"
-            },
-            { "shining_identity_upsert_omission", "" },
-            {
-                "shining_same_identity_last_write_exact_case",
-                "shining_faction:ORDER_NEW,shining_faction:order_old"
-            },
-            { "shining_unrelated_guardian_mutation", "" },
-            { "shining_nested_reorder", "" },
-            { "mortal_structure_nested_reorder", "" },
-            { "mortal_resources_nested_reorder", "" },
-            { "mortal_custom_nested_reorder", "" },
-            { "mortal_project_cost_nested_reorder", "" },
-            {
-                "mortal_nested_duplicate_addition",
-                "mortal_faction:faction_target"
-            },
-            {
-                "mortal_nested_duplicate_removal",
-                "mortal_faction:faction_target"
-            },
-            {
-                "mortal_same_identity_semantic_change",
-                "mortal_faction:faction_target"
-            },
-            {
-                "mortal_ordered_benefits_reorder",
-                "mortal_faction:faction_target"
-            },
-            { "shining_long_receipt_history_reorder", "" }
-        };
-
-    public static TheoryData<string, string>
-        OmittedShiningTargetTouchCases => new()
-        {
-            {
-                "guardian_create",
-                "shining_faction:order_guardian"
-            },
-            {
-                "resident_move",
-                "shining_faction:order_new,shining_faction:order_old"
-            },
-            {
-                "saref_move",
-                "shining_faction:order_new,shining_faction:order_old"
-            }
-        };
-
-    public static TheoryData<string>
-        MortalPromotionHistoricalMutationSurfaces => new()
-        {
-            "core_profile",
-            "progression_power",
-            "governance",
-            "leadership",
-            "ranks",
-            "resources",
-            "relations",
-            "projects",
-            "custom_state",
-            "current_location_faction_control",
-            "world_map_faction_control",
-            "npc_affiliation"
-        };
 
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -220,26 +119,19 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Theory]
-    [InlineData(false, false, true, false, (int)FactionTouchKind.New)]
-    [InlineData(true, false, true, false, (int)FactionTouchKind.LegacyPromotion)]
-    [InlineData(true, true, true, false, (int)FactionTouchKind.AlreadyMaterialized)]
-    [InlineData(true, true, false, false, (int)FactionTouchKind.AlreadyMaterialized)]
-    [InlineData(true, false, false, false, (int)FactionTouchKind.UntouchedLegacy)]
-    [InlineData(true, true, false, true, (int)FactionTouchKind.ClientDerivedOnly)]
+    [InlineData(false, false, (int)FactionTouchKind.New)]
+    [InlineData(true, false, (int)FactionTouchKind.InvalidReceiptless)]
+    [InlineData(true, true, (int)FactionTouchKind.AlreadyMaterialized)]
     public void Classify_ReturnsExpectedTouchKind(
         bool existedPreTurn,
         bool hadReceiptPreTurn,
-        bool gmAuthoredTouch,
-        bool derivedOnly,
         int expected)
     {
         Assert.Equal(
             (FactionTouchKind)expected,
             FactionTouchClassifier.Classify(
                 existedPreTurn,
-                hadReceiptPreTurn,
-                gmAuthoredTouch,
-                derivedOnly));
+                hadReceiptPreTurn));
     }
 
     [Fact]
@@ -253,7 +145,9 @@ public sealed class FactionMaterializationValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             issue.Code == "faction_materialization_immutable_receipt_changed" &&
-            issue.Actor == "mortal_faction:faction_watch");
+            issue.Actor == "mortal_faction:faction_watch" &&
+            issue.FactionRepairClassification ==
+                FactionTouchKind.AlreadyMaterialized);
     }
 
     [Fact]
@@ -274,8 +168,12 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     public async Task Validate_DuplicatePreTurnFactionIdentity_FailsClosed()
     {
         var preTurn = MortalRoot(
-            LegacyMortalFaction("faction_watch"),
-            LegacyMortalFaction("faction_watch"));
+            MaterializedMortalFaction(
+                "faction_watch",
+                "fmat_watch_duplicate_a"),
+            MaterializedMortalFaction(
+                "faction_watch",
+                "fmat_watch_duplicate_b"));
         var current = MortalRoot(
             MaterializedMortalFaction("faction_watch", "fmat_watch"));
         await WriteCurrentAndSnapshotAsync(
@@ -402,13 +300,13 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Validate_RawCanonicalLegacyWithoutSnapshot_FailsClosed(
+    public async Task Validate_RawCanonicalReceiptlessWithoutSnapshot_FailsClosed(
         bool shining)
     {
         var path = shining ? ShiningPath : MortalPath;
         var current = shining
-            ? ShiningRoot(LegacyShiningFaction("order_dawn", factionStrength: 30))
-            : MortalRoot(LegacyMortalFaction("faction_watch"));
+            ? ShiningRoot(ReceiptlessShiningFaction("order_dawn", factionStrength: 30))
+            : MortalRoot(ReceiptlessMortalFaction("faction_watch"));
         await _fs.WriteFileAtomicAsync(path, current.ToJsonString());
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
@@ -421,22 +319,24 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Validate_PostCanonicalLegacyWithoutSnapshot_RemainsCompatible(
+    public async Task Validate_PostCanonicalReceiptlessWithoutSnapshot_ReportsObsoleteState(
         bool shining)
     {
         var path = shining ? ShiningPath : MortalPath;
         var current = shining
-            ? ShiningRoot(LegacyShiningFaction("order_dawn", factionStrength: 30))
-            : MortalRoot(LegacyMortalFaction("faction_watch"));
+            ? ShiningRoot(ReceiptlessShiningFaction("order_dawn", factionStrength: 30))
+            : MortalRoot(ReceiptlessMortalFaction("faction_watch"));
         await _fs.WriteFileAtomicAsync(path, current.ToJsonString());
 
         var issues = await _validator.ValidateGameStateAsync(
             GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness);
 
-        Assert.DoesNotContain(issues, issue =>
-            issue.Code is
-                "faction_materialization_pre_turn_authority_unusable" or
-                "faction_materialization_missing");
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_obsolete_receiptless_state" &&
+            issue.Actor == (shining
+                ? "shining_faction:order_dawn"
+                : "mortal_faction:faction_watch"));
     }
 
     [Fact]
@@ -457,26 +357,29 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Fact]
-    public async Task Validate_UntouchedLegacyFaction_DoesNotRequireReceipt()
+    public async Task Validate_UntouchedReceiptlessFaction_ReportsObsoleteState()
     {
-        var preTurn = MortalRoot(LegacyMortalFaction("faction_watch"));
-        var current = MortalRoot(LegacyMortalFaction("faction_watch"));
+        var preTurn = MortalRoot(ReceiptlessMortalFaction("faction_watch"));
+        var current = MortalRoot(ReceiptlessMortalFaction("faction_watch"));
         await WriteCurrentAndSnapshotAsync(
             (MortalPath, current.ToJsonString()),
             (MortalPath, preTurn.ToJsonString()));
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
-        Assert.DoesNotContain(issues, issue =>
+        Assert.Contains(issues, issue =>
             issue.Actor == "mortal_faction:faction_watch" &&
-            issue.Code == "faction_materialization_missing");
+            issue.Code ==
+                "faction_materialization_obsolete_receiptless_state" &&
+            issue.FactionRepairClassification ==
+                FactionTouchKind.InvalidReceiptless);
     }
 
     [Fact]
-    public async Task Validate_ShiningExactDerivedProjectionFieldsOnly_DoesNotPromoteLegacyFaction()
+    public async Task Validate_ShiningDerivedProjectionCannotPreserveReceiptlessFaction()
     {
-        var preTurnFaction = LegacyShiningFaction("order_dawn", factionStrength: 30);
-        var currentFaction = LegacyShiningFaction("order_dawn", factionStrength: 31);
+        var preTurnFaction = ReceiptlessShiningFaction("order_dawn", factionStrength: 30);
+        var currentFaction = ReceiptlessShiningFaction("order_dawn", factionStrength: 31);
         preTurnFaction["derivedTier"] = 1;
         currentFaction["derivedTier"] = 2;
         preTurnFaction["serviceMultiplier"] = 1.0;
@@ -487,247 +390,27 @@ public sealed class FactionMaterializationValidationTests : IDisposable
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
-        Assert.DoesNotContain(issues, issue =>
+        Assert.Contains(issues, issue =>
             issue.Actor == "shining_faction:order_dawn" &&
-            issue.Code == "faction_materialization_missing");
+            issue.Code ==
+                "faction_materialization_obsolete_receiptless_state");
     }
 
     [Fact]
-    public async Task Validate_ShiningNestedServiceMultiplierSnapshot_IsGmAuthoredTouch()
+    public async Task Validate_EmptyFactionRootsWithoutSnapshot_RemainValid()
     {
-        var preTurnFaction = LegacyShiningFaction("order_dawn", factionStrength: 30);
-        var currentFaction = LegacyShiningFaction("order_dawn", factionStrength: 30);
-        preTurnFaction["tradeInventory"] = new JsonObject
-        {
-            ["serviceMultiplierSnapshot"] = 1.0
-        };
-        currentFaction["tradeInventory"] = new JsonObject
-        {
-            ["serviceMultiplierSnapshot"] = 1.25
-        };
-        await WriteCurrentAndSnapshotAsync(
-            (ShiningPath, ShiningRoot(currentFaction).ToJsonString()),
-            (ShiningPath, ShiningRoot(preTurnFaction).ToJsonString()));
+        await _fs.WriteFileAtomicAsync(MortalPath, MortalRoot().ToJsonString());
+        await _fs.WriteFileAtomicAsync(ShiningPath, ShiningRoot().ToJsonString());
 
-        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(issues, issue =>
-            issue.Actor == "shining_faction:order_dawn" &&
-            issue.Code == "faction_materialization_missing");
-    }
-
-    [Theory]
-    [MemberData(nameof(LegacyMortalExternalTouchChannels))]
-    public async Task Validate_LegacyMortalExternalTouchWithoutPromotion_ReportsPromotionRequired(
-        string channel)
-    {
-        await WriteLegacyMortalExternalTouchAsync(channel);
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(issues, issue =>
-            issue.Code == "faction_legacy_promotion_required" &&
-            issue.Actor == "mortal_faction:faction_watch");
-    }
-
-    [Fact]
-    public async Task Validate_LegacyShiningResidentRealignmentWithoutPromotion_ReportsPromotionRequired()
-    {
-        const string sourceFactionId = "order_twilight";
-        const string targetFactionId = "order_dawn";
-        const string residentId = "resident_liora";
-        const string requestId = "realign_req_liora";
-        const string historyEntryId = "history_realign_liora";
-
-        var preTurnShining = ShiningRoot(
-            LegacyShiningFaction(sourceFactionId, factionStrength: 30),
-            LegacyShiningFaction(targetFactionId, factionStrength: 30));
-        var currentShining = CloneJsonObject(preTurnShining);
-        currentShining["factionRealignmentReceipts"] = new JsonArray(
-            new JsonObject
-            {
-                ["requestId"] = requestId,
-                ["residentId"] = residentId,
-                ["residentName"] = "Liora",
-                ["sourceFactionId"] = sourceFactionId,
-                ["targetFactionId"] = targetFactionId,
-                ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
-                ["realignmentMode"] =
-                    ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
-                ["residentHistoryEntryId"] = historyEntryId,
-                ["resolvedAtTurn"] = 12,
-                ["resolvedAtUtc"] = "2026-08-03T12:00:00Z",
-                ["reason"] = "accepted_by_target_faction"
-            });
-
-        var preTurnResidents = BuildRouteResidentRoot(
-            BuildRouteResident(residentId, sourceFactionId));
-        var currentResidents = BuildRouteResidentRoot(
-            BuildRouteResident(residentId, targetFactionId));
-        ((JsonArray)currentResidents[
-            GuardianAbodeResidentState.HistoryLogProperty]!).Add(
-            new JsonObject
-            {
-                ["entryId"] = historyEntryId,
-                ["residentId"] = residentId,
-                ["title"] = "A new radiant allegiance",
-                ["summary"] = "Liora joined the Dawn order.",
-                ["revealedAtTurn"] = 12,
-                ["revealedAtUtc"] = "2026-08-03T12:00:00Z",
-                ["tags"] = new JsonArray("faction", "realignment")
-            });
-        var pendingRealignment = new JsonObject
-        {
-            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(
-                new JsonObject
-                {
-                    ["requestId"] = requestId,
-                    ["residentId"] = residentId,
-                    ["residentName"] = "Liora",
-                    ["sourceFactionId"] = sourceFactionId,
-                    ["sourceFactionName"] = "Twilight Order",
-                    ["targetFactionId"] = targetFactionId,
-                    ["targetFactionName"] = "Dawn Order",
-                    ["realignmentMode"] =
-                        ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
-                    ["factionLoyaltyLevel"] = 14,
-                    ["factionLoyaltyTier"] =
-                        ShiningAbodeState.FactionLoyaltyTierAlienated,
-                    ["factionRestlessness"] = 76,
-                    ["factionRealignmentState"] =
-                        ShiningAbodeState.FactionRealignmentStateReadyToRealign,
-                    ["createdAtTurn"] = 12,
-                    ["createdAtUtc"] = "2026-08-03T11:59:00Z"
-                })
-        };
-
-        await WriteCurrentAndSnapshotAsync(
-            (ShiningPath, currentShining.ToJsonString()),
-            (ResidentPath, currentResidents.ToJsonString()),
-            (ShiningFactionRequestState.PendingRealignmentsRequestPath,
-                pendingRealignment.ToJsonString()),
-            (ShiningPath, preTurnShining.ToJsonString()),
-            (ResidentPath, preTurnResidents.ToJsonString()),
-            (ShiningFactionRequestState.PendingRealignmentsRequestPath,
-                pendingRealignment.ToJsonString()));
-
-        var issues = (await _validator
-                .ValidateAcceptedTurnRawFactionMaterializationAsync())
-            .ToList();
-        await InvokeRouteValidationAsync(
-            "ValidatePendingShiningRealignmentResolutionAsync",
-            issues);
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness);
 
         Assert.DoesNotContain(issues, issue =>
-            issue.Code?.StartsWith(
-                "shining_realignment_",
-                StringComparison.Ordinal) == true);
-        Assert.Contains(issues, issue =>
-            issue.Code == "faction_legacy_promotion_required" &&
-            issue.Actor == $"shining_faction:{sourceFactionId}");
-        Assert.Contains(issues, issue =>
-            issue.Code == "faction_legacy_promotion_required" &&
-            issue.Actor == $"shining_faction:{targetFactionId}");
-    }
-
-    [Theory]
-    [InlineData("untouched_mortal")]
-    [InlineData("shining_derived_only")]
-    public async Task Validate_LegacyExternalTouchControls_DoNotPromote(
-        string control)
-    {
-        if (string.Equals(
-                control,
-                "untouched_mortal",
-                StringComparison.Ordinal))
-        {
-            var faction = LegacyMortalFaction("faction_watch");
-            await WriteCurrentAndSnapshotAsync(
-                (MortalPath, MortalRoot(
-                    CloneJsonObject(faction)).ToJsonString()),
-                (MortalPath, MortalRoot(faction).ToJsonString()));
-        }
-        else
-        {
-            var preTurnFaction = LegacyShiningFaction(
-                "order_dawn",
-                factionStrength: 30);
-            var currentFaction = LegacyShiningFaction(
-                "order_dawn",
-                factionStrength: 31);
-            preTurnFaction["derivedTier"] = 1;
-            currentFaction["derivedTier"] = 2;
-            preTurnFaction["serviceMultiplier"] = 1.0;
-            currentFaction["serviceMultiplier"] = 1.25;
-            await WriteCurrentAndSnapshotAsync(
-                (ShiningPath, ShiningRoot(currentFaction).ToJsonString()),
-                (ShiningPath, ShiningRoot(preTurnFaction).ToJsonString()));
-        }
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
+            issue.Code ==
+                "faction_materialization_obsolete_receiptless_state");
         Assert.DoesNotContain(issues, issue =>
-            issue.Code == "faction_legacy_promotion_required");
-    }
-
-    [Theory]
-    [MemberData(nameof(RawFactionTouchProjectionCases))]
-    public async Task
-        Validate_RawFactionTouchProjection_ClosesCarrierAndComparatorResiduals(
-            string scenario,
-            string expectedActorsCsv)
-    {
-        await WriteRawFactionTouchProjectionCaseAsync(scenario);
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        var expectedActors = string.IsNullOrEmpty(expectedActorsCsv)
-            ? Array.Empty<string>()
-            : expectedActorsCsv
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .OrderBy(actor => actor, StringComparer.Ordinal)
-                .ToArray();
-        var actualActors = issues
-            .Where(issue =>
-                issue.Code == "faction_legacy_promotion_required")
-            .Select(issue => issue.Actor)
-            .Where(actor => actor != null)
-            .Cast<string>()
-            .OrderBy(actor => actor, StringComparer.Ordinal)
-            .ToArray();
-
-        Assert.Equal(expectedActors, actualActors);
-    }
-
-    [Theory]
-    [MemberData(nameof(OmittedShiningTargetTouchCases))]
-    public async Task
-        Validate_OmittedShiningTargetFaction_StillPromotesExternalTouches(
-            string scenario,
-            string expectedActorsCsv)
-    {
-        await WriteOmittedShiningTargetTouchCaseAsync(scenario);
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        var expectedActors = expectedActorsCsv
-            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .OrderBy(actor => actor, StringComparer.Ordinal)
-            .ToArray();
-        var actualActors = issues
-            .Where(issue =>
-                issue.Code == "faction_legacy_promotion_required")
-            .Select(issue => issue.Actor)
-            .Where(actor => actor != null)
-            .Cast<string>()
-            .OrderBy(actor => actor, StringComparer.Ordinal)
-            .ToArray();
-
-        Assert.Equal(expectedActors, actualActors);
+            issue.Actor?.StartsWith("mortal_faction:", StringComparison.Ordinal) == true ||
+            issue.Actor?.StartsWith("shining_faction:", StringComparison.Ordinal) == true);
     }
 
     [Theory]
@@ -736,28 +419,78 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string field,
         string code)
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         faction.Remove(field);
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
         Assert.Contains(issues, issue =>
             issue.Code == code &&
-            issue.Actor == "shining_faction:shine_faction_dawn_archive");
+            issue.Actor == "shining_faction:shine_faction_dawn_archive" &&
+            issue.FactionRepairClassification ==
+                FactionTouchKind.New);
     }
 
     [Fact]
-    public async Task NewShiningFaction_AllSevenExactEmptySurfaces_PassesRaw()
+    public async Task NewShiningStoryFaction_RequiredStorySurfaceAndSixExactEmptySurfaces_PassRaw()
     {
-        await WriteNativeDiscoveryOutcomeAsync(
-            BuildCompleteNativeShiningFaction());
+        await WriteGenericStoryFactionOutcomeAsync(
+            BuildCompleteGenericStoryShiningFaction());
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
         Assert.DoesNotContain(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
             issue.Actor == "shining_faction:shine_faction_dawn_archive");
+    }
+
+    [Fact]
+    public async Task NewShiningFaction_CaseVariantResidentLinkGrantsNoEvidenceOrTradeAuthority()
+    {
+        const string factionId = "shine_faction_dawn_archive";
+        var faction = BuildCompleteGenericStoryShiningFaction();
+        faction["baseStrength"] = 22;
+        faction["factionStrength"] = 25;
+        faction["materialization"]!["capabilities"]!["hasResidentAffiliations"] = true;
+        faction["materialization"]!["capabilities"]!["canTrade"] = true;
+        faction["materialization"]!["sections"]!["residentAffiliations"] =
+            PopulatedDisposition();
+
+        var current = ShiningRoot(faction);
+        current["halls"] = new JsonArray(
+            BuildShiningHall(
+                "hall_dawn_archive",
+                "Dawn Archive"));
+        var currentResidents = BuildRouteResidentRoot(
+            BuildRouteResident(
+                "resident_case_variant",
+                "Shine_Faction_Dawn_Archive"));
+
+        await WriteCurrentAndSnapshotAsync(
+            (ShiningPath, current.ToJsonString()),
+            (ResidentPath, currentResidents.ToJsonString()),
+            (SarefStoryPath,
+                BuildSarefStoryRoot(
+                    "revealed",
+                    factionId).ToJsonString()),
+            (ShiningPath, ShiningRoot().ToJsonString()),
+            (ResidentPath, BuildRouteResidentRoot().ToJsonString()));
+
+        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Actor == $"shining_faction:{factionId}" &&
+            issue.Code == "faction_materialization_disposition_mismatch" &&
+            issue.Section == "residentAffiliations");
+        Assert.Contains(issues, issue =>
+            issue.Actor == $"shining_faction:{factionId}" &&
+            issue.Code == "faction_materialization_capability_mismatch" &&
+            issue.Section == "hasResidentAffiliations");
+        Assert.Contains(issues, issue =>
+            issue.Actor == $"shining_faction:{factionId}" &&
+            issue.Code == "faction_materialization_capability_mismatch" &&
+            issue.Section == "canTrade");
     }
 
     [Theory]
@@ -770,7 +503,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         bool declaredCanTrade,
         bool expectsMismatch)
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         var leadership = faction["leadership"]!.AsObject();
         if (vacantLeadership)
         {
@@ -781,7 +514,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
 
         faction["materialization"]!["capabilities"]!["canTrade"] =
             declaredCanTrade;
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
         var hasMismatch = issues.Any(issue =>
@@ -800,12 +533,12 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         int submittedFactionStrength,
         bool declaredCanTrade)
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         faction["baseStrength"] = derivedBaseStrength;
         faction["factionStrength"] = submittedFactionStrength;
         faction["materialization"]!["capabilities"]!["canTrade"] =
             declaredCanTrade;
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -824,7 +557,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         int submittedFactionStrength,
         bool declaredCanTrade)
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         faction["baseStrength"] = 10;
         faction["factionStrength"] = submittedFactionStrength;
         AddCompletedShiningProject(
@@ -833,7 +566,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             submittedProjectStrengthReward);
         faction["materialization"]!["capabilities"]!["canTrade"] =
             declaredCanTrade;
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -846,12 +579,12 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [Fact]
     public async Task NewShiningFaction_TradeContentCannotUseEmptyDisposition()
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         faction["tradeInventory"] = new JsonObject
         {
             ["tradeCycleId"] = "shining_return_12"
         };
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -871,7 +604,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string surface,
         bool expectsMismatch)
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         switch (surface)
         {
             case "missing_inventory":
@@ -892,7 +625,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 break;
         }
 
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
         var hasMismatch = issues.Any(issue =>
@@ -906,9 +639,9 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [Fact]
     public async Task NewShiningFaction_UnknownExactHall_FailsRaw()
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         faction["hallId"] = "hall_missing";
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -926,7 +659,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string mutation,
         string expectedCode)
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         switch (mutation)
         {
             case "provenance_extra":
@@ -936,6 +669,12 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 faction["creationProvenance"]!["route"] = "inferred";
                 break;
             case "non_story_authority":
+                faction["creationProvenance"] = new JsonObject
+                {
+                    ["route"] = "native_discovery",
+                    ["authorityType"] = "shining_core_action_request",
+                    ["authorityId"] = "request_discover_dawn_archive"
+                };
                 faction["storyAuthority"] = new JsonObject
                 {
                     ["authorityType"] = "saref_main_story",
@@ -957,7 +696,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 break;
         }
 
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -1011,7 +750,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [InlineData("wrong_role")]
     [InlineData("wrong_story_visibility")]
     [InlineData("wrong_faction_visibility")]
-    [InlineData("wrong_legacy_visibility")]
+    [InlineData("wrong_visibility")]
     [InlineData("wrong_faction_role")]
     [InlineData("provenance_mismatch")]
     public async Task StoryFaction_MissingOrWrongCanonicalBinding_Fails(
@@ -1243,6 +982,9 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             Assert.Equal(
                 $"{ResidentPath}.entries[required_resident]",
                 profileIssue.FilePath);
+            Assert.Equal(
+                new[] { AfterlifeProfilesPath },
+                profileIssue.RepairTargetFiles);
         }
         else
         {
@@ -1297,6 +1039,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             "faction_materialization_shining_actor_profile_invalid",
             sourceIssue.Code);
         Assert.Equal(expectedPath, sourceIssue.FilePath);
+        Assert.Empty(sourceIssue.RepairTargetFiles);
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith(
                 "actor_materialization_",
@@ -1309,7 +1052,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     public async Task ShiningHeadActor_ExactDocumentedException_Passes(
         string exceptionKind)
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         var leadership = faction["leadership"]!.AsObject();
         if (string.Equals(
                 exceptionKind,
@@ -1324,7 +1067,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 false;
         }
 
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -1341,9 +1084,9 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [Fact]
     public async Task ShiningHeadActor_PlayerSoulExceptionRequiresExactPair()
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         faction["leadership"]!["headActorId"] = "not_player_soul";
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -1355,7 +1098,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     [Fact]
     public async Task ShiningHeadActor_VacantExceptionRequiresNullPair()
     {
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         faction["leadership"]!["leadershipState"] =
             ShiningAbodeState.LeadershipStateVacant;
         faction["leadership"]!["headActorType"] =
@@ -1363,7 +1106,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         faction["leadership"]!["headActorId"] =
             ShiningAbodeState.HeadActorTypePlayerSoul;
         faction["materialization"]!["capabilities"]!["canTrade"] = false;
-        await WriteNativeDiscoveryOutcomeAsync(faction);
+        await WriteGenericStoryFactionOutcomeAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -1386,6 +1129,77 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             issue.Severity == IssueSeverity.Error &&
             issue.Actor == "shining_faction:shine_faction_native");
+    }
+
+    [Theory]
+    [InlineData("native_discovery")]
+    [InlineData("player_founding")]
+    public async Task NewShiningFaction_NonStoryRouteWithoutInverseAuthority_FailsRaw(
+        string route)
+    {
+        if (string.Equals(route, "native_discovery", StringComparison.Ordinal))
+        {
+            await WriteCompleteNativeDiscoveryAsync(
+                residentCount: 2,
+                completedProjectCount: 2,
+                mutation: "missing_route_request");
+        }
+        else
+        {
+            await WriteCompletePlayerFoundingAsync(
+                mutation: "missing_route_request");
+        }
+
+        var issues =
+            await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_shining_route_authority_invalid" &&
+            issue.FactionRepairClassification == FactionTouchKind.New);
+    }
+
+    [Fact]
+    public async Task NewShiningFaction_AmbiguousNativeInverseAuthority_FailsRaw()
+    {
+        await WriteCompleteNativeDiscoveryAsync(
+            residentCount: 2,
+            completedProjectCount: 2,
+            mutation: "duplicate_route_request");
+
+        var issues =
+            await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code ==
+                "faction_materialization_shining_route_authority_invalid" &&
+            issue.Actor == "shining_faction:shine_faction_native" &&
+            issue.FactionRepairClassification == FactionTouchKind.New);
+    }
+
+    [Theory]
+    [InlineData("native_discovery")]
+    [InlineData("player_founding")]
+    public async Task NewShiningFaction_ExactInverseAuthority_PassesRaw(
+        string route)
+    {
+        if (string.Equals(route, "native_discovery", StringComparison.Ordinal))
+        {
+            await WriteCompleteNativeDiscoveryAsync(
+                residentCount: 2,
+                completedProjectCount: 2);
+        }
+        else
+        {
+            await WriteCompletePlayerFoundingAsync();
+        }
+
+        var issues =
+            await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code ==
+                "faction_materialization_shining_route_authority_invalid");
     }
 
     [Theory]
@@ -1522,218 +1336,12 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     }
 
     [Theory]
-    [MemberData(nameof(MortalPromotionHistoricalMutationSurfaces))]
-    public async Task Validate_MortalPromotion_UncommandedHistoricalMutation_ReportsPreservationFailure(
-        string surface)
-    {
-        await WriteMortalPromotionHistoryFixtureAsync(surface);
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(issues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed" &&
-            issue.Actor == "mortal_faction:faction_watch");
-    }
-
-    [Fact]
-    public async Task Validate_MortalPromotion_AddsMissingSemanticsAndReceiptWithoutRewritingHistory()
-    {
-        await WriteMortalPromotionHistoryFixtureAsync();
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Empty(issues);
-    }
-
-    [Fact]
-    public async Task Validate_MortalPromotion_AddsPopulatedRowsWhereNoHistoricalValueExisted()
-    {
-        await WriteMortalPromotionHistoryFixtureAsync(
-            includeHistoricalGovernedRows: false);
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Empty(issues);
-    }
-
-    [Fact]
-    public async Task Validate_MortalPromotion_ChronicleAdditionDoesNotReplaceHistoricalEntry()
-    {
-        await WriteMortalPromotionHistoryFixtureAsync("chronicle");
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.DoesNotContain(issues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed");
-    }
-
-    [Fact]
-    public async Task Validate_MortalPromotion_OmittedExternalRowsRemainMergePreserved()
-    {
-        await WriteMortalPromotionHistoryFixtureAsync(
-            "omit_external_history");
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.DoesNotContain(issues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed");
-    }
-
-    [Fact]
-    public async Task Validate_MortalPromotion_LateDuplicateProjectRewrite_ReportsPreservationFailure()
-    {
-        await WriteMortalPromotionHistoryFixtureAsync(
-            "late_duplicate_project_rewrite");
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(issues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed" &&
-            issue.Actor == "mortal_faction:faction_watch");
-    }
-
-    [Theory]
-    [InlineData("structure")]
-    [InlineData("resources")]
-    [InlineData("custom")]
-    public async Task Validate_MortalPromotion_LateDuplicateSidecarRewrite_ReportsPreservationFailure(
-        string sidecar)
-    {
-        await WriteMortalPromotionHistoryFixtureAsync(
-            $"late_sidecar_{sidecar}_rewrite");
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(issues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed" &&
-            issue.Actor == "mortal_faction:faction_watch");
-    }
-
-    [Theory]
-    [InlineData("branch_display_name")]
-    [InlineData("rank_name_male")]
-    [InlineData("rank_name_female")]
-    [InlineData("rank_name")]
-    [InlineData("bonus_description")]
-    [InlineData("bonus_type")]
-    [InlineData("bonus_target")]
-    [InlineData("resource_name")]
-    [InlineData("custom_name")]
-    [InlineData("custom_title")]
-    [InlineData("project_id_case")]
-    public async Task Validate_MortalPromotion_LateNormalizerIdentityFallbackRewrite_ReportsPreservationFailure(
-        string identitySurface)
-    {
-        await WriteMortalPromotionHistoryFixtureAsync(
-            $"identity_{identitySurface}");
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(issues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed" &&
-            issue.Actor == "mortal_faction:faction_watch");
-    }
-
-    [Theory]
-    [InlineData("identical")]
-    [InlineData("additive")]
-    public async Task Validate_MortalPromotion_LateDuplicateAdditiveMerge_PreservesHistory(
-        string duplicateKind)
-    {
-        await WriteMortalPromotionHistoryFixtureAsync(
-            $"duplicate_{duplicateKind}");
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.DoesNotContain(issues, issue =>
-            issue.Code ==
-                "faction_materialization_promotion_history_changed");
-    }
-
-    [Fact]
-    public async Task Validate_ManyMortalPromotions_TailDuplicateRewrite_UsesExactIndexedHistory()
-    {
-        const int promotionCount = 64;
-        await WriteManyMortalPromotionHistoryFixtureAsync(promotionCount);
-
-        var issues = await _validator
-            .ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        var actors = issues
-            .Where(issue =>
-                issue.Code ==
-                "faction_materialization_promotion_history_changed")
-            .Select(issue => issue.Actor)
-            .OrderBy(actor => actor, StringComparer.Ordinal)
-            .ToArray();
-        Assert.Equal(
-            new[] { "mortal_faction:faction_many_063" },
-            actors);
-    }
-
-    [Theory]
-    [InlineData("omitted")]
-    [InlineData("empty")]
-    [InlineData("whitespace")]
-    public async Task MortalPromotion_MissingOrBlankImagePrompt_FailsRaw(
+    [InlineData("non_english")]
+    [InlineData("overlong")]
+    public async Task NewMortalFaction_InvalidImagePrompt_FailsRaw(
         string variation)
     {
-        var faction = BuildCompleteMortalPromotion();
-        switch (variation)
-        {
-            case "omitted":
-                faction.Remove("image_prompt");
-                break;
-            case "empty":
-                faction["image_prompt"] = string.Empty;
-                break;
-            case "whitespace":
-                faction["image_prompt"] = "   ";
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(variation),
-                    variation,
-                    "Unsupported image prompt variation.");
-        }
-        await WriteMortalPromotionAsync(faction);
-
-        var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
-
-        Assert.Contains(issues, issue =>
-            issue.Code == "faction_materialization_mortal_image_prompt_missing" &&
-            issue.Actor == "mortal_faction:faction_watch" &&
-            issue.FilePath ==
-                $"{MortalPath}.factionDataChanges[0].image_prompt");
-    }
-
-    [Theory]
-    [InlineData(false, "non_english")]
-    [InlineData(false, "overlong")]
-    [InlineData(true, "non_english")]
-    [InlineData(true, "overlong")]
-    public async Task MortalMaterialization_InvalidImagePrompt_FailsRaw(
-        bool promotion,
-        string variation)
-    {
-        var faction = promotion
-            ? BuildCompleteMortalPromotion()
-            : BuildCompleteMinimalMortalCreation();
+        var faction = BuildCompleteMinimalMortalCreation();
         faction["image_prompt"] = variation switch
         {
             "non_english" => "дозорные у старой башни",
@@ -1743,19 +1351,13 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 variation,
                 "Unsupported image prompt variation.")
         };
-        if (promotion)
-            await WriteMortalPromotionAsync(faction);
-        else
-            await WriteMortalCreationAsync(faction);
+        await WriteMortalCreationAsync(faction);
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
-        var expectedFactionId = promotion
-            ? "faction_watch"
-            : "temp-faction-watch";
 
         Assert.Contains(issues, issue =>
             issue.Code == "faction_materialization_mortal_image_prompt_invalid" &&
-            issue.Actor == $"mortal_faction:{expectedFactionId}" &&
+            issue.Actor == "mortal_faction:temp-faction-watch" &&
             issue.FilePath ==
                 $"{MortalPath}.factionDataChanges[0].image_prompt");
     }
@@ -1943,6 +1545,105 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             issue.Actor == "mortal_faction:temp-faction-watch");
     }
 
+    [Theory]
+    [InlineData(CurrentLocationPath, false)]
+    [InlineData(WorldMapPath, true)]
+    public async Task MortalLocationControlUnknownFaction_DeclaresExactOriginRepairRoot(
+        string authorityPath,
+        bool wrapInWorldMap)
+    {
+        await _fs.WriteFileAtomicAsync(
+            MortalPath,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray()
+            }.ToJsonString());
+        var location = new JsonObject
+        {
+            ["locationId"] = "location_watch_road",
+            ["locationName"] = "Western Road",
+            ["factionControl"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_missing",
+                ["controlLevel"] = 35
+            })
+        };
+        var authority = wrapInWorldMap
+            ? new JsonObject
+            {
+                ["locations"] = new JsonArray(location)
+            }
+            : location;
+        await _fs.WriteFileAtomicAsync(
+            authorityPath,
+            authority.ToJsonString());
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var issue = Assert.Single(issues, candidate =>
+            candidate.Code ==
+                "faction_materialization_mortal_location_control_unknown_faction" &&
+            candidate.Actor == "mortal_faction:faction_missing");
+
+        Assert.Equal(
+            new[] { authorityPath },
+            issue.RepairTargetFiles);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task MortalLocationControlUnknownFaction_SameLocationIdAcrossRoots_PreservesExactOrigin(
+        bool currentLocationIsInvalid)
+    {
+        await _fs.WriteFileAtomicAsync(
+            MortalPath,
+            new JsonObject
+            {
+                ["factions"] = new JsonArray()
+            }.ToJsonString());
+
+        static JsonObject BuildLocation(bool invalid) => new()
+        {
+            ["locationId"] = "location_shared_authority",
+            ["locationName"] = "Shared Authority Location",
+            ["factionControl"] = invalid
+                ? new JsonArray(new JsonObject
+                {
+                    ["factionId"] = "faction_missing",
+                    ["controlLevel"] = 35
+                })
+                : new JsonArray()
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            CurrentLocationPath,
+            BuildLocation(currentLocationIsInvalid).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            WorldMapPath,
+            new JsonObject
+            {
+                ["locations"] = new JsonArray(
+                    BuildLocation(!currentLocationIsInvalid))
+            }.ToJsonString());
+
+        var issues = await _validator
+            .ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var issue = Assert.Single(issues, candidate =>
+            candidate.Code ==
+                "faction_materialization_mortal_location_control_unknown_faction" &&
+            candidate.Actor == "mortal_faction:faction_missing");
+
+        Assert.Equal(
+            new[]
+            {
+                currentLocationIsInvalid
+                    ? CurrentLocationPath
+                    : WorldMapPath
+            },
+            issue.RepairTargetFiles);
+    }
+
     [Fact]
     public async Task NewMortalFaction_InitialIdCollidesWithPreTurnFaction_FailsRaw()
     {
@@ -1957,7 +1658,9 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         };
         await WriteCurrentAndSnapshotAsync(
             (MortalPath, current.ToJsonString()),
-            (MortalPath, MortalRoot(LegacyMortalFaction("faction_watch")).ToJsonString()));
+            (MortalPath, MortalRoot(MaterializedMortalFaction(
+                "faction_watch",
+                "fmat_existing_watch")).ToJsonString()));
 
         var issues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
 
@@ -2083,1947 +1786,6 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (MortalPath, MortalRoot().ToJsonString()));
     }
 
-    private async Task WriteMortalPromotionAsync(JsonObject faction)
-    {
-        var current = MortalRoot();
-        current["factionDataChanges"] = new JsonArray(faction);
-        var legacy = LegacyMortalFaction("faction_watch");
-        legacy["name"] = faction["name"]?.DeepClone();
-        await WriteCurrentAndSnapshotAsync(
-            (MortalPath, current.ToJsonString()),
-            (MortalPath, MortalRoot(
-                legacy).ToJsonString()));
-    }
-
-    private async Task WriteMortalPromotionHistoryFixtureAsync(
-        string? mutationSurface = null,
-        bool includeHistoricalGovernedRows = true)
-    {
-        const string factionId = "faction_watch";
-        var promotion = BuildCompleteMortalCreation();
-        promotion["factionId"] = factionId;
-        promotion.Remove("initialId");
-        promotion.Remove("isNewFaction");
-        promotion["relations"]![0]!["targetFactionId"] =
-            "faction_allies";
-        promotion["controlledTerritories"] = new JsonArray(
-            new JsonObject
-            {
-                ["locationId"] = "location_watch_road",
-                ["locationName"] = "Western Road"
-            },
-            new JsonObject
-            {
-                ["locationId"] = "location_watch_crossing",
-                ["locationName"] = "Old Crossing"
-            });
-        promotion["scribeChronicle"] = new JsonArray();
-        promotion["materialization"] =
-            BuildPopulatedMortalEnvelope(
-                factionId,
-                "fmat_watch_promotion_history");
-        ConfigureMortalPromotionIdentityFixture(
-            promotion,
-            mutationSurface);
-
-        var legacy = new JsonObject
-        {
-            ["factionId"] = factionId,
-            ["name"] = promotion["name"]!.DeepClone(),
-            ["description"] = promotion["description"]!.DeepClone(),
-            ["purpose"] = promotion["purpose"]!.DeepClone(),
-            ["level"] = promotion["level"]!.DeepClone(),
-            ["experience"] = promotion["experience"]!.DeepClone(),
-            ["experienceForNextLevel"] =
-                promotion["experienceForNextLevel"]!.DeepClone(),
-            ["developmentArchetype"] =
-                promotion["developmentArchetype"]!.DeepClone(),
-            ["powerProfile"] = promotion["powerProfile"]!.DeepClone()
-        };
-        if (includeHistoricalGovernedRows)
-        {
-            legacy["relations"] = promotion["relations"]!.DeepClone();
-            legacy["controlledTerritories"] =
-                promotion["controlledTerritories"]!.DeepClone();
-        }
-        var preTurnCore = MortalRoot(
-            legacy,
-            new JsonObject
-            {
-                ["factionId"] = "faction_allies",
-                ["name"] = "Road Allies"
-            });
-
-        var preTurnStructure = new JsonObject
-        {
-            ["entries"] = new JsonArray(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = promotion["name"]!.DeepClone(),
-                ["name"] = promotion["name"]!.DeepClone(),
-                ["governance"] = promotion["governance"]!.DeepClone(),
-                ["leadership"] = promotion["leadership"]!.DeepClone()
-            })
-        };
-        if (includeHistoricalGovernedRows)
-        {
-            preTurnStructure["entries"]![0]!["ranks"] =
-                promotion["ranks"]!.DeepClone();
-            preTurnStructure["entries"]![0]!["structuredBonuses"] =
-                promotion["structuredBonuses"]!.DeepClone();
-        }
-        var promotionResources = promotion["resources"]!.AsObject();
-        var preTurnResources = new JsonObject
-        {
-            ["entries"] = new JsonArray()
-        };
-        if (includeHistoricalGovernedRows)
-        {
-            preTurnResources["entries"]!.AsArray().Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = promotion["name"]!.DeepClone(),
-                ["name"] = promotion["name"]!.DeepClone(),
-                ["metaResources"] =
-                    promotionResources["metaResources"]!.DeepClone(),
-                ["strategicGoods"] =
-                    promotionResources["strategicGoods"]!.DeepClone()
-            });
-        }
-        var historicalProject =
-            promotion["activeProjects"]![0]!.DeepClone().AsObject();
-        historicalProject["factionId"] = factionId;
-        historicalProject["factionName"] =
-            promotion["name"]!.DeepClone();
-        var preTurnProjects = new JsonObject
-        {
-            ["activeProjects"] = includeHistoricalGovernedRows
-                ? new JsonArray(historicalProject)
-                : new JsonArray(),
-            ["completedProjects"] = new JsonArray()
-        };
-        var preTurnCustom = new JsonObject
-        {
-            ["entries"] = new JsonArray()
-        };
-        if (includeHistoricalGovernedRows)
-        {
-            preTurnCustom["entries"]!.AsArray().Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = promotion["name"]!.DeepClone(),
-                ["name"] = promotion["name"]!.DeepClone(),
-                ["customStates"] =
-                    promotion["customStates"]!.DeepClone()
-            });
-        }
-        var preTurnChronicles = new JsonObject
-        {
-            ["entries"] = new JsonArray(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = promotion["name"]!.DeepClone(),
-                ["entry"] =
-                    "#7 - The old watch held the western road through winter."
-            })
-        };
-        var preTurnCurrentLocation = new JsonObject
-        {
-            ["locationId"] = "location_watch_road",
-            ["locationName"] = "Western Road",
-            ["factionControl"] = includeHistoricalGovernedRows
-                ? new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["controlLevel"] = 35
-                })
-                : new JsonArray()
-        };
-        var preTurnWorldMap = new JsonObject
-        {
-            ["locations"] = new JsonArray(new JsonObject
-            {
-                ["locationId"] = "location_watch_crossing",
-                ["locationName"] = "Old Crossing",
-                ["factionControl"] = includeHistoricalGovernedRows
-                    ? new JsonArray(new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["controlLevel"] = 20
-                    })
-                    : new JsonArray()
-            })
-        };
-        var preTurnNpcCore = new JsonObject
-        {
-            ["npcs"] = new JsonArray(new JsonObject
-            {
-                ["NPCId"] = "npc_watch_veteran",
-                ["name"] = "Veteran Ilya",
-                ["factionAffiliations"] = includeHistoricalGovernedRows
-                    ? new JsonArray(new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["role"] = "road_veteran"
-                    })
-                    : new JsonArray()
-            })
-        };
-
-        var currentStructure = CloneJsonObject(preTurnStructure);
-        var currentResources = CloneJsonObject(preTurnResources);
-        var currentProjects = CloneJsonObject(preTurnProjects);
-        var currentCustom = CloneJsonObject(preTurnCustom);
-        var currentChronicles = CloneJsonObject(preTurnChronicles);
-        var currentLocation = CloneJsonObject(preTurnCurrentLocation);
-        var currentWorldMap = CloneJsonObject(preTurnWorldMap);
-        var currentNpcCore = CloneJsonObject(preTurnNpcCore);
-        if (!includeHistoricalGovernedRows)
-        {
-            currentLocation["factionControl"]!.AsArray().Add(
-                new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["controlLevel"] = 35
-                });
-            currentWorldMap["locations"]![0]!["factionControl"]!
-                .AsArray()
-                .Add(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["controlLevel"] = 20
-                });
-            currentNpcCore["npcs"]![0]!["factionAffiliations"]!
-                .AsArray()
-                .Add(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["role"] = "road_veteran"
-                });
-        }
-
-        switch (mutationSurface)
-        {
-            case null:
-                break;
-            case "core_profile":
-                promotion["name"] = "Rewritten Wayfarer Watch";
-                break;
-            case "progression_power":
-                promotion["powerProfile"]!["military"] = 9;
-                break;
-            case "governance":
-                promotion["governance"]!["model"] =
-                    "Unhistorical commandery";
-                break;
-            case "leadership":
-                promotion["leadership"]!["summary"] =
-                    "An unrelated captain now rules.";
-                break;
-            case "ranks":
-                promotion["ranks"]!["branches"]![0]!["ranks"]![0]![
-                    "name"] = "Rewritten Warden";
-                break;
-            case "resources":
-                promotion["resources"]!["metaResources"]![0]!["amount"] =
-                    99;
-                break;
-            case "relations":
-                promotion["relations"]![0]!["status"] = "Hostile";
-                break;
-            case "projects":
-                promotion["activeProjects"]![0]!["name"] =
-                    "Replace the Historical Watchtower";
-                break;
-            case "custom_state":
-                promotion["customStates"]![0]!["value"] = "discarded";
-                break;
-            case "chronicle":
-                currentChronicles["entries"]![0]!["entry"] =
-                    "#7 - Rewritten historical chronicle.";
-                break;
-            case "omit_external_history":
-                currentStructure["entries"] = new JsonArray();
-                currentResources["entries"] = new JsonArray();
-                currentProjects["activeProjects"] = new JsonArray();
-                currentProjects["completedProjects"] = new JsonArray();
-                currentCustom["entries"] = new JsonArray();
-                currentChronicles["entries"] = new JsonArray();
-                currentLocation["factionControl"] = new JsonArray();
-                currentWorldMap["locations"]![0]!["factionControl"] =
-                    new JsonArray();
-                currentNpcCore["npcs"]![0]!["factionAffiliations"] =
-                    new JsonArray();
-                break;
-            case "current_location_faction_control":
-                currentLocation["factionControl"]![0]!["controlLevel"] =
-                    80;
-                break;
-            case "world_map_faction_control":
-                currentWorldMap["locations"]![0]!["factionControl"]![0]![
-                    "controlLevel"] = 75;
-                break;
-            case "npc_affiliation":
-                currentNpcCore["npcs"]![0]!["factionAffiliations"]![0]![
-                    "role"] = "rewritten_role";
-                break;
-            case "late_duplicate_project_rewrite":
-            {
-                var duplicate = promotion["activeProjects"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["name"] =
-                    "Replace the Historical Watchtower";
-                promotion["activeProjects"]!.AsArray().Add(duplicate);
-                break;
-            }
-            case "late_sidecar_structure_rewrite":
-            {
-                var duplicate = currentStructure["entries"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["governance"]!["model"] =
-                    "Unhistorical duplicate commandery";
-                currentStructure["entries"]!.AsArray().Add(duplicate);
-                break;
-            }
-            case "late_sidecar_resources_rewrite":
-            {
-                var duplicate = currentResources["entries"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["metaResources"]![0]!["amount"] = 99;
-                currentResources["entries"]!.AsArray().Add(duplicate);
-                break;
-            }
-            case "late_sidecar_custom_rewrite":
-            {
-                var duplicate = currentCustom["entries"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["customStates"]![0]!["value"] =
-                    "discarded";
-                currentCustom["entries"]!.AsArray().Add(duplicate);
-                break;
-            }
-            case "identity_branch_display_name":
-            case "identity_rank_name_male":
-            case "identity_rank_name_female":
-            case "identity_rank_name":
-            case "identity_bonus_description":
-            case "identity_bonus_type":
-            case "identity_bonus_target":
-            case "identity_resource_name":
-            case "identity_custom_name":
-            case "identity_custom_title":
-            case "identity_project_id_case":
-                AddMortalPromotionIdentityRewrite(
-                    promotion,
-                    mutationSurface);
-                break;
-            case "duplicate_identical":
-                currentStructure["entries"]!.AsArray().Add(
-                    currentStructure["entries"]![0]!.DeepClone());
-                break;
-            case "duplicate_additive":
-                currentStructure["entries"]!.AsArray().Add(
-                    new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["inspectionNote"] =
-                            "The later row only adds non-historical metadata."
-                    });
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(mutationSurface),
-                    mutationSurface,
-                    "Unsupported promotion-history mutation surface.");
-        }
-
-        var currentCore = MortalRoot();
-        currentCore["factionDataChanges"] = new JsonArray(promotion);
-        await WriteCurrentAndSnapshotAsync(
-            (MortalPath, currentCore.ToJsonString()),
-            (MortalStructurePath, currentStructure.ToJsonString()),
-            (MortalResourcesPath, currentResources.ToJsonString()),
-            (MortalProjectsPath, currentProjects.ToJsonString()),
-            (MortalCustomPath, currentCustom.ToJsonString()),
-            (MortalChroniclesPath, currentChronicles.ToJsonString()),
-            (CurrentLocationPath, currentLocation.ToJsonString()),
-            (WorldMapPath, currentWorldMap.ToJsonString()),
-            (NpcCorePath, currentNpcCore.ToJsonString()),
-            (MortalPath, preTurnCore.ToJsonString()),
-            (MortalStructurePath, preTurnStructure.ToJsonString()),
-            (MortalResourcesPath, preTurnResources.ToJsonString()),
-            (MortalProjectsPath, preTurnProjects.ToJsonString()),
-            (MortalCustomPath, preTurnCustom.ToJsonString()),
-            (MortalChroniclesPath, preTurnChronicles.ToJsonString()),
-            (CurrentLocationPath, preTurnCurrentLocation.ToJsonString()),
-            (WorldMapPath, preTurnWorldMap.ToJsonString()),
-            (NpcCorePath, preTurnNpcCore.ToJsonString()));
-    }
-
-    private static void ConfigureMortalPromotionIdentityFixture(
-        JsonObject promotion,
-        string? scenario)
-    {
-        if (scenario == null ||
-            !scenario.StartsWith(
-                "identity_",
-                StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        var branch = promotion["ranks"]!["branches"]![0]!
-            .AsObject();
-        var rank = branch["ranks"]![0]!.AsObject();
-        var bonus = promotion["structuredBonuses"]![0]!
-            .AsObject();
-        var resource = promotion["resources"]!["metaResources"]![0]!
-            .AsObject();
-        var custom = promotion["customStates"]![0]!
-            .AsObject();
-
-        switch (scenario)
-        {
-            case "identity_branch_display_name":
-                branch.Remove("branchId");
-                branch.Remove("name");
-                branch["displayName"] = "Road Wardens";
-                branch["doctrine"] = "Historical road patrol";
-                break;
-            case "identity_rank_name_male":
-                rank.Remove("rankId");
-                rank.Remove("name");
-                rank["rankNameMale"] = "Warden";
-                rank["authority"] = "Historical road patrol";
-                break;
-            case "identity_rank_name_female":
-                rank.Remove("rankId");
-                rank.Remove("name");
-                rank["rankNameFemale"] = "Warden";
-                rank["authority"] = "Historical road patrol";
-                break;
-            case "identity_rank_name":
-                rank.Remove("rankId");
-                rank["authority"] = "Historical road patrol";
-                break;
-            case "identity_bonus_description":
-                bonus.Remove("bonusId");
-                bonus["magnitude"] = 1;
-                break;
-            case "identity_bonus_type":
-                bonus.Remove("bonusId");
-                bonus.Remove("description");
-                bonus["bonusType"] = "travel";
-                bonus["magnitude"] = 1;
-                break;
-            case "identity_bonus_target":
-                bonus.Remove("bonusId");
-                bonus.Remove("description");
-                bonus["target"] = "watched_roads";
-                bonus["magnitude"] = 1;
-                break;
-            case "identity_resource_name":
-                resource.Remove("resourceId");
-                resource.Remove("name");
-                resource["resourceName"] = "Warden Trust";
-                break;
-            case "identity_custom_name":
-                custom.Remove("stateId");
-                custom["name"] = "Bridge Repair Priority";
-                break;
-            case "identity_custom_title":
-                custom.Remove("stateId");
-                custom["title"] = "Bridge Repair Priority";
-                break;
-            case "identity_project_id_case":
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(scenario),
-                    scenario,
-                    "Unsupported Mortal history identity fixture.");
-        }
-    }
-
-    private static void AddMortalPromotionIdentityRewrite(
-        JsonObject promotion,
-        string scenario)
-    {
-        switch (scenario)
-        {
-            case "identity_branch_display_name":
-            {
-                var duplicate = promotion["ranks"]!["branches"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["doctrine"] =
-                    "Rewritten road command";
-                promotion["ranks"]!["branches"]!.AsArray().Add(
-                    duplicate);
-                return;
-            }
-            case "identity_rank_name_male":
-            case "identity_rank_name_female":
-            case "identity_rank_name":
-            {
-                var ranks = promotion["ranks"]!["branches"]![0]![
-                    "ranks"]!.AsArray();
-                var duplicate = ranks[0]!.DeepClone().AsObject();
-                duplicate["authority"] =
-                    "Rewritten road command";
-                ranks.Add(duplicate);
-                return;
-            }
-            case "identity_bonus_description":
-            case "identity_bonus_type":
-            case "identity_bonus_target":
-            {
-                var duplicate = promotion["structuredBonuses"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["magnitude"] = 99;
-                promotion["structuredBonuses"]!.AsArray().Add(
-                    duplicate);
-                return;
-            }
-            case "identity_resource_name":
-            {
-                var duplicate = promotion["resources"]![
-                    "metaResources"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["resourceName"] = "warden trust";
-                duplicate["amount"] = 99;
-                promotion["resources"]!["metaResources"]!.AsArray().Add(
-                    duplicate);
-                return;
-            }
-            case "identity_custom_name":
-            case "identity_custom_title":
-            {
-                var duplicate = promotion["customStates"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["value"] = "discarded";
-                promotion["customStates"]!.AsArray().Add(duplicate);
-                return;
-            }
-            case "identity_project_id_case":
-            {
-                var duplicate = promotion["activeProjects"]![0]!
-                    .DeepClone()
-                    .AsObject();
-                duplicate["projectId"] = "PROJECT_WATCHTOWER";
-                duplicate["name"] =
-                    "Replace the Historical Watchtower";
-                promotion["activeProjects"]!.AsArray().Add(duplicate);
-                return;
-            }
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(scenario),
-                    scenario,
-                    "Unsupported Mortal history identity rewrite.");
-        }
-    }
-
-    private async Task WriteManyMortalPromotionHistoryFixtureAsync(
-        int promotionCount)
-    {
-        var promotions = new JsonArray();
-        var legacyFactions = new JsonArray();
-        var structureEntries = new JsonArray();
-        var resourceEntries = new JsonArray();
-        var activeProjects = new JsonArray();
-        var completedProjects = new JsonArray();
-        var customEntries = new JsonArray();
-
-        for (var index = 0; index < promotionCount; index++)
-        {
-            var suffix = index.ToString("D3");
-            var factionId = $"faction_many_{suffix}";
-            var factionName = $"Indexed Watch {suffix}";
-            var projectId = $"project_many_{suffix}";
-            var promotion = BuildCompleteMinimalMortalCreation();
-            promotion["factionId"] = factionId;
-            promotion.Remove("initialId");
-            promotion.Remove("isNewFaction");
-            promotion["name"] = factionName;
-            promotion["description"] =
-                $"A legacy watch promoted at indexed coordinate {suffix}.";
-            promotion["scribeChronicle"] = new JsonArray(
-                $"#12 - {factionName} completed materialization.");
-            promotion["activeProjects"] = new JsonArray(
-                new JsonObject
-                {
-                    ["projectId"] = projectId,
-                    ["name"] = $"Preserve Watchtower {suffix}"
-                });
-            var envelope = BuildMortalEnvelope(
-                factionId,
-                $"fmat_many_{suffix}");
-            envelope["capabilities"]!["runsProjects"] = true;
-            envelope["sections"]!["projects"] =
-                PopulatedDisposition();
-            promotion["materialization"] = envelope;
-            promotions.Add(promotion);
-
-            legacyFactions.Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["name"] = factionName,
-                ["description"] =
-                    promotion["description"]!.DeepClone(),
-                ["purpose"] = promotion["purpose"]!.DeepClone(),
-                ["level"] = 1
-            });
-            structureEntries.Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = factionName,
-                ["governance"] =
-                    promotion["governance"]!.DeepClone(),
-                ["leadership"] =
-                    promotion["leadership"]!.DeepClone(),
-                ["ranks"] = promotion["ranks"]!.DeepClone(),
-                ["structuredBonuses"] =
-                    promotion["structuredBonuses"]!.DeepClone()
-            });
-            resourceEntries.Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = factionName,
-                ["metaResources"] =
-                    promotion["resources"]!["metaResources"]!
-                        .DeepClone(),
-                ["strategicGoods"] =
-                    promotion["resources"]!["strategicGoods"]!
-                        .DeepClone()
-            });
-            activeProjects.Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = factionName,
-                ["projectId"] = projectId,
-                ["name"] = $"Preserve Watchtower {suffix}"
-            });
-            completedProjects.Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = factionName,
-                ["projectId"] = $"completed_many_{suffix}",
-                ["name"] = $"Historical Milestone {suffix}"
-            });
-            customEntries.Add(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["factionName"] = factionName,
-                ["customStates"] =
-                    promotion["customStates"]!.DeepClone()
-            });
-        }
-
-        var finalPromotion = promotions[promotionCount - 1]!
-            .AsObject();
-        var tailRewrite = finalPromotion["activeProjects"]![0]!
-            .DeepClone()
-            .AsObject();
-        tailRewrite["name"] =
-            "Rewrite Only the Final Historical Watchtower";
-        finalPromotion["activeProjects"]!.AsArray().Add(tailRewrite);
-
-        var currentCore = MortalRoot();
-        currentCore["factionDataChanges"] = promotions;
-        var preTurnCore = MortalRoot();
-        preTurnCore["factions"] = legacyFactions;
-        var preTurnStructure = new JsonObject
-        {
-            ["entries"] = structureEntries
-        };
-        var preTurnResources = new JsonObject
-        {
-            ["entries"] = resourceEntries
-        };
-        var preTurnProjects = new JsonObject
-        {
-            ["activeProjects"] = activeProjects,
-            ["completedProjects"] = completedProjects
-        };
-        var preTurnCustom = new JsonObject
-        {
-            ["entries"] = customEntries
-        };
-        var emptyChronicles = new JsonObject
-        {
-            ["entries"] = new JsonArray()
-        };
-        var emptyCurrentLocation = new JsonObject
-        {
-            ["locationId"] = "location_many",
-            ["factionControl"] = new JsonArray()
-        };
-        var emptyWorldMap = new JsonObject
-        {
-            ["locations"] = new JsonArray()
-        };
-        var emptyNpcCore = new JsonObject
-        {
-            ["npcs"] = new JsonArray()
-        };
-
-        await WriteCurrentAndSnapshotAsync(
-            (MortalPath, currentCore.ToJsonString()),
-            (MortalStructurePath, preTurnStructure.ToJsonString()),
-            (MortalResourcesPath, preTurnResources.ToJsonString()),
-            (MortalProjectsPath, preTurnProjects.ToJsonString()),
-            (MortalCustomPath, preTurnCustom.ToJsonString()),
-            (MortalChroniclesPath, emptyChronicles.ToJsonString()),
-            (CurrentLocationPath, emptyCurrentLocation.ToJsonString()),
-            (WorldMapPath, emptyWorldMap.ToJsonString()),
-            (NpcCorePath, emptyNpcCore.ToJsonString()),
-            (MortalPath, preTurnCore.ToJsonString()),
-            (MortalStructurePath, preTurnStructure.ToJsonString()),
-            (MortalResourcesPath, preTurnResources.ToJsonString()),
-            (MortalProjectsPath, preTurnProjects.ToJsonString()),
-            (MortalCustomPath, preTurnCustom.ToJsonString()),
-            (MortalChroniclesPath, emptyChronicles.ToJsonString()),
-            (CurrentLocationPath, emptyCurrentLocation.ToJsonString()),
-            (WorldMapPath, emptyWorldMap.ToJsonString()),
-            (NpcCorePath, emptyNpcCore.ToJsonString()));
-    }
-
-    private async Task WriteLegacyMortalExternalTouchAsync(string channel)
-    {
-        const string factionId = "faction_watch";
-        var preTurnCore = MortalRoot(LegacyMortalFaction(factionId));
-        var currentCore = CloneJsonObject(preTurnCore);
-        string path;
-        JsonObject preTurnAuthority;
-        JsonObject currentAuthority;
-
-        switch (channel)
-        {
-            case "factionRankChanges":
-                path = "game_state/factions/faction_structure.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["entries"] = new JsonArray()
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                currentAuthority[channel] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["branchesToAdd"] = new JsonArray(new JsonObject
-                    {
-                        ["branchId"] = "road_scouts",
-                        ["displayName"] = "Road Scouts",
-                        ["ranks"] = new JsonArray()
-                    })
-                });
-                break;
-            case "factionBonusChanges":
-                path = "game_state/factions/faction_structure.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["entries"] = new JsonArray()
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                currentAuthority[channel] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["bonusesToAddOrUpdate"] = new JsonArray(new JsonObject
-                    {
-                        ["bonusId"] = null,
-                        ["name"] = "Roadwise",
-                        ["description"] = "Wardens read the old roads well."
-                    })
-                });
-                break;
-            case "factionResourceChanges":
-                path = "game_state/factions/faction_resources.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["entries"] = new JsonArray()
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                currentAuthority[channel] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["resourceChanges"] = new JsonArray(new JsonObject
-                    {
-                        ["resourceName"] = "timber",
-                        ["changeAmount"] = 4
-                    })
-                });
-                break;
-            case "factionProjectUpdates":
-                path = "game_state/factions/faction_projects.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["activeProjects"] = new JsonArray(new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["projectId"] = "project_watchtower",
-                        ["projectName"] = "Raise the Watchtower",
-                        ["activeState"] = "Active"
-                    }),
-                    ["completedProjects"] = new JsonArray()
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                currentAuthority[channel] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["projectUpdate"] = new JsonObject
-                    {
-                        ["projectId"] = "project_watchtower",
-                        ["currentStep"] = 2
-                    }
-                });
-                break;
-            case "completeFactionProjects":
-                path = "game_state/factions/faction_projects.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["activeProjects"] = new JsonArray(new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["projectId"] = "project_watchtower",
-                        ["projectName"] = "Raise the Watchtower",
-                        ["activeState"] = "Active"
-                    }),
-                    ["completedProjects"] = new JsonArray()
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                currentAuthority[channel] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["projectId"] = "project_watchtower",
-                    ["projectName"] = "Raise the Watchtower",
-                    ["finalState"] = "Completed"
-                });
-                break;
-            case "factionCustomStateChanges":
-                path = "game_state/factions/faction_custom.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["entries"] = new JsonArray(new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["customStates"] = new JsonArray(new JsonObject
-                        {
-                            ["stateId"] = "watch_priority",
-                            ["name"] = "Watch Priority",
-                            ["value"] = "bridge"
-                        })
-                    })
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                currentAuthority[channel] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["statesToRemove"] = new JsonArray("watch_priority")
-                });
-                break;
-            case "factionChronicleUpdates":
-                path = "game_state/factions/faction_chronicles.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["entries"] = new JsonArray()
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                currentAuthority[channel] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["factionName"] = "Wayfarer Watch",
-                    ["entryToAppend"] =
-                        "#12 - The watch renewed its western-road patrol."
-                });
-                break;
-            case "current_location_factionControl":
-                path = "game_state/world/current_location.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["locationId"] = "location_watch_road",
-                    ["locationName"] = "Western Road",
-                    ["factionControl"] = new JsonArray()
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                ((JsonArray)currentAuthority["factionControl"]!).Add(
-                    new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["controlLevel"] = 35
-                    });
-                break;
-            case "world_map_factionControl":
-                path = "game_state/world/world_map.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["locations"] = new JsonArray(new JsonObject
-                    {
-                        ["locationId"] = "location_watch_road",
-                        ["locationName"] = "Western Road",
-                        ["factionControl"] = new JsonArray()
-                    })
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                ((JsonArray)currentAuthority["locations"]![0]![
-                    "factionControl"]!).Add(new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["controlLevel"] = 35
-                    });
-                break;
-            case "npc_factionAffiliations":
-                path = "game_state/npcs/npc_core.json";
-                preTurnAuthority = new JsonObject
-                {
-                    ["npcs"] = new JsonArray(new JsonObject
-                    {
-                        ["NPCId"] = "npc_watch_captain",
-                        ["name"] = "Captain Mira",
-                        ["factionAffiliations"] = new JsonArray()
-                    })
-                };
-                currentAuthority = CloneJsonObject(preTurnAuthority);
-                ((JsonArray)currentAuthority["npcs"]![0]![
-                    "factionAffiliations"]!).Add(new JsonObject
-                    {
-                        ["factionId"] = factionId,
-                        ["role"] = "captain"
-                    });
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(channel),
-                    channel,
-                    "Unsupported legacy Mortal external touch channel.");
-        }
-
-        await WriteCurrentAndSnapshotAsync(
-            (MortalPath, currentCore.ToJsonString()),
-            (path, currentAuthority.ToJsonString()),
-            (MortalPath, preTurnCore.ToJsonString()),
-            (path, preTurnAuthority.ToJsonString()));
-    }
-
-    private async Task WriteOmittedShiningTargetTouchCaseAsync(
-        string scenario)
-    {
-        const string oldFactionId = "order_old";
-        const string newFactionId = "order_new";
-        const string unrelatedFactionId = "order_unrelated";
-        const string unrelatedMaterializationId =
-            "fmat_order_unrelated_12";
-
-        JsonObject BuildUnrelatedFaction() =>
-            MaterializedShiningFaction(
-                unrelatedFactionId,
-                unrelatedMaterializationId);
-
-        switch (scenario)
-        {
-            case "guardian_create":
-            {
-                const string targetFactionId = "order_guardian";
-                const string guardianId = "guardian_touch_target";
-                var targetFaction = LegacyShiningFaction(
-                    targetFactionId,
-                    factionStrength: 30);
-                targetFaction["storyAuthority"] = new JsonObject
-                {
-                    ["authorityType"] = "guardian_ascension",
-                    ["authorityId"] = guardianId
-                };
-                var preTurnShining = ShiningRoot(
-                    targetFaction,
-                    BuildUnrelatedFaction());
-                var currentShining = ShiningRoot(
-                    BuildUnrelatedFaction());
-                var preTurnGuardians = new JsonObject
-                {
-                    ["guardians"] = new JsonArray()
-                };
-                var currentGuardians = new JsonObject
-                {
-                    ["UpdateGuardians"] =
-                        new JsonArray(new JsonObject
-                        {
-                            ["command"] = "create",
-                            ["data"] = new JsonObject
-                            {
-                                ["guardianId"] = guardianId,
-                                ["name"] = "Touch Guardian"
-                            }
-                        })
-                };
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (GuardiansPath, currentGuardians.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()),
-                    (GuardiansPath, preTurnGuardians.ToJsonString()));
-                return;
-            }
-            case "resident_move":
-            {
-                var preTurnShining = ShiningRoot(
-                    LegacyShiningFaction(
-                        oldFactionId,
-                        factionStrength: 30),
-                    LegacyShiningFaction(
-                        newFactionId,
-                        factionStrength: 30),
-                    BuildUnrelatedFaction());
-                var currentShining = ShiningRoot(
-                    BuildUnrelatedFaction());
-                var preTurnResidents = BuildRouteResidentRoot(
-                    BuildRouteResident(
-                        "resident_touch_target",
-                        oldFactionId));
-                var currentResidents = new JsonObject
-                {
-                    [GuardianAbodeResidentState.UpdateProperty] =
-                        new JsonArray(BuildRouteResident(
-                            "resident_touch_target",
-                            newFactionId))
-                };
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (ResidentPath, currentResidents.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()),
-                    (ResidentPath, preTurnResidents.ToJsonString()));
-                return;
-            }
-            case "saref_move":
-            {
-                var preTurnShining = ShiningRoot(
-                    LegacyShiningFaction(
-                        oldFactionId,
-                        factionStrength: 30),
-                    LegacyShiningFaction(
-                        newFactionId,
-                        factionStrength: 30),
-                    BuildUnrelatedFaction());
-                var currentShining = ShiningRoot(
-                    BuildUnrelatedFaction());
-                var preTurnStory =
-                    SarefMainStoryState.CreateDefaultRoot();
-                preTurnStory["factionLinks"]!["wingsFactionId"] =
-                    oldFactionId;
-                var currentStory = new JsonObject
-                {
-                    [SarefMainStoryState.ResponseField] =
-                        new JsonObject
-                        {
-                            ["mode"] =
-                                SarefMainStoryState
-                                    .WingsUpdateModeReveal,
-                            ["requestId"] =
-                                "saref_omitted_touch_request",
-                            ["resolvedAtTurn"] = 12,
-                            ["factionLinks"] = new JsonObject
-                            {
-                                ["wingsFactionId"] = newFactionId
-                            }
-                        }
-                };
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (SarefStoryPath, currentStory.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()),
-                    (SarefStoryPath, preTurnStory.ToJsonString()));
-                return;
-            }
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(scenario),
-                    scenario,
-                    "Unknown omitted Shining target touch scenario.");
-        }
-    }
-
-    private async Task WriteRawFactionTouchProjectionCaseAsync(
-        string scenario)
-    {
-        const string targetMortalFactionId = "faction_target";
-        const string unrelatedMortalFactionId = "faction_unrelated";
-        const string oldShiningFactionId = "order_old";
-        const string newShiningFactionId = "order_new";
-        const string originShiningFactionId = "order_origin";
-        const string unrelatedShiningFactionId = "order_unrelated";
-
-        switch (scenario)
-        {
-            case "mortal_npc_affiliation_upsert":
-            {
-                var preTurnCore = BuildLegacyMortalTouchRoot(
-                    targetMortalFactionId,
-                    unrelatedMortalFactionId);
-                var currentCore = CloneJsonObject(preTurnCore);
-                var preTurnNpcs = new JsonObject
-                {
-                    [GuardianPolicyContracts
-                        .NpcCoreUpdateSectionName] =
-                        new JsonArray(new JsonObject
-                        {
-                            ["NPCId"] = "npc_affiliation_target",
-                            ["name"] = "Affiliation Target",
-                            ["factionAffiliations"] =
-                                new JsonArray()
-                        })
-                };
-                var currentNpcs = CloneJsonObject(preTurnNpcs);
-                currentNpcs[NpcCoreChangesContract.PropertyName] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["NPCId"] = "npc_affiliation_target",
-                        ["reason"] = "The target joined a permanent faction.",
-                        ["factionAffiliationsToUpsert"] =
-                            new JsonArray(new JsonObject
-                            {
-                                ["factionId"] = targetMortalFactionId,
-                                ["factionName"] = targetMortalFactionId,
-                                ["rank"] = "member",
-                                ["branch"] = null,
-                                ["membershipStatus"] = "Active"
-                            })
-                    });
-
-                await WriteCurrentAndSnapshotAsync(
-                    (MortalPath, currentCore.ToJsonString()),
-                    (NpcCorePath, currentNpcs.ToJsonString()),
-                    (MortalPath, preTurnCore.ToJsonString()),
-                    (NpcCorePath, preTurnNpcs.ToJsonString()));
-                return;
-            }
-            case "shining_resident_update_move":
-            {
-                var preTurnShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    unrelatedShiningFactionId);
-                var currentShining = CloneJsonObject(preTurnShining);
-                var preTurnResidents = BuildRouteResidentRoot(
-                    BuildRouteResident(
-                        "resident_touch_target",
-                        oldShiningFactionId));
-                var currentResidents = new JsonObject
-                {
-                    [GuardianAbodeResidentState.UpdateProperty] =
-                        new JsonArray(BuildRouteResident(
-                            "resident_touch_target",
-                            newShiningFactionId))
-                };
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (ResidentPath, currentResidents.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()),
-                    (ResidentPath, preTurnResidents.ToJsonString()));
-                return;
-            }
-            case "shining_saref_update_move":
-            {
-                var preTurnShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    unrelatedShiningFactionId);
-                var currentShining = CloneJsonObject(preTurnShining);
-                var preTurnStory = SarefMainStoryState.CreateDefaultRoot();
-                preTurnStory["factionLinks"]!["wingsFactionId"] =
-                    oldShiningFactionId;
-                var currentStory = new JsonObject
-                {
-                    [SarefMainStoryState.ResponseField] =
-                        new JsonObject
-                        {
-                            ["mode"] =
-                                SarefMainStoryState.WingsUpdateModeReveal,
-                            ["requestId"] = "saref_touch_request",
-                            ["resolvedAtTurn"] = 12,
-                            ["factionLinks"] = new JsonObject
-                            {
-                                ["wingsFactionId"] =
-                                    newShiningFactionId
-                            }
-                        }
-                };
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (SarefStoryPath, currentStory.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()),
-                    (SarefStoryPath, preTurnStory.ToJsonString()));
-                return;
-            }
-            case "shining_guardian_create":
-            {
-                const string guardianFactionId = "order_guardian";
-                const string guardianId = "guardian_touch_target";
-                var faction = LegacyShiningFaction(
-                    guardianFactionId,
-                    factionStrength: 30);
-                faction["storyAuthority"] = new JsonObject
-                {
-                    ["authorityType"] = "guardian_ascension",
-                    ["authorityId"] = guardianId
-                };
-                var preTurnShining = ShiningRoot(
-                    faction,
-                    LegacyShiningFaction(
-                        unrelatedShiningFactionId,
-                        factionStrength: 30));
-                var currentShining = CloneJsonObject(preTurnShining);
-                var preTurnGuardians = new JsonObject
-                {
-                    ["guardians"] = new JsonArray()
-                };
-                var currentGuardians = new JsonObject
-                {
-                    ["UpdateGuardians"] =
-                        new JsonArray(new JsonObject
-                        {
-                            ["command"] = "create",
-                            ["data"] = new JsonObject
-                            {
-                                ["guardianId"] = guardianId,
-                                ["name"] = "Touch Guardian"
-                            }
-                        })
-                };
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (GuardiansPath, currentGuardians.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()),
-                    (GuardiansPath, preTurnGuardians.ToJsonString()));
-                return;
-            }
-            case "shining_political_current_move":
-            {
-                var preTurnShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    originShiningFactionId,
-                    unrelatedShiningFactionId);
-                preTurnShining["shiningPoliticalActors"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["actorId"] = "political_touch_target",
-                        ["originFactionId"] = originShiningFactionId,
-                        ["currentFactionId"] = oldShiningFactionId
-                    });
-                var currentShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    originShiningFactionId,
-                    unrelatedShiningFactionId);
-                currentShining["shiningPoliticalActors"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["actorId"] = "political_touch_target",
-                        ["originFactionId"] = originShiningFactionId,
-                        ["currentFactionId"] = newShiningFactionId
-                    });
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()));
-                return;
-            }
-            case "shining_identity_upsert_omission":
-            {
-                var preTurnShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    unrelatedShiningFactionId);
-                preTurnShining["shiningPoliticalActors"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["actorId"] = "omitted_actor",
-                        ["originFactionId"] = oldShiningFactionId,
-                        ["currentFactionId"] = oldShiningFactionId
-                    });
-                preTurnShining["coreActionReceipts"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["requestId"] = "omitted_core_receipt",
-                        ["factionId"] = oldShiningFactionId,
-                        ["resolvedFactionId"] = oldShiningFactionId,
-                        ["targetFactionId"] = oldShiningFactionId
-                    });
-                preTurnShining["factionFoundingReceipts"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["requestId"] = "omitted_founding_receipt",
-                        ["factionId"] = oldShiningFactionId,
-                        ["proposedFactionId"] = oldShiningFactionId
-                    });
-                preTurnShining["factionRealignmentReceipts"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["requestId"] = "omitted_realign_receipt",
-                        ["sourceFactionId"] = oldShiningFactionId,
-                        ["targetFactionId"] = oldShiningFactionId
-                    });
-                var currentShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    unrelatedShiningFactionId);
-                currentShining["shiningPoliticalActors"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["actorId"] = "omitted_actor",
-                        ["displayName"] = "Link Fields Omitted"
-                    });
-                currentShining["coreActionReceipts"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["requestId"] = "omitted_core_receipt",
-                        ["status"] = "acknowledged"
-                    });
-                currentShining["factionFoundingReceipts"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["requestId"] = "omitted_founding_receipt",
-                        ["status"] = "acknowledged"
-                    });
-                currentShining["factionRealignmentReceipts"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["requestId"] = "omitted_realign_receipt",
-                        ["status"] = "acknowledged"
-                    });
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()));
-                return;
-            }
-            case "shining_same_identity_last_write_exact_case":
-            {
-                const string caseVariantFactionId = "ORDER_NEW";
-                const string actorId = "folded_actor";
-                var preTurnShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    caseVariantFactionId,
-                    unrelatedShiningFactionId);
-                preTurnShining["shiningPoliticalActors"] =
-                    new JsonArray(new JsonObject
-                    {
-                        ["actorId"] = actorId,
-                        ["originFactionId"] = unrelatedShiningFactionId,
-                        ["currentFactionId"] = oldShiningFactionId
-                    });
-                var currentShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    caseVariantFactionId,
-                    unrelatedShiningFactionId);
-                currentShining["shiningPoliticalActors"] =
-                    new JsonArray(
-                        new JsonObject
-                        {
-                            ["actorId"] = actorId,
-                            ["currentFactionId"] = newShiningFactionId
-                        },
-                        new JsonObject
-                        {
-                            ["actorId"] = actorId,
-                            ["currentFactionId"] = caseVariantFactionId
-                        });
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()));
-                return;
-            }
-            case "shining_unrelated_guardian_mutation":
-            {
-                const string guardianFactionId = "order_guardian";
-                const string guardianId = "guardian_touch_target";
-                var faction = LegacyShiningFaction(
-                    guardianFactionId,
-                    factionStrength: 30);
-                faction["storyAuthority"] = new JsonObject
-                {
-                    ["authorityType"] = "guardian_ascension",
-                    ["authorityId"] = guardianId
-                };
-                var preTurnShining = ShiningRoot(
-                    faction,
-                    LegacyShiningFaction(
-                        unrelatedShiningFactionId,
-                        factionStrength: 30));
-                var currentShining = CloneJsonObject(preTurnShining);
-                var preTurnGuardian = new JsonObject
-                {
-                    ["guardianId"] = guardianId,
-                    ["name"] = "Touch Guardian",
-                    ["mood"] = "calm",
-                    ["memoryFragments"] =
-                        new JsonArray("first", "second")
-                };
-                var currentGuardian =
-                    CloneJsonObject(preTurnGuardian);
-                currentGuardian["mood"] = "watchful";
-                currentGuardian["memoryFragments"] =
-                    new JsonArray("second", "first");
-                var preTurnGuardians = new JsonObject
-                {
-                    ["guardians"] = new JsonArray(preTurnGuardian)
-                };
-                var currentGuardians = new JsonObject
-                {
-                    ["guardians"] = new JsonArray(currentGuardian)
-                };
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (GuardiansPath, currentGuardians.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()),
-                    (GuardiansPath, preTurnGuardians.ToJsonString()));
-                return;
-            }
-            case "shining_nested_reorder":
-            {
-                var preTurnShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    unrelatedShiningFactionId);
-                preTurnShining["shiningPoliticalActors"] =
-                    new JsonArray(
-                        BuildPoliticalTouchRow(
-                            "actor_first",
-                            oldShiningFactionId,
-                            "alpha",
-                            "beta"),
-                        BuildPoliticalTouchRow(
-                            "actor_second",
-                            newShiningFactionId,
-                            "gamma",
-                            "delta"));
-                preTurnShining["coreActionReceipts"] =
-                    new JsonArray(
-                        BuildReceiptTouchRow(
-                            "receipt_first",
-                            oldShiningFactionId,
-                            "first",
-                            "second"),
-                        BuildReceiptTouchRow(
-                            "receipt_second",
-                            newShiningFactionId,
-                            "third",
-                            "fourth"));
-                var currentShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    newShiningFactionId,
-                    unrelatedShiningFactionId);
-                currentShining["shiningPoliticalActors"] =
-                    new JsonArray(
-                        BuildPoliticalTouchRow(
-                            "actor_second",
-                            newShiningFactionId,
-                            "delta",
-                            "gamma"),
-                        BuildPoliticalTouchRow(
-                            "actor_first",
-                            oldShiningFactionId,
-                            "beta",
-                            "alpha"));
-                currentShining["coreActionReceipts"] =
-                    new JsonArray(
-                        BuildReceiptTouchRow(
-                            "receipt_second",
-                            newShiningFactionId,
-                            "fourth",
-                            "third"),
-                        BuildReceiptTouchRow(
-                            "receipt_first",
-                            oldShiningFactionId,
-                            "second",
-                            "first"));
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()));
-                return;
-            }
-            case "mortal_structure_nested_reorder":
-            case "mortal_nested_duplicate_addition":
-            case "mortal_nested_duplicate_removal":
-            case "mortal_ordered_benefits_reorder":
-            {
-                var preTurnCore = BuildLegacyMortalTouchRoot(
-                    targetMortalFactionId,
-                    unrelatedMortalFactionId);
-                var currentCore = CloneJsonObject(preTurnCore);
-                var preTurnStructure =
-                    BuildMortalStructureTouchRoot(
-                        targetMortalFactionId);
-                var currentStructure =
-                    CloneJsonObject(preTurnStructure);
-                var currentEntry =
-                    currentStructure["entries"]![0]!.AsObject();
-
-                if (scenario ==
-                    "mortal_structure_nested_reorder")
-                {
-                    currentEntry["leadership"]![
-                        "leaderNpcIds"] =
-                        ReversedJsonArray(
-                            currentEntry["leadership"]![
-                                "leaderNpcIds"]!.AsArray());
-                    currentEntry["ranks"]!["branches"] =
-                        ReversedJsonArray(
-                            currentEntry["ranks"]![
-                                "branches"]!.AsArray());
-                    foreach (var branch in currentEntry["ranks"]![
-                                 "branches"]!.AsArray()
-                                 .OfType<JsonObject>())
-                    {
-                        branch["ranks"] = ReversedJsonArray(
-                            branch["ranks"]!.AsArray());
-                        foreach (var rank in branch["ranks"]!
-                                     .AsArray()
-                                     .OfType<JsonObject>())
-                        {
-                            rank["availableBranches"] =
-                                ReversedJsonArray(
-                                    rank["availableBranches"]!
-                                        .AsArray());
-                        }
-                    }
-
-                    currentEntry["structuredBonuses"] =
-                        ReversedJsonArray(
-                            currentEntry["structuredBonuses"]!
-                                .AsArray());
-                }
-                else if (scenario ==
-                         "mortal_nested_duplicate_addition")
-                {
-                    var branches = currentEntry["ranks"]![
-                        "branches"]!.AsArray();
-                    branches.Add(branches[0]!.DeepClone());
-                }
-                else if (scenario ==
-                         "mortal_nested_duplicate_removal")
-                {
-                    var preTurnBranches =
-                        preTurnStructure["entries"]![0]!["ranks"]![
-                            "branches"]!.AsArray();
-                    preTurnBranches.Add(
-                        preTurnBranches[0]!.DeepClone());
-                }
-                else
-                {
-                    var benefits = currentEntry["ranks"]![
-                        "branches"]![0]!["ranks"]![0]![
-                        "benefits"]!.AsArray();
-                    currentEntry["ranks"]!["branches"]![0]![
-                        "ranks"]![0]!["benefits"] =
-                        ReversedJsonArray(benefits);
-                }
-
-                await WriteCurrentAndSnapshotAsync(
-                    (MortalPath, currentCore.ToJsonString()),
-                    (MortalStructurePath,
-                        currentStructure.ToJsonString()),
-                    (MortalPath, preTurnCore.ToJsonString()),
-                    (MortalStructurePath,
-                        preTurnStructure.ToJsonString()));
-                return;
-            }
-            case "mortal_resources_nested_reorder":
-            case "mortal_same_identity_semantic_change":
-            {
-                var preTurnCore = BuildLegacyMortalTouchRoot(
-                    targetMortalFactionId,
-                    unrelatedMortalFactionId);
-                var currentCore = CloneJsonObject(preTurnCore);
-                var preTurnResources =
-                    BuildMortalResourcesTouchRoot(
-                        targetMortalFactionId);
-                var currentResources =
-                    CloneJsonObject(preTurnResources);
-                var currentEntry =
-                    currentResources["entries"]![0]!.AsObject();
-                if (scenario ==
-                    "mortal_resources_nested_reorder")
-                {
-                    currentEntry["metaResources"] =
-                        ReversedJsonArray(
-                            currentEntry["metaResources"]!
-                                .AsArray());
-                    currentEntry["strategicGoods"] =
-                        ReversedJsonArray(
-                            currentEntry["strategicGoods"]!
-                                .AsArray());
-                }
-                else
-                {
-                    currentEntry["metaResources"]![0]![
-                        "currentStockpile"] = 99;
-                }
-
-                await WriteCurrentAndSnapshotAsync(
-                    (MortalPath, currentCore.ToJsonString()),
-                    (MortalResourcesPath,
-                        currentResources.ToJsonString()),
-                    (MortalPath, preTurnCore.ToJsonString()),
-                    (MortalResourcesPath,
-                        preTurnResources.ToJsonString()));
-                return;
-            }
-            case "mortal_custom_nested_reorder":
-            {
-                var preTurnCore = BuildLegacyMortalTouchRoot(
-                    targetMortalFactionId,
-                    unrelatedMortalFactionId);
-                var currentCore = CloneJsonObject(preTurnCore);
-                var preTurnCustom =
-                    BuildMortalCustomTouchRoot(
-                        targetMortalFactionId);
-                var currentCustom =
-                    CloneJsonObject(preTurnCustom);
-                var currentEntry =
-                    currentCustom["entries"]![0]!.AsObject();
-                currentEntry["customStates"] =
-                    ReversedJsonArray(
-                        currentEntry["customStates"]!.AsArray());
-
-                await WriteCurrentAndSnapshotAsync(
-                    (MortalPath, currentCore.ToJsonString()),
-                    (MortalCustomPath,
-                        currentCustom.ToJsonString()),
-                    (MortalPath, preTurnCore.ToJsonString()),
-                    (MortalCustomPath,
-                        preTurnCustom.ToJsonString()));
-                return;
-            }
-            case "mortal_project_cost_nested_reorder":
-            {
-                var preTurnCore = BuildLegacyMortalTouchRoot(
-                    targetMortalFactionId,
-                    unrelatedMortalFactionId);
-                var currentCore = CloneJsonObject(preTurnCore);
-                var preTurnProjects =
-                    BuildMortalProjectsTouchRoot(
-                        targetMortalFactionId);
-                var currentProjects =
-                    CloneJsonObject(preTurnProjects);
-                var currentProject =
-                    currentProjects["activeProjects"]![0]!
-                        .AsObject();
-                currentProject["totalResourceCost"] =
-                    ReversedJsonArray(
-                        currentProject["totalResourceCost"]!
-                            .AsArray());
-                currentProject["resourcesSpent"] =
-                    ReversedJsonArray(
-                        currentProject["resourcesSpent"]!
-                            .AsArray());
-
-                await WriteCurrentAndSnapshotAsync(
-                    (MortalPath, currentCore.ToJsonString()),
-                    (MortalProjectsPath,
-                        currentProjects.ToJsonString()),
-                    (MortalPath, preTurnCore.ToJsonString()),
-                    (MortalProjectsPath,
-                        preTurnProjects.ToJsonString()));
-                return;
-            }
-            case "shining_long_receipt_history_reorder":
-            {
-                var preTurnShining = BuildLegacyShiningTouchRoot(
-                    oldShiningFactionId,
-                    unrelatedShiningFactionId);
-                var receipts = new JsonArray();
-                for (var index = 0; index < 1024; index++)
-                {
-                    receipts.Add(new JsonObject
-                    {
-                        ["requestId"] =
-                            $"history_receipt_{index:D4}",
-                        ["factionId"] = oldShiningFactionId,
-                        ["auditTrail"] =
-                            new JsonArray(
-                                $"step_{index}_first",
-                                $"step_{index}_second")
-                    });
-                }
-
-                preTurnShining["coreActionReceipts"] = receipts;
-                var currentShining =
-                    BuildLegacyShiningTouchRoot(
-                        oldShiningFactionId,
-                        unrelatedShiningFactionId);
-                currentShining["coreActionReceipts"] =
-                    ReversedJsonArray(receipts);
-
-                await WriteCurrentAndSnapshotAsync(
-                    (ShiningPath, currentShining.ToJsonString()),
-                    (ShiningPath, preTurnShining.ToJsonString()));
-                return;
-            }
-            default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(scenario),
-                    scenario,
-                    "Unsupported raw faction-touch projection scenario.");
-        }
-    }
-
-    private static JsonObject BuildLegacyMortalTouchRoot(
-        params string[] factionIds) =>
-        MortalRoot(
-            factionIds
-                .Select(LegacyMortalFaction)
-                .ToArray());
-
-    private static JsonObject BuildLegacyShiningTouchRoot(
-        params string[] factionIds) =>
-        ShiningRoot(
-            factionIds
-                .Select(factionId =>
-                    LegacyShiningFaction(
-                        factionId,
-                        factionStrength: 30))
-                .ToArray());
-
-    private static JsonObject BuildPoliticalTouchRow(
-        string actorId,
-        string factionId,
-        string firstTag,
-        string secondTag) =>
-        new()
-        {
-            ["actorId"] = actorId,
-            ["originFactionId"] = factionId,
-            ["currentFactionId"] = factionId,
-            ["tags"] = new JsonArray(firstTag, secondTag)
-        };
-
-    private static JsonObject BuildReceiptTouchRow(
-        string requestId,
-        string factionId,
-        string firstAuditEntry,
-        string secondAuditEntry) =>
-        new()
-        {
-            ["requestId"] = requestId,
-            ["factionId"] = factionId,
-            ["auditTrail"] =
-                new JsonArray(firstAuditEntry, secondAuditEntry)
-        };
-
-    private static JsonObject BuildMortalStructureTouchRoot(
-        string factionId) =>
-        new()
-        {
-            ["entries"] = new JsonArray(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["leadership"] = new JsonObject
-                {
-                    ["leaderNpcIds"] =
-                        new JsonArray("npc_first", "npc_second")
-                },
-                ["ranks"] = new JsonObject
-                {
-                    ["branches"] = new JsonArray(
-                        BuildMortalBranchTouchRow(
-                            "branch_first",
-                            "branch_second"),
-                        BuildMortalBranchTouchRow(
-                            "branch_second",
-                            "branch_first"))
-                },
-                ["structuredBonuses"] =
-                    new JsonArray(
-                        new JsonObject
-                        {
-                            ["bonusId"] = "bonus_first",
-                            ["description"] = "First bonus",
-                            ["bonusType"] = "reputation",
-                            ["target"] = "roads"
-                        },
-                        new JsonObject
-                        {
-                            ["bonusId"] = "bonus_second",
-                            ["description"] = "Second bonus",
-                            ["bonusType"] = "reputation",
-                            ["target"] = "bridges"
-                        })
-            })
-        };
-
-    private static JsonObject BuildMortalBranchTouchRow(
-        string branchId,
-        string otherBranchId) =>
-        new()
-        {
-            ["branchId"] = branchId,
-            ["displayName"] = branchId,
-            ["ranks"] = new JsonArray(
-                new JsonObject
-                {
-                    ["rankNameMale"] = $"{branchId}_senior",
-                    ["rankNameFemale"] = $"{branchId}_senior_f",
-                    ["name"] = $"{branchId}_senior",
-                    ["benefits"] =
-                        new JsonArray(
-                            "first benefit",
-                            "second benefit"),
-                    ["availableBranches"] =
-                        new JsonArray(branchId, otherBranchId)
-                },
-                new JsonObject
-                {
-                    ["rankNameMale"] = $"{branchId}_junior",
-                    ["rankNameFemale"] = $"{branchId}_junior_f",
-                    ["name"] = $"{branchId}_junior",
-                    ["benefits"] =
-                        new JsonArray(
-                            "third benefit",
-                            "fourth benefit"),
-                    ["availableBranches"] =
-                        new JsonArray(otherBranchId, branchId)
-                })
-        };
-
-    private static JsonObject BuildMortalResourcesTouchRoot(
-        string factionId) =>
-        new()
-        {
-            ["entries"] = new JsonArray(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["metaResources"] =
-                    new JsonArray(
-                        BuildMortalResourceTouchRow(
-                            "Wealth",
-                            includeUpkeep: true),
-                        BuildMortalResourceTouchRow(
-                            "Influence",
-                            includeUpkeep: true)),
-                ["strategicGoods"] =
-                    new JsonArray(
-                        BuildMortalResourceTouchRow(
-                            "iron",
-                            includeUpkeep: false),
-                        BuildMortalResourceTouchRow(
-                            "timber",
-                            includeUpkeep: false))
-            })
-        };
-
-    private static JsonObject BuildMortalResourceTouchRow(
-        string resourceName,
-        bool includeUpkeep)
-    {
-        var resource = new JsonObject
-        {
-            ["resourceName"] = resourceName,
-            ["currentStockpile"] = 10,
-            ["incomePerCycle"] = 2
-        };
-        if (includeUpkeep)
-            resource["upkeepPerCycle"] = 1;
-        return resource;
-    }
-
-    private static JsonObject BuildMortalCustomTouchRoot(
-        string factionId) =>
-        new()
-        {
-            ["entries"] = new JsonArray(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["customStates"] =
-                    new JsonArray(
-                        BuildMortalCustomStateTouchRow(
-                            "state_first"),
-                        BuildMortalCustomStateTouchRow(
-                            "state_second"))
-            })
-        };
-
-    private static JsonObject BuildMortalCustomStateTouchRow(
-        string stateId) =>
-        new()
-        {
-            ["stateId"] = stateId,
-            ["name"] = stateId,
-            ["currentValue"] = 1,
-            ["minValue"] = 0,
-            ["maxValue"] = 10,
-            ["description"] = $"State {stateId}",
-            ["progressionRule"] = new JsonObject
-            {
-                ["changePerTurn"] = 1,
-                ["description"] = "Changes once per turn."
-            },
-            ["thresholds"] = new JsonArray()
-        };
-
-    private static JsonObject BuildMortalProjectsTouchRoot(
-        string factionId) =>
-        new()
-        {
-            ["activeProjects"] = new JsonArray(new JsonObject
-            {
-                ["factionId"] = factionId,
-                ["projectId"] = "project_touch",
-                ["projectName"] = "Touch Project",
-                ["activeState"] = "Active",
-                ["description"] = "A stable project.",
-                ["totalResourceCost"] =
-                    new JsonArray(
-                        new JsonObject
-                        {
-                            ["resourceName"] = "iron",
-                            ["totalAmount"] = 10
-                        },
-                        new JsonObject
-                        {
-                            ["resourceName"] = "timber",
-                            ["totalAmount"] = 20
-                        }),
-                ["resourcesSpent"] =
-                    new JsonArray(
-                        new JsonObject
-                        {
-                            ["resourceName"] = "iron",
-                            ["amountSpent"] = 2
-                        },
-                        new JsonObject
-                        {
-                            ["resourceName"] = "timber",
-                            ["amountSpent"] = 4
-                        }),
-                ["totalTimeCostMinutes"] = 120,
-                ["timeSpentMinutes"] = 30,
-                ["totalSteps"] = 4,
-                ["currentStep"] = 1
-            }),
-            ["completedProjects"] = new JsonArray()
-        };
-
-    private static JsonArray ReversedJsonArray(JsonArray source) =>
-        new(
-            source
-                .Reverse()
-                .Select(node => node?.DeepClone())
-                .ToArray());
-
     private async Task<IReadOnlyList<ValidationIssue>> ValidateNativeDiscoveryRouteAsync()
     {
         var issues = (await _validator
@@ -4115,7 +1877,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         ((JsonArray)preTurnShining["halls"]!).Add(
             BuildShiningHall(existingHallId, "Existing Hall"));
         ((JsonArray)preTurnShining["factions"]!).Add(
-            BuildLegacyRouteFaction(
+            BuildExistingRouteFaction(
                 existingFactionId,
                 existingHallId,
                 existingProjectId));
@@ -4231,10 +1993,24 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             ["schemaVersion"] = 1,
             [AfterlifeEntityProfileState.ProfilesProperty] = profiles
         };
+        var requestEntries = new JsonArray();
+        if (!string.Equals(
+                mutation,
+                "missing_route_request",
+                StringComparison.Ordinal))
+        {
+            requestEntries.Add(request);
+            if (string.Equals(
+                    mutation,
+                    "duplicate_route_request",
+                    StringComparison.Ordinal))
+            {
+                requestEntries.Add(request.DeepClone());
+            }
+        }
         var requestRoot = new JsonObject
         {
-            [ShiningCoreActionRequestState.RequestsProperty] =
-                new JsonArray(request)
+            [ShiningCoreActionRequestState.RequestsProperty] = requestEntries
         };
 
         await WriteCurrentAndSnapshotAsync(
@@ -4329,10 +2105,17 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         var currentSoul = CloneJsonObject(preTurnSoul);
         if (string.Equals(mutation, "reserved_feathers", StringComparison.Ordinal))
             currentSoul["inkFeathers"]!["current"] = 76;
+        var requestEntries = new JsonArray();
+        if (!string.Equals(
+                mutation,
+                "missing_route_request",
+                StringComparison.Ordinal))
+        {
+            requestEntries.Add(request);
+        }
         var requestRoot = new JsonObject
         {
-            [ShiningFactionRequestState.RequestsProperty] =
-                new JsonArray(request)
+            [ShiningFactionRequestState.RequestsProperty] = requestEntries
         };
         var supporterProfiles = BuildAfterlifeProfileRoot(
             supporterIds.Select(residentId =>
@@ -4352,7 +2135,8 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (ShiningFactionRequestState.PendingFoundingsRequestPath, requestRoot.ToJsonString()));
     }
 
-    private async Task WriteNativeDiscoveryOutcomeAsync(JsonObject faction)
+    private async Task WriteGenericStoryFactionOutcomeAsync(
+        JsonObject faction)
     {
         var current = ShiningRoot(faction);
         current["halls"] = new JsonArray(
@@ -4361,6 +2145,11 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 "Dawn Archive"));
         await WriteCurrentAndSnapshotAsync(
             (ShiningPath, current.ToJsonString()),
+            (ResidentPath, BuildRouteResidentRoot().ToJsonString()),
+            (SarefStoryPath,
+                BuildSarefStoryRoot(
+                    "revealed",
+                    "shine_faction_dawn_archive").ToJsonString()),
             (ShiningPath, ShiningRoot().ToJsonString()));
     }
 
@@ -4405,7 +2194,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
     {
         const string factionId = "shine_faction_dawn_archive";
         var actorId = $"required_{actorKind}";
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         if (derivedBaseStrength.HasValue)
             faction["baseStrength"] = derivedBaseStrength.Value;
         if (submittedFactionStrength.HasValue)
@@ -4522,6 +2311,10 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (ResidentPath, residentRoot.ToJsonString()),
             (AfterlifeProfilesPath,
                 BuildAfterlifeProfileRoot(profiles).ToJsonString()),
+            (SarefStoryPath,
+                BuildSarefStoryRoot(
+                    "revealed",
+                    factionId).ToJsonString()),
             (ShiningPath, ShiningRoot().ToJsonString()));
     }
 
@@ -4529,7 +2322,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string mutation)
     {
         const string factionId = "shine_faction_dawn_archive";
-        var faction = BuildCompleteNativeShiningFaction();
+        var faction = BuildCompleteGenericStoryShiningFaction();
         var residentRoot = BuildRouteResidentRoot();
         var current = ShiningRoot(faction);
         var preTurnShining = ShiningRoot();
@@ -4622,14 +2415,24 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             "duplicate_resident_id_across_factions" or
             "duplicate_political_identity_across_factions")
         {
+            const string otherFactionId = "shine_faction_other";
+            const string otherHallId = "hall_other_archive";
+            var otherFaction = BuildCompleteNativeShiningFaction();
+            otherFaction["factionId"] = otherFactionId;
+            otherFaction["hallId"] = otherHallId;
+            otherFaction["name"] = "Other Archive";
+            otherFaction["materialization"]!["materializationId"] =
+                "fmat_shine_faction_other";
+            otherFaction["materialization"]!["factionId"] =
+                otherFactionId;
             ((JsonArray)current["factions"]!).Add(
-                LegacyShiningFaction(
-                    "shine_faction_other",
-                    factionStrength: 30));
+                otherFaction);
             ((JsonArray)preTurnShining["factions"]!).Add(
-                LegacyShiningFaction(
-                    "shine_faction_other",
-                    factionStrength: 30));
+                otherFaction.DeepClone());
+            ((JsonArray)current["halls"]!).Add(
+                BuildShiningHall(
+                    otherHallId,
+                    "Other Archive"));
         }
 
         var profiles = new[]
@@ -4645,6 +2448,10 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             (ResidentPath, residentRoot.ToJsonString()),
             (AfterlifeProfilesPath,
                 BuildAfterlifeProfileRoot(profiles).ToJsonString()),
+            (SarefStoryPath,
+                BuildSarefStoryRoot(
+                    "revealed",
+                    factionId).ToJsonString()),
             (ShiningPath, preTurnShining.ToJsonString()));
     }
 
@@ -4888,14 +2695,14 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 factions.Select(faction => (JsonNode?)faction).ToArray())
         };
 
-    private static JsonObject LegacyMortalFaction(string factionId) =>
+    private static JsonObject ReceiptlessMortalFaction(string factionId) =>
         new()
         {
             ["factionId"] = factionId,
             ["name"] = factionId
         };
 
-    private static JsonObject LegacyShiningFaction(
+    private static JsonObject ReceiptlessShiningFaction(
         string factionId,
         int factionStrength) =>
         new()
@@ -4909,7 +2716,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string factionId,
         string materializationId)
     {
-        var faction = LegacyMortalFaction(factionId);
+        var faction = ReceiptlessMortalFaction(factionId);
         faction["materialization"] = BuildMortalEnvelope(factionId, materializationId);
         return faction;
     }
@@ -4918,7 +2725,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         string factionId,
         string materializationId)
     {
-        var faction = LegacyShiningFaction(factionId, factionStrength: 30);
+        var faction = ReceiptlessShiningFaction(factionId, factionStrength: 30);
         faction["materialization"] = BuildShiningEnvelope(factionId, materializationId);
         return faction;
     }
@@ -4942,22 +2749,28 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         return root;
     }
 
-    private static JsonObject BuildLegacyRouteFaction(
+    private static JsonObject BuildExistingRouteFaction(
         string factionId,
         string hallId,
-        string projectId) =>
-        new()
-        {
-            ["factionId"] = factionId,
-            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
-            ["hallId"] = hallId,
-            ["baseStrength"] = 30,
-            ["factionStrength"] = 30,
-            ["projects"] = new JsonArray(
-                BuildRouteProject(
-                    projectId,
-                    ShiningAbodeState.ProjectStatusCompleted))
-        };
+        string projectId)
+    {
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["factionId"] = factionId;
+        faction["hallId"] = hallId;
+        faction["baseStrength"] = 50;
+        faction["factionStrength"] = 60;
+        faction["projects"] = new JsonArray(
+            BuildRouteProject(
+                projectId,
+                ShiningAbodeState.ProjectStatusCompleted));
+        faction["materialization"] = BuildShiningRouteEnvelope(
+            factionId,
+            $"fmat_{factionId}_existing",
+            hasProjects: true,
+            hasResidents: false,
+            hasLeadershipHistory: false);
+        return faction;
+    }
 
     private static JsonObject BuildRouteProject(
         string projectId,
@@ -5377,13 +3190,37 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         return faction;
     }
 
+    private static JsonObject BuildCompleteGenericStoryShiningFaction()
+    {
+        const string factionId = "shine_faction_dawn_archive";
+        var faction = BuildCompleteNativeShiningFaction();
+        faction["creationProvenance"] = new JsonObject
+        {
+            ["route"] = "story",
+            ["authorityType"] = "saref_main_story",
+            ["authorityId"] = factionId
+        };
+        faction["visibility"] = "revealed";
+        faction["storyAuthority"] = new JsonObject
+        {
+            ["authorityType"] = "saref_main_story",
+            ["authorityId"] = factionId,
+            ["factionRole"] = "wings_of_angels"
+        };
+        faction["sarefFactionRole"] = "wings_of_angels";
+        faction["sarefVisibility"] = "revealed";
+        MarkStoryStatePopulated(faction);
+        return faction;
+    }
+
     private static JsonObject BuildSarefStoryRoot(
-        string visibility) =>
+        string visibility,
+        string factionId = "shine_faction_wings") =>
         new()
         {
             ["factionLinks"] = new JsonObject
             {
-                ["wingsFactionId"] = "shine_faction_wings",
+                ["wingsFactionId"] = factionId,
                 ["visibility"] = visibility
             },
             ["wingsInfiltration"] = null
@@ -5415,7 +3252,7 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             case "wrong_faction_visibility":
                 faction["visibility"] = "rumored";
                 break;
-            case "wrong_legacy_visibility":
+            case "wrong_visibility":
                 faction["sarefVisibility"] = "rumored";
                 break;
             case "wrong_faction_role":
@@ -5811,18 +3648,6 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 "temp-faction-watch",
                 "fmat_watch_creation")
         };
-
-    private static JsonObject BuildCompleteMortalPromotion()
-    {
-        var faction = BuildCompleteMinimalMortalCreation();
-        faction["factionId"] = "faction_watch";
-        faction.Remove("initialId");
-        faction.Remove("isNewFaction");
-        faction["materialization"] = BuildMortalEnvelope(
-            "faction_watch",
-            "fmat_watch_promotion");
-        return faction;
-    }
 
     private static JsonObject BuildMortalEnvelope(
         string factionId,

@@ -1416,7 +1416,9 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             actorId,
             ShiningAbodeState.LeadershipStateSecure))!.AsObject();
         var currentShining = preTurnShining.DeepClone().AsObject();
+        preTurnShining["factions"]![0]!["baseStrength"] = 24;
         preTurnShining["factions"]![0]!["factionStrength"] = 24;
+        currentShining["factions"]![0]!["baseStrength"] = 25;
         currentShining["factions"]![0]!["factionStrength"] = 25;
         preTurnShining["factions"]![0]!["factionLifecycle"] = new JsonObject
         {
@@ -1456,7 +1458,9 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             actorId,
             ShiningAbodeState.LeadershipStateSecure))!.AsObject();
         var currentShining = preTurnShining.DeepClone().AsObject();
+        preTurnShining["factions"]![0]!["baseStrength"] = 24;
         preTurnShining["factions"]![0]!["factionStrength"] = 24;
+        currentShining["factions"]![0]!["baseStrength"] = 25;
         currentShining["factions"]![0]!["factionStrength"] = 25;
         preTurnShining["factions"]![0]!["factionLifecycle"] = new JsonObject
         {
@@ -3262,6 +3266,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             actorId,
             leadershipState))!.AsObject();
         var faction = currentShiningRoot["factions"]![0]!.AsObject();
+        faction["baseStrength"] = factionStrength;
         faction["factionStrength"] = factionStrength;
         faction["factionLifecycle"] = new JsonObject { ["state"] = lifecycleState };
         var currentProfilesRoot = JsonNode.Parse(BuildCompleteAfterlifeBindingProfileStateJson(

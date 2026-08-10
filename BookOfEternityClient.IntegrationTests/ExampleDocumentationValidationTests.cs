@@ -178,7 +178,7 @@ public sealed class ExampleDocumentationValidationTests
         {
             ["mortal_faction_materialization_populated_creation_v1"] = "E_Block_21.txt",
             ["mortal_faction_materialization_seven_empty_creation_v1"] = "E_Block_21.txt",
-            ["mortal_faction_materialization_legacy_promotion_v1"] = "E_CLI_Step_Main.txt",
+            ["mortal_faction_materialized_existing_state_v1"] = "E_CLI_Step_Main.txt",
             ["mortal_faction_core_changes_update_v1"] = "E_CLI_Step_Main.txt",
             ["shining_faction_materialization_native_discovery_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["shining_faction_materialization_player_founding_v1"] = "E_CLI_Afterlife_Turns.txt",
@@ -283,15 +283,15 @@ public sealed class ExampleDocumentationValidationTests
                 faction["materialization"]!["factionId"]!.GetValue<string>());
         }
 
-        var legacyResponse = ParseNamedJsonFence(
+        var existingState = ParseNamedJsonFence(
             "E_CLI_Step_Main.txt",
-            "mortal_faction_materialization_legacy_promotion_v1");
-        var legacyFaction = Assert.Single(
-            Assert.IsType<JsonArray>(legacyResponse["factionDataChanges"])
+            "mortal_faction_materialized_existing_state_v1");
+        var existingFaction = Assert.Single(
+            Assert.IsType<JsonArray>(existingState["factions"])
                 .OfType<JsonObject>());
         Assert.False(string.IsNullOrWhiteSpace(
-            legacyFaction["factionId"]?.GetValue<string>()));
-        AssertCompleteMortalFactionCarrier(legacyFaction);
+            existingFaction["factionId"]?.GetValue<string>()));
+        AssertCompleteMortalFactionCarrier(existingFaction);
 
         var coreResponse = ParseNamedJsonFence(
             "E_CLI_Step_Main.txt",
@@ -299,7 +299,7 @@ public sealed class ExampleDocumentationValidationTests
         var command = Assert.Single(
             Assert.IsType<JsonArray>(coreResponse["factionCoreChanges"])
                 .OfType<JsonObject>());
-        var legacyFactionId = legacyFaction["factionId"]!.GetValue<string>();
+        var existingFactionId = existingFaction["factionId"]!.GetValue<string>();
         var knownLeaderNpcIds = (command["governanceAndLeadership"]?["leadership"]?["leaderNpcIds"] as JsonArray)?
             .OfType<JsonValue>()
             .Select(value => value.GetValue<string>())
@@ -308,7 +308,7 @@ public sealed class ExampleDocumentationValidationTests
             ?? new HashSet<string>(StringComparer.Ordinal);
         var preTurnCore = new JsonObject
         {
-            ["factions"] = new JsonArray(legacyFaction.DeepClone())
+            ["factions"] = new JsonArray(existingFaction.DeepClone())
         };
         var currentCore = preTurnCore.DeepClone().AsObject();
         currentCore[FactionCoreChangesContract.PropertyName] =
@@ -317,7 +317,7 @@ public sealed class ExampleDocumentationValidationTests
             currentCore,
             preTurnCore,
             new FactionCoreChangesContract.Authority(
-                new HashSet<string>(StringComparer.Ordinal) { legacyFactionId },
+                new HashSet<string>(StringComparer.Ordinal) { existingFactionId },
                 knownLeaderNpcIds));
         Assert.True(
             coreEvaluation.CanApply,
@@ -448,6 +448,11 @@ public sealed class ExampleDocumentationValidationTests
         Assert.Contains("tradeInventory", repair, StringComparison.Ordinal);
         Assert.Contains("tradeInventoryReceipts", repair, StringComparison.Ordinal);
         Assert.Contains("materialization.sections.trade", repair, StringComparison.Ordinal);
+        Assert.Contains("targetFiles", repair, StringComparison.Ordinal);
+        Assert.Contains(
+            "game_state/meta/shining_abode_state.json",
+            repair,
+            StringComparison.Ordinal);
     }
 
     [Theory]
@@ -471,10 +476,23 @@ public sealed class ExampleDocumentationValidationTests
                 ["entries"] = new JsonArray(),
                 [GuardianAbodeResidentState.HistoryLogProperty] = new JsonArray()
             };
+        var route = faction["creationProvenance"]?["route"]?
+            .GetValue<string>();
+        var requiresRequestAuthority =
+            string.Equals(route, "native_discovery", StringComparison.Ordinal) ||
+            string.Equals(route, "player_founding", StringComparison.Ordinal);
+        if (requiresRequestAuthority)
+        {
+            Assert.True(
+                fences.Count >= 4,
+                $"'{contractId}' must include exact pending request and accepted receipt carriers.");
+        }
 
         var issues = await ValidateShiningFactionExampleAsync(
             faction,
-            residentRoot);
+            residentRoot,
+            requiresRequestAuthority ? fences[2] : null,
+            requiresRequestAuthority ? fences[3] : null);
         var factionId = faction["factionId"]!.GetValue<string>();
         var errors = issues
             .Where(issue =>
@@ -2075,7 +2093,9 @@ public sealed class ExampleDocumentationValidationTests
     private static async Task<IReadOnlyList<ValidationIssue>>
         ValidateShiningFactionExampleAsync(
             JsonObject faction,
-            JsonObject residentRoot)
+            JsonObject residentRoot,
+            JsonObject? pendingAuthorityRoot,
+            JsonObject? acceptedReceiptRoot)
     {
         var tempRoot = Path.Combine(
             Path.GetTempPath(),
@@ -2094,26 +2114,42 @@ public sealed class ExampleDocumentationValidationTests
             var materializedAtTurn =
                 faction["materialization"]?["materializedAtTurn"]?
                     .GetValue<int>() ?? 1;
-            var currentShiningRoot = new JsonObject
+            var currentShiningRoot = ShiningAbodeState.CreateDefaultState();
+            currentShiningRoot["availability"] =
+                ShiningAbodeState.AvailabilityActive;
+            currentShiningRoot["radiance"] = new JsonObject
             {
-                ["halls"] = new JsonArray(
-                    new JsonObject
-                    {
-                        ["hallId"] = hallId,
-                        ["hallName"] = $"Example hall {hallId}",
-                        ["description"] =
-                            "A complete hall fixture for production validation.",
-                        ["serviceTags"] = new JsonArray("memory")
-                    }),
-                ["factions"] = new JsonArray(faction.DeepClone()),
-                ["shiningPoliticalActors"] = new JsonArray()
+                ["experience"] = 250,
+                ["tier"] = 2
             };
-            var preTurnShiningRoot = new JsonObject
+            currentShiningRoot["lightSparks"] = 80;
+            currentShiningRoot["halls"] = new JsonArray(
+                new JsonObject
+                {
+                    ["hallId"] = hallId,
+                    ["hallName"] = $"Example hall {hallId}",
+                    ["description"] =
+                        "A complete hall fixture for production validation.",
+                    ["serviceTags"] = new JsonArray("memory")
+                });
+            currentShiningRoot["factions"] =
+                new JsonArray(faction.DeepClone());
+            currentShiningRoot["shiningPoliticalActors"] =
+                new JsonArray();
+
+            var preTurnShiningRoot = ShiningAbodeState.CreateDefaultState();
+            preTurnShiningRoot["availability"] =
+                ShiningAbodeState.AvailabilityActive;
+            preTurnShiningRoot["radiance"] = new JsonObject
             {
-                ["halls"] = new JsonArray(),
-                ["factions"] = new JsonArray(),
-                ["shiningPoliticalActors"] = new JsonArray()
+                ["experience"] = 250,
+                ["tier"] = 2
             };
+            preTurnShiningRoot["lightSparks"] = 80;
+            preTurnShiningRoot["halls"] = new JsonArray();
+            preTurnShiningRoot["factions"] = new JsonArray();
+            preTurnShiningRoot["shiningPoliticalActors"] =
+                new JsonArray();
 
             var actorIdentities = new HashSet<(string ActorType, string ActorId)>();
             (string ActorType, string ActorId)? headIdentity = null;
@@ -2204,12 +2240,87 @@ public sealed class ExampleDocumentationValidationTests
                     }
                     : new JsonObject();
 
+            const string soulPath = "game_state/meta/soul_state.json";
+            var currentResidentsRoot = residentRoot.DeepClone().AsObject();
+            var preTurnResidentsRoot = new JsonObject
+            {
+                ["entries"] = new JsonArray(),
+                [GuardianAbodeResidentState.HistoryLogProperty] =
+                    new JsonArray()
+            };
+            var currentSoulRoot =
+                BuildShiningExampleSoulRoot(currentFeathers: 75);
+            var preTurnSoulRoot =
+                BuildShiningExampleSoulRoot(currentFeathers: 75);
+            string? pendingAuthorityPath = null;
+            string? pendingAuthorityJson = null;
+
+            var route = faction["creationProvenance"]?["route"]?
+                .GetValue<string>();
+            if (string.Equals(
+                    route,
+                    "native_discovery",
+                    StringComparison.Ordinal))
+            {
+                Assert.NotNull(pendingAuthorityRoot);
+                Assert.NotNull(acceptedReceiptRoot);
+                currentShiningRoot["coreActionReceipts"] =
+                    acceptedReceiptRoot!["coreActionReceipts"]!.DeepClone();
+                currentShiningRoot["radiance"]!["experience"] = 270;
+                currentShiningRoot["lightSparks"] = 60;
+                preTurnSoulRoot =
+                    BuildShiningExampleSoulRoot(currentFeathers: 100);
+                pendingAuthorityPath =
+                    ShiningCoreActionRequestState.PendingActionsRequestPath;
+                pendingAuthorityJson = pendingAuthorityRoot!.ToJsonString();
+            }
+            else if (string.Equals(
+                         route,
+                         "player_founding",
+                         StringComparison.Ordinal))
+            {
+                Assert.NotNull(pendingAuthorityRoot);
+                Assert.NotNull(acceptedReceiptRoot);
+                currentShiningRoot["factionFoundingReceipts"] =
+                    acceptedReceiptRoot!["factionFoundingReceipts"]!
+                        .DeepClone();
+
+                var request = pendingAuthorityRoot!["requests"]![0]!
+                    .AsObject();
+                currentShiningRoot["halls"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["hallId"] = request["proposedHallId"]!.DeepClone(),
+                        ["hallName"] =
+                            request["proposedHallName"]!.DeepClone(),
+                        ["description"] =
+                            request["proposedHallDescription"]!.DeepClone(),
+                        ["serviceTags"] =
+                            request["proposedHallServiceTags"]!.DeepClone()
+                    });
+
+                preTurnResidentsRoot = currentResidentsRoot.DeepClone()
+                    .AsObject();
+                foreach (var resident in
+                         preTurnResidentsRoot["entries"]!
+                             .AsArray()
+                             .OfType<JsonObject>())
+                {
+                    resident["shiningFactionId"] =
+                        "shine_faction_before_player_founding";
+                }
+
+                pendingAuthorityPath =
+                    ShiningFactionRequestState.PendingFoundingsRequestPath;
+                pendingAuthorityJson = pendingAuthorityRoot.ToJsonString();
+            }
+
             await fs.WriteFileAtomicAsync(
                 ShiningAbodeState.StatePath,
                 currentShiningRoot.ToJsonString());
             await fs.WriteFileAtomicAsync(
                 GuardianAbodeResidentState.StatePath,
-                residentRoot.ToJsonString());
+                currentResidentsRoot.ToJsonString());
             await fs.WriteFileAtomicAsync(
                 AfterlifeEntityProfileState.StatePath,
                 profilesRoot.ToJsonString());
@@ -2222,9 +2333,35 @@ public sealed class ExampleDocumentationValidationTests
                 {
                     ["guardians"] = new JsonArray()
                 }.ToJsonString());
+            await fs.WriteFileAtomicAsync(
+                soulPath,
+                currentSoulRoot.ToJsonString());
+            if (pendingAuthorityPath is not null &&
+                pendingAuthorityJson is not null)
+            {
+                await fs.WriteFileAtomicAsync(
+                    pendingAuthorityPath,
+                    pendingAuthorityJson);
+            }
+
+            var preTurnFiles = new Dictionary<string, string>(
+                StringComparer.Ordinal)
+            {
+                [ShiningAbodeState.StatePath] =
+                    preTurnShiningRoot.ToJsonString(),
+                [GuardianAbodeResidentState.StatePath] =
+                    preTurnResidentsRoot.ToJsonString(),
+                [soulPath] = preTurnSoulRoot.ToJsonString()
+            };
+            if (pendingAuthorityPath is not null &&
+                pendingAuthorityJson is not null)
+            {
+                preTurnFiles[pendingAuthorityPath] = pendingAuthorityJson;
+            }
+
             await WriteShiningExamplePendingSnapshotAsync(
                 fs,
-                preTurnShiningRoot,
+                preTurnFiles,
                 materializedAtTurn);
 
             var validator = new ValidationService(
@@ -2238,6 +2375,20 @@ public sealed class ExampleDocumentationValidationTests
             Directory.Delete(tempRoot, recursive: true);
         }
     }
+
+    private static JsonObject BuildShiningExampleSoulRoot(
+        int currentFeathers) =>
+        new()
+        {
+            ["currentRealm"] = "Shining Abode",
+            ["currentIncarnation"] = 2,
+            ["soulName"] = "Worked Example Soul",
+            ["inkFeathers"] = new JsonObject
+            {
+                ["current"] = currentFeathers,
+                ["total"] = 100
+            }
+        };
 
     private static JsonObject BuildShiningExampleActorProfile(
         string actorType,
@@ -2374,7 +2525,7 @@ public sealed class ExampleDocumentationValidationTests
 
     private static async Task WriteShiningExamplePendingSnapshotAsync(
         FileSystemManager fs,
-        JsonObject preTurnShiningRoot,
+        IReadOnlyDictionary<string, string> preTurnFiles,
         int turnNumber)
     {
         const string sessionId =
@@ -2383,12 +2534,7 @@ public sealed class ExampleDocumentationValidationTests
             "request_shining_faction_example_validation";
         const string playerAction =
             "Validate the Shining faction worked example.";
-        const string statePath =
-            "game_state/meta/shining_abode_state.json";
         var effectiveTurn = Math.Max(1, turnNumber);
-        var preTurnJson = preTurnShiningRoot.ToJsonString();
-        var snapshotPath =
-            $"game_state/control/pending_turn_snapshot/{statePath}";
 
         await fs.WriteFileAtomicAsync(
             "input/turn_request.json",
@@ -2400,7 +2546,20 @@ public sealed class ExampleDocumentationValidationTests
                 ["timestamp"] = "2026-08-03T00:00:00Z",
                 ["playerAction"] = playerAction
             }.ToJsonString());
-        await fs.WriteFileAtomicAsync(snapshotPath, preTurnJson);
+
+        var files = new JsonObject();
+        var snapshotFileHashes = new JsonObject();
+        var rollbackBaselineFiles = new JsonArray();
+        foreach (var (statePath, preTurnJson) in preTurnFiles)
+        {
+            var snapshotPath =
+                $"game_state/control/pending_turn_snapshot/{statePath}";
+            await fs.WriteFileAtomicAsync(snapshotPath, preTurnJson);
+            files[statePath] = snapshotPath;
+            snapshotFileHashes[statePath] =
+                PendingTurnSnapshotAuthority.ComputeSha256(preTurnJson);
+            rollbackBaselineFiles.Add(statePath);
+        }
 
         var manifest = new JsonObject
         {
@@ -2409,19 +2568,11 @@ public sealed class ExampleDocumentationValidationTests
             ["turnNumber"] = effectiveTurn,
             ["requestTimestamp"] = "2026-08-03T00:00:00Z",
             ["playerAction"] = playerAction,
-            ["files"] = new JsonObject
-            {
-                [statePath] = snapshotPath
-            },
-            ["snapshotFileHashes"] = new JsonObject
-            {
-                [statePath] =
-                    PendingTurnSnapshotAuthority.ComputeSha256(
-                        preTurnJson)
-            },
+            ["files"] = files,
+            ["snapshotFileHashes"] = snapshotFileHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),
             ["rollbackBackups"] = new JsonObject(),
-            ["rollbackBaselineFiles"] = new JsonArray(statePath),
+            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
             ["sourceLabel"] =
                 "Shining faction worked example validation",
             ["manifestPayloadHash"] = string.Empty

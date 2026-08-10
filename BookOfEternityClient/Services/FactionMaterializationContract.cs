@@ -13,7 +13,8 @@ internal sealed record FactionMaterializationEvidence(
     string FactionId,
     IReadOnlyDictionary<string, bool> SectionHasContent,
     IReadOnlyDictionary<string, bool> CapabilityEvidence,
-    IReadOnlyDictionary<string, bool> SectionHasCanonicalEmptySurface);
+    IReadOnlyDictionary<string, bool> SectionHasCanonicalEmptySurface,
+    FactionTouchKind? RepairClassification = null);
 
 internal static class FactionMaterializationContract
 {
@@ -151,6 +152,28 @@ internal static class FactionMaterializationContract
         }
 
         return issues;
+    }
+
+    internal static bool HasCompleteEnvelope(
+        JsonElement faction,
+        FactionMaterializationFamily family,
+        string factionType,
+        string factionId)
+    {
+        var evidence = new FactionMaterializationEvidence(
+            factionType,
+            factionId,
+            new Dictionary<string, bool>(StringComparer.Ordinal),
+            new Dictionary<string, bool>(StringComparer.Ordinal),
+            new Dictionary<string, bool>(StringComparer.Ordinal));
+        return Validate(
+                faction,
+                "faction-reader",
+                family,
+                evidence,
+                requireEnvelope: true,
+                deferEvidenceConsistency: true)
+            .Count == 0;
     }
 
     private static void ValidateDuplicateEnvelopeProperty(
@@ -485,8 +508,9 @@ internal static class FactionMaterializationContract
         FactionMaterializationEvidence evidence,
         string? section = null,
         string? expected = null,
-        string? actual = null) =>
-        new(
+        string? actual = null)
+    {
+        var issue = new ValidationIssue(
             path,
             IssueSeverity.Error,
             message,
@@ -496,4 +520,7 @@ internal static class FactionMaterializationContract
             expected: expected,
             actual: actual,
             repairHint: "Repair only this faction's materialization envelope; preserve accepted historical receipts.");
+        issue.FactionRepairClassification = evidence.RepairClassification;
+        return issue;
+    }
 }

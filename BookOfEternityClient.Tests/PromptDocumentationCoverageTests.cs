@@ -713,7 +713,7 @@ public sealed class PromptDocumentationCoverageTests
                      {
                          "mortal_faction_materialization_populated_creation_v1",
                          "mortal_faction_materialization_seven_empty_creation_v1",
-                         "mortal_faction_materialization_legacy_promotion_v1",
+                         "mortal_faction_materialized_existing_state_v1",
                          "mortal_faction_core_changes_update_v1",
                          "mortal_faction_materialization_repair_v1"
                      })
@@ -726,12 +726,12 @@ public sealed class PromptDocumentationCoverageTests
         {
             Assert.Contains("Faction Materialization", guidance, StringComparison.Ordinal);
             Assert.Contains("factionCoreChanges", guidance, StringComparison.Ordinal);
-            Assert.Contains("legacy promotion", guidance, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("receipt-less", guidance, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("empty_by_design", guidance, StringComparison.Ordinal);
         }
 
         Assert.Contains(
-            "faction creation, legacy promotion, or ordinary faction update",
+            "faction creation or ordinary faction update",
             daemon,
             StringComparison.OrdinalIgnoreCase);
         Assert.Contains("$script:CompactMortalFactionTemplatePath", daemon, StringComparison.Ordinal);
@@ -788,7 +788,10 @@ public sealed class PromptDocumentationCoverageTests
                      "\"factionRankChanges\"",
                      "\"factionResourceChanges\"",
                      "\"factionProjectUpdates\"",
-                     "\"factionChronicleUpdates\""
+                     "\"factionChronicleUpdates\"",
+                     "targetFiles",
+                     "game_state/world/current_location.json",
+                     "game_state/world/world_map.json"
                  })
         {
             Assert.Contains(requiredText, template, StringComparison.Ordinal);

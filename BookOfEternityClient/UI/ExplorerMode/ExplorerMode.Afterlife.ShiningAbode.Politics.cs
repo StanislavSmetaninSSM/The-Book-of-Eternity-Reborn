@@ -628,7 +628,7 @@ public partial class ExplorerMode
             .Where(entry =>
                 string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
                 (string.IsNullOrWhiteSpace(sameFactionId) ||
-                 string.Equals(GetNodeString(entry["shiningFactionId"]), sameFactionId, StringComparison.OrdinalIgnoreCase)))
+                 string.Equals(GetNodeString(entry["shiningFactionId"]), sameFactionId, StringComparison.Ordinal)))
             .Select(entry =>
             {
                 var residentId = GetNodeString(entry["residentId"]) ?? string.Empty;
@@ -651,7 +651,7 @@ public partial class ExplorerMode
             foreach (var resident in residentEntries.OfType<JsonObject>()
                          .Where(entry =>
                              string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
-                             string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase)))
+                             string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.Ordinal)))
             {
                 var residentId = GetNodeString(resident["residentId"]) ?? string.Empty;
                 choices.Add(new ShiningActorChoice(

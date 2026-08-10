@@ -743,7 +743,7 @@
     </ExistingRulesCompatibility>
     <FactionMaterialization>
         <![CDATA[
-        Faction Materialization v1: use the compact Mortal faction template for every faction creation, legacy promotion, or ordinary faction update. Creation and legacy promotion use a full factionDataChanges carrier with the complete materialization envelope and explicit populated/empty_by_design dispositions. Preserve an accepted envelope on later turns and route ordinary semantic changes through factionCoreChanges. Dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands remain separate.
+        Faction Materialization v1: use the compact Mortal faction template for every faction creation or ordinary faction update. Only a genuinely new faction uses the full factionDataChanges carrier with the complete materialization envelope and explicit populated/empty_by_design dispositions. Every existing faction must already have an accepted envelope; preserve it and route ordinary semantic changes through factionCoreChanges. Receipt-less canonical faction state and a full resend of an existing identity are invalid. Dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands remain separate.
         ]]>
     </FactionMaterialization>
 </InstructionBlock>

@@ -7,29 +7,21 @@ namespace BookOfEternityClient.Services;
 internal enum FactionTouchKind
 {
     New,
-    LegacyPromotion,
     AlreadyMaterialized,
-    ClientDerivedOnly,
-    UntouchedLegacy
+    InvalidReceiptless
 }
 
 internal static class FactionTouchClassifier
 {
     internal static FactionTouchKind Classify(
         bool existedPreTurn,
-        bool hadReceiptPreTurn,
-        bool gmAuthoredTouch,
-        bool clientDerivedOnly)
+        bool hadReceiptPreTurn)
     {
         if (!existedPreTurn)
             return FactionTouchKind.New;
-        if (clientDerivedOnly && !gmAuthoredTouch)
-            return FactionTouchKind.ClientDerivedOnly;
-        if (hadReceiptPreTurn)
-            return FactionTouchKind.AlreadyMaterialized;
-        return gmAuthoredTouch
-            ? FactionTouchKind.LegacyPromotion
-            : FactionTouchKind.UntouchedLegacy;
+        return hadReceiptPreTurn
+            ? FactionTouchKind.AlreadyMaterialized
+            : FactionTouchKind.InvalidReceiptless;
     }
 }
 
@@ -228,9 +220,6 @@ public partial class ValidationService
             return;
         }
 
-        var externalTouchIds = rawBeforeNormalization
-            ? await ReadRawMortalExternalFactionTouchIdsAsync(issues)
-            : new HashSet<string>(StringComparer.Ordinal);
         var factionIds = currentCanonical.Keys
             .Concat(currentFull.Keys)
             .Distinct(StringComparer.Ordinal)
@@ -245,38 +234,33 @@ public partial class ValidationService
                 preTurnFaction?.Faction.TryGetProperty(
                     FactionMaterializationContract.PropertyName,
                     out _) == true;
+            var touchKind = FactionTouchClassifier.Classify(
+                existedPreTurn: preTurnFaction != null,
+                hadReceiptPreTurn);
             var carrier = SelectMortalFactionCarrier(
                 canonicalCarrier,
                 fullCarrier,
-                hadReceiptPreTurn,
+                touchKind,
                 factionId,
                 issues);
             if (carrier == null)
                 continue;
 
-            if (fullCarrier != null && hadReceiptPreTurn)
+            if (fullCarrier != null && preTurnFaction != null)
             {
                 AddExistingFactionFullResendIssue(
                     fullCarrier.Context,
                     "mortal_faction",
                     factionId,
+                    touchKind,
                     issues);
             }
 
-            var gmAuthoredTouch =
-                fullCarrier != null ||
-                preTurnFaction == null ||
-                externalTouchIds.Contains(factionId) ||
-                !FactionJsonSemanticallyEqual(
-                    carrier.Faction,
-                    preTurnFaction.Faction);
             ValidateFactionContinuity(
                 carrier,
                 preTurnFaction,
                 FactionMaterializationFamily.Mortal,
                 "mortal_faction",
-                gmAuthoredTouch,
-                clientDerivedOnly: false,
                 issues,
                 materializedFactions);
         }
@@ -410,66 +394,14 @@ public partial class ValidationService
             return;
         }
 
-        var externalTouchIds = rawBeforeNormalization
-            ? await ReadRawShiningExternalFactionTouchIdsAsync(
-                currentDocument.RootElement,
-                preTurnDocument.RootElement,
-                issues)
-            : new HashSet<string>(StringComparer.Ordinal);
         foreach (var (factionId, carrier) in currentFactions)
         {
             preTurnFactions.TryGetValue(factionId, out var preTurnFaction);
-            var exactEquality =
-                preTurnFaction != null &&
-                FactionJsonSemanticallyEqual(
-                    carrier.Faction,
-                    preTurnFaction.Faction);
-            var derivedEquality =
-                preTurnFaction != null &&
-                ShiningFactionJsonEqualIgnoringDerivedFields(
-                    carrier.Faction,
-                    preTurnFaction.Faction);
-            var externallyTouched = externalTouchIds.Contains(factionId);
-            var clientDerivedOnly =
-                !externallyTouched &&
-                !exactEquality &&
-                derivedEquality;
             ValidateFactionContinuity(
                 carrier,
                 preTurnFaction,
                 FactionMaterializationFamily.Shining,
                 "shining_faction",
-                gmAuthoredTouch:
-                    preTurnFaction == null ||
-                    externallyTouched ||
-                    !derivedEquality,
-                clientDerivedOnly,
-                issues,
-                materializedFactions);
-        }
-
-        foreach (var (factionId, preTurnFaction) in
-                 preTurnFactions)
-        {
-            if (currentFactions.ContainsKey(factionId) ||
-                !externalTouchIds.Contains(factionId) ||
-                preTurnFaction.Faction.TryGetProperty(
-                    FactionMaterializationContract.PropertyName,
-                    out _))
-            {
-                continue;
-            }
-
-            ValidateFactionContinuity(
-                new FactionCarrier(
-                    preTurnFaction.Faction.Clone(),
-                    preTurnFaction.Context,
-                    factionId),
-                preTurnFaction,
-                FactionMaterializationFamily.Shining,
-                "shining_faction",
-                gmAuthoredTouch: true,
-                clientDerivedOnly: false,
                 issues,
                 materializedFactions);
         }
@@ -683,7 +615,7 @@ public partial class ValidationService
     private static FactionCarrier? SelectMortalFactionCarrier(
         FactionCarrier? canonicalCarrier,
         FactionCarrier? fullCarrier,
-        bool hadReceiptPreTurn,
+        FactionTouchKind touchKind,
         string factionId,
         List<ValidationIssue> issues)
     {
@@ -701,9 +633,10 @@ public partial class ValidationService
             section: "FactionMaterialization",
             expected: "one effective current faction carrier",
             actual: $"also present at {canonicalCarrier.Context}",
-            repairHint: hadReceiptPreTurn
+            repairHint: touchKind == FactionTouchKind.AlreadyMaterialized
                 ? "Use only narrow update authority for an already materialized faction and preserve its canonical carrier."
-                : "Keep one full carrier for a new or promoted faction; do not duplicate the same exact identity in canonical and full arrays."));
+                : "Keep one full carrier only for a genuinely new faction; an existing receipt-less identity is invalid current-schema state.",
+            factionRepairClassification: touchKind));
         return fullCarrier;
     }
 
@@ -712,8 +645,6 @@ public partial class ValidationService
         PreTurnFaction? preTurn,
         FactionMaterializationFamily family,
         string factionType,
-        bool gmAuthoredTouch,
-        bool clientDerivedOnly,
         List<ValidationIssue> issues,
         List<(
             JsonElement Faction,
@@ -728,37 +659,14 @@ public partial class ValidationService
                 out _) == true;
         var touchKind = FactionTouchClassifier.Classify(
             existedPreTurn,
-            hadReceiptPreTurn,
-            gmAuthoredTouch,
-            clientDerivedOnly);
-        var hasCurrentEnvelope = current.Faction.TryGetProperty(
-            FactionMaterializationContract.PropertyName,
-            out _);
-        if (touchKind == FactionTouchKind.LegacyPromotion &&
-            !hasCurrentEnvelope)
+            hadReceiptPreTurn);
+        if (touchKind == FactionTouchKind.InvalidReceiptless)
         {
-            issues.Add(new ValidationIssue(
-                current.Context,
-                IssueSeverity.Error,
-                "A GM-authored change to a legacy faction requires complete same-turn promotion.",
-                code: "faction_legacy_promotion_required",
-                actor: $"{factionType}:{current.FactionId}",
-                section: "FactionMaterialization",
-                expected:
-                    "one complete same-turn materialization envelope for this exact legacy faction",
-                actual: "legacy faction touched without complete promotion",
-                repairHint:
-                    "Promote this exact faction through its complete full materialization carrier in the same accepted turn."));
-        }
-
-        var requireEnvelope = touchKind is
-            FactionTouchKind.New or
-            FactionTouchKind.LegacyPromotion or
-            FactionTouchKind.AlreadyMaterialized;
-        if (touchKind == FactionTouchKind.ClientDerivedOnly &&
-            hadReceiptPreTurn)
-        {
-            requireEnvelope = true;
+            AddObsoleteReceiptlessFactionIssue(
+                current,
+                factionType,
+                issues);
+            return;
         }
 
         var structuralEvidence = new FactionMaterializationEvidence(
@@ -766,14 +674,15 @@ public partial class ValidationService
             current.FactionId,
             new Dictionary<string, bool>(StringComparer.Ordinal),
             new Dictionary<string, bool>(StringComparer.Ordinal),
-            new Dictionary<string, bool>(StringComparer.Ordinal));
+            new Dictionary<string, bool>(StringComparer.Ordinal),
+            touchKind);
 
         issues.AddRange(FactionMaterializationContract.Validate(
             current.Faction,
             current.Context,
             family,
             structuralEvidence,
-            requireEnvelope,
+            requireEnvelope: true,
             deferEvidenceConsistency: true));
 
         if (hadReceiptPreTurn)
@@ -819,13 +728,29 @@ public partial class ValidationService
                 carrier.FactionId,
                 new Dictionary<string, bool>(StringComparer.Ordinal),
                 new Dictionary<string, bool>(StringComparer.Ordinal),
-                new Dictionary<string, bool>(StringComparer.Ordinal));
+                new Dictionary<string, bool>(StringComparer.Ordinal),
+                carrier.Faction.TryGetProperty(
+                    FactionMaterializationContract.PropertyName,
+                    out _)
+                    ? FactionTouchKind.AlreadyMaterialized
+                    : FactionTouchKind.InvalidReceiptless);
+            if (!carrier.Faction.TryGetProperty(
+                    FactionMaterializationContract.PropertyName,
+                    out _))
+            {
+                AddObsoleteReceiptlessFactionIssue(
+                    carrier,
+                    factionType,
+                    issues);
+                continue;
+            }
+
             issues.AddRange(FactionMaterializationContract.Validate(
                 carrier.Faction,
                 carrier.Context,
                 family,
                 structuralEvidence,
-                requireEnvelope: false,
+                requireEnvelope: true,
                 deferEvidenceConsistency: true));
             if (carrier.Faction.TryGetProperty(
                     FactionMaterializationContract.PropertyName,
@@ -838,6 +763,26 @@ public partial class ValidationService
                     carrier.FactionId));
             }
         }
+    }
+
+    private static void AddObsoleteReceiptlessFactionIssue(
+        FactionCarrier carrier,
+        string factionType,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            carrier.Context,
+            IssueSeverity.Error,
+            "Canonical faction state does not contain the required current-schema materialization receipt.",
+            code: "faction_materialization_obsolete_receiptless_state",
+            actor: $"{factionType}:{carrier.FactionId}",
+            section: "FactionMaterialization",
+            expected: "one complete immutable materialization receipt",
+            actual: "receipt-less obsolete faction state",
+            repairHint:
+                "Re-author this development fixture or bootstrap state in the current schema; runtime promotion and compatibility loading are not supported.",
+            factionRepairClassification:
+                FactionTouchKind.InvalidReceiptless));
     }
 
     private static void ValidateHistoricalFactionMaterializationEnvelope(
@@ -868,7 +813,9 @@ public partial class ValidationService
             section: "FactionMaterialization",
             expected: "semantic equality with validated pre-turn materialization receipt",
             actual: hasCurrentEnvelope ? "changed" : "missing",
-            repairHint: "Restore the exact validated pre-turn materialization receipt and apply gameplay changes through supported narrow authority."));
+            repairHint: "Restore the exact validated pre-turn materialization receipt and apply gameplay changes through supported narrow authority.",
+            factionRepairClassification:
+                FactionTouchKind.AlreadyMaterialized));
     }
 
     private static void AddMissingHistoricalFactionIssues(
@@ -896,7 +843,9 @@ public partial class ValidationService
                 section: "FactionMaterialization",
                 expected: "canonical faction carrier with its validated pre-turn receipt",
                 actual: "canonical faction carrier missing",
-                repairHint: "Restore the exact faction carrier and materialization receipt from validated pre-turn authority."));
+                repairHint: "Restore the exact faction carrier and materialization receipt from validated pre-turn authority.",
+                factionRepairClassification:
+                    FactionTouchKind.AlreadyMaterialized));
         }
     }
 
@@ -917,246 +866,6 @@ public partial class ValidationService
         {
             return false;
         }
-    }
-
-    private static bool ShiningFactionJsonEqualIgnoringDerivedFields(
-        JsonElement left,
-        JsonElement right)
-    {
-        try
-        {
-            var leftNode = JsonNode.Parse(left.GetRawText()) as JsonObject;
-            var rightNode = JsonNode.Parse(right.GetRawText()) as JsonObject;
-            if (leftNode == null || rightNode == null)
-                return false;
-
-            foreach (var field in ShiningClientDerivedFactionFields)
-            {
-                leftNode.Remove(field);
-                rightNode.Remove(field);
-            }
-
-            return JsonNode.DeepEquals(leftNode, rightNode);
-        }
-        catch (Exception exception) when (
-            exception is JsonException or
-            ArgumentException or
-            InvalidOperationException)
-        {
-            return false;
-        }
-    }
-
-    private static void AddRawFactionTouchEvidence(
-        Dictionary<string, List<RawFactionTouchEvidence>> evidenceByFaction,
-        string? factionId,
-        string sourceIdentity,
-        JsonNode? payload)
-    {
-        if (string.IsNullOrWhiteSpace(factionId) || payload == null)
-            return;
-        if (!evidenceByFaction.TryGetValue(factionId, out var evidence))
-        {
-            evidence = new List<RawFactionTouchEvidence>();
-            evidenceByFaction[factionId] = evidence;
-        }
-
-        evidence.Add(new RawFactionTouchEvidence(
-            sourceIdentity,
-            payload.DeepClone(),
-            BuildRawFactionTouchComparisonFingerprint(
-                sourceIdentity,
-                payload)));
-    }
-
-    private static HashSet<string> FindChangedRawFactionTouchIds(
-        IReadOnlyDictionary<string, List<RawFactionTouchEvidence>> current,
-        IReadOnlyDictionary<string, List<RawFactionTouchEvidence>> preTurn)
-    {
-        var changed = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var factionId in current.Keys
-                     .Concat(preTurn.Keys)
-                     .Distinct(StringComparer.Ordinal))
-        {
-            current.TryGetValue(factionId, out var currentEvidence);
-            preTurn.TryGetValue(factionId, out var preTurnEvidence);
-            if (!RawFactionTouchEvidenceMultisetEquals(
-                    currentEvidence ?? [],
-                    preTurnEvidence ?? []))
-            {
-                changed.Add(factionId);
-            }
-        }
-
-        return changed;
-    }
-
-    private static bool RawFactionTouchEvidenceMultisetEquals(
-        IReadOnlyList<RawFactionTouchEvidence> left,
-        IReadOnlyList<RawFactionTouchEvidence> right)
-    {
-        if (left.Count != right.Count)
-            return false;
-
-        var counts =
-            new Dictionary<RawFactionTouchComparisonKey, int>();
-        foreach (var item in left)
-        {
-            var key = new RawFactionTouchComparisonKey(
-                item.SourceIdentity,
-                item.ComparisonFingerprint);
-            counts.TryGetValue(key, out var count);
-            counts[key] = count + 1;
-        }
-
-        foreach (var item in right)
-        {
-            var key = new RawFactionTouchComparisonKey(
-                item.SourceIdentity,
-                item.ComparisonFingerprint);
-            if (!counts.TryGetValue(key, out var count))
-                return false;
-
-            if (count == 1)
-                counts.Remove(key);
-            else
-                counts[key] = count - 1;
-        }
-
-        return counts.Count == 0;
-    }
-
-    private static string BuildRawFactionTouchComparisonFingerprint(
-        string sourceIdentity,
-        JsonNode payload)
-    {
-        var result = new StringBuilder();
-        AppendRawFactionTouchCanonicalNode(
-            result,
-            sourceIdentity,
-            "$",
-            payload);
-        return result.ToString();
-    }
-
-    private static void AppendRawFactionTouchCanonicalNode(
-        StringBuilder result,
-        string sourceIdentity,
-        string path,
-        JsonNode? node)
-    {
-        switch (node)
-        {
-            case null:
-                result.Append("null");
-                return;
-            case JsonObject value:
-            {
-                result.Append('{');
-                var first = true;
-                foreach (var property in value.OrderBy(
-                             item => item.Key,
-                             StringComparer.Ordinal))
-                {
-                    if (!first)
-                        result.Append(',');
-                    first = false;
-                    result.Append(
-                        JsonSerializer.Serialize(property.Key));
-                    result.Append(':');
-                    AppendRawFactionTouchCanonicalNode(
-                        result,
-                        sourceIdentity,
-                        $"{path}.{property.Key}",
-                        property.Value);
-                }
-
-                result.Append('}');
-                return;
-            }
-            case JsonArray value:
-            {
-                var items = new List<string>(value.Count);
-                foreach (var item in value)
-                {
-                    var itemFingerprint = new StringBuilder();
-                    AppendRawFactionTouchCanonicalNode(
-                        itemFingerprint,
-                        sourceIdentity,
-                        $"{path}[]",
-                        item);
-                    items.Add(itemFingerprint.ToString());
-                }
-
-                if (RawFactionTouchArrayIsContractUnordered(
-                        sourceIdentity,
-                        path))
-                {
-                    items.Sort(StringComparer.Ordinal);
-                }
-
-                result.Append('[');
-                for (var index = 0; index < items.Count; index++)
-                {
-                    if (index > 0)
-                        result.Append(',');
-                    result.Append(items[index]);
-                }
-
-                result.Append(']');
-                return;
-            }
-            default:
-                result.Append(node.ToJsonString());
-                return;
-        }
-    }
-
-    private static bool RawFactionTouchArrayIsContractUnordered(
-        string sourceIdentity,
-        string path)
-    {
-        if (string.Equals(
-                sourceIdentity,
-                $"{MortalFactionStructurePath}.entries",
-                StringComparison.Ordinal))
-        {
-            return path is
-                "$.leadership.leaderNpcIds" or
-                "$.ranks.branches" or
-                "$.ranks.branches[].ranks" or
-                "$.ranks.branches[].ranks[].availableBranches" or
-                "$.structuredBonuses";
-        }
-
-        if (string.Equals(
-                sourceIdentity,
-                $"{MortalFactionResourcesPath}.entries",
-                StringComparison.Ordinal))
-        {
-            return path is
-                "$.metaResources" or
-                "$.strategicGoods";
-        }
-
-        if (string.Equals(
-                sourceIdentity,
-                $"{MortalFactionCustomPath}.entries",
-                StringComparison.Ordinal))
-        {
-            return path == "$.customStates";
-        }
-
-        if (sourceIdentity is
-                "game_state/factions/faction_projects.json.activeProjects" or
-                "game_state/factions/faction_projects.json.completedProjects")
-        {
-            return path is
-                "$.totalResourceCost" or
-                "$.resourcesSpent";
-        }
-
-        return false;
     }
 
     private static string? ReadNonEmptyFactionString(
@@ -1229,18 +938,46 @@ public partial class ValidationService
         string context,
         string factionType,
         string factionId,
+        FactionTouchKind classification,
         List<ValidationIssue> issues)
     {
         issues.Add(new ValidationIssue(
             context,
             IssueSeverity.Error,
-            "An already materialized faction cannot be resent through the full Mortal carrier.",
+            "An existing faction cannot be resent through the full Mortal carrier.",
             code: "faction_materialization_existing_full_resend_forbidden",
             actor: $"{factionType}:{factionId}",
             section: "FactionMaterialization",
             expected: "supported narrow update authority",
             actual: "full factionDataChanges carrier",
-            repairHint: "Preserve the canonical faction and historical receipt; send only a supported narrow command."));
+            repairHint: "Preserve the canonical faction and historical receipt; send only a supported narrow command.",
+            factionRepairClassification: classification));
+    }
+
+    private static void ApplyFactionRepairClassification(
+        List<ValidationIssue> issues,
+        int startIndex,
+        string coordinate,
+        FactionTouchKind classification)
+    {
+        for (var index = startIndex; index < issues.Count; index++)
+        {
+            var issue = issues[index];
+            if (issue.FactionRepairClassification.HasValue ||
+                !string.Equals(
+                    issue.Section,
+                    "FactionMaterialization",
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    issue.Actor,
+                    coordinate,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            issue.FactionRepairClassification = classification;
+        }
     }
 
     private sealed record FactionCarrier(
@@ -1253,12 +990,4 @@ public partial class ValidationService
         string Context,
         string FactionId);
 
-    private sealed record RawFactionTouchEvidence(
-        string SourceIdentity,
-        JsonNode Payload,
-        string ComparisonFingerprint);
-
-    private readonly record struct RawFactionTouchComparisonKey(
-        string SourceIdentity,
-        string ComparisonFingerprint);
 }

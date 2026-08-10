@@ -1970,10 +1970,6 @@ public partial class GameEngine
             StringComparison.Ordinal) == true ||
         string.Equals(
             issue.Code,
-            "faction_legacy_promotion_required",
-            StringComparison.Ordinal) ||
-        string.Equals(
-            issue.Code,
             "faction_existing_full_resend_forbidden",
             StringComparison.Ordinal);
 
@@ -3082,13 +3078,9 @@ public partial class GameEngine
         };
         expectedShape.AddRange(
             factionIssues
-                .SelectMany(issue => new[]
-                {
-                    GetExactFactionMaterializationClassification(issue.Expected),
-                    GetExactFactionMaterializationClassification(issue.Actual)
-                })
-                .Where(classification => classification != null)
-                .Select(classification => classification!)
+                .Where(issue => issue.FactionRepairClassification.HasValue)
+                .Select(issue => GetFactionMaterializationRepairClassification(
+                    issue.FactionRepairClassification!.Value))
                 .Distinct(StringComparer.Ordinal)
                 .OrderBy(classification => classification, StringComparer.Ordinal));
 
@@ -3180,6 +3172,16 @@ public partial class GameEngine
 
         foreach (var issue in factionIssues)
         {
+            foreach (var repairTarget in issue.RepairTargetFiles)
+            {
+                if (allowedTargets.Contains(
+                        repairTarget,
+                        StringComparer.Ordinal))
+                {
+                    targetFiles.Add(repairTarget);
+                }
+            }
+
             foreach (var allowedTarget in allowedTargets)
             {
                 if (IssuePathNamesExactRepairRoot(issue.FilePath, allowedTarget))
@@ -3209,19 +3211,20 @@ public partial class GameEngine
         .Split('_')
         .Contains("missing", StringComparer.Ordinal);
 
-    private static string? GetExactFactionMaterializationClassification(string? value)
-    {
-        var classification = value?.Trim();
-        return classification switch
+    private static string GetFactionMaterializationRepairClassification(
+        FactionTouchKind classification) =>
+        classification switch
         {
-            "new" => "new",
-            "legacy_promotion" => "legacy_promotion",
-            "already_materialized" => "already_materialized",
-            "client_derived_only" => "client_derived_only",
-            "untouched_legacy" => "untouched_legacy",
-            _ => null
+            FactionTouchKind.New => "new",
+            FactionTouchKind.AlreadyMaterialized =>
+                "already_materialized",
+            FactionTouchKind.InvalidReceiptless =>
+                "invalid_receiptless",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(classification),
+                classification,
+                "Unsupported faction repair classification.")
         };
-    }
 
     private static ValidationRepairHarnessPacket BuildFactionIdentityRepairPacket(
         IReadOnlyList<ValidationIssue> factionIdentityErrors)

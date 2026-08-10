@@ -339,17 +339,12 @@ public partial class CanonicalStateNormalizer
                 backups);
 
         var previous = await ReadBackupObjectAsync(path, backups);
-        var promotedLegacyEntries =
-            CollectPromotedLegacyFactionChronicleEntries(
-                factionCorePrevious,
-                factionCoreCurrent).ToArray();
         var initialPreviousEntries =
             CollectInitialFactionChronicleEntries(factionCorePrevious).ToArray();
         var initialCurrentEntries =
             CollectInitialFactionChronicleEntries(factionCoreCurrent).ToArray();
         if (currentNode == null &&
             previous == null &&
-            promotedLegacyEntries.Length == 0 &&
             initialPreviousEntries.Length == 0 &&
             initialCurrentEntries.Length == 0)
         {
@@ -363,8 +358,6 @@ public partial class CanonicalStateNormalizer
             AddUniqueNode(entries, entry);
         foreach (var entry in CollectFactionChronicleEntries(currentNode))
             AddUniqueNode(entries, entry);
-        foreach (var entry in promotedLegacyEntries)
-            AddUniqueFactionChronicleEntry(entries, entry);
         foreach (var entry in initialPreviousEntries)
             AddUniqueFactionChronicleEntry(entries, entry);
         foreach (var entry in initialCurrentEntries)

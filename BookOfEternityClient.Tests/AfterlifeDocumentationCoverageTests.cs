@@ -4089,7 +4089,10 @@ public sealed class AfterlifeDocumentationCoverageTests
             "player_founding",
             "story",
             "Actor Materialization",
-            "shining_faction:");
+            "shining_faction:",
+            "receipt-less",
+            "case-sensitive",
+            "game_state/meta/afterlife_entity_profiles.json");
     }
 
     [Fact]
@@ -4104,7 +4107,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             "docs/audits/afterlife/shining-abode/Shining_Abode_Faction_Politics_Addendum.md",
             "active Guardian does not cause the client to invent a faction charter",
             "Actor Materialization",
-            "Chaos Sea Guardian Politics is Actor Materialization/living-world authority under #1500/#1368, not a Mortal or Shining faction");
+            "Chaos Sea Guardian Politics is Actor Materialization/living-world authority under #1500/#1368, not a Mortal or Shining faction",
+            "Every canonical Shining faction",
+            "case-sensitive");
         AssertFileContains("Examples/E_CLI_Afterlife_Turns.txt",
             "shining_faction_materialization_native_discovery_v1",
             "shining_faction_materialization_player_founding_v1",
@@ -4113,7 +4118,33 @@ public sealed class AfterlifeDocumentationCoverageTests
             "\"originType\": \"native_radiant\"",
             "\"originType\": \"player_founded\"",
             "\"visibility\": \"hidden\"",
-            "\"materialization\"");
+            "\"materialization\"",
+            "case-sensitive",
+            "game_state/meta/afterlife_entity_profiles.json");
+    }
+
+    [Fact]
+    public void ShiningFactionLifecycleGuidance_RequiresExplicitCurrentSchemaState()
+    {
+        var guidance = new[]
+        {
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        };
+
+        Assert.All(guidance, text =>
+        {
+            Assert.Contains(
+                "explicit `factionLifecycle.state`",
+                text,
+                StringComparison.Ordinal);
+            Assert.DoesNotContain(
+                "missing legacy lifecycle",
+                text,
+                StringComparison.OrdinalIgnoreCase);
+        });
     }
 
     [Fact]

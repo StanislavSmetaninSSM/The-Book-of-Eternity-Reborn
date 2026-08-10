@@ -40,6 +40,10 @@ public partial class ValidationService
             currentRoot!["factionDataChanges"] is JsonArray
             {
                 Count: > 0
+            } ||
+            currentRoot!["factions"] is JsonArray
+            {
+                Count: > 0
             };
         if (!needsPreTurnAuthority)
             return issues;
@@ -82,6 +86,12 @@ public partial class ValidationService
             return issues;
         }
 
+        await ValidateMortalFactionCanonicalAuthorityFenceAsync(
+            issues,
+            currentRoot!,
+            preTurnRoot!,
+            lookup.Manifest);
+
         var authority = await ReadFactionCoreChangesAuthorityAsync(
             currentRoot!,
             preTurnRoot!,
@@ -93,6 +103,191 @@ public partial class ValidationService
         issues.AddRange(evaluation.Issues);
         return issues;
     }
+
+    private async Task ValidateMortalFactionCanonicalAuthorityFenceAsync(
+        List<ValidationIssue> issues,
+        JsonObject currentCore,
+        JsonObject preTurnCore,
+        ValidationPendingTurnSnapshotManifest manifest)
+    {
+        var preTurnFactions =
+            preTurnCore["factions"] as JsonArray ?? new JsonArray();
+        var preTurnFactionIds = preTurnFactions
+            .OfType<JsonObject>()
+            .Select(faction => GetNodeString(faction["factionId"]))
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.Ordinal);
+
+        if (currentCore["factions"] is JsonArray currentFactions)
+        {
+            foreach (var faction in currentFactions.OfType<JsonObject>())
+            {
+                var factionId = GetNodeString(faction["factionId"]);
+                if (string.IsNullOrWhiteSpace(factionId))
+                    continue;
+
+                var preTurnMatches = preTurnFactions
+                    .OfType<JsonObject>()
+                    .Where(candidate => string.Equals(
+                        GetNodeString(candidate["factionId"]),
+                        factionId,
+                        StringComparison.Ordinal))
+                    .ToArray();
+                if (preTurnMatches.Length == 0)
+                {
+                    issues.Add(MortalFactionDirectAuthorityIssue(
+                        $"{FactionCoreChangesContract.FactionCorePath}.factions",
+                        "faction_materialization_mortal_direct_canonical_creation_forbidden",
+                        factionId,
+                        FactionTouchKind.New,
+                        "A new Mortal faction was written directly to canonical factions[]."));
+                    continue;
+                }
+
+                if (!preTurnMatches.Any(candidate =>
+                        JsonNode.DeepEquals(candidate, faction)))
+                {
+                    issues.Add(MortalFactionDirectAuthorityIssue(
+                        $"{FactionCoreChangesContract.FactionCorePath}.factions",
+                        "faction_materialization_mortal_direct_canonical_mutation_forbidden",
+                        factionId,
+                        FactionTouchKind.AlreadyMaterialized,
+                        "An existing Mortal faction canonical object differs from its validated pre-turn baseline."));
+                }
+            }
+        }
+
+        foreach (var carrier in MortalFactionCanonicalSidecarCarriers)
+        {
+            var currentJson = await _fs.ReadFileAsync(carrier.Path);
+            if (!TryParseUniqueJsonNode(currentJson, out var currentNode) ||
+                currentNode is not JsonObject currentRoot)
+            {
+                continue;
+            }
+
+            var preTurnJson =
+                await ReadValidatedPendingTurnSnapshotFileAsync(
+                    manifest,
+                    carrier.Path);
+            _ = TryParseUniqueJsonNode(preTurnJson, out var preTurnNode);
+            var preTurnRoot = preTurnNode as JsonObject;
+
+            foreach (var propertyName in carrier.CanonicalProperties)
+            {
+                if (currentRoot[propertyName] is not JsonArray currentEntries)
+                    continue;
+                var preTurnEntries =
+                    preTurnRoot?[propertyName] as JsonArray ?? new JsonArray();
+                var index = 0;
+                foreach (var entry in currentEntries.OfType<JsonObject>())
+                {
+                    var factionId = GetNodeString(entry["factionId"]);
+                    if (string.IsNullOrWhiteSpace(factionId))
+                    {
+                        index++;
+                        continue;
+                    }
+
+                    if (!preTurnEntries
+                            .OfType<JsonObject>()
+                            .Any(candidate =>
+                                SameMortalFactionSidecarIdentity(
+                                    propertyName,
+                                    candidate,
+                                    entry) &&
+                                JsonNode.DeepEquals(candidate, entry)))
+                    {
+                        issues.Add(MortalFactionDirectAuthorityIssue(
+                            $"{carrier.Path}.{propertyName}[{index}]",
+                            "faction_materialization_mortal_direct_sidecar_mutation_forbidden",
+                            factionId,
+                            preTurnFactionIds.Contains(factionId)
+                                ? FactionTouchKind.AlreadyMaterialized
+                                : FactionTouchKind.New,
+                            "Mortal faction sidecar state was created or changed outside its canonical command carrier.",
+                            carrier.Path));
+                    }
+
+                    index++;
+                }
+            }
+        }
+    }
+
+    private static bool SameMortalFactionSidecarIdentity(
+        string propertyName,
+        JsonObject left,
+        JsonObject right)
+    {
+        if (!string.Equals(
+                GetNodeString(left["factionId"]),
+                GetNodeString(right["factionId"]),
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        if (propertyName is not ("activeProjects" or "completedProjects"))
+            return true;
+
+        return string.Equals(
+            GetNodeString(left["projectId"]),
+            GetNodeString(right["projectId"]),
+            StringComparison.Ordinal);
+    }
+
+    private static ValidationIssue MortalFactionDirectAuthorityIssue(
+        string filePath,
+        string code,
+        string factionId,
+        FactionTouchKind classification,
+        string message,
+        string? sidecarPath = null) =>
+        new(
+            filePath,
+            IssueSeverity.Error,
+            message,
+            classification,
+            code: code,
+            actor: $"mortal_faction:{factionId}",
+            section: "FactionMaterialization",
+            expected:
+                "exact validated pre-turn canonical baseline; new factions only through factionDataChanges; existing changes only through canonical command arrays",
+            actual: "unexplained current canonical state",
+            repairHint:
+                "Restore the exact pre-turn carrier and express the intended change through factionDataChanges or the matching narrow command array.",
+            repairTargetFiles: sidecarPath == null
+                ? new[] { FactionCoreChangesContract.FactionCorePath }
+                : new[]
+                {
+                    FactionCoreChangesContract.FactionCorePath,
+                    sidecarPath
+                });
+
+    private static readonly MortalFactionCanonicalSidecarCarrier[]
+        MortalFactionCanonicalSidecarCarriers =
+        {
+            new(
+                MortalFactionStructurePath,
+                new[] { "entries" }),
+            new(
+                MortalFactionResourcesPath,
+                new[] { "entries" }),
+            new(
+                MortalFactionProjectsPath,
+                new[] { "activeProjects", "completedProjects" }),
+            new(
+                MortalFactionCustomPath,
+                new[] { "entries" }),
+            new(
+                MortalFactionChroniclesPath,
+                new[] { "entries" })
+        };
+
+    private sealed record MortalFactionCanonicalSidecarCarrier(
+        string Path,
+        IReadOnlyList<string> CanonicalProperties);
 
     private bool TryParseFactionCoreChangesRoot(
         string? json,

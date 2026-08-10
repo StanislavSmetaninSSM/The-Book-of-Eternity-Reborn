@@ -188,60 +188,6 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static IEnumerable<JsonObject>
-        CollectPromotedLegacyFactionChronicleEntries(
-            JsonNode? previousFactionCore,
-            JsonNode? currentFactionCore)
-    {
-        var promotedFactionIds = CollectFactionEntryObjects(
-                currentFactionCore,
-                "factionDataChanges")
-            .Select(NormalizeFactionCoreEntry)
-            .Where(faction =>
-                faction[FactionMaterializationContract.PropertyName]
-                    is JsonObject)
-            .Select(faction => GetNodeString(faction["factionId"]))
-            .Where(factionId => !string.IsNullOrWhiteSpace(factionId))
-            .Select(factionId => factionId!)
-            .ToHashSet(StringComparer.Ordinal);
-
-        if (promotedFactionIds.Count == 0)
-            yield break;
-
-        foreach (var rawFaction in CollectFactionEntryObjects(
-                     previousFactionCore,
-                     "factions"))
-        {
-            var faction = NormalizeFactionCoreEntry(rawFaction);
-            var factionId = GetNodeString(faction["factionId"]);
-            var factionName =
-                GetNodeString(faction["factionName"]) ??
-                GetNodeString(faction["name"]);
-            if (string.IsNullOrWhiteSpace(factionId) ||
-                !promotedFactionIds.Contains(factionId) ||
-                faction[FactionMaterializationContract.PropertyName]
-                    is JsonObject ||
-                faction["scribeChronicle"] is not JsonArray entries)
-            {
-                continue;
-            }
-
-            foreach (var entryNode in entries)
-            {
-                var entry = GetNodeString(entryNode);
-                if (string.IsNullOrWhiteSpace(entry))
-                    continue;
-
-                yield return new JsonObject
-                {
-                    ["factionId"] = factionId,
-                    ["factionName"] = factionName,
-                    ["entry"] = entry
-                };
-            }
-        }
-    }
-
     private static void AddUniqueFactionChronicleEntry(
         JsonArray entries,
         JsonNode candidate)

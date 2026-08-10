@@ -21,15 +21,6 @@ public partial class ValidationService
             "hidden"
         };
 
-    private static readonly HashSet<string>
-        ShiningClientDerivedFactionFields =
-            new(StringComparer.Ordinal)
-            {
-                "factionStrength",
-                "derivedTier",
-                "serviceMultiplier"
-            };
-
     private void ValidateShiningAbodeStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         RequireString(root, contextPrefix, issues, "availability");
@@ -1625,8 +1616,11 @@ public partial class ValidationService
             string factionId,
             string message,
             string? expected = null,
-            string? actual = null) =>
-        new(
+            string? actual = null,
+            IReadOnlyList<string>? repairTargetFiles = null,
+            FactionTouchKind? repairClassification = null)
+    {
+        var issue = new ValidationIssue(
             path,
             IssueSeverity.Error,
             message,
@@ -1636,7 +1630,11 @@ public partial class ValidationService
             expected: expected,
             actual: actual,
             repairHint:
-                "Repair only this Shining faction's authored semantic or materialization bundle.");
+                "Repair only this Shining faction's authored semantic or materialization bundle.",
+            repairTargetFiles: repairTargetFiles);
+        issue.FactionRepairClassification = repairClassification;
+        return issue;
+    }
 
     private string ValidateShiningFactionLifecycleObject(JsonElement faction, string contextPrefix, List<ValidationIssue> issues)
     {

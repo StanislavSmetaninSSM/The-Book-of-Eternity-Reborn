@@ -524,20 +524,11 @@ internal static class FactionCoreChangesContract
             return;
         }
 
-        var sameTurnPromotion =
-            string.Equals(
-                current.Section,
-                "factionDataChanges",
-                StringComparison.Ordinal) &&
-            HasCompleteMortalReceipt(current.Faction, factionId);
-        if (!sameTurnPromotion)
-        {
-            issues.Add(Error(
-                $"{context}.factionId",
-                "faction_core_changes_target_not_materialized",
-                "A legacy target must be completely promoted through factionDataChanges in the same turn before a narrow command may apply.",
-                factionId));
-        }
+        issues.Add(Error(
+            $"{context}.factionId",
+            "faction_core_changes_target_not_materialized",
+            "A current-schema narrow command requires a pre-turn faction with a complete immutable materialization receipt.",
+            factionId));
     }
 
     private static void ValidateDirectFullResendBypass(
@@ -559,10 +550,7 @@ internal static class FactionCoreChangesContract
                     string.Equals(
                         reference.FactionId,
                         factionId,
-                        StringComparison.Ordinal) &&
-                    HasCompleteMortalReceipt(
-                        reference.Faction,
-                        factionId)))
+                        StringComparison.Ordinal)))
             {
                 continue;
             }
@@ -570,7 +558,7 @@ internal static class FactionCoreChangesContract
             issues.Add(Error(
                 $"{FactionCorePath}.factionDataChanges[{index}]",
                 "faction_existing_full_resend_forbidden",
-                "An already materialized Mortal faction cannot be resent through the full factionDataChanges carrier.",
+                "An existing Mortal faction cannot be resent through the full factionDataChanges carrier.",
                 factionId));
         }
     }
@@ -597,15 +585,6 @@ internal static class FactionCoreChangesContract
                 continue;
             }
 
-            if (TryResolveSameTurnPromotionOverlay(
-                    candidates,
-                    preTurnFactions,
-                    out var promoted))
-            {
-                result.Add(promoted);
-                continue;
-            }
-
             issues.Add(Error(
                 candidates[1].Path,
                 "faction_core_changes_duplicate_effective_identity",
@@ -615,66 +594,6 @@ internal static class FactionCoreChangesContract
         }
 
         return result;
-    }
-
-    private static bool TryResolveSameTurnPromotionOverlay(
-        IReadOnlyList<FactionReference> candidates,
-        IReadOnlyList<FactionReference> preTurnFactions,
-        out FactionReference promoted)
-    {
-        promoted = null!;
-        if (candidates.Count != 2)
-            return false;
-
-        var baselines = candidates
-            .Where(reference => string.Equals(
-                reference.Section,
-                "factions",
-                StringComparison.Ordinal))
-            .ToList();
-        var promotions = candidates
-            .Where(reference => string.Equals(
-                reference.Section,
-                "factionDataChanges",
-                StringComparison.Ordinal))
-            .ToList();
-        if (baselines.Count != 1 ||
-            promotions.Count != 1)
-        {
-            return false;
-        }
-
-        var baseline = baselines[0];
-        var promotion = promotions[0];
-        var factionId = baseline.FactionId;
-        if (factionId == null)
-            return false;
-
-        var previous = preTurnFactions
-            .Where(reference => string.Equals(
-                reference.FactionId,
-                factionId,
-                StringComparison.Ordinal))
-            .ToList();
-        if (previous.Count != 1 ||
-            HasCompleteMortalReceipt(
-                previous[0].Faction,
-                factionId) ||
-            HasCompleteMortalReceipt(
-                baseline.Faction,
-                factionId) ||
-            !HasCompleteMortalReceipt(
-                promotion.Faction,
-                factionId) ||
-            !JsonNode.DeepEquals(
-                baseline.Faction,
-                previous[0].Faction))
-        {
-            return false;
-        }
-
-        promoted = promotion;
-        return true;
     }
 
     private static void ValidateProfile(

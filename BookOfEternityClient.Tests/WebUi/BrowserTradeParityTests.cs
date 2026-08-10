@@ -1137,6 +1137,27 @@ public sealed class BrowserTradeParityTests : IDisposable
                 ["factionId"] = "faction_old",
                 ["originType"] = ShiningAbodeState.OriginTypeAscendedGuardian,
                 ["hallId"] = "hall_old",
+                ["creationProvenance"] = new JsonObject
+                {
+                    ["route"] = "story",
+                    ["authorityType"] = "guardian_ascension",
+                    ["authorityId"] = "guardian_old"
+                },
+                ["visibility"] = "revealed",
+                ["isPlayerVisible"] = true,
+                ["playerVisible"] = true,
+                ["currentAgenda"] = "Поддерживать торговлю Старого Дома.",
+                ["storyAuthority"] = new JsonObject
+                {
+                    ["authorityType"] = "guardian_ascension",
+                    ["authorityId"] = "guardian_old",
+                    ["factionRole"] = "patron_guardian"
+                },
+                ["factionLifecycle"] = new JsonObject
+                {
+                    ["state"] =
+                        ShiningAbodeState.FactionLifecycleStateActive
+                },
                 ["charter"] = new JsonObject
                 {
                     ["factionName"] = "Старый Дом",
@@ -1155,6 +1176,10 @@ public sealed class BrowserTradeParityTests : IDisposable
                 ["investCountThisAscension"] = 0,
                 ["projectArchetypesCountedThisAscension"] = new JsonArray(),
                 ["projects"] = new JsonArray(),
+                ["chronicle"] = new JsonArray(),
+                ["territorialInfluence"] = new JsonArray(),
+                ["resourceLedger"] = new JsonArray(),
+                ["tradeInventory"] = null,
                 ["tradeInventoryReceipts"] = new JsonArray(),
                 ["leadershipReceipts"] = new JsonArray(),
                 ["leadershipHistory"] = new JsonArray()
@@ -1198,6 +1223,13 @@ public sealed class BrowserTradeParityTests : IDisposable
                 }
             };
         }
+
+        ShiningFactionTestMaterialization.Apply(
+            shiningRoot["factions"]!.AsArray()[0]!.AsObject(),
+            materializedAtTurn: 1,
+            hasResidentAffiliations: false,
+            canTrade: true,
+            usesStoryState: true);
 
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, new JsonObject

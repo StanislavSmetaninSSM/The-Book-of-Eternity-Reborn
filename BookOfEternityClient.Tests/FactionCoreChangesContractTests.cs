@@ -330,7 +330,7 @@ public sealed class FactionCoreChangesContractTests
     }
 
     [Fact]
-    public void Evaluate_LegacyTargetWithoutSameTurnPromotion_IsRejected()
+    public void Evaluate_ReceiptlessTarget_IsRejected()
     {
         var preTurn = BuildMaterializedFactionCore();
         preTurn["factions"]![0]!.AsObject().Remove("materialization");
@@ -350,41 +350,33 @@ public sealed class FactionCoreChangesContractTests
     }
 
     [Fact]
-    public void Evaluate_SameTurnPromotionPlusCommand_TargetsPromotedCarrier()
+    public void Evaluate_ReceiptlessFullResendPlusCommand_IsRejected()
     {
         var preTurn = BuildMaterializedFactionCore();
-        var legacy = preTurn["factions"]![0]!.DeepClone().AsObject();
-        legacy.Remove("materialization");
-        preTurn["factions"] = new JsonArray(legacy);
+        var receiptless = preTurn["factions"]![0]!.DeepClone().AsObject();
+        receiptless.Remove("materialization");
+        preTurn["factions"] = new JsonArray(receiptless);
 
-        var promoted = legacy.DeepClone().AsObject();
-        promoted["materialization"] = BuildEnvelope(
+        var resent = receiptless.DeepClone().AsObject();
+        resent["materialization"] = BuildEnvelope(
             "faction_watch",
-            "fmat_promoted_watch");
+            "fmat_resent_watch");
         var command = BuildCommand(
             "faction_watch",
             "purposeAndPrinciples",
             BuildCompleteGroup("purposeAndPrinciples"));
         var current = new JsonObject
         {
-            ["factionDataChanges"] = new JsonArray(promoted),
+            ["factionDataChanges"] = new JsonArray(resent),
             [FactionCoreChangesContract.PropertyName] = new JsonArray(command)
         };
 
         var evaluation = Evaluate(current, preTurn);
 
-        Assert.True(evaluation.CanApply);
-        var result = current.DeepClone().AsObject();
-        FactionCoreChangesContract.Apply(result, evaluation);
-        var applied = Assert.Single(
-            result["factionDataChanges"]!.AsArray().OfType<JsonObject>());
-        Assert.Equal(
-            "Guard both banks of the river crossing.",
-            applied["purpose"]!.GetValue<string>());
-        Assert.Equal(
-            "fmat_promoted_watch",
-            applied["materialization"]!["materializationId"]!.GetValue<string>());
-        Assert.False(result.ContainsKey(FactionCoreChangesContract.PropertyName));
+        Assert.Contains(evaluation.Issues, issue =>
+            issue.Code == "faction_existing_full_resend_forbidden" &&
+            issue.Actor == "mortal_faction:faction_watch");
+        Assert.False(evaluation.CanApply);
     }
 
     [Fact]

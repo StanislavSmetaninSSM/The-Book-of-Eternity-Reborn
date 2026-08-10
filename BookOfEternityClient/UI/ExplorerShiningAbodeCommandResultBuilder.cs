@@ -444,7 +444,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ? string.Empty
             : GetString(selectedResident, "shiningFactionId", string.Empty);
         var targetFactions = visibleFactions
-            .Where(faction => !string.Equals(GetString(faction, "factionId", string.Empty), excludedSourceFactionId, StringComparison.OrdinalIgnoreCase))
+            .Where(faction => !string.Equals(GetString(faction, "factionId", string.Empty), excludedSourceFactionId, StringComparison.Ordinal))
             .ToArray();
         var residentOptions = selectedResident == null ? residents : [selectedResident];
 
@@ -553,7 +553,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var candidates = BuildLeadershipCandidateOptions(context, selectedFactionId).ToList();
         var supporters = EnumeratePlayerVisibleAscendedResidents(context, allowFactionless: false)
             .Where(resident => string.IsNullOrWhiteSpace(selectedFactionId) ||
-                               string.Equals(GetString(resident, "shiningFactionId", string.Empty), selectedFactionId, StringComparison.OrdinalIgnoreCase))
+                               string.Equals(GetString(resident, "shiningFactionId", string.Empty), selectedFactionId, StringComparison.Ordinal))
             .OrderBy(static resident => GetResidentDisplayName(resident), StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
@@ -3078,7 +3078,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
 
         foreach (var resident in EnumeratePlayerVisibleAscendedResidents(context, allowFactionless: false)
                      .Where(resident => string.IsNullOrWhiteSpace(selectedFactionId) ||
-                                        string.Equals(GetString(resident, "shiningFactionId", string.Empty), selectedFactionId, StringComparison.OrdinalIgnoreCase))
+                                        string.Equals(GetString(resident, "shiningFactionId", string.Empty), selectedFactionId, StringComparison.Ordinal))
                      .OrderBy(static resident => GetResidentDisplayName(resident), StringComparer.OrdinalIgnoreCase))
         {
             var residentId = GetString(resident, "residentId", string.Empty);

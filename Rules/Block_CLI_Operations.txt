@@ -1392,7 +1392,7 @@
   <description>Faction Materialization routing</description>
   <content>
    <![CDATA[
-   Faction Materialization v1 is mandatory for Mortal faction creation and legacy promotion. Read the compact Mortal faction template first. Full factionDataChanges is limited to those lifecycle routes and carries exact populated/empty_by_design dispositions. Preserve the envelope after acceptance; use factionCoreChanges for an ordinary semantic faction update and keep dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands on their existing surfaces.
+   Faction Materialization v1 is mandatory for every Mortal faction. Read the compact Mortal faction template first. Full factionDataChanges is limited to genuinely new creation and carries exact populated/empty_by_design dispositions. Every existing faction must already carry and preserve its accepted envelope; use factionCoreChanges for an ordinary semantic faction update. Receipt-less canonical faction state and a full resend of an existing identity are invalid. Keep dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands on their existing surfaces.
    ]]>
   </content>
  </rule>

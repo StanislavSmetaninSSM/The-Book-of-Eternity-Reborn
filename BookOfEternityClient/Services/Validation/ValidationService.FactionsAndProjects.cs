@@ -255,20 +255,23 @@ public partial class ValidationService
         var isMortalFullCarrier = itemContext.Contains(
             ".factionDataChanges[",
             StringComparison.Ordinal);
-        var isCreationOrPromotion = false;
-        var alreadyMaterialized = false;
+        var isCreation = false;
+        var existingPreTurn = false;
+        var existingPreTurnHadReceipt = false;
         var collidesWithPreTurnId = false;
         var materializationFactionId = string.Empty;
         if (isMortalFullCarrier)
         {
-            isCreationOrPromotion = TryClassifyMortalFullCarrier(
+            isCreation = TryClassifyMortalFullCarrier(
                 item,
                 out materializationFactionId,
-                out alreadyMaterialized,
+                out existingPreTurn,
+                out existingPreTurnHadReceipt,
                 out collidesWithPreTurnId);
         }
 
-        if (isCreationOrPromotion)
+        var factionIssueStart = issues.Count;
+        if (isCreation)
         {
             if (collidesWithPreTurnId)
             {
@@ -283,16 +286,33 @@ public partial class ValidationService
                 item,
                 itemContext,
                 materializationFactionId,
-                HasPreTurnMortalChronicle(materializationFactionId),
+                hasExistingChronicle: false,
                 issues);
         }
-        else if (isMortalFullCarrier && alreadyMaterialized)
+        else if (isMortalFullCarrier && existingPreTurn)
         {
             AddExistingFactionFullResendIssue(
                 itemContext,
                 "mortal_faction",
                 materializationFactionId,
+                existingPreTurnHadReceipt
+                    ? FactionTouchKind.AlreadyMaterialized
+                    : FactionTouchKind.InvalidReceiptless,
                 issues);
+        }
+
+        if (isMortalFullCarrier &&
+            !string.IsNullOrWhiteSpace(materializationFactionId))
+        {
+            ApplyFactionRepairClassification(
+                issues,
+                factionIssueStart,
+                $"mortal_faction:{materializationFactionId}",
+                isCreation
+                    ? FactionTouchKind.New
+                    : existingPreTurnHadReceipt
+                        ? FactionTouchKind.AlreadyMaterialized
+                        : FactionTouchKind.InvalidReceiptless);
         }
 
         RequireString(item, itemContext, issues, "name");

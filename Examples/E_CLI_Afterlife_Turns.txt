@@ -3854,7 +3854,7 @@ Canonical Shining owner-state invariants:
 - `halls[].hallId`, `factions[].factionId`, `shiningPoliticalActors[].actorId`, and every `projects[].projectId` across all factions must be unique. Duplicate ids make runtime helpers choose the first match and are invalid.
 - Supported completed projects are globally capped by Radiance tier: tier `0..1` allows `1`, tier `2..3` allows `2`, tier `4` allows `3`. If more completed projects have `isSupported = true`, preserve for repair or close an explicit `unsupport_project`; do not keep the over-cap state.
 - `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. While it is empty, `gachaSystem.chargesUsedThisReturn` must be `0`; positive used charges without a cycle id are stale state.
-- Every Shining faction has a canonical `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing legacy lifecycle is read as `active`, but new faction updates should write the field explicitly.
+- Every current-schema Shining faction requires explicit `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing, blank, or unsupported lifecycle fails raw owner-state validation before normalization and never defaults to `active`.
 - Do not delete defeated factions from `factions[]`. `broken` and `dissolved` keep history/remnants through `factionLifecycle.defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, while `factionStrength=0`, `leadership.leadershipState=vacant`, `tradeInventory=null`, and all projects have `isSupported=false`.
 - `leaderless` also requires vacant leadership and does not behave like a normally headed active faction until a later explicit leadership restoration. `active` and `weakened` are the operational lifecycle states.
 
@@ -10712,6 +10712,10 @@ Afterlife spiritual conflict margin:
 
 ## Shining Faction Materialization worked examples
 
+Every canonical Shining faction already has one complete materialization envelope. Receipt-less state is invalid and is not promoted or repaired into the current schema at runtime. Ordinary readers reveal only exact `visibility = "revealed"`; missing or blank visibility fails closed.
+
+Resident membership and materialization evidence use an exact, case-sensitive `guardian_abode_residents.json.entries[].shiningFactionId == factionId` match. A case variant contributes neither resident evidence nor derived faction strength, tier, service multiplier, or trade authority.
+
 ### shining_faction_materialization_native_discovery_v1
 
 The validated `native_discovery -> shining_core_action_request -> native_radiant` route authors the faction; discovery is not inferred from a Guardian title or prose.
@@ -10764,7 +10768,8 @@ The validated `native_discovery -> shining_core_action_request -> native_radiant
   "investCountThisAscension": 0,
   "projectArchetypesCountedThisAscension": [],
   "projects": [
-    {"projectId": "project_singing_path", "displayName": "Поющая тропа", "status": "completed", "isSupported": false}
+    {"projectId": "project_singing_path", "displayName": "Поющая тропа", "status": "completed", "isSupported": false},
+    {"projectId": "project_dawn_memory", "displayName": "Память рассвета", "status": "completed", "isSupported": false}
   ],
   "territorialInfluence": [
     {"zoneId": "zone_dawn_reed_hall", "scopeType": "hall", "scopeId": "hall_dawn_reed", "displayName": "Зал Тростника", "controlLevel": "anchored", "influenceValue": 55, "publicStatus": "known", "updatedAtTurn": 31}
@@ -10830,6 +10835,51 @@ Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
     }
   ],
   "historyLog": []
+}
+```
+
+Exact pre-turn authority in `game_state/control/pending_shining_abode_actions.json`:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "request_discover_dawn_reed",
+      "actionType": "discover_native_faction",
+      "radianceTierAtRequest": 2,
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
+      "sourceDraftVersion": 0,
+      "selectedCardIds": [],
+      "createdAtTurn": 31,
+      "createdAtUtc": "2026-08-03T00:00:00Z"
+    }
+  ]
+}
+```
+
+Matching accepted receipt in current `shining_abode_state.json.coreActionReceipts[]`:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "request_discover_dawn_reed",
+      "actionType": "discover_native_faction",
+      "status": "accepted",
+      "selectedCardIds": [],
+      "newResidentIds": ["resident_dawn_reed_guide", "resident_dawn_reed_singer"],
+      "seededProjectIds": ["project_singing_path", "project_dawn_memory"],
+      "resolvedFactionId": "faction_dawn_reed",
+      "hallId": "hall_dawn_reed",
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 31,
+      "resolvedAtUtc": "2026-08-03T00:05:00Z",
+      "reason": "native_discovery_accepted"
+    }
+  ]
 }
 ```
 
@@ -10967,6 +11017,66 @@ Companion canonical carrier in `game_state/meta/guardian_abode_residents.json`:
 }
 ```
 
+Exact pre-turn authority in `game_state/control/pending_shining_faction_foundings.json`:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "shining_founding_request_44",
+      "proposedFactionId": "faction_lantern_covenant",
+      "proposedHallId": "hall_lantern_covenant",
+      "proposedHallName": "Зал Союза Фонарей",
+      "proposedHallDescription": "Открытый зал для недавно вознесённых душ.",
+      "proposedHallServiceTags": ["social", "memory"],
+      "charter": {
+        "factionName": "Союз Фонарей",
+        "favoredArchetype": "accord",
+        "patronEffectFamily": "social",
+        "summary": "Открытый приют для недавно вознесённых душ."
+      },
+      "supportingResidentIds": [
+        "resident_lantern_supporter_1",
+        "resident_lantern_supporter_2",
+        "resident_lantern_supporter_3"
+      ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "createdAtTurn": 44,
+      "createdAtUtc": "2026-08-03T00:00:00Z"
+    }
+  ]
+}
+```
+
+Matching accepted receipt in current `shining_abode_state.json.factionFoundingReceipts[]`:
+
+```json
+{
+  "factionFoundingReceipts": [
+    {
+      "requestId": "shining_founding_request_44",
+      "proposedFactionId": "faction_lantern_covenant",
+      "proposedHallId": "hall_lantern_covenant",
+      "hallName": "Зал Союза Фонарей",
+      "factionId": "faction_lantern_covenant",
+      "hallId": "hall_lantern_covenant",
+      "status": "accepted",
+      "supportingResidentIds": [
+        "resident_lantern_supporter_1",
+        "resident_lantern_supporter_2",
+        "resident_lantern_supporter_3"
+      ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
+      "resolvedAtTurn": 44,
+      "resolvedAtUtc": "2026-08-03T00:05:00Z",
+      "reason": "founding_accepted"
+    }
+  ]
+}
+```
+
 ### shining_faction_materialization_story_hidden_v1
 
 Exact story authority may create a hidden faction. Ordinary reader projections omit this entire faction object and strip every materialization envelope from visible factions.
@@ -11062,12 +11172,15 @@ Exact story authority may create a hidden faction. Ordinary reader projections o
 
 ### shining_faction_materialization_repair_v1
 
-A bounded Shining repair targets only the rejected disposition/canonical surface and preserves hidden visibility, identity, route authority, and unrelated fields.
+A bounded Shining repair targets only the rejected disposition/canonical surface and preserves hidden visibility, identity, route authority, and unrelated fields. `targetFiles` is the exact writable allowlist. If the defect is a missing or ambiguous required actor profile, the packet also names `game_state/meta/afterlife_entity_profiles.json`; do not add that root to an unrelated trade-only repair.
 
 ```json
 {
   "factionId": "faction_veiled_prism",
   "repairScope": "materialization.sections.trade",
+  "targetFiles": [
+    "game_state/meta/shining_abode_state.json"
+  ],
   "preserveMaterializationId": "mat_shining_faction_veiled_prism_turn_52",
   "visibility": "hidden",
   "tradeInventory": null,

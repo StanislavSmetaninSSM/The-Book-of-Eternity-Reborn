@@ -639,7 +639,7 @@ without player-facing harness leakage.
   `docs/superpowers/plans/2026-08-03-faction-materialization.md`, and every
   artifact under `specs/1510-complete-faction-materialization/`; preserve the
   historical task record but remove it as current acceptance authority.
-- [ ] T078g [US3] Add and observe RED strict-schema regressions in
+- [x] T078g [US3] Add and observe RED strict-schema regressions in
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`,
   `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Factions.cs`,
   `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.ShiningAbode.cs`,
@@ -649,7 +649,7 @@ without player-facing harness leakage.
   and a fresh empty-faction bootstrap remains valid. Record the existing
   failing Fast visibility test as RED evidence rather than patching its fixture
   back to compatibility behavior.
-- [ ] T078h [US3] Remove receipt-less/promotion runtime branches from
+- [x] T078h [US3] Remove receipt-less/promotion runtime branches from
   `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`,
@@ -657,28 +657,37 @@ without player-facing harness leakage.
   `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Factions.cs`,
   `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs`,
   `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.ShiningAbode.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionsAndProjects.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs`,
   `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`, and
-  `BookOfEternityClient/Services/SarefMainStoryState.cs`; require a complete
+  `BookOfEternityClient/Services/SarefMainStoryState.cs`,
+  `BookOfEternityClient/Services/ShiningAbodeState.cs`, and
+  `BookOfEternityClient/Services/ShiningAbodeState.Gameplay.cs`; require a complete
   receipt for every canonical faction, allow the full Mortal carrier only for
   a genuinely absent ID, retain only current-schema immutable/narrow-update
   validation, and make T078g GREEN without weakening current receipt integrity.
-- [ ] T078i [P] [US2] Add and observe RED exact-identity regressions in
+- [x] T078i [P] [US2] Add and observe RED exact-identity regressions in
   `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
   for a resident whose `shiningFactionId` differs only by case: it must not
   satisfy resident materialization evidence or contribute derived strength,
   tier, service multiplier, or trade authority.
-- [ ] T078j [US2] Make all Shining resident/derived-strength joins exact and
+- [x] T078j [US2] Make all Shining resident/derived-strength joins exact and
   case-sensitive in `BookOfEternityClient/Services/ShiningAbodeState.cs` and
+  `BookOfEternityClient/Services/ShiningAbodeState.Gameplay.cs`,
+  `BookOfEternityClient/Services/ShiningFactionRequestState.cs`,
   `BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs`,
+  `BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs`,
+  `BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs`, and
+  `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode*.cs`,
   then run the exact T078i filter to GREEN without changing Guardian identity
   authority.
-- [ ] T078k [P] [US4] Add and observe RED repair regressions in
+- [x] T078k [P] [US4] Add and observe RED repair regressions in
   `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs` for a
   missing/ambiguous Shining actor profile and a Mortal location-control defect;
   assert typed classification plus the exact
   `afterlife_entity_profiles.json`, current-location, world-map, and location
   roots with no unrelated writable root.
-- [ ] T078l [US4] Add typed faction repair-target metadata in
+- [x] T078l [US4] Add typed faction repair-target metadata in
   `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`,
   emit it from
   `BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs`,
@@ -687,7 +696,7 @@ without player-facing harness leakage.
   and consume it in
   `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs` so
   repair scope no longer depends on issue-hint prose; run T078k to GREEN.
-- [ ] T078m [US4] Migrate or remove compatibility-only positive fixtures and
+- [x] T078m [US4] Migrate or remove compatibility-only positive fixtures and
   synchronize strict-current-schema GM guidance, worked examples, manifests,
   and source guards in `Rules/Block_21.txt`, `Examples/E_Block_21.txt`,
   `TaskGuides/CLI_Step_Main.txt`, `Examples/E_CLI_Step_Main.txt`,
@@ -700,13 +709,50 @@ without player-facing harness leakage.
   `Examples/example_validation_manifest.json`, and their focused
   documentation/example tests; keep deliberately receipt-less data only as
   named negative validation fixtures.
-- [ ] T078n Run the strict focused selections from `quickstart.md`, including
+- [x] T078n Run the strict focused selections from `quickstart.md`, including
   `GameEngineTurnLifecycleTests` and the exact previously failing
   `ShiningAbodeStateTests.BuildShiningActionChoices_HiddenSupportedProjectsDoNotConsumePlayerVisibleSupportCap`,
   then run one Fast checkpoint and request a fresh full-range code review;
   record counts, duration, timeout/duplicate/cleanup status, and resolve every
   Critical or Important current-schema finding before T079.
-- [ ] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
+  Evidence (2026-08-11): the principal focused selections passed 176/176,
+  84/84, 251/251, 169/169, 288/288, and 16/16; the exact faction-repair
+  lifecycle slice passed 12/12 and the hidden-project regression passed 1/1.
+  The broad lifecycle class exceeded the unchanged five-minute Focused limit,
+  so no timeout was widened; its #1510 repair boundary was covered by the exact
+  slice and the complete fast project. Fast passed 2740/2740 in 2:58.445 with
+  zero duplicate IDs, no timeout, and complete owned-process cleanup.
+  FullValidation passed 1641/1641 in 8:32.199 under the same controls. The
+  fresh full-range review reported two Critical and two Important findings;
+  T078o-T078r capture their RED/GREEN corrections, and subsequent focused,
+  FullValidation, and Fast controls are green.
+- [x] T078o [US1] Add RED regressions proving that Mortal canonical
+  `faction_core.json` and faction sidecars cannot create or mutate permanent
+  faction state outside `FactionCoreChanges`; then add a raw, pre-normalization
+  authority fence in
+  `BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs`
+  that accepts omitted or exact pre-turn baselines, rejects unexplained core
+  and sidecar changes, and preserves command-owned narrow updates and full
+  creation for genuinely absent exact IDs.
+- [x] T078p [US2] Add RED inverse-authority regressions for every newly
+  materialized Shining faction, then require its exact creation route to
+  resolve to one canonical source: native discovery and player founding must
+  have the matching pending request, successful receipt, eligibility/cost,
+  resident, project, and hall evidence; story routes must resolve through
+  canonical Saref or Guardian story authority; reject missing, ambiguous, or
+  mismatched route authority before normalization and migrate generic tests to
+  an explicitly authorized creation route.
+- [x] T078q [US2] Add RED case-variant regressions for Shining founding and
+  realignment receipts, request cleanup, membership/current-hall joins, and
+  trade locality; make every actor, faction, hall, request, and receipt identity
+  comparison ordinal while retaining case-insensitive comparison only for
+  protocol status/mode tokens.
+- [x] T078r [US1] Add RED Mortal location-authority regressions where
+  `current_location.json` and `world_map.json` contain the same exact location
+  ID but only one source carries faction control; make authority reads
+  source-aware so one root cannot overwrite another, validate every effective
+  source record, and preserve exact repair targets for the defective root.
+- [x] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.
 - [ ] T080 From a clean checkout of the exact final candidate commit, run
@@ -731,7 +777,7 @@ Phase 1 setup
        └─ Phase 5 Shining routes
             └─ Phase 6 repair/docs/privacy
                  └─ Phase 7 historical verification/review
-                      └─ T078f–T078n strict current-schema correction
+                      └─ T078f–T078r strict current-schema correction
                            └─ T079–T081 final integration
 ```
 
@@ -744,9 +790,10 @@ Phase 1 setup
 - Documentation work may begin in parallel after exact contracts stabilize,
   but its tests and examples cannot be marked complete before runtime shapes are
   final.
-- T078g must reach RED before T078h; T078i before T078j; and T078k before
-  T078l. T078m follows the runtime contract, and T078n blocks final hygiene and
-  PreMerge.
+- T078g must reach RED before T078h; T078i before T078j; T078k before T078l;
+  and each of T078o–T078r must reach RED before its implementation half.
+  T078m follows the runtime contract. T078n supplies the review that discovered
+  T078o–T078r; all four corrections block final hygiene and PreMerge.
 
 ## Parallel opportunities
 
@@ -774,7 +821,8 @@ The recommended delivery is incremental:
 5. repair, docs, examples, manifests, and privacy;
 6. strict current-schema cleanup, exact Shining identity, and typed repair
    targets;
-7. bounded cross-domain verification and review.
+7. bounded cross-domain verification and review;
+8. close every full-range review blocker with RED/GREEN evidence.
 
 Each slice ends in focused GREEN tests and a small issue-linked commit. Fast,
 FullValidation, and PreMerge remain checkpoints, not per-edit loops.
