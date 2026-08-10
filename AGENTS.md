@@ -6,6 +6,19 @@ Do not implement project changes without a tracked task.
 
 Before editing code, tests, prompts, documentation, examples, or game contracts, first ensure there is an explicit task for the work. If the user asks to implement something and no task exists, create or request a task record before making repository changes. Small exploratory reads, reviews, and planning may happen without a task, but implementation work must be tied to a task.
 
+## Pre-release save compatibility guardrail
+
+The game has not had a public release. Backward compatibility with older save
+files, development snapshots, canonical-state schemas, and obsolete test
+fixtures is not a requirement unless a tracked issue and accepted spec make a
+specific exception. Migrate active bootstrap state, templates, examples, and
+tests to the current contract and remove legacy fallbacks instead of adding
+complexity for hypothetical saves. Old tests and fixtures do not establish a
+compatibility contract by themselves.
+
+This does not relax atomic accepted-turn behavior, current canonical-state
+integrity, or immutable receipt/history guarantees inside the supported schema.
+
 ## C# test execution policy
 
 Use PowerShell 7 and `.\scripts\test-csharp.ps1` as the normal bounded entry

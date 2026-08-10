@@ -69,6 +69,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T007 Define console/browser parity expectations for affected player actions
 - [ ] T008 Confirm Spectre/browser escaping or sanitization strategy for dynamic text
 - [ ] T009 Document out-of-scope follow-up issues, if any
+- [ ] T009a Confirm the pre-release save policy: migrate active bootstrap state, templates, examples, and tests and remove obsolete compatibility branches, or link the explicit issue/spec exception that requires them
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

@@ -14,6 +14,7 @@
 - **Issue type**: [bug / task / enhancement / epic / audit / hardening]
 - **Spec Kit justification**: [why this issue needs a durable spec instead of ordinary issue + Superpowers flow]
 - **Contract scope**: [player-facing / GM-facing prompts / runtime-state / validation / docs / examples / console / browser / frontend / none]
+- **Save compatibility**: [not required (pre-release default) / explicitly required by issue, with concrete save population and migration/support horizon]
 - **Out of scope**: [explicit boundaries and follow-up issue policy]
 
 ## User Scenarios & Testing *(mandatory)*

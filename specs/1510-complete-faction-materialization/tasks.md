@@ -34,6 +34,14 @@ suite.
   `AGENTS.md`, `.specify/memory/constitution.md`, this feature directory, and
   `docs/testing.md`; preserve unrelated/untracked `.serena/`, `bin/`, and
   `obj/` artifacts.
+- [ ] T001a Record the user-approved pre-release save policy in
+  `.specify/memory/constitution.md`, `.specify/templates/plan-template.md`,
+  `.specify/templates/spec-template.md`, `.specify/templates/tasks-template.md`,
+  and `AGENTS.md`: the game has not shipped, backward compatibility with old
+  save/state schemas is not a requirement, and obsolete test fixtures are not
+  compatibility authority unless a tracked issue/spec explicitly creates an
+  exception. Reconcile this feature's legacy requirements before further code
+  changes.
 - [ ] T002 Confirm the saved Fast baseline (2,633/2,633 in 4:16.219) still
   describes the starting commit; do not rerun Fast merely for setup unless the
   branch base changed.

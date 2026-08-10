@@ -53,6 +53,7 @@
 - **Test-first path**: Regression or feature tests are identified before implementation tasks.
 - **Verification evidence**: Focused `dotnet test`, docs coverage, frontend verification, and/or browser visual checks are listed.
 - **Agent orchestration**: Hermes/Codex delegation packets must include source issues, active Spec Kit artifacts, Superpowers method requirements, and verification commands.
+- **Pre-release save policy**: Backward compatibility is not assumed before the first public release. The plan migrates active bootstrap state/templates/examples/tests and removes obsolete fallbacks, or links an explicit issue/spec exception with a concrete migration and support horizon.
 
 ## Project Structure
 
