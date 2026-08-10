@@ -755,10 +755,10 @@ without player-facing harness leakage.
 - [x] T079 Run `git diff --check`, verify no `.serena/`, `bin/`, `obj/`, test
   result, or unrelated file is staged, and commit any reviewed corrections in
   coherent `(#1510)` commits.
-- [ ] T080 From a clean checkout of the exact final candidate commit, run
+- [x] T080 From a clean checkout of the exact final candidate commit, run
   `pwsh .\scripts\test-csharp.ps1 -Lane PreMerge` once; do not precede it with a
   duplicate Fast run.
-- [ ] T081 Reconcile every checked task with actual diff and fresh evidence,
+- [x] T081 Reconcile every checked task with actual diff and fresh evidence,
   update the PR summary with commands/counts/durations/residual risk, link
   #1510, and mark tasks complete only after inspection.
 
