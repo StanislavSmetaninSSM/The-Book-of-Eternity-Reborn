@@ -942,10 +942,13 @@ internal static class MortalItemMaterializationContract
             ? parsedSourceTurn
             : -1;
 
+        var acceptedTurnMatchesEnvelope = instanceKind == "split_derived"
+            ? acceptedAtTurn >= sourceTurn
+            : acceptedAtTurn == sourceTurn;
         if (!string.Equals(itemId, receiptItemId, StringComparison.Ordinal) ||
             !string.Equals(materializationId, receiptMaterializationId, StringComparison.Ordinal) ||
             !string.Equals(creationRef, receiptCreationRef, StringComparison.Ordinal) ||
-            acceptedAtTurn != sourceTurn)
+            !acceptedTurnMatchesEnvelope)
         {
             issues.Add(Issue(
                 receiptContext,

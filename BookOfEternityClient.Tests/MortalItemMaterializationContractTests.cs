@@ -429,6 +429,405 @@ public sealed class MortalItemMaterializationContractTests
         Assert.False(MortalItemMaterializationContract.HasCompleteEnvelope(incompleteDocument.RootElement));
     }
 
+    [Fact]
+    public void IdentityIndex_ParseEmptyRoot_ReturnsCurrentDeterministicShape()
+    {
+        var result = MortalItemIdentityState.Parse(new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["entries"] = new JsonArray()
+        });
+
+        Assert.Empty(result.Issues);
+        Assert.Empty(result.EntriesByItemId);
+        Assert.True(JsonNode.DeepEquals(
+            MortalItemIdentityState.CreateEmptyRoot(),
+            result.Root));
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsDuplicateItemAndReceiptIds()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot();
+        var root = MortalItemTestFixture.CreateIndex(
+            item,
+            item.DeepClone().AsObject());
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_materialization_duplicate_item_id");
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_materialization_duplicate_receipt_id");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsUnknownRootAndEntryFields()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot();
+        var root = MortalItemTestFixture.CreateIndex(item);
+        root["futureRootField"] = true;
+        root["entries"]![0]!["futureEntryField"] = true;
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Equal(2, result.Issues.Count(issue =>
+            issue.Code == "mortal_item_identity_unknown_field"));
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRawJsonRejectsDuplicateProperty()
+    {
+        var result = MortalItemIdentityState.Parse(
+            "{\"schemaVersion\":1,\"schemaVersion\":1,\"entries\":[]}");
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_duplicate_property");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRawJsonAcceptsValidIntegerSchema()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+
+        var result = MortalItemIdentityState.Parse(root.ToJsonString());
+
+        Assert.Empty(result.Issues);
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsUnsortedOrDuplicateOrigins()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        root["entries"]![0]!["originMaterializationIds"] =
+            new JsonArray("mat_z", "mat_a", "mat_a");
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_origin_ids_not_sorted");
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_duplicate_origin_id");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsCarrierStateMismatch()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        root["entries"]![0]!["state"] = "destroyed";
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_state_mismatch");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsLocationCarrierWithoutStorageId()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot();
+        var root = MortalItemTestFixture.CreateIndexForCarrier(
+            item,
+            "location_storage",
+            "loc_test");
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_invalid_carrier");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsNoOpTransition()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        var transition = root["entries"]![0]!["transitions"]![0]!.AsObject();
+        transition["kind"] = "semantic_update";
+        transition["sourceCarrier"] = transition["destinationCarrier"]!.DeepClone();
+        transition["quantityBefore"] = 1;
+        transition["quantityAfter"] = 1;
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_transition_noop");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsCarrierThatDisagreesWithLastTransition()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        root["entries"]![0]!["currentCarrier"]!["kind"] = "npc_inventory";
+        root["entries"]![0]!["currentCarrier"]!["ownerId"] = "npc_test";
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_transition_state_mismatch");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsDecreasingTransitionTurn()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        var entry = root["entries"]![0]!.AsObject();
+        var carrier = entry["currentCarrier"]!.AsObject();
+        MortalItemIdentityState.AppendTransition(
+            entry,
+            MortalItemIdentityState.CreateTransition(
+                "semantic_update",
+                turn: 41,
+                sourceItemIds: new[] { MortalItemTestFixture.ItemId },
+                sourceCarrier: carrier,
+                destinationCarrier: carrier,
+                quantityBefore: 1,
+                quantityAfter: 2,
+                authorityKind: "turn_outcome",
+                authorityId: "turn_41"));
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_transition_turn_order");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsMalformedRootCreationTransition()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        var entry = root["entries"]![0]!.AsObject();
+        entry["transitions"]![0]!["sourceCarrier"] = entry["currentCarrier"]!.DeepClone();
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_transition_shape_mismatch");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsGloballyDuplicateTransitionId()
+    {
+        var first = MortalItemTestFixture.CreateCanonicalRoot("itm_a");
+        var second = MortalItemTestFixture.CreateCanonicalRoot("itm_b");
+        var root = MortalItemTestFixture.CreateIndex(first, second);
+        root["entries"]![1]!["transitions"]![0]!["transitionId"] =
+            root["entries"]![0]!["transitions"]![0]!["transitionId"]!.DeepClone();
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_identity_duplicate_transition_id");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseCanonicalizesEntryAndObjectOrder()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot();
+        var ordinary = MortalItemTestFixture.CreateIndex(item);
+        var reversedEntry = new JsonObject();
+        foreach (var pair in ordinary["entries"]![0]!.AsObject().Reverse())
+            reversedEntry[pair.Key] = pair.Value?.DeepClone();
+        var reordered = new JsonObject
+        {
+            ["entries"] = new JsonArray(reversedEntry),
+            ["schemaVersion"] = 1
+        };
+
+        var first = MortalItemIdentityState.Parse(ordinary);
+        var second = MortalItemIdentityState.Parse(reordered);
+
+        Assert.Empty(first.Issues);
+        Assert.Empty(second.Issues);
+        Assert.Equal(first.Root.ToJsonString(), second.Root.ToJsonString());
+        Assert.Same(
+            first.Root["entries"]![0],
+            first.EntriesByItemId[MortalItemTestFixture.ItemId]);
+    }
+
+    [Fact]
+    public void CreateRootReceipt_SealsCanonicalItemAgainstAcceptedEnvelope()
+    {
+        var raw = MortalItemTestFixture.CreateRawRoot();
+        var receipt = MortalItemIdentityState.CreateRootReceipt(
+            raw,
+            MortalItemTestFixture.ItemId,
+            acceptedTurn: 42);
+        var canonical = raw.DeepClone().AsObject();
+        canonical["itemId"] = MortalItemTestFixture.ItemId;
+        canonical["existedId"] = MortalItemTestFixture.ItemId;
+        canonical.Remove("creationRef");
+        canonical["materializationReceipt"] = receipt;
+
+        using var document = Parse(canonical);
+        Assert.Empty(MortalItemMaterializationContract.Validate(
+            document.RootElement,
+            "items.items[0]",
+            MortalItemMaterializationPhase.CanonicalPostSeal));
+    }
+
+    [Fact]
+    public void CreateSplitReceipt_UsesNewReceiptAndDirectParentLineage()
+    {
+        var parent = MortalItemTestFixture.CreateCanonicalRoot();
+        var receipt = MortalItemIdentityState.CreateSplitReceipt(
+            parent,
+            "itm_child",
+            turn: 43);
+        var child = parent.DeepClone().AsObject();
+        child["itemId"] = "itm_child";
+        child["existedId"] = "itm_child";
+        child["materializationReceipt"] = receipt;
+
+        Assert.NotEqual(
+            parent["materializationReceipt"]!["receiptId"]!.GetValue<string>(),
+            receipt["receiptId"]!.GetValue<string>());
+        Assert.Equal("split_derived", receipt["instanceKind"]!.GetValue<string>());
+        Assert.Equal(
+            MortalItemTestFixture.ItemId,
+            Assert.Single(receipt["parentItemIds"]!.AsArray())!.GetValue<string>());
+
+        using var document = Parse(child);
+        Assert.Empty(MortalItemMaterializationContract.Validate(
+            document.RootElement,
+            "items.items[1]",
+            MortalItemMaterializationPhase.CanonicalPostSeal));
+    }
+
+    [Fact]
+    public void CreateTransition_EmitsExactClientOwnedShape()
+    {
+        var transition = MortalItemIdentityState.CreateTransition(
+            "transfer",
+            turn: 43,
+            sourceItemIds: new[] { MortalItemTestFixture.ItemId },
+            sourceCarrier: new JsonObject
+            {
+                ["kind"] = "player_inventory",
+                ["ownerId"] = "player",
+                ["containerId"] = null,
+                ["containerPath"] = new JsonArray()
+            },
+            destinationCarrier: new JsonObject
+            {
+                ["kind"] = "npc_inventory",
+                ["ownerId"] = "npc_test",
+                ["containerId"] = null,
+                ["containerPath"] = new JsonArray()
+            },
+            quantityBefore: 1,
+            quantityAfter: 1,
+            authorityKind: "npc_trade_receipt",
+            authorityId: "trade_43");
+
+        Assert.Equal(
+            new[]
+            {
+                "transitionId", "kind", "turn", "sourceItemIds", "sourceCarrier",
+                "destinationCarrier", "quantityBefore", "quantityAfter", "authorityKind", "authorityId"
+            },
+            transition.Select(pair => pair.Key));
+        Assert.StartsWith("mitrn_", transition["transitionId"]!.GetValue<string>(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void IdentityIndex_ValidateAgainstRejectsReceiptAndTransitionHistoryRewrite()
+    {
+        var beforeRoot = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        var currentRoot = beforeRoot.DeepClone().AsObject();
+        currentRoot["entries"]![0]!["receiptId"] = "mirec_forged";
+        currentRoot["entries"]![0]!["transitions"]![0]!["authorityId"] = "turn_forged";
+
+        var issues = MortalItemIdentityState.ValidateAgainst(
+            MortalItemIdentityState.Parse(beforeRoot),
+            MortalItemIdentityState.Parse(currentRoot));
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_item_identity_protected_field_rewrite");
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_item_identity_transition_history_rewrite");
+    }
+
+    [Fact]
+    public void IdentityIndex_ValidateAgainstAllowsAppendOnlyTransfer()
+    {
+        var beforeRoot = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        var currentRoot = beforeRoot.DeepClone().AsObject();
+        var entry = currentRoot["entries"]![0]!.AsObject();
+        var sourceCarrier = entry["currentCarrier"]!.AsObject();
+        var destinationCarrier = new JsonObject
+        {
+            ["kind"] = "npc_inventory",
+            ["ownerId"] = "npc_test",
+            ["containerId"] = null,
+            ["containerPath"] = new JsonArray()
+        };
+        entry["currentCarrier"] = destinationCarrier.DeepClone();
+        MortalItemIdentityState.AppendTransition(
+            entry,
+            MortalItemIdentityState.CreateTransition(
+                "transfer",
+                turn: 43,
+                sourceItemIds: new[] { MortalItemTestFixture.ItemId },
+                sourceCarrier,
+                destinationCarrier,
+                quantityBefore: 1,
+                quantityAfter: 1,
+                authorityKind: "npc_trade_receipt",
+                authorityId: "trade_43"));
+
+        Assert.Empty(MortalItemIdentityState.ValidateAgainst(
+            MortalItemIdentityState.Parse(beforeRoot),
+            MortalItemIdentityState.Parse(currentRoot)));
+    }
+
+    [Fact]
+    public void IdentityIndex_ValidateAgainstRejectsRetiredReactivation()
+    {
+        var activeRoot = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        var retiredRoot = activeRoot.DeepClone().AsObject();
+        retiredRoot["entries"]![0]!["state"] = "destroyed";
+        retiredRoot["entries"]![0]!["currentCarrier"] = null;
+
+        var issues = MortalItemIdentityState.ValidateAgainst(
+            MortalItemIdentityState.Parse(retiredRoot),
+            MortalItemIdentityState.Parse(activeRoot));
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_item_identity_retired_reactivated");
+    }
+
+    [Fact]
+    public void IdentityIndex_ValidateAgainstRejectsCarrierRewriteWithoutTransfer()
+    {
+        var beforeRoot = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        var currentRoot = beforeRoot.DeepClone().AsObject();
+        currentRoot["entries"]![0]!["currentCarrier"] = new JsonObject
+        {
+            ["kind"] = "npc_inventory",
+            ["ownerId"] = "npc_test",
+            ["containerId"] = null,
+            ["containerPath"] = new JsonArray()
+        };
+
+        var issues = MortalItemIdentityState.ValidateAgainst(
+            MortalItemIdentityState.Parse(beforeRoot),
+            MortalItemIdentityState.Parse(currentRoot));
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_item_identity_unrecorded_state_change");
+    }
+
     private static JsonDocument Parse(JsonNode root) =>
         JsonDocument.Parse(root.ToJsonString());
 

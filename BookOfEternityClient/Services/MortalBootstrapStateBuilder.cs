@@ -111,6 +111,7 @@ public static class MortalBootstrapStateBuilder
                 shortCircumstances,
                 $"{turnAnchor} Первый ориентир новой жизни отмечен по выбранным обстоятельствам."),
             ["game_state/inventory/items.json"] = BuildInventory(),
+            [MortalItemIdentityState.StatePath] = MortalItemIdentityState.CreateEmptyRoot(),
             ["game_state/world/world_events.json"] = BuildWorldEvents(
                 idSuffix,
                 turn,
