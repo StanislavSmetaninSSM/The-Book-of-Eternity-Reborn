@@ -122,6 +122,11 @@ internal sealed partial class MortalItemTransitionWriter
         var baselineError = ValidateComposedState(beforeCatalog, beforeIndex);
         if (baselineError != null)
             return MortalItemTransitionResult.Failed(baselineError);
+        if (HasAppliedTransitionAuthority(beforeIndex, intent))
+        {
+            return MortalItemTransitionResult.Failed(
+                "Этот exact item transition authority уже был применён; replay отклонён без записи.");
+        }
 
         var itemId = intent.SourceItemIds[0];
         var occurrence = beforeCatalog.ByItemId[itemId][0];
@@ -302,6 +307,13 @@ internal sealed partial class MortalItemTransitionWriter
         }
 
         var envelope = rawItem[MortalItemMaterializationContract.EnvelopeProperty]!.AsObject();
+        var materializationId = ReadExactString(envelope["materializationId"]);
+        var creationRef = ReadExactString(rawItem["creationRef"]);
+        if (materializationId == null || creationRef == null)
+        {
+            return MortalItemTransitionResult.Failed(
+                "GM-envelope не содержит точные materializationId и creationRef.");
+        }
         if (!TryReadPositiveInt(envelope["sourceTurn"], out var sourceTurn) ||
             sourceTurn != acceptedTurn)
         {
@@ -324,6 +336,20 @@ internal sealed partial class MortalItemTransitionWriter
         var baselineError = ValidateComposedState(beforeCatalog, beforeIndex);
         if (baselineError != null)
             return MortalItemTransitionResult.Failed(baselineError);
+        var acceptedCreationEvidence =
+            MortalItemIdentityState.BuildAcceptedRootCreationEvidence(beforeIndex);
+        var acceptedCreationMatch = acceptedCreationEvidence.Match(
+            materializationId,
+            creationRef);
+        if (acceptedCreationMatch != MortalItemAcceptedCreationEvidenceMatch.None ||
+            beforeCatalog.ByMaterializationId.ContainsKey(materializationId) ||
+            beforeCatalog.ByCreationRef.ContainsKey(creationRef))
+        {
+            return MortalItemTransitionResult.Failed(
+                acceptedCreationMatch == MortalItemAcceptedCreationEvidenceMatch.Confusable
+                    ? "materializationId или creationRef отличается от принятой identity только регистром, пробелами или Unicode-нормализацией; ambiguous replay отклонён без записи."
+                    : "Этот exact materializationId или creationRef уже был принят активной или retired identity; replay создания отклонён без записи.");
+        }
 
         var destinationArray = ResolveCarrierArray(
             state,
@@ -383,9 +409,6 @@ internal sealed partial class MortalItemTransitionWriter
         destinationArray.Add(canonicalItem);
         var currentIndexRoot = beforeIndex.Root.DeepClone().AsObject();
         var carrierNode = CreateCarrierNode(destination);
-        var materializationId = ReadExactString(envelope["materializationId"]);
-        if (materializationId == null)
-            return MortalItemTransitionResult.Failed("GM-envelope не содержит точный materializationId.");
         currentIndexRoot["entries"]!.AsArray().Add(new JsonObject
         {
             ["itemId"] = itemId,
@@ -393,6 +416,7 @@ internal sealed partial class MortalItemTransitionWriter
             ["state"] = "active",
             ["currentCarrier"] = carrierNode.DeepClone(),
             ["originMaterializationIds"] = new JsonArray(materializationId),
+            ["originCreationRefs"] = new JsonArray(creationRef),
             ["parentItemIds"] = new JsonArray(),
             ["mergedIntoItemId"] = null,
             ["transitions"] = new JsonArray(
@@ -473,6 +497,88 @@ internal sealed partial class MortalItemTransitionWriter
         }
         return null;
     }
+
+    private static bool HasAppliedTransitionAuthority(
+        MortalItemIdentityParseResult index,
+        MortalItemTransitionIntent intent)
+    {
+        foreach (var itemId in intent.SourceItemIds)
+        {
+            if (!index.EntriesByItemId.TryGetValue(itemId, out var entry) ||
+                entry["transitions"] is not JsonArray transitions)
+            {
+                continue;
+            }
+
+            foreach (var transition in transitions.OfType<JsonObject>())
+            {
+                if (string.Equals(
+                        ReadExactString(transition["authorityKind"]),
+                        intent.AuthorityKind,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        ReadExactString(transition["authorityId"]),
+                        intent.AuthorityId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        ReadExactString(transition["kind"]),
+                        ToTransitionKind(intent.Kind),
+                        StringComparison.Ordinal) &&
+                    transition["turn"]?.GetValue<int>() == intent.Turn &&
+                    JsonNode.DeepEquals(
+                        transition["sourceCarrier"],
+                        intent.SourceCarrier == null
+                            ? null
+                            : CreateCarrierNode(intent.SourceCarrier)) &&
+                    JsonNode.DeepEquals(
+                        transition["destinationCarrier"],
+                        intent.DestinationCarrier == null
+                            ? null
+                            : CreateCarrierNode(intent.DestinationCarrier)) &&
+                    HasExactSourceItemIds(transition, intent.SourceItemIds))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasExactSourceItemIds(
+        JsonObject transition,
+        IReadOnlyList<string> expected)
+    {
+        if (transition["sourceItemIds"] is not JsonArray actual ||
+            actual.Count != expected.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < expected.Count; index++)
+        {
+            if (!string.Equals(
+                    ReadExactString(actual[index]),
+                    expected[index],
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static string ToTransitionKind(MortalItemTransitionKind kind) =>
+        kind switch
+        {
+            MortalItemTransitionKind.Transfer => "transfer",
+            MortalItemTransitionKind.Split => "split",
+            MortalItemTransitionKind.Merge => "merge",
+            MortalItemTransitionKind.Consume => "consume",
+            MortalItemTransitionKind.Destroy => "destroy",
+            _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
+        };
 
     private async Task<LoadedState> LoadAsync(
         FileSystemManager.CanonicalWriteLease writeLease,

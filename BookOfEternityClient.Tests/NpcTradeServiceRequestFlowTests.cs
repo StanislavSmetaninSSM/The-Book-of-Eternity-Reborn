@@ -268,6 +268,62 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task SellBuybackSell_SameTurnUsesDistinctLocalCommandAuthorities()
+    {
+        await SeedBaseStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true,
+            includeSellableInventoryItem: true);
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+
+        var firstSell = await service.SellAsync(
+            "npc_merchant_001",
+            "item_sell_lantern_001",
+            currentTurn: 8);
+        Assert.True(firstSell.Success, firstSell.Message);
+        var firstNpcRoot = JsonNode.Parse(
+            (await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.AsObject();
+        var firstEntry = Assert.Single(
+            firstNpcRoot["UpdateNPCs"]![0]!["buybackInventory"]!
+                .AsArray()
+                .OfType<JsonObject>());
+        var firstEntryId = firstEntry["buybackEntryId"]!.GetValue<string>();
+
+        var buyback = await service.BuyBackAsync(
+            "npc_merchant_001",
+            firstEntryId,
+            currentTurn: 8);
+        var secondSell = await service.SellAsync(
+            "npc_merchant_001",
+            "item_sell_lantern_001",
+            currentTurn: 8);
+
+        Assert.True(buyback.Success, buyback.Message);
+        Assert.True(secondSell.Success, secondSell.Message);
+        var index = MortalItemIdentityState.Parse(
+            await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+        var identity = index.EntriesByItemId["item_sell_lantern_001"];
+        var sellAuthorities = identity["transitions"]!.AsArray()
+            .OfType<JsonObject>()
+            .Where(transition =>
+                transition["authorityKind"]?.GetValue<string>() == "npc_trade_sell")
+            .Select(transition => transition["authorityId"]!.GetValue<string>())
+            .ToArray();
+        Assert.Equal(2, sellAuthorities.Length);
+        Assert.Equal(2, sellAuthorities.Distinct(StringComparer.Ordinal).Count());
+        var npcRoot = JsonNode.Parse(
+            (await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.AsObject();
+        var buybackEntries = npcRoot["UpdateNPCs"]![0]!["buybackInventory"]!
+            .AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(2, buybackEntries.Length);
+        Assert.Single(
+            buybackEntries,
+            entry => entry["status"]?.GetValue<string>() == "available");
+    }
+
+    [Fact]
     public async Task BuyAsync_WithoutValidCurrentTurn_FailsWithoutMutatingState()
     {
         await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);

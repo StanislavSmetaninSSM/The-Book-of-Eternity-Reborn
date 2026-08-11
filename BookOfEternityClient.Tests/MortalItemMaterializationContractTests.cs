@@ -137,6 +137,31 @@ public sealed class MortalItemMaterializationContractTests
     }
 
     [Theory]
+    [InlineData("raw", "creationRef")]
+    [InlineData("canonical", "itemId")]
+    public void Validate_MissingExactIdentityUsesStandaloneUnknownActor(
+        string phaseName,
+        string identityField)
+    {
+        var phase = phaseName == "raw"
+            ? MortalItemMaterializationPhase.RawPreSeal
+            : MortalItemMaterializationPhase.CanonicalPostSeal;
+        var item = phase == MortalItemMaterializationPhase.RawPreSeal
+            ? MortalItemTestFixture.CreateRawRoot()
+            : MortalItemTestFixture.CreateCanonicalRoot();
+        item.Remove(identityField);
+
+        using var document = Parse(item);
+        var issues = MortalItemMaterializationContract.Validate(
+            document.RootElement,
+            "items[0]",
+            phase);
+
+        Assert.NotEmpty(issues);
+        Assert.All(issues, issue => Assert.Equal("mortal_item:unknown", issue.Actor));
+    }
+
+    [Theory]
     [InlineData("")]
     [InlineData("старинный меч на камне")]
     public void Validate_InvalidImagePrompt_IsRejected(string prompt)
@@ -510,6 +535,49 @@ public sealed class MortalItemMaterializationContractTests
             issue.Code == "mortal_item_identity_origin_ids_not_sorted");
         Assert.Contains(result.Issues, issue =>
             issue.Code == "mortal_item_identity_duplicate_origin_id");
+    }
+
+    [Fact]
+    public void IdentityIndex_ParseRejectsMissingOriginCreationReferences()
+    {
+        var root = MortalItemTestFixture.CreateIndex(
+            MortalItemTestFixture.CreateCanonicalRoot());
+        root["entries"]![0]!.AsObject().Remove("originCreationRefs");
+
+        var result = MortalItemIdentityState.Parse(root);
+
+        Assert.Contains(result.Issues, issue =>
+            issue.FilePath.EndsWith(".originCreationRefs", StringComparison.Ordinal) &&
+            issue.Code == "mortal_item_identity_invalid_entry");
+    }
+
+    [Theory]
+    [InlineData("MAT_ITEM_TEST", "NEW_ITEM_TEST")]
+    [InlineData("mat_item_cafe\u0301", "new_item_cafe\u0301")]
+    public void IdentityIndex_AcceptedRootEvidenceDetectsConfusableAliases(
+        string materializationId,
+        string creationRef)
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot();
+        if (materializationId.Contains("cafe", StringComparison.Ordinal))
+        {
+            item = MortalItemTestFixture.CreateRawRoot(
+                creationRef: "new_item_caf\u00e9",
+                materializationId: "mat_item_caf\u00e9");
+            var receipt = MortalItemIdentityState.CreateRootReceipt(item, "itm_cafe", 42);
+            item["itemId"] = "itm_cafe";
+            item["existedId"] = "itm_cafe";
+            item.Remove("creationRef");
+            item["materializationReceipt"] = receipt;
+        }
+        var index = MortalItemIdentityState.Parse(
+            MortalItemTestFixture.CreateIndex(item));
+
+        var evidence = MortalItemIdentityState.BuildAcceptedRootCreationEvidence(index);
+
+        Assert.Equal(
+            MortalItemAcceptedCreationEvidenceMatch.Confusable,
+            evidence.Match(materializationId, creationRef));
     }
 
     [Fact]

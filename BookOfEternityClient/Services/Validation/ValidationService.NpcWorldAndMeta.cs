@@ -4953,7 +4953,7 @@ public partial class ValidationService
 
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
-        return normalizedPath.Equals(MortalItemIdentityState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+        return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
                normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||

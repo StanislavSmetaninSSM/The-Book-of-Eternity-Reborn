@@ -51,6 +51,10 @@ public partial class ValidationService
             writeLease: null,
             includeNpcInventoryCommands: true,
             issues);
+        MortalItemRouteAuthorityCatalog? routeAuthorities = null;
+        MortalItemIdentityParseResult? currentIndex = null;
+        try
+        {
         AddCatalogIssues(current.Catalog, issues);
         ValidateMortalItemCompanionReferences(
             current.Catalog,
@@ -77,10 +81,10 @@ public partial class ValidationService
             }
         }
 
-        var routeAuthorities = await MortalItemRouteAuthorityCatalog.BuildAsync(_fs);
+        routeAuthorities = await MortalItemRouteAuthorityCatalog.BuildAsync(_fs);
         AddRouteAuthorityIssues(routeAuthorities, issues);
 
-        var currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
+        currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
         issues.AddRange(currentIndex.Issues);
 
         var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
@@ -121,6 +125,11 @@ public partial class ValidationService
             return;
         }
 
+        ValidateRawCreationHistory(
+            current.Catalog,
+            MortalItemIdentityState.BuildAcceptedRootCreationEvidence(previousIndex),
+            issues);
+
         if (!MortalItemMaterializationContract.ImmutableEvidenceEquals(
                 previousIndex.Root,
                 currentIndex.Root))
@@ -146,6 +155,53 @@ public partial class ValidationService
             snapshotLookup.Manifest.TurnNumber);
         issues.AddRange(transferCatalog.Issues);
         ValidateRawCurrentItemContinuity(previous.Catalog, current.Catalog, issues);
+        }
+        finally
+        {
+            AttachMortalItemRepairContexts(
+                issues,
+                current.Catalog,
+                routeAuthorities,
+                currentIndex);
+        }
+    }
+
+    private static void ValidateRawCreationHistory(
+        MortalItemCarrierCatalog catalog,
+        MortalItemAcceptedRootCreationEvidence acceptedEvidence,
+        List<ValidationIssue> issues)
+    {
+        foreach (var occurrence in catalog.Occurrences.Where(occurrence =>
+                     IsRawMortalItemCreation(occurrence.Item)))
+        {
+            if (occurrence.MaterializationId == null && occurrence.CreationRef == null)
+                continue;
+
+            var match = acceptedEvidence.Match(
+                occurrence.MaterializationId,
+                occurrence.CreationRef);
+            if (match == MortalItemAcceptedCreationEvidenceMatch.None)
+                continue;
+
+            var confusable = match == MortalItemAcceptedCreationEvidenceMatch.Confusable;
+            issues.Add(new ValidationIssue(
+                occurrence.JsonPath,
+                IssueSeverity.Error,
+                confusable
+                    ? "A raw Mortal item root reuses accepted creation evidence through a case, whitespace, or Unicode-normalization alias."
+                    : "A raw Mortal item root replays materialization or creation-reference evidence that was already accepted.",
+                code: confusable
+                    ? "mortal_item_materialization_historical_identity_ambiguity"
+                    : "mortal_item_materialization_creation_replay",
+                actor: occurrence.CreationRef == null
+                    ? "mortal_item:unknown"
+                    : $"mortal_item:new:{occurrence.CreationRef}",
+                section: "MortalItemMaterialization",
+                expected: "new exact and non-confusable root materializationId plus creationRef",
+                actual: $"materializationId={occurrence.MaterializationId ?? "missing"}; creationRef={occurrence.CreationRef ?? "missing"}",
+                repairHint: "Отклони accepted turn и повтори исходную игровую операцию с новой client/GM request authority; не переименовывай уже принятую выдачу и не повторяй settlement.",
+                repairTargetFiles: new[] { occurrence.FilePath }));
+        }
     }
 
     private static void ValidateRawSnapshotBinding(
@@ -163,7 +219,7 @@ public partial class ValidationService
                 "A raw Mortal item creation must bind to the active validated accepted turn.",
                 code: "mortal_item_materialization_route_authority_mismatch",
                 actor: occurrence.CreationRef == null
-                    ? "mortal_item:new:unknown"
+                    ? "mortal_item:unknown"
                     : $"mortal_item:new:{occurrence.CreationRef}",
                 section: "MortalItemMaterialization",
                 expected: acceptedTurn.ToString(),
@@ -191,7 +247,7 @@ public partial class ValidationService
                 "The raw creation route does not authorize this destination carrier kind.",
                 code: "mortal_item_materialization_route_authority_mismatch",
                 actor: occurrence.CreationRef == null
-                    ? "mortal_item:new:unknown"
+                    ? "mortal_item:unknown"
                     : $"mortal_item:new:{occurrence.CreationRef}",
                 section: "MortalItemMaterialization",
                 expected: $"carrier allowed by route {route ?? "missing"}",
@@ -209,6 +265,9 @@ public partial class ValidationService
             writeLease,
             includeNpcInventoryCommands: false,
             issues);
+        MortalItemIdentityParseResult? currentIndex = null;
+        try
+        {
         AddCatalogIssues(current.Catalog, issues);
         ValidateMortalItemCompanionReferences(
             current.Catalog,
@@ -223,7 +282,7 @@ public partial class ValidationService
                 issues);
         }
 
-        var currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
+        currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
         issues.AddRange(currentIndex.Issues);
         ValidateCanonicalCatalogAgainstIndex(current.Catalog, currentIndex, issues);
         ValidateCanonicalContainerPaths(current.Catalog, issues);
@@ -259,6 +318,195 @@ public partial class ValidationService
 
         issues.AddRange(MortalItemIdentityState.ValidateAgainst(previousIndex, currentIndex));
         ValidateCanonicalImmutableEvidence(previous.Catalog, current.Catalog, issues);
+        }
+        finally
+        {
+            AttachMortalItemRepairContexts(
+                issues,
+                current.Catalog,
+                routeAuthorities: null,
+                currentIndex: currentIndex);
+        }
+    }
+
+    private static void AttachMortalItemRepairContexts(
+        IEnumerable<ValidationIssue> issues,
+        MortalItemCarrierCatalog catalog,
+        MortalItemRouteAuthorityCatalog? routeAuthorities,
+        MortalItemIdentityParseResult? currentIndex)
+    {
+        foreach (var issue in issues)
+        {
+            if (issue.MortalItemRepairContext != null ||
+                !IsMortalItemRepairIssue(issue))
+            {
+                continue;
+            }
+
+            var occurrence = ResolveMortalItemRepairOccurrence(issue, catalog);
+            var coordinate = ResolveMortalItemRepairCoordinate(issue, occurrence);
+            var route = ReadExactString(occurrence?.Item["materialization"]?["route"]);
+            MortalItemRouteAuthority? routeAuthority = null;
+            if (occurrence?.CreationRef != null &&
+                routeAuthorities?.ByCreationRef.TryGetValue(
+                    occurrence.CreationRef,
+                    out var resolvedRouteAuthority) == true)
+            {
+                routeAuthority = resolvedRouteAuthority;
+                route = resolvedRouteAuthority.Route;
+            }
+
+            JsonObject? indexEntry = null;
+            if (occurrence?.ItemId != null)
+                currentIndex?.EntriesByItemId.TryGetValue(occurrence.ItemId, out indexEntry);
+            else if (TryReadExistingMortalItemCoordinate(coordinate) is { } itemId)
+                currentIndex?.EntriesByItemId.TryGetValue(itemId, out indexEntry);
+
+            var lastTransition = indexEntry?["transitions"] is JsonArray { Count: > 0 } transitions
+                ? transitions[^1] as JsonObject
+                : null;
+            var transitionClass = coordinate.StartsWith(
+                "mortal_item:new:",
+                StringComparison.Ordinal)
+                ? "create"
+                : ReadExactString(lastTransition?["kind"]) ?? "unresolved";
+            var sourceCarrier = ReadMortalItemRepairCarrier(
+                lastTransition?["sourceCarrier"] as JsonObject);
+            var destinationCarrier = routeAuthority?.Destination ?? occurrence?.Carrier ??
+                ReadMortalItemRepairCarrier(lastTransition?["destinationCarrier"] as JsonObject);
+            var expectedAuthority = routeAuthority == null
+                ? ReadMortalItemEnvelopeAuthority(occurrence?.Item) ??
+                  ReadMortalItemTransitionAuthority(lastTransition)
+                : $"{routeAuthority.AuthorityKind}:{routeAuthority.AuthorityId}";
+            var requiredCompanionTargets = issue.RepairTargetFiles
+                .Append(issue.FilePath)
+                .Select(ResolveMortalItemCompanionTarget)
+                .Where(path => path != null)
+                .Cast<string>()
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(path => path, StringComparer.Ordinal)
+                .ToArray();
+
+            issue.MortalItemRepairContext = new MortalItemRepairContext(
+                coordinate,
+                transitionClass,
+                route,
+                sourceCarrier,
+                destinationCarrier,
+                expectedAuthority,
+                $"{issue.Code ?? "mortal_item_materialization_invalid"}: {issue.Actual ?? "missing"}",
+                requiredCompanionTargets);
+        }
+    }
+
+    private static bool IsMortalItemRepairIssue(ValidationIssue issue) =>
+        issue.Code?.StartsWith("mortal_item_materialization_", StringComparison.Ordinal) == true ||
+        issue.Code?.StartsWith("mortal_item_identity_", StringComparison.Ordinal) == true ||
+        string.Equals(issue.Section, "MortalItemMaterialization", StringComparison.Ordinal) ||
+        string.Equals(issue.Section, "MortalItemIdentity", StringComparison.Ordinal);
+
+    private static MortalItemCarrierOccurrence? ResolveMortalItemRepairOccurrence(
+        ValidationIssue issue,
+        MortalItemCarrierCatalog catalog)
+    {
+        if (issue.Actor?.StartsWith("mortal_item:new:", StringComparison.Ordinal) == true)
+        {
+            var creationRef = issue.Actor["mortal_item:new:".Length..];
+            if (catalog.ByCreationRef.TryGetValue(creationRef, out var matches) &&
+                matches.Count == 1)
+            {
+                return matches[0];
+            }
+        }
+        else if (TryReadExistingMortalItemCoordinate(issue.Actor) is { } itemId &&
+                 catalog.ByItemId.TryGetValue(itemId, out var matches) &&
+                 matches.Count == 1)
+        {
+            return matches[0];
+        }
+
+        var pathMatches = catalog.Occurrences
+            .Where(occurrence =>
+                issue.FilePath.StartsWith(occurrence.JsonPath, StringComparison.Ordinal))
+            .OrderByDescending(occurrence => occurrence.JsonPath.Length)
+            .Take(2)
+            .ToArray();
+        return pathMatches.Length == 1 ? pathMatches[0] : null;
+    }
+
+    private static string ResolveMortalItemRepairCoordinate(
+        ValidationIssue issue,
+        MortalItemCarrierOccurrence? occurrence)
+    {
+        if (issue.Actor?.StartsWith("mortal_item:new:", StringComparison.Ordinal) == true ||
+            issue.Actor?.StartsWith("mortal_item:existing:", StringComparison.Ordinal) == true ||
+            issue.Actor?.StartsWith("mortal_item:unresolved:", StringComparison.Ordinal) == true)
+        {
+            return issue.Actor;
+        }
+
+        if (occurrence?.CreationRef != null)
+            return $"mortal_item:new:{occurrence.CreationRef}";
+        if (occurrence?.ItemId != null)
+            return $"mortal_item:existing:{occurrence.ItemId}";
+        if (MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(issue.FilePath))
+            return "mortal_item:identity_authority";
+        return "mortal_item:unknown";
+    }
+
+    private static string? TryReadExistingMortalItemCoordinate(string? coordinate)
+    {
+        const string prefix = "mortal_item:existing:";
+        return coordinate?.StartsWith(prefix, StringComparison.Ordinal) == true &&
+               coordinate.Length > prefix.Length
+            ? coordinate[prefix.Length..]
+            : null;
+    }
+
+    private static string? ReadMortalItemEnvelopeAuthority(JsonObject? item)
+    {
+        var authority = item?["materialization"]?["sourceAuthority"] as JsonObject;
+        var kind = ReadExactString(authority?["kind"]);
+        var authorityId = ReadExactString(authority?["authorityId"]);
+        return kind != null && authorityId != null ? $"{kind}:{authorityId}" : null;
+    }
+
+    private static string? ReadMortalItemTransitionAuthority(JsonObject? transition)
+    {
+        var kind = ReadExactString(transition?["authorityKind"]);
+        var authorityId = ReadExactString(transition?["authorityId"]);
+        return kind != null && authorityId != null ? $"{kind}:{authorityId}" : null;
+    }
+
+    private static MortalItemCarrierCoordinate? ReadMortalItemRepairCarrier(
+        JsonObject? carrier)
+    {
+        var kind = ReadExactString(carrier?["kind"]);
+        var ownerId = ReadExactString(carrier?["ownerId"]);
+        if (kind == null || ownerId == null)
+            return null;
+
+        var containerPath = carrier?["containerPath"] is JsonArray path
+            ? path.Select(ReadExactString)
+                .Where(value => value != null)
+                .Cast<string>()
+                .ToArray()
+            : Array.Empty<string>();
+        return new MortalItemCarrierCoordinate(
+            kind,
+            ownerId,
+            ReadExactString(carrier?["containerId"]),
+            containerPath);
+    }
+
+    private static string? ResolveMortalItemCompanionTarget(string path)
+    {
+        var normalized = path.Replace('\\', '/');
+        return MortalItemCompanionPaths.FirstOrDefault(root =>
+            string.Equals(normalized, root, StringComparison.Ordinal) ||
+            normalized.StartsWith(root + ".", StringComparison.Ordinal) ||
+            normalized.StartsWith(root + ":", StringComparison.Ordinal) ||
+            normalized.StartsWith(root + "[", StringComparison.Ordinal));
     }
 
     private async Task<MortalItemCatalogFiles> LoadMortalItemCatalogAsync(
@@ -552,7 +800,7 @@ public partial class ValidationService
                 issue.Message,
                 code: issue.Code,
                 actor: issue.CreationRef == null
-                    ? "mortal_item:new:unknown"
+                    ? "mortal_item:unknown"
                     : $"mortal_item:new:{issue.CreationRef}",
                 section: "MortalItemMaterialization",
                 expected: issue.Expected,
@@ -800,6 +1048,18 @@ public partial class ValidationService
                     "mortal_item_materialization_index_origin_mismatch",
                     occurrence.MaterializationId,
                     entry["originMaterializationIds"]?.ToJsonString() ?? "missing"));
+            }
+
+            if (occurrence.CreationRef != null &&
+                !ContainsExactString(
+                    entry["originCreationRefs"] as JsonArray,
+                    occurrence.CreationRef))
+            {
+                issues.Add(IndexMismatchIssue(
+                    occurrence,
+                    "mortal_item_materialization_index_creation_ref_mismatch",
+                    occurrence.CreationRef,
+                    entry["originCreationRefs"]?.ToJsonString() ?? "missing"));
             }
 
             var canonicalCount = TryReadInt(occurrence.Item["count"]);

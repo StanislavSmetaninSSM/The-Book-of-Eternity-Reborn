@@ -10,6 +10,46 @@ namespace BookOfEternityClient.Tests;
 public sealed class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void MortalItemIdentityIndex_IsClientOwnedAcrossValidationAndRepairMappings()
+    {
+        var issueClassification = ReadRepoFile(
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.PrivateImplementation.cs");
+        var validationSurfaceClassification = ReadRepoFile(
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.NpcWorldAndMeta.cs");
+        var itemRepairBuilder = ReadRepoFile(
+            "BookOfEternityClient",
+            "Services",
+            "MortalItemRepairPacketBuilder.cs");
+
+        Assert.Contains(
+            "MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget",
+            issueClassification,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget",
+            validationSurfaceClassification,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "MortalItemIdentityState.StatePath",
+            itemRepairBuilder,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "item_identity_index.json",
+            itemRepairBuilder,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "never a GM repair target",
+            itemRepairBuilder,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void InventoryMechanicalBonusAuthorityContract_IsDocumentedForGm()
     {
         var block10 = ReadRepoFile("Rules", "Block_10.txt");

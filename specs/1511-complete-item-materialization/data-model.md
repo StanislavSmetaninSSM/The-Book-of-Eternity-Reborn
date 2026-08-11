@@ -167,6 +167,7 @@ Path: `game_state/inventory/item_identity_index.json`
         "containerPath": []
       },
       "originMaterializationIds": ["mat_item_..."],
+      "originCreationRefs": ["new_item_..."],
       "parentItemIds": [],
       "mergedIntoItemId": null,
       "transitions": [
@@ -206,6 +207,14 @@ Path: `game_state/inventory/item_identity_index.json`
 An entry is never deleted. A retired item cannot become active again by
 reusing its ID. A buyback/reacquisition of the same still-existing physical
 item is a transfer and therefore must not first retire it as destroyed.
+`originCreationRefs` is protected replay evidence, not an address for an
+accepted item. Root creation adds one reference, split copies the origin set,
+and merge forms an ordinal-sorted union. Together with
+`originMaterializationIds`, it prevents reuse of either half of an accepted
+creation key after destruction or contributor merge. The client builds one
+exact plus case/whitespace/Unicode-confusable evidence index before processing
+a creation batch, so every pending root is checked in constant time against
+active and retired history.
 
 ### Carrier coordinate
 

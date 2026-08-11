@@ -542,7 +542,7 @@ public sealed partial class NpcTradeService
                 quantity,
                 currentTurn,
                 "npc_trade_sell",
-                $"npc_trade_sell:{canonicalNpcId}:{canonicalItemId}:{currentTurn}"),
+                $"npc_trade_sell:{canonicalNpcId}:{canonicalItemId}:{currentTurn}:{Guid.NewGuid():N}"),
             new MortalItemTransitionMutation(
                 new[] { PlayerStatusPath },
                 context =>

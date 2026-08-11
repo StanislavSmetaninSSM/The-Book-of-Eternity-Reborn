@@ -36,6 +36,11 @@ internal sealed partial class MortalItemTransitionWriter
         var baselineError = ValidateComposedState(beforeCatalog, beforeIndex);
         if (baselineError != null)
             return MortalItemTransitionResult.Failed(baselineError);
+        if (HasAppliedTransitionAuthority(beforeIndex, intent))
+        {
+            return MortalItemTransitionResult.Failed(
+                "Этот exact item transition authority уже был применён; replay отклонён без записи.");
+        }
 
         return intent.Kind switch
         {
@@ -140,6 +145,7 @@ internal sealed partial class MortalItemTransitionWriter
             ["state"] = "active",
             ["currentCarrier"] = carrierNode.DeepClone(),
             ["originMaterializationIds"] = currentParentEntry["originMaterializationIds"]!.DeepClone(),
+            ["originCreationRefs"] = currentParentEntry["originCreationRefs"]!.DeepClone(),
             ["parentItemIds"] = new JsonArray(sourceId),
             ["mergedIntoItemId"] = null,
             ["transitions"] = new JsonArray(
@@ -276,6 +282,21 @@ internal sealed partial class MortalItemTransitionWriter
         }
         currentSurvivorEntry["originMaterializationIds"] = new JsonArray(
             origins.Select(origin => (JsonNode?)JsonValue.Create(origin)).ToArray());
+        var originCreationRefs = new SortedSet<string>(StringComparer.Ordinal);
+        foreach (var sourceId in sourceIds)
+        {
+            foreach (var creationRef in currentIndex.EntriesByItemId[sourceId]["originCreationRefs"]!
+                         .AsArray()
+                         .Select(node => ReadExactString(node))
+                         .Where(value => value != null))
+            {
+                originCreationRefs.Add(creationRef!);
+            }
+        }
+        currentSurvivorEntry["originCreationRefs"] = new JsonArray(
+            originCreationRefs
+                .Select(creationRef => (JsonNode?)JsonValue.Create(creationRef))
+                .ToArray());
         var carrierNode = CreateCarrierNode(carrier);
         MortalItemIdentityState.AppendTransition(
             currentSurvivorEntry,

@@ -163,7 +163,7 @@ public static class InventoryManagementService
                 Quantity: item.Count,
                 Turn: turn,
                 AuthorityKind: "inventory_discard",
-                AuthorityId: $"inventory_discard:{turn}:{item.Identity}"));
+                AuthorityId: $"inventory_discard:{turn}:{item.Identity}:{Guid.NewGuid():N}"));
         if (!transition.Success)
             return InventoryManagementWriteOutcome.Failed(transition.Message);
 
@@ -252,7 +252,7 @@ public static class InventoryManagementService
                 Quantity: splitQuantity,
                 Turn: turn,
                 AuthorityKind: "inventory_split",
-                AuthorityId: $"inventory_split:{turn}:{item.Identity}"));
+                AuthorityId: $"inventory_split:{turn}:{item.Identity}:{Guid.NewGuid():N}"));
         if (!transition.Success)
             return InventoryManagementWriteOutcome.Failed(transition.Message);
 
@@ -343,7 +343,7 @@ public static class InventoryManagementService
                 Quantity: totalCount,
                 Turn: turn,
                 AuthorityKind: "inventory_merge",
-                AuthorityId: $"inventory_merge:{turn}:{item.Identity}",
+                AuthorityId: $"inventory_merge:{turn}:{item.Identity}:{Guid.NewGuid():N}",
                 SurvivorItemId: item.Identity));
         if (!transition.Success)
             return InventoryManagementWriteOutcome.Failed(transition.Message);

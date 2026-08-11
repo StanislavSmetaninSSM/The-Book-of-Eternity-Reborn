@@ -56,6 +56,7 @@ Each entry has exact fields:
 - `state`: `active`, `merged`, `consumed`, or `destroyed`;
 - `currentCarrier`: exact carrier object for active, otherwise null;
 - `originMaterializationIds`: non-empty, unique, ordinal-sorted array;
+- `originCreationRefs`: non-empty, unique, ordinal-sorted replay-evidence array;
 - `parentItemIds`: unique direct derivation sources;
 - `mergedIntoItemId`: survivor for merged, otherwise null;
 - `transitions`: non-empty append-only transition array.
@@ -134,6 +135,11 @@ an operation intent; the client derives protected state.
 - Merge preserves survivor receipt; contributor entries become `merged`.
 - Full consumption/destruction retires exactly the removed item.
 - Retired IDs are never reused or reactivated.
+- Accepted root `materializationId` and `creationRef` evidence is durable across
+  active, split-derived, merged, consumed, and destroyed entries; neither value
+  nor a case/whitespace/Unicode-normalization alias may authorize another
+  independent creation. One prebuilt exact/confusable evidence index serves
+  the whole accepted creation batch.
 - A missing/unreadable validated pre-turn index fails closed.
 
 ## Bootstrap

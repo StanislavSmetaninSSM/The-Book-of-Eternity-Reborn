@@ -67,9 +67,53 @@ public sealed partial class MortalItemIdentityTransitionTests
         Assert.True(JsonNode.DeepEquals(
             parentEntry["originMaterializationIds"],
             childEntry["originMaterializationIds"]));
+        Assert.True(JsonNode.DeepEquals(
+            parentEntry["originCreationRefs"],
+            childEntry["originCreationRefs"]));
         Assert.Equal(context.ItemId, Assert.Single(childEntry["parentItemIds"]!.AsArray())!.GetValue<string>());
         AssertTransition(parentEntry, "split", 10, 7);
         AssertTransition(childEntry, "split", 10, 3);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_DistinctSameTurnSplitAuthoritiesRemainIndependentCommands()
+    {
+        await using var context = await TransitionContext.CreateAsync();
+        await ArrangePlayerStacksAsync(context, (context.Item, 4));
+
+        var first = await ExecuteAsync(
+            context.FileSystem,
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Split,
+                new[] { context.ItemId },
+                PlayerCarrier(),
+                PlayerCarrier(),
+                Quantity: 1,
+                Turn: 43,
+                AuthorityKind: "inventory_split",
+                AuthorityId: "inventory_split:43:itm_move:command_a"));
+        var second = await ExecuteAsync(
+            context.FileSystem,
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Split,
+                new[] { context.ItemId },
+                PlayerCarrier(),
+                PlayerCarrier(),
+                Quantity: 1,
+                Turn: 43,
+                AuthorityKind: "inventory_split",
+                AuthorityId: "inventory_split:43:itm_move:command_b"));
+
+        Assert.True(first.Success, first.Message);
+        Assert.True(second.Success, second.Message);
+        Assert.NotEqual(first.DerivedItemId, second.DerivedItemId);
+        var items = (await context.ReadInventoryAsync())["items"]!.AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        Assert.Equal(3, items.Length);
+        Assert.Equal(4, items.Sum(item => item["count"]!.GetValue<int>()));
+        var source = Assert.Single(items, item => ItemId(item) == context.ItemId);
+        Assert.Equal(2, source["count"]!.GetValue<int>());
     }
 
     [Fact]
@@ -197,6 +241,7 @@ public sealed partial class MortalItemIdentityTransitionTests
         Assert.Equal(expectedOrigins, survivorEntry["originMaterializationIds"]!.AsArray()
             .Select(node => node!.GetValue<string>())
             .ToArray());
+        Assert.Equal(2, survivorEntry["originCreationRefs"]!.AsArray().Count);
         AssertTransition(survivorEntry, "merge", 6, 10);
 
         var contributorEntry = index.EntriesByItemId[ItemId(contributor)];

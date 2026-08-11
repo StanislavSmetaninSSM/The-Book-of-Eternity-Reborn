@@ -33,6 +33,8 @@ public partial class CanonicalStateNormalizer
         var acceptedTurn = await TryReadCurrentTurnNumberAsync();
         var indexJson = await ReadCanonicalFileAsync(MortalItemIdentityState.StatePath);
         var parsedIndex = MortalItemIdentityState.Parse(indexJson);
+        var acceptedCreationEvidence =
+            MortalItemIdentityState.BuildAcceptedRootCreationEvidence(parsedIndex);
         var index = parsedIndex.Root.DeepClone().AsObject();
         var indexEntries = index["entries"]!.AsArray();
         var pending = new List<PendingMortalItemCreation>();
@@ -65,10 +67,28 @@ public partial class CanonicalStateNormalizer
             var creationRef = RequireExactMortalItemIdentity(
                 rawItem["creationRef"],
                 $"{itemPath}.creationRef");
+            var materializationId = RequireExactMortalItemIdentity(
+                rawItem[MortalItemMaterializationContract.EnvelopeProperty]?["materializationId"],
+                $"{itemPath}.materialization.materializationId");
             if (creationMap.ContainsKey(creationRef))
             {
                 throw new InvalidDataException(
                     $"Duplicate exact Mortal item creationRef '{creationRef}'.");
+            }
+            if (parsedIndex.Issues.Count > 0)
+            {
+                throw new InvalidDataException(
+                    "Mortal item sealing requires a valid client-owned item identity index.");
+            }
+            var acceptedCreationMatch = acceptedCreationEvidence.Match(
+                materializationId,
+                creationRef);
+            if (acceptedCreationMatch != MortalItemAcceptedCreationEvidenceMatch.None)
+            {
+                throw new InvalidDataException(
+                    acceptedCreationMatch == MortalItemAcceptedCreationEvidenceMatch.Confusable
+                        ? $"Mortal item creationRef '{creationRef}' or materializationId '{materializationId}' is a case, whitespace, or Unicode-normalization alias of accepted identity history."
+                        : $"Mortal item creationRef '{creationRef}' or materializationId '{materializationId}' was already accepted by active or retired identity history.");
             }
             if (!routeCatalog.ByCreationRef.TryGetValue(creationRef, out var authority))
             {
@@ -947,6 +967,8 @@ public partial class CanonicalStateNormalizer
             ["state"] = "active",
             ["currentCarrier"] = carrier.DeepClone(),
             ["originMaterializationIds"] = new JsonArray(materializationId),
+            ["originCreationRefs"] = new JsonArray(
+                RequireExactMortalItemIdentity(receipt["creationRef"], "creationRef")),
             ["parentItemIds"] = new JsonArray(),
             ["mergedIntoItemId"] = null,
             ["transitions"] = new JsonArray(transition)

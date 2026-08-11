@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -7,6 +9,94 @@ internal sealed record MortalItemIdentityParseResult(
     JsonObject Root,
     IReadOnlyDictionary<string, JsonObject> EntriesByItemId,
     IReadOnlyList<ValidationIssue> Issues);
+
+internal enum MortalItemAcceptedCreationEvidenceMatch
+{
+    None,
+    Exact,
+    Confusable
+}
+
+internal sealed class MortalItemAcceptedRootCreationEvidence
+{
+    private readonly HashSet<string> _exactMaterializationIds = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _exactCreationRefs = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _confusableMaterializationIds = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _confusableCreationRefs = new(StringComparer.Ordinal);
+
+    internal void AddMaterializationId(string value)
+    {
+        _exactMaterializationIds.Add(value);
+        _confusableMaterializationIds.Add(
+            MortalItemIdentityRules.BuildConfusableKey(value));
+    }
+
+    internal void AddCreationRef(string value)
+    {
+        _exactCreationRefs.Add(value);
+        _confusableCreationRefs.Add(
+            MortalItemIdentityRules.BuildConfusableKey(value));
+    }
+
+    internal MortalItemAcceptedCreationEvidenceMatch Match(
+        string? materializationId,
+        string? creationRef)
+    {
+        var materializationMatch = MatchField(
+            materializationId,
+            _exactMaterializationIds,
+            _confusableMaterializationIds);
+        var creationRefMatch = MatchField(
+            creationRef,
+            _exactCreationRefs,
+            _confusableCreationRefs);
+        if (materializationMatch == MortalItemAcceptedCreationEvidenceMatch.Exact ||
+            creationRefMatch == MortalItemAcceptedCreationEvidenceMatch.Exact)
+        {
+            return MortalItemAcceptedCreationEvidenceMatch.Exact;
+        }
+
+        return materializationMatch == MortalItemAcceptedCreationEvidenceMatch.Confusable ||
+               creationRefMatch == MortalItemAcceptedCreationEvidenceMatch.Confusable
+            ? MortalItemAcceptedCreationEvidenceMatch.Confusable
+            : MortalItemAcceptedCreationEvidenceMatch.None;
+    }
+
+    private static MortalItemAcceptedCreationEvidenceMatch MatchField(
+        string? value,
+        HashSet<string> exactValues,
+        HashSet<string> confusableValues)
+    {
+        if (string.IsNullOrEmpty(value))
+            return MortalItemAcceptedCreationEvidenceMatch.None;
+        if (exactValues.Contains(value))
+            return MortalItemAcceptedCreationEvidenceMatch.Exact;
+        return confusableValues.Contains(MortalItemIdentityRules.BuildConfusableKey(value))
+            ? MortalItemAcceptedCreationEvidenceMatch.Confusable
+            : MortalItemAcceptedCreationEvidenceMatch.None;
+    }
+}
+
+internal static class MortalItemIdentityRules
+{
+    internal static bool IsExactIdentity(string? value) =>
+        !string.IsNullOrWhiteSpace(value) &&
+        string.Equals(value, value.Trim(), StringComparison.Ordinal);
+
+    internal static string BuildConfusableKey(string value)
+    {
+        var trimmed = value.Trim();
+        try
+        {
+            return trimmed.Normalize(NormalizationForm.FormC)
+                .ToUpper(CultureInfo.InvariantCulture);
+        }
+        catch (ArgumentException)
+        {
+            return trimmed.ToUpper(CultureInfo.InvariantCulture);
+        }
+    }
+}
 
 internal static class MortalItemIdentityState
 {
@@ -18,7 +108,7 @@ internal static class MortalItemIdentityState
     private static readonly string[] EntryFieldOrder =
     {
         "itemId", "receiptId", "state", "currentCarrier", "originMaterializationIds",
-        "parentItemIds", "mergedIntoItemId", "transitions"
+        "originCreationRefs", "parentItemIds", "mergedIntoItemId", "transitions"
     };
 
     private static readonly string[] CarrierFieldOrder =
@@ -279,6 +369,27 @@ internal static class MortalItemIdentityState
         transitions.Add(transition.DeepClone());
     }
 
+    internal static MortalItemAcceptedRootCreationEvidence
+        BuildAcceptedRootCreationEvidence(MortalItemIdentityParseResult index)
+    {
+        ArgumentNullException.ThrowIfNull(index);
+        var evidence = new MortalItemAcceptedRootCreationEvidence();
+        foreach (var entry in index.EntriesByItemId.Values)
+        {
+            foreach (var materializationId in
+                     ReadValidIdentitySet(entry["originMaterializationIds"]))
+            {
+                evidence.AddMaterializationId(materializationId);
+            }
+            foreach (var creationRef in
+                     ReadValidIdentitySet(entry["originCreationRefs"]))
+            {
+                evidence.AddCreationRef(creationRef);
+            }
+        }
+        return evidence;
+    }
+
     internal static IReadOnlyList<ValidationIssue> ValidateAgainst(
         MortalItemIdentityParseResult previous,
         MortalItemIdentityParseResult current)
@@ -314,6 +425,11 @@ internal static class MortalItemIdentityState
                 itemId,
                 issues);
             ValidateOriginContinuity(previousEntry, currentEntry, itemId, issues);
+            ValidateOriginCreationRefContinuity(
+                previousEntry,
+                currentEntry,
+                itemId,
+                issues);
             ValidateTransitionContinuity(previousEntry, currentEntry, itemId, issues);
             ValidateAppendedTransitionQuantityContinuity(
                 previousEntry,
@@ -374,6 +490,39 @@ internal static class MortalItemIdentityState
                 "mortal_item_identity_origin_history_rewrite",
                 "Only an appended merge transition may extend origin materialization history.",
                 "unchanged origins or a merge-authorized ordinal union",
+                string.Join(", ", currentOrigins.OrderBy(value => value, StringComparer.Ordinal)),
+                itemId));
+        }
+    }
+
+    private static void ValidateOriginCreationRefContinuity(
+        JsonObject previous,
+        JsonObject current,
+        string itemId,
+        List<ValidationIssue> issues)
+    {
+        var previousOrigins = ReadValidIdentitySet(previous["originCreationRefs"]);
+        var currentOrigins = ReadValidIdentitySet(current["originCreationRefs"]);
+        if (!previousOrigins.IsSubsetOf(currentOrigins))
+        {
+            issues.Add(Issue(
+                $"{StatePath}.entries[{itemId}].originCreationRefs",
+                "mortal_item_identity_origin_creation_history_rewrite",
+                "Accepted root creation-reference history is append-only.",
+                string.Join(", ", previousOrigins.OrderBy(value => value, StringComparer.Ordinal)),
+                string.Join(", ", currentOrigins.OrderBy(value => value, StringComparer.Ordinal)),
+                itemId));
+            return;
+        }
+
+        if (currentOrigins.Count > previousOrigins.Count &&
+            !string.Equals(ReadLastTransitionKind(current), "merge", StringComparison.Ordinal))
+        {
+            issues.Add(Issue(
+                $"{StatePath}.entries[{itemId}].originCreationRefs",
+                "mortal_item_identity_origin_creation_history_rewrite",
+                "Only an appended merge transition may extend root creation-reference history.",
+                "unchanged references or a merge-authorized ordinal union",
                 string.Join(", ", currentOrigins.OrderBy(value => value, StringComparer.Ordinal)),
                 itemId));
         }
@@ -485,7 +634,8 @@ internal static class MortalItemIdentityState
             !JsonNode.DeepEquals(previous["state"], current["state"]) ||
             !JsonNode.DeepEquals(previous["currentCarrier"], current["currentCarrier"]) ||
             !JsonNode.DeepEquals(previous["mergedIntoItemId"], current["mergedIntoItemId"]) ||
-            !JsonNode.DeepEquals(previous["originMaterializationIds"], current["originMaterializationIds"]);
+            !JsonNode.DeepEquals(previous["originMaterializationIds"], current["originMaterializationIds"]) ||
+            !JsonNode.DeepEquals(previous["originCreationRefs"], current["originCreationRefs"]);
         if (!protectedStateChanged)
             return;
 
@@ -668,6 +818,7 @@ internal static class MortalItemIdentityState
             issues.Add(InvalidEntry($"{path}.state", string.Join(" | ", EntryStates), state ?? Describe(entry["state"]), itemId));
 
         ValidateOriginIds(entry, path, itemId, issues);
+        ValidateOriginCreationRefs(entry, path, itemId, issues);
         ReadIdentityArray(entry["parentItemIds"], $"{path}.parentItemIds", itemId, issues, requireNonEmpty: false);
         ValidateEntryState(entry, path, itemId, state, issues);
         ValidateTransitions(entry, path, itemId, transitionIds, issues);
@@ -709,6 +860,45 @@ internal static class MortalItemIdentityState
                 "mortal_item_identity_origin_ids_not_sorted",
                 "Origin materialization IDs must use deterministic ordinal order.",
                 "ordinal-sorted IDs",
+                string.Join(", ", origins),
+                itemId));
+        }
+    }
+
+    private static void ValidateOriginCreationRefs(
+        JsonObject entry,
+        string path,
+        string? itemId,
+        List<ValidationIssue> issues)
+    {
+        var origins = ReadIdentityArray(
+            entry["originCreationRefs"],
+            $"{path}.originCreationRefs",
+            itemId,
+            issues,
+            requireNonEmpty: true,
+            requireUnique: false);
+        if (origins.Count == 0)
+            return;
+
+        if (origins.Distinct(StringComparer.Ordinal).Count() != origins.Count)
+        {
+            issues.Add(Issue(
+                $"{path}.originCreationRefs",
+                "mortal_item_identity_duplicate_origin_creation_ref",
+                "Origin creation references must be ordinal-unique.",
+                "unique references",
+                string.Join(", ", origins),
+                itemId));
+        }
+
+        if (!origins.SequenceEqual(origins.OrderBy(value => value, StringComparer.Ordinal), StringComparer.Ordinal))
+        {
+            issues.Add(Issue(
+                $"{path}.originCreationRefs",
+                "mortal_item_identity_origin_creation_refs_not_sorted",
+                "Origin creation references must use deterministic ordinal order.",
+                "ordinal-sorted references",
                 string.Join(", ", origins),
                 itemId));
         }
@@ -1017,7 +1207,8 @@ internal static class MortalItemIdentityState
             result[property] = property switch
             {
                 "currentCarrier" when value is JsonObject carrier => NormalizeCarrier(carrier),
-                "originMaterializationIds" or "parentItemIds" when value is JsonArray identities =>
+                "originMaterializationIds" or "originCreationRefs" or "parentItemIds"
+                    when value is JsonArray identities =>
                     NormalizeIdentityArray(identities),
                 "transitions" when value is JsonArray transitions => NormalizeTransitions(transitions),
                 _ => value?.DeepClone()
@@ -1162,8 +1353,7 @@ internal static class MortalItemIdentityState
     private static string? ReadExactIdentity(JsonNode? node)
     {
         if (node is not JsonValue value || !value.TryGetValue<string>(out var text) ||
-            string.IsNullOrWhiteSpace(text) ||
-            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+            !MortalItemIdentityRules.IsExactIdentity(text))
         {
             return null;
         }
@@ -1172,8 +1362,7 @@ internal static class MortalItemIdentityState
 
     private static void RequireExactIdentity(string value, string parameterName)
     {
-        if (string.IsNullOrWhiteSpace(value) ||
-            !string.Equals(value, value.Trim(), StringComparison.Ordinal))
+        if (!MortalItemIdentityRules.IsExactIdentity(value))
         {
             throw new ArgumentException("Identity must be non-empty and untrimmed.", parameterName);
         }

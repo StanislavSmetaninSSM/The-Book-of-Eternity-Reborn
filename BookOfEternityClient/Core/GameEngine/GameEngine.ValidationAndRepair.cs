@@ -1007,6 +1007,26 @@ public partial class GameEngine
         int attempt, RollbackSnapshot? rollbackSnapshot, string repairSessionGeneration)
     {
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
+        if (MortalItemRepairPacketBuilder.RequiresFailClosedRollback(errors))
+        {
+            _logger.LogError(
+                "Mortal item repair after {Source} has protected or unresolved authority; rejecting the accepted state for caller-owned rollback instead of dispatching a broad GM repair.",
+                source);
+            if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
+                    repairSessionGeneration))
+            {
+                throw new GmWorkerSessionReplacedException(
+                    "The protected Mortal item rejection belongs to a game session that is no longer current.");
+            }
+
+            await DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration);
+            AnsiConsole.MarkupLine(
+                HasRollbackCapability(rollbackSnapshot)
+                    ? "[yellow]↩ Клиент отклонил неразрешимую или защищённую item authority; accepted turn будет восстановлен из pre-turn rollback.[/]"
+                    : "[yellow]⚠ Клиент отклонил неразрешимую или защищённую item authority; широкий GM repair запрещён.[/]");
+            return false;
+        }
+
         var dispatch = await WriteValidationRepairRequestForSessionAsync(
             source,
             errors,
@@ -1837,6 +1857,7 @@ public partial class GameEngine
         var trainingShowcaseSnapshotErrors = errors.Where(IsTrainingShowcaseSnapshotRepairIssue).ToList();
         var npcScopeDeclarationErrors = errors.Where(IsNpcScopeDeclarationRepairIssue).ToList();
         var acceptedTurnOutputArtifactErrors = errors.Where(IsAcceptedTurnOutputArtifactRepairIssue).ToList();
+        var mortalItemRepairPackets = MortalItemRepairPacketBuilder.Build(errors);
 
         if (guardianPendingCreationMaterializationErrors.Count > 0)
             packets.Add(BuildGuardianPendingCreationMaterializationRepairPacket(guardianPendingCreationMaterializationErrors));
@@ -1862,6 +1883,8 @@ public partial class GameEngine
 
         if (actorMaterializationErrors.Count > 0)
             packets.Add(BuildActorMaterializationRepairPacket(actorMaterializationErrors));
+
+        packets.AddRange(mortalItemRepairPackets.Select(BuildMortalItemRepairHarnessPacket));
 
         foreach (var factionMaterializationGroup in factionMaterializationGroups)
         {
@@ -1931,6 +1954,60 @@ public partial class GameEngine
             packets.Add(BuildAfterlifeEntityProfileScaffoldRepairPacket(afterlifeEntityProfileScaffoldErrors));
 
         return packets;
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalItemRepairHarnessPacket(
+        MortalItemRepairPacket source)
+    {
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = source.Kind,
+            Priority = source.Priority,
+            Title = source.Title,
+            TargetFiles = source.TargetFiles.ToList(),
+            TemplateRefs = source.TemplateRefs.ToList(),
+            CanonicalActorNames = source.CanonicalActorNames.ToList(),
+            TransitionClass = source.TransitionClass,
+            Route = source.Route,
+            SourceCarrier = CreateMortalItemRepairCarrierElement(source.SourceCarrier),
+            DestinationCarrier = CreateMortalItemRepairCarrierElement(source.DestinationCarrier),
+            MissingFields = source.MissingFields.ToList(),
+            ExactFieldCorrections = source.ExactFieldCorrections
+                .Select(correction => new ValidationRepairExactFieldCorrection
+                {
+                    Path = correction.Path,
+                    Expected = correction.Expected,
+                    Actual = correction.Actual,
+                    Code = correction.Code,
+                    RepairHint = correction.RepairHint
+                })
+                .ToList(),
+            RequiredCompanionTargets = source.RequiredCompanionTargets.ToList(),
+            ExpectedAuthority = source.ExpectedAuthority.ToList(),
+            ActualEvidence = source.ActualEvidence.ToList(),
+            ExpectedShape = source.ExpectedShape.ToList(),
+            SafeCorrectionRules = source.SafeCorrectionRules.ToList(),
+            Steps = source.Steps.ToList(),
+            DebugLogTemplate = string.Empty,
+            DoNotDo = source.DoNotDo.ToList()
+        };
+    }
+
+    private static JsonElement CreateMortalItemRepairCarrierElement(
+        MortalItemCarrierCoordinate? carrier)
+    {
+        if (carrier == null)
+            return JsonSerializer.SerializeToElement<object?>(null, JsonOpts);
+
+        return JsonSerializer.SerializeToElement(
+            new
+            {
+                kind = carrier.Kind,
+                ownerId = carrier.OwnerId,
+                containerId = carrier.ContainerId,
+                containerPath = carrier.ContainerPath
+            },
+            JsonOpts);
     }
 
     private static bool IsGuardianScopeRepairIssue(ValidationIssue issue)

@@ -68,6 +68,45 @@ public sealed partial class MortalItemMaterializationValidationTests
             await context.AssertExactBytesAsync(before);
         }
 
+        [Fact]
+        public async Task IncompleteCraftRoute_IssueCarriesExactRepairContext()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            var item = MortalItemTestFixture.CreateRawRoot(
+                "craft_output",
+                "craft_request");
+            item.Remove("description");
+            var arrangement = await context.ArrangeRouteAsync(
+                "craft_output",
+                "craft_request",
+                item);
+
+            var issues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+            var issue = Assert.Single(issues, candidate =>
+                candidate.Code == "mortal_item_materialization_complete_field_missing" &&
+                candidate.FilePath.EndsWith(".description", StringComparison.Ordinal));
+            var repair = Assert.IsType<MortalItemRepairContext>(
+                issue.MortalItemRepairContext);
+            Assert.Equal(
+                $"mortal_item:new:{arrangement.CreationRef}",
+                repair.Coordinate);
+            Assert.Equal("create", repair.TransitionClass);
+            Assert.Equal("craft_output", repair.Route);
+            Assert.Null(repair.SourceCarrier);
+            Assert.Equal(
+                new MortalItemCarrierCoordinate(
+                    "player_inventory",
+                    "player",
+                    null,
+                    Array.Empty<string>()),
+                repair.DestinationCarrier);
+            Assert.Equal(
+                $"craft_request:{arrangement.AuthorityId}",
+                repair.ExpectedAuthority);
+        }
+
         [Theory]
         [InlineData("player_acquisition", "turn_outcome")]
         [InlineData("npc_acquisition", "npc_inventory_add")]

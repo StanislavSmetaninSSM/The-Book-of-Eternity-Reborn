@@ -366,6 +366,8 @@ internal static class MortalItemTestFixture
             ["currentCarrier"] = carrier.DeepClone(),
             ["originMaterializationIds"] = new JsonArray(
                 envelope["materializationId"]!.GetValue<string>()),
+            ["originCreationRefs"] = new JsonArray(
+                receipt["creationRef"]!.GetValue<string>()),
             ["parentItemIds"] = new JsonArray(),
             ["mergedIntoItemId"] = null,
             ["transitions"] = new JsonArray

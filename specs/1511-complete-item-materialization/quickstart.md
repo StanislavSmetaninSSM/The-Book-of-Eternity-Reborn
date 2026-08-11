@@ -441,3 +441,97 @@ Representative accepted US3 controls:
 An independent checkpoint review found no remaining Critical or Important US3
 issues after the companion-reference, global quantity, semantic-section, and
 overflow regressions were added and made green.
+
+## 14. Bounded repair, replay, and rollback evidence
+
+US4 now emits one exact-coordinate item packet for each independently
+repairable item and one bounded authority packet for global identity
+conflicts. Packets expose route, transition, carrier, companion, expected
+authority, actual evidence, and exact corrections, but their target allowlist
+can never delegate `game_state/inventory/item_identity_index.json` or another
+client/control/output surface to the GM. Protected-path classification remains
+case-insensitive while item and `creationRef` identity remains ordinal; values
+are never collapsed, and case/whitespace/Unicode-confusable aliases are
+rejected explicitly.
+
+Accepted creation and stack commands reject replay before any settlement or
+quantity mutation. The identity index retains both materialization-ID and
+creation-reference origin history through split, merge, and retirement, and a
+single exact/confusable evidence index serves the whole accepted creation
+batch. The transition replay key includes authority, transition kind, turn,
+source item IDs, and source/destination carrier, so a literal retry is rejected
+while a distinct command or a different leg of a multi-carrier route remains
+valid. Failed raw repair retains the exact pending snapshot and route request;
+correction of the same not-yet-accepted `creationRef` then seals one receipt and
+one index transition. Existing one-lease before-images restore carriers,
+companions, index, route state, and player-facing outputs byte-for-byte; an
+acquisition message written for a rejected item is either explicitly rewritten
+after canonical repair or removed by rollback.
+
+Representative US4 red/green and checkpoint evidence:
+
+| Selection | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| packet builder initial contract (RED) | FAIL as expected | build gate | false | complete | `TestResults/test-lanes/20260811-205557-510-20456-18f5bb0d65524b608fd4669e126d8a26-focused` |
+| packet source-guard correction (RED) | FAIL as expected | 12/13 | false | complete | `TestResults/test-lanes/20260811-205830-679-40792-020df5760e6a4b7abbd8f8c68ad17ed7-focused` |
+| packet builder first GREEN | PASS | 13/13 | false | complete | `TestResults/test-lanes/20260811-205939-400-20244-a0e8686b3a9a477b954521d429f9bfcc-focused` |
+| GameEngine item packet mapping (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260811-210155-041-33324-ff6877a5e12f4748b265e817b0cb973d-focused` |
+| GameEngine item packet mapping (GREEN) | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-210348-521-28096-bd4220985249487384d91e1bf8f5a1ac-focused` |
+| validator repair context (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260811-210659-806-45424-6f006b966767482d923f88ed494dc938-focused` |
+| validator repair context (GREEN) | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-210953-722-8636-3abe7f9fea2149a3844702fcf83e1a05-focused` |
+| same-authority lifecycle matrix (RED) | FAIL as expected | 6/7 | false | complete | `TestResults/test-lanes/20260811-211551-336-25416-a233ad31488d4cd28263681c61f81750-focused` |
+| same-authority lifecycle matrix (GREEN) | PASS | 7/7 | false | complete | `TestResults/test-lanes/20260811-211736-303-7936-26ea15629d164e328166292a05bb33ce-focused` |
+| identity packet and protected casing (RED) | FAIL as expected | 12/15 | false | complete | `TestResults/test-lanes/20260811-212308-895-42704-2d4b849d072447cbb5246335567a05d3-focused` |
+| identity packet and protected casing (GREEN) | PASS | 15/15 | false | complete | `TestResults/test-lanes/20260811-212354-157-32300-a90bb882231940a69b605cd9dfa27ef8-focused` |
+| stale acquisition output and rollback characterization | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260811-212534-660-27544-5f0c760e2b0b4627a82aef85b10903db-focused` |
+| same-request craft correction and snapshot retention | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-212714-027-42680-caae7a47caff4c5da1a032c71a043687-focused` |
+| focused packet/transition/source-guard control | PASS | 54/54 | false | complete | `TestResults/test-lanes/20260811-213302-501-47796-563d2169ac2f45edafe7b1d5b8e8d122-focused` |
+| focused route/repair/snapshot/rollback integration | PASS | 94/94 | false | complete | `TestResults/test-lanes/20260811-213327-658-3212-65476f153d0a4119822815419e6e0ee1-focused` |
+| preliminary US4 Fast checkpoint | PASS | 2880/2880 | false | complete | `TestResults/test-lanes/20260811-213547-826-45700-9c4bb0759d9247ef9de99208f8329831-fast` |
+| same-turn sell/buyback/sell local authority (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260811-214321-216-25208-b3633f66f215452c8958152ed848869f-focused` |
+| same-turn sell/buyback/sell local authority (GREEN) | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-214503-701-41200-6afb4161596e4c44b53789e3f760409f-focused` |
+| complete Mortal NPC trade service control | PASS | 23/23 | false | complete | `TestResults/test-lanes/20260811-214610-907-31192-e6d9f1976b374c5e80d732a679b64dfe-focused` |
+| accepted US4 Fast checkpoint after local-cycle hardening | PASS | 2881/2881 | false | complete | `TestResults/test-lanes/20260811-214901-077-43760-0591249b0d364112bf517e76ce8685ea-fast` |
+| item-specific identity grouping after Fast (RED) | FAIL as expected | 15/16 | false | complete | `TestResults/test-lanes/20260811-215348-695-21632-6c3f712278694db080cabae70852067d-focused` |
+| item-specific identity grouping after Fast (GREEN) | PASS | 16/16 | false | complete | `TestResults/test-lanes/20260811-215431-308-4628-ac78d5079de04a819a816814468e61a7-focused` |
+| protected/unresolved/bounded packet review cases (RED compile gate) | FAIL as expected | build gate | false | complete | `TestResults/test-lanes/20260811-220634-338-18448-7e60cb9d013c4ee9846fabcc54df7061-focused` |
+| protected/unresolved/bounded packet review cases (GREEN) | PASS | 22/22 | false | complete | `TestResults/test-lanes/20260811-220844-946-38216-c17bf09f443d470fb1047bc0a62f91b6-focused` |
+| retired create-authority replay after destroy/merge (RED) | FAIL as expected | 0/2 | false | complete | `TestResults/test-lanes/20260811-221022-266-16568-184011246560402a836e77e791513426-focused` |
+| protected authority dispatch guard (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260811-221223-062-26740-29b39af55d0f4597985d0032bc8b1237-focused` |
+| retired replay and protected dispatch review cases (GREEN) | PASS | 3/3 | false | complete | `TestResults/test-lanes/20260811-221458-325-20060-99f07675c81e404ea986cc49dc565eec-focused` |
+| repair/replay/output lifecycle review control | PASS | 14/14 | false | complete | `TestResults/test-lanes/20260811-221624-070-46116-f17574f8f9814a20bf5ca7f2e9a56309-focused` |
+| bounded packet, local authority, and source-guard review control | PASS | 25/25 | false | complete | `TestResults/test-lanes/20260811-221721-457-14948-345e7df6c6474f5798869385999ed90c-focused` |
+| expanded item validation/normalizer/lifecycle review control | PASS | 321/321 | false | complete | `TestResults/test-lanes/20260811-221907-715-35796-4380f09af1494c51b82a417a7204b146-focused` |
+| post-first-review US4 Fast checkpoint | PASS | 2888/2888 | false | complete | `TestResults/test-lanes/20260811-222300-089-38020-dc04048965c14f389eb4110b2344fe73-fast` |
+| durable exact/confusable evidence and exact-coordinate unit control | PASS | 195/195 | false | complete | `TestResults/test-lanes/20260811-230540-017-11304-03a9112fab454cc3a640bab922ef3855-focused` |
+| expanded route/snapshot/replay integration control | PASS | 150/150 | false | complete | `TestResults/test-lanes/20260811-230003-467-29416-e815453a6d884284b5efeb474fa23c13-focused` |
+| missing-identity sentinel regression (RED) | FAIL as expected | 0/2 | false | complete | `TestResults/test-lanes/20260811-230318-763-19384-32884a7810054ee18b891daa786b6aad-focused` |
+| literal/missing identity coordinate regression (GREEN) | PASS | 4/4 | false | complete | `TestResults/test-lanes/20260811-230403-433-18500-7dd18c8992cd4a59aff6cbb773f3b964-focused` |
+| partial historical creation key (RED) | FAIL as expected | 4/6 | false | complete | `TestResults/test-lanes/20260811-231052-690-46208-782a5ff04c224a2e88b12abab3fb8f4e-focused` |
+| destroy/merge exact, confusable, and partial-key replay (GREEN) | PASS | 6/6 | false | complete | `TestResults/test-lanes/20260811-231211-303-44952-69071a411e4149c08da33ef206de07d1-focused` |
+| final post-review repair/contract unit control | PASS | 94/94 | false | complete | `TestResults/test-lanes/20260811-231352-095-7520-d36d6f3193364995a54ceba347f254c9-focused` |
+| accepted final US4 Fast checkpoint | PASS | 2895/2895 | false | complete | `TestResults/test-lanes/20260811-231524-300-46376-68e44f3e45cd4db6bbcdac6da011035f-fast` |
+
+The stale-output tests characterize an already shared accepted-turn freshness
+and rollback invariant, so they were green when introduced; US4 adds the
+Mortal-item-specific regression and proves that item repair participates in
+that existing invariant. The first combined fast control exposed an overly
+broad replay key: a legal round trip reused one request authority on different
+carrier legs. Exact transition coordinates replaced the broad authority-only
+key. A second review then proved that local commands need unique operation
+tokens: `sell -> buyback -> sell` in one turn is three deliberate operations,
+not a replay. After adding the token to local sales, the full 23-test trade
+service control and final 2881-test Fast checkpoint passed with zero duplicate
+IDs, timeout, or cleanup errors. The final independent US4 review then found
+that active carriers alone did not prevent recreation after destroy/merge,
+protected evidence could still leak into GM corrections, unresolved coordinates
+could become whole-carrier packets, and some evidence values were unbounded.
+The review regressions now prove durable retired-origin replay rejection,
+client-side fail-closed rollback before GM dispatch, exact `new`/`existing`
+grouping only, empty-target suppression, and a 500-character evidence bound.
+The final re-review also exercised partial historical keys and legitimate exact
+identities such as literal `unknown` and internal whitespace: only standalone
+`mortal_item:unknown` is unresolved, while any independently matched historical
+materialization ID or creation reference fails closed with no GM packet. The
+final static review reported no Critical, Important, or Minor findings and
+marked US4 ready to commit.

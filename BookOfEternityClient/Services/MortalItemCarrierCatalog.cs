@@ -1,5 +1,3 @@
-using System.Globalization;
-using System.Text;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -940,7 +938,7 @@ internal sealed class MortalItemCarrierCatalog
 
         internal void Observe(string identityKind, string identity, string path)
         {
-            var confusable = BuildConfusableKey(identity);
+            var confusable = MortalItemIdentityRules.BuildConfusableKey(identity);
             var scopedKey = $"{identityKind}\u001f{confusable}";
             if (!_firstByConfusable.TryGetValue(scopedKey, out var first))
             {
@@ -964,19 +962,6 @@ internal sealed class MortalItemCarrierCatalog
                 identityKind,
                 identity,
                 first.Path));
-        }
-
-        private static string BuildConfusableKey(string value)
-        {
-            var trimmed = value.Trim();
-            try
-            {
-                return trimmed.Normalize(NormalizationForm.FormC).ToUpper(CultureInfo.InvariantCulture);
-            }
-            catch (ArgumentException)
-            {
-                return trimmed.ToUpper(CultureInfo.InvariantCulture);
-            }
         }
 
         private sealed record FirstIdentity(string Identity, string Path);

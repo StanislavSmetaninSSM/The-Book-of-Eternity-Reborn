@@ -1111,7 +1111,7 @@ internal static class MortalItemMaterializationContract
     private static string? ReadExactNonEmptyString(JsonElement value, string property)
     {
         var text = ReadNonEmptyString(value, property);
-        return text != null && string.Equals(text, text.Trim(), StringComparison.Ordinal)
+        return MortalItemIdentityRules.IsExactIdentity(text)
             ? text
             : null;
     }
@@ -1269,6 +1269,8 @@ internal static class MortalItemMaterializationContract
         var kind = phase == MortalItemMaterializationPhase.RawPreSeal
             ? "new"
             : "existing";
-        return $"mortal_item:{kind}:{identity ?? "unknown"}";
+        return identity == null
+            ? "mortal_item:unknown"
+            : $"mortal_item:{kind}:{identity}";
     }
 }

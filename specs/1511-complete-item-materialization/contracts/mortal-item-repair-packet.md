@@ -13,6 +13,13 @@ One packet represents one exact item coordinate:
 Global duplicate/ambiguity errors may produce one
 `mortal_item:identity_authority` packet listing only the conflicting exact
 coordinates. Packets are not grouped by display name, route label, or file.
+`mortal_item:unknown`, `mortal_item:unresolved:*`, missing snapshot authority,
+and unreadable whole-carrier failures never become item packets; they fail
+closed through the diagnostic/rollback path.
+`unknown` is not a reserved identity suffix: literal
+`mortal_item:new:unknown` and exact identities with internal whitespace remain
+valid coordinates. Only the standalone `mortal_item:unknown` form denotes a
+missing coordinate.
 
 ## Required packet evidence
 
@@ -27,7 +34,8 @@ coordinates. Packets are not grouped by display name, route label, or file.
 - `targetFiles`: minimal sorted GM-owned canonical/companion targets.
 - `missingFields`: exact missing paths, if any.
 - `exactFieldCorrections`: code/path/expected/actual/repair hint for every
-  grouped issue.
+  actionable GM-owned grouped issue. Client-owned receipt, seal, index, and
+  transition issues are excluded.
 - `requiredCompanionTargets`: exact companion roots required by the section
   dispositions and route.
 - `expectedAuthority`: request/receipt/reward/carrier authority.
@@ -59,6 +67,12 @@ paths rooted in:
 
 `item_identity_index.json`, receipt fields, pending snapshot artifacts, and
 other client-owned files are never GM repair targets.
+
+If any accepted-turn error reports changed receipt, seal, identity-index, or
+client transition authority, the client does not dispatch a GM repair at all.
+It rejects the accepted result and returns control to the pre-turn rollback
+path, because asking the GM to edit protected evidence would make the repair
+cycle impossible to complete safely.
 
 ## Expected shape
 
@@ -99,7 +113,13 @@ currency/ingredient/reward, output, and index state. For craft, trade, quest
 reward, loot acquisition, transfer, split, and merge, a repeated valid repair
 with the same request/creation reference performs at most one settlement,
 preserves quantity conservation, and creates no duplicate item, receipt, or
-index transition. Duplicate use is rejected rather than replayed.
+index transition. Creation replay is rejected against both materialization-ID
+and creation-reference origin history in active and retired identity-index
+entries, so changing only one half of the creation key, destroying an item, or
+merging it as a contributor cannot make its original authority reusable.
+Exact historical replay and case/whitespace/Unicode-confusable historical
+aliases fail closed before GM dispatch; they are not repairable by renaming an
+already-settled grant.
 
 ## Player-facing output
 
