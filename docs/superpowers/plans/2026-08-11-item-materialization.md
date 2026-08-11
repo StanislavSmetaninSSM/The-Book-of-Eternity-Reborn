@@ -197,7 +197,7 @@ public static class MortalItemTestFixture
 Expose this exact lifecycle:
 
 ```csharp
-internal sealed class MortalItemMaterializationTestContext : IAsyncDisposable
+internal sealed partial class MortalItemMaterializationTestContext : IAsyncDisposable
 {
     internal FileSystemManager FileSystem { get; }
     internal ValidationService Validator { get; }
@@ -255,7 +255,8 @@ public void Validate_RawRoot_RejectsExactContractViolation(string path, string r
 {
     var item = MortalItemTestFixture.CreateRawRoot();
     SetNode(item, path, replacement == "omitted" ? null : JsonValue.Create(replacement));
-    var issues = MortalItemMaterializationContract.Validate(item, "items[0]", MortalItemMaterializationPhase.RawPreSeal);
+    using var document = JsonDocument.Parse(item.ToJsonString());
+    var issues = MortalItemMaterializationContract.Validate(document.RootElement, "items[0]", MortalItemMaterializationPhase.RawPreSeal);
     Assert.Contains(issues, issue => issue.Code == code);
 }
 
@@ -301,17 +302,17 @@ internal static class MortalItemMaterializationContract
     };
 
     internal static IReadOnlyList<ValidationIssue> Validate(
-        JsonNode item,
+        JsonElement item,
         string context,
         MortalItemMaterializationPhase phase);
 
-    internal static bool HasCompleteEnvelope(JsonNode item);
+    internal static bool HasCompleteEnvelope(JsonElement item);
     internal static string ComputeSeal(JsonObject item, JsonObject receiptWithoutSeal);
     internal static bool ImmutableEvidenceEquals(JsonNode previous, JsonNode current);
 }
 ```
 
-Use exact `HashSet<string>(StringComparer.Ordinal)` field allowlists. Parse raw JSON with duplicate-property detection before `JsonNode` conversion. The seal input writes receipt fields in contract order and the envelope through deterministic canonical property ordering before SHA-256.
+Use exact `HashSet<string>(StringComparer.Ordinal)` field allowlists. Enumerate `JsonElement` properties before any `JsonNode` conversion so duplicate names remain observable; the duplicate-property test constructs raw JSON containing the same property twice. The seal input writes receipt fields in contract order and the envelope through deterministic canonical property ordering before SHA-256.
 
 - [ ] **Step 4: Implement section disposition/evidence checks**
 
@@ -363,6 +364,7 @@ git commit -m "feat: define mortal item materialization contract (#1511)"
 - Modify: `BookOfEternityClient.Tests/MortalItemMaterializationContractTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/PendingTurnSnapshotTests.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Bootstrap.cs`
 - Modify: `BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer.cs`
 
@@ -458,7 +460,7 @@ Expected: PASS and the empty bootstrap still validates.
 - [ ] **Step 6: Commit identity authority**
 
 ```powershell
-git add -- BookOfEternityClient/Services/MortalItemIdentityState.cs BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs BookOfEternityClient/Services/CanonicalStateNormalizer.cs BookOfEternityClient.Tests/MortalItemMaterializationContractTests.cs BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs BookOfEternityClient.IntegrationTests/PendingTurnSnapshotTests.cs specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/MortalItemIdentityState.cs BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs BookOfEternityClient/Services/CanonicalStateNormalizer.cs BookOfEternityClient.Tests/MortalItemMaterializationContractTests.cs BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs BookOfEternityClient.IntegrationTests/PendingTurnSnapshotTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Bootstrap.cs specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: add client-owned item identity index (#1511)"
 ```
@@ -483,7 +485,7 @@ public void Build_DoesNotCollapseCaseDistinctIds()
 {
     var lower = MortalItemTestFixture.CreateCanonicalRoot("itm_case");
     var upper = MortalItemTestFixture.CreateCanonicalRoot("ITM_CASE");
-    var result = MortalItemCarrierCatalog.Build(MortalItemCarrierCatalogInput.Player(lower, upper));
+    var result = MortalItemCarrierCatalog.Build(InputWithPlayerItems(lower, upper));
     Assert.Equal(2, result.ByItemId.Count);
     Assert.Contains(result.Issues, issue => issue.Code == "mortal_item_materialization_identity_ambiguity");
 }
@@ -491,10 +493,24 @@ public void Build_DoesNotCollapseCaseDistinctIds()
 [Fact]
 public void Build_DoublingPopulationStaysWithinTwoPointFiveTimesWork()
 {
-    var one = MortalItemCarrierCatalog.Build(MortalItemCarrierCatalogInput.Representative(200));
-    var two = MortalItemCarrierCatalog.Build(MortalItemCarrierCatalogInput.Representative(400));
+    var one = MortalItemCarrierCatalog.Build(RepresentativeInput(200));
+    var two = MortalItemCarrierCatalog.Build(RepresentativeInput(400));
     Assert.True(two.Metrics.TotalVisited <= one.Metrics.TotalVisited * 2.5);
 }
+
+private static MortalItemCarrierCatalogInput InputWithPlayerItems(params JsonObject[] items) =>
+    new(
+        new JsonObject { ["items"] = new JsonArray(items.Select(item => item.DeepClone()).ToArray()) },
+        null,
+        null,
+        null,
+        null,
+        new Dictionary<string, JsonObject>(StringComparer.Ordinal));
+
+private static MortalItemCarrierCatalogInput RepresentativeInput(int itemCount) =>
+    InputWithPlayerItems(Enumerable.Range(0, itemCount)
+        .Select(index => MortalItemTestFixture.CreateCanonicalRoot($"itm_{index:D5}"))
+        .ToArray());
 ```
 
 Add player, NPC, location-storage, vehicle, nested-container, duplicate-carrier, whitespace, and Unicode-normalization cases.
@@ -532,11 +548,7 @@ internal sealed record MortalItemCarrierCatalogInput(
     JsonObject? NpcInventoryCommands,
     JsonObject? CurrentLocation,
     JsonObject? Vehicles,
-    IReadOnlyDictionary<string, JsonObject> CompanionRoots)
-{
-    internal static MortalItemCarrierCatalogInput Player(params JsonObject[] items);
-    internal static MortalItemCarrierCatalogInput Representative(int itemCount);
-}
+    IReadOnlyDictionary<string, JsonObject> CompanionRoots);
 
 internal sealed record MortalItemCatalogScanMetrics(int Items, int Companions, int Routes)
 {
@@ -568,6 +580,7 @@ git commit -m "feat: catalog mortal item identity once (#1511)"
 
 **Files:**
 - Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Validation.cs`
 - Modify: `BookOfEternityClient.Tests/ValidationPhaseSelectionTests.cs`
 - Create: `BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs`
 - Modify: `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`
@@ -664,7 +677,7 @@ Expected: PASS for raw complete, canonical complete, receipt-less rejection, and
 - [ ] **Step 7: Commit validation registration**
 
 ```powershell
-git add -- BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs BookOfEternityClient/Services/ValidationService.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient.Tests/ValidationPhaseSelectionTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.cs specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs BookOfEternityClient/Services/ValidationService.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient.Tests/ValidationPhaseSelectionTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Validation.cs specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: validate mortal item materialization (#1511)"
 ```
@@ -675,6 +688,7 @@ git commit -m "feat: validate mortal item materialization (#1511)"
 
 **Files:**
 - Create: `BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.MortalItems.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Normalization.cs`
 - Create: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
@@ -747,31 +761,49 @@ Generate IDs from client GUIDs with `itm_`, `mirec_`, and `mitrn_` prefixes. Tes
 
 - [ ] **Step 4: Bind refresh to one lease and restore exact before-images**
 
-Replace the unbound refresh contour with this structure:
+Replace the unbound refresh contour with this structure. Return item issues to
+the existing repair loop instead of converting them into a snapshot-baseline
+failure:
 
 ```csharp
-private async Task RefreshCanonicalStateAsync(IReadOnlyDictionary<string, string> backups)
+private async Task<IReadOnlyList<ValidationIssue>> RefreshCanonicalStateAsync(
+    IReadOnlyDictionary<string, string> backups)
 {
-    await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-    var before = await CaptureCanonicalBeforeImagesAsync(writeLease, CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
-    try
+    IReadOnlyList<ValidationIssue> postSealIssues;
+    await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
     {
-        await _normalizer.BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
-        var issues = await _validator.ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(writeLease);
-        if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
-            throw new InvalidDataException("Post-seal Mortal item materialization validation failed: " +
-                string.Join(" | ", issues.Select(issue => $"{issue.Code}:{issue.FilePath}")));
-    }
-    catch
-    {
-        await RestoreCanonicalBeforeImagesAsync(writeLease, before);
-        throw;
+        var before = await CaptureCanonicalBeforeImagesAsync(
+            writeLease,
+            CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        try
+        {
+            await _normalizer.BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
+            postSealIssues = await _validator
+                .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(writeLease);
+            if (postSealIssues.Any(issue => issue.Severity == IssueSeverity.Error))
+            {
+                await RestoreCanonicalBeforeImagesAsync(writeLease, before);
+                return postSealIssues;
+            }
+        }
+        catch
+        {
+            await RestoreCanonicalBeforeImagesAsync(writeLease, before);
+            throw;
+        }
     }
     await RefreshRuntimeStateAsync();
+    return postSealIssues;
 }
 ```
 
 `RestoreCanonicalBeforeImagesAsync` constructs `CoordinatedStateWriteHelper.PlannedWrite(path, current, previous, RequireCurrentBaseline: true)` for every tracked path and throws if the coordinated restore returns false. This keeps the same tracked arrays used by QTE and browser paths.
+
+Change `RefreshAcceptedTurnCanonicalStateForValidationAsync` to return a small
+record containing `BaselineUsable` and `PostSealIssues`. Its caller retains the
+existing invalid-snapshot packet only when `BaselineUsable` is false; non-empty
+item issues go through `WaitForContractRepairAsync`, preserving their exact
+`mortal_item:*` coordinates.
 
 - [ ] **Step 5: Run normalizer and snapshot filters green**
 
@@ -784,7 +816,7 @@ Expected: PASS including byte-for-byte injected failure rollback.
 - [ ] **Step 6: Commit atomic player sealing**
 
 ```powershell
-git add -- BookOfEternityClient/Services/CanonicalStateNormalizer.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.MortalItems.cs specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/CanonicalStateNormalizer.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.MortalItems.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Normalization.cs specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: seal player item creations atomically (#1511)"
 ```
@@ -796,6 +828,7 @@ git commit -m "feat: seal player item creations atomically (#1511)"
 **Files:**
 - Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Routes.cs`
 - Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Companions.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Routes.cs`
 - Create: `BookOfEternityClient/Services/MortalItemRouteAuthorityCatalog.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs`
@@ -878,7 +911,16 @@ Require the structured reward detail to resolve to the newly assigned item ID an
 if (!string.Equals(rewardItemId, indexEntry.ItemId, StringComparison.Ordinal) ||
     !string.Equals(indexEntry.LastTransition.AuthorityId, rewardAuthorityId, StringComparison.Ordinal))
 {
-    issues.Add(MortalItemIssue.QuestRewardAuthorityMismatch(rewardPath, rewardItemId, rewardAuthorityId));
+    issues.Add(new ValidationIssue(
+        rewardPath,
+        IssueSeverity.Error,
+        "Quest item reward must resolve to the accepted item identity transition.",
+        code: "mortal_item_materialization_quest_reward_authority_mismatch",
+        actor: $"mortal_item:existing:{rewardItemId}",
+        section: "MortalItemMaterialization",
+        expected: rewardAuthorityId,
+        actual: indexEntry.LastTransition.AuthorityId,
+        repairHint: "Restore the exact quest reward authority and do not replay the reward."));
 }
 ```
 
@@ -893,7 +935,7 @@ Expected: all complete routes pass; malformed rows leave exact before-images.
 - [ ] **Step 8: Commit route completion**
 
 ```powershell
-git add -- BookOfEternityClient/Services/MortalItemRouteAuthorityCatalog.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs BookOfEternityClient/Services/QuestRewardAuthority.cs BookOfEternityClient/Services/Validation/ValidationService.QuestRewardAuthority.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Routes.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Companions.cs specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/MortalItemRouteAuthorityCatalog.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs BookOfEternityClient/Services/QuestRewardAuthority.cs BookOfEternityClient/Services/Validation/ValidationService.QuestRewardAuthority.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Routes.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Companions.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Routes.cs specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: materialize every mortal item creation route (#1511)"
 ```
@@ -945,6 +987,7 @@ git commit -m "test: verify complete mortal item creation (#1511)"
 **Files:**
 - Create: `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.cs`
 - Create: `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Transfers.cs`
 - Modify: `BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs`
 - Modify: `BookOfEternityClient/Services/StorageTransportMoveService.cs`
 - Modify: `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
@@ -1027,7 +1070,7 @@ Expected: PASS including exact rollback after injected write failure.
 - [ ] **Step 7: Commit transfer authority**
 
 ```powershell
-git add -- BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/StorageTransportMoveService.cs BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.cs BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/StorageTransportMoveService.cs BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.cs BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Transfers.cs specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: preserve item identity across carrier moves (#1511)"
 ```
@@ -1038,6 +1081,7 @@ git commit -m "feat: preserve item identity across carrier moves (#1511)"
 
 **Files:**
 - Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Transfers.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Trade.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
 - Modify: `BookOfEternityClient/Services/NpcTradeService.cs`
@@ -1098,7 +1142,7 @@ Expected: PASS; update `quickstart.md` with both result directories and mark pro
 - [ ] **Step 6: Commit NPC/trade continuity**
 
 ```powershell
-git add -- BookOfEternityClient/Services/NpcTradeService.cs BookOfEternityClient/Services/NpcTradeRequestState.cs BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Transfers.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs specs/1511-complete-item-materialization/quickstart.md specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/NpcTradeService.cs BookOfEternityClient/Services/NpcTradeRequestState.cs BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Transfers.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Trade.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs specs/1511-complete-item-materialization/quickstart.md specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: preserve item identity through npc trade (#1511)"
 ```
@@ -1109,6 +1153,7 @@ git commit -m "feat: preserve item identity through npc trade (#1511)"
 
 **Files:**
 - Create: `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Stacks.cs`
 - Modify: `BookOfEternityClient.Tests/WebUi/BrowserInventoryManagementTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs`
 - Modify: `BookOfEternityClient/Services/InventoryManagementService.cs`
@@ -1193,7 +1238,7 @@ Expected: PASS with exact conservation and rollback assertions.
 Update `quickstart.md`, mark proven T039–T047, then commit:
 
 ```powershell
-git add -- BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/InventoryManagementService.cs BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Inventory.cs BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs BookOfEternityClient.Tests/WebUi/BrowserInventoryManagementTests.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs specs/1511-complete-item-materialization/quickstart.md specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/InventoryManagementService.cs BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Inventory.cs BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs BookOfEternityClient.Tests/WebUi/BrowserInventoryManagementTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Stacks.cs BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs specs/1511-complete-item-materialization/quickstart.md specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: preserve mortal item stack lineage (#1511)"
 ```
@@ -1206,6 +1251,7 @@ git commit -m "feat: preserve mortal item stack lineage (#1511)"
 - Create: `BookOfEternityClient.Tests/MortalItemRepairPacketBuilderTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationLifecycleTests.cs`
 - Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationLifecycleTests.Output.cs`
+- Create: `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Repair.cs`
 - Create: `BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
@@ -1221,7 +1267,13 @@ git commit -m "feat: preserve mortal item stack lineage (#1511)"
 [Fact]
 public void Build_NeverTargetsClientOwnedIdentityIndex()
 {
-    var issue = MortalItemIssue.InvalidReceipt("mortal_item:new:new_item_test");
+    var issue = new ValidationIssue(
+        "game_state/inventory/items.json.UpdateInventory[0].materializationReceipt",
+        IssueSeverity.Error,
+        "The GM cannot author a client-owned item receipt.",
+        code: "mortal_item_materialization_gm_authored_client_field",
+        actor: "mortal_item:new:new_item_test",
+        section: "MortalItemMaterialization");
     var packet = MortalItemRepairPacketBuilder.Build("mortal_item:new:new_item_test", new[] { issue });
     Assert.DoesNotContain(MortalItemIdentityState.StatePath, packet.TargetFiles);
     Assert.DoesNotContain(packet.Steps, step => step.Contains("author", StringComparison.OrdinalIgnoreCase) && step.Contains("receipt", StringComparison.OrdinalIgnoreCase));
@@ -1296,7 +1348,7 @@ Expected: PASS for every route, one settlement, conserved quantity, exact rollba
 Update `quickstart.md`, mark proven T048–T054, then commit:
 
 ```powershell
-git add -- BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient.Tests/MortalItemRepairPacketBuilderTests.cs BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationLifecycleTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationLifecycleTests.Output.cs specs/1511-complete-item-materialization/quickstart.md specs/1511-complete-item-materialization/tasks.md
+git add -- BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs BookOfEternityClient.Tests/MortalItemRepairPacketBuilderTests.cs BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationLifecycleTests.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationLifecycleTests.Output.cs BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.Repair.cs specs/1511-complete-item-materialization/quickstart.md specs/1511-complete-item-materialization/tasks.md
 git diff --cached --check
 git commit -m "feat: repair mortal item materialization atomically (#1511)"
 ```
