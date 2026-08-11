@@ -737,6 +737,26 @@ Final development controls before the clean-candidate PreMerge:
 | LifecycleIntegration after bootstrap/snapshot correction | PASS | 217/217 | 0 | false | complete | `TestResults/test-lanes/20260812-084518-429-16268-ec86024e4a6a4a15a94cbeb1200cb6ae-lifecycleintegration` |
 | Bootstrap plus prompt documentation source guards | PASS | 22/22 | 0 | false | complete | `TestResults/test-lanes/20260812-085720-521-16464-4ee1ceb2fbc8425f96f6a7d346f975aa-focused` |
 
+The first clean-candidate PreMerge exposed one repository-owned positive
+fixture that the earlier source-tree inventory had missed: the reusable Mortal
+command-display ZIP still stored receipt-less player and location items. The
+accepted-only clients correctly hid those objects, so the inventory parity and
+localized-slot assertions failed. No compatibility fallback was restored. The
+archive was migrated instead: 10 player items, 3 NPC items, and 2 location-
+storage items now carry complete envelopes and receipts, the accepted NPC adds
+live in `npc_core.json`, stale NPC item commands are empty, and one 15-entry
+identity index covers every durable carrier. A permanent archive integrity test
+validates canonical post-seal shape, receipt/index agreement, carrier
+coordinates, and canonical `equippedItems`.
+
+Fixture correction evidence before the replacement clean-candidate PreMerge:
+
+| Lane / selection | Result | Tests | Duplicate IDs | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | ---: | --- | --- | --- |
+| first clean-candidate PreMerge | FAIL, receipt-less reusable Mortal save | 3019/3020 C#; 138/138 frontend | 0 | false | complete | `TestResults/test-lanes/20260812-091241-707-18488-16f35420e9a84c4287cd4a8ca9f93db9-premerge` |
+| migrated save contract, validation, localization, and console/browser anchors | PASS | 56/56 | 0 | false | complete | `TestResults/test-lanes/20260812-093350-174-29540-c87bbcd78c4440f1bbb65c3eca645afa-focused` |
+| all repository fixture-integrity controls | PASS | 19/19 | 0 | false | complete | `TestResults/test-lanes/20260812-093651-907-13156-1cd703b2713045fea694dfc977deb773-focused` |
+
 Manual console/browser inspection passed. The simple and mechanic-bearing
 fixtures retained their Russian in-world description, physical facts,
 structured mechanics, bond/Fate/quest semantics, and exact action affordances.
