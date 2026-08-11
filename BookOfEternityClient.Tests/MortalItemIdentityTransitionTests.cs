@@ -7,7 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class MortalItemIdentityTransitionTests
+public sealed partial class MortalItemIdentityTransitionTests
 {
     [Fact]
     public async Task ExecuteAsync_PlayerToStoragePreservesEvidenceAndMovesOneCarrier()

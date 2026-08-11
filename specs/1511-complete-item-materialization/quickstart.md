@@ -411,3 +411,33 @@ helper in
 The accepted US2 Fast checkpoint passed 2845/2845 tests with no timeout,
 complete owned-process cleanup, and no duplicate test IDs in
 `TestResults/test-lanes/20260811-193248-935-20344-05d9fa95249849f78fab1efc0c8799f7-fast`.
+
+## 13. Stack lineage and destructive discard evidence
+
+US3 routes split, merge, and full discard through the same atomic transition
+writer used by transfers. A split preserves the parent identity and creates one
+derived child receipt with exact parent/root lineage. A merge preserves the
+selected survivor receipt, unions every origin, and retires each contributor as
+`merged`. Full discard retires the exact item as `destroyed`, clears its inline
+equipment reference, and does not create ground loot. Every operation validates
+quantity continuity and commits the physical carrier and identity index
+together, restoring exact before-images on failure.
+
+The merge compatibility projection covers all governed item semantics,
+including readable, sentient, bonded, quest, equipment/container, and
+materialization-section dispositions. Offer-local or permanent identity fields
+remain outside that projection. Reversed source order, unsafe companion
+references, quantity overflow, and unrelated pre-existing carrier/index
+quantity corruption all fail before any write.
+
+Representative accepted US3 controls:
+
+| Selection | Result | Tests | Result directory |
+| --- | --- | ---: | --- |
+| transition writer and browser stack/discard controls | PASS | 41/41 | `TestResults/test-lanes/20260811-204258-571-29364-577be144794e44feb1537995aa17a2e4-focused` |
+| console discard parity and canonical quantity authority | PASS | 4/4 | `TestResults/test-lanes/20260811-204328-274-35424-53d5d42965c740418f4af2bd4395c350-focused` |
+| accepted post-review Fast checkpoint | PASS | 2863/2863 | `TestResults/test-lanes/20260811-204701-972-24412-e06ff39a2e884f4b94427124cf03252a-fast` |
+
+An independent checkpoint review found no remaining Critical or Important US3
+issues after the companion-reference, global quantity, semantic-section, and
+overflow regressions were added and made green.

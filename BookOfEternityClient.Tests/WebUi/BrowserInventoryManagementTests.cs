@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
@@ -125,8 +126,14 @@ public sealed class BrowserInventoryManagementTests : IDisposable
 
         var inventory = await ReadInventoryAsync();
         var items = inventory["items"]!.AsArray();
-        Assert.DoesNotContain(items, item => item!["existedId"]!.GetValue<string>() == "blade_1");
+        Assert.DoesNotContain(items, item => item!["itemId"]!.GetValue<string>() == "blade_1");
         Assert.Null(inventory["equipment"]!["mainHand"]);
+        var index = await ReadIdentityIndexAsync();
+        var entry = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>(),
+            candidate => candidate["itemId"]!.GetValue<string>() == "blade_1");
+        Assert.Equal("destroyed", entry["state"]!.GetValue<string>());
+        Assert.Null(entry["currentCarrier"]);
+        Assert.Equal("destroy", entry["transitions"]!.AsArray()[^1]!["kind"]!.GetValue<string>());
     }
 
     [Fact]
@@ -189,13 +196,13 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         AssertNoRawInventoryDiagnosticText(text);
     }
 
-    [Theory]
+    [Fact]
     [Trait("Category", "BrowserInventoryManagement")]
-    [InlineData("count")]
-    [InlineData("quantity")]
-    public async Task TryApplyAsync_InventorySplit_CreatesFreshStackAndPreservesCountField(string countField)
+    public async Task TryApplyAsync_InventorySplit_CreatesDerivedStackAndPreservesIdentityEvidence()
     {
-        await SeedSingleStackAsync(countField, 5);
+        await SeedSingleStackAsync(5);
+        var before = Assert.Single((await ReadInventoryAsync())["items"]!.AsArray())!.AsObject();
+        var parentReceipt = before["materializationReceipt"]!.DeepClone();
 
         var result = await _mortalWriteService.TryApplyAsync(
             "/inventory_split stack_1",
@@ -206,12 +213,21 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         var items = (await ReadInventoryAsync())["items"]!.AsArray();
         Assert.Equal(2, items.Count);
 
-        var original = Assert.Single(items.OfType<JsonObject>(), item => item["existedId"]!.GetValue<string>() == "stack_1");
-        var split = Assert.Single(items.OfType<JsonObject>(), item => item["existedId"]!.GetValue<string>() != "stack_1");
-        Assert.Equal(3, original[countField]!.GetValue<int>());
-        Assert.Equal(2, split[countField]!.GetValue<int>());
+        var original = Assert.Single(items.OfType<JsonObject>(), item => item["itemId"]!.GetValue<string>() == "stack_1");
+        var split = Assert.Single(items.OfType<JsonObject>(), item => item["itemId"]!.GetValue<string>() != "stack_1");
+        Assert.Equal(3, original["count"]!.GetValue<int>());
+        Assert.Equal(2, split["count"]!.GetValue<int>());
         Assert.Equal("Лунная трава", split["name"]!.GetValue<string>());
-        Assert.DoesNotContain("stack_1", split["existedId"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.StartsWith("itm_", split["itemId"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.True(JsonNode.DeepEquals(parentReceipt, original["materializationReceipt"]));
+        Assert.Equal("split_derived", split["materializationReceipt"]!["instanceKind"]!.GetValue<string>());
+        Assert.Equal("stack_1", Assert.Single(split["materializationReceipt"]!["parentItemIds"]!.AsArray())!.GetValue<string>());
+
+        var index = await ReadIdentityIndexAsync();
+        Assert.Equal(2, index["entries"]!.AsArray().Count);
+        var childEntry = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>(),
+            entry => entry["itemId"]!.GetValue<string>() == split["itemId"]!.GetValue<string>());
+        Assert.Equal("split", childEntry["transitions"]!.AsArray()[^1]!["kind"]!.GetValue<string>());
     }
 
     [Theory]
@@ -220,7 +236,7 @@ public sealed class BrowserInventoryManagementTests : IDisposable
     [InlineData(5)]
     public async Task TryApplyAsync_InventorySplitRejectsOutOfBoundsQuantitiesWithoutMutation(int splitQuantity)
     {
-        await SeedSingleStackAsync("count", 5);
+        await SeedSingleStackAsync(5);
         var original = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
 
         var result = await _mortalWriteService.TryApplyAsync(
@@ -235,9 +251,40 @@ public sealed class BrowserInventoryManagementTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserInventoryManagement")]
+    public async Task TryApplyAsync_InventorySplitRejectsNameOnlySelectionWithoutMutation()
+    {
+        var first = CreateCanonicalInventoryItem(
+            "itm_same_name_a",
+            "Лунная трава",
+            "material",
+            "Common",
+            5);
+        var second = CreateCanonicalInventoryItem(
+            "itm_same_name_b",
+            "Лунная трава",
+            "material",
+            "Common",
+            5);
+        await WriteCanonicalInventoryAsync(new[] { first, second }, new JsonObject());
+        var beforeInventory = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var result = await _mortalWriteService.TryApplyAsync(
+            "/inventory_split Лунная трава",
+            Answers(("item_identity", "Лунная трава"), ("split_quantity", 2), ("confirm_inventory_split", true)),
+            Owner("browser-inventory-test"));
+
+        Assert.False(result.Success);
+        Assert.True(result.KeepSessionOpen);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserInventoryManagement")]
     public async Task ExecuteAsync_InventoryMergeReportsUnavailableWhenNoCompatibleStackExists()
     {
-        await SeedSingleStackAsync("count", 3);
+        await SeedSingleStackAsync(3);
 
         var result = await _commandService.ExecuteAsync(new ExplorerWebCommandRequest(
             "/inventory_merge stack_1",
@@ -254,6 +301,34 @@ public sealed class BrowserInventoryManagementTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserInventoryManagement")]
+    public async Task ValidateMergeAsync_QuantityOverflowReturnsFailure()
+    {
+        var selected = CreateCanonicalInventoryItem(
+            "itm_overflow_selected",
+            "Зёрна для переполнения",
+            "material",
+            "Common",
+            int.MaxValue);
+        var contributor = CreateCanonicalInventoryItem(
+            "itm_overflow_contributor",
+            "Зёрна для переполнения",
+            "material",
+            "Common",
+            1);
+        await WriteCanonicalInventoryAsync(
+            new[] { selected, contributor },
+            new JsonObject());
+
+        var outcome = await InventoryManagementService.ValidateMergeAsync(
+            _fs,
+            "itm_overflow_selected");
+
+        Assert.False(outcome.Success);
+        Assert.Contains("слишком велико", outcome.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserInventoryManagement")]
     public async Task TryApplyAsync_InventoryMerge_SumsCompatibleStacksAndRemovesDuplicates()
     {
         await SeedInventoryAsync();
@@ -265,12 +340,252 @@ public sealed class BrowserInventoryManagementTests : IDisposable
 
         Assert.True(result.Success, result.Message);
         var items = (await ReadInventoryAsync())["items"]!.AsArray();
-        Assert.Contains(items, item => item!["existedId"]!.GetValue<string>() == "herb_stack");
-        Assert.DoesNotContain(items, item => item!["existedId"]!.GetValue<string>() == "herb_stack_2");
-        Assert.Contains(items, item => item!["existedId"]!.GetValue<string>() == "herb_stack_rare");
+        Assert.Contains(items, item => item!["itemId"]!.GetValue<string>() == "herb_stack");
+        Assert.DoesNotContain(items, item => item!["itemId"]!.GetValue<string>() == "herb_stack_2");
+        Assert.Contains(items, item => item!["itemId"]!.GetValue<string>() == "herb_stack_rare");
 
-        var merged = Assert.Single(items.OfType<JsonObject>(), item => item["existedId"]!.GetValue<string>() == "herb_stack");
+        var merged = Assert.Single(items.OfType<JsonObject>(), item => item["itemId"]!.GetValue<string>() == "herb_stack");
         Assert.Equal(7, merged["count"]!.GetValue<int>());
+        var index = await ReadIdentityIndexAsync();
+        var survivor = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>(),
+            entry => entry["itemId"]!.GetValue<string>() == "herb_stack");
+        var contributor = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>(),
+            entry => entry["itemId"]!.GetValue<string>() == "herb_stack_2");
+        Assert.Equal(2, survivor["originMaterializationIds"]!.AsArray().Count);
+        Assert.Equal("merged", contributor["state"]!.GetValue<string>());
+        Assert.Equal("herb_stack", contributor["mergedIntoItemId"]!.GetValue<string>());
+    }
+
+    [Theory]
+    [Trait("Category", "BrowserInventoryManagement")]
+    [InlineData("readable")]
+    [InlineData("sentient")]
+    [InlineData("bonded")]
+    [InlineData("quest")]
+    [InlineData("section_reason")]
+    public async Task TryApplyAsync_InventoryMergeRejectsGovernedSemanticMismatchWithoutMutation(
+        string mismatch)
+    {
+        var selected = CreateCanonicalInventoryItem(
+            "itm_semantic_selected",
+            "Лунная трава",
+            "material",
+            "Common",
+            2);
+        var incompatible = CreateCanonicalInventoryItem(
+            "itm_semantic_incompatible",
+            "Лунная трава",
+            "material",
+            "Common",
+            3,
+            configureRaw: item => ConfigureSemanticMismatch(item, mismatch));
+        AssertCanonicalItem(selected);
+        AssertCanonicalItem(incompatible);
+        await WriteCanonicalInventoryAsync(new[] { selected, incompatible }, new JsonObject());
+        var beforeInventory = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var result = await _mortalWriteService.TryApplyAsync(
+            "/inventory_merge itm_semantic_selected",
+            Answers(("item_identity", "itm_semantic_selected"), ("confirm_inventory_merge", true)),
+            Owner("browser-inventory-test"));
+
+        Assert.False(result.Success);
+        Assert.True(result.KeepSessionOpen);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserInventoryManagement")]
+    public async Task TryApplyAsync_InventoryMergeRejectsEquippedContributorWithoutMutation()
+    {
+        var selected = CreateCanonicalInventoryItem(
+            "itm_equipped_selected",
+            "Парные клинки",
+            "weapon",
+            "Common",
+            2,
+            equipmentSlot: "mainHand");
+        var contributor = CreateCanonicalInventoryItem(
+            "itm_equipped_contributor",
+            "Парные клинки",
+            "weapon",
+            "Common",
+            3,
+            equipmentSlot: "mainHand");
+        await WriteCanonicalInventoryAsync(
+            new[] { selected, contributor },
+            new JsonObject { ["mainHand"] = "itm_equipped_contributor" });
+        var beforeInventory = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var result = await _mortalWriteService.TryApplyAsync(
+            "/inventory_merge itm_equipped_selected",
+            Answers(("item_identity", "itm_equipped_selected"), ("confirm_inventory_merge", true)),
+            Owner("browser-inventory-test"));
+
+        Assert.False(result.Success);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserInventoryManagement")]
+    public async Task TryApplyAsync_InventoryMergeRejectsEquippedSurvivorWithoutMutation()
+    {
+        var selected = CreateCanonicalInventoryItem(
+            "itm_equipped_selected",
+            "Парные клинки",
+            "weapon",
+            "Common",
+            2,
+            equipmentSlot: "mainHand");
+        var contributor = CreateCanonicalInventoryItem(
+            "itm_equipped_contributor",
+            "Парные клинки",
+            "weapon",
+            "Common",
+            3,
+            equipmentSlot: "mainHand");
+        await WriteCanonicalInventoryAsync(
+            new[] { selected, contributor },
+            new JsonObject { ["mainHand"] = "itm_equipped_selected" });
+        var beforeInventory = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var result = await _mortalWriteService.TryApplyAsync(
+            "/inventory_merge itm_equipped_selected",
+            Answers(("item_identity", "itm_equipped_selected"), ("confirm_inventory_merge", true)),
+            Owner("browser-inventory-test"));
+
+        Assert.False(result.Success);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserInventoryManagement")]
+    public async Task TryApplyAsync_InventoryMergeRejectsContainerContributorWithoutMutation()
+    {
+        static void ConfigureContainer(JsonObject item)
+        {
+            item["isContainer"] = true;
+            item["capacity"] = 10;
+            item["materialization"]!["sections"]!["container"] = new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
+        }
+
+        var selected = CreateCanonicalInventoryItem(
+            "itm_container_selected",
+            "Дорожная сумка",
+            "container",
+            "Common",
+            2,
+            configureRaw: ConfigureContainer);
+        var contributor = CreateCanonicalInventoryItem(
+            "itm_container_contributor",
+            "Дорожная сумка",
+            "container",
+            "Common",
+            3,
+            configureRaw: ConfigureContainer);
+        var child = CreateCanonicalInventoryItem(
+            "itm_container_child",
+            "Камень внутри сумки",
+            "material",
+            "Common",
+            1);
+        child["contentsPath"] = new JsonArray("itm_container_contributor");
+        AssertCanonicalItem(selected);
+        AssertCanonicalItem(contributor);
+        AssertCanonicalItem(child);
+        await WriteCanonicalInventoryAsync(
+            new[] { selected, contributor, child },
+            new JsonObject());
+        var index = await ReadIdentityIndexAsync();
+        var childEntry = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>(),
+            entry => entry["itemId"]!.GetValue<string>() == "itm_container_child");
+        childEntry["currentCarrier"]!["containerPath"] = new JsonArray("itm_container_contributor");
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            index.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var beforeInventory = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var result = await _mortalWriteService.TryApplyAsync(
+            "/inventory_merge itm_container_selected",
+            Answers(("item_identity", "itm_container_selected"), ("confirm_inventory_merge", true)),
+            Owner("browser-inventory-test"));
+
+        Assert.False(result.Success);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserInventoryManagement")]
+    public async Task TryApplyAsync_InventoryMergeRejectsContainerSurvivorWithoutMutation()
+    {
+        static void ConfigureContainer(JsonObject item)
+        {
+            item["isContainer"] = true;
+            item["capacity"] = 10;
+            item["materialization"]!["sections"]!["container"] = new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
+        }
+
+        var selected = CreateCanonicalInventoryItem(
+            "itm_container_selected",
+            "Дорожная сумка",
+            "container",
+            "Common",
+            2,
+            configureRaw: ConfigureContainer);
+        var contributor = CreateCanonicalInventoryItem(
+            "itm_container_contributor",
+            "Дорожная сумка",
+            "container",
+            "Common",
+            3,
+            configureRaw: ConfigureContainer);
+        var child = CreateCanonicalInventoryItem(
+            "itm_container_child",
+            "Камень внутри сумки",
+            "material",
+            "Common",
+            1);
+        child["contentsPath"] = new JsonArray("itm_container_selected");
+        AssertCanonicalItem(selected);
+        AssertCanonicalItem(contributor);
+        AssertCanonicalItem(child);
+        await WriteCanonicalInventoryAsync(
+            new[] { selected, contributor, child },
+            new JsonObject());
+        var index = await ReadIdentityIndexAsync();
+        var childEntry = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>(),
+            entry => entry["itemId"]!.GetValue<string>() == "itm_container_child");
+        childEntry["currentCarrier"]!["containerPath"] = new JsonArray("itm_container_selected");
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            index.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var beforeInventory = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var result = await _mortalWriteService.TryApplyAsync(
+            "/inventory_merge itm_container_selected",
+            Answers(("item_identity", "itm_container_selected"), ("confirm_inventory_merge", true)),
+            Owner("browser-inventory-test"));
+
+        Assert.False(result.Success);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
     }
 
     [Fact]
@@ -334,65 +649,134 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync(InventoryEquipmentService.ItemsPath, """
+        var items = new[]
         {
-          "items": [
-            {
-              "existedId": "blade_1",
-              "name": "Стальной клинок",
-              "type": "weapon",
-              "equipmentSlot": "mainHand",
-              "count": 1
-            },
-            {
-              "existedId": "herb_stack",
-              "name": "Лунная трава",
-              "type": "material",
-              "quality": "Common",
-              "count": 5
-            },
-            {
-              "existedId": "herb_stack_2",
-              "name": "Лунная трава",
-              "type": "material",
-              "quality": "Common",
-              "quantity": 2
-            },
-            {
-              "existedId": "herb_stack_rare",
-              "name": "Лунная трава",
-              "type": "material",
-              "quality": "Rare",
-              "count": 4
-            }
-          ],
-          "equipment": {
-            "mainHand": "blade_1"
-          }
-        }
-        """);
+            CreateCanonicalInventoryItem("blade_1", "Стальной клинок", "weapon", "Common", 1, "mainHand"),
+            CreateCanonicalInventoryItem("herb_stack", "Лунная трава", "material", "Common", 5),
+            CreateCanonicalInventoryItem("herb_stack_2", "Лунная трава", "material", "Common", 2),
+            CreateCanonicalInventoryItem("herb_stack_rare", "Лунная трава", "material", "Rare", 4)
+        };
+        await WriteCanonicalInventoryAsync(
+            items,
+            new JsonObject { ["mainHand"] = "blade_1" });
     }
 
-    private async Task SeedSingleStackAsync(string countField, int count)
+    private async Task SeedSingleStackAsync(int count)
     {
-        await _fs.WriteFileAtomicAsync(InventoryEquipmentService.ItemsPath, $$"""
-        {
-          "items": [
+        await WriteCanonicalInventoryAsync(
+            new[] { CreateCanonicalInventoryItem("stack_1", "Лунная трава", "material", "Common", count) },
+            new JsonObject());
+    }
+
+    private async Task WriteCanonicalInventoryAsync(
+        IReadOnlyList<JsonObject> items,
+        JsonObject equipment)
+    {
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
             {
-              "existedId": "stack_1",
-              "name": "Лунная трава",
-              "type": "material",
-              "quality": "Common",
-              "{{countField}}": {{count}}
-            }
-          ],
-          "equipment": {}
+                ["items"] = new JsonArray(items.Select(item => (JsonNode?)item.DeepClone()).ToArray()),
+                ["equipment"] = equipment
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(items.ToArray())
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static JsonObject CreateCanonicalInventoryItem(
+        string itemId,
+        string name,
+        string type,
+        string quality,
+        int count,
+        string? equipmentSlot = null,
+        Action<JsonObject>? configureRaw = null)
+    {
+        var item = MortalItemTestFixture.CreateRawRoot(
+            creationRef: $"new_item_{itemId}",
+            materializationId: $"mat_item_{itemId}");
+        item["name"] = name;
+        item["description"] = $"Тестовый предмет «{name}».";
+        item["type"] = type;
+        item["quality"] = quality;
+        item["rarity"] = quality;
+        item["count"] = count;
+        item["equipmentSlot"] = equipmentSlot;
+        if (equipmentSlot != null)
+        {
+            item["materialization"]!["sections"]!["equipment"] = new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
         }
-        """);
+        configureRaw?.Invoke(item);
+        var receipt = MortalItemIdentityState.CreateRootReceipt(item, itemId, acceptedTurn: 42);
+        item["itemId"] = itemId;
+        item["existedId"] = itemId;
+        item.Remove("creationRef");
+        item["materializationReceipt"] = receipt;
+        return item;
+    }
+
+    private static void ConfigureSemanticMismatch(JsonObject item, string mismatch)
+    {
+        switch (mismatch)
+        {
+            case "readable":
+                item["textContent"] = "Редкая запись о лунных травах.";
+                SetPopulatedSection(item, "readableOrSentient");
+                break;
+            case "sentient":
+                item["isSentient"] = true;
+                SetPopulatedSection(item, "readableOrSentient");
+                break;
+            case "bonded":
+                item["ownerBondLevelCurrent"] = 1;
+                item["ownerBondLevelMax"] = 10;
+                SetPopulatedSection(item, "bondsAndFateCards");
+                break;
+            case "quest":
+                item["questLinks"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["questId"] = "quest_lunar_herbs",
+                        ["role"] = "required"
+                    });
+                SetPopulatedSection(item, "questRole");
+                break;
+            case "section_reason":
+                item["materialization"]!["sections"]!["mechanics"]!["reason"] =
+                    "Этот экземпляр намеренно не имеет самостоятельной механики по иной внутримировой причине.";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mismatch));
+        }
+    }
+
+    private static void SetPopulatedSection(JsonObject item, string section) =>
+        item["materialization"]!["sections"]![section] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+
+    private static void AssertCanonicalItem(JsonObject item)
+    {
+        using var document = JsonDocument.Parse(item.ToJsonString());
+        Assert.Empty(MortalItemMaterializationContract.Validate(
+            document.RootElement,
+            "browser_inventory_fixture",
+            MortalItemMaterializationPhase.CanonicalPostSeal));
     }
 
     private async Task<JsonObject> ReadInventoryAsync() =>
         JsonNode.Parse((await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath))!)!.AsObject();
+
+    private async Task<JsonObject> ReadIdentityIndexAsync() =>
+        JsonNode.Parse((await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!)!.AsObject();
 
     private static Dictionary<string, JsonNode?> Answers(params (string Key, object Value)[] values)
     {

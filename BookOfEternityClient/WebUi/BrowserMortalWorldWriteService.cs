@@ -530,7 +530,7 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Выброс предмета",
-            [InventoryEquipmentService.ItemsPath],
+            [InventoryEquipmentService.ItemsPath, MortalItemIdentityState.StatePath],
             async lease =>
             {
                 var outcome = await InventoryManagementService.DropAsync(_fs, lease, itemIdentity);
@@ -574,7 +574,7 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Разделение стопки",
-            [InventoryEquipmentService.ItemsPath],
+            [InventoryEquipmentService.ItemsPath, MortalItemIdentityState.StatePath],
             async lease =>
             {
                 var outcome = await InventoryManagementService.SplitAsync(
@@ -613,7 +613,7 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Объединение стопок",
-            [InventoryEquipmentService.ItemsPath],
+            [InventoryEquipmentService.ItemsPath, MortalItemIdentityState.StatePath],
             async lease =>
             {
                 var outcome = await InventoryManagementService.MergeAsync(_fs, lease, itemIdentity);

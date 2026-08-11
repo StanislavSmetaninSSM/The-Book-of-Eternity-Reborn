@@ -1489,52 +1489,6 @@ public partial class ExplorerMode
         return result;
     }
 
-    private static int FindInventoryItemIndex(JsonArray items, string itemIdentity, string itemName)
-    {
-        for (int i = 0; i < items.Count; i++)
-        {
-            if (InventoryItemMatches(items[i], itemIdentity, itemName))
-                return i;
-        }
-
-        return -1;
-    }
-
-    private static void AssignNewInventoryIdentity(JsonObject item)
-    {
-        var newId = Guid.NewGuid().ToString();
-        var hadIdentityField = false;
-
-        foreach (var key in new[] { "existedId", "itemId", "id" })
-        {
-            if (!item.ContainsKey(key)) continue;
-            item[key] = newId;
-            hadIdentityField = true;
-        }
-
-        if (!hadIdentityField)
-            item["existedId"] = newId;
-    }
-
-    private static string CreateInventoryMergeSignature(JsonNode? item)
-    {
-        if (item is not JsonObject obj)
-            return item?.ToJsonString() ?? "";
-
-        var clone = JsonNode.Parse(obj.ToJsonString()) as JsonObject;
-        if (clone == null)
-            return "";
-
-        clone.Remove("count");
-        clone.Remove("quantity");
-        clone.Remove("id");
-        clone.Remove("itemId");
-        clone.Remove("existedId");
-        clone.Remove("initialId");
-
-        return clone.ToJsonString();
-    }
-
     /// <summary>Sets equipment.{slot} = item identity (or fallback name) in items.json.</summary>
     private async Task EquipItemLocal(string itemIdentity, string itemName, string slotKey)
     {
@@ -1600,46 +1554,21 @@ public partial class ExplorerMode
         }
     }
 
-    /// <summary>Removes an item from items.json entirely (drop/discard).</summary>
+    /// <summary>Retires an item through the shared identity transition writer.</summary>
     private async Task DropItemLocal(string itemIdentity, string itemName)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            if (node == null) return;
-
-            var itemsArr = GetPlayerInventoryArrayNode(node, createIfMissing: false);
-            if (itemsArr == null) return;
-
-            var itemIndex = FindInventoryItemIndex(itemsArr, itemIdentity, itemName);
-            if (itemIndex >= 0)
+            var outcome = await InventoryManagementService.DropAsync(_fs, itemIdentity);
+            if (outcome.Success)
             {
-                itemsArr.RemoveAt(itemIndex);
-
-                // Also clear equipment slot if equipped
-                var equipNode = node["equipment"];
-                if (equipNode is JsonObject eqObj)
-                {
-                    foreach (var prop in eqObj.ToArray())
-                    {
-                        if (InventoryReferenceMatches(prop.Value, itemIdentity, itemName))
-                            eqObj[prop.Key] = null;
-                    }
-                }
-
-                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-                await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
                 MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» выброшен.[/]");
                 MarkupLine("[dim]Нажмите любую клавишу...[/]");
                 ReadKey();
                 return;
             }
 
-            MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
+            MarkupLine($"[yellow]{Markup.Escape(outcome.Message)}[/]");
             WaitForKey();
         }
         catch (Exception ex)
@@ -1649,47 +1578,24 @@ public partial class ExplorerMode
         }
     }
 
-    /// <summary>Splits an item stack: reduces count of original and creates a new item entry with the split amount.</summary>
+    /// <summary>Splits an item stack through the shared identity transition writer.</summary>
     private async Task SplitItemStack(string itemIdentity, string itemName, int splitAmount)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            var itemsArr = GetPlayerInventoryArrayNode(node, createIfMissing: false);
-            if (itemsArr == null) return;
-
-            var itemIndex = FindInventoryItemIndex(itemsArr, itemIdentity, itemName);
-            if (itemIndex >= 0)
+            var outcome = await InventoryManagementService.SplitAsync(
+                _fs,
+                itemIdentity,
+                splitAmount);
+            if (outcome.Success)
             {
-                var original = itemsArr[itemIndex]!.AsObject();
-                var countKey = original.ContainsKey("quantity") ? "quantity" : "count";
-
-                var currentCount = original[countKey]?.GetValue<int>() ?? 1;
-                if (splitAmount >= currentCount) { MarkupLine("[yellow]Нельзя отделить всё количество.[/]"); WaitForKey(); return; }
-
-                // Reduce original
-                original[countKey] = currentCount - splitAmount;
-
-                // Create copy with split amount
-                var copy = JsonNode.Parse(original.ToJsonString())!.AsObject();
-                copy[countKey] = splitAmount;
-                AssignNewInventoryIdentity(copy);
-
-                itemsArr.Add(copy);
-
-                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-                await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
-                MarkupLine($"[green]✅ Стопка разделена: {currentCount - splitAmount} + {splitAmount}[/]");
+                MarkupLine($"[green]✅ {Markup.Escape(outcome.Message)}[/]");
                 MarkupLine("[dim]Нажмите любую клавишу...[/]");
                 ReadKey();
                 return;
             }
 
-            MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
+            MarkupLine($"[yellow]{Markup.Escape(outcome.Message)}[/]");
             WaitForKey();
         }
         catch (Exception ex)
@@ -1699,65 +1605,22 @@ public partial class ExplorerMode
         }
     }
 
-    /// <summary>Merges two stacks of the same item name into one.</summary>
+    /// <summary>Merges compatible stacks through the shared identity transition writer.</summary>
     private async Task MergeItemStacks(string itemIdentity, string itemName)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            var itemsArr = GetPlayerInventoryArrayNode(node, createIfMissing: false);
-            if (itemsArr == null) return;
-
-            var selectedIndex = FindInventoryItemIndex(itemsArr, itemIdentity, itemName);
-            if (selectedIndex < 0)
+            var outcome = await InventoryManagementService.MergeAsync(_fs, itemIdentity);
+            if (outcome.Success)
             {
-                MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
-                WaitForKey();
+                MarkupLine($"[green]✅ {Markup.Escape(outcome.Message)}[/]");
+                MarkupLine("[dim]Нажмите любую клавишу...[/]");
+                ReadKey();
                 return;
             }
 
-            var selectedItem = itemsArr[selectedIndex];
-            var selectedSignature = CreateInventoryMergeSignature(selectedItem);
-            var matchingIndices = new List<int> { selectedIndex };
-            for (int i = 0; i < itemsArr.Count; i++)
-            {
-                if (i == selectedIndex) continue;
-                if (CreateInventoryMergeSignature(itemsArr[i]) == selectedSignature)
-                    matchingIndices.Add(i);
-            }
-
-            if (matchingIndices.Count < 2)
-            {
-                MarkupLine("[yellow]Нет другой стопки с таким же именем для объединения.[/]");
-                WaitForKey();
-                return;
-            }
-
-            // Sum all counts into the first stack, remove the rest
-            var first = itemsArr[matchingIndices[0]]!.AsObject();
-            var countKey = first.ContainsKey("quantity") ? "quantity" : "count";
-            var totalCount = 0;
-            foreach (var idx in matchingIndices)
-            {
-                var ck = itemsArr[idx]!.AsObject().ContainsKey("quantity") ? "quantity" : "count";
-                totalCount += itemsArr[idx]![ck]?.GetValue<int>() ?? 1;
-            }
-
-            first[countKey] = totalCount;
-
-            // Remove duplicates in reverse order to preserve indices
-            for (int j = matchingIndices.Count - 1; j >= 1; j--)
-                itemsArr.RemoveAt(matchingIndices[j]);
-
-            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-            await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
-            MarkupLine($"[green]✅ Стопки объединены: {totalCount} шт.[/]");
-            MarkupLine("[dim]Нажмите любую клавишу...[/]");
-            ReadKey();
+            MarkupLine($"[yellow]{Markup.Escape(outcome.Message)}[/]");
+            WaitForKey();
         }
         catch (Exception ex)
         {

@@ -68,7 +68,7 @@ internal sealed class MortalItemTransitionMutationContext
 /// Applies client-owned Mortal item identity transitions as one guarded write
 /// set. Callers provide operation authority, never carrier JSON or an index.
 /// </summary>
-internal sealed class MortalItemTransitionWriter
+internal sealed partial class MortalItemTransitionWriter
 {
     private static readonly string[] CompanionPaths =
     {
@@ -95,6 +95,13 @@ internal sealed class MortalItemTransitionWriter
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(intent);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+
+        if (intent.Kind is MortalItemTransitionKind.Split or
+            MortalItemTransitionKind.Merge or
+            MortalItemTransitionKind.Destroy)
+        {
+            return await ExecuteStackMutationAsync(writeLease, intent, mutation);
+        }
 
         var intentError = ValidateTransferIntent(intent);
         if (intentError != null)
@@ -606,6 +613,15 @@ internal sealed class MortalItemTransitionWriter
                     StringComparison.Ordinal))
             {
                 return $"Receipt предмета {occurrence.ItemId} расходится с индексом идентичности.";
+            }
+
+            if (!TryReadPositiveInt(occurrence.Item["count"], out var carrierQuantity) ||
+                entry["transitions"] is not JsonArray { Count: > 0 } transitions ||
+                transitions[^1] is not JsonObject lastTransition ||
+                !TryReadPositiveInt(lastTransition["quantityAfter"], out var indexedQuantity) ||
+                carrierQuantity != indexedQuantity)
+            {
+                return $"Количество предмета {occurrence.ItemId} расходится с identity history.";
             }
 
             using var document = JsonDocument.Parse(occurrence.Item.ToJsonString());

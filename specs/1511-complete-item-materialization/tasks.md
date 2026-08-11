@@ -139,18 +139,18 @@ contributors match the contract exactly.
 
 ### Tests for User Story 3
 
-- [ ] T039 [US3] Add red split-derived receipt, parent/origin lineage, quantity conservation, and rollback tests in `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs`
-- [ ] T040 [US3] Add red deterministic-survivor, origin-union, contributor-retirement, and complete semantic compatibility tests in `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs`
-- [ ] T041 [P] [US3] Migrate browser split/merge fixtures to current schema and add receipt/index assertions plus incompatible readable/sentient/bonded/quest/equipped/container cases in `BookOfEternityClient.Tests/WebUi/BrowserInventoryManagementTests.cs`
-- [ ] T042 [P] [US3] Add console/browser local discard tests proving `destroyed` retirement, cleared equipment, and no ground-loot carrier in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs`
+- [x] T039 [US3] Add red split-derived receipt, parent/origin lineage, quantity conservation, and rollback tests in `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs`
+- [x] T040 [US3] Add red deterministic-survivor, origin-union, contributor-retirement, and complete semantic compatibility tests in `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs`
+- [x] T041 [P] [US3] Migrate browser split/merge fixtures to current schema and add receipt/index assertions plus incompatible readable/sentient/bonded/quest/equipped/container cases in `BookOfEternityClient.Tests/WebUi/BrowserInventoryManagementTests.cs`
+- [x] T042 [P] [US3] Add console/browser local discard tests proving `destroyed` retirement, cleared equipment, and no ground-loot carrier in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs`
 
 ### Implementation for User Story 3
 
-- [ ] T043 [US3] Replace clone-and-ID split with a transition-writer split that seals one derived child receipt and records exact lineage in `BookOfEternityClient/Services/InventoryManagementService.cs`
-- [ ] T044 [US3] Replace raw-JSON merge signatures with governed semantic compatibility, selected-ID survivor, origin union, and contributor retirement in `BookOfEternityClient/Services/InventoryManagementService.cs`
-- [ ] T045 [US3] Route full local discard through a `destroy` transition and preserve partial/full consumption distinction in `BookOfEternityClient/Services/InventoryManagementService.cs`
-- [ ] T046 [US3] Remove duplicate UI-side split/merge signature assumptions and use the shared service outcome/identity contract in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Inventory.cs` and `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
-- [ ] T047 [US3] Run the US3 Focused filters for fast service/browser tests and integration console parity; record result directories in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T043 [US3] Replace clone-and-ID split with a transition-writer split that seals one derived child receipt and records exact lineage in `BookOfEternityClient/Services/InventoryManagementService.cs`
+- [x] T044 [US3] Replace raw-JSON merge signatures with governed semantic compatibility, selected-ID survivor, origin union, and contributor retirement in `BookOfEternityClient/Services/InventoryManagementService.cs`
+- [x] T045 [US3] Route full local discard through a `destroy` transition and preserve partial/full consumption distinction in `BookOfEternityClient/Services/InventoryManagementService.cs`
+- [x] T046 [US3] Remove duplicate UI-side split/merge signature assumptions and use the shared service outcome/identity contract in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Inventory.cs` and `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
+- [x] T047 [US3] Run the US3 Focused filters for fast service/browser tests and integration console parity; record result directories in `specs/1511-complete-item-materialization/quickstart.md`
 
 **Checkpoint**: No tested stack operation creates/erases quantity or loses
 origin lineage; incompatible stacks remain unchanged.

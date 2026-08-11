@@ -801,6 +801,19 @@ public partial class ValidationService
                     occurrence.MaterializationId,
                     entry["originMaterializationIds"]?.ToJsonString() ?? "missing"));
             }
+
+            var canonicalCount = TryReadInt(occurrence.Item["count"]);
+            var indexedQuantity = ReadLastTransitionQuantityAfter(entry);
+            if (canonicalCount.HasValue &&
+                indexedQuantity.HasValue &&
+                canonicalCount.Value != indexedQuantity.Value)
+            {
+                issues.Add(IndexMismatchIssue(
+                    occurrence,
+                    "mortal_item_materialization_index_quantity_mismatch",
+                    canonicalCount.Value.ToString(),
+                    indexedQuantity.Value.ToString()));
+            }
         }
 
         foreach (var pair in index.EntriesByItemId)
@@ -1084,6 +1097,17 @@ public partial class ValidationService
         }
 
         return null;
+    }
+
+    private static int? ReadLastTransitionQuantityAfter(JsonObject entry)
+    {
+        if (entry["transitions"] is not JsonArray { Count: > 0 } transitions ||
+            transitions[^1] is not JsonObject transition)
+        {
+            return null;
+        }
+
+        return TryReadInt(transition["quantityAfter"]);
     }
 
     private static ValidationIssue CloneIssueWithTarget(

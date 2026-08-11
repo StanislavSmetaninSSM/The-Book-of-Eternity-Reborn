@@ -67,7 +67,11 @@ internal sealed class TestExplorerConsole : IExplorerConsole
             return (T)(object)ResolveSelection(selection);
 
         if (prompt is ConfirmationPrompt)
+        {
+            if (_anyConfirmResponses.Count > 0)
+                return (T)(object)_anyConfirmResponses.Dequeue();
             return (T)(object)false;
+        }
 
         if (prompt is TextPrompt<string>)
             return (T)(object)string.Empty;

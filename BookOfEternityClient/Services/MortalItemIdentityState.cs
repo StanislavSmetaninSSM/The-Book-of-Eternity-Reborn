@@ -315,6 +315,11 @@ internal static class MortalItemIdentityState
                 issues);
             ValidateOriginContinuity(previousEntry, currentEntry, itemId, issues);
             ValidateTransitionContinuity(previousEntry, currentEntry, itemId, issues);
+            ValidateAppendedTransitionQuantityContinuity(
+                previousEntry,
+                currentEntry,
+                itemId,
+                issues);
             ValidateTransitionBackedStateChange(previousEntry, currentEntry, itemId, issues);
             ValidateRetirementContinuity(previousEntry, currentEntry, itemId, issues);
         }
@@ -395,6 +400,48 @@ internal static class MortalItemIdentityState
                 continue;
             issues.Add(TransitionHistoryIssue(itemId, previousTransitions, currentTransitions));
             return;
+        }
+    }
+
+    private static void ValidateAppendedTransitionQuantityContinuity(
+        JsonObject previous,
+        JsonObject current,
+        string itemId,
+        List<ValidationIssue> issues)
+    {
+        var previousTransitions = previous["transitions"] as JsonArray;
+        var currentTransitions = current["transitions"] as JsonArray;
+        if (previousTransitions is not { Count: > 0 } ||
+            currentTransitions == null ||
+            currentTransitions.Count <= previousTransitions.Count ||
+            previousTransitions[^1] is not JsonObject previousLast ||
+            !TryGetInt(previousLast, "quantityAfter", out var expectedQuantity))
+        {
+            return;
+        }
+
+        for (var index = previousTransitions.Count; index < currentTransitions.Count; index++)
+        {
+            if (currentTransitions[index] is not JsonObject transition ||
+                !TryGetInt(transition, "quantityBefore", out var quantityBefore) ||
+                !TryGetInt(transition, "quantityAfter", out var quantityAfter))
+            {
+                return;
+            }
+
+            if (quantityBefore != expectedQuantity)
+            {
+                issues.Add(Issue(
+                    $"{StatePath}.entries[{itemId}].transitions[{index}].quantityBefore",
+                    "mortal_item_identity_quantity_transition_mismatch",
+                    "An appended Mortal item transition must continue the exact recorded quantity history.",
+                    expectedQuantity.ToString(),
+                    quantityBefore.ToString(),
+                    itemId));
+                return;
+            }
+
+            expectedQuantity = quantityAfter;
         }
     }
 

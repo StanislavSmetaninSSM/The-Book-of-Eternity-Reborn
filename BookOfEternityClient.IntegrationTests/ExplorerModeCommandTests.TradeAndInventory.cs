@@ -721,6 +721,150 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                      entry.Choices.Contains("🔁 Выкупить обратно", StringComparer.Ordinal));
     }
 
+    [Fact]
+    public async Task TryProcessCommand_InventoryDrop_RetiresIdentityAndClearsEquipment()
+    {
+        await SeedMortalStateAsync();
+        var blade = CreateCanonicalManagementItem(
+            "itm_console_blade",
+            "Стальной клинок",
+            count: 1,
+            equipmentSlot: "mainHand");
+        await SeedCanonicalManagementInventoryAsync(
+            new[] { blade },
+            new JsonObject { ["mainHand"] = "itm_console_blade" });
+        _console.QueueSelection("Действие", "[red]🗑 Выбросить[/]");
+        _console.QueueAnyConfirmResponse(true);
+        await _stateManager.RefreshGameStateAsync();
+
+        var exception = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(exception);
+        AssertNoHiddenExplorerErrors("inventory_drop_identity");
+        var inventory = JsonNode.Parse(
+            (await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath))!)!.AsObject();
+        Assert.Empty(inventory["items"]!.AsArray());
+        Assert.Null(inventory["equipment"]!["mainHand"]);
+        var index = MortalItemIdentityState.Parse(
+            (await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!);
+        var entry = index.EntriesByItemId["itm_console_blade"];
+        Assert.Equal("destroyed", entry["state"]!.GetValue<string>());
+        Assert.Null(entry["currentCarrier"]);
+        Assert.Equal("destroy", entry["transitions"]!.AsArray()[^1]!["kind"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InventorySplit_CreatesDerivedReceiptAndIndexEntry()
+    {
+        await SeedMortalStateAsync();
+        var stack = CreateCanonicalManagementItem("itm_console_stack", "Лунная трава", count: 5);
+        var parentReceipt = stack["materializationReceipt"]!.DeepClone();
+        await SeedCanonicalManagementInventoryAsync(new[] { stack }, new JsonObject());
+        _console.QueueSelection("Действие", "✂ Разделить стопку");
+        await _stateManager.RefreshGameStateAsync();
+
+        var exception = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(exception);
+        AssertNoHiddenExplorerErrors("inventory_split_identity");
+        var inventory = JsonNode.Parse(
+            (await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath))!)!.AsObject();
+        var items = inventory["items"]!.AsArray().OfType<JsonObject>().ToArray();
+        Assert.Equal(2, items.Length);
+        var parent = Assert.Single(items, item =>
+            item["itemId"]!.GetValue<string>() == "itm_console_stack");
+        var child = Assert.Single(items, item =>
+            item["itemId"]!.GetValue<string>() != "itm_console_stack");
+        Assert.Equal(4, parent["count"]!.GetValue<int>());
+        Assert.Equal(1, child["count"]!.GetValue<int>());
+        Assert.True(JsonNode.DeepEquals(parentReceipt, parent["materializationReceipt"]));
+        Assert.Equal("split_derived", child["materializationReceipt"]!["instanceKind"]!.GetValue<string>());
+        Assert.StartsWith("itm_", child["itemId"]!.GetValue<string>(), StringComparison.Ordinal);
+        var index = MortalItemIdentityState.Parse(
+            (await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Equal(2, index.EntriesByItemId.Count);
+        Assert.Equal("split", index.EntriesByItemId[child["itemId"]!.GetValue<string>()]
+            ["transitions"]!.AsArray()[^1]!["kind"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InventoryMerge_KeepsSelectedIdentityAndRetiresContributor()
+    {
+        await SeedMortalStateAsync();
+        var survivor = CreateCanonicalManagementItem("itm_console_merge_a", "Лунная трава", count: 2);
+        var contributor = CreateCanonicalManagementItem("itm_console_merge_b", "Лунная трава", count: 3);
+        var survivorReceipt = survivor["materializationReceipt"]!.DeepClone();
+        await SeedCanonicalManagementInventoryAsync(
+            new[] { survivor, contributor },
+            new JsonObject());
+        _console.QueueSelection("Действие", "📚 Сложить с другим предметом");
+        await _stateManager.RefreshGameStateAsync();
+
+        var exception = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(exception);
+        AssertNoHiddenExplorerErrors("inventory_merge_identity");
+        var inventory = JsonNode.Parse(
+            (await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath))!)!.AsObject();
+        var merged = Assert.Single(inventory["items"]!.AsArray())!.AsObject();
+        Assert.Equal("itm_console_merge_a", merged["itemId"]!.GetValue<string>());
+        Assert.Equal(5, merged["count"]!.GetValue<int>());
+        Assert.True(JsonNode.DeepEquals(survivorReceipt, merged["materializationReceipt"]));
+        var index = MortalItemIdentityState.Parse(
+            (await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Equal("active", index.EntriesByItemId["itm_console_merge_a"]["state"]!.GetValue<string>());
+        Assert.Equal("merged", index.EntriesByItemId["itm_console_merge_b"]["state"]!.GetValue<string>());
+        Assert.Equal("itm_console_merge_a",
+            index.EntriesByItemId["itm_console_merge_b"]["mergedIntoItemId"]!.GetValue<string>());
+    }
+
+    private async Task SeedCanonicalManagementInventoryAsync(
+        IReadOnlyList<JsonObject> items,
+        JsonObject equipment)
+    {
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(items.Select(item => (JsonNode?)item.DeepClone()).ToArray()),
+                ["equipment"] = equipment
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(items.ToArray())
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static JsonObject CreateCanonicalManagementItem(
+        string itemId,
+        string name,
+        int count,
+        string? equipmentSlot = null)
+    {
+        var item = MortalItemTestFixture.CreateRawRoot(
+            creationRef: $"new_item_{itemId}",
+            materializationId: $"mat_item_{itemId}");
+        item["name"] = name;
+        item["description"] = $"Тестовый предмет «{name}».";
+        item["type"] = equipmentSlot == null ? "material" : "weapon";
+        item["count"] = count;
+        item["equipmentSlot"] = equipmentSlot;
+        if (equipmentSlot != null)
+        {
+            item["materialization"]!["sections"]!["equipment"] = new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
+        }
+        var receipt = MortalItemIdentityState.CreateRootReceipt(item, itemId, acceptedTurn: 42);
+        item["itemId"] = itemId;
+        item["existedId"] = itemId;
+        item.Remove("creationRef");
+        item["materializationReceipt"] = receipt;
+        return item;
+    }
+
     private async Task SeedRichNpcDrilldownStateAsync()
     {
         await SeedMortalStateAsync();

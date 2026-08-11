@@ -71,24 +71,21 @@ public static class InventoryManagementService
         IEnumerable<InventoryManagementItem> items,
         string identityOrName)
     {
-        if (string.IsNullOrWhiteSpace(identityOrName))
+        if (string.IsNullOrWhiteSpace(identityOrName) ||
+            !string.Equals(identityOrName, identityOrName.Trim(), StringComparison.Ordinal))
             return null;
 
-        var trimmed = identityOrName.Trim();
         return items.FirstOrDefault(item =>
-            (!string.IsNullOrWhiteSpace(item.Identity) &&
-             string.Equals(item.Identity, trimmed, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(item.Name) &&
-             string.Equals(item.Name, trimmed, StringComparison.OrdinalIgnoreCase)));
+            !string.IsNullOrWhiteSpace(item.Identity) &&
+            string.Equals(item.Identity, identityOrName, StringComparison.Ordinal));
     }
 
     public static IReadOnlyList<InventoryManagementItem> FindCompatibleStacks(
         InventoryManagementContext context,
         InventoryManagementItem selected)
     {
-        var selectedSignature = CreateInventoryMergeSignature(selected.Data);
         return context.Items
-            .Where(item => string.Equals(CreateInventoryMergeSignature(item.Data), selectedSignature, StringComparison.Ordinal))
+            .Where(item => MortalItemTransitionWriter.StackSemanticsEqual(selected.Data, item.Data))
             .ToArray();
     }
 
@@ -128,8 +125,11 @@ public static class InventoryManagementService
 
     public static async Task<InventoryManagementWriteOutcome> DropAsync(
         FileSystemManager fs,
-        string itemIdentityOrName) =>
-        await DropCoreAsync(fs, writeLease: null, itemIdentityOrName);
+        string itemIdentityOrName)
+    {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return await DropCoreAsync(fs, writeLease, itemIdentityOrName);
+    }
 
     internal static async Task<InventoryManagementWriteOutcome> DropAsync(
         FileSystemManager fs,
@@ -139,7 +139,7 @@ public static class InventoryManagementService
 
     private static async Task<InventoryManagementWriteOutcome> DropCoreAsync(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease? writeLease,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string itemIdentityOrName)
     {
         var context = await ReadContextCoreAsync(fs, writeLease);
@@ -150,13 +150,22 @@ public static class InventoryManagementService
         if (item == null)
             return InventoryManagementWriteOutcome.Failed("Предмет не найден в инвентаре.");
 
-        context.ItemsArray.RemoveAt(item.Index);
-        ClearMatchingEquipmentReferences(context.Root, item.Identity, item.Name);
-
-        await WriteAsync(
-            fs,
+        if (string.IsNullOrWhiteSpace(item.Identity))
+            return InventoryManagementWriteOutcome.Failed("Предмет не имеет точного permanent itemId.");
+        var turn = await ResolveLocalTransitionTurnAsync(fs, writeLease);
+        var transition = await new MortalItemTransitionWriter(fs).ExecuteAsync(
             writeLease,
-            context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Destroy,
+                new[] { item.Identity },
+                PlayerCarrier(item.Data),
+                DestinationCarrier: null,
+                Quantity: item.Count,
+                Turn: turn,
+                AuthorityKind: "inventory_discard",
+                AuthorityId: $"inventory_discard:{turn}:{item.Identity}"));
+        if (!transition.Success)
+            return InventoryManagementWriteOutcome.Failed(transition.Message);
 
         return InventoryManagementWriteOutcome.Completed(
             $"«{item.Name}» выброшен.",
@@ -198,8 +207,11 @@ public static class InventoryManagementService
     public static async Task<InventoryManagementWriteOutcome> SplitAsync(
         FileSystemManager fs,
         string itemIdentityOrName,
-        int splitQuantity) =>
-        await SplitCoreAsync(fs, writeLease: null, itemIdentityOrName, splitQuantity);
+        int splitQuantity)
+    {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return await SplitCoreAsync(fs, writeLease, itemIdentityOrName, splitQuantity);
+    }
 
     internal static async Task<InventoryManagementWriteOutcome> SplitAsync(
         FileSystemManager fs,
@@ -210,7 +222,7 @@ public static class InventoryManagementService
 
     private static async Task<InventoryManagementWriteOutcome> SplitCoreAsync(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease? writeLease,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string itemIdentityOrName,
         int splitQuantity)
     {
@@ -226,26 +238,30 @@ public static class InventoryManagementService
         if (!validation.Success)
             return validation;
 
-        var original = context.ItemsArray[item.Index]!.AsObject();
-        var countKey = original.ContainsKey("quantity") ? "quantity" : "count";
-        var currentCount = ReadStackCount(original);
-        original[countKey] = currentCount - splitQuantity;
-
-        var copy = JsonNode.Parse(original.ToJsonString())!.AsObject();
-        copy[countKey] = splitQuantity;
-        AssignNewInventoryIdentity(copy);
-        context.ItemsArray.Add(copy);
-
-        await WriteAsync(
-            fs,
+        if (string.IsNullOrWhiteSpace(item.Identity))
+            return InventoryManagementWriteOutcome.Failed("Стопка не имеет точного permanent itemId.");
+        var turn = await ResolveLocalTransitionTurnAsync(fs, writeLease);
+        var carrier = PlayerCarrier(item.Data);
+        var transition = await new MortalItemTransitionWriter(fs).ExecuteAsync(
             writeLease,
-            context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Split,
+                new[] { item.Identity },
+                carrier,
+                carrier,
+                Quantity: splitQuantity,
+                Turn: turn,
+                AuthorityKind: "inventory_split",
+                AuthorityId: $"inventory_split:{turn}:{item.Identity}"));
+        if (!transition.Success)
+            return InventoryManagementWriteOutcome.Failed(transition.Message);
 
         return InventoryManagementWriteOutcome.Completed(
-            $"Стопка «{item.Name}» разделена: {currentCount - splitQuantity} и {splitQuantity}.",
+            $"Стопка «{item.Name}» разделена: {item.Count - splitQuantity} и {splitQuantity}.",
             item.Identity,
             item.Name,
-            splitQuantity);
+            splitQuantity,
+            transition.DerivedItemId);
     }
 
     public static async Task<InventoryManagementWriteOutcome> ValidateMergeAsync(
@@ -277,8 +293,11 @@ public static class InventoryManagementService
 
     public static async Task<InventoryManagementWriteOutcome> MergeAsync(
         FileSystemManager fs,
-        string itemIdentityOrName) =>
-        await MergeCoreAsync(fs, writeLease: null, itemIdentityOrName);
+        string itemIdentityOrName)
+    {
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        return await MergeCoreAsync(fs, writeLease, itemIdentityOrName);
+    }
 
     internal static async Task<InventoryManagementWriteOutcome> MergeAsync(
         FileSystemManager fs,
@@ -288,7 +307,7 @@ public static class InventoryManagementService
 
     private static async Task<InventoryManagementWriteOutcome> MergeCoreAsync(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease? writeLease,
+        FileSystemManager.CanonicalWriteLease writeLease,
         string itemIdentityOrName)
     {
         var context = await ReadContextCoreAsync(fs, writeLease);
@@ -303,32 +322,31 @@ public static class InventoryManagementService
         if (!validation.Success)
             return validation;
 
-        var matchingIndices = new List<int> { item.Index };
-        var selectedSignature = CreateInventoryMergeSignature(item.Data);
-        for (var i = 0; i < context.ItemsArray.Count; i++)
-        {
-            if (i == item.Index)
-                continue;
-
-            if (CreateInventoryMergeSignature(context.ItemsArray[i]) == selectedSignature)
-                matchingIndices.Add(i);
-        }
-
-        var first = context.ItemsArray[matchingIndices[0]]!.AsObject();
-        var countKey = first.ContainsKey("quantity") ? "quantity" : "count";
-        var totalCount = 0;
-        foreach (var idx in matchingIndices)
-            totalCount += ReadStackCount(context.ItemsArray[idx] as JsonObject);
-
-        first[countKey] = totalCount;
-
-        for (var j = matchingIndices.Count - 1; j >= 1; j--)
-            context.ItemsArray.RemoveAt(matchingIndices[j]);
-
-        await WriteAsync(
-            fs,
+        if (string.IsNullOrWhiteSpace(item.Identity))
+            return InventoryManagementWriteOutcome.Failed("Стопка не имеет точного permanent itemId.");
+        var compatible = FindCompatibleStacks(context, item);
+        if (compatible.Any(candidate => string.IsNullOrWhiteSpace(candidate.Identity)))
+            return InventoryManagementWriteOutcome.Failed("Совместимая стопка не имеет точного permanent itemId.");
+        var totalLong = compatible.Sum(candidate => (long)candidate.Count);
+        if (totalLong > int.MaxValue)
+            return InventoryManagementWriteOutcome.Failed("Итоговое количество стопки слишком велико.");
+        var totalCount = (int)totalLong;
+        var turn = await ResolveLocalTransitionTurnAsync(fs, writeLease);
+        var carrier = PlayerCarrier(item.Data);
+        var transition = await new MortalItemTransitionWriter(fs).ExecuteAsync(
             writeLease,
-            context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Merge,
+                compatible.Select(candidate => candidate.Identity).ToArray(),
+                carrier,
+                carrier,
+                Quantity: totalCount,
+                Turn: turn,
+                AuthorityKind: "inventory_merge",
+                AuthorityId: $"inventory_merge:{turn}:{item.Identity}",
+                SurvivorItemId: item.Identity));
+        if (!transition.Success)
+            return InventoryManagementWriteOutcome.Failed(transition.Message);
 
         return InventoryManagementWriteOutcome.Completed(
             $"Стопки «{item.Name}» объединены: {totalCount} шт.",
@@ -337,13 +355,83 @@ public static class InventoryManagementService
             totalCount);
     }
 
-    private static Task WriteAsync(
+    private static async Task<int> ResolveLocalTransitionTurnAsync(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease? writeLease,
-        string content) =>
-        writeLease == null
-            ? fs.WriteFileAtomicAsync(InventoryEquipmentService.ItemsPath, content)
-            : fs.WriteFileAtomicAsync(writeLease, InventoryEquipmentService.ItemsPath, content);
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var latestTurn = 1;
+        var indexJson = await fs.ReadFileAsync(writeLease, MortalItemIdentityState.StatePath);
+        var index = MortalItemIdentityState.Parse(indexJson);
+        foreach (var entry in index.EntriesByItemId.Values)
+        {
+            if (entry["transitions"] is not JsonArray transitions)
+                continue;
+            foreach (var transition in transitions.OfType<JsonObject>())
+            {
+                if (TryReadInt(transition["turn"], out var transitionTurn))
+                    latestTurn = Math.Max(latestTurn, transitionTurn);
+            }
+        }
+
+        var storiesRoot = fs.ResolvePath("stories");
+        if (!Directory.Exists(storiesRoot))
+            return latestTurn;
+        foreach (var path in Directory.EnumerateFiles(storiesRoot, "*.json", SearchOption.AllDirectories))
+        {
+            try
+            {
+                var relativePath = Path.GetRelativePath(fs.GameSessionPath, path).Replace('\\', '/');
+                var json = await fs.ReadFileAsync(writeLease, relativePath);
+                if (string.IsNullOrWhiteSpace(json))
+                    continue;
+                using var document = JsonDocument.Parse(json);
+                if (document.RootElement.TryGetProperty("turnNumber", out var turnNode) &&
+                    turnNode.ValueKind == JsonValueKind.Number &&
+                    turnNode.TryGetInt32(out var storyTurn))
+                {
+                    latestTurn = Math.Max(latestTurn, storyTurn);
+                }
+            }
+            catch (Exception exception) when (
+                exception is IOException or JsonException or UnauthorizedAccessException)
+            {
+                // An unrelated partial story file cannot make a local inventory write move backward.
+            }
+        }
+        return latestTurn;
+    }
+
+    private static MortalItemCarrierCoordinate PlayerCarrier(JsonObject item) =>
+        new(
+            "player_inventory",
+            "player",
+            null,
+            ReadExactContentsPath(item));
+
+    private static IReadOnlyList<string> ReadExactContentsPath(JsonObject item)
+    {
+        if (item["contentsPath"] == null)
+            return Array.Empty<string>();
+        if (item["contentsPath"] is not JsonArray path)
+            return new[] { string.Empty };
+
+        var result = new List<string>(path.Count);
+        foreach (var node in path)
+        {
+            if (node is JsonValue value &&
+                value.TryGetValue<string>(out var identity) &&
+                !string.IsNullOrWhiteSpace(identity) &&
+                string.Equals(identity, identity.Trim(), StringComparison.Ordinal))
+            {
+                result.Add(identity);
+            }
+            else
+            {
+                result.Add(string.Empty);
+            }
+        }
+        return result;
+    }
 
     private static InventoryManagementWriteOutcome ValidateSplit(InventoryManagementItem item, int splitQuantity)
     {
@@ -368,7 +456,10 @@ public static class InventoryManagementService
         if (compatible.Count < 2)
             return InventoryManagementWriteOutcome.Failed("Нет другой совместимой стопки для объединения.");
 
-        var total = compatible.Sum(static match => match.Count);
+        var totalLong = compatible.Sum(static match => (long)match.Count);
+        if (totalLong > int.MaxValue)
+            return InventoryManagementWriteOutcome.Failed("Итоговое количество стопки слишком велико.");
+        var total = (int)totalLong;
         return InventoryManagementWriteOutcome.Completed(
             $"Будет объединено стопок: {compatible.Count}. Итоговое количество: {total}.",
             item.Identity,
@@ -437,52 +528,6 @@ public static class InventoryManagementService
             (!string.IsNullOrWhiteSpace(itemName) &&
              string.Equals(item.Name, itemName, StringComparison.OrdinalIgnoreCase)));
 
-    private static void ClearMatchingEquipmentReferences(JsonObject root, string itemIdentity, string itemName)
-    {
-        foreach (var equipmentProperty in new[] { "equipment", "equippedItems" })
-        {
-            if (root[equipmentProperty] is not JsonObject equipment)
-                continue;
-
-            foreach (var prop in equipment.ToArray())
-            {
-                if (InventoryReferenceMatches(prop.Value, itemIdentity, itemName))
-                    equipment[prop.Key] = null;
-            }
-        }
-    }
-
-    private static bool InventoryReferenceMatches(JsonNode? referenceNode, string itemIdentity, string itemName)
-    {
-        if (referenceNode == null)
-            return false;
-
-        if (referenceNode is JsonValue value && value.TryGetValue<string>(out var reference))
-        {
-            if (!string.IsNullOrWhiteSpace(itemIdentity) &&
-                string.Equals(reference, itemIdentity, StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            return !string.IsNullOrWhiteSpace(itemName) &&
-                   string.Equals(reference, itemName, StringComparison.OrdinalIgnoreCase);
-        }
-
-        if (referenceNode is not JsonObject obj)
-            return false;
-
-        var identity = FirstNonEmpty(
-            GetString(obj, "existedId"),
-            GetString(obj, "itemId"),
-            GetString(obj, "id"));
-        if (!string.IsNullOrWhiteSpace(itemIdentity) &&
-            string.Equals(identity, itemIdentity, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        var name = FirstNonEmpty(GetString(obj, "name"), GetString(obj, "itemName"));
-        return !string.IsNullOrWhiteSpace(itemName) &&
-               string.Equals(name, itemName, StringComparison.OrdinalIgnoreCase);
-    }
-
     private static string ReadEquipmentReferenceIdentity(JsonNode? slotData)
     {
         if (TryGetScalarString(slotData, out var scalar))
@@ -547,43 +592,6 @@ public static class InventoryManagementService
         return jsonValue.TryGetValue<string>(out var text) && int.TryParse(text, out value);
     }
 
-    private static void AssignNewInventoryIdentity(JsonObject item)
-    {
-        var newId = Guid.NewGuid().ToString();
-        var hadIdentityField = false;
-
-        foreach (var key in new[] { "existedId", "itemId", "id" })
-        {
-            if (!item.ContainsKey(key))
-                continue;
-
-            item[key] = newId;
-            hadIdentityField = true;
-        }
-
-        if (!hadIdentityField)
-            item["existedId"] = newId;
-    }
-
-    private static string CreateInventoryMergeSignature(JsonNode? item)
-    {
-        if (item is not JsonObject obj)
-            return item?.ToJsonString() ?? string.Empty;
-
-        var clone = JsonNode.Parse(obj.ToJsonString()) as JsonObject;
-        if (clone == null)
-            return string.Empty;
-
-        clone.Remove("count");
-        clone.Remove("quantity");
-        clone.Remove("id");
-        clone.Remove("itemId");
-        clone.Remove("existedId");
-        clone.Remove("initialId");
-
-        return clone.ToJsonString();
-    }
-
     private static string GetString(JsonObject obj, string propertyName) =>
         TryGetScalarString(obj[propertyName], out var value) ? value : string.Empty;
 
@@ -643,15 +651,17 @@ public sealed record InventoryManagementWriteOutcome(
     string Message,
     string ItemIdentity,
     string ItemName,
-    int Count)
+    int Count,
+    string? DerivedItemIdentity)
 {
     public static InventoryManagementWriteOutcome Completed(
         string message,
         string itemIdentity,
         string itemName,
-        int count) =>
-        new(true, message, itemIdentity, itemName, count);
+        int count,
+        string? derivedItemIdentity = null) =>
+        new(true, message, itemIdentity, itemName, count, derivedItemIdentity);
 
     public static InventoryManagementWriteOutcome Failed(string message) =>
-        new(false, message, string.Empty, string.Empty, 0);
+        new(false, message, string.Empty, string.Empty, 0, null);
 }
