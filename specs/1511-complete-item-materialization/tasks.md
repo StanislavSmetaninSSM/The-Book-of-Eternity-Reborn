@@ -64,7 +64,7 @@ unchanged. Empty Mortal bootstrap remains valid.
 
 ### Tests for User Story 1
 
-- [ ] T008 [US1] Add red exact-schema tests for envelope fields, section dispositions, physical empty shapes, duplicate properties, wrong realm, GM-authored client fields, and immutable receipt shape in `BookOfEternityClient.Tests/MortalItemMaterializationContractTests.cs`
+- [x] T008 [US1] Add red exact-schema tests for envelope fields, section dispositions, physical empty shapes, duplicate properties, wrong realm, GM-authored client fields, and immutable receipt shape in `BookOfEternityClient.Tests/MortalItemMaterializationContractTests.cs`
 - [ ] T009 [US1] Add red exact-identity and one-pass catalog tests for player, NPC, location-storage, and vehicle carriers, including case/whitespace/Unicode ambiguity and the 2.5x work bound, in `BookOfEternityClient.Tests/MortalItemCarrierCatalogTests.cs`
 - [ ] T010 [US1] Add red raw-to-sealed player `UpdateInventory`, receipt-less canonical rejection, and empty-bootstrap integration tests in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.cs`
 - [ ] T011 [US1] Add red Theory rows for existing-NPC add, new-NPC inventory, loot template, craft output, trade output, quest reward, and existing-storage placement in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Routes.cs`
@@ -74,7 +74,7 @@ unchanged. Empty Mortal bootstrap remains valid.
 
 ### Implementation for User Story 1
 
-- [ ] T015 [US1] Implement exact envelope, disposition, complete-field, receipt, seal, and identity validation primitives in `BookOfEternityClient/Services/MortalItemMaterializationContract.cs`
+- [x] T015 [US1] Implement exact envelope, disposition, complete-field, receipt, seal, and identity validation primitives in `BookOfEternityClient/Services/MortalItemMaterializationContract.cs`
 - [ ] T016 [US1] Implement client-owned index parsing, deterministic serialization, receipt sealing, entry/transition invariants, and protected-field comparisons in `BookOfEternityClient/Services/MortalItemIdentityState.cs`
 - [ ] T017 [US1] Implement one-pass ordinal carrier/receipt/materialization/creation-ref indexes and scan metrics in `BookOfEternityClient/Services/MortalItemCarrierCatalog.cs`
 - [ ] T018 [US1] Implement exact route-authority derivation for turn, NPC add/new NPC, loot-template ordinal, craft request, NPC trade receipt, quest reward, and location storage in `BookOfEternityClient/Services/MortalItemRouteAuthorityCatalog.cs`

@@ -318,10 +318,27 @@ internal static class MortalItemTestFixture
             ["creationRef"] = receiptWithoutSeal["creationRef"]!.DeepClone(),
             ["instanceKind"] = receiptWithoutSeal["instanceKind"]!.DeepClone(),
             ["parentItemIds"] = receiptWithoutSeal["parentItemIds"]!.DeepClone(),
-            ["materialization"] = materialization.DeepClone()
+            ["materialization"] = Canonicalize(materialization)
         };
         var bytes = Encoding.UTF8.GetBytes(input.ToJsonString(CompactJson));
         return "sha256:" + Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
+    }
+
+    private static JsonNode Canonicalize(JsonNode value) =>
+        value switch
+        {
+            JsonObject obj => CanonicalizeObject(obj),
+            JsonArray array => new JsonArray(
+                array.Select(element => element == null ? null : Canonicalize(element)).ToArray()),
+            _ => value.DeepClone()
+        };
+
+    private static JsonObject CanonicalizeObject(JsonObject value)
+    {
+        var result = new JsonObject();
+        foreach (var pair in value.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+            result[pair.Key] = pair.Value == null ? null : Canonicalize(pair.Value);
+        return result;
     }
 
     private static string IdentitySuffix(string itemId)
