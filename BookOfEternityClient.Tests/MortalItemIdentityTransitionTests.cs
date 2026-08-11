@@ -77,6 +77,57 @@ public sealed partial class MortalItemIdentityTransitionTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_TransferIntoPlayerInventoryClearsLegacyPlacementHints()
+    {
+        var stale = MortalItemTestFixture.CreateCanonicalRoot("itm_stale_storage_placement");
+        stale["isCarried"] = false;
+        stale["currentLocationId"] = "loc_stale_storage";
+        stale["currentLocationName"] = "Старое хранилище";
+        MortalItemTestFixture.ResealCanonical(stale);
+        await using var context = await TransitionContext.CreateAsync(stale);
+        var storage = Coordinate("location_storage", "loc_test", "storage_test");
+
+        Assert.True((await context.TransferAsync("itm_stale_storage_placement", PlayerCarrier(), storage)).Success);
+        var result = await context.TransferAsync("itm_stale_storage_placement", storage, PlayerCarrier());
+
+        Assert.True(result.Success, result.Message);
+        var moved = (await context.ReadInventoryAsync())["items"]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(item => item["itemId"]!.GetValue<string>() == "itm_stale_storage_placement");
+        Assert.False(moved.ContainsKey("isCarried"));
+        Assert.False(moved.ContainsKey("currentLocationId"));
+        Assert.False(moved.ContainsKey("currentLocationName"));
+        Assert.True(MortalItemLocalActionPolicy.IsCarriedByPlayer(moved));
+    }
+
+    [Fact]
+    public async Task CreateAsync_PlayerInventoryClearsLegacyPlacementHints()
+    {
+        await using var context = await TransitionContext.CreateAsync();
+        var raw = MortalItemTestFixture.CreateRawRoot(
+            authorityId: "new_player_item_with_stale_placement",
+            creationRef: "new_item_with_stale_placement",
+            materializationId: "mat_item_with_stale_placement");
+        raw["isCarried"] = false;
+        raw["currentLocationId"] = "loc_stale_reward";
+        raw["currentLocationName"] = "Старый алтарь";
+
+        var result = await context.CreateItemAsync(
+            raw,
+            authorityKind: "turn_outcome",
+            authorityId: "new_player_item_with_stale_placement");
+
+        Assert.True(result.Success, result.Message);
+        var created = (await context.ReadInventoryAsync())["items"]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(item => item["itemId"]!.GetValue<string>() == result.ItemId);
+        Assert.False(created.ContainsKey("isCarried"));
+        Assert.False(created.ContainsKey("currentLocationId"));
+        Assert.False(created.ContainsKey("currentLocationName"));
+        Assert.True(MortalItemLocalActionPolicy.IsCarriedByPlayer(created));
+    }
+
+    [Fact]
     public async Task ExecuteAsync_DuplicatePreTurnCarrierFailsWithoutWriting()
     {
         await using var context = await TransitionContext.CreateAsync();
@@ -96,6 +147,89 @@ public sealed partial class MortalItemIdentityTransitionTests
         Assert.Equal(beforeInventory, await context.ReadAsync(StorageTransportMoveService.InventoryPath));
         Assert.Equal(beforeLocation, await context.ReadAsync(StorageTransportMoveService.CurrentLocationPath));
         Assert.Equal(beforeIndex, await context.ReadAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Theory]
+    [InlineData("non_object")]
+    [InlineData("non_scalar_reference")]
+    [InlineData("case_variant_reference")]
+    [InlineData("duplicate_normalized_slot")]
+    [InlineData("unknown_slot")]
+    [InlineData("non_canonical_slot_spelling")]
+    public async Task ExecuteAsync_InvalidPlayerEquippedItemsFailsWithoutWriting(string invalidKind)
+    {
+        await using var context = await TransitionContext.CreateAsync();
+        var inventory = await context.ReadInventoryAsync();
+        switch (invalidKind)
+        {
+            case "non_object":
+                inventory["equippedItems"] = "itm_move";
+                break;
+            case "non_scalar_reference":
+                inventory["equippedItems"] = new JsonObject
+                {
+                    ["MainHand"] = new JsonObject { ["itemId"] = context.ItemId }
+                };
+                break;
+            case "case_variant_reference":
+                inventory["equippedItems"] = new JsonObject
+                {
+                    ["MainHand"] = context.ItemId.ToUpperInvariant()
+                };
+                break;
+            case "duplicate_normalized_slot":
+                inventory["equippedItems"] = new JsonObject
+                {
+                    ["MainHand"] = context.ItemId,
+                    ["mainhand"] = null
+                };
+                break;
+            case "unknown_slot":
+                inventory["equippedItems"] = new JsonObject
+                {
+                    ["NarrativePocket"] = context.ItemId
+                };
+                break;
+            case "non_canonical_slot_spelling":
+                inventory["equippedItems"] = new JsonObject
+                {
+                    [" MainHand "] = context.ItemId
+                };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(invalidKind), invalidKind, null);
+        }
+        await context.WriteAsync(StorageTransportMoveService.InventoryPath, inventory);
+        var beforeInventory = await context.ReadAsync(StorageTransportMoveService.InventoryPath);
+        var beforeLocation = await context.ReadAsync(StorageTransportMoveService.CurrentLocationPath);
+        var beforeIndex = await context.ReadAsync(MortalItemIdentityState.StatePath);
+
+        var result = await context.TransferAsync(
+            context.ItemId,
+            PlayerCarrier(),
+            Coordinate("location_storage", "loc_test", "storage_test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("equippedItems", result.Message, StringComparison.Ordinal);
+        Assert.Equal(beforeInventory, await context.ReadAsync(StorageTransportMoveService.InventoryPath));
+        Assert.Equal(beforeLocation, await context.ReadAsync(StorageTransportMoveService.CurrentLocationPath));
+        Assert.Equal(beforeIndex, await context.ReadAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_MissingOptionalEquippedItemsUsesEmptySnapshot()
+    {
+        await using var context = await TransitionContext.CreateAsync();
+        var inventory = await context.ReadInventoryAsync();
+        inventory.Remove("equippedItems");
+        await context.WriteAsync(StorageTransportMoveService.InventoryPath, inventory);
+
+        var result = await context.TransferAsync(
+            context.ItemId,
+            PlayerCarrier(),
+            Coordinate("location_storage", "loc_test", "storage_test"));
+
+        Assert.True(result.Success, result.Message);
     }
 
     [Fact]
@@ -373,6 +507,21 @@ public sealed partial class MortalItemIdentityTransitionTests
                     Turn: 43,
                     AuthorityKind: "storage_move",
                     AuthorityId: "storage_move_43"));
+        }
+
+        internal async Task<MortalItemTransitionResult> CreateItemAsync(
+            JsonObject rawItem,
+            string authorityKind,
+            string authorityId)
+        {
+            await using var writeLease = await FileSystem.AcquireCanonicalWriteLeaseAsync();
+            return await new MortalItemTransitionWriter(FileSystem).CreateAsync(
+                writeLease,
+                rawItem,
+                PlayerCarrier(),
+                acceptedTurn: 42,
+                authorityKind,
+                authorityId);
         }
 
         internal async Task<JsonObject> ReadInventoryAsync() =>

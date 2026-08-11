@@ -183,6 +183,31 @@ internal static class MortalItemMaterializationContract
         return issues.Count == 0;
     }
 
+    internal static bool TryReadAcceptedIdentity(JsonObject item, out string identity)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        using var document = JsonDocument.Parse(item.ToJsonString());
+        return TryReadAcceptedIdentity(document.RootElement, out identity);
+    }
+
+    internal static bool TryReadAcceptedIdentity(JsonElement item, out string identity)
+    {
+        identity = string.Empty;
+        if (item.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var itemId = ReadExactNonEmptyString(item, "itemId");
+        var existedId = ReadExactNonEmptyString(item, "existedId");
+        if (itemId == null || !string.Equals(itemId, existedId, StringComparison.Ordinal))
+            return false;
+
+        if (Validate(item, "mortal-item-player-projection", MortalItemMaterializationPhase.CanonicalPostSeal).Count != 0)
+            return false;
+
+        identity = itemId;
+        return true;
+    }
+
     internal static string ComputeSeal(JsonObject item, JsonObject receiptWithoutSeal)
     {
         ArgumentNullException.ThrowIfNull(item);

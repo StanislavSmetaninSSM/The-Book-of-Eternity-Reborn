@@ -1063,9 +1063,12 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
             return Result(command, CommandExecutionState.Completed, blocks);
 
         var selected = candidates.Count == 1 ? candidates[0] : null;
-        IReadOnlyList<string> slotKeys = selected is { ResolvedSlot.Length: > 0 }
-            ? [selected.ResolvedSlot]
-            : InventoryEquipmentService.SlotLabels.Keys.ToArray();
+        IReadOnlyList<string> slotKeys = selected != null
+            ? selected.ResolvedSlots
+            : candidates
+                .SelectMany(static item => item.ResolvedSlots)
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
 
         return Result(
             command,
@@ -1082,9 +1085,9 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
                         .Select(static item => Option(
                             FirstNonEmpty(item.Identity, item.Name),
                             item.Name,
-                            string.IsNullOrWhiteSpace(item.ResolvedSlot)
+                            item.ResolvedSlots.Count == 0
                                 ? "Слот нужно выбрать вручную."
-                                : $"Подходит: {InventoryEquipmentService.FormatSlotName(item.ResolvedSlot)}."))
+                                : $"Подходит: {InventoryEquipmentService.FormatSlotNames(item.ResolvedSlots)}."))
                         .ToList()
                 },
                 new UiSelectionPrompt
@@ -3526,9 +3529,9 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
 
     private static UiEntityCard BuildInventoryEquipmentCandidateCard(InventoryEquipmentItem item)
     {
-        var slot = string.IsNullOrWhiteSpace(item.ResolvedSlot)
+        var slot = item.ResolvedSlots.Count == 0
             ? "нужно выбрать вручную"
-            : InventoryEquipmentService.FormatSlotName(item.ResolvedSlot);
+            : InventoryEquipmentService.FormatSlotNames(item.ResolvedSlots);
         var facts = new List<UiEntityFact>
         {
             new() { Label = "Тип", Value = FormatInventoryItemTypeForPlayer(item.Type) },
@@ -3540,9 +3543,11 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         {
             Title = item.Name,
             Subtitle = "Предмет для экипировки",
-            Summary = string.IsNullOrWhiteSpace(item.ResolvedSlot)
+            Summary = item.ResolvedSlots.Count == 0
                 ? "Предмет можно экипировать, но подходящий слот нужно выбрать вручную."
-                : $"Предмет можно экипировать в слот: {slot}.",
+                : item.RequiresTwoHands
+                    ? $"Предмет занимает обе руки: {slot}."
+                    : $"Предмет можно экипировать в один из слотов: {slot}.",
             Icon = "package",
             Facts = facts
         };

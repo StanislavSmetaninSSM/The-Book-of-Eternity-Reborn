@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
@@ -62,6 +63,191 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         Assert.Contains("хранилищ", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Запертый шкаф", text, StringComparison.Ordinal);
         AssertNoRawStorageTransportDiagnosticText(text);
+    }
+
+    [Theory]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    [InlineData("/storage_move")]
+    [InlineData("/vehicle_move")]
+    public async Task ExecuteAsync_StorageTransportPrompts_ReceiptBearingItemsDoNotExposeAuthorityPayload(
+        string command)
+    {
+        await SeedStorageTransportStateAsync();
+
+        var result = await ExecuteAsync(command);
+        var payload = JsonSerializer.Serialize(result);
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.DoesNotContain("materializationReceipt", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"materialization\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("creationRef", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("receiptId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"seal\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("originMaterializationIds", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("parentItemIds", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("currentCarrier", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_identity_index.json", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mortal_item_materialization_repair", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    [InlineData("/storage_move")]
+    [InlineData("/vehicle_move")]
+    public async Task ExecuteAsync_StorageTransportPrompts_IgnoreRawAndIdlessCandidates(
+        string command)
+    {
+        await SeedStorageTransportStateAsync();
+        var rawItem = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_raw_storage_transport_prompt",
+            materializationId: "mat_item_raw_storage_transport_prompt");
+        rawItem["id"] = "raw_storage_transport_prompt";
+        rawItem["name"] = "RAW_UNACCEPTED_STORAGE_TRANSPORT_ITEM";
+        await WriteJsonAsync(
+            StorageTransportMoveService.InventoryPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(rawItem),
+                ["UpdateInventory"] = new JsonArray(rawItem.DeepClone()),
+                ["equipment"] = new JsonObject()
+            });
+        var before = await _fs.ReadFileAsync(StorageTransportMoveService.InventoryPath);
+
+        var result = await ExecuteAsync(command);
+        var inventoryPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(
+            result.Prompts,
+            static prompt => prompt.Id == "inventory_item_key"));
+        var directionPromptId = command.Contains("storage", StringComparison.Ordinal)
+            ? "storage_move_direction"
+            : "vehicle_move_direction";
+        var directionPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(
+            result.Prompts,
+            prompt => prompt.Id == directionPromptId));
+        var deposit = Assert.Single(directionPrompt.Options, static option => option.Value == "deposit");
+        var projected = CollectResultAndPromptText(result) + "\n" + JsonSerializer.Serialize(result);
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Empty(inventoryPrompt.Options);
+        Assert.True(deposit.Disabled);
+        Assert.DoesNotContain("RAW_UNACCEPTED_STORAGE_TRANSPORT_ITEM", projected, StringComparison.Ordinal);
+        Assert.DoesNotContain("creationRef", projected, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(before, await _fs.ReadFileAsync(StorageTransportMoveService.InventoryPath));
+    }
+
+    [Theory]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    [InlineData("/storage_move", "id:storage_1")]
+    [InlineData("/vehicle_move", "id:wagon_1")]
+    public async Task ExplicitlyNonCarriedInventoryItemIsNotOfferedOrMoved(
+        string command,
+        string targetKey)
+    {
+        await SeedStorageTransportStateAsync(includeLocationItem: true);
+        var beforeInventory = await _fs.ReadFileAsync(StorageTransportMoveService.InventoryPath);
+        var beforeLocation = await _fs.ReadFileAsync(StorageTransportMoveService.CurrentLocationPath);
+        var beforeVehicles = await _fs.ReadFileAsync(StorageTransportMoveService.VehiclesPath);
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var prompt = await ExecuteAsync(command);
+        var inventoryPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(
+            prompt.Prompts,
+            static entry => entry.Id == "inventory_item_key"));
+        Assert.DoesNotContain(
+            inventoryPrompt.Options,
+            static option => option.Value == "location_item_1" ||
+                             option.Label.Contains("Ключ на алтаре", StringComparison.Ordinal));
+
+        var validation = command == "/storage_move"
+            ? await StorageTransportMoveService.ValidateStorageMoveAsync(
+                _fs,
+                StorageTransportMoveService.DirectionDeposit,
+                targetKey,
+                "id:location_item_1")
+            : await StorageTransportMoveService.ValidateVehicleMoveAsync(
+                _fs,
+                StorageTransportMoveService.DirectionDeposit,
+                targetKey,
+                "id:location_item_1");
+        var write = command == "/storage_move"
+            ? await StorageTransportMoveService.MoveStorageItemAsync(
+                _fs,
+                StorageTransportMoveService.DirectionDeposit,
+                targetKey,
+                "id:location_item_1")
+            : await StorageTransportMoveService.MoveVehicleItemAsync(
+                _fs,
+                StorageTransportMoveService.DirectionDeposit,
+                targetKey,
+                "id:location_item_1");
+
+        Assert.False(validation.Success);
+        Assert.False(write.Success);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(StorageTransportMoveService.InventoryPath));
+        Assert.Equal(beforeLocation, await _fs.ReadFileAsync(StorageTransportMoveService.CurrentLocationPath));
+        Assert.Equal(beforeVehicles, await _fs.ReadFileAsync(StorageTransportMoveService.VehiclesPath));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    public async Task ValidateStorageTransportMove_RequiresExactTargetAndItemSelectors()
+    {
+        await SeedStorageTransportStateAsync();
+
+        var exactStorage = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "id:storage_1",
+            "id:blade_1");
+        var caseVariant = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "id:storage_1",
+            "id:BLADE_1");
+        var nameSelector = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "id:storage_1",
+            "Стальной клинок");
+        var caseVariantStorage = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "id:STORAGE_1",
+            "id:blade_1");
+        var namedStorage = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "Кедровый сундук",
+            "id:blade_1");
+        var caseVariantVehicle = await StorageTransportMoveService.ValidateVehicleMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "id:WAGON_1",
+            "id:blade_1");
+        var namedVehicle = await StorageTransportMoveService.ValidateVehicleMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "Старый фургон",
+            "id:blade_1");
+        var forgedIndexForPermanentTarget = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "idx:0:FORGED_TARGET_FINGERPRINT",
+            "id:blade_1");
+
+        Assert.True(exactStorage.Success, exactStorage.Message);
+        Assert.False(caseVariant.Success);
+        Assert.False(nameSelector.Success);
+        Assert.False(caseVariantStorage.Success);
+        Assert.False(namedStorage.Success);
+        Assert.False(caseVariantVehicle.Success);
+        Assert.False(namedVehicle.Success);
+        Assert.False(forgedIndexForPermanentTarget.Success);
+        Assert.DoesNotContain("permanent", forgedIndexForPermanentTarget.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("exact", forgedIndexForPermanentTarget.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("reference", forgedIndexForPermanentTarget.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ID", forgedIndexForPermanentTarget.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]
@@ -553,7 +739,7 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         return Assert.Single(prompt.Options, option => option.Label.Contains(labelContains, StringComparison.OrdinalIgnoreCase)).Value;
     }
 
-    private async Task SeedStorageTransportStateAsync()
+    private async Task SeedStorageTransportStateAsync(bool includeLocationItem = false)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -570,13 +756,23 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         var map = CreateCanonicalItem("map_1", "Карта подвала");
         var locked = CreateCanonicalItem("locked_1", "Чужая шкатулка");
         var rope = CreateCanonicalItem("rope_1", "Канат");
+        var locationItem = CreateCanonicalItem(
+            "location_item_1",
+            "Ключ на алтаре",
+            configure: item =>
+            {
+                item["isCarried"] = false;
+                item["currentLocationName"] = "Алтарь у старой дороги";
+            });
 
         await WriteJsonAsync(
             StorageTransportMoveService.InventoryPath,
             new JsonObject
             {
-                ["items"] = Items(blade, herb, coinOne, coinTwo),
-                ["equipment"] = new JsonObject()
+                ["items"] = includeLocationItem
+                    ? Items(blade, herb, coinOne, coinTwo, locationItem)
+                    : Items(blade, herb, coinOne, coinTwo),
+                ["equippedItems"] = new JsonObject()
             });
         await WriteJsonAsync(
             StorageTransportMoveService.CurrentLocationPath,
@@ -621,7 +817,9 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         await WriteJsonAsync(
             MortalItemIdentityState.StatePath,
             CombineIdentityIndexes(
-                MortalItemTestFixture.CreateIndex(blade, herb, coinOne, coinTwo),
+                includeLocationItem
+                    ? MortalItemTestFixture.CreateIndex(blade, herb, coinOne, coinTwo, locationItem)
+                    : MortalItemTestFixture.CreateIndex(blade, herb, coinOne, coinTwo),
                 MortalItemTestFixture.CreateIndexForCarrier(map, "location_storage", "loc_1", "storage_1"),
                 MortalItemTestFixture.CreateIndexForCarrier(locked, "location_storage", "loc_1", "storage_locked"),
                 MortalItemTestFixture.CreateIndexForCarrier(rope, "vehicle_inventory", "wagon_1")));
@@ -694,11 +892,17 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
             path,
             root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
-    private static JsonObject CreateCanonicalItem(string itemId, string name, int count = 1)
+    private static JsonObject CreateCanonicalItem(
+        string itemId,
+        string name,
+        int count = 1,
+        Action<JsonObject>? configure = null)
     {
         var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
         item["name"] = name;
         item["count"] = count;
+        configure?.Invoke(item);
+        MortalItemTestFixture.ResealCanonical(item);
         return item;
     }
 

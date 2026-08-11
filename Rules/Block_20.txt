@@ -1492,4 +1492,12 @@
    </content>
   </rule>
  </content>
+ <rule id="20.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 storage placement</description>
+  <content><![CDATA[
+  A genuinely new item whose first durable carrier is an already-valid location storage uses storage_placement, sourceAuthority.kind location_storage, and the exact current location/storage authority. Author a complete raw item with existedId = null, turn-unique creationRef, every governed semantic field, and all twelve materialization.sections. This route does not authorize creating or repairing the storage itself.
+
+  Moving an accepted item into or out of storage is transfer by exact itemId and preserves its materialization envelope and receipt. contentsPath is null or an ordered array of permanent parent item IDs; display names are not authority. The GM never creates itemId, materializationReceipt, item_identity_index.json, seals, transitions, or lineage. Receipt-less canonical storage contents are rejected because the game has not shipped and no legacy promotion path exists.
+  ]]></content>
+ </rule>
 </instructionblock>

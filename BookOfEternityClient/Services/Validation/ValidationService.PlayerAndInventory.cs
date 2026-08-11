@@ -4500,8 +4500,8 @@ public partial class ValidationService
             RequireArrayOfObjects(customProperties, $"{itemContext}.customProperties", issues);
         if (item.TryGetProperty("combatEffect", out var combatEffect))
             ValidateCombatActionArray(combatEffect, $"{itemContext}.combatEffect", issues);
-        ValidateOptionalString(item, itemContext, issues, "mechanicalSummaryAuthority");
-        ValidateOptionalString(item, itemContext, issues, "mechanicalSummaryUnresolvedReason");
+        ValidateOptionalNullableStringField(item, itemContext, issues, "mechanicalSummaryAuthority");
+        ValidateOptionalNullableStringField(item, itemContext, issues, "mechanicalSummaryUnresolvedReason");
         ValidateInventoryMechanicalSummaryAuthority(item, itemContext, issues);
         if (item.TryGetProperty("disassembleTo", out var disassembleTo) && disassembleTo.ValueKind != JsonValueKind.Null)
             ValidateItemDisassemblyArray(disassembleTo, $"{itemContext}.disassembleTo", issues);

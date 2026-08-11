@@ -5,19 +5,41 @@
       "name": "Traveler Lantern",
       "description": "A sturdy lantern with an engraved brass lid.",
       "image_prompt": "weathered brass lantern, travel gear, realistic lighting",
+      "type": "Test item",
+      "group": "Test fixtures",
       "quality": "Common",
+      "rarity": "Common",
       "price": 45,
       "count": 1,
       "weight": 1.2,
       "volume": 1,
-      "contentsPath": null,
-      "isContainer": false,
-      "isConsumption": false,
-      "requiresTwoHands": false,
       "durability": "91%",
+      "maxDurability": "100%",
+      "bonuses": [],
+      "effects": [],
+      "structuredBonuses": [],
+      "combatEffect": [],
+      "customProperties": [],
+      "mechanicalSummaryAuthority": null,
+      "mechanicalSummaryUnresolvedReason": null,
       "equipmentSlot": null,
       "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "isContainer": false,
+      "capacity": null,
+      "containerWeight": null,
+      "weightReduction": null,
+      "contentsPath": null,
+      "isConsumption": false,
+      "textContent": null,
+      "journalEntries": [],
+      "isSentient": false,
+      "unreadableReason": null,
+      "sealedReason": null,
+      "lockedReason": null,
+      "disassembleTo": null,
       "ownerBondLevelCurrent": 120,
+      "ownerBondLevelMax": 100,
       "fateCards": [
         {
           "cardId": "card_ember_memory",
@@ -32,7 +54,48 @@
           },
           "isUnlocked": false
         }
-      ]
+      ],
+      "questLinks": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_item_traveler_lantern_01",
+        "realm": "Mortal",
+        "route": "player_acquisition",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "turn_outcome",
+          "authorityId": "fixture_item_bond_fate_card_contract"
+        },
+        "creationRef": "new_item_traveler_lantern_01",
+        "state": "complete",
+        "sections": {
+          "presentation": { "state": "populated", "reason": null },
+          "physical": { "state": "populated", "reason": null },
+          "mechanics": { "state": "empty_by_design", "reason": "У тестового предмета нет самостоятельной механики." },
+          "equipment": { "state": "empty_by_design", "reason": "Тестовый предмет не экипируется." },
+          "container": { "state": "empty_by_design", "reason": "Тестовый предмет ничего не вмещает." },
+          "consumption": { "state": "empty_by_design", "reason": "Тестовый предмет не расходуется при использовании." },
+          "readableOrSentient": { "state": "empty_by_design", "reason": "Тестовый предмет не читается и не обладает голосом." },
+          "craftingAndDisassembly": { "state": "empty_by_design", "reason": "Тестовый предмет не задаёт рецепт или разборку." },
+          "bondsAndFateCards": { "state": "populated", "reason": null },
+          "questRole": { "state": "empty_by_design", "reason": "Тестовый предмет не связан с заданием." },
+          "provenance": { "state": "populated", "reason": null },
+          "ownershipAndPlacement": { "state": "populated", "reason": null }
+        }
+      },
+      "itemId": "traveler_lantern_01",
+      "materializationReceipt": {
+        "schemaVersion": 1,
+        "receiptId": "mirec_4427cc94e9e94a339e66c60dc29099d4",
+        "itemId": "traveler_lantern_01",
+        "materializationId": "mat_item_traveler_lantern_01",
+        "acceptedAtTurn": 42,
+        "creationRef": "new_item_traveler_lantern_01",
+        "instanceKind": "root",
+        "parentItemIds": [],
+        "seal": "sha256:11024015b887508089b65e0fb1cb5b313118be700f92f365e5b6419b2d3f0b77"
+      }
     }
-  ]
+  ],
+  "equippedItems": {}
 }

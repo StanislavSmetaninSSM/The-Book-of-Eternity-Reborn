@@ -854,8 +854,9 @@
        <content type="rule_text">
         <![CDATA[
 
-                            Set 'contentsPath' to an array of strings (container names, exact from Context) or 'null'.
-                            Path is from top-level container down to immediate parent. If in main inventory, 'contentsPath' is 'null'.
+                            Set 'contentsPath' to an ordered array of exact permanent parent item IDs or 'null'.
+                            Path is from top-level container down to immediate parent. A same-turn raw child may reference its new parent by exact creationRef; the client rewrites that alias to the permanent itemId while sealing. If in main inventory, 'contentsPath' is 'null'.
+                            Do not author isCarried, currentLocationId, or currentLocationName as item placement fields: they are not placement authority. The exact route destination, carrier, and contentsPath govern placement; the client removes stale placement hints when an item enters player_inventory.
                         
                             ]]>
        </content>
@@ -2410,4 +2411,12 @@
    </content>
   </rule>
  </content>
+ <rule id="10.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 canonical inventory and containers</description>
+  <content><![CDATA[
+  New durable Mortal items are complete raw objects with existedId = null, one turn-unique creationRef, every governed semantic field, and all twelve materialization.sections. The GM writes the immutable materialization envelope and semantic fields, but must not create itemId, materializationReceipt, item_identity_index.json, seals, transitions, retirement, or lineage. The client seals accepted items, persists equal itemId/existedId, and removes the raw top-level creationRef.
+
+  Canonical contentsPath is null at root or an ordered array of permanent parent item IDs, never container display names. Every parent is an active isContainer=true item in the same root carrier; no cycles, duplicates, self-parenting, or ambiguous case variants are allowed. Same-turn raw parent/child references use exact creationRef and are rewritten together. Existing items and equipment references use exact itemId and preserve envelope/receipt. Receipt-less current items are invalid because the game has not shipped; there is no legacy promotion path.
+  ]]></content>
+ </rule>
 </instructionblock>

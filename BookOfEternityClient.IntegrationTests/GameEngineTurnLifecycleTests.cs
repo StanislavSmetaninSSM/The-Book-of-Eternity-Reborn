@@ -65,6 +65,12 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
+        _fs.WriteFileAtomicAsync(
+                MortalItemIdentityState.StatePath,
+                MortalItemIdentityState.CreateEmptyRoot()
+                    .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))
+            .GetAwaiter()
+            .GetResult();
     }
 
     [Fact]
@@ -388,6 +394,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var scriptPath = Path.Combine(_rootPath, "fake-validation-repair-worker-applied.ps1");
         await File.WriteAllTextAsync(scriptPath, """
             $task = Get-Content -Raw -Path $env:BOE_WORKER_TASK_PATH | ConvertFrom-Json
+            $weatherContext = @($task.contextFiles | Where-Object { $_.path -eq 'game_state/world/weather.json' })[0]
             $proposalId = 'worker_proposal_game_engine_applied'
             $contentRef = 'worker_proposals/' + $proposalId + '/game_state/world/weather.json'
             $contentPath = Join-Path $env:BOE_WORKER_SESSION_PATH $contentRef
@@ -407,7 +414,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 changedFiles = @([ordered]@{
                     path = 'game_state/world/weather.json'
                     changeKind = 'replace'
-                    beforeSha256 = $task.contextFiles[0].sha256
+                    beforeSha256 = $weatherContext.sha256
                     afterSha256 = $afterSha256
                     contentRef = $contentRef
                 })
@@ -447,7 +454,17 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
         var dispatch = task.GetType().GetProperty("Result")?.GetValue(task);
         Assert.NotNull(dispatch);
-        Assert.True((bool)dispatch!.GetType().GetProperty("WorkerApplyAccepted")!.GetValue(dispatch)!);
+        var workerResult = (GmWorkerValidationRepairDispatchResult?)dispatch!
+            .GetType()
+            .GetProperty("WorkerResult")!
+            .GetValue(dispatch);
+        var workerDiagnostic = workerResult == null
+            ? "missing worker result"
+            : $"{workerResult.Outcome}: {workerResult.FallbackReason}; " +
+              string.Join(" | ", workerResult.ApplyDecision?.RejectionReasons ?? []);
+        Assert.True(
+            (bool)dispatch.GetType().GetProperty("WorkerApplyAccepted")!.GetValue(dispatch)!,
+            workerDiagnostic);
         Assert.True((bool)dispatch.GetType().GetProperty("ReadySignalCreated")!.GetValue(dispatch)!);
 
         var auditDiagnostic = auditPathWritable
@@ -1734,7 +1751,18 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 await Task.Delay(50);
             }
 
-            Assert.True(_fs.FileExists("game_state/control/validation_repair_request.json"));
+            if (!_fs.FileExists("game_state/control/validation_repair_request.json"))
+            {
+                var diagnosticValidator = new ValidationService(
+                    _fs,
+                    NullLogger<ValidationService>.Instance);
+                var diagnosticIssues = await diagnosticValidator.ValidateGameStateAsync();
+                Assert.Fail(string.Join(
+                    " | ",
+                    diagnosticIssues
+                        .Where(issue => issue.Severity == IssueSeverity.Error)
+                        .Select(issue => $"{issue.Code}:{issue.FilePath}:{issue.Actor}")));
+            }
             var repairRequestJson = await _fs.ReadFileAsync("game_state/control/validation_repair_request.json");
             var repairRequestNode = JsonNode.Parse(repairRequestJson!)!.AsObject();
             repairRequestNode["harnessRepairPackets"] = new JsonArray
@@ -7837,6 +7865,18 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 timestamp = DateTime.UtcNow.ToString("o"),
                 gm_thoughts_markdown = "## Охват NPC-анализа\n- Режим / Mode: Scene-local\n- Релевантные акторы / Relevant actors: Селена, Мирко\n- Почему они релевантны / Why they are relevant: Тестовый bootstrap.\n- Акторы вне охвата / Actors outside scope: нет\n- Почему они вне охвата / Why outside scope: нет\n\n## Reasoning / Размышления NPC\n- Bootstrap intentionally malformed for rollback test."
             });
+            var bootstrapValidator = new ValidationService(
+                _fs,
+                NullLogger<ValidationService>.Instance);
+            var rawItemIssues = await bootstrapValidator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+            Assert.True(
+                rawItemIssues.All(issue => issue.Severity != IssueSeverity.Error),
+                string.Join(
+                    " | ",
+                    rawItemIssues
+                        .Where(issue => issue.Severity == IssueSeverity.Error)
+                        .Select(issue => $"{issue.Code}:{issue.FilePath}:{issue.Actor}")));
             await WriteJsonAsync("ready/turn_complete.json", new
             {
                 sessionId = request.SessionId,
@@ -7854,7 +7894,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
             await WaitForValidationRepairRequestContainingAsync(
                 "narrative_response",
-                TimeSpan.FromSeconds(75));
+                TimeSpan.FromSeconds(20));
             await WriteJsonAsync("game_state/control/gm_validation_repair_artifact_stall_report.json", new
             {
                 isStalled = true,
@@ -7875,8 +7915,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             engine,
             "CheckGmIncarnationTrigger",
             new[] { acceptedSnapshotContext });
-        await Task.WhenAll(dispatchTask, gmOutputTask)
-            .WaitAsync(TimeSpan.FromSeconds(90));
+        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(35));
+        await dispatchTask.WaitAsync(TimeSpan.FromSeconds(20));
         var dispatched = await dispatchTask;
 
         Assert.False(dispatched);
@@ -10291,8 +10331,22 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             await Task.Delay(50);
         }
 
+        var controlRoot = _fs.ResolvePath("game_state/control");
+        var controlDiagnostics = Directory.Exists(controlRoot)
+            ? string.Join(
+                " | ",
+                Directory.GetFiles(controlRoot, "*.json", SearchOption.TopDirectoryOnly)
+                    .Order(StringComparer.Ordinal)
+                    .Select(path =>
+                    {
+                        var name = Path.GetFileName(path);
+                        var content = File.ReadAllText(path);
+                        return $"{name}={content}";
+                    }))
+            : "<missing control directory>";
         throw new TimeoutException(
-            $"Timed out waiting for validation_repair_request.json containing '{expectedText}'. Last request: {lastRequest ?? "<missing>"}");
+            $"Timed out waiting for validation_repair_request.json containing '{expectedText}'. " +
+            $"Last request: {lastRequest ?? "<missing>"}. Control files: {controlDiagnostics}");
     }
 
     private async Task<string> WaitForUpdatedValidationRepairRequestContainingAsync(

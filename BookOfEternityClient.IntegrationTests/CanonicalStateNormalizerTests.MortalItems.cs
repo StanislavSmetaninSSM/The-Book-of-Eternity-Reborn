@@ -98,7 +98,7 @@ public sealed partial class CanonicalStateNormalizerTests
         await context.WritePlayerUpdateAsync(parent, child);
         var rawRoot = (await context.ReadJsonAsync(
             InventoryEquipmentService.ItemsPath))!.AsObject();
-        rawRoot["equipment"]!["mainHand"] = childCreationRef;
+        rawRoot["equippedItems"]!["MainHand"] = childCreationRef;
         await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath, rawRoot);
 
         await context.NormalizeAcceptedTurnAsync();
@@ -116,7 +116,7 @@ public sealed partial class CanonicalStateNormalizerTests
             Assert.Single(childItem["contentsPath"]!.AsArray())!.GetValue<string>());
         Assert.Equal(
             childItem["itemId"]!.GetValue<string>(),
-            canonicalRoot["equipment"]!["mainHand"]!.GetValue<string>());
+            canonicalRoot["equippedItems"]!["MainHand"]!.GetValue<string>());
     }
 
     [Fact]

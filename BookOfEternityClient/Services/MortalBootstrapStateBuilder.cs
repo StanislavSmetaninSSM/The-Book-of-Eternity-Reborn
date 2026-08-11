@@ -112,6 +112,10 @@ public static class MortalBootstrapStateBuilder
                 $"{turnAnchor} Первый ориентир новой жизни отмечен по выбранным обстоятельствам."),
             ["game_state/inventory/items.json"] = BuildInventory(),
             [MortalItemIdentityState.StatePath] = MortalItemIdentityState.CreateEmptyRoot(),
+            ["game_state/inventory/item_resources.json"] = BuildEmptyEntries(),
+            ["game_state/inventory/item_bonds.json"] = BuildEmptyEntries(),
+            ["game_state/inventory/item_text_updates.json"] = BuildEmptyEntries(),
+            ["game_state/npcs/item_journals.json"] = BuildEmptyEntries(),
             ["game_state/world/world_events.json"] = BuildWorldEvents(
                 idSuffix,
                 turn,
@@ -139,6 +143,12 @@ public static class MortalBootstrapStateBuilder
     }
 
     private static JsonObject BuildExperience() => new();
+
+    private static JsonObject BuildEmptyEntries() =>
+        new()
+        {
+            ["entries"] = new JsonArray()
+        };
 
     private static JsonObject BuildActiveSkills() =>
         new()
@@ -197,7 +207,7 @@ public static class MortalBootstrapStateBuilder
         new()
         {
             ["items"] = new JsonArray(),
-            ["equipment"] = new JsonObject()
+            ["equippedItems"] = new JsonObject()
         };
 
     private static JsonObject BuildCurrentLocation(

@@ -10,18 +10,31 @@ public static class InventoryEquipmentService
 {
     public const string ItemsPath = "game_state/inventory/items.json";
 
+    private static readonly IReadOnlyList<string> UniversalAccessorySlots =
+        ["Accessory1", "Accessory2", "Accessory3", "Accessory4"];
+
     public static readonly IReadOnlyDictionary<string, string> SlotLabels =
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["head"] = "🪖 Голова",
-            ["body"] = "🛡️ Тело",
-            ["hands"] = "🧤 Руки",
-            ["feet"] = "👢 Ноги",
-            ["mainHand"] = "⚔️ Основная рука",
-            ["offHand"] = "🛡️ Вторая рука",
-            ["neck"] = "📿 Шея",
-            ["ring1"] = "💍 Кольцо 1",
-            ["ring2"] = "💍 Кольцо 2"
+            ["Head"] = "🪖 Голова",
+            ["Chest"] = "🛡️ Грудь",
+            ["Legs"] = "🦵 Ноги",
+            ["Feet"] = "👢 Ступни",
+            ["Hands"] = "🧤 Кисти",
+            ["Wrists"] = "⌚ Запястья",
+            ["Neck"] = "📿 Шея",
+            ["Waist"] = "🪢 Пояс",
+            ["Back"] = "🎒 Спина",
+            ["Finger1"] = "💍 Палец 1",
+            ["Finger2"] = "💍 Палец 2",
+            ["MainHand"] = "⚔️ Основная рука",
+            ["OffHand"] = "🛡️ Вторая рука",
+            ["Underwear_Top"] = "👕 Нижнее бельё (верх)",
+            ["Underwear_Bottom"] = "🩳 Нижнее бельё (низ)",
+            ["Accessory1"] = "🔹 Аксессуар 1",
+            ["Accessory2"] = "🔹 Аксессуар 2",
+            ["Accessory3"] = "🔹 Аксессуар 3",
+            ["Accessory4"] = "🔹 Аксессуар 4"
         };
 
     public static async Task<InventoryEquipmentContext?> ReadContextAsync(FileSystemManager fs) =>
@@ -56,15 +69,21 @@ public static class InventoryEquipmentService
             return null;
 
         var items = ReadItems(root);
-        var equipped = ReadEquipped(root, items);
+        if (!MortalItemEquipmentAuthority.TryRead(
+                root,
+                root["items"] as JsonArray,
+                ItemsPath,
+                out var equipmentState,
+                out _))
+        {
+            return null;
+        }
+        var equipped = ReadEquipped(equipmentState, items);
         var equippedSlotsByItem = equipped
             .Where(static entry => !string.IsNullOrWhiteSpace(entry.ItemIdentity))
-            .GroupBy(static entry => entry.ItemIdentity, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(static group => group.Key, static group => group.First().SlotKey, StringComparer.OrdinalIgnoreCase);
-        var equippedNames = equipped
-            .Where(static entry => !string.IsNullOrWhiteSpace(entry.ItemName))
-            .GroupBy(static entry => entry.ItemName, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(static group => group.Key, static group => group.First().SlotKey, StringComparer.OrdinalIgnoreCase);
+            .GroupBy(static entry => entry.ItemIdentity, StringComparer.Ordinal)
+            .ToDictionary(static group => group.Key, static group => group.First().SlotKey, StringComparer.Ordinal);
+        var occupiedSlots = ReadOccupiedSlots(equipmentState);
 
         var enrichedItems = items
             .Select(item =>
@@ -72,13 +91,30 @@ public static class InventoryEquipmentService
                 var equippedSlot = string.Empty;
                 if (!string.IsNullOrWhiteSpace(item.Identity))
                     equippedSlotsByItem.TryGetValue(item.Identity, out equippedSlot);
-                if (string.IsNullOrWhiteSpace(equippedSlot) && !string.IsNullOrWhiteSpace(item.Name))
-                    equippedNames.TryGetValue(item.Name, out equippedSlot);
-                return item with { EquippedSlot = equippedSlot ?? string.Empty };
+                var resolvedSlots = item.IsAccessory && string.IsNullOrWhiteSpace(equippedSlot)
+                    ? item.ResolvedSlots
+                        .Where(slot => !occupiedSlots.Contains(slot))
+                        .ToArray()
+                    : item.ResolvedSlots;
+                var isEquippable = !item.IsSoulRelic &&
+                                    !item.IsBroken &&
+                                    item.IsCarriedByPlayer &&
+                                    resolvedSlots.Count > 0 &&
+                                    (!item.RequiresTwoHands ||
+                                     resolvedSlots.Count == 2 &&
+                                     resolvedSlots.Contains("MainHand", StringComparer.Ordinal) &&
+                                     resolvedSlots.Contains("OffHand", StringComparer.Ordinal));
+                return item with
+                {
+                    ResolvedSlot = resolvedSlots.FirstOrDefault() ?? string.Empty,
+                    ResolvedSlots = resolvedSlots,
+                    IsEquippable = isEquippable,
+                    EquippedSlot = equippedSlot ?? string.Empty
+                };
             })
             .ToArray();
 
-        equipped = ReadEquipped(root, enrichedItems);
+        equipped = ReadEquipped(equipmentState, enrichedItems);
         return new InventoryEquipmentContext(root, enrichedItems, equipped);
     }
 
@@ -109,16 +145,15 @@ public static class InventoryEquipmentService
         if (!outcome.Success)
             return outcome;
 
-        var equipment = context.Root["equipment"] as JsonObject;
-        if (equipment == null)
+        if (context.Root["equippedItems"] is not JsonObject equipment)
         {
             equipment = new JsonObject();
-            context.Root["equipment"] = equipment;
+            context.Root["equippedItems"] = equipment;
         }
 
         var item = FindItem(context.Items, itemIdentityOrName)!;
-        var reference = !string.IsNullOrWhiteSpace(item.Identity) ? item.Identity : item.Name;
-        equipment[outcome.SlotKey] = reference;
+        foreach (var targetSlot in outcome.AffectedSlots)
+            equipment[FindStoredSlotKey(equipment, targetSlot) ?? targetSlot] = item.Identity;
         await WriteAsync(
             fs,
             writeLease,
@@ -151,10 +186,11 @@ public static class InventoryEquipmentService
         if (!outcome.Success)
             return outcome;
 
-        if (context.Root["equipment"] is not JsonObject equipment)
+        if (context.Root["equippedItems"] is not JsonObject equipment)
             return InventoryEquipmentWriteOutcome.Failed("Экипировка не найдена.");
 
-        equipment[outcome.SlotKey] = null;
+        foreach (var affectedSlot in outcome.AffectedSlots)
+            equipment[affectedSlot] = null;
         await WriteAsync(
             fs,
             writeLease,
@@ -227,12 +263,12 @@ public static class InventoryEquipmentService
         if (string.IsNullOrWhiteSpace(identityOrName))
             return null;
 
-        var trimmed = identityOrName.Trim();
+        if (!string.Equals(identityOrName, identityOrName.Trim(), StringComparison.Ordinal))
+            return null;
+
         return items.FirstOrDefault(item =>
-            (!string.IsNullOrWhiteSpace(item.Identity) &&
-             string.Equals(item.Identity, trimmed, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(item.Name) &&
-             string.Equals(item.Name, trimmed, StringComparison.OrdinalIgnoreCase)));
+            !string.IsNullOrWhiteSpace(item.Identity) &&
+            string.Equals(item.Identity, identityOrName, StringComparison.Ordinal));
     }
 
     public static string FormatSlotName(string slotKey) =>
@@ -261,6 +297,37 @@ public static class InventoryEquipmentService
             : SlotLabels.Keys.FirstOrDefault(key =>
                 string.Equals(key, itemSlot.Trim(), StringComparison.OrdinalIgnoreCase));
     }
+
+    public static IReadOnlyList<string> ReadCanonicalSlots(JsonNode? node)
+    {
+        if (node is JsonValue value && value.TryGetValue<string>(out var scalar))
+            return NormalizeSlots([scalar]);
+
+        if (node is not JsonArray array)
+            return [];
+
+        return NormalizeSlots(array
+            .OfType<JsonValue>()
+            .Select(static candidate => candidate.TryGetValue<string>(out var slot) ? slot : null));
+    }
+
+    public static IReadOnlyList<string> ReadCanonicalSlots(JsonElement owner, string propertyName)
+    {
+        if (!owner.TryGetProperty(propertyName, out var node))
+            return [];
+
+        if (node.ValueKind == JsonValueKind.String)
+            return NormalizeSlots([node.GetString()]);
+
+        if (node.ValueKind != JsonValueKind.Array)
+            return [];
+
+        return NormalizeSlots(node.EnumerateArray()
+            .Select(static candidate => candidate.ValueKind == JsonValueKind.String ? candidate.GetString() : null));
+    }
+
+    public static string FormatSlotNames(IEnumerable<string> slots) =>
+        string.Join(", ", slots.Select(FormatSlotName));
 
     public static string ReadFirstCommandArgument(string command)
     {
@@ -341,6 +408,12 @@ public static class InventoryEquipmentService
         if (item.IsBroken)
             return InventoryEquipmentWriteOutcome.Failed($"«{item.Name}» сломан и не может быть экипирован.");
 
+        if (!item.IsCarriedByPlayer)
+            return InventoryEquipmentWriteOutcome.Failed($"«{item.Name}» находится вне рюкзака и не может быть экипирован.");
+
+        if (item.IsAccessory && item.ResolvedSlots.Count == 0)
+            return InventoryEquipmentWriteOutcome.Failed("Все универсальные слоты аксессуаров уже заняты.");
+
         if (!item.IsEquippable)
             return InventoryEquipmentWriteOutcome.Failed($"«{item.Name}» нельзя экипировать как обычный предмет.");
 
@@ -350,20 +423,27 @@ public static class InventoryEquipmentService
         if (!TryNormalizeSlot(slotKey, out var normalizedSlot))
             return InventoryEquipmentWriteOutcome.Failed("Выберите корректный слот экипировки.");
 
-        if (!string.IsNullOrWhiteSpace(item.ResolvedSlot) &&
-            !string.Equals(item.ResolvedSlot, normalizedSlot, StringComparison.OrdinalIgnoreCase))
+        if (!item.ResolvedSlots.Contains(normalizedSlot, StringComparer.Ordinal))
         {
             return InventoryEquipmentWriteOutcome.Failed(
-                $"«{item.Name}» подходит только для слота: {FormatSlotName(item.ResolvedSlot)}.");
+                $"«{item.Name}» подходит только для слотов: {FormatSlotNames(item.ResolvedSlots)}.");
         }
 
-        var slotLabel = FormatSlotName(normalizedSlot);
+        var affectedSlots = item.RequiresTwoHands
+            ? item.ResolvedSlots
+            : [normalizedSlot];
+        var slotLabel = item.RequiresTwoHands
+            ? FormatSlotNames(affectedSlots)
+            : FormatSlotName(normalizedSlot);
         return InventoryEquipmentWriteOutcome.Completed(
-            $"«{item.Name}» экипирован: {slotLabel}.",
+            item.RequiresTwoHands
+                ? $"«{item.Name}» экипирован и занимает обе руки: {slotLabel}."
+                : $"«{item.Name}» экипирован: {slotLabel}.",
             item.Identity,
             item.Name,
             normalizedSlot,
-            slotLabel);
+            slotLabel,
+            affectedSlots);
     }
 
     private static InventoryEquipmentWriteOutcome ValidateUnequip(
@@ -381,12 +461,18 @@ public static class InventoryEquipmentService
         if (!equipped.IsOrdinaryInventoryItem)
             return InventoryEquipmentWriteOutcome.Failed("Этот слот не относится к обычному инвентарю персонажа.");
 
+        var affectedSlots = context.Equipped
+            .Where(entry => string.Equals(entry.ItemIdentity, equipped.ItemIdentity, StringComparison.Ordinal))
+            .Select(static entry => entry.SlotKey)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
         return InventoryEquipmentWriteOutcome.Completed(
             $"«{equipped.ItemName}» снят и убран в рюкзак.",
             equipped.ItemIdentity,
             equipped.ItemName,
-            normalizedSlot,
-            equipped.SlotLabel);
+            equipped.SlotKey,
+            equipped.SlotLabel,
+            affectedSlots);
     }
 
     private static InventoryEquipmentItem[] ReadItems(JsonObject root)
@@ -397,103 +483,79 @@ public static class InventoryEquipmentService
 
         return array
             .OfType<JsonObject>()
-            .Select(ReadItem)
+            .Select(static item =>
+                MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var identity)
+                    ? ReadItem(item, identity)
+                    : null)
+            .OfType<InventoryEquipmentItem>()
             .Where(static item => !string.IsNullOrWhiteSpace(item.Name))
             .ToArray();
     }
 
-    private static InventoryEquipmentItem ReadItem(JsonObject item)
+    private static InventoryEquipmentItem ReadItem(JsonObject item, string identity)
     {
-        var identity = FirstNonEmpty(
-            GetString(item, "existedId"),
-            GetString(item, "itemId"),
-            GetString(item, "id"));
         var name = FirstNonEmpty(GetString(item, "name"), GetString(item, "itemName"), "???");
         var type = GetString(item, "type");
-        var itemSlot = GetString(item, "equipmentSlot");
-        var resolvedSlot = ResolveEquipSlot(itemSlot, type) ?? string.Empty;
+        var equipmentSlots = ReadCanonicalSlots(item["equipmentSlot"]);
+        var accessoryForSlots = ReadCanonicalSlots(item["accessoryForSlot"]);
+        var isAccessory = accessoryForSlots.Count > 0;
+        var resolvedSlots = isAccessory ? UniversalAccessorySlots : equipmentSlots;
+        var resolvedSlot = resolvedSlots.FirstOrDefault() ?? string.Empty;
+        var requiresTwoHands = ReadBool(item, "requiresTwoHands");
+        var hasValidTwoHandProfile = !requiresTwoHands ||
+                                     equipmentSlots.Count == 2 &&
+                                     equipmentSlots.Contains("MainHand", StringComparer.Ordinal) &&
+                                     equipmentSlots.Contains("OffHand", StringComparer.Ordinal);
         var isBroken = ReadBool(item, "isBroken") || IsZeroPercent(GetString(item, "durability"));
         var isSoulRelic = IsSoulRelic(item);
+        var isCarriedByPlayer = MortalItemLocalActionPolicy.IsCarriedByPlayer(item);
         var isEquippable = !isSoulRelic &&
                             !isBroken &&
-                            !string.IsNullOrWhiteSpace(resolvedSlot);
+                            isCarriedByPlayer &&
+                            resolvedSlots.Count > 0 &&
+                            hasValidTwoHandProfile;
 
         return new InventoryEquipmentItem(
             Identity: identity,
             Name: name,
             Type: type,
-            ItemSlot: itemSlot,
+            ItemSlot: resolvedSlot,
             ResolvedSlot: resolvedSlot,
+            ResolvedSlots: resolvedSlots,
+            AccessoryForSlots: accessoryForSlots,
+            IsAccessory: isAccessory,
+            RequiresTwoHands: requiresTwoHands,
             IsBroken: isBroken,
             IsSoulRelic: isSoulRelic,
+            IsCarriedByPlayer: isCarriedByPlayer,
             IsEquippable: isEquippable,
             EquippedSlot: string.Empty);
     }
 
     private static List<EquippedInventoryItem> ReadEquipped(
-        JsonObject root,
+        MortalItemEquipmentSnapshot equipmentState,
         IReadOnlyList<InventoryEquipmentItem> items)
     {
         var result = new List<EquippedInventoryItem>();
-        var equipment = root["equipment"] as JsonObject ?? root["equippedItems"] as JsonObject;
-        if (equipment == null)
-            return result;
-
-        foreach (var prop in equipment)
+        foreach (var slot in equipmentState.Slots)
         {
-            if (prop.Value == null || prop.Value.GetValueKind() == JsonValueKind.Null)
+            if (slot.ItemId == null)
                 continue;
 
-            var referenceIdentity = ReadEquipmentReferenceIdentity(prop.Value);
-            var referenceName = ReadEquipmentReferenceName(prop.Value);
-            var matched = FindMatchingItem(items, referenceIdentity, referenceName);
-            var itemName = matched?.Name ??
-                           FirstNonEmpty(referenceName, referenceIdentity, "???");
-            var itemIdentity = matched?.Identity ?? referenceIdentity;
+            var matched = items.FirstOrDefault(item =>
+                string.Equals(item.Identity, slot.ItemId, StringComparison.Ordinal));
+            if (matched == null)
+                continue;
+
             result.Add(new EquippedInventoryItem(
-                SlotKey: prop.Key,
-                SlotLabel: FormatSlotName(prop.Key),
-                ItemIdentity: itemIdentity,
-                ItemName: itemName,
-                IsOrdinaryInventoryItem: matched == null || !matched.IsSoulRelic));
+                SlotKey: slot.StoredSlot,
+                SlotLabel: FormatSlotName(slot.CanonicalSlot),
+                ItemIdentity: matched.Identity,
+                ItemName: matched.Name,
+                IsOrdinaryInventoryItem: !matched.IsSoulRelic));
         }
 
         return result;
-    }
-
-    private static InventoryEquipmentItem? FindMatchingItem(
-        IEnumerable<InventoryEquipmentItem> items,
-        string itemIdentity,
-        string itemName) =>
-        items.FirstOrDefault(item =>
-            (!string.IsNullOrWhiteSpace(itemIdentity) &&
-             string.Equals(item.Identity, itemIdentity, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(itemName) &&
-             string.Equals(item.Name, itemName, StringComparison.OrdinalIgnoreCase)));
-
-    private static string ReadEquipmentReferenceIdentity(JsonNode? slotData)
-    {
-        if (TryGetScalarString(slotData, out var scalar))
-            return scalar;
-
-        if (slotData is not JsonObject obj)
-            return string.Empty;
-
-        return FirstNonEmpty(
-            GetString(obj, "existedId"),
-            GetString(obj, "itemId"),
-            GetString(obj, "id"));
-    }
-
-    private static string ReadEquipmentReferenceName(JsonNode? slotData)
-    {
-        if (TryGetScalarString(slotData, out var scalar))
-            return scalar;
-
-        if (slotData is not JsonObject obj)
-            return string.Empty;
-
-        return FirstNonEmpty(GetString(obj, "name"), GetString(obj, "itemName"));
     }
 
     private static JsonArray? GetPlayerInventoryArrayNode(JsonObject root)
@@ -501,11 +563,23 @@ public static class InventoryEquipmentService
         if (root["items"] is JsonArray items)
             return items;
 
-        if (root["UpdateInventory"] is JsonArray updateInventory)
-            return updateInventory;
-
         return null;
     }
+
+    private static HashSet<string> ReadOccupiedSlots(MortalItemEquipmentSnapshot equipmentState)
+    {
+        return equipmentState.Slots
+            .Where(static slot => slot.ItemId != null)
+            .Select(static slot => slot.CanonicalSlot)
+            .ToHashSet(StringComparer.Ordinal);
+    }
+
+    private static string? FindStoredSlotKey(JsonObject equipment, string canonicalSlot) =>
+        equipment
+            .Select(static property => property.Key)
+            .SingleOrDefault(slot =>
+                TryNormalizeSlot(slot, out var normalized) &&
+                string.Equals(normalized, canonicalSlot, StringComparison.Ordinal));
 
     private static string GetString(JsonObject obj, string propertyName) =>
         TryGetScalarString(obj[propertyName], out var value) ? value : string.Empty;
@@ -560,6 +634,21 @@ public static class InventoryEquipmentService
     private static bool IsSoulRelic(JsonObject item)
         => !string.IsNullOrWhiteSpace(GetString(item, "relicId"));
 
+    private static IReadOnlyList<string> NormalizeSlots(IEnumerable<string?> candidates)
+    {
+        var result = new List<string>();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var candidate in candidates)
+        {
+            if (candidate == null || !TryNormalizeSlot(candidate, out var normalized) || !seen.Add(normalized))
+                continue;
+
+            result.Add(normalized);
+        }
+
+        return result;
+    }
+
     private static string FirstNonEmpty(params string[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
 }
@@ -575,8 +664,13 @@ public sealed record InventoryEquipmentItem(
     string Type,
     string ItemSlot,
     string ResolvedSlot,
+    IReadOnlyList<string> ResolvedSlots,
+    IReadOnlyList<string> AccessoryForSlots,
+    bool IsAccessory,
+    bool RequiresTwoHands,
     bool IsBroken,
     bool IsSoulRelic,
+    bool IsCarriedByPlayer,
     bool IsEquippable,
     string EquippedSlot);
 
@@ -593,18 +687,20 @@ public sealed record InventoryEquipmentWriteOutcome(
     string ItemIdentity,
     string ItemName,
     string SlotKey,
-    string SlotLabel)
+    string SlotLabel,
+    IReadOnlyList<string> AffectedSlots)
 {
     public static InventoryEquipmentWriteOutcome Completed(
         string message,
         string itemIdentity,
         string itemName,
         string slotKey,
-        string slotLabel) =>
-        new(true, message, itemIdentity, itemName, slotKey, slotLabel);
+        string slotLabel,
+        IReadOnlyList<string> affectedSlots) =>
+        new(true, message, itemIdentity, itemName, slotKey, slotLabel, affectedSlots);
 
     public static InventoryEquipmentWriteOutcome Failed(string message) =>
-        new(false, message, string.Empty, string.Empty, string.Empty, string.Empty);
+        new(false, message, string.Empty, string.Empty, string.Empty, string.Empty, []);
 
     public JsonObject ToPayload() =>
         new()

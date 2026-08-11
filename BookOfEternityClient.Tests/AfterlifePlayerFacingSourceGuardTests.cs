@@ -140,7 +140,8 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("archiveId=", inkFeathers, StringComparison.Ordinal);
         Assert.DoesNotContain("relicChoices.IndexOf", inkFeathers, StringComparison.Ordinal);
         Assert.DoesNotContain("archiveChoices.IndexOf", inkFeathers, StringComparison.Ordinal);
-        Assert.Contains("id=", inventory, StringComparison.Ordinal);
+        Assert.Contains("(вариант ", inventory, StringComparison.Ordinal);
+        Assert.DoesNotContain("id=", inventory, StringComparison.Ordinal);
         Assert.DoesNotContain("ShortIdentity", inventory, StringComparison.Ordinal);
 
         Assert.Contains("candidateId:", inbox, StringComparison.Ordinal);

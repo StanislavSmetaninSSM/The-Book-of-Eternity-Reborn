@@ -2606,12 +2606,7 @@ public partial class GameEngine
             var inventory = new
             {
                 items = Array.Empty<object>(),
-                equipment = new
-                {
-                    head = (object?)null, body = (object?)null, hands = (object?)null,
-                    feet = (object?)null, mainHand = (object?)null, offHand = (object?)null,
-                    neck = (object?)null, ring1 = (object?)null, ring2 = (object?)null
-                },
+                equippedItems = new Dictionary<string, object?>(),
                 totalWeight = 0,
                 maxWeight = (double?)null
             };

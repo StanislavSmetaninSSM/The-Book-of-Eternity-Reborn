@@ -893,7 +893,12 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(message))
             return "Локальная запись не выполнена.";
 
-        return message
+        var safeFallback = "Локальная запись не выполнена: состояние требует исправления.";
+        var prelocalized = MortalItemPlayerFailureMessages.Sanitize(message, safeFallback);
+        if (!string.Equals(prelocalized, message, StringComparison.Ordinal))
+            return prelocalized;
+
+        var localized = message
             .Replace("Browser-write", "Локальная запись", StringComparison.Ordinal)
             .Replace("GM-turn", "ход ГМ", StringComparison.Ordinal)
             .Replace("rollback/snapshot artifact", "восстановление состояния", StringComparison.Ordinal)
@@ -906,6 +911,7 @@ public sealed class BrowserMortalWorldWriteService
             .Replace("pending_", string.Empty, StringComparison.OrdinalIgnoreCase)
             .Replace(".json", " файл", StringComparison.OrdinalIgnoreCase)
             .Replace("lease", "срока блокировки", StringComparison.Ordinal);
+        return MortalItemPlayerFailureMessages.Sanitize(localized, safeFallback);
     }
 
     private async Task<JsonNode?> ReadNodeAsync(

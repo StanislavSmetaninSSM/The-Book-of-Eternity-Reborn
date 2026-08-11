@@ -83,6 +83,37 @@ internal static class MortalItemIdentityRules
         !string.IsNullOrWhiteSpace(value) &&
         string.Equals(value, value.Trim(), StringComparison.Ordinal);
 
+    internal static bool TryReadExactSidecarItemId(JsonElement entry, out string itemId)
+    {
+        itemId = string.Empty;
+        if (entry.ValueKind != JsonValueKind.Object ||
+            !TryReadOptionalExactIdentity(entry, "itemId", out var hasItemId, out var directItemId) ||
+            !TryReadOptionalExactIdentity(entry, "existedId", out var hasExistedId, out var existedItemId) ||
+            (!hasItemId && !hasExistedId) ||
+            (hasItemId && hasExistedId && !string.Equals(directItemId, existedItemId, StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        itemId = hasExistedId ? existedItemId : directItemId;
+        return true;
+    }
+
+    internal static bool TryReadExactSidecarItemId(JsonObject entry, out string itemId)
+    {
+        itemId = string.Empty;
+        if (!TryReadOptionalExactIdentity(entry, "itemId", out var hasItemId, out var directItemId) ||
+            !TryReadOptionalExactIdentity(entry, "existedId", out var hasExistedId, out var existedItemId) ||
+            (!hasItemId && !hasExistedId) ||
+            (hasItemId && hasExistedId && !string.Equals(directItemId, existedItemId, StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        itemId = hasExistedId ? existedItemId : directItemId;
+        return true;
+    }
+
     internal static string BuildConfusableKey(string value)
     {
         var trimmed = value.Trim();
@@ -95,6 +126,42 @@ internal static class MortalItemIdentityRules
         {
             return trimmed.ToUpper(CultureInfo.InvariantCulture);
         }
+    }
+
+    private static bool TryReadOptionalExactIdentity(
+        JsonElement entry,
+        string propertyName,
+        out bool present,
+        out string identity)
+    {
+        present = entry.TryGetProperty(propertyName, out var value);
+        identity = string.Empty;
+        if (!present)
+            return true;
+
+        identity = value.ValueKind == JsonValueKind.String ? value.GetString() ?? string.Empty : string.Empty;
+        return IsExactIdentity(identity);
+    }
+
+    private static bool TryReadOptionalExactIdentity(
+        JsonObject entry,
+        string propertyName,
+        out bool present,
+        out string identity)
+    {
+        present = entry.ContainsKey(propertyName);
+        identity = string.Empty;
+        if (!present)
+            return true;
+
+        if (entry[propertyName] is not JsonValue value ||
+            !value.TryGetValue<string>(out identity!))
+        {
+            identity = string.Empty;
+            return false;
+        }
+
+        return IsExactIdentity(identity);
     }
 }
 

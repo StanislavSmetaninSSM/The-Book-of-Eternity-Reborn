@@ -33,7 +33,7 @@ internal sealed partial class MortalItemTransitionWriter
 
         var beforeCatalog = BuildCatalog(state);
         var beforeIndex = MortalItemIdentityState.Parse(state.IdentityIndexJson);
-        var baselineError = ValidateComposedState(beforeCatalog, beforeIndex);
+        var baselineError = ValidateComposedState(state, beforeCatalog, beforeIndex);
         if (baselineError != null)
             return MortalItemTransitionResult.Failed(baselineError);
         if (HasAppliedTransitionAuthority(beforeIndex, intent))
@@ -510,7 +510,7 @@ internal sealed partial class MortalItemTransitionWriter
 
         state.IdentityIndexRoot = currentIndex.Root;
         var catalog = BuildCatalog(state);
-        var composedError = ValidateComposedState(catalog, currentIndex);
+        var composedError = ValidateComposedState(state, catalog, currentIndex);
         if (composedError != null)
             return composedError;
         if (expectedActiveItemId == null)

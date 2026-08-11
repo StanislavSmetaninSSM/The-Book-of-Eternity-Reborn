@@ -1072,17 +1072,20 @@ public sealed class BrowserTradeParityTests : IDisposable
             """
             : "";
 
+        var buybackItemId = includeBuybackInventory && includeSellableInventoryItem
+            ? "item_buyback_lantern_001"
+            : "item_sell_lantern_001";
         var buybackBlock = includeBuybackInventory
-            ? """
+            ? $$"""
               ,
               "buybackInventory": [
                 {
                   "buybackEntryId": "npc_buyback_001",
                   "npcId": "npc_merchant_001",
                   "npcName": "Марек",
-                  "itemId": "item_sell_lantern_001",
+                  "itemId": "{{buybackItemId}}",
                   "itemData": {
-                    "itemId": "item_sell_lantern_001",
+                    "itemId": "{{buybackItemId}}",
                     "name": "Походный фонарь",
                     "description": "Ранее проданный фонарь.",
                     "type": "tool",
@@ -1135,9 +1138,9 @@ public sealed class BrowserTradeParityTests : IDisposable
                 price: 20,
                 baseSellPrice: 8)
             : null;
-        var buybackItem = includeBuybackInventory && !includeSellableInventoryItem
+        var buybackItem = includeBuybackInventory
             ? MortalItemTestFixture.CreateCanonicalRootAtTurn(
-                "item_sell_lantern_001",
+                buybackItemId,
                 acceptedAtTurn: 5,
                 route: "player_acquisition",
                 authorityKind: "turn_outcome",
@@ -1175,7 +1178,7 @@ public sealed class BrowserTradeParityTests : IDisposable
                 ["items"] = soldItem == null
                     ? new JsonArray()
                     : new JsonArray(soldItem.DeepClone()),
-                ["equipment"] = new JsonObject()
+                ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var indexedCarriers = new List<(JsonObject Item, string Kind, string OwnerId, string? ContainerId)>();

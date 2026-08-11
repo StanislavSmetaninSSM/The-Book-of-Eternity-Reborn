@@ -147,6 +147,11 @@ item's own container capability.
 - quest links resolve to exact quest/reward authority;
 - `contentsPath` contains permanent parent item IDs after sealing.
 
+`isCarried`, `currentLocationId`, and `currentLocationName` are not placement
+authority for a materialized item. Exact route destination, carrier, and
+`contentsPath` govern placement. The client removes those stale hints whenever
+creation or transfer settles into `player_inventory`.
+
 The envelope does not legalize missing, malformed, orphaned, or contradictory
 canonical data.
 

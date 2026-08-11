@@ -119,7 +119,7 @@ internal sealed partial class MortalItemTransitionWriter
 
         var beforeCatalog = BuildCatalog(state);
         var beforeIndex = MortalItemIdentityState.Parse(state.IdentityIndexJson);
-        var baselineError = ValidateComposedState(beforeCatalog, beforeIndex);
+        var baselineError = ValidateComposedState(state, beforeCatalog, beforeIndex);
         if (baselineError != null)
             return MortalItemTransitionResult.Failed(baselineError);
         if (HasAppliedTransitionAuthority(beforeIndex, intent))
@@ -201,6 +201,9 @@ internal sealed partial class MortalItemTransitionWriter
             : new JsonArray(intent.DestinationCarrier.ContainerPath
                 .Select(value => (JsonNode?)JsonValue.Create(value))
                 .ToArray());
+        MortalItemLocalActionPolicy.NormalizePlacementForDestination(
+            item,
+            intent.DestinationCarrier);
         destinationArray.Add(item);
 
         var currentIndexRoot = beforeIndex.Root.DeepClone().AsObject();
@@ -249,7 +252,7 @@ internal sealed partial class MortalItemTransitionWriter
 
         state.IdentityIndexRoot = normalizedCurrentIndex.Root;
         var afterCatalog = BuildCatalog(state);
-        var composedError = ValidateComposedState(afterCatalog, normalizedCurrentIndex);
+        var composedError = ValidateComposedState(state, afterCatalog, normalizedCurrentIndex);
         if (composedError != null)
             return MortalItemTransitionResult.Failed(composedError);
         if (!afterCatalog.ByItemId.TryGetValue(itemId, out var afterOccurrences) ||
@@ -333,7 +336,7 @@ internal sealed partial class MortalItemTransitionWriter
 
         var beforeCatalog = BuildCatalog(state);
         var beforeIndex = MortalItemIdentityState.Parse(state.IdentityIndexJson);
-        var baselineError = ValidateComposedState(beforeCatalog, beforeIndex);
+        var baselineError = ValidateComposedState(state, beforeCatalog, beforeIndex);
         if (baselineError != null)
             return MortalItemTransitionResult.Failed(baselineError);
         var acceptedCreationEvidence =
@@ -377,6 +380,9 @@ internal sealed partial class MortalItemTransitionWriter
             : new JsonArray(destination.ContainerPath
                 .Select(value => (JsonNode?)JsonValue.Create(value))
                 .ToArray());
+        MortalItemLocalActionPolicy.NormalizePlacementForDestination(
+            canonicalItem,
+            destination);
         var receipt = MortalItemIdentityState.CreateRootReceipt(
             canonicalItem,
             itemId,
@@ -448,7 +454,7 @@ internal sealed partial class MortalItemTransitionWriter
 
         state.IdentityIndexRoot = normalizedCurrentIndex.Root;
         var afterCatalog = BuildCatalog(state);
-        var composedError = ValidateComposedState(afterCatalog, normalizedCurrentIndex);
+        var composedError = ValidateComposedState(state, afterCatalog, normalizedCurrentIndex);
         if (composedError != null)
             return MortalItemTransitionResult.Failed(composedError);
         if (!afterCatalog.ByItemId.TryGetValue(itemId, out var occurrences) ||
@@ -691,9 +697,13 @@ internal sealed partial class MortalItemTransitionWriter
             state.Companions));
 
     private static string? ValidateComposedState(
+        LoadedState loadedState,
         MortalItemCarrierCatalog catalog,
         MortalItemIdentityParseResult index)
     {
+        var equipmentError = ValidateEquipmentState(loadedState);
+        if (equipmentError != null)
+            return equipmentError;
         if (catalog.Issues.Count > 0)
             return catalog.Issues[0].Message;
         if (index.Issues.Count > 0)
@@ -749,6 +759,46 @@ internal sealed partial class MortalItemTransitionWriter
                 return $"Завершённая идентичность {pair.Key} не может оставаться у носителя.";
         }
 
+        return null;
+    }
+
+    private static string? ValidateEquipmentState(LoadedState state)
+    {
+        if (state.Inventory?.CatalogRoot is { } inventoryRoot &&
+            !MortalItemEquipmentAuthority.TryRead(
+                inventoryRoot,
+                inventoryRoot["items"] as JsonArray,
+                InventoryEquipmentService.ItemsPath,
+                out _,
+                out var playerError))
+        {
+            return playerError;
+        }
+
+        if (state.NpcCore?.CatalogRoot is not { } npcRoot)
+            return null;
+        foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+        {
+            if (npcRoot[sectionName] is not JsonArray npcs)
+                continue;
+            for (var index = 0; index < npcs.Count; index++)
+            {
+                if (npcs[index] is not JsonObject npc ||
+                    (!npc.ContainsKey("inventory") && !npc.ContainsKey("equippedItems")))
+                {
+                    continue;
+                }
+                if (!MortalItemEquipmentAuthority.TryRead(
+                        npc,
+                        npc["inventory"] as JsonArray,
+                        $"{NpcCoreChangesContract.NpcCorePath}.{sectionName}[{index}]",
+                        out _,
+                        out var npcError))
+                {
+                    return npcError;
+                }
+            }
+        }
         return null;
     }
 

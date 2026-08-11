@@ -227,6 +227,9 @@ internal static class QuestRewardAuthority
     {
         if (TryReadScalarString(rewardNode, out var scalar) && !string.IsNullOrWhiteSpace(scalar))
         {
+            if (kind == QuestRewardKind.Item && context.RequiresExactItemId)
+                return $"{FallbackRewardLabel(kind)} — подробности пока не записаны";
+
             return context.TryResolve(kind, scalar, out var scalarResolvedLabel)
                 ? FormatResolvedLabel(kind, scalar, scalarResolvedLabel)
                 : $"{FallbackRewardLabel(kind)} — подробности пока не записаны";
@@ -239,7 +242,9 @@ internal static class QuestRewardAuthority
         var status = ReadExplicitUnavailableStatus(reward);
         var reason = FirstNonEmpty(ReadReasonStrings(reward));
         var resolved = TryResolveStructuredReward(kind, reward, context, out var resolvedLabel);
-        if (string.IsNullOrWhiteSpace(label))
+        if (resolved && kind == QuestRewardKind.Item && context.RequiresExactItemId)
+            label = resolvedLabel;
+        else if (string.IsNullOrWhiteSpace(label))
             label = resolved ? resolvedLabel : FallbackRewardLabel(kind);
 
         if (kind == QuestRewardKind.Relationship)
@@ -255,6 +260,9 @@ internal static class QuestRewardAuthority
 
         if (resolved)
             return label;
+
+        if (kind == QuestRewardKind.Item)
+            label = FallbackRewardLabel(kind);
 
         return !string.IsNullOrWhiteSpace(reason)
             ? $"{label} — недоступно: {reason}"
@@ -349,6 +357,19 @@ internal static class QuestRewardAuthority
         QuestRewardAuthorityContext context,
         out string resolvedLabel)
     {
+        if (kind == QuestRewardKind.Item && context.RequiresExactItemId)
+        {
+            if (reward["itemId"] is JsonValue itemIdValue &&
+                itemIdValue.TryGetValue<string>(out var itemId) &&
+                MortalItemIdentityRules.IsExactIdentity(itemId))
+            {
+                return context.TryResolve(kind, itemId, out resolvedLabel);
+            }
+
+            resolvedLabel = string.Empty;
+            return false;
+        }
+
         foreach (var candidate in ReadStructuredAuthorityCandidates(kind, reward))
         {
             if (context.TryResolve(kind, candidate, out resolvedLabel))
@@ -368,7 +389,9 @@ internal static class QuestRewardAuthority
             _ => RelationshipIdentityFields.Concat(RelationshipLinkNameFields).ToArray()
         };
 
-        return ReadNodeStrings(reward, linkFields);
+        return kind == QuestRewardKind.Item
+            ? ReadNodeStringsUntrimmed(reward, linkFields)
+            : ReadNodeStrings(reward, linkFields);
     }
 
     private static string DescribeRewardForActual(QuestRewardKind kind, JsonObject reward)
@@ -626,6 +649,32 @@ internal static class QuestRewardAuthority
             context.Register(QuestRewardKind.Item, ReadNodeStrings(item, ItemIdentityFields), FirstNonEmpty(ReadNodeStrings(item, ItemNameFields)));
     }
 
+    internal static void RegisterAcceptedItems(QuestRewardAuthorityContext context, JsonNode? root)
+    {
+        if (root is not JsonObject obj || obj["items"] is not JsonArray items)
+            return;
+
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var itemId))
+                continue;
+
+            context.RegisterAcceptedItem(itemId, FirstNonEmpty(ReadNodeStrings(item, ItemNameFields)));
+        }
+    }
+
+    private static IEnumerable<string> ReadNodeStringsUntrimmed(JsonObject obj, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (!TryGetProperty(obj, propertyName, out var node))
+                continue;
+
+            if (TryReadScalarString(node, out var value) && !string.IsNullOrWhiteSpace(value))
+                yield return value;
+        }
+    }
+
     internal static void RegisterSkills(QuestRewardAuthorityContext context, JsonNode? root)
     {
         foreach (var skill in EnumerateObjects(root, SkillCollectionNames))
@@ -646,9 +695,17 @@ internal static class QuestRewardAuthority
 
 internal sealed class QuestRewardAuthorityContext
 {
-    private readonly Dictionary<string, string> _itemLabels = new(StringComparer.OrdinalIgnoreCase);
+    private readonly bool _exactItemAuthority;
+    private readonly Dictionary<string, string> _itemLabels;
     private readonly Dictionary<string, string> _skillLabels = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> _relationshipLabels = new(StringComparer.OrdinalIgnoreCase);
+
+    private QuestRewardAuthorityContext(bool exactItemAuthority = false)
+    {
+        _exactItemAuthority = exactItemAuthority;
+        _itemLabels = new Dictionary<string, string>(
+            exactItemAuthority ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+    }
 
     public static QuestRewardAuthorityContext Create(
         JsonNode? inventoryRoot,
@@ -664,6 +721,35 @@ internal sealed class QuestRewardAuthorityContext
         QuestRewardAuthority.RegisterRelationships(context, npcRelationshipsRoot, npcCoreRoot);
         return context;
     }
+
+    public static QuestRewardAuthorityContext CreatePlayerProjection(
+        JsonNode? inventoryRoot,
+        JsonNode? activeSkillsRoot,
+        JsonNode? passiveSkillsRoot,
+        JsonNode? npcCoreRoot,
+        JsonNode? npcRelationshipsRoot)
+    {
+        var context = new QuestRewardAuthorityContext(exactItemAuthority: true);
+        QuestRewardAuthority.RegisterAcceptedItems(context, inventoryRoot);
+        QuestRewardAuthority.RegisterSkills(context, activeSkillsRoot);
+        QuestRewardAuthority.RegisterSkills(context, passiveSkillsRoot);
+        QuestRewardAuthority.RegisterRelationships(context, npcRelationshipsRoot, npcCoreRoot);
+        return context;
+    }
+
+    internal void RegisterAcceptedItem(string itemId, string? label)
+    {
+        if (!_exactItemAuthority ||
+            string.IsNullOrWhiteSpace(itemId) ||
+            !string.Equals(itemId, itemId.Trim(), StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _itemLabels[itemId] = !string.IsNullOrWhiteSpace(label) ? label.Trim() : itemId;
+    }
+
+    internal bool RequiresExactItemId => _exactItemAuthority;
 
     public void Register(QuestRewardKind kind, IEnumerable<string> identities, string? label)
     {
@@ -698,7 +784,18 @@ internal sealed class QuestRewardAuthorityContext
     public bool TryResolve(QuestRewardKind kind, string reference, out string label)
     {
         var map = Map(kind);
-        if (map.TryGetValue(reference.Trim(), out label!))
+        var lookup = kind == QuestRewardKind.Item && _exactItemAuthority
+            ? reference
+            : reference.Trim();
+        if (kind == QuestRewardKind.Item &&
+            _exactItemAuthority &&
+            !string.Equals(lookup, lookup.Trim(), StringComparison.Ordinal))
+        {
+            label = string.Empty;
+            return false;
+        }
+
+        if (map.TryGetValue(lookup, out label!))
             return true;
 
         if (kind == QuestRewardKind.Relationship)

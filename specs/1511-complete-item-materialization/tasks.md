@@ -197,16 +197,16 @@ and zero internal authority tokens; rejected items never appear.
 
 ### Tests for User Story 5
 
-- [ ] T055 [US5] Add red console detail/privacy tests for `materialization`, receipt, seal, lineage, carrier, path, and repair tokens in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs`
-- [ ] T056 [P] [US5] Add red browser result/payload/privacy tests for the same accepted/rejected items in `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
-- [ ] T057 [P] [US5] Add red browser local-action prompt parity tests using receipt-bearing fixtures in `BookOfEternityClient.Tests/WebUi/BrowserInventoryManagementTests.cs` and `BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs`
+- [x] T055 [US5] Add red console detail/privacy tests for `materialization`, receipt, seal, lineage, carrier, path, and repair tokens in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs`
+- [x] T056 [P] [US5] Add red browser result/payload/privacy tests for the same accepted/rejected items in `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
+- [x] T057 [P] [US5] Add red browser local-action prompt parity tests using receipt-bearing fixtures in `BookOfEternityClient.Tests/WebUi/BrowserInventoryManagementTests.cs` and `BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs`
 
 ### Implementation for User Story 5
 
-- [ ] T058 [US5] Add `materialization`, `materializationReceipt`, `creationRef`, and all client authority fields to the console internal-field denylist while preserving semantic catch-all behavior in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Inventory.cs` and NPC inventory rendering partials
-- [ ] T059 [US5] Project browser inventory data through an explicit semantic allowlist and omit identity-index state from player DTOs in the applicable files under `BookOfEternityClient/WebUi/`
-- [ ] T060 [US5] If and only if C# projection tests prove frontend source receives internal fields, add a typed semantic projection/denylist and tests under `BookOfEternityClient.WebFrontend/src/`; otherwise record the no-frontend-change rationale in `specs/1511-complete-item-materialization/quickstart.md`
-- [ ] T061 [US5] Run the US5 console/browser Focused filters and inspect one simple plus one mechanic-bearing result payload; record absence of internal terms in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T058 [US5] Add `materialization`, `materializationReceipt`, `creationRef`, and all client authority fields to the console internal-field denylist while preserving semantic catch-all behavior in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Inventory.cs` and NPC inventory rendering partials
+- [x] T059 [US5] Project browser inventory data through an explicit semantic allowlist and omit identity-index state from player DTOs in the applicable files under `BookOfEternityClient/WebUi/`
+- [x] T060 [US5] If and only if C# projection tests prove frontend source receives internal fields, add a typed semantic projection/denylist and tests under `BookOfEternityClient.WebFrontend/src/`; otherwise record the no-frontend-change rationale in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T061 [US5] Run the US5 console/browser Focused filters and inspect one simple plus one mechanic-bearing result payload; record absence of internal terms in `specs/1511-complete-item-materialization/quickstart.md`
 
 **Checkpoint**: Harness evidence is invisible to ordinary players while
 accepted item semantics remain inspectable and console/browser behavior agrees.
@@ -218,16 +218,16 @@ accepted item semantics remain inspectable and console/browser behavior agrees.
 **Purpose**: Migrate repository-owned positive state and teach the GM the exact
 workflow. This phase crosses all stories and cannot be deferred.
 
-- [ ] T062 Migrate the active sword and companion journals, add the matching identity index, and preserve fixture integrity in `FileSystemExample/game_session/game_state/inventory/items.json`, `FileSystemExample/game_session/game_state/npcs/item_journals.json`, and `FileSystemExample/game_session/game_state/inventory/item_identity_index.json`
-- [ ] T063 Migrate shared positive item builders/fixtures identified by T003, keep receipt-less objects only in explicitly named negative inputs, and enforce the classification in `BookOfEternityClient.IntegrationTests/FileSystemExampleFixtureIntegrityTests.cs` and `BookOfEternityClient.Tests/MortalItemTestFixtureTests.cs`
-- [ ] T064 Update new-item, exact-ID, container-path, loot-template, transfer, split/merge, craft, storage, and no-legacy rules in `Rules/Block_2.txt`, `Rules/Block_5.txt`, `Rules/Block_9.txt`, `Rules/Block_10.txt`, `Rules/Block_11.txt`, `Rules/Block_19.A.txt`, and `Rules/Block_20.txt`
-- [ ] T065 [P] Update canonical file mapping guidance, client-owned index ownership, repair restrictions, and current-schema lifecycle in `Rules/Block_CLI_Operations.txt`, `CLI_API_Specification.md`, and `CLI_Agent_Daemon_Specification.md`
-- [ ] T066 [P] Update GM authoring/repair steps and daemon-read requirements in `TaskGuides/CLI_Step_Main.txt`, `Examples/E_CLI_Step_Main.txt`, and the repository daemon PowerShell entrypoint
-- [ ] T067 Add complete mundane player-acquisition and mechanic-bearing craft/trade worked examples, transfer/storage/lineage notes, and explicit receipt-less rejection in `Examples/E_Block_9.txt`, `Examples/E_Block_10.txt`, `Examples/E_Block_11.txt`, `Examples/E_Block_19.A.txt`, `Examples/E_Block_20.txt`, and a new `Examples/E_CLI_Mortal_Item_Materialization.txt`
-- [ ] T068 Register every new/changed example and expected diagnostic in `Examples/example_validation_manifest.json`
-- [ ] T069 Add red-then-green GM contract/source-guard assertions for required fields, routes, client ownership, no legacy promotion, and worked examples in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs`
-- [ ] T070 Add red-then-green executable example/manifest validation for valid routes and receipt-less rejection in `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
-- [ ] T071 Check `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Afterlife_Turns.txt`, afterlife source guards, and realm-segregation tests; record in `specs/1511-complete-item-materialization/quickstart.md` that no afterlife contract changed, or update them only if an actual shared boundary changed
+- [x] T062 Migrate the active sword and companion journals, add the matching identity index, and preserve fixture integrity in `FileSystemExample/game_session/game_state/inventory/items.json`, `FileSystemExample/game_session/game_state/npcs/item_journals.json`, and `FileSystemExample/game_session/game_state/inventory/item_identity_index.json`
+- [x] T063 Migrate shared positive item builders/fixtures identified by T003, keep receipt-less objects only in explicitly named negative inputs, and enforce the classification in `BookOfEternityClient.IntegrationTests/FileSystemExampleFixtureIntegrityTests.cs` and `BookOfEternityClient.Tests/MortalItemTestFixtureTests.cs`
+- [x] T064 Update new-item, exact-ID, container-path, loot-template, transfer, split/merge, craft, storage, and no-legacy rules in `Rules/Block_2.txt`, `Rules/Block_5.txt`, `Rules/Block_9.txt`, `Rules/Block_10.txt`, `Rules/Block_11.txt`, `Rules/Block_19.A.txt`, and `Rules/Block_20.txt`
+- [x] T065 [P] Update canonical file mapping guidance, client-owned index ownership, repair restrictions, and current-schema lifecycle in `Rules/Block_CLI_Operations.txt`, `CLI_API_Specification.md`, and `CLI_Agent_Daemon_Specification.md`
+- [x] T066 [P] Update GM authoring/repair steps and daemon-read requirements in `TaskGuides/CLI_Step_Main.txt`, `Examples/E_CLI_Step_Main.txt`, and the repository daemon PowerShell entrypoint
+- [x] T067 Add complete mundane player-acquisition and mechanic-bearing craft/trade worked examples, transfer/storage/lineage notes, and explicit receipt-less rejection in `Examples/E_Block_9.txt`, `Examples/E_Block_10.txt`, `Examples/E_Block_11.txt`, `Examples/E_Block_19.A.txt`, `Examples/E_Block_20.txt`, and a new `Examples/E_CLI_Mortal_Item_Materialization.txt`
+- [x] T068 Register every new/changed example and expected diagnostic in `Examples/example_validation_manifest.json`
+- [x] T069 Add red-then-green GM contract/source-guard assertions for required fields, routes, client ownership, no legacy promotion, and worked examples in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs`
+- [x] T070 Add red-then-green executable example/manifest validation for valid routes and receipt-less rejection in `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
+- [x] T071 Check `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Afterlife_Turns.txt`, afterlife source guards, and realm-segregation tests; record in `specs/1511-complete-item-materialization/quickstart.md` that no afterlife contract changed, or update them only if an actual shared boundary changed
 
 ---
 
@@ -236,15 +236,41 @@ workflow. This phase crosses all stories and cannot be deferred.
 **Purpose**: Prove the complete candidate, reconcile durable task state, and
 integrate only the tested commit.
 
-- [ ] T072 Run `git diff --check`, audit tracked/untracked artifacts, and remove only feature-owned generated outputs while preserving the pre-existing `.serena/` and `bin/obj` directories
-- [ ] T073 Run all four Focused command groups from `specs/1511-complete-item-materialization/plan.md`; diagnose failures with the smallest relevant filter and record exact result directories in `specs/1511-complete-item-materialization/quickstart.md`
-- [ ] T074 Run one Fast checkpoint through `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` and record total/pass/fail/timeout/cleanup evidence in `specs/1511-complete-item-materialization/quickstart.md`
-- [ ] T075 Run documentation-sensitive `FullValidation` and accepted-turn `LifecycleIntegration` once, diagnose only related failures, and record result evidence in `specs/1511-complete-item-materialization/quickstart.md`
-- [ ] T076 Perform the manual console/browser semantic/privacy check from `quickstart.md`; if frontend source changed, also run its repository-defined verification and record the result in `specs/1511-complete-item-materialization/quickstart.md`
-- [ ] T077 Reconcile every FR/SC and every task checkbox against inspected diffs and fresh evidence in `specs/1511-complete-item-materialization/tasks.md`; do not mark report-only work complete
-- [ ] T078 Request and apply code review for contract authority, exact identity, atomicity, linear scans, repair targets, route coverage, docs synchronization, and player privacy; record resolved findings in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T072 Run `git diff --check`, audit tracked/untracked artifacts, and remove only feature-owned generated outputs while preserving the pre-existing `.serena/` and `bin/obj` directories
+- [x] T073 Run all seven bounded Focused command groups from `specs/1511-complete-item-materialization/plan.md`; diagnose failures with the smallest relevant filter and record exact result directories in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T074 Run one Fast checkpoint through `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` and record total/pass/fail/timeout/cleanup evidence in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T075 Run documentation-sensitive `FullValidation` and accepted-turn `LifecycleIntegration` once, diagnose only related failures, and record result evidence in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T076 Perform the manual console/browser semantic/privacy check from `quickstart.md`; if frontend source changed, also run its repository-defined verification and record the result in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T077 Reconcile every FR/SC and every task checkbox against inspected diffs and fresh evidence in `specs/1511-complete-item-materialization/tasks.md`; do not mark report-only work complete
+- [x] T078 Request and apply code review for contract authority, exact identity, atomicity, linear scans, repair targets, route coverage, docs synchronization, and player privacy; record resolved findings in `specs/1511-complete-item-materialization/quickstart.md`
 - [ ] T079 Create a clean-checkout candidate from the exact final commit and run one `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge`; require zero failures, duplicate IDs, timeout, and cleanup errors
 - [ ] T080 Push `1511-complete-item-materialization`, open the #1511-linked PR with Mortal/afterlife docs rationale and exact verification evidence, merge only the reviewed PreMerge-tested commit to `main`, then close #1511 and update its roadmap status
+
+### T077 requirement reconciliation
+
+- FR-001–FR-014 are covered by T008–T027: complete route packages, exact
+  creation identity, sealing, one-pass carrier authority, companions, and empty
+  bootstrap.
+- FR-015–FR-016, FR-025–FR-027, FR-033, and FR-042 are covered by T028–T038:
+  exact transfer authority, atomic carrier/index writes, route settlement, and
+  already-valid storage/vehicle continuity.
+- FR-017–FR-021 are covered by T039–T047: split/merge conservation, derived
+  identity, origin union, retirement, craft provenance, and scalar-resource
+  exclusion.
+- FR-022–FR-024 are covered across T008–T026 and T055–T061: companion
+  atomicity, exact sidecar resolution, structured mechanical authority, and
+  semantic player projection.
+- FR-028–FR-032 are covered by T048–T054: receipt-less rejection, bounded
+  repair, retained snapshot/rollback authority, and replay-safe settlement.
+- FR-034 is covered by T055–T061; FR-035–FR-039 and FR-041 are covered by
+  T013, T024, and T062–T071; FR-040 is covered by T009 and T017; FR-043 is
+  covered by T072–T080.
+- SC-001 through SC-009 each have fresh focused/broad evidence recorded in
+  `quickstart.md`. SC-010 has green Focused, Fast, FullValidation, and
+  LifecycleIntegration evidence; its remaining exact-commit PreMerge proof is
+  intentionally T079, followed by integration T080.
+- T001–T078 are complete from inspected diffs and fresh evidence. T079 and T080
+  remain intentionally open; no report-only work was marked complete.
 
 ---
 

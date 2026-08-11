@@ -638,40 +638,6 @@ private async Task ShowNPCs()
             }
         }
 
-        // ── Embedded inventory & equipment (in npc_core) ──
-        if (npc.TryGetProperty("inventory", out var embInv) && embInv.ValueKind == JsonValueKind.Array && embInv.GetArrayLength() > 0)
-        {
-            lines.Add("");
-            lines.Add($"  [bold orange3]🎒 Инвентарь (встроенный):[/]");
-            foreach (var it in embInv.EnumerateArray())
-            {
-                var iName = GetStr(it, "name", "?");
-                var iQty = GetStr(it, "quantity", GetStr(it, "count", ""));
-                var iEquipped = it.TryGetProperty("equipped", out var ieq) && ieq.ValueKind == JsonValueKind.True;
-                var line = iEquipped
-                    ? $"    ⚔ [green]{Markup.Escape(iName)}[/] [green](экипировано)[/]"
-                    : $"    • [white]{Markup.Escape(iName)}[/]";
-                if (!string.IsNullOrEmpty(iQty) && iQty != "1")
-                    line += $" ×{Markup.Escape(iQty)}";
-                lines.Add(line);
-            }
-        }
-        if (npc.TryGetProperty("equippedItems", out var embEq) && embEq.ValueKind == JsonValueKind.Object)
-        {
-            var hasEquip = false;
-            foreach (var slot in embEq.EnumerateObject())
-            {
-                if (slot.Value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined) continue;
-                if (!hasEquip)
-                {
-                    lines.Add($"  [bold orange3]🛡️ Экипировка:[/]");
-                    hasEquip = true;
-                }
-                var slotVal = slot.Value.ValueKind == JsonValueKind.String ? (slot.Value.GetString() ?? "") : slot.Value.ToString();
-                lines.Add($"    • [dim]{Markup.Escape(NpcFieldToRussian(slot.Name))}:[/] [white]{Markup.Escape(slotVal)}[/]");
-            }
-        }
-
         // ── Embedded masks (in npc_core) ──
         var activeMask = GetStr(npc, "activeMaskId", "");
         if (npc.TryGetProperty("masks", out var embMasks) && embMasks.ValueKind == JsonValueKind.Array && embMasks.GetArrayLength() > 0 && debugMode)
@@ -852,8 +818,8 @@ private async Task ShowNPCs()
         // ── Активность (npc_activities) ──
         RenderNpcActivities(lines, actDoc, npcId, originalName, debugMode);
 
-        // ── Инвентарь (npc_inventory) ──
-        RenderNpcInventory(lines, invDoc, npcId, originalName, debugMode);
+        // ── Принятый канонический инвентарь NPC ──
+        RenderNpcInventory(lines, npc, debugMode);
 
         // ── Эффекты (npc_effects) ──
         RenderNpcEffects(lines, effDoc, npcId, originalName, debugMode);
@@ -915,7 +881,7 @@ private async Task ShowNPCs()
                 CustomStates: ToJsonNode(customDoc)));
         ShowNpcDetailSectionMenu(name, projection.Sections);
 
-        await ShowNpcDetailActions(npc, originalName, npcTradeAvailability.TradeAvailable, invDoc);
+        await ShowNpcDetailActions(npc, originalName, npcTradeAvailability.TradeAvailable);
     }
 
     private void ShowNpcDetailSectionMenu(string npcName, IReadOnlyList<NpcDetailSection> sections)
@@ -961,7 +927,7 @@ private async Task ShowNPCs()
         document == null ? null : JsonNode.Parse(document.RootElement.GetRawText());
 
 
-    private async Task ShowNpcDetailActions(JsonElement npc, string npcName, bool tradeAvailable, JsonDocument? invDoc)
+    private async Task ShowNpcDetailActions(JsonElement npc, string npcName, bool tradeAvailable)
     {
         var imagePrompt = GetStr(npc, "image_prompt", "");
         var npcImageKey = GetPrimaryNpcId(npc);
@@ -971,7 +937,7 @@ private async Task ShowNPCs()
         var hasExistingImage = _imageService?.EntityImageExists("npc", npcImageKey) == true;
         var hasImageSupport = _imageService != null && (hasImagePrompt || hasExistingImage);
         var npcId = GetPrimaryNpcId(npc);
-        var npcInventoryDisplay = invDoc != null ? BuildNpcInventoryDisplay(invDoc, npcId, npcName) : new NpcInventoryDisplay();
+        var npcInventoryDisplay = BuildNpcInventoryDisplay(npc);
         var hasInspectableItems = npcInventoryDisplay.Items.Count > 0;
         var socialAvailable = !string.IsNullOrWhiteSpace(npcId) && (tradeAvailable || hasImageSupport || hasInspectableItems);
 
@@ -1048,7 +1014,7 @@ private async Task ShowNPCs()
 
             if (action.Contains("Осмотреть предметы"))
             {
-                await ShowNpcHeldItemInspector(npc, npcName, invDoc);
+                await ShowNpcHeldItemInspector(npc, npcName);
                 continue;
             }
 
@@ -1083,20 +1049,11 @@ private async Task ShowNPCs()
     }
 
 
-    private async Task ShowNpcHeldItemInspector(JsonElement npc, string npcName, JsonDocument? invDoc)
+    private async Task ShowNpcHeldItemInspector(JsonElement npc, string npcName)
     {
-        if (invDoc == null)
-        {
-            ShowEmptyPanel("Инвентарь NPC", "Инвентарь NPC недоступен");
-            WaitForKey();
-            return;
-        }
-
-        var npcId = GetPrimaryNpcId(npc);
-
         while (true)
         {
-            var display = BuildNpcInventoryDisplay(invDoc, npcId, npcName);
+            var display = BuildNpcInventoryDisplay(npc);
             if (display.IsEmpty || display.Items.Count == 0)
             {
                 ShowEmptyPanel("Инвентарь NPC", "У NPC нет предметов для осмотра");
@@ -1504,148 +1461,48 @@ private async Task ShowNPCs()
     }
 
 
-    private NpcInventoryDisplay BuildNpcInventoryDisplay(JsonDocument doc, string npcId, string npcName)
+    private NpcInventoryDisplay BuildNpcInventoryDisplay(JsonElement npc)
     {
         var display = new NpcInventoryDisplay();
-        if (doc.RootElement.ValueKind != JsonValueKind.Object) return display;
+        if (npc.ValueKind != JsonValueKind.Object)
+            return display;
 
-        var itemsByKey = new Dictionary<string, NpcInventoryItemDisplay>(StringComparer.OrdinalIgnoreCase);
+        var itemsByKey = new Dictionary<string, NpcInventoryItemDisplay>(StringComparer.Ordinal);
         var order = new List<string>();
-        var equippedSlots = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        if (doc.RootElement.TryGetProperty("NPCInventoryAdds", out var adds) && adds.ValueKind == JsonValueKind.Array)
+        if (npc.TryGetProperty("inventory", out var inventory) && inventory.ValueKind == JsonValueKind.Array)
         {
-            var generatedIndex = 0;
-            foreach (var entry in adds.EnumerateArray())
+            foreach (var item in inventory.EnumerateArray())
             {
-                if (!MatchesNpcEntry(entry, npcId, npcName)) continue;
-                if (!entry.TryGetProperty("item", out var item) || item.ValueKind != JsonValueKind.Object) continue;
+                if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var key))
+                    continue;
 
-                var key = ResolveInventoryKey(item, ++generatedIndex);
-                var itemDisplay = new NpcInventoryItemDisplay
+                itemsByKey[key] = new NpcInventoryItemDisplay
                 {
                     Key = key,
-                    Data = CloneJsonObject(item)
+                    Data = (MortalItemPlayerProjection.CloneItemSemanticValue(CloneJsonObject(item)) as JsonObject) ?? new JsonObject()
                 };
-
-                itemsByKey[key] = itemDisplay;
-                if (!order.Contains(key, StringComparer.OrdinalIgnoreCase))
+                if (!order.Contains(key, StringComparer.Ordinal))
                     order.Add(key);
             }
         }
 
-        if (doc.RootElement.TryGetProperty("NPCInventoryUpdates", out var updates) && updates.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var entry in updates.EnumerateArray())
-            {
-                if (!MatchesNpcEntry(entry, npcId, npcName)) continue;
-                if (!entry.TryGetProperty("itemUpdate", out var itemUpdate) || itemUpdate.ValueKind != JsonValueKind.Object) continue;
-
-                var key = GetStr(itemUpdate, "existedId", "");
-                if (string.IsNullOrWhiteSpace(key))
-                    continue;
-
-                var itemDisplay = GetOrCreateInventoryItem(itemsByKey, order, key, key);
-                MergeJsonObject(itemDisplay.Data, CloneJsonObject(itemUpdate));
-
-                var count = GetNodeInt(itemDisplay.Data, "count");
-                if (count == 0)
-                {
-                    itemsByKey.Remove(key);
-                    order.RemoveAll(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
-                }
-            }
-        }
-
-        if (doc.RootElement.TryGetProperty("NPCInventoryResourcesChanges", out var resources) && resources.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var entry in resources.EnumerateArray())
-            {
-                if (!MatchesNpcEntry(entry, npcId, npcName)) continue;
-
-                var key = GetStr(entry, "itemId", "");
-                var itemName = GetStr(entry, "itemName", key);
-                if (string.IsNullOrWhiteSpace(key) && string.IsNullOrWhiteSpace(itemName))
-                    continue;
-
-                var itemDisplay = GetOrCreateInventoryItem(itemsByKey, order, key, itemName);
-                if (!string.IsNullOrWhiteSpace(itemName) && string.IsNullOrWhiteSpace(GetNodeStr(itemDisplay.Data, "name", "")))
-                    itemDisplay.Data["name"] = itemName;
-
-                var newResource = GetInt(entry, "newResourceValue", int.MinValue);
-                if (newResource != int.MinValue)
-                    itemDisplay.Data["resource"] = newResource;
-            }
-        }
-
-        if (doc.RootElement.TryGetProperty("NPCInventoryRemovals", out var removals) && removals.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var entry in removals.EnumerateArray())
-            {
-                if (!MatchesNpcEntry(entry, npcId, npcName)) continue;
-
-                var key = GetStr(entry, "itemId", "");
-                if (string.IsNullOrWhiteSpace(key)) continue;
-
-                itemsByKey.Remove(key);
-                order.RemoveAll(k => string.Equals(k, key, StringComparison.OrdinalIgnoreCase));
-
-                foreach (var slot in equippedSlots.Where(kv => string.Equals(kv.Value, key, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Key).ToList())
-                    equippedSlots.Remove(slot);
-            }
-        }
-
-        if (doc.RootElement.TryGetProperty("NPCEquipmentChanges", out var equips) && equips.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var entry in equips.EnumerateArray())
-            {
-                if (!MatchesNpcEntry(entry, npcId, npcName)) continue;
-
-                var action = GetStr(entry, "action", "").ToLowerInvariant();
-                var itemId = GetStr(entry, "itemId", "");
-                var itemName = GetStr(entry, "itemName", itemId);
-
-                if (action == "equip")
-                {
-                    var itemDisplay = GetOrCreateInventoryItem(itemsByKey, order, itemId, itemName);
-                    if (!string.IsNullOrWhiteSpace(itemName) && string.IsNullOrWhiteSpace(GetNodeStr(itemDisplay.Data, "name", "")))
-                        itemDisplay.Data["name"] = itemName;
-
-                    if (entry.TryGetProperty("targetSlots", out var targetSlots) && targetSlots.ValueKind == JsonValueKind.Array)
-                    {
-                        foreach (var slot in targetSlots.EnumerateArray().Where(v => v.ValueKind == JsonValueKind.String).Select(v => v.GetString()).Where(v => !string.IsNullOrWhiteSpace(v)))
-                            equippedSlots[slot!] = itemDisplay.Key;
-                    }
-                }
-                else if (action == "unequip")
-                {
-                    if (entry.TryGetProperty("sourceSlots", out var sourceSlots) && sourceSlots.ValueKind == JsonValueKind.Array)
-                    {
-                        foreach (var slot in sourceSlots.EnumerateArray().Where(v => v.ValueKind == JsonValueKind.String).Select(v => v.GetString()).Where(v => !string.IsNullOrWhiteSpace(v)))
-                            equippedSlots.Remove(slot!);
-                    }
-                    else if (!string.IsNullOrWhiteSpace(itemId))
-                    {
-                        foreach (var slot in equippedSlots.Where(kv => string.Equals(kv.Value, itemId, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Key).ToList())
-                            equippedSlots.Remove(slot);
-                    }
-                }
-            }
-        }
+        var equippedSlots = new Dictionary<string, string>(StringComparer.Ordinal);
+        ReadCanonicalEquipment();
 
         foreach (var key in order)
         {
-            if (!itemsByKey.TryGetValue(key, out var item)) continue;
-            item.IsEquipped = equippedSlots.Values.Any(v => string.Equals(v, key, StringComparison.OrdinalIgnoreCase));
+            if (!itemsByKey.TryGetValue(key, out var item))
+                continue;
+
+            item.IsEquipped = equippedSlots.Values.Contains(key, StringComparer.Ordinal);
             display.Items.Add(item);
         }
 
-        foreach (var slot in equippedSlots.OrderBy(kv => kv.Key, StringComparer.OrdinalIgnoreCase))
+        foreach (var slot in equippedSlots.OrderBy(pair => pair.Key, StringComparer.Ordinal))
         {
             var itemName = itemsByKey.TryGetValue(slot.Value, out var item)
                 ? GetNodeStr(item.Data, "name", slot.Value)
                 : slot.Value;
-
             display.Equipment.Add(new NpcEquipmentDisplay
             {
                 Slot = slot.Key,
@@ -1654,78 +1511,36 @@ private async Task ShowNPCs()
         }
 
         return display;
-    }
 
-
-    private static NpcInventoryItemDisplay GetOrCreateInventoryItem(
-        Dictionary<string, NpcInventoryItemDisplay> itemsByKey,
-        List<string> order,
-        string itemId,
-        string itemName)
-    {
-        if (!string.IsNullOrWhiteSpace(itemId) && itemsByKey.TryGetValue(itemId, out var byId))
-            return byId;
-
-        if (!string.IsNullOrWhiteSpace(itemName))
+        void ReadCanonicalEquipment()
         {
-            var byName = itemsByKey.Values.FirstOrDefault(v =>
-                string.IsNullOrWhiteSpace(GetNodeStr(v.Data, "existedId", "")) &&
-                string.Equals(GetNodeStr(v.Data, "name", ""), itemName, StringComparison.OrdinalIgnoreCase));
-            if (byName != null)
-                return byName;
+            var owner = JsonNode.Parse(npc.GetRawText()) as JsonObject;
+            if (owner == null ||
+                !MortalItemEquipmentAuthority.TryRead(
+                    owner,
+                    owner["inventory"] as JsonArray,
+                    "npc_core.inventory",
+                    out var equipmentState,
+                    out _))
+            {
+                return;
+            }
+
+            foreach (var slot in equipmentState.Slots)
+            {
+                if (slot.ItemId == null)
+                    continue;
+
+                if (itemsByKey.ContainsKey(slot.ItemId))
+                    equippedSlots[slot.StoredSlot] = slot.ItemId;
+            }
         }
-
-        var key = !string.IsNullOrWhiteSpace(itemId)
-            ? itemId
-            : $"name:{itemName}";
-
-        var data = new JsonObject();
-        if (!string.IsNullOrWhiteSpace(itemId))
-            data["existedId"] = itemId;
-        if (!string.IsNullOrWhiteSpace(itemName))
-            data["name"] = itemName;
-
-        var item = new NpcInventoryItemDisplay
-        {
-            Key = key,
-            Data = data
-        };
-
-        itemsByKey[key] = item;
-        if (!order.Contains(key, StringComparer.OrdinalIgnoreCase))
-            order.Add(key);
-
-        return item;
     }
-
-
-    private static string ResolveInventoryKey(JsonElement item, int generatedIndex)
-    {
-        var existedId = GetStr(item, "existedId", "");
-        if (!string.IsNullOrWhiteSpace(existedId))
-            return existedId;
-
-        var initialId = GetStr(item, "initialId", "");
-        if (!string.IsNullOrWhiteSpace(initialId))
-            return initialId;
-
-        var name = GetStr(item, "name", "item");
-        return $"name:{name}:{generatedIndex}";
-    }
-
 
     private static JsonObject CloneJsonObject(JsonElement item)
     {
         return JsonNode.Parse(item.GetRawText())?.AsObject() ?? new JsonObject();
     }
-
-
-    private static void MergeJsonObject(JsonObject target, JsonObject patch)
-    {
-        foreach (var prop in patch)
-            target[prop.Key] = prop.Value?.DeepClone();
-    }
-
 
     private static string GetNodeStr(JsonObject obj, string prop, string def)
     {

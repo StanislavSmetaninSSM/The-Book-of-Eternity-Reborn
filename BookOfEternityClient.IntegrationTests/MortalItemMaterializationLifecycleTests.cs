@@ -208,6 +208,9 @@ public sealed class MortalItemMaterializationLifecycleTests
             "craft_output",
             "craft_request");
         raw.Remove("description");
+        raw["isCarried"] = false;
+        raw["currentLocationId"] = "loc_stale_craft_output";
+        raw["currentLocationName"] = "Старый верстак";
         var arrangement = await context.ArrangeRouteAsync(
             "craft_output",
             "craft_request",
@@ -250,6 +253,9 @@ public sealed class MortalItemMaterializationLifecycleTests
             arrangement.CreationRef,
             item[MortalItemMaterializationContract.ReceiptProperty]!["creationRef"]!
                 .GetValue<string>());
+        Assert.False(item.ContainsKey("isCarried"));
+        Assert.False(item.ContainsKey("currentLocationId"));
+        Assert.False(item.ContainsKey("currentLocationName"));
         var index = MortalItemIdentityState.Parse(
             await context.FileSystem.ReadFileAsync(MortalItemIdentityState.StatePath));
         var entry = Assert.Single(index.EntriesByItemId).Value;

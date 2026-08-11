@@ -42,6 +42,10 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Contains("game_state/quests/regular_quests.json", files.Keys);
         Assert.Contains("game_state/inventory/items.json", files.Keys);
         Assert.Contains(MortalItemIdentityState.StatePath, files.Keys);
+        Assert.Contains("game_state/inventory/item_resources.json", files.Keys);
+        Assert.Contains("game_state/inventory/item_bonds.json", files.Keys);
+        Assert.Contains("game_state/inventory/item_text_updates.json", files.Keys);
+        Assert.Contains("game_state/npcs/item_journals.json", files.Keys);
         Assert.Contains("game_state/player/experience.json", files.Keys);
         Assert.Contains("game_state/player/skills_active.json", files.Keys);
         Assert.Contains("game_state/player/skills_passive.json", files.Keys);
@@ -87,13 +91,18 @@ public sealed class MortalBootstrapValidationTests : IDisposable
 
         var inventory = files["game_state/inventory/items.json"];
         Assert.Empty(inventory["items"]!.AsArray());
-        Assert.Empty(inventory["equipment"]!.AsObject());
+        Assert.Empty(inventory["equippedItems"]!.AsObject());
+        Assert.False(inventory.ContainsKey("equipment"));
         Assert.False(inventory.ContainsKey("totalWeight"));
         Assert.False(inventory.ContainsKey("maxWeight"));
 
         Assert.True(JsonNode.DeepEquals(
             MortalItemIdentityState.CreateEmptyRoot(),
             files[MortalItemIdentityState.StatePath]));
+        Assert.Empty(files["game_state/inventory/item_resources.json"]["entries"]!.AsArray());
+        Assert.Empty(files["game_state/inventory/item_bonds.json"]["entries"]!.AsArray());
+        Assert.Empty(files["game_state/inventory/item_text_updates.json"]["entries"]!.AsArray());
+        Assert.Empty(files["game_state/npcs/item_journals.json"]["entries"]!.AsArray());
 
         var experience = files["game_state/player/experience.json"];
         Assert.Empty(experience);

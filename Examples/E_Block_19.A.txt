@@ -399,3 +399,16 @@
   </jsonresponse>
  </example>
 </instructionblock>
+
+# Mortal Item Materialization v1 — NPC inventory and trade addendum
+
+For an existing NPC, a genuinely new inventory item uses `npc_acquisition /
+npc_inventory_add`. Initial stock embedded in a genuinely new NPC uses
+`new_npc_inventory / new_npc`. A never-before-existing purchased stock instance
+uses `trade_output / npc_trade_receipt`; follow
+`mortal_item_mechanic_trade_output_v1` in
+`E_CLI_Mortal_Item_Materialization.txt`, with raw `creationRef` equal to the
+unique offer `slotId`. Existing sale/purchase/buyback/theft is an exact-ID
+transfer that preserves receipt and envelope. Older partial inventory/trade
+snippets in this block do not authorize receipt-less canonical items or
+GM-authored permanent IDs.

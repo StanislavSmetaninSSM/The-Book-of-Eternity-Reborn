@@ -135,6 +135,81 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
+    public async Task GetSellableItemsAsync_HidesRejectedItemsAndExactEquippedCanonicalItem()
+    {
+        await SeedBaseStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true,
+            includeSellableInventoryItem: true);
+        var inventory = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        inventory["items"]!.AsArray().Add(new JsonObject
+        {
+            ["itemId"] = "item_rejected_trade_001",
+            ["existedId"] = "item_rejected_trade_001",
+            ["name"] = "Непринятый предмет продажи",
+            ["quality"] = "Common",
+            ["type"] = "tool",
+            ["price"] = 20,
+            ["baseSellPrice"] = 8
+        });
+        inventory["equippedItems"] = new JsonObject
+        {
+            ["MainHand"] = "item_sell_lantern_001"
+        };
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            inventory.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+
+        var offers = await service.GetSellableItemsAsync("npc_merchant_001");
+
+        Assert.Empty(offers);
+    }
+
+    [Fact]
+    public async Task SellAsync_CaseVariantEquipmentReferenceFailsClosedWithoutMutation()
+    {
+        await SeedBaseStateAsync(
+            includeTradeInventory: true,
+            includeTradeReceipt: true,
+            includeSellableInventoryItem: true);
+        var inventory = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        inventory["equippedItems"] = new JsonObject
+        {
+            ["MainHand"] = "ITEM_SELL_LANTERN_001"
+        };
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            inventory.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var beforeInventory = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var beforeNpc = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        var beforeStatus = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var offers = await service.GetSellableItemsAsync("npc_merchant_001");
+        var result = await service.SellAsync(
+            "npc_merchant_001",
+            "item_sell_lantern_001",
+            currentTurn: 8);
+
+        Assert.Empty(offers);
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("состояни", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("equippedItems", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("itemId", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ITEM_SELL_LANTERN_001", result.Message, StringComparison.Ordinal);
+        Assert.DoesNotContain("receipt", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync("game_state/inventory/items.json"));
+        Assert.Equal(beforeNpc, await _fs.ReadFileAsync("game_state/npcs/npc_core.json"));
+        Assert.Equal(beforeStatus, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+    }
+
+    [Fact]
     public async Task EnsureTradeInventoryAsync_SameTurnInitialIdMerchant_CreatesPendingRequestForInitialId()
     {
         await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false, useSameTurnInitialId: true);
@@ -397,85 +472,58 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     }
 
     [Fact]
-    public async Task GetSellableItemsAsync_RelicLookingLegacyTextRemainsNeutralWithoutCanonicalRelicId()
+    public async Task GetSellableItemsAsync_UsesCanonicalRelicAndQuestLinksWithoutProseOrLegacyFlagInference()
     {
         await SeedBaseStateAsync(
             includeTradeInventory: true,
             includeTradeReceipt: true);
-        await _fs.WriteFileAtomicAsync(
-            "game_state/inventory/items.json",
-            """
+        var items = new[]
+        {
+            CreateCanonicalSellableItem("sr_ordinary_tool", "Обычный резец", item => item["type"] = "tool"),
+            CreateCanonicalSellableItem("item_type_prose", "Сувенир", item => item["type"] = "soul relic replica"),
+            CreateCanonicalSellableItem("item_group_prose", "Театральный реквизит", item => item["group"] = "Реликвия души — декорации"),
+            CreateCanonicalSellableItem("item_legacy_field", "Архивный муляж", item => item["soulRelicId"] = "legacy_non_authority"),
+            CreateCanonicalSellableItem("item_quest_group_prose", "Театральный реквизит задания", item => item["group"] = "Quest"),
+            CreateCanonicalSellableItem("item_explicit_non_quest", "Обычная памятка", item =>
             {
-              "items": [
+                item["group"] = "Quest";
+                item["isQuestItem"] = false;
+            }),
+            CreateCanonicalSellableItem("item_canonical_relic", "Настоящая реликвия", item =>
+            {
+                item["quality"] = "Rare";
+                item["rarity"] = "Rare";
+                item["relicId"] = "relic_authority_001";
+                item["price"] = 200;
+                item["baseSellPrice"] = 80;
+            }),
+            CreateCanonicalSellableItem("item_legacy_quest_flag", "Архивный флаг задания", item => item["isQuestItem"] = true),
+            CreateCanonicalSellableItem("item_canonical_quest", "Подлинный предмет задания", item =>
+            {
+                item["questLinks"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["questId"] = "quest_trade_guard",
+                        ["role"] = "required"
+                    });
+                item["materialization"]!["sections"]!["questRole"] = new JsonObject
                 {
-                  "itemId": "sr_ordinary_tool",
-                  "name": "Обычный резец",
-                  "quality": "Common",
-                  "type": "tool",
-                  "price": 20,
-                  "baseSellPrice": 8
-                },
-                {
-                  "itemId": "item_type_prose",
-                  "name": "Сувенир",
-                  "quality": "Common",
-                  "type": "soul relic replica",
-                  "price": 20,
-                  "baseSellPrice": 8
-                },
-                {
-                  "itemId": "item_group_prose",
-                  "name": "Театральный реквизит",
-                  "quality": "Common",
-                  "group": "Реликвия души — декорации",
-                  "price": 20,
-                  "baseSellPrice": 8
-                },
-                {
-                  "itemId": "item_legacy_field",
-                  "name": "Архивный муляж",
-                  "quality": "Common",
-                  "soulRelicId": "legacy_non_authority",
-                  "price": 20,
-                  "baseSellPrice": 8
-                },
-                {
-                  "itemId": "item_quest_group_prose",
-                  "name": "Театральный реквизит задания",
-                  "quality": "Common",
-                  "group": "Quest",
-                  "price": 20,
-                  "baseSellPrice": 8
-                },
-                {
-                  "itemId": "item_explicit_non_quest",
-                  "name": "Обычная памятка",
-                  "quality": "Common",
-                  "group": "Quest",
-                  "isQuestItem": false,
-                  "price": 20,
-                  "baseSellPrice": 8
-                },
-                {
-                  "itemId": "item_canonical_relic",
-                  "name": "Настоящая реликвия",
-                  "quality": "Rare",
-                  "relicId": "relic_authority_001",
-                  "price": 200,
-                  "baseSellPrice": 80
-                },
-                {
-                  "itemId": "item_canonical_quest",
-                  "name": "Подлинный предмет задания",
-                  "quality": "Common",
-                  "isQuestItem": true,
-                  "price": 20,
-                  "baseSellPrice": 8
-                }
-              ],
-              "equipment": {}
-            }
-            """);
+                    ["state"] = "populated",
+                    ["reason"] = null
+                };
+            })
+        };
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(items.Select(item => (JsonNode?)item.DeepClone()).ToArray()),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(items)
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var service = new NpcTradeService(
             _fs,
             NullLogger<NpcTradeService>.Instance);
@@ -488,6 +536,7 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
                 "item_explicit_non_quest",
                 "item_group_prose",
                 "item_legacy_field",
+                "item_legacy_quest_flag",
                 "item_quest_group_prose",
                 "item_type_prose",
                 "sr_ordinary_tool"
@@ -502,6 +551,74 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.DoesNotContain(
             offers,
             offer => offer.ItemId == "item_canonical_quest");
+    }
+
+    [Fact]
+    public async Task SellAsync_BlocksCanonicalQuestLinkedAndExplicitlyNonCarriedItemsWithoutMutation()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        var questLinked = CreateCanonicalSellableItem(
+            "item_quest_linked_sale_guard",
+            "Печать незавершённого задания",
+            item =>
+            {
+                item["questLinks"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["questId"] = "quest_sale_guard",
+                        ["role"] = "required"
+                    });
+                item["materialization"]!["sections"]!["questRole"] = new JsonObject
+                {
+                    ["state"] = "populated",
+                    ["reason"] = null
+                };
+            });
+        var locationItem = CreateCanonicalSellableItem(
+            "item_location_sale_guard",
+            "Фонарь у ворот",
+            item =>
+            {
+                item["isCarried"] = false;
+                item["currentLocationName"] = "Северные ворота";
+            });
+        var items = new[] { questLinked, locationItem };
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(items.Select(item => (JsonNode?)item.DeepClone()).ToArray()),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(items)
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var beforeInventory = await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath);
+        var beforeNpc = await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath);
+        var beforeStatus = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var beforeIndex = await _fs.ReadFileAsync(MortalItemIdentityState.StatePath);
+
+        var offers = await service.GetSellableItemsAsync("npc_merchant_001");
+        var questSale = await service.SellAsync(
+            "npc_merchant_001",
+            "item_quest_linked_sale_guard",
+            currentTurn: 8);
+        var locationSale = await service.SellAsync(
+            "npc_merchant_001",
+            "item_location_sale_guard",
+            currentTurn: 8);
+
+        Assert.Empty(offers);
+        Assert.False(questSale.Success);
+        Assert.False(questSale.StateChanged);
+        Assert.False(locationSale.Success);
+        Assert.False(locationSale.StateChanged);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(InventoryEquipmentService.ItemsPath));
+        Assert.Equal(beforeNpc, await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath));
+        Assert.Equal(beforeStatus, await _fs.ReadFileAsync("game_state/core/player_status.json"));
+        Assert.Equal(beforeIndex, await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
     }
 
     [Fact]
@@ -655,6 +772,54 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
     public async Task EnsureTradeInventoryAsync_PendingStockStillReturnsAvailableBuybackOffers()
     {
         await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackInventory: true);
+        var npcRoot = JsonNode.Parse(
+            await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}")!.AsObject();
+        var buybackInventory = npcRoot["UpdateNPCs"]![0]!["buybackInventory"]!.AsArray();
+        buybackInventory.Add(new JsonObject
+        {
+            ["buybackEntryId"] = "npc_buyback_orphan",
+            ["itemId"] = "item_orphan_buyback",
+            ["itemData"] = new JsonObject
+            {
+                ["itemId"] = "item_orphan_buyback",
+                ["name"] = "НЕПРИНЯТЫЙ ORPHAN BUYBACK",
+                ["quality"] = "Common"
+            },
+            ["buybackPrice"] = 8,
+            ["soldForPrice"] = 8,
+            ["status"] = "available"
+        });
+        buybackInventory.Add(new JsonObject
+        {
+            ["buybackEntryId"] = "npc_buyback_mismatch",
+            ["itemId"] = "item_sell_lantern_001",
+            ["itemData"] = new JsonObject
+            {
+                ["itemId"] = "item_other_buyback",
+                ["name"] = "НЕСОВПАДАЮЩИЙ BUYBACK",
+                ["quality"] = "Common"
+            },
+            ["buybackPrice"] = 8,
+            ["soldForPrice"] = 8,
+            ["status"] = "available"
+        });
+        buybackInventory.Add(new JsonObject
+        {
+            ["buybackEntryId"] = "npc_buyback_wrong_case",
+            ["itemId"] = "ITEM_SELL_LANTERN_001",
+            ["itemData"] = new JsonObject
+            {
+                ["itemId"] = "ITEM_SELL_LANTERN_001",
+                ["name"] = "BUYBACK С НЕТОЧНЫМ ID",
+                ["quality"] = "Common"
+            },
+            ["buybackPrice"] = 8,
+            ["soldForPrice"] = 8,
+            ["status"] = "available"
+        });
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            npcRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
         var view = await service.EnsureTradeInventoryAsync("npc_merchant_001", currentTurn: 7);
@@ -664,6 +829,7 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.True(view.InventoryRequestPending);
         Assert.Single(view.BuybackOffers);
         Assert.Equal("npc_buyback_001", view.BuybackOffers[0].BuybackEntryId);
+        Assert.DoesNotContain(view.BuybackOffers, offer => offer.Name.Contains("BUYBACK", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -731,7 +897,7 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
         {
           "items": [],
-          "equipment": {}
+          "equippedItems": {}
         }
         """);
 
@@ -749,7 +915,7 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
                   "baseSellPrice": 8
                 }
               ],
-              "equipment": {}
+              "equippedItems": {}
             }
             """);
         }
@@ -1056,7 +1222,7 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
                 ["items"] = soldItem == null
                     ? new JsonArray()
                     : new JsonArray(soldItem.DeepClone()),
-                ["equipment"] = new JsonObject()
+                ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var indexedCarriers = stockItems
@@ -1070,6 +1236,32 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
             MortalItemIdentityState.StatePath,
             MortalItemTestFixture.CreateIndexForCarriers(indexedCarriers.ToArray())
                 .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static JsonObject CreateCanonicalSellableItem(
+        string itemId,
+        string name,
+        Action<JsonObject>? configure = null)
+    {
+        var item = MortalItemTestFixture.CreateRawRoot(
+            route: "player_acquisition",
+            authorityKind: "turn_outcome",
+            authorityId: "turn_5",
+            sourceTurn: 5,
+            creationRef: $"new_item_{itemId}",
+            materializationId: $"mat_item_{itemId}");
+        item["name"] = name;
+        item["description"] = $"Тестовый canonical предмет «{name}».";
+        item["price"] = 20;
+        item["baseSellPrice"] = 8;
+        configure?.Invoke(item);
+
+        var receipt = MortalItemIdentityState.CreateRootReceipt(item, itemId, acceptedTurn: 5);
+        item["itemId"] = itemId;
+        item["existedId"] = itemId;
+        item.Remove("creationRef");
+        item["materializationReceipt"] = receipt;
+        return item;
     }
 
     public void Dispose()

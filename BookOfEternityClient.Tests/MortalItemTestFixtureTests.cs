@@ -95,7 +95,7 @@ public sealed class MortalItemTestFixtureTests
     }
 
     [Fact]
-    public void CreateReceiptlessNegative_IsExplicitlyInvalidCanonicalInput()
+    public void CreateReceiptlessNegative_RejectsReceiptlessCanonicalInput()
     {
         var item = MortalItemTestFixture.CreateReceiptlessNegative();
 

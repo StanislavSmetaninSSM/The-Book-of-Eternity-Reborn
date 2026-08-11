@@ -895,7 +895,10 @@ public partial class GameEngine
         IDictionary<string, string> snapshotHashes)
     {
         byte[]? content = null;
-        if (rollbackSnapshot?.BackupFiles.TryGetValue(relativePath, out var backupPath) == true)
+        var useCurrentValidationState =
+            rollbackSnapshot?.ValidationSnapshotFiles.Contains(relativePath) == true;
+        if (!useCurrentValidationState &&
+            rollbackSnapshot?.BackupFiles.TryGetValue(relativePath, out var backupPath) == true)
         {
             content = await _fs.ReadFileBytesAsync(writeLease, backupPath);
         }

@@ -13,8 +13,8 @@ internal static class ReadableInventoryDocumentAuthority
         "книга", "письмо", "свиток", "записка", "документ", "надпись", "дневник", "журнал"
     ];
 
-    private static readonly string[] ItemIdentityFields = ["existedId", "itemId", "id"];
     private static readonly string[] ItemNameFields = ["name", "itemName"];
+    private static readonly string[] ValidationItemIdentityFields = ["itemId", "existedId", "id"];
     private static readonly string[] ReasonFields =
     [
         "unreadableReason", "sealedReason", "lockedReason", "unknownReason",
@@ -25,27 +25,54 @@ internal static class ReadableInventoryDocumentAuthority
     public static IReadOnlyList<ReadableInventoryDocument> ResolveDocuments(
         JsonNode? inventoryRoot,
         JsonNode? itemTextRoot,
-        JsonNode? itemJournalRoot)
+        JsonNode? itemJournalRoot) =>
+        ResolveDocumentsCore(inventoryRoot, itemTextRoot, itemJournalRoot, acceptedOnly: true);
+
+    public static IReadOnlyList<ReadableInventoryDocument> ResolveDocumentsForValidation(
+        JsonNode? inventoryRoot,
+        JsonNode? itemTextRoot,
+        JsonNode? itemJournalRoot) =>
+        ResolveDocumentsCore(inventoryRoot, itemTextRoot, itemJournalRoot, acceptedOnly: false);
+
+    private static IReadOnlyList<ReadableInventoryDocument> ResolveDocumentsCore(
+        JsonNode? inventoryRoot,
+        JsonNode? itemTextRoot,
+        JsonNode? itemJournalRoot,
+        bool acceptedOnly)
     {
-        var textEntries = CollectItemTextEntries(itemTextRoot);
-        var journalEntries = CollectItemJournalEntries(itemJournalRoot);
+        var textEntries = acceptedOnly
+            ? CollectItemTextEntries(itemTextRoot)
+            : CollectSidecarEntries(
+                itemTextRoot,
+                ["entries", "updateItemTextContents"],
+                ReadItemTextEntryText,
+                allowRootArray: true);
+        var journalEntries = acceptedOnly
+            ? CollectItemJournalEntries(itemJournalRoot)
+            : CollectSidecarEntries(
+                itemJournalRoot,
+                ["entries", "itemJournals", "itemJournalUpdates"],
+                ReadItemJournalEntryText,
+                allowRootArray: true);
         var textById = BuildEntryMap(textEntries, static entry => entry.Identities);
-        var textByName = BuildEntryMap(textEntries, static entry => entry.Identities.Count > 0 || string.IsNullOrWhiteSpace(entry.Name) ? [] : [entry.Name]);
         var journalById = BuildEntryMap(journalEntries, static entry => entry.Identities);
-        var journalByName = BuildEntryMap(journalEntries, static entry => entry.Identities.Count > 0 || string.IsNullOrWhiteSpace(entry.Name) ? [] : [entry.Name]);
 
         var result = new List<ReadableInventoryDocument>();
-        foreach (var item in EnumerateInventoryItemObjects(inventoryRoot))
+        foreach (var item in EnumerateInventoryItemObjects(inventoryRoot, acceptedOnly))
         {
-            if (!IsDocumentLikeItem(item))
+            string itemId;
+            var hasIdentity = acceptedOnly
+                ? MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out itemId)
+                : TryReadValidationItemId(item, out itemId);
+            if (!hasIdentity || !IsDocumentLikeItem(item))
                 continue;
 
-            var identities = ReadIdentityValues(item, ItemIdentityFields);
+            IReadOnlyList<string> identities = [itemId];
             var name = FirstNonEmpty(ReadNodeString(item, ItemNameFields)) ?? "Безымянный документ";
             var text = new List<string>();
             text.AddRange(ReadStringValues(item["textContent"]));
-            text.AddRange(ResolveSidecarText(identities, name, textById, textByName));
-            text.AddRange(ResolveSidecarText(identities, name, journalById, journalByName));
+            text.AddRange(ResolveSidecarText(itemId, textById));
+            text.AddRange(ResolveSidecarText(itemId, journalById));
 
             result.Add(new ReadableInventoryDocument(
                 Identities: identities,
@@ -59,26 +86,14 @@ internal static class ReadableInventoryDocumentAuthority
     }
 
     public static IReadOnlyList<ReadableInventoryTextEntry> CollectItemTextEntries(JsonNode? root) =>
-        CollectSidecarEntries(root, ["entries", "updateItemTextContents"], ReadItemTextEntryText);
+        CollectSidecarEntries(root, ["entries"], ReadItemTextEntryText, allowRootArray: false);
 
     public static IReadOnlyList<ReadableInventoryTextEntry> CollectItemJournalEntries(JsonNode? root) =>
-        CollectSidecarEntries(root, ["entries", "itemJournals", "itemJournalUpdates"], ReadItemJournalEntryText);
+        CollectSidecarEntries(root, ["entries"], ReadItemJournalEntryText, allowRootArray: false);
 
-    public static bool SidecarMatchesDocument(ReadableInventoryTextEntry sidecar, ReadableInventoryDocument document)
+    private static IEnumerable<JsonObject> EnumerateInventoryItemObjects(JsonNode? root, bool acceptedOnly)
     {
-        if (sidecar.Identities.Count > 0)
-        {
-            return document.Identities.Any(identity =>
-                sidecar.Identities.Contains(identity, StringComparer.OrdinalIgnoreCase));
-        }
-
-        return !string.IsNullOrWhiteSpace(sidecar.Name) &&
-               string.Equals(sidecar.Name, document.Name, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static IEnumerable<JsonObject> EnumerateInventoryItemObjects(JsonNode? root)
-    {
-        if (root is JsonArray rootArray)
+        if (!acceptedOnly && root is JsonArray rootArray)
         {
             foreach (var item in rootArray.OfType<JsonObject>())
                 yield return item;
@@ -88,11 +103,11 @@ internal static class ReadableInventoryDocumentAuthority
         if (root is not JsonObject obj)
             yield break;
 
-        foreach (var propertyName in new[] { "items", "UpdateInventory" })
+        var collectionNames = acceptedOnly ? new[] { "items" } : new[] { "items", "UpdateInventory" };
+        foreach (var collectionName in collectionNames)
         {
-            if (obj[propertyName] is not JsonArray items)
+            if (obj[collectionName] is not JsonArray items)
                 continue;
-
             foreach (var item in items.OfType<JsonObject>())
                 yield return item;
         }
@@ -101,26 +116,29 @@ internal static class ReadableInventoryDocumentAuthority
     private static IReadOnlyList<ReadableInventoryTextEntry> CollectSidecarEntries(
         JsonNode? root,
         IReadOnlyList<string> collectionNames,
-        Func<JsonObject, IReadOnlyList<string>> readText)
+        Func<JsonObject, IReadOnlyList<string>> readText,
+        bool allowRootArray)
     {
         var result = new List<ReadableInventoryTextEntry>();
-        foreach (var entry in EnumerateSidecarObjects(root, collectionNames))
+        foreach (var entry in EnumerateSidecarObjects(root, collectionNames, allowRootArray))
         {
             var text = readText(entry);
-            if (text.Count == 0)
+            if (text.Count == 0 || !MortalItemIdentityRules.TryReadExactSidecarItemId(entry, out var itemId))
                 continue;
 
-            var identities = ReadIdentityValues(entry, ItemIdentityFields);
             var name = FirstNonEmpty(ReadNodeString(entry, "itemName", "name")) ?? string.Empty;
-            result.Add(new ReadableInventoryTextEntry(identities, name, text));
+            result.Add(new ReadableInventoryTextEntry([itemId], name, text));
         }
 
         return result;
     }
 
-    private static IEnumerable<JsonObject> EnumerateSidecarObjects(JsonNode? root, IReadOnlyList<string> collectionNames)
+    private static IEnumerable<JsonObject> EnumerateSidecarObjects(
+        JsonNode? root,
+        IReadOnlyList<string> collectionNames,
+        bool allowRootArray)
     {
-        if (root is JsonArray rootArray)
+        if (allowRootArray && root is JsonArray rootArray)
         {
             foreach (var item in rootArray.OfType<JsonObject>())
                 yield return item;
@@ -134,7 +152,6 @@ internal static class ReadableInventoryDocumentAuthority
         {
             if (obj[collectionName] is not JsonArray entries)
                 continue;
-
             foreach (var item in entries.OfType<JsonObject>())
                 yield return item;
         }
@@ -144,7 +161,7 @@ internal static class ReadableInventoryDocumentAuthority
         IReadOnlyList<ReadableInventoryTextEntry> entries,
         Func<ReadableInventoryTextEntry, IReadOnlyList<string>> keySelector)
     {
-        var map = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+        var map = new Dictionary<string, List<string>>(StringComparer.Ordinal);
         foreach (var entry in entries)
         {
             foreach (var key in keySelector(entry))
@@ -166,24 +183,14 @@ internal static class ReadableInventoryDocumentAuthority
     }
 
     private static IReadOnlyList<string> ResolveSidecarText(
-        IReadOnlyList<string> identities,
-        string name,
-        Dictionary<string, List<string>> byId,
-        Dictionary<string, List<string>> byName)
+        string itemId,
+        Dictionary<string, List<string>> byId) =>
+        byId.TryGetValue(itemId, out var text) ? text : [];
+
+    private static bool TryReadValidationItemId(JsonObject item, out string itemId)
     {
-        var result = new List<string>();
-        foreach (var identity in identities)
-        {
-            if (byId.TryGetValue(identity, out var text))
-                result.AddRange(text);
-        }
-
-        if (result.Count > 0)
-            return result;
-
-        return !string.IsNullOrWhiteSpace(name) && byName.TryGetValue(name, out var fallbackText)
-            ? fallbackText
-            : [];
+        itemId = FirstNonEmpty(ReadNodeString(item, ValidationItemIdentityFields)) ?? string.Empty;
+        return MortalItemIdentityRules.IsExactIdentity(itemId);
     }
 
     private static IReadOnlyList<string> ReadItemTextEntryText(JsonObject entry)
@@ -339,18 +346,6 @@ internal static class ReadableInventoryDocumentAuthority
         }
 
         return null;
-    }
-
-    private static IReadOnlyList<string> ReadIdentityValues(JsonObject obj, IReadOnlyList<string> propertyNames)
-    {
-        var result = new List<string>();
-        foreach (var value in ReadNodeString(obj, propertyNames))
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-                result.Add(value);
-        }
-
-        return Deduplicate(result);
     }
 
     private static IEnumerable<string> ReadNodeString(JsonObject obj, params string[] propertyNames) =>

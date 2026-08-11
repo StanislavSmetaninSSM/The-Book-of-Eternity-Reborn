@@ -138,6 +138,11 @@ public sealed class ValidationSourceGuardTests
             "BookOfEternityClient",
             "Services",
             "InventoryEquipmentService.cs"));
+        var mortalItemLocalActionPolicySource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "MortalItemLocalActionPolicy.cs"));
         var systemGuardianSource = File.ReadAllText(Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
@@ -193,25 +198,27 @@ public sealed class ValidationSourceGuardTests
             soulRelicHelper,
             StringComparison.Ordinal);
 
-        var questHelperStart = tradeSource.IndexOf(
-            "private static bool IsQuestBoundItem(",
+        Assert.Contains(
+            "MortalItemLocalActionPolicy.IsQuestBound(item)",
+            tradeSource,
+            StringComparison.Ordinal);
+        var questHelperStart = mortalItemLocalActionPolicySource.IndexOf(
+            "internal static bool IsQuestBound(",
             StringComparison.Ordinal);
         Assert.True(
-            questHelperStart >= 0 &&
-            soulRelicHelperStart > questHelperStart,
+            questHelperStart >= 0,
             "Expected the NPC trade quest-item authority helper.");
-        var questHelper =
-            tradeSource[questHelperStart..soulRelicHelperStart];
+        var questHelper = mortalItemLocalActionPolicySource[questHelperStart..];
         Assert.Contains(
-            "item[\"isQuestItem\"]",
+            "item.TryGetPropertyValue(\"questLinks\"",
+            questHelper,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "isQuestItem",
             questHelper,
             StringComparison.Ordinal);
         Assert.DoesNotContain(
             "item[\"group\"]",
-            questHelper,
-            StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "GetNodeString(",
             questHelper,
             StringComparison.Ordinal);
     }
@@ -589,6 +596,11 @@ public sealed class ValidationSourceGuardTests
     [Fact]
     public void PlayerFacingActorViews_MustNotReferencePrivateMaterializationMetadata()
     {
+        var mortalItemProjectionPath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "MortalItemPlayerProjection.cs");
         var sourceRoots = new[]
         {
             Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI"),
@@ -610,7 +622,11 @@ public sealed class ValidationSourceGuardTests
         foreach (var sourceRoot in sourceRoots.Where(Directory.Exists))
         {
             foreach (var file in Directory.EnumerateFiles(sourceRoot, "*", SearchOption.AllDirectories)
-                         .Where(file => extensions.Contains(Path.GetExtension(file))))
+                         .Where(file => extensions.Contains(Path.GetExtension(file)))
+                         .Where(file => !string.Equals(
+                             Path.GetFullPath(file),
+                             Path.GetFullPath(mortalItemProjectionPath),
+                             StringComparison.OrdinalIgnoreCase)))
             {
                 var source = File.ReadAllText(file);
                 foreach (var token in privateTokens)
@@ -619,6 +635,11 @@ public sealed class ValidationSourceGuardTests
                 }
             }
         }
+
+        var mortalItemProjection = File.ReadAllText(mortalItemProjectionPath);
+        Assert.Contains("IsInternalItemField", mortalItemProjection, StringComparison.Ordinal);
+        Assert.Contains("materializationId", mortalItemProjection, StringComparison.Ordinal);
+        Assert.Contains("originMaterializationIds", mortalItemProjection, StringComparison.Ordinal);
     }
 
     [Fact]

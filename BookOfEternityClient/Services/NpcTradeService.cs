@@ -217,33 +217,44 @@ public sealed partial class NpcTradeService
         var relation = ReadNpcRelationshipLevel(npc);
         var pricingTier = GetPricingTier(relation);
 
-        NormalizeInventoryShape(itemsRoot);
         var items = itemsRoot["items"]?.AsArray();
         if (items == null)
             return Array.Empty<NpcSellOffer>();
 
-        var equippedRefs = CollectEquippedItemReferences(itemsRoot);
-        var offers = items.OfType<JsonObject>()
-            .Where(item => !IsQuestBoundItem(item))
-            .Where(item => !IsSoulRelicLikeItem(item))
-            .Where(item =>
+        if (!MortalItemEquipmentAuthority.TryRead(
+                itemsRoot,
+                items,
+                InventoryEquipmentService.ItemsPath,
+                out var equipmentState,
+                out _))
+        {
+            return Array.Empty<NpcSellOffer>();
+        }
+        var equippedRefs = equipmentState.EquippedItemIds();
+        var offers = new List<NpcSellOffer>();
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var itemId) ||
+                equippedRefs.Contains(itemId) ||
+                !MortalItemLocalActionPolicy.IsCarriedByPlayer(item) ||
+                MortalItemLocalActionPolicy.IsQuestBound(item) ||
+                IsSoulRelicLikeItem(item))
             {
-                var itemId = GetNodeString(item["itemId"]) ?? GetNodeString(item["id"]) ?? GetNodeString(item["existedId"]);
-                return string.IsNullOrWhiteSpace(itemId) || !equippedRefs.Contains(itemId);
-            })
-            .Select(item =>
-            {
-                var rarity = GetItemRarity(item);
-                var baseSellPrice = GetBaseSellPrice(item, rarity);
-                return new NpcSellOffer(
-                    GetNodeString(item["itemId"]) ?? GetNodeString(item["id"]) ?? GetNodeString(item["existedId"]) ?? "",
-                    GetNodeString(item["name"]) ?? "Неизвестный товар",
-                    rarity,
-                    ComputeSellPrice(baseSellPrice, playerTrade, npcTrade, pricingTier),
-                    GetNodeString(item["description"]) ?? "",
-                    CloneObject(item));
-            })
-            .Where(offer => !string.IsNullOrWhiteSpace(offer.ItemId))
+                continue;
+            }
+
+            var rarity = GetItemRarity(item);
+            var baseSellPrice = GetBaseSellPrice(item, rarity);
+            offers.Add(new NpcSellOffer(
+                itemId,
+                GetNodeString(item["name"]) ?? "Неизвестный товар",
+                rarity,
+                ComputeSellPrice(baseSellPrice, playerTrade, npcTrade, pricingTier),
+                GetNodeString(item["description"]) ?? "",
+                CloneObject(item)));
+        }
+
+        offers = offers
             .OrderByDescending(offer => GetRarityRank(offer.Rarity))
             .ThenBy(offer => offer.Name, StringComparer.OrdinalIgnoreCase)
             .ToList();
@@ -430,7 +441,7 @@ public sealed partial class NpcTradeService
             return new NpcTradeOperationResult(
                 false,
                 false,
-                $"Покупка не зафиксирована: {transition.Message}");
+                MortalItemPlayerFailureMessages.TransitionRejected());
         }
 
         var itemName = GetNodeString(itemData["name"]) ?? "Товар";
@@ -484,12 +495,23 @@ public sealed partial class NpcTradeService
         if (!NpcTradeAllowedHere(npc, localScope, out var blockedReason))
             return new NpcTradeOperationResult(false, false, blockedReason ?? "Торговля недоступна.");
 
-        NormalizeInventoryShape(itemsRoot);
         var items = itemsRoot["items"]?.AsArray();
         if (items == null)
             return new NpcTradeOperationResult(false, false, "Инвентарь недоступен.");
 
-        var equippedRefs = CollectEquippedItemReferences(itemsRoot);
+        if (!MortalItemEquipmentAuthority.TryRead(
+                itemsRoot,
+                items,
+                InventoryEquipmentService.ItemsPath,
+                out var equipmentState,
+                out _))
+        {
+            return new NpcTradeOperationResult(
+                false,
+                false,
+                MortalItemPlayerFailureMessages.TransitionRejected());
+        }
+        var equippedRefs = equipmentState.EquippedItemIds();
         if (equippedRefs.Contains(itemId))
             return new NpcTradeOperationResult(false, false, "Экипированный предмет нельзя продать из этой панели.");
 
@@ -502,7 +524,9 @@ public sealed partial class NpcTradeService
         var canonicalItemId = GetNodeString(item["itemId"]);
         if (!string.Equals(canonicalItemId, itemId, StringComparison.Ordinal))
             return new NpcTradeOperationResult(false, false, "Товар не найден по точному itemId.");
-        if (IsQuestBoundItem(item))
+        if (!MortalItemLocalActionPolicy.IsCarriedByPlayer(item))
+            return new NpcTradeOperationResult(false, false, "Этот предмет находится вне рюкзака и не может быть продан.");
+        if (MortalItemLocalActionPolicy.IsQuestBound(item))
             return new NpcTradeOperationResult(false, false, "Этот предмет нельзя продать через локальную торговлю.");
         if (IsSoulRelicLikeItem(item))
             return new NpcTradeOperationResult(false, false, "Реликвии души нельзя продать через локальную торговлю НПС.");
@@ -573,7 +597,7 @@ public sealed partial class NpcTradeService
             return new NpcTradeOperationResult(
                 false,
                 false,
-                $"Продажа не зафиксирована: {transition.Message}");
+                MortalItemPlayerFailureMessages.TransitionRejected());
         }
 
         var itemName = GetNodeString(item["name"]) ?? "Товар";
@@ -718,7 +742,7 @@ public sealed partial class NpcTradeService
             return new NpcTradeOperationResult(
                 false,
                 false,
-                $"Обратный выкуп не зафиксирован: {transition.Message}");
+                MortalItemPlayerFailureMessages.TransitionRejected());
         }
 
         var itemName = GetNodeString(itemData["name"]) ?? "Товар";
@@ -1236,7 +1260,9 @@ public sealed partial class NpcTradeService
         if (npc["inventory"] is not JsonArray inventory)
             return null;
         var matches = inventory.OfType<JsonObject>()
-            .Where(item => string.Equals(GetNodeString(item["itemId"]), itemId, StringComparison.Ordinal))
+            .Where(item =>
+                MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var acceptedItemId) &&
+                string.Equals(acceptedItemId, itemId, StringComparison.Ordinal))
             .ToArray();
         return matches.Length == 1 ? matches[0] : null;
     }
@@ -1761,49 +1787,6 @@ public sealed partial class NpcTradeService
 
     private static int ReadNpcRelationshipLevel(JsonObject npc) => GetNodeInt(npc["relationshipLevel"], 0);
 
-    private static void NormalizeInventoryShape(JsonObject root)
-    {
-        if (root["items"] is not JsonArray)
-            root["items"] = new JsonArray();
-        if (root["equipment"] is not JsonObject)
-        {
-            root["equipment"] = new JsonObject
-            {
-                ["head"] = null,
-                ["body"] = null,
-                ["hands"] = null,
-                ["feet"] = null,
-                ["mainHand"] = null,
-                ["offHand"] = null,
-                ["neck"] = null,
-                ["ring1"] = null,
-                ["ring2"] = null
-            };
-        }
-    }
-
-    private static HashSet<string> CollectEquippedItemReferences(JsonObject root)
-    {
-        var refs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (root["equipment"] is not JsonObject eq)
-            return refs;
-
-        foreach (var prop in eq)
-        {
-            if (prop.Value is JsonValue value && value.TryGetValue<string>(out var str) && !string.IsNullOrWhiteSpace(str))
-                refs.Add(str);
-        }
-
-        return refs;
-    }
-
-    private static bool IsQuestBoundItem(JsonObject item)
-    {
-        return item["isQuestItem"] is JsonValue questValue &&
-               questValue.TryGetValue<bool>(out var isQuestItem) &&
-               isQuestItem;
-    }
-
     private static bool IsSoulRelicLikeItem(JsonObject item)
     {
         return !string.IsNullOrWhiteSpace(
@@ -1816,8 +1799,8 @@ public sealed partial class NpcTradeService
         {
             if (items[i] is not JsonObject item)
                 continue;
-            var existingId = GetNodeString(item["itemId"]) ?? GetNodeString(item["id"]) ?? GetNodeString(item["existedId"]);
-            if (!string.IsNullOrWhiteSpace(existingId) && string.Equals(existingId, itemId, StringComparison.Ordinal))
+            if (MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var existingId) &&
+                string.Equals(existingId, itemId, StringComparison.Ordinal))
                 return i;
         }
         return -1;
@@ -1835,28 +1818,61 @@ public sealed partial class NpcTradeService
 
     private static List<NpcBuybackOffer> ReadBuybackOffers(JsonObject npc)
     {
-        if (npc[BuybackInventoryProperty] is not JsonArray buybackInventory)
+        if (npc[BuybackInventoryProperty] is not JsonArray buybackInventory ||
+            npc["inventory"] is not JsonArray physicalInventory)
             return new List<NpcBuybackOffer>();
 
-        return buybackInventory
-            .OfType<JsonObject>()
-            .Where(entry => string.Equals(GetNodeString(entry["status"]), BuybackStatusAvailable, StringComparison.OrdinalIgnoreCase))
-            .Where(entry => entry["itemData"] is JsonObject)
-            .Select(entry =>
+        var physicalItems = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var ambiguousItemIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var item in physicalInventory.OfType<JsonObject>())
+        {
+            if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var itemId) ||
+                ambiguousItemIds.Contains(itemId))
             {
-                var itemData = CloneObject(entry["itemData"]!.AsObject());
-                return new NpcBuybackOffer(
-                    GetNodeString(entry["buybackEntryId"]) ?? "",
-                    GetNodeString(entry["itemId"]) ?? GetNodeString(itemData["itemId"]) ?? "",
-                    GetNodeString(itemData["name"]) ?? "Товар",
-                    GetItemRarity(itemData),
-                    GetNodeInt(entry["buybackPrice"], GetNodeInt(entry["soldForPrice"], 0)),
-                    GetNodeInt(entry["soldForPrice"], 0),
-                    GetNodeInt(entry["soldByPlayerAtTurn"], 0),
-                    GetNodeString(itemData["description"]) ?? "",
-                    itemData);
-            })
-            .Where(offer => !string.IsNullOrWhiteSpace(offer.BuybackEntryId))
+                continue;
+            }
+
+            if (!physicalItems.TryAdd(itemId, item))
+            {
+                physicalItems.Remove(itemId);
+                ambiguousItemIds.Add(itemId);
+            }
+        }
+
+        var result = new List<NpcBuybackOffer>();
+        foreach (var entry in buybackInventory.OfType<JsonObject>())
+        {
+            if (!string.Equals(GetNodeString(entry["status"]), BuybackStatusAvailable, StringComparison.OrdinalIgnoreCase) ||
+                entry["itemData"] is not JsonObject itemData)
+            {
+                continue;
+            }
+
+            var buybackEntryId = GetNodeString(entry["buybackEntryId"]) ?? string.Empty;
+            var entryItemId = GetNodeString(entry["itemId"]) ?? string.Empty;
+            var itemDataId = GetNodeString(itemData["itemId"]) ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(buybackEntryId) ||
+                !MortalItemIdentityRules.IsExactIdentity(entryItemId) ||
+                !string.Equals(entryItemId, itemDataId, StringComparison.Ordinal) ||
+                !physicalItems.TryGetValue(entryItemId, out var physicalItem))
+            {
+                continue;
+            }
+
+            var projectedItem = CloneObject(physicalItem);
+            result.Add(new NpcBuybackOffer(
+                buybackEntryId,
+                entryItemId,
+                GetNodeString(projectedItem["name"]) ?? "Товар",
+                GetItemRarity(projectedItem),
+                GetNodeInt(entry["buybackPrice"], GetNodeInt(entry["soldForPrice"], 0)),
+                GetNodeInt(entry["soldForPrice"], 0),
+                GetNodeInt(entry["soldByPlayerAtTurn"], 0),
+                GetNodeString(projectedItem["description"]) ?? string.Empty,
+                projectedItem));
+        }
+
+        return result
             .OrderByDescending(offer => GetRarityRank(offer.Rarity))
             .ThenBy(offer => offer.Name, StringComparer.OrdinalIgnoreCase)
             .ToList();

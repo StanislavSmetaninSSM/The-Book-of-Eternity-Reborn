@@ -535,3 +535,219 @@ identities such as literal `unknown` and internal whitespace: only standalone
 materialization ID or creation reference fails closed with no GM packet. The
 final static review reported no Critical, Important, or Minor findings and
 marked US4 ready to commit.
+
+## 15. Player-safe console and browser projection evidence
+
+US5 keeps the accepted Mortal item object authoritative in its carrier while
+projecting only in-world semantics to the two player clients. Player inventory,
+equipment, detail, and local-action readers now use canonical `items[]` only;
+command-shaped `UpdateInventory` candidates and equipment references that do
+not resolve to a canonical item are omitted. NPC views use only the inventory
+embedded in canonical `npc_core`; pending `NPCInventoryAdds` never feed either
+client. Current-schema `equippedItems` references are accepted only as ordinal-
+exact scalar item IDs and are rendered by the matched item's semantic name.
+Local drop/split/merge and storage/vehicle prompts follow the same rule and
+never serialize or act on rejected command carriers. Items with the same
+player-facing name remain distinct because equipment and actions bind only by
+their ordinal-exact permanent IDs.
+
+The console retains its semantic catch-all for setting-specific fields, but a
+shared ordinal-insensitive recursive denylist removes envelope, receipt, seal,
+source-authority, identity-index, lineage, carrier, path, transition,
+validation, and repair fields at any nesting depth. The browser first clones an
+explicit top-level semantic allowlist, applies a structured-bonus allowlist,
+and then uses the same recursive sanitizer for retained semantic subtrees.
+Overview cards, detail blocks, NPC mechanics, and action payloads therefore do
+not receive protected evidence. Both clients preserve unknown in-world bonus
+fields, real owner-bond current/maximum values, Fate Cards, and quest links.
+Companion data is joined only from canonical `entries[]` through an exact
+`itemId`/`existedId`; command arrays, display-name fallback, and case-folded IDs
+cannot enrich an accepted item.
+
+Fate Card projection now covers the complete current schema used by the item
+validator: locked cards show bond, plot, conjunction, and required-material
+conditions; unlocked cards show improved bonuses, new combat effects, item
+stat boosts, description changes, a player-facing notice when the visual form
+changes, and other narrative changes. Embedded and sidecar mirrors are deduped
+by ordinal-exact `cardId` (semantic name only when no ID exists). Raw English
+image-generation prompts remain hidden. Browser details also preserve the
+console distinction between unresolved, narrative-only, and applicable
+mechanical summaries instead of presenting unresolved prose as active rules.
+
+The mechanic-bearing fixtures are created with complete envelopes and complete
+current-schema Fate Card fields, resealed after semantic test customization,
+and explicitly pass `CanonicalPostSeal` contract validation before they are
+shown. This prevents a forged or stale receipt from making the privacy test
+green for the wrong reason. Navigation retains only the permanent selector
+needed for a local action; it is not rendered as item detail.
+
+No `BookOfEternityClient.WebFrontend/src/` change was required. The final C#
+results and serialized payloads contain no materialization, receipt, creation
+reference, seal, origin, carrier, transition, path, validation, or repair
+fields. The frontend therefore never receives those fields; the boundary is
+fully enforced before frontend projection.
+
+Representative US5 red/green and parity controls:
+
+| Selection | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| initial console authority/raw-candidate projection (RED) | FAIL as expected | 1/3 | false | complete | `TestResults/test-lanes/20260811-232902-192-13204-83574bcc58b241bab6c361cee2fd6547-focused` |
+| receipt-bearing browser local-action baseline | PASS | 3/3 | false | complete | `TestResults/test-lanes/20260811-233021-277-46640-3fd4808c0f2b4082a3b798c2129cc6e4-focused` |
+| nested authority, raw detail, and pending NPC projection (RED) | FAIL as expected | 0/3 | false | complete | `TestResults/test-lanes/20260811-234806-900-29172-5cce30bc074e4e859023bb7dcfb6507b-focused` |
+| first recursive/canonical route correction | PASS | 5/5 | false | complete | `TestResults/test-lanes/20260812-000150-496-42212-b3128e8ea9e64b119b0ae4e5d6af3809-focused` |
+| unmatched player equipment references (RED) | FAIL as expected | 0/2 | false | complete | `TestResults/test-lanes/20260812-000421-178-29464-f4bfee200bf2449d86528f896d367793-focused` |
+| accepted-only player equipment references (GREEN) | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-000529-005-16304-4ec476d19cb1409a92dc3d25fb4bb5d3-focused` |
+| source-authority and unmatched console NPC edge (RED) | FAIL as expected | 2/4 | false | complete | `TestResults/test-lanes/20260812-001644-011-32616-dcada7437c254dc686e67d0fbf29f3ac-focused` |
+| recursive source-authority correction | PASS | 4/4 | false | complete | `TestResults/test-lanes/20260812-001805-639-32472-23ffded2925a4b65ac74cde3dc025f39-focused` |
+| browser semantic equipped-item resolution (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260812-002431-826-21632-262da2e686074c39b977b705dda8a723-focused` |
+| case-confusable and object/name console equipment resolution (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260812-002920-765-38328-149cb5174de340399f10a63efce1b796-focused` |
+| final exact console/browser NPC equipment regressions | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-003021-064-33880-612bb129b9e24604897892d53a41bfeb-focused` |
+| browser Fate Card conditions/reward parity (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260812-003437-382-45856-cbbd94eaa7d24295918281ea569da529-focused` |
+| sanitized embedded/sidecar Fate Card parity (GREEN) | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260812-003549-337-45064-2015027370ae4bf79bf5c53bb7727067-focused` |
+| player equipment name/case spoof (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260812-004124-752-37432-aee49a99ffba410d9e1c2ae8d176aac8-focused` |
+| raw drop/split prompt candidates (RED) | FAIL as expected | 1/3 | false | complete | `TestResults/test-lanes/20260812-004529-529-30952-3097168e56af46598102911990bd2854-focused` |
+| raw storage/vehicle prompt candidates (RED) | FAIL as expected | 0/2 | false | complete | `TestResults/test-lanes/20260812-004731-771-33468-42a4d5f14dfd40f08a1b04f1a4fb1d6a-focused` |
+| canonical-only local/storage/vehicle prompts (GREEN) | PASS | 5/5 | false | complete | `TestResults/test-lanes/20260812-005211-931-42524-3fac769f751b4e26b8e43a507428275a-focused` |
+| wrong-case/name sidecar enrichment (RED) | FAIL as expected | 0/2 | false | complete | `TestResults/test-lanes/20260812-005009-771-20808-e211405bc7ce452fb5def0ebfe8fc790-focused` |
+| exact sidecar and player equipment identity (GREEN) | PASS | 4/4 | false | complete | `TestResults/test-lanes/20260812-005321-560-6604-04408c397fb4423695f3bad4c6747a2c-focused` |
+| unknown semantic array catch-all (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260812-005416-512-21644-bac8c68c2a8b4ec8a226a6b0dc3f5813-focused` |
+| complete Fate/mechanical-summary, semantic array, and exact-name regressions | PASS | 5/5 | false | complete | `TestResults/test-lanes/20260812-011458-578-25860-d779af4f72944e7396cb191f082d1f27-focused` |
+| browser inventory/storage/transport local parity | PASS | 50/50 | false | complete | `TestResults/test-lanes/20260812-011808-866-43996-b1ce3f1da3994e2196e392481aed2d4f-focused` |
+| broad current-schema fixture checkpoint | FAIL, stale object equipment fixture | 59/60 | false | complete | `TestResults/test-lanes/20260812-011959-965-33448-aaef131b00e54ed99cdea6cf5ab5b943-focused` |
+| final console/browser inventory and NPC integration control | PASS | 60/60 | false | complete | `TestResults/test-lanes/20260812-012122-824-13392-36f02a29cbcb4b99ab3241149c32b732-focused` |
+
+The inspected console fixture retained its item name, description,
+setting-specific `makerTradition`, unknown nested semantic bonus field,
+`12/80` bond, Fate Card, and quest link while every injected private marker was
+absent. The browser fixture retained `Рунное дело +2`, its nested in-world
+condition, the same bond/fate/quest contours, a locked-card bond/plot/material
+condition, every unlocked sidecar reward category, and an accepted NPC
+equipped-item name. Mirrored Fate Cards appeared once by exact card ID. Raw
+same-file candidates, pending NPC additions, unmatched equipment,
+case-confusable IDs, object/name equipment and sidecar fallbacks, raw visual
+prompts, and all injected authority markers were absent from the final
+serialized results.
+
+Post-review hardening kept the same accepted-only boundary while extending
+semantic parity. Both clients now show physical volume for non-container items,
+consumable capability, readable/sealed/locked reasons, open-schema quest-link
+conditions, full disassembly and combat mechanics, and setting-specific nested
+fields. Transfer or creation into `player_inventory` removes legacy
+`isCarried` and location hints before resealing, so carrier authority and local
+actions cannot disagree. Full repair packets, transition records, carrier
+coordinates, source-authority objects, materialization envelopes, and identity
+index entries are recognized by their complete DTO shape and omitted as a
+unit; adjacent ordinary `kind`, `title`, `turn`, `realm`, `state`, `sections`,
+and `steps` semantics remain visible. The console applies this projection once
+at item-detail entry and at structured quest-reward recursion; the browser
+applies it before dossier construction.
+
+Representative post-review evidence:
+
+| Selection | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| placement normalization and scalar/nested semantic parity | PASS | 3/3 | false | complete | `TestResults/test-lanes/20260812-063037-847-45204-cd2bb772f3be408dbc2e9e8596039826-focused` |
+| recursive repair-field privacy | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-063258-328-43920-788e6a30e9364261a8811dfd5beefb53-focused` |
+| physical/consumable/readability parity | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-064613-401-44472-64295d11397f4fce98c50d0c2870314b-focused` |
+| full authority DTO shape unit projection | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260812-070327-627-24708-d876b254fbf54feeb42edfc843ce999f-focused` |
+| final console/browser item projection checkpoint | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-070430-962-45856-cf16ecbcf12549079f11fe5dc4b3b9b3-focused` |
+
+## 16. Current-schema fixture and GM contract migration
+
+The active example save and all shared positive item builders now use complete
+Mortal materialization envelopes, receipts, and the client-owned identity
+index. Receipt-less objects remain only in explicitly named negative fixtures.
+GM rules, CLI/API and daemon guidance, task guides, route examples, the example
+manifest, and source guards describe exact permanent IDs, ordinal identity,
+creation-reference rewrites, accepted transfer/stack lineage, protected repair
+targets, and receipt-less rejection. `contentsPath` contains permanent parent
+item IDs rather than display names; `isCarried` and location hints are stated
+as presentation fields rather than placement authority. The worked Mortal
+example covers mundane acquisition plus mechanic-bearing craft/trade paths.
+
+No Chaos Sea or Shining Abode pending/control, response, receipt, scheduler,
+normalizer, or GM-authored contract changed. The shared client projection work
+does not add an afterlife authoring surface, so
+`OtherGuides/Afterlife_Contract_Matrix.md` and
+`Examples/E_CLI_Afterlife_Turns.txt` intentionally remain unchanged. The
+afterlife realm-segregation control passed 13/13.
+
+Phase 8 evidence:
+
+| Selection | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| validator fixture inventory | PASS | 98/98 | false | complete | `TestResults/test-lanes/20260812-051106-634-26264-abdb3e7fc8dd4315a4701b2784bfd1dc-focused` |
+| item-bond source guard | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-051023-035-17420-1730a8ac8f60431d944a0e842a337c30-focused` |
+| item example and manifest validation | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-053746-061-47756-5589bd4280ad45818cf793503305efab-focused` |
+| prompt documentation guards | PASS | 22/22 | false | complete | `TestResults/test-lanes/20260812-053837-351-32676-9769a97415374aa29a9456c210f449b7-focused` |
+| example documentation validation | PASS | 18/18 | false | complete | `TestResults/test-lanes/20260812-054533-512-30944-59d078e4136348c5b0c27319b8cde69b-focused` |
+| afterlife realm segregation | PASS | 13/13 | false | complete | `TestResults/test-lanes/20260812-054721-620-30800-698e00bf5d884f4280cc77f332915184-focused` |
+| consolidated fixture/documentation group | PASS | 36/36 | false | complete | `TestResults/test-lanes/20260812-064039-800-7908-6abf77a4ff2b46c397ba49eb6f5adc3f-focused` |
+| current-schema placement source guards | PASS | 2/2 | false | complete | `TestResults/test-lanes/20260812-063914-212-4628-5ad507b58d68467fab06c7bacb1b5af4-focused` |
+
+## 17. Final verification record
+
+The bounded Focused schedule was kept within the runner's five-minute hard
+limit. The broad browser class was narrowed to every touched item, equipment,
+books, NPC, quest, interaction, effect, storage, and transport command family;
+the final PreMerge lane remains the full integration control. Two stale
+positive fixtures found during this pass were migrated to accepted
+current-schema items: the storage/vehicle prompt inventory and the occupied
+accessory reference. No production relaxation was made.
+
+| Focused group | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| materialization contract and identity transitions | PASS | 98/98 | false | complete | `TestResults/test-lanes/20260812-071003-718-16220-63f1cc7b4e71487ebf5ea591a01db34f-focused` |
+| validation and canonical normalization | PASS | 307/307 | false | complete | `TestResults/test-lanes/20260812-072135-558-9248-99a8e6df240442e2a0d4afe258e93fa2-focused` |
+| quest reward and NPC trade authority | PASS | 19/19 | false | complete | `TestResults/test-lanes/20260812-073337-638-27296-8b44d5cfb6d349ca9f0368747ba7a89c-focused` |
+| console Explorer projection and actions | PASS | 366/366 | false | complete | `TestResults/test-lanes/20260812-073413-669-41508-685801f244b34e5bae4c7c865041e7de-focused` |
+| touched browser item command families | PASS | 37/37 | false | complete | `TestResults/test-lanes/20260812-074649-516-43920-ada99d1ff48c4e20831c20b5c867949b-focused` |
+| active fixture and documentation validation | PASS | 36/36 | false | complete | `TestResults/test-lanes/20260812-074731-545-34920-08109ac8029142dc888c4bfc360635a3-focused` |
+| prompt guards and browser local-action parity | PASS | 85/85 | false | complete | `TestResults/test-lanes/20260812-075036-887-30272-d77a2d0dde624c52a96f6b809ff172fb-focused` |
+
+Repository hygiene passed `git diff --check`. The artifact audit retained the
+pre-existing `.serena/` and generated `bin/obj` trees without staging or
+deleting them; every other untracked path is a feature-owned source, example,
+or current-schema fixture intended for the candidate.
+
+The final read-only code review reported **0 Critical** and **0 Important**
+findings and marked the candidate ready to commit. The review covered exact
+identity and route authority, receipt/identity privacy, repair and rollback,
+equipment and local-action atomicity, sidecar ambiguity, console/browser
+semantic parity, current-schema fixtures, and GM documentation boundaries.
+
+The development Fast checkpoint completed before the final lifecycle-specific
+hardening. The final `LifecycleIntegration` then exposed and verified two
+current-life boundaries: accepted-turn snapshots must compare raw item state
+against the staged current baseline rather than previous-life rollback bytes,
+and a fresh Mortal bootstrap must create empty identity-bound item sidecars.
+The bootstrap now initializes `item_resources.json`, `item_bonds.json`,
+`item_text_updates.json`, and `item_journals.json` beside the empty inventory
+and identity index. Previous-life bytes remain available only to roll back a
+rejected bootstrap. The daemon specification, API, operational prompt, main GM
+guide, worked bootstrap example, and source guard all state this ownership
+boundary explicitly.
+
+Final development controls before the clean-candidate PreMerge:
+
+| Lane / selection | Result | Tests | Duplicate IDs | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | ---: | --- | --- | --- |
+| Fast checkpoint | PASS | 2937/2937 | 0 | false | complete | `TestResults/test-lanes/20260812-075851-508-35436-f6e8e55c10de417fb01b0775abc6232d-fast` |
+| FullValidation after final GM docs | PASS | 1735/1735 | 0 | false | complete | `TestResults/test-lanes/20260812-085742-923-34964-f1a33612435e479d8eb1ab3c1728bdf4-fullvalidation` |
+| LifecycleIntegration after bootstrap/snapshot correction | PASS | 217/217 | 0 | false | complete | `TestResults/test-lanes/20260812-084518-429-16268-ec86024e4a6a4a15a94cbeb1200cb6ae-lifecycleintegration` |
+| Bootstrap plus prompt documentation source guards | PASS | 22/22 | 0 | false | complete | `TestResults/test-lanes/20260812-085720-521-16464-4ee1ceb2fbc8425f96f6a7d346f975aa-focused` |
+
+Manual console/browser inspection passed. The simple and mechanic-bearing
+fixtures retained their Russian in-world description, physical facts,
+structured mechanics, bond/Fate/quest semantics, and exact action affordances.
+Injected receipt, materialization, creation-reference, identity-index,
+carrier, transition, file-path, validation, repair-packet, and private-marker
+data were absent from both serialized player projections. No frontend source
+changed, so no frontend build or visual check was required: the C# projection
+boundary prevents those fields from reaching React.
+
+The requirement reconciliation found task coverage for all FR-001–FR-043 and
+SC-001–SC-010. In User Story 2, the phrase `loot carrier` is interpreted only
+as the FR-002 loot route into a real canonical destination; no durable ground-
+loot carrier was implemented. SC-010 remains pending solely for the exact-
+commit clean-checkout PreMerge in T079, followed by PR integration in T080.

@@ -11,7 +11,7 @@ public partial class ValidationService
         if (inventoryRoot == null)
             return;
 
-        var documents = ReadableInventoryDocumentAuthority.ResolveDocuments(
+        var documents = ReadableInventoryDocumentAuthority.ResolveDocumentsForValidation(
             inventoryRoot,
             await ReadJsonNodeAsync("game_state/inventory/item_text_updates.json"),
             await ReadJsonNodeAsync("game_state/npcs/item_journals.json"));

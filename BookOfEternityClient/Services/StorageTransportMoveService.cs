@@ -34,18 +34,29 @@ public static class StorageTransportMoveService
             return StorageMoveContext.Failed("В текущей локации нет доступных хранилищ.");
 
         var storages = EnumerateStorageTargets(storagesArray, accessibleOnly: true)
-            .Select(static target => new StorageMoveStorage(
-                target.Key,
-                target.Identity,
-                target.Name,
-                target.Contents.Count,
-                BuildItemOptions(target.Contents, $"Внутри: {target.Name}.", allowEmptyIdentity: true)))
+            .Select(static target =>
+            {
+                var contents = BuildItemOptions(
+                    target.Contents,
+                    $"Внутри: {target.Name}.",
+                    allowEmptyIdentity: false);
+                return new StorageMoveStorage(
+                    target.Key,
+                    target.Identity,
+                    target.Name,
+                    contents.Count,
+                    contents);
+            })
             .ToArray();
 
         return new StorageMoveContext(
             true,
             string.Empty,
-            BuildItemOptions(inventoryArray ?? new JsonArray(), "В рюкзаке.", allowEmptyIdentity: true),
+            BuildItemOptions(
+                inventoryArray ?? new JsonArray(),
+                "В рюкзаке.",
+                allowEmptyIdentity: false,
+                requireCarriedByPlayer: true),
             storages);
     }
 
@@ -67,18 +78,29 @@ public static class StorageTransportMoveService
             return VehicleMoveContext.Failed("Список транспорта сейчас пуст или недоступен.");
 
         var vehicles = EnumerateVehicleTargets(vehiclesArray, requireInventoryArray: false)
-            .Select(static target => new VehicleMoveVehicle(
-                target.Key,
-                target.Identity,
-                target.Name,
-                target.Contents.Count,
-                BuildItemOptions(target.Contents, $"В транспорте: {target.Name}.", allowEmptyIdentity: true)))
+            .Select(static target =>
+            {
+                var contents = BuildItemOptions(
+                    target.Contents,
+                    $"В транспорте: {target.Name}.",
+                    allowEmptyIdentity: false);
+                return new VehicleMoveVehicle(
+                    target.Key,
+                    target.Identity,
+                    target.Name,
+                    contents.Count,
+                    contents);
+            })
             .ToArray();
 
         return new VehicleMoveContext(
             true,
             string.Empty,
-            BuildItemOptions(inventoryArray ?? new JsonArray(), "В рюкзаке.", allowEmptyIdentity: true),
+            BuildItemOptions(
+                inventoryArray ?? new JsonArray(),
+                "В рюкзаке.",
+                allowEmptyIdentity: false,
+                requireCarriedByPlayer: true),
             vehicles);
     }
 
@@ -206,7 +228,11 @@ public static class StorageTransportMoveService
             if (inventoryArray == null)
                 return StorageTransportMoveOutcome.Failed("В рюкзаке нет предметов для перемещения.");
 
-            var item = ResolveItem(inventoryArray, itemKey, "В рюкзаке нет выбранного предмета.");
+            var item = ResolveItem(
+                inventoryArray,
+                itemKey,
+                "В рюкзаке нет выбранного предмета.",
+                requireCarriedByPlayer: true);
             if (!item.Success)
                 return StorageTransportMoveOutcome.Failed(item.Message);
 
@@ -224,7 +250,7 @@ public static class StorageTransportMoveService
                         Array.Empty<string>()),
                     "local_storage_move");
                 if (!transfer.Success)
-                    return StorageTransportMoveOutcome.Failed(transfer.Message);
+                    return StorageTransportMoveOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
             }
 
             return StorageTransportMoveOutcome.Completed(
@@ -251,7 +277,7 @@ public static class StorageTransportMoveService
                 PlayerCarrier(Array.Empty<string>()),
                 "local_storage_move");
             if (!transfer.Success)
-                return StorageTransportMoveOutcome.Failed(transfer.Message);
+                return StorageTransportMoveOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
         }
 
         return StorageTransportMoveOutcome.Completed(
@@ -324,7 +350,11 @@ public static class StorageTransportMoveService
             if (inventoryArray == null)
                 return StorageTransportMoveOutcome.Failed("В рюкзаке нет предметов для перемещения.");
 
-            var item = ResolveItem(inventoryArray, itemKey, "В рюкзаке нет выбранного предмета.");
+            var item = ResolveItem(
+                inventoryArray,
+                itemKey,
+                "В рюкзаке нет выбранного предмета.",
+                requireCarriedByPlayer: true);
             if (!item.Success)
                 return StorageTransportMoveOutcome.Failed(item.Message);
 
@@ -342,7 +372,7 @@ public static class StorageTransportMoveService
                         Array.Empty<string>()),
                     "local_vehicle_move");
                 if (!transfer.Success)
-                    return StorageTransportMoveOutcome.Failed(transfer.Message);
+                    return StorageTransportMoveOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
             }
 
             return StorageTransportMoveOutcome.Completed(
@@ -369,7 +399,7 @@ public static class StorageTransportMoveService
                 PlayerCarrier(Array.Empty<string>()),
                 "local_vehicle_move");
             if (!transfer.Success)
-                return StorageTransportMoveOutcome.Failed(transfer.Message);
+                return StorageTransportMoveOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
         }
 
         return StorageTransportMoveOutcome.Completed(
@@ -510,21 +540,17 @@ public static class StorageTransportMoveService
     }
 
     private static bool HasRecognizedInventoryShape(JsonObject root) =>
-        root["items"] == null && root["UpdateInventory"] == null ||
-        root["items"] is JsonArray ||
-        root["UpdateInventory"] is JsonArray;
+        root["items"] == null || root["items"] is JsonArray;
 
     private static JsonArray? GetPlayerInventoryArrayNode(JsonObject root, bool createIfMissing)
     {
         if (root["items"] is JsonArray items)
             return items;
-        if (root["UpdateInventory"] is JsonArray updateInventory)
-            return updateInventory;
         if (!createIfMissing)
             return null;
 
         var created = new JsonArray();
-        root["UpdateInventory"] = created;
+        root["items"] = created;
         return created;
     }
 
@@ -569,9 +595,10 @@ public static class StorageTransportMoveService
     private static IReadOnlyList<StorageTransportItemOption> BuildItemOptions(
         JsonArray items,
         string descriptionPrefix,
-        bool allowEmptyIdentity)
+        bool allowEmptyIdentity,
+        bool requireCarriedByPlayer = false)
     {
-        var entries = EnumerateItems(items, allowEmptyIdentity).ToArray();
+        var entries = EnumerateItems(items, allowEmptyIdentity, requireCarriedByPlayer).ToArray();
         var labelCounts = entries
             .GroupBy(static entry => entry.BaseLabel, StringComparer.Ordinal)
             .ToDictionary(static group => group.Key, static group => group.Count(), StringComparer.Ordinal);
@@ -595,14 +622,22 @@ public static class StorageTransportMoveService
             .ToArray();
     }
 
-    private static IEnumerable<ItemCandidate> EnumerateItems(JsonArray items, bool allowEmptyIdentity = true)
+    private static IEnumerable<ItemCandidate> EnumerateItems(
+        JsonArray items,
+        bool allowEmptyIdentity = false,
+        bool requireCarriedByPlayer = false)
     {
         for (var index = 0; index < items.Count; index++)
         {
             if (items[index] is not JsonObject item)
                 continue;
 
-            var identity = ReadItemIdentity(item);
+            if (requireCarriedByPlayer && !MortalItemLocalActionPolicy.IsCarriedByPlayer(item))
+                continue;
+
+            var identity = MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var acceptedIdentity)
+                ? acceptedIdentity
+                : string.Empty;
             if (!allowEmptyIdentity && string.IsNullOrWhiteSpace(identity))
                 continue;
 
@@ -705,7 +740,7 @@ public static class StorageTransportMoveService
         if (TryParseIdReference(targetKey, out var id))
         {
             var matches = candidates
-                .Where(target => string.Equals(target.Identity, id, StringComparison.OrdinalIgnoreCase))
+                .Where(target => string.Equals(target.Identity, id, StringComparison.Ordinal))
                 .ToArray();
             return matches.Length switch
             {
@@ -720,6 +755,8 @@ public static class StorageTransportMoveService
             var candidate = candidates.FirstOrDefault(target => target.Index == index);
             if (candidate == null)
                 return ResolveTargetResult.Failed(string.Empty);
+            if (!string.IsNullOrWhiteSpace(candidate.Identity))
+                return ResolveTargetResult.Failed("Выбранная цель изменилась. Откройте форму заново.");
             return string.Equals(Fingerprint(candidate.Node), fingerprint, StringComparison.Ordinal)
                 ? ResolveTargetResult.Completed(candidate)
                 : ResolveTargetResult.Failed("Выбранная цель изменилась. Откройте форму заново.");
@@ -727,8 +764,8 @@ public static class StorageTransportMoveService
 
         var fallbackMatches = candidates
             .Where(target =>
-                string.Equals(target.Identity, targetKey, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(target.Name, targetKey, StringComparison.OrdinalIgnoreCase))
+                string.IsNullOrWhiteSpace(target.Identity) &&
+                string.Equals(target.Name, targetKey, StringComparison.Ordinal))
             .ToArray();
         return fallbackMatches.Length switch
         {
@@ -738,13 +775,19 @@ public static class StorageTransportMoveService
         };
     }
 
-    private static ResolveItemResult ResolveItem(JsonArray items, string itemKey, string missingMessage)
+    private static ResolveItemResult ResolveItem(
+        JsonArray items,
+        string itemKey,
+        string missingMessage,
+        bool requireCarriedByPlayer = false)
     {
-        var candidates = EnumerateItems(items).ToArray();
+        var candidates = EnumerateItems(
+            items,
+            requireCarriedByPlayer: requireCarriedByPlayer).ToArray();
         if (TryParseIdReference(itemKey, out var id))
         {
             var matches = candidates
-                .Where(item => string.Equals(item.Identity, id, StringComparison.OrdinalIgnoreCase))
+                .Where(item => string.Equals(item.Identity, id, StringComparison.Ordinal))
                 .ToArray();
             return matches.Length switch
             {
@@ -756,17 +799,16 @@ public static class StorageTransportMoveService
 
         if (TryParseIndexReference(itemKey, out var index, out var fingerprint))
         {
-            if (index < 0 || index >= items.Count || items[index] is not JsonObject current)
+            var candidate = candidates.FirstOrDefault(item => item.Index == index);
+            if (candidate == null)
                 return ResolveItemResult.Failed(missingMessage);
-            return string.Equals(Fingerprint(current), fingerprint, StringComparison.Ordinal)
-                ? ResolveItemResult.Completed(candidates.First(item => item.Index == index))
+            return string.Equals(Fingerprint(candidate.Node), fingerprint, StringComparison.Ordinal)
+                ? ResolveItemResult.Completed(candidate)
                 : ResolveItemResult.Failed("Выбранный предмет изменился. Откройте форму заново.");
         }
 
         var fallbackMatches = candidates
-            .Where(item =>
-                string.Equals(item.Identity, itemKey, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(item.Name, itemKey, StringComparison.OrdinalIgnoreCase))
+            .Where(item => string.Equals(item.Identity, itemKey, StringComparison.Ordinal))
             .ToArray();
         return fallbackMatches.Length switch
         {

@@ -137,6 +137,11 @@ public partial class CanonicalStateNormalizer
         {
             var canonicalItem = pendingCreation.RawItem.DeepClone().AsObject();
             RewriteMortalItemContentsPath(canonicalItem, creationMap);
+            MortalItemLocalActionPolicy.NormalizePlacementForDestination(
+                canonicalItem,
+                RewriteMortalItemCarrierCoordinate(
+                    pendingCreation.Authority.Destination,
+                    creationMap));
 
             var receipt = MortalItemIdentityState.CreateRootReceipt(
                 canonicalItem,

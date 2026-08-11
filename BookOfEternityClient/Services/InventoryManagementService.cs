@@ -48,18 +48,27 @@ public static class InventoryManagementService
             if (itemsArray[index] is not JsonObject item)
                 continue;
 
-            items.Add(ReadItem(index, item));
+            if (MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var identity) &&
+                MortalItemLocalActionPolicy.IsCarriedByPlayer(item))
+                items.Add(ReadItem(index, item, identity));
         }
 
-        var equippedSlots = ReadEquippedSlots(root, items);
+        if (!MortalItemEquipmentAuthority.TryRead(
+                root,
+                itemsArray,
+                InventoryEquipmentService.ItemsPath,
+                out var equipmentState,
+                out _))
+        {
+            return null;
+        }
+        var equippedSlots = ReadEquippedSlots(equipmentState, items);
         var enriched = items
             .Select(item =>
             {
                 var equippedSlot = string.Empty;
                 if (!string.IsNullOrWhiteSpace(item.Identity))
                     equippedSlots.TryGetValue(item.Identity, out equippedSlot);
-                if (string.IsNullOrWhiteSpace(equippedSlot) && !string.IsNullOrWhiteSpace(item.Name))
-                    equippedSlots.TryGetValue(item.Name, out equippedSlot);
                 return item with { EquippedSlot = equippedSlot ?? string.Empty };
             })
             .ToArray();
@@ -165,7 +174,7 @@ public static class InventoryManagementService
                 AuthorityKind: "inventory_discard",
                 AuthorityId: $"inventory_discard:{turn}:{item.Identity}:{Guid.NewGuid():N}"));
         if (!transition.Success)
-            return InventoryManagementWriteOutcome.Failed(transition.Message);
+            return InventoryManagementWriteOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
 
         return InventoryManagementWriteOutcome.Completed(
             $"«{item.Name}» выброшен.",
@@ -254,7 +263,7 @@ public static class InventoryManagementService
                 AuthorityKind: "inventory_split",
                 AuthorityId: $"inventory_split:{turn}:{item.Identity}:{Guid.NewGuid():N}"));
         if (!transition.Success)
-            return InventoryManagementWriteOutcome.Failed(transition.Message);
+            return InventoryManagementWriteOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
 
         return InventoryManagementWriteOutcome.Completed(
             $"Стопка «{item.Name}» разделена: {item.Count - splitQuantity} и {splitQuantity}.",
@@ -346,7 +355,7 @@ public static class InventoryManagementService
                 AuthorityId: $"inventory_merge:{turn}:{item.Identity}:{Guid.NewGuid():N}",
                 SurvivorItemId: item.Identity));
         if (!transition.Success)
-            return InventoryManagementWriteOutcome.Failed(transition.Message);
+            return InventoryManagementWriteOutcome.Failed(MortalItemPlayerFailureMessages.TransitionRejected());
 
         return InventoryManagementWriteOutcome.Completed(
             $"Стопки «{item.Name}» объединены: {totalCount} шт.",
@@ -467,12 +476,8 @@ public static class InventoryManagementService
             total);
     }
 
-    private static InventoryManagementItem ReadItem(int index, JsonObject item)
+    private static InventoryManagementItem ReadItem(int index, JsonObject item, string identity)
     {
-        var identity = FirstNonEmpty(
-            GetString(item, "existedId"),
-            GetString(item, "itemId"),
-            GetString(item, "id"));
         var name = FirstNonEmpty(GetString(item, "name"), GetString(item, "itemName"), "???");
         var countField = item.ContainsKey("quantity") ? "quantity" : "count";
         var count = ReadStackCount(item);
@@ -488,77 +493,28 @@ public static class InventoryManagementService
     }
 
     private static Dictionary<string, string> ReadEquippedSlots(
-        JsonObject root,
+        MortalItemEquipmentSnapshot equipmentState,
         IReadOnlyList<InventoryManagementItem> items)
     {
-        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var equipmentProperty in new[] { "equipment", "equippedItems" })
+        var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var slot in equipmentState.Slots)
         {
-            if (root[equipmentProperty] is not JsonObject equipment)
+            if (slot.ItemId == null)
                 continue;
 
-            foreach (var prop in equipment)
-            {
-                if (prop.Value == null || prop.Value.GetValueKind() == JsonValueKind.Null)
-                    continue;
-
-                var referenceIdentity = ReadEquipmentReferenceIdentity(prop.Value);
-                var referenceName = ReadEquipmentReferenceName(prop.Value);
-                var matched = FindMatchingItem(items, referenceIdentity, referenceName);
-                if (matched == null)
-                    continue;
-
-                if (!string.IsNullOrWhiteSpace(matched.Identity))
-                    result[matched.Identity] = prop.Key;
-                if (!string.IsNullOrWhiteSpace(matched.Name))
-                    result[matched.Name] = prop.Key;
-            }
+            var matched = items.FirstOrDefault(item =>
+                string.Equals(item.Identity, slot.ItemId, StringComparison.Ordinal));
+            if (matched != null)
+                result[matched.Identity] = slot.StoredSlot;
         }
 
         return result;
-    }
-
-    private static InventoryManagementItem? FindMatchingItem(
-        IEnumerable<InventoryManagementItem> items,
-        string itemIdentity,
-        string itemName) =>
-        items.FirstOrDefault(item =>
-            (!string.IsNullOrWhiteSpace(itemIdentity) &&
-             string.Equals(item.Identity, itemIdentity, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(itemName) &&
-             string.Equals(item.Name, itemName, StringComparison.OrdinalIgnoreCase)));
-
-    private static string ReadEquipmentReferenceIdentity(JsonNode? slotData)
-    {
-        if (TryGetScalarString(slotData, out var scalar))
-            return scalar;
-
-        if (slotData is not JsonObject obj)
-            return string.Empty;
-
-        return FirstNonEmpty(
-            GetString(obj, "existedId"),
-            GetString(obj, "itemId"),
-            GetString(obj, "id"));
-    }
-
-    private static string ReadEquipmentReferenceName(JsonNode? slotData)
-    {
-        if (TryGetScalarString(slotData, out var scalar))
-            return scalar;
-
-        return slotData is JsonObject obj
-            ? FirstNonEmpty(GetString(obj, "name"), GetString(obj, "itemName"))
-            : string.Empty;
     }
 
     private static JsonArray? GetPlayerInventoryArrayNode(JsonObject root)
     {
         if (root["items"] is JsonArray items)
             return items;
-
-        if (root["UpdateInventory"] is JsonArray updateInventory)
-            return updateInventory;
 
         return null;
     }

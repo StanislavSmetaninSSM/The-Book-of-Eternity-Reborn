@@ -223,3 +223,16 @@
   </example>
  </rule>
 </instructionblock>
+
+# Mortal Item Materialization v1 — craft addendum
+
+The complete mechanic-bearing shape is documented by
+`mortal_item_mechanic_trade_output_v1` in
+`E_CLI_Mortal_Item_Materialization.txt`; for crafting, change the route to
+`craft_output`, use `sourceAuthority.kind = craft_request`, and bind its
+`authorityId` to the exact pending craft request. Keep the full semantic shape
+and all twelve section dispositions. Ingredient removal/update and output
+creation are atomic. The GM must not assign the output `itemId`, receipt, seal,
+index transition, or lineage. Older snippets in this block that focus only on
+repair math, ingredients, or tool durability are fragments, not complete new
+item carriers.

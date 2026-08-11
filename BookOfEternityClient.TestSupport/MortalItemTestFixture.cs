@@ -138,6 +138,36 @@ internal static class MortalItemTestFixture
         return item;
     }
 
+    internal static void ResealCanonical(JsonObject item)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        var receipt = item["materializationReceipt"] as JsonObject ??
+                      throw new InvalidOperationException("Canonical Mortal item fixture requires a receipt.");
+        receipt["seal"] = MortalItemMaterializationContract.ComputeSeal(item, receipt);
+    }
+
+    internal static JsonObject CreateItemFateCard(
+        string cardId,
+        string name,
+        bool isUnlocked,
+        JsonObject? unlockConditions = null,
+        JsonObject? rewards = null,
+        string? description = null,
+        string? imagePrompt = null) =>
+        new()
+        {
+            ["cardId"] = cardId,
+            ["name"] = name,
+            ["image_prompt"] = imagePrompt ?? "engraved fate sigil on a fantasy item, dramatic light",
+            ["description"] = description ?? $"Карта судьбы «{name}» для тестового предмета.",
+            ["unlockConditions"] = unlockConditions,
+            ["rewards"] = rewards ?? new JsonObject
+            {
+                ["description"] = "Карта открывает новое свойство предмета."
+            },
+            ["isUnlocked"] = isUnlocked
+        };
+
     internal static JsonObject CreateCanonicalRootAtTurn(
         string itemId,
         int acceptedAtTurn,

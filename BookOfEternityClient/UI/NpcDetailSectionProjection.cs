@@ -279,17 +279,39 @@ internal static class NpcDetailSectionProjection
 
         AddNamedArrayRows(rows, categories, "Активный навык", npc["activeSkills"], "Навыки");
         AddNamedArrayRows(rows, categories, "Пассивный навык", npc["passiveSkills"], "Навыки");
-        AddNamedArrayRows(rows, categories, "Предмет", npc["inventory"], "инвентарь");
+        var inventory = npc["inventory"] as JsonArray;
+        var projectedInventory = ProjectNpcInventoryForPlayer(inventory);
+        AddNamedArrayRows(
+            rows,
+            categories,
+            "Предмет",
+            projectedInventory,
+            "инвентарь");
 
-        if (npc["equippedItems"] is JsonObject equipment)
+        if (MortalItemEquipmentAuthority.TryRead(
+                npc,
+                inventory,
+                $"npc_core.{npcId}",
+                out var equipmentState,
+                out _))
         {
             var beforeEquipment = rows.Count;
-            foreach (var item in equipment)
+            foreach (var slot in equipmentState.Slots)
             {
-                if (item.Value == null || item.Value.GetValueKind() is JsonValueKind.Null or JsonValueKind.Undefined)
+                if (slot.ItemId == null)
                     continue;
 
-                rows.Add(new UiTableRow { Cells = ["Экипировка", $"{item.Key}: {DescribeNodeValue(item.Value)}"] });
+                var acceptedItem = ResolveNpcInventoryItem(JsonValue.Create(slot.ItemId)!, inventory);
+                if (acceptedItem == null)
+                    continue;
+
+                var itemName = FirstNonEmpty(
+                    GetNodeString(acceptedItem, "name"),
+                    GetNodeString(acceptedItem, "itemName"));
+                if (string.IsNullOrWhiteSpace(itemName))
+                    continue;
+
+                rows.Add(new UiTableRow { Cells = ["Экипировка", $"{slot.StoredSlot}: {itemName}"] });
             }
 
             if (rows.Count > beforeEquipment)
@@ -306,12 +328,6 @@ internal static class NpcDetailSectionProjection
             rows.Add(new UiTableRow { Cells = ["Эффект", DescribeNodeValue(entry)] });
             AddCategory(categories, "эффекты");
         }
-        foreach (var entry in CollectMatchingObjects(documents.Inventory, npcId, npcName))
-        {
-            rows.Add(new UiTableRow { Cells = ["Инвентарь", DescribeNodeValue(entry)] });
-            AddCategory(categories, "инвентарь");
-        }
-
         if (rows.Count == 0)
             return;
 
@@ -319,13 +335,46 @@ internal static class NpcDetailSectionProjection
             ? "Навыки / эффекты / инвентарь / снаряжение"
             : string.Join(" / ", categories);
 
+        var blocks = new List<UiBlock>
+        {
+            BuildNpcSectionDossier(npcName, label, ["Раздел", "Подробности"], rows)
+        };
+        foreach (var item in projectedInventory.OfType<JsonObject>())
+            blocks.AddRange(ExplorerMortalWorldCommandResultBuilder.BuildInventoryItemDetailBlocksForPlayer(item));
+
         sections.Add(new NpcDetailSection(
             "mechanics",
             label,
             FormatCount(rows.Count, "запись", "записи", "записей"),
-            [
-                BuildNpcSectionDossier(npcName, label, ["Раздел", "Подробности"], rows)
-            ]));
+            blocks));
+    }
+
+    private static JsonArray ProjectNpcInventoryForPlayer(JsonArray? inventory)
+    {
+        var projected = new JsonArray();
+        if (inventory == null)
+            return projected;
+
+        foreach (var item in inventory.OfType<JsonObject>())
+        {
+            if (MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _) &&
+                MortalItemPlayerProjection.CloneItemSemanticValue(item) is JsonObject semanticItem)
+                projected.Add(semanticItem);
+        }
+
+        return projected;
+    }
+
+    private static JsonObject? ResolveNpcInventoryItem(JsonNode reference, JsonArray? inventory)
+    {
+        if (inventory == null || !TryGetScalarString(reference, out var itemId) || string.IsNullOrWhiteSpace(itemId))
+            return null;
+
+        return inventory
+            .OfType<JsonObject>()
+            .FirstOrDefault(item =>
+                MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var identity) &&
+                string.Equals(identity, itemId, StringComparison.Ordinal));
     }
 
     private static void AddMemorySection(

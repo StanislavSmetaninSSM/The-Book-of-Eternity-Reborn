@@ -2599,18 +2599,7 @@ internal static class ShiningBlessingEffectState
         return new JsonObject
         {
             ["items"] = new JsonArray(),
-            ["equipment"] = new JsonObject
-            {
-                ["head"] = null,
-                ["body"] = null,
-                ["hands"] = null,
-                ["feet"] = null,
-                ["mainHand"] = null,
-                ["offHand"] = null,
-                ["neck"] = null,
-                ["ring1"] = null,
-                ["ring2"] = null
-            },
+            ["equippedItems"] = new JsonObject(),
             ["totalWeight"] = 0,
             ["maxWeight"] = 45,
             ["resources"] = new JsonObject()

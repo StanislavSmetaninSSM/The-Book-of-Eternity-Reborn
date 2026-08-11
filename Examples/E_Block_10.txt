@@ -472,8 +472,8 @@
 
                                     [
                                         { "contentsPath": null },
-                                        { "contentsPath": ["First Aid Kit"] },
-                                        { "contentsPath": ["Main Backpack", "Coin Purse"] }
+                                        { "contentsPath": ["itm_first_aid_kit_01"] },
+                                        { "contentsPath": ["itm_main_backpack_01", "itm_coin_purse_01"] }
                                     ]
 
                                     ]]>
@@ -541,7 +541,7 @@
                                         }]
                                     }
                                     
-                                    All these items would be generated as full objects in 'UpdateInventory' with 'contentsPath: ["Traveler's Backpack"]'.
+                                    All these items would be generated as full objects in 'UpdateInventory' with 'contentsPath: ["itm_travelers_backpack_01"]'.
 
                                     ]]>
    </content>
@@ -1406,3 +1406,16 @@
   </example>
  </rule>
 </instructionblock>
+
+# Mortal Item Materialization v1 — inventory addendum
+
+Use `mortal_item_player_acquisition_empty_sections_v1` in
+`E_CLI_Mortal_Item_Materialization.txt` as the complete minimum new-item
+carrier. A new raw item has `existedId: null`, no `itemId`, a turn-unique
+`creationRef`, every semantic field, and all twelve `materialization.sections`.
+Canonical `contentsPath` contains permanent parent item IDs, not names. The
+client alone writes the receipt and identity index. Older snippets in this
+block with a GM-authored `itemId`, missing envelope, name-based contentsPath,
+or a partial item object illustrate only their named semantic sub-rule and
+must not be copied as full creation payloads. See
+`mortal_item_receiptless_rejection_v1` for the exact invalid-state diagnostic.

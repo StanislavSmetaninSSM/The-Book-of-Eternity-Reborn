@@ -13,10 +13,6 @@ internal static class ReadableInventoryDocumentShelfProjection
         JsonNode? itemJournalRoot)
     {
         var documents = ReadableInventoryDocumentAuthority.ResolveDocuments(inventoryRoot, itemTextRoot, itemJournalRoot);
-        var sidecarEntries = ReadableInventoryDocumentAuthority
-            .CollectItemTextEntries(itemTextRoot)
-            .Concat(ReadableInventoryDocumentAuthority.CollectItemJournalEntries(itemJournalRoot))
-            .ToList();
 
         var items = new List<ReadableDocumentShelfItem>();
         var usedSelectors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -34,29 +30,6 @@ internal static class ReadableInventoryDocumentShelfProjection
                 $"Предмет: {document.Name}",
                 document.TextEntries,
                 document.UnreadableReason,
-                aliases));
-        }
-
-        foreach (var sidecar in sidecarEntries
-                     .Where(sidecar => !documents.Any(document => ReadableInventoryDocumentAuthority.SidecarMatchesDocument(sidecar, document))))
-        {
-            var title = FirstNonEmpty(sidecar.Name, sidecar.Identities.FirstOrDefault()) ?? "Безымянный текст";
-            var aliases = sidecar.Identities
-                .Concat([sidecar.Name, title])
-                .Where(static value => !string.IsNullOrWhiteSpace(value))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
-            var selector = BuildUniqueSelector(FirstNonEmpty(sidecar.Identities) ?? title, items.Count, usedSelectors);
-            var source = !string.IsNullOrWhiteSpace(sidecar.Name)
-                ? $"Запись: {sidecar.Name}"
-                : "Отдельная запись";
-
-            items.Add(CreateItem(
-                selector,
-                title,
-                source,
-                sidecar.TextEntries,
-                unreadableReason: null,
                 aliases));
         }
 

@@ -1004,6 +1004,173 @@ public sealed class PromptDocumentationCoverageTests
             StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public void MortalItemMaterializationGuidance_CoversRoutesLifecycleAndClientOwnership()
+    {
+        var block2 = ReadRepoFile("Rules", "Block_2.txt");
+        var block5 = ReadRepoFile("Rules", "Block_5.txt");
+        var block9 = ReadRepoFile("Rules", "Block_9.txt");
+        var block10 = ReadRepoFile("Rules", "Block_10.txt");
+        var block11 = ReadRepoFile("Rules", "Block_11.txt");
+        var block19A = ReadRepoFile("Rules", "Block_19.A.txt");
+        var block20 = ReadRepoFile("Rules", "Block_20.txt");
+        var block10Example = ReadRepoFile("Examples", "E_Block_10.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var api = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var stepExample = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var workedExample = ReadRepoFile("Examples", "E_CLI_Mortal_Item_Materialization.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        var rulesCorpus = string.Join('\n',
+            block2, block5, block9, block10, block11, block19A, block20);
+        var gmLifecycleCorpus = string.Join('\n',
+            operations, api, daemonSpec, stepGuide, stepExample, workedExample);
+
+        foreach (var route in new[]
+                 {
+                     "player_acquisition",
+                     "npc_acquisition",
+                     "new_npc_inventory",
+                     "loot_acquisition",
+                     "craft_output",
+                     "trade_output",
+                     "quest_reward",
+                     "storage_placement"
+                 })
+        {
+            Assert.Contains(route, rulesCorpus, StringComparison.Ordinal);
+            Assert.Contains(route, gmLifecycleCorpus, StringComparison.Ordinal);
+        }
+
+        foreach (var guidance in new[] { operations, api, daemonSpec, stepGuide })
+        {
+            Assert.Contains("Mortal Item Materialization v1", guidance, StringComparison.Ordinal);
+            Assert.Contains("не создавай itemId", guidance, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("не создавай materializationReceipt", guidance, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("item_identity_index.json", guidance, StringComparison.Ordinal);
+            Assert.Contains("receipt-less", guidance, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("игра ещё не вышла", guidance, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var bootstrapGuidance in new[] { operations, api, daemonSpec, stepGuide, stepExample })
+        {
+            Assert.Contains(
+                "Previous-life item sidecars are rollback-only and are not the current GM baseline.",
+                bootstrapGuidance,
+                StringComparison.Ordinal);
+            Assert.Contains("game_state/inventory/item_resources.json", bootstrapGuidance, StringComparison.Ordinal);
+            Assert.Contains("game_state/inventory/item_bonds.json", bootstrapGuidance, StringComparison.Ordinal);
+            Assert.Contains("game_state/inventory/item_text_updates.json", bootstrapGuidance, StringComparison.Ordinal);
+            Assert.Contains("game_state/npcs/item_journals.json", bootstrapGuidance, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+                 {
+                     "existedId = null",
+                     "creationRef",
+                     "materialization.sections",
+                     "exact itemId",
+                     "contentsPath",
+                     "split",
+                     "merge",
+                     "destroyed"
+                 })
+        {
+            Assert.Contains(requiredText, gmLifecycleCorpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("craft_output", block9, StringComparison.Ordinal);
+        Assert.Contains("exact itemId", block11, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("permanent parent item IDs", block10, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("container names, exact from Context", block10, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "\"contentsPath\": [\"First Aid Kit\"]",
+            block10Example,
+            StringComparison.Ordinal);
+        foreach (var placementGuidance in new[] { block10, stepGuide, workedExample })
+        {
+            Assert.Contains("isCarried", placementGuidance, StringComparison.Ordinal);
+            Assert.Contains("not placement authority", placementGuidance, StringComparison.OrdinalIgnoreCase);
+        }
+        Assert.Contains("npc_acquisition", block19A, StringComparison.Ordinal);
+        Assert.Contains("trade_output", block19A, StringComparison.Ordinal);
+        Assert.Contains("storage_placement", block20, StringComparison.Ordinal);
+        Assert.Contains("loot_acquisition", block5, StringComparison.Ordinal);
+        Assert.Contains("quest_reward", block2, StringComparison.Ordinal);
+
+        foreach (var contractId in new[]
+                 {
+                     "mortal_item_player_acquisition_empty_sections_v1",
+                     "mortal_item_mechanic_trade_output_v1",
+                     "mortal_item_existing_transfer_v1",
+                     "mortal_item_split_merge_lineage_v1",
+                     "mortal_item_receiptless_rejection_v1"
+                 })
+        {
+            Assert.Contains(contractId, workedExample, StringComparison.Ordinal);
+        }
+
+        Assert.DoesNotContain("legacy promotion", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("$script:MortalItemMaterializationDirective", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:CompactMortalItemTemplatePath", daemon, StringComparison.Ordinal);
+        Assert.Contains("Mortal Item Materialization v1", daemon, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CompactMortalItemTemplate_CoversCompleteCreationAndProtectedLifecycle()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        const string templateMarker =
+            "-RelativePath \"Templates\\MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md\"";
+        var markerIndex = daemon.IndexOf(templateMarker, StringComparison.Ordinal);
+        Assert.True(markerIndex >= 0, "Compact Mortal item template marker is missing.");
+        var contentStart = daemon.IndexOf("-Content @'", markerIndex, StringComparison.Ordinal);
+        Assert.True(contentStart >= 0, "Compact Mortal item template content is missing.");
+        contentStart += "-Content @'".Length;
+        var contentEnd = daemon.IndexOf("\n'@", contentStart, StringComparison.Ordinal);
+        Assert.True(contentEnd > contentStart, "Compact Mortal item template terminator is missing.");
+        var template = daemon[contentStart..contentEnd];
+
+        foreach (var requiredText in new[]
+                 {
+                     "player_acquisition",
+                     "npc_acquisition",
+                     "new_npc_inventory",
+                     "loot_acquisition",
+                     "craft_output",
+                     "trade_output",
+                     "quest_reward",
+                     "storage_placement",
+                     "existedId = null",
+                     "creationRef",
+                     "materialization.sections",
+                     "presentation",
+                     "ownershipAndPlacement",
+                     "structuredBonuses",
+                     "contentsPath",
+                     "isCarried",
+                     "not placement authority",
+                     "item_identity_index.json",
+                     "exact ordinal `itemId`",
+                     "split",
+                     "merge",
+                     "destroyed",
+                     "mortal_item_materialization_repair"
+                 })
+        {
+            Assert.Contains(requiredText, template, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains(
+            "Examples\\E_CLI_Mortal_Item_Materialization.txt",
+            daemon,
+            StringComparison.Ordinal);
+        Assert.Contains("compact_mortal_item_materialization_template", daemon, StringComparison.Ordinal);
+        Assert.Contains("$script:MortalItemMaterializationDirective", daemon, StringComparison.Ordinal);
+    }
+
     private static string ReadRepoFile(params string[] parts) =>
         File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
 }
