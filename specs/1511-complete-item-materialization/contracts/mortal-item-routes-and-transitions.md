@@ -36,8 +36,9 @@ semantic, companion, identity, receipt, or single-carrier contract.
 
 ### `loot_acquisition`
 
-- Input: structured loot outcome plus complete new item.
-- Authority: exact current loot outcome ID.
+- Input: one exact `lootForCurrentTurn` template plus a complete new item.
+- Authority: the derived ordinal key
+  `loot_template:<turn>:<ordinal>:<baseName>` from the validated turn context.
 - Destination: player inventory, NPC inventory, or existing location storage.
 - There is no durable ground-loot carrier in v1.
 

@@ -176,7 +176,7 @@ the shared materialization package to the current surfaces:
 | `player_acquisition` | new `UpdateInventory` item plus accepted turn context |
 | `npc_acquisition` | `NPCInventoryAdds` for an existing NPC |
 | `new_npc_inventory` | new NPC initial `inventory[]` |
-| `loot_acquisition` | structured loot outcome plus one real destination carrier |
+| `loot_acquisition` | exact derived key for one validated `lootForCurrentTurn` template plus one real destination carrier |
 | `craft_output` | validated `pending_craft_request.json` and consumed-input transition |
 | `trade_output` | validated NPC trade request/receipt and source/destination transition |
 | `quest_reward` | structured quest reward detail bound to the created item |

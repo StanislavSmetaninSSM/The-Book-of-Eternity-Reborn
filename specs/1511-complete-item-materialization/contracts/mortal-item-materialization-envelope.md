@@ -77,14 +77,18 @@ rather than normalizing them.
 | `player_acquisition` | `turn_outcome` |
 | `npc_acquisition` | `npc_inventory_add` |
 | `new_npc_inventory` | `new_npc` |
-| `loot_acquisition` | `loot_outcome` |
+| `loot_acquisition` | `loot_template` |
 | `craft_output` | `craft_request` |
 | `trade_output` | `npc_trade_receipt` |
 | `quest_reward` | `quest_reward` |
 | `storage_placement` | `location_storage` |
 
 The route adapter validates the authority ID against the hash-validated
-pre-turn/current route surface. Text labels and narrative do not satisfy it.
+pre-turn/current route surface. For standard loot it derives the exact key
+`loot_template:<turn>:<ordinal>:<baseName>` from
+`Context.lootForCurrentTurn`; plot-mandated acquisition uses the ordinary
+`player_acquisition` turn authority. Text labels and narrative do not satisfy
+route authority.
 
 ## Complete semantic fields
 
