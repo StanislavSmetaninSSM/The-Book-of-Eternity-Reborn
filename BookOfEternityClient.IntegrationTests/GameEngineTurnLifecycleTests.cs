@@ -1756,7 +1756,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 var diagnosticValidator = new ValidationService(
                     _fs,
                     NullLogger<ValidationService>.Instance);
-                var diagnosticIssues = await diagnosticValidator.ValidateGameStateAsync();
+                var diagnosticIssues = await diagnosticValidator.ValidateGameStateAsync(
+                    IntegrationValidationProfiles.SoulIdentity);
                 Assert.Fail(string.Join(
                     " | ",
                     diagnosticIssues
