@@ -207,3 +207,18 @@ description, physical values, and legitimate mechanics, but never:
 - `materialization` or `materializationReceipt`;
 - `creationRef`, receipt/index IDs, seal, lineage, or carrier coordinate;
 - file paths, validation codes, repair packets, or GM/client authority terms.
+
+## 9. Baseline evidence
+
+The pre-production-code baseline on 2026-08-11 was clean:
+
+| Selection | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| `CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_StripsPlayerFacingItemJournalTurnAnchors` | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-111912-622-33464-28883a6e924f43c38537a1d57aedd539-focused` |
+| `BrowserInventoryManagementTests` | PASS | 13/13 | false | complete | `TestResults/test-lanes/20260811-111936-897-6780-bd98b778f37741fe9fb3bd5beb5b9190-focused` |
+
+The first normalizer invocation used the file suffix as if it were a class
+name (`CanonicalStateNormalizerTests.Inventory`) and correctly failed the lane
+guard with zero discovered tests. Repository inspection showed the actual
+partial class/method name; the corrected exact selector above passed 1/1. The
+zero-discovery invocation is diagnostic evidence, not an accepted baseline.

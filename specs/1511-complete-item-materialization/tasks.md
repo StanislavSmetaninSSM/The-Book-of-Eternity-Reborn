@@ -26,10 +26,10 @@ is allowed.
 **Purpose**: Reconfirm the tracked branch, isolate user-owned artifacts, and
 capture a reproducible pre-change baseline.
 
-- [ ] T001 Confirm issue #1511 is open/in-progress, branch `1511-complete-item-materialization` is based on `fa1e85276661717ae805c5ff6f0460c438892f25`, and only the known `.serena/` and `bin/obj` paths are untracked in `E:/Games/worktrees/boe-1510-design`
-- [ ] T002 Re-read `AGENTS.md`, `.specify/memory/constitution.md`, and all files under `specs/1511-complete-item-materialization/`; record any implementation-impacting drift in `specs/1511-complete-item-materialization/research.md`
-- [ ] T003 [P] Inventory active positive, negative, and fragment-only item fixtures with exact migration disposition in `specs/1511-complete-item-materialization/fixture-migration-inventory.md`
-- [ ] T004 Run clean baseline Focused controls for `CanonicalStateNormalizerTests.Inventory` and `BrowserInventoryManagementTests` through `scripts/test-csharp.ps1` and record result directories in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T001 Confirm issue #1511 is open/in-progress, branch `1511-complete-item-materialization` is based on `fa1e85276661717ae805c5ff6f0460c438892f25`, and only the known `.serena/` and `bin/obj` paths are untracked in `E:/Games/worktrees/boe-1510-design`
+- [x] T002 Re-read `AGENTS.md`, `.specify/memory/constitution.md`, and all files under `specs/1511-complete-item-materialization/`; record any implementation-impacting drift in `specs/1511-complete-item-materialization/research.md`
+- [x] T003 [P] Inventory active positive, negative, and fragment-only item fixtures with exact migration disposition in `specs/1511-complete-item-materialization/fixture-migration-inventory.md`
+- [x] T004 Run clean baseline Focused controls for `CanonicalStateNormalizerTests.Inventory` and `BrowserInventoryManagementTests` through `scripts/test-csharp.ps1` and record result directories in `specs/1511-complete-item-materialization/quickstart.md`
 
 ---
 
