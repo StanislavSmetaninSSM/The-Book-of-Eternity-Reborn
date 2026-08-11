@@ -72,14 +72,21 @@ prevent reliable pre-turn/current classification.
 **Decision**: Add `item_identity_index.json` and every governed carrier input
 to `CanonicalStateNormalizer.CanonicalAccumulatedFiles`,
 `NormalizerBackupInputFiles`, and `NormalizerRollbackTrackedFiles` as
-appropriate. Perform accepted-turn sealing through the normalizer bound to the
-existing canonical write lease and validated pre-turn backups.
+appropriate. `GameEngine.RefreshCanonicalStateAsync` must acquire one
+`CanonicalWriteLease`, bind the normalizer to that lease, capture exact
+before-images for every touched carrier/companion/index path, and keep those
+before-images until post-seal canonical validation succeeds. Any normalization
+or validation failure restores every tracked path byte-for-byte before the
+lease is released.
 
 **Rationale**:
 
 - `GameEngine.ValidateAcceptedTurnOutcomeWithRepairLoopAsync` validates raw
   state, loads a hash-validated pending snapshot, normalizes canonical state,
   validates the result, and retains rollback authority through repair.
+- The current `RefreshCanonicalStateAsync` call into
+  `NormalizeAccumulatedStateAsync` is not lease-bound; #1511 closes that gap
+  rather than assuming an existing lease.
 - QTE/browser transaction code already derives tracked rollback paths from the
   normalizer lists.
 - A second transaction mechanism would compete with the canonical lease and

@@ -190,9 +190,14 @@ The detailed field-to-section map belongs in the feature's contract and data-mod
 4. Assign a permanent item identity only after semantic validation succeeds.
 5. Resolve every same-turn reference from `creationRef` to the permanent identity.
 6. Seal the immutable receipt and create the active identity entry.
-7. Revalidate the composed canonical state, then commit atomically.
+7. Revalidate the composed canonical state under the same bound
+   `CanonicalWriteLease`, then release the lease only after success.
 
-If any step fails, no item, reward settlement, consumed ingredient, equipment change, or active index entry commits.
+The accepted-turn refresh captures exact before-images for every touched
+carrier, companion, and index path before the first write. If normalization or
+post-seal validation fails, it restores those paths byte-for-byte, so no item,
+reward settlement, consumed ingredient, equipment change, or active index entry
+commits.
 
 ### Existing-item transfer
 
@@ -287,7 +292,9 @@ The validated pre-turn snapshot remains rollback authority until the corrected c
 
 The same change reviews and updates at least:
 
-- `Rules/Block_10.txt` and related command rules;
+- `Rules/Block_2.txt`, `Rules/Block_5.txt`, `Rules/Block_9.txt`,
+  `Rules/Block_10.txt`, `Rules/Block_11.txt`, `Rules/Block_19.A.txt`, and
+  `Rules/Block_20.txt`;
 - CLI operation guidance and GM prompt entrypoints;
 - item, NPC inventory, crafting, trade, quest-reward, and storage worked examples;
 - example validation manifest;
@@ -310,7 +317,8 @@ Implementation follows red-green-refactor:
 - continuity tests for transfers and direct canonical-write bypasses;
 - split/merge conservation and lineage tests;
 - companion atomicity and orphan tests;
-- bounded repair and rollback/idempotence tests;
+- bounded repair and rollback/idempotence matrices covering craft, trade,
+  quest rewards, loot, transfer, split, and merge;
 - existing console/browser projection tests for accepted visibility and internal-field privacy;
 - fixture, documentation, manifest, and source-guard tests;
 - a representative scaling control that detects quadratic multi-carrier scans;

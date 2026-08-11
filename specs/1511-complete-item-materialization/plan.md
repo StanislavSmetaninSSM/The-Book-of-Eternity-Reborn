@@ -162,8 +162,12 @@ The critical implementation observations are:
    the storage/vehicle entity itself remains #1515.
 5. The accepted-turn normalizer already receives validated pre-turn backups and
    its tracked-file lists already feed pending snapshots, QTE rollback, and
-   browser transactions. Adding the index there gives one existing rollback
-   contour rather than a second transaction system.
+   browser transactions. `RefreshCanonicalStateAsync` does not currently bind
+   that normalization call to a canonical write lease, so #1511 must acquire
+   one lease, bind the normalizer, and retain exact before-images for all
+   carrier/companion/index writes through post-seal validation. Adding the
+   index there then extends one coordinated rollback contour rather than
+   introducing a second transaction system.
 6. Player-facing item readers generally select known fields; explicit privacy
    tests determine whether any projection source needs changing.
 
@@ -186,8 +190,10 @@ The critical implementation observations are:
 
 1. Add contract-only red tests and immutable schema helpers.
 2. Add exact-key carrier/index discovery and fail-closed current-state validation.
-3. Add pre-seal raw creation validation, then normalizer projection, permanent ID
-   assignment, reference resolution, receipt sealing, and index transition.
+3. Add pre-seal raw creation validation, then run normalizer projection,
+   permanent ID assignment, reference resolution, receipt sealing, and index
+   transition under one bound `CanonicalWriteLease` with exact before-image
+   restoration on any normalization or post-seal validation failure.
 4. Cover each route adapter and companion authority with atomic negative tests.
 5. Route client-side drop/split/merge/storage/vehicle operations through one
    coordinated item transition writer under the canonical lease.

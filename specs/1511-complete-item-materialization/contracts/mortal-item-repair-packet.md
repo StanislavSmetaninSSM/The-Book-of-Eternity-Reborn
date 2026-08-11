@@ -95,9 +95,11 @@ other client-owned files are never GM repair targets.
 
 The validated pre-turn snapshot remains authoritative until post-seal canonical
 validation succeeds. Failed repair restores carrier, companion, route,
-currency/ingredient/reward, output, and index state. A repeated valid repair
-with the same request/creation reference creates at most one item and one
-receipt; duplicate use is rejected rather than granted twice.
+currency/ingredient/reward, output, and index state. For craft, trade, quest
+reward, loot acquisition, transfer, split, and merge, a repeated valid repair
+with the same request/creation reference performs at most one settlement,
+preserves quantity conservation, and creates no duplicate item, receipt, or
+index transition. Duplicate use is rejected rather than replayed.
 
 ## Player-facing output
 
