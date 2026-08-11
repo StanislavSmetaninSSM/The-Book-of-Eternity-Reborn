@@ -12,7 +12,8 @@ public partial class ValidationService
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
         "game_state/inventory/recipes.json",
-        "game_state/npcs/item_journals.json"
+        "game_state/npcs/item_journals.json",
+        "game_state/quests/quest_history.json"
     };
 
     public async Task<IReadOnlyList<ValidationIssue>>
@@ -51,6 +52,10 @@ public partial class ValidationService
             includeNpcInventoryCommands: true,
             issues);
         AddCatalogIssues(current.Catalog, issues);
+        ValidateMortalItemCompanionReferences(
+            current.Catalog,
+            MortalItemMaterializationPhase.RawPreSeal,
+            issues);
 
         foreach (var occurrence in current.Catalog.Occurrences)
         {
@@ -71,6 +76,9 @@ public partial class ValidationService
                     issues);
             }
         }
+
+        var routeAuthorities = await MortalItemRouteAuthorityCatalog.BuildAsync(_fs);
+        AddRouteAuthorityIssues(routeAuthorities, issues);
 
         var currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
         issues.AddRange(currentIndex.Issues);
@@ -195,6 +203,10 @@ public partial class ValidationService
             includeNpcInventoryCommands: false,
             issues);
         AddCatalogIssues(current.Catalog, issues);
+        ValidateMortalItemCompanionReferences(
+            current.Catalog,
+            MortalItemMaterializationPhase.CanonicalPostSeal,
+            issues);
 
         foreach (var occurrence in current.Catalog.Occurrences)
         {
@@ -518,6 +530,135 @@ public partial class ValidationService
                 actual: issue.Identity ?? "missing",
                 repairHint: "Исправь только названный item/carrier; не нормализуй регистр, пробелы или Unicode и не создавай второй receipt.",
                 repairTargetFiles: new[] { targetPath }));
+        }
+    }
+
+    private static void AddRouteAuthorityIssues(
+        MortalItemRouteAuthorityCatalog catalog,
+        List<ValidationIssue> issues)
+    {
+        foreach (var issue in catalog.Issues)
+        {
+            issues.Add(new ValidationIssue(
+                issue.Path,
+                IssueSeverity.Error,
+                issue.Message,
+                code: issue.Code,
+                actor: issue.CreationRef == null
+                    ? "mortal_item:new:unknown"
+                    : $"mortal_item:new:{issue.CreationRef}",
+                section: "MortalItemMaterialization",
+                expected: issue.Expected,
+                actual: issue.Actual,
+                repairHint: "Исправь только exact route authority этого creationRef по validated request/reward/carrier; не создавай itemId или receipt вручную.",
+                repairTargetFiles: new[] { issue.FilePath }));
+        }
+    }
+
+    private static void ValidateMortalItemCompanionReferences(
+        MortalItemCarrierCatalog catalog,
+        MortalItemMaterializationPhase phase,
+        List<ValidationIssue> issues)
+    {
+        var reported = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var pair in catalog.ByCompanionReference)
+        {
+            catalog.ByItemId.TryGetValue(pair.Key, out var itemOccurrences);
+            var itemMatches = itemOccurrences?.Count ?? 0;
+            var rawCreationOccurrences =
+                phase == MortalItemMaterializationPhase.RawPreSeal &&
+                catalog.ByCreationRef.TryGetValue(pair.Key, out var creationOccurrences)
+                    ? creationOccurrences
+                        .Where(occurrence => IsRawMortalItemCreation(occurrence.Item))
+                        .ToArray()
+                    : Array.Empty<MortalItemCarrierOccurrence>();
+            var creationMatches = rawCreationOccurrences.Length;
+            var totalMatches = itemMatches + creationMatches;
+            if (totalMatches == 1)
+            {
+                var resolvedOccurrence = itemMatches == 1
+                    ? itemOccurrences![0]
+                    : rawCreationOccurrences[0];
+                ValidateMortalItemCompanionCarrierAgreement(
+                    pair.Key,
+                    pair.Value,
+                    resolvedOccurrence,
+                    issues);
+                continue;
+            }
+
+            foreach (var reference in pair.Value)
+            {
+                var reportKey = $"{reference.FilePath}\u001f{reference.JsonPath}\u001f{pair.Key}";
+                if (!reported.Add(reportKey))
+                    continue;
+
+                var looksLikeCreationReference =
+                    reference.PropertyName.Contains("creation", StringComparison.OrdinalIgnoreCase);
+                var looksLikePermanentReference =
+                    reference.PropertyName.Equals("itemId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("existedId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("sourceItemId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("targetItemId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("parentItemId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("containerItemId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("rewardItemId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("destinationItemId", StringComparison.OrdinalIgnoreCase) ||
+                    reference.PropertyName.Equals("resultItemId", StringComparison.OrdinalIgnoreCase);
+                var actor = looksLikeCreationReference || creationMatches > 0
+                    ? $"mortal_item:new:{pair.Key}"
+                    : looksLikePermanentReference || itemMatches > 0 ||
+                      phase == MortalItemMaterializationPhase.CanonicalPostSeal
+                        ? $"mortal_item:existing:{pair.Key}"
+                        : $"mortal_item:unresolved:{pair.Key}";
+                issues.Add(new ValidationIssue(
+                    reference.JsonPath,
+                    IssueSeverity.Error,
+                    "A Mortal item companion reference must resolve to exactly one governed item occurrence.",
+                    code: "mortal_item_materialization_orphan_companion",
+                    actor: actor,
+                    section: "MortalItemMaterialization",
+                    expected: phase == MortalItemMaterializationPhase.RawPreSeal
+                        ? "one exact current itemId or same-turn creationRef"
+                        : "one exact canonical itemId",
+                    actual: totalMatches == 0
+                        ? $"unresolved exact reference {pair.Key}"
+                        : $"{totalMatches} exact carrier matches for {pair.Key}",
+                    repairHint: "Исправь или удали только эту companion-ссылку; она должна указывать на один exact itemId, а до sealing также может указывать на один same-turn creationRef.",
+                    repairTargetFiles: new[] { reference.FilePath }));
+            }
+        }
+    }
+
+    private static void ValidateMortalItemCompanionCarrierAgreement(
+        string referenceIdentity,
+        IReadOnlyList<MortalItemCompanionReference> references,
+        MortalItemCarrierOccurrence resolvedOccurrence,
+        List<ValidationIssue> issues)
+    {
+        foreach (var reference in references)
+        {
+            if (reference.ExpectedCarrier == null ||
+                SameRootCarrier(
+                    reference.ExpectedCarrier,
+                    resolvedOccurrence.Carrier))
+            {
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                reference.JsonPath,
+                IssueSeverity.Error,
+                "A Mortal item companion reference resolves to an item owned by a different carrier authority.",
+                code: "mortal_item_materialization_companion_owner_mismatch",
+                actor: resolvedOccurrence.ItemId != null
+                    ? $"mortal_item:existing:{resolvedOccurrence.ItemId}"
+                    : $"mortal_item:new:{referenceIdentity}",
+                section: "MortalItemMaterialization",
+                expected: CreateCarrierNode(reference.ExpectedCarrier).ToJsonString(),
+                actual: CreateCarrierNode(resolvedOccurrence.Carrier).ToJsonString(),
+                repairHint: "Ссылайся только на exact предмет того же владельца и carrier; не связывай чужой inventory/storage.",
+                repairTargetFiles: new[] { reference.FilePath }));
         }
     }
 

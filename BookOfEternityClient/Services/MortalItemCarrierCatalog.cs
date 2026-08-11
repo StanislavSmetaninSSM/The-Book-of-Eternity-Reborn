@@ -24,7 +24,8 @@ internal sealed record MortalItemCompanionReference(
     string Reference,
     string PropertyName,
     string FilePath,
-    string JsonPath);
+    string JsonPath,
+    MortalItemCarrierCoordinate? ExpectedCarrier = null);
 
 internal sealed record MortalItemCarrierCatalogIssue(
     string Code,
@@ -211,6 +212,24 @@ internal sealed class MortalItemCarrierCatalog
                     "player",
                     null,
                     Array.Empty<string>()));
+            ScanInlineCompanionSurface(
+                PlayerInventoryPath,
+                $"{PlayerInventoryPath}.equipment",
+                root["equipment"],
+                new MortalItemCarrierCoordinate(
+                    "player_inventory",
+                    "player",
+                    null,
+                    Array.Empty<string>()));
+            ScanInlineCompanionSurface(
+                PlayerInventoryPath,
+                $"{PlayerInventoryPath}.equippedItems",
+                root["equippedItems"],
+                new MortalItemCarrierCoordinate(
+                    "player_inventory",
+                    "player",
+                    null,
+                    Array.Empty<string>()));
         }
 
         internal void ScanNpcCore(JsonObject? root)
@@ -231,12 +250,37 @@ internal sealed class MortalItemCarrierCatalog
 
                     RouteNodesVisited++;
                     var npcPath = $"{NpcCorePath}.{sectionName}[{index}]";
-                    if (npc["inventory"] is not JsonArray inventory || !ContainsItemObject(inventory))
+                    var inventory = npc["inventory"] as JsonArray;
+                    var hasInventoryItems =
+                        inventory != null && ContainsItemObject(inventory);
+                    var hasEquipmentSurface =
+                        ContainsExactScalarReference(npc["equippedItems"]) ||
+                        ContainsExactScalarReference(npc["equipment"]);
+                    var npcId = hasInventoryItems || hasEquipmentSurface
+                        ? ReadCarrierIdentity(npc, NpcIdentityFields, npcPath, "npc owner")
+                        : null;
+                    var expectedCarrier = npcId == null
+                        ? null
+                        : new MortalItemCarrierCoordinate(
+                            "npc_inventory",
+                            npcId,
+                            null,
+                            Array.Empty<string>());
+                    ScanInlineCompanionSurface(
+                        NpcCorePath,
+                        $"{npcPath}.equippedItems",
+                        npc["equippedItems"],
+                        expectedCarrier);
+                    ScanInlineCompanionSurface(
+                        NpcCorePath,
+                        $"{npcPath}.equipment",
+                        npc["equipment"],
+                        expectedCarrier);
+                    if (!hasInventoryItems)
                         continue;
-                    var npcId = ReadCarrierIdentity(npc, NpcIdentityFields, npcPath, "npc owner");
 
                     ScanItemArray(
-                        inventory,
+                        inventory!,
                         NpcCorePath,
                         $"{npcPath}.inventory",
                         new MortalItemCarrierCoordinate(
@@ -254,6 +298,35 @@ internal sealed class MortalItemCarrierCatalog
                 return;
 
             RouteNodesVisited++;
+            if (root["NPCEquipmentChanges"] is JsonArray equipmentChanges)
+            {
+                for (var index = 0; index < equipmentChanges.Count; index++)
+                {
+                    var command = equipmentChanges[index] as JsonObject;
+                    var hasItemReference = command != null &&
+                                           DirectCompanionReferenceProperties.Any(property =>
+                                               ReadString(command[property]) != null);
+                    var npcId = !hasItemReference
+                        ? null
+                        : ReadCarrierIdentity(
+                            command!,
+                            NpcIdentityFields,
+                            $"{NpcInventoryCommandsPath}.NPCEquipmentChanges[{index}]",
+                            "npc owner");
+                    ScanCompanionNode(
+                        NpcInventoryCommandsPath,
+                        $"{NpcInventoryCommandsPath}.NPCEquipmentChanges[{index}]",
+                        equipmentChanges[index],
+                        valuesAreReferences: false,
+                        npcId == null
+                            ? null
+                            : new MortalItemCarrierCoordinate(
+                                "npc_inventory",
+                                npcId,
+                                null,
+                                Array.Empty<string>()));
+                }
+            }
             if (root["NPCInventoryAdds"] is not JsonArray adds)
                 return;
 
@@ -267,6 +340,21 @@ internal sealed class MortalItemCarrierCatalog
                 if (command["item"] is not JsonObject item)
                     continue;
                 var npcId = ReadCarrierIdentity(command, NpcIdentityFields, commandPath, "npc owner");
+                if (ReadString(command["destinationContainerId"]) is { } containerReference)
+                {
+                    AddCompanionReference(
+                        containerReference,
+                        "destinationContainerId",
+                        NpcInventoryCommandsPath,
+                        $"{commandPath}.destinationContainerId",
+                        npcId == null
+                            ? null
+                            : new MortalItemCarrierCoordinate(
+                                "npc_inventory",
+                                npcId,
+                                null,
+                                Array.Empty<string>()));
+                }
 
                 AddItem(
                     item,
@@ -302,7 +390,12 @@ internal sealed class MortalItemCarrierCatalog
 
                 RouteNodesVisited++;
                 var storagePath = $"{locationPath}.locationStorages[{index}]";
-                if (storage["contents"] is not JsonArray contents || !ContainsItemObject(contents))
+                var contents = storage["contents"] as JsonArray;
+                var hasContentsItems =
+                    contents != null && ContainsItemObject(contents);
+                var hasInlineReferences =
+                    ContainsExactScalarReference(storage["itemIds"]);
+                if (!hasContentsItems && !hasInlineReferences)
                     continue;
 
                 if (!locationIdentityRead)
@@ -320,9 +413,23 @@ internal sealed class MortalItemCarrierCatalog
                     new[] { "storageId" },
                     storagePath,
                     "storage container");
+                var expectedCarrier = locationId == null || storageId == null
+                    ? null
+                    : new MortalItemCarrierCoordinate(
+                        "location_storage",
+                        locationId,
+                        storageId,
+                        Array.Empty<string>());
+                ScanInlineCompanionSurface(
+                    CurrentLocationPath,
+                    $"{storagePath}.itemIds",
+                    storage["itemIds"],
+                    expectedCarrier);
+                if (!hasContentsItems)
+                    continue;
 
                 ScanItemArray(
-                    contents,
+                    contents!,
                     CurrentLocationPath,
                     $"{storagePath}.contents",
                     new MortalItemCarrierCoordinate(
@@ -413,6 +520,16 @@ internal sealed class MortalItemCarrierCatalog
             return false;
         }
 
+        private static bool ContainsExactScalarReference(JsonNode? node) =>
+            node switch
+            {
+                JsonValue value => ReadString(value) != null,
+                JsonObject obj => obj.Any(pair =>
+                    ContainsExactScalarReference(pair.Value)),
+                JsonArray array => array.Any(ContainsExactScalarReference),
+                _ => false
+            };
+
         private void AddItem(
             JsonObject item,
             string filePath,
@@ -454,6 +571,16 @@ internal sealed class MortalItemCarrierCatalog
                 carrier,
                 item.DeepClone().AsObject());
             Occurrences.Add(occurrence);
+
+            for (var index = 0; index < carrier.ContainerPath.Count; index++)
+            {
+                AddCompanionReference(
+                    carrier.ContainerPath[index],
+                    "contentsPath",
+                    filePath,
+                    $"{jsonPath}.contentsPath[{index}]",
+                    carrier);
+            }
 
             if (itemId != null)
             {
@@ -620,10 +747,20 @@ internal sealed class MortalItemCarrierCatalog
             string filePath,
             string jsonPath,
             JsonNode? node,
-            bool valuesAreReferences)
+            bool valuesAreReferences,
+            MortalItemCarrierCoordinate? expectedCarrier = null)
         {
             if (node == null)
                 return;
+            if (node is JsonObject unavailableReward &&
+                string.Equals(
+                    filePath,
+                    "game_state/quests/quest_history.json",
+                    StringComparison.Ordinal) &&
+                QuestRewardAuthority.IsExplicitlyUnavailableReward(unavailableReward))
+            {
+                return;
+            }
 
             CompanionNodesVisited++;
             switch (node)
@@ -641,7 +778,8 @@ internal sealed class MortalItemCarrierCatalog
                                 directReference,
                                 pair.Key,
                                 filePath,
-                                childPath);
+                                childPath,
+                                expectedCarrier);
                         }
 
                         if (CompanionReferenceArrayProperties.Contains(pair.Key) &&
@@ -655,7 +793,8 @@ internal sealed class MortalItemCarrierCatalog
                                     reference,
                                     pair.Key,
                                     filePath,
-                                    $"{childPath}[{index}]");
+                                    $"{childPath}[{index}]",
+                                    expectedCarrier);
                             }
                         }
 
@@ -663,7 +802,8 @@ internal sealed class MortalItemCarrierCatalog
                             filePath,
                             childPath,
                             pair.Value,
-                            childValuesAreReferences);
+                            childValuesAreReferences,
+                            expectedCarrier);
                     }
                     break;
 
@@ -674,12 +814,18 @@ internal sealed class MortalItemCarrierCatalog
                             filePath,
                             $"{jsonPath}[{index}]",
                             array[index],
-                            valuesAreReferences);
+                            valuesAreReferences,
+                            expectedCarrier);
                     }
                     break;
 
                 case JsonValue value when valuesAreReferences && ReadString(value) is { } reference:
-                    AddCompanionReference(reference, "mapValue", filePath, jsonPath);
+                    AddCompanionReference(
+                        reference,
+                        "mapValue",
+                        filePath,
+                        jsonPath,
+                        expectedCarrier);
                     break;
             }
         }
@@ -688,15 +834,34 @@ internal sealed class MortalItemCarrierCatalog
             string reference,
             string propertyName,
             string filePath,
-            string jsonPath)
+            string jsonPath,
+            MortalItemCarrierCoordinate? expectedCarrier = null)
         {
             var companionReference = new MortalItemCompanionReference(
                 reference,
                 propertyName,
                 filePath,
-                jsonPath);
+                jsonPath,
+                expectedCarrier);
             AddIndex(ByCompanionReference, reference, companionReference);
             _ambiguity.Observe("companionReference", reference, jsonPath);
+        }
+
+        private void ScanInlineCompanionSurface(
+            string filePath,
+            string jsonPath,
+            JsonNode? node,
+            MortalItemCarrierCoordinate? expectedCarrier)
+        {
+            if (node == null)
+                return;
+
+            ScanCompanionNode(
+                filePath,
+                jsonPath,
+                node,
+                valuesAreReferences: true,
+                expectedCarrier);
         }
 
         private void AddUniqueIdentity(

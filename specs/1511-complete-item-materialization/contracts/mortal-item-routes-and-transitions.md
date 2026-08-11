@@ -53,7 +53,14 @@ semantic, companion, identity, receipt, or single-carrier contract.
 ### `trade_output`
 
 - Input: source removal plus destination item transition.
-- Authority: exact NPC trade request/receipt and offer/item identity.
+- Authority: one exact pre-turn NPC trade request plus one exact current-turn
+  `UpdateNpcTradeInventoryReceipts` entry.
+- The raw item's exact `creationRef` equals the unique current-schema offer
+  `slotId`; duplicate or request-ambiguous slot authority fails closed.
+- The raw item must equal the offer `itemData` semantic projection. Offer-local
+  identity (`itemId`) and raw creation/sealing evidence are excluded from that
+  comparison, so the canonical trade offer remains a reusable template while
+  the purchased item receives its own permanent identity and receipt.
 - Buying/selling/buyback of an existing physical item is a transfer preserving
   identity/receipt. A merchant-generated never-before-existing stock item uses
   independent creation exactly once.

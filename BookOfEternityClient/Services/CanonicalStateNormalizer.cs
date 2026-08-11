@@ -96,7 +96,11 @@ public partial class CanonicalStateNormalizer
     public static readonly string[] NormalizerRollbackTrackedFiles = NormalizerBackupInputFiles
         .Concat(new[]
         {
-            GuardianProjectState.JournalPath
+            GuardianProjectState.JournalPath,
+            "game_state/npcs/npc_inventory.json",
+            "game_state/inventory/recipes.json",
+            CraftRequestState.PendingRequestPath,
+            NpcTradeRequestState.PendingRequestPath
         })
         .Distinct(StringComparer.OrdinalIgnoreCase)
         .ToArray();

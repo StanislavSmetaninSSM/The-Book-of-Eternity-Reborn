@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class MortalItemMaterializationValidationTests
+public sealed partial class MortalItemMaterializationValidationTests
 {
     [Fact]
     public async Task RawCompletePlayerCreation_PassesBeforeSeal()

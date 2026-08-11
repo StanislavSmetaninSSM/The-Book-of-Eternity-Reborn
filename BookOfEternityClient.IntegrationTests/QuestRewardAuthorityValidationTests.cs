@@ -31,25 +31,45 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
     public async Task ValidateGameStateAsync_QuestRewardItemResolvedByInventory_DoesNotReportItemAuthorityIssue()
     {
         await WriteQuestRewardAsync("""
-          "itemsReceived": ["item_merchant_seal"]
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
+          "rewardId": "reward_merchant_seal",
+          "itemsReceived": [
             {
               "itemId": "item_merchant_seal",
-              "name": "Печать караванного мастера",
-              "description": "Печать, полученная за охрану каравана.",
-              "type": "Квестовый предмет"
+              "displayName": "Печать караванного мастера"
             }
           ]
-        }
         """);
+        var item = MortalItemTestFixture.CreateRawRoot(
+            route: "quest_reward",
+            authorityKind: "quest_reward",
+            authorityId: "reward_merchant_seal",
+            creationRef: "new_item_merchant_seal",
+            materializationId: "mat_item_merchant_seal");
+        var receipt = MortalItemIdentityState.CreateRootReceipt(
+            item,
+            "item_merchant_seal",
+            acceptedTurn: 42);
+        item["itemId"] = "item_merchant_seal";
+        item["existedId"] = "item_merchant_seal";
+        item.Remove("creationRef");
+        item["materializationReceipt"] = receipt;
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            MortalItemTestFixture.CreateCarrier(
+                item,
+                "player_inventory",
+                "player").ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(item).ToJsonString());
 
         var issues = await _validator.ValidateGameStateAsync(
             IntegrationValidationProfiles.QuestReward);
 
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingItemAuthorityCode));
+        Assert.DoesNotContain(issues, issue => IsIssue(
+            issue,
+            QuestRewardAuthority.MortalItemTransitionAuthorityMismatchCode));
     }
 
     [Fact]
@@ -65,7 +85,28 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
         Assert.Contains(issues, issue =>
             IsIssue(issue, MissingItemAuthorityCode) &&
             issue.FilePath.Contains("itemsReceived[0]", StringComparison.OrdinalIgnoreCase) &&
-            issue.Actual?.Contains("item_gold_ring", StringComparison.OrdinalIgnoreCase) == true);
+                issue.Actual?.Contains("item_gold_ring", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentItemRewardWithoutRewardId_ReportsTransitionAuthorityIssue()
+    {
+        await WriteQuestRewardAsync("""
+          "itemsReceived": [
+            {
+              "itemId": "item_unsealed_reward",
+              "displayName": "Незапечатанная награда"
+            }
+          ]
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync(
+            IntegrationValidationProfiles.QuestReward);
+
+        Assert.Contains(issues, issue =>
+            IsIssue(
+                issue,
+                QuestRewardAuthority.MortalItemTransitionAuthorityMismatchCode));
     }
 
     [Fact]
@@ -193,6 +234,9 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingSkillAuthorityCode));
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingRelationshipAuthorityCode));
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingHistoryReasonCode));
+        Assert.DoesNotContain(issues, issue => IsIssue(
+            issue,
+            QuestRewardAuthority.MortalItemTransitionAuthorityMismatchCode));
     }
 
     [Fact]

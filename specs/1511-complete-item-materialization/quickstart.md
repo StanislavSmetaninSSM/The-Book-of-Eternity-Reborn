@@ -245,3 +245,123 @@ The refresh transaction holds one `CanonicalWriteLease`, captures exact byte
 before-images for the shared normalizer/QTE/browser rollback contour, and
 restores every changed or newly created tracked path on write exceptions or
 post-seal validation errors.
+
+## 11. All creation routes and US1 checkpoint evidence
+
+The complete-creation slice now seals all eight approved routes with one
+turn-wide ordinal `creationRef` map. Exact companion references are rewritten
+across player/NPC equipment, nested containers, resources, text, journals,
+bonds, recipes, quest rewards, and storage. The validator rejects forged route
+authority, unresolved or cross-owner references, duplicate quest authority,
+and receipt/index disagreement before acceptance.
+
+Representative red/green evidence from the route and companion TDD loop:
+
+| Selection | Result | Tests | Result directory |
+| --- | --- | ---: | --- |
+| orphan companion references (RED) | FAIL as expected | 0/2 | `TestResults/test-lanes/20260811-140919-606-11444-5e20ceb66f4f45ffad4af889c4be5c80-focused` |
+| orphan companion references (GREEN) | PASS | 2/2 | `TestResults/test-lanes/20260811-141259-393-13516-2d16d5405a194e19a74f97c1eda5dff0-focused` |
+| inline references and missing parent (RED) | FAIL as expected | 0/4 | `TestResults/test-lanes/20260811-141819-825-39448-550d405fb2c44940b02fd15883120183-focused` |
+| inline references and missing parent (GREEN) | PASS | 4/4 | `TestResults/test-lanes/20260811-142202-794-26804-d86b19aa6228478bb0f74049e4b744a9-focused` |
+| craft/trade authority (RED) | FAIL as expected | 0/2 | `TestResults/test-lanes/20260811-143753-670-28648-dc4f15689cd24ec88766ce5512b86666-focused` |
+| craft/trade authority and route matrix (GREEN) | PASS | 10/10 | `TestResults/test-lanes/20260811-143914-419-28804-c8e051e0be5846e7a104b59a0f067958-focused` |
+| historical quest reward authority (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-144107-484-37708-1ba3b18e8a444fd4984bde63870264c6-focused` |
+| historical quest reward authority (GREEN) | PASS | 3/3 | `TestResults/test-lanes/20260811-144146-735-38956-d77fb2d483424c0f852c3b997c8fc0c4-focused` |
+| duplicate quest creation authority (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-144252-066-47908-dd87ade6f20440748047ca34929ccd77-focused` |
+| duplicate quest creation authority (GREEN) | PASS | 2/2 | `TestResults/test-lanes/20260811-144327-350-30544-c0d01a5ffda54638bd8ed456f43db727-focused` |
+| immutable old `creationRef` reuse (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-144445-710-14516-9f1e5019bd75405ba7bd2634e485650d-focused` |
+| immutable old `creationRef` reuse (GREEN) | PASS | 9/9 | `TestResults/test-lanes/20260811-144520-543-28184-004057220e114bc3bdfd5a4ac6b45ac7-focused` |
+| unrelated NPC equipment preservation (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-144702-571-18444-354d803d4a024286a42c028d40404b66-focused` |
+| NPC equipment command reconciliation (GREEN) | PASS | 3/3 | `TestResults/test-lanes/20260811-144749-101-28680-6e9fc587887941ef87ff682b0b73409a-focused` |
+| cross-owner NPC equipment reference (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-145103-105-6720-4f92d489a0884362bfaf6a43e078df68-focused` |
+| owner and inline reference validation (GREEN) | PASS | 7/7 | `TestResults/test-lanes/20260811-145354-191-40932-da22c55b371e43c8a4673ce8e4be393b-focused` |
+| unknown NPC destination parent (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-145803-899-38900-b7fc066d4da6410d9259e3a242429cfa-focused` |
+| NPC destination parent validation (GREEN) | PASS | 2/2 | `TestResults/test-lanes/20260811-145838-838-34736-df3042422f274b5ab921795351324e40-focused` |
+
+The accepted US1 checkpoint commands were:
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -Filter "FullyQualifiedName~MortalItemMaterializationContractTests|FullyQualifiedName~MortalItemCarrierCatalogTests|FullyQualifiedName~ValidationPhaseSelectionTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalItemMaterializationValidationTests|FullyQualifiedName~CanonicalStateNormalizerTests|FullyQualifiedName~MortalBootstrapValidationTests|FullyQualifiedName~PendingTurnSnapshotTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
+```
+
+`CanonicalStateNormalizerTests` is the actual partial-class test name; the
+planning suffix `.MortalItems` is a source-file label, not a discoverable test
+class. The corrected selector prevents a false zero-discovery checkpoint.
+
+| Checkpoint | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| complete normalizer control | PASS | 224/224 | false | complete | `TestResults/test-lanes/20260811-150733-959-47944-cfdc4d9602f24caeab3de10252b322f5-focused` |
+| complete materialization control | PASS | 67/67 | false | complete | `TestResults/test-lanes/20260811-151017-091-21616-810b08aefa124ce08ad0bd2446a2fd8e-focused` |
+| post-review materialization control | PASS | 68/68 | false | complete | `TestResults/test-lanes/20260811-155421-062-1412-01ad8c8da90643439f80f5be7c421643-focused` |
+| quest/trade/snapshot related control | PASS | 22/22 | false | complete | `TestResults/test-lanes/20260811-151200-130-39244-67ce33a64a6a43fcb6f8802864dbd71e-focused` |
+| carrier catalog control | PASS | 16/16 | false | complete | `TestResults/test-lanes/20260811-151237-421-7708-94eb6f3812d34c43b790966e71ffbb8b-focused` |
+| US1 fast-project checkpoint | PASS | 94/94 | false | complete | `TestResults/test-lanes/20260811-152503-575-45108-8e32c3db81ab41c883a42d64af5b40fb-focused` |
+| US1 integration checkpoint | PASS | 326/326 | false | complete | `TestResults/test-lanes/20260811-152528-928-19328-40437ec42fc24982bad007f5fe88157e-focused` |
+| complete Fast checkpoint | PASS | 2832/2832 | false | complete | `TestResults/test-lanes/20260811-152059-768-18620-2e5ec8159fe3431a97a08074766a1820-fast` |
+| post-review Fast checkpoint | PASS | 2832/2832 | false | complete | `TestResults/test-lanes/20260811-155616-989-12232-4cc376efdb02499e9ecacd2ce3f272a9-fast` |
+
+The first Fast attempt exposed two whitespace-sensitive accepted-turn source
+guards after a method was line-wrapped; the guards now inspect the relevant
+method bodies and passed 2/2 in
+`TestResults/test-lanes/20260811-151620-498-45208-bc906636498544788c1269f711558e51-focused`.
+The second Fast attempt exposed a QTE fixture whose “minimal validated Mortal
+state” omitted the now-required empty client identity index. The fixture was
+migrated (no runtime auto-healing was added) and the failing scenario passed
+1/1 in
+`TestResults/test-lanes/20260811-152030-354-20376-b81bf8e5cf994685ab1bb3f6ce18ca42-focused`.
+
+Manual merge-gate review then strengthened the positive active quest-reward
+test to reject the new transition-authority issue as well as the older generic
+lookup issue. The legacy scalar/receipt-less fixture failed 0/1 as expected in
+`TestResults/test-lanes/20260811-153256-736-12172-d5f1d32fade2451fae7bb858b92f5fff-focused`.
+After migration to a structured reward detail, complete sealed item, and
+matching identity-index create transition, the scenario passed 1/1 in
+`TestResults/test-lanes/20260811-153405-624-45164-0fbe306e600b45caa8af07cee73629ea-focused`;
+the complete quest/trade regression selection passed 19/19 in
+`TestResults/test-lanes/20260811-153802-357-7704-7e7bd6f314b64922ac3dea6b625a705f-focused`.
+
+The same review found that a GM could bypass the supported player creation
+command by inserting a raw item directly into canonical `items[]`. The new
+surface-boundary regression failed 0/1 as expected in
+`TestResults/test-lanes/20260811-154927-720-29476-d2d7bb473dce493dbf1b3983c4ca5ab5-focused`.
+After the route authority catalog began requiring every raw player-carrier
+occurrence to originate under `UpdateInventory`, the scenario passed 1/1 in
+`TestResults/test-lanes/20260811-155027-355-16732-78202dbb8e524a2d819cc82df03b7bd7-focused`;
+the complete materialization selection then passed 68/68 in the post-review
+checkpoint recorded above.
+
+An independent checkpoint review then found four route-boundary gaps. The
+remediation kept later trade settlement/transfer work in US2 while closing the
+US1 authority boundary: unavailable quest details no longer authorize a live
+creation; every location-storage destination must exist in the validated
+pre-turn snapshot; a trade output must bind one exact pre-turn request and one
+current-turn `UpdateNpcTradeInventoryReceipts` entry, use the unique offer
+`slotId` as its raw `creationRef`, and match the offer `itemData` semantic
+projection while leaving the current-schema offer template unchanged. Trade
+output may enter only the player inventory, ambiguous request/slot evidence
+fails closed, and trade/NPC-command lookups are built once with ordinal keys.
+
+| Review remediation | Result | Tests | Result directory |
+| --- | --- | ---: | --- |
+| unavailable quest reward authority (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-162613-895-18408-b6300bc1f93f44baa71959c648760f37-focused` |
+| unavailable quest reward authority (GREEN) | PASS | 1/1 | `TestResults/test-lanes/20260811-162715-646-9344-37fd44ea37dc4003be607bbea0b168c8-focused` |
+| same-turn storage targets for non-storage routes (RED) | FAIL as expected | 0/4 | `TestResults/test-lanes/20260811-162906-881-39912-ed17139ba3884c768e176ed9746a24cf-focused` |
+| same-turn storage targets for non-storage routes (GREEN) | PASS | 4/4 | `TestResults/test-lanes/20260811-163201-812-17524-af7c164fc1c249c58e40a4e8d7592234-focused` |
+| unrelated trade-offer identity (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-163745-417-27384-fda014dced0f4afa95927759087fd8b0-focused` |
+| existing-storage trade destination (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-163956-511-19940-479b8f361b8145e783adbfcdc6eae439-focused` |
+| exact trade offer and destination authority (GREEN) | PASS | 3/3 | `TestResults/test-lanes/20260811-164120-848-44272-f5bcaeba2d8240ddb139bc259ba9ac7a-focused` |
+| all eight creation routes after trade hardening | PASS | 8/8 | `TestResults/test-lanes/20260811-164249-848-36876-dbba6412bc9b43cd85c2ad554c2661e2-focused` |
+| route/NPC-command scale controls (RED compile gate) | FAIL as expected | build gate | `TestResults/test-lanes/20260811-164603-505-31200-e54be79376f242b2b573daa96682ed9c-focused` |
+| route/NPC-command 2.5x scale controls (GREEN) | PASS | 2/2 | `TestResults/test-lanes/20260811-165043-506-18616-73f6ba8add6e46649326450498abd7a2-focused` |
+| forged route-authority regression after offer evidence split | PASS | 8/8 | `TestResults/test-lanes/20260811-165625-291-7444-514742d30b3244949f183d6e04d6346c-focused` |
+| complete materialization control after all remediations | PASS | 75/75 | `TestResults/test-lanes/20260811-165732-537-19320-712f4420dec64fa397d241ca71447a65-focused` |
+| related normalizer regression control | PASS | 14/14 | `TestResults/test-lanes/20260811-165944-012-43104-f042b73a265c45bdbbaf8bffd279fcbd-focused` |
+| post-remediation Fast checkpoint | PASS | 2834/2834 | `TestResults/test-lanes/20260811-170135-202-15644-32fca72316eb45f685b566670a376cf7-fast` |
+| production-schema trade template compatibility (RED) | FAIL as expected | 7/9 | `TestResults/test-lanes/20260811-171332-445-21832-8357767fddd4431ab972f2e4a0cd7eb6-focused` |
+| exact request/update-receipt + slot/semantic trade authority (GREEN) | PASS | 13/13 | `TestResults/test-lanes/20260811-172233-518-17784-eb9fadb454a2408e89068a0c59b19fec-focused` |
+| sparse and dense trade/NPC-command 2.5x scale controls | PASS | 3/3 | `TestResults/test-lanes/20260811-172448-037-46576-02ef659c112e40e6b440d1def4067d54-focused` |
+| complete materialization control after current-schema trade binding | PASS | 77/77 | `TestResults/test-lanes/20260811-172543-854-18324-8668ef3490e8488c91759adbbf3335c9-focused` |
+| related normalizer control after current-schema trade binding | PASS | 14/14 | `TestResults/test-lanes/20260811-172811-815-29492-3d421069d747400ba9d7503310247f15-focused` |
+| final US1 Fast checkpoint after current-schema trade binding | PASS | 2835/2835 | `TestResults/test-lanes/20260811-172844-250-33132-9c187074d1a4465d9faa5b1ef3102067-fast` |

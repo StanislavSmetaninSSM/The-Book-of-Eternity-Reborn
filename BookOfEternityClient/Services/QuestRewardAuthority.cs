@@ -16,6 +16,8 @@ internal static class QuestRewardAuthority
     public const string MissingSkillAuthorityCode = "quest_reward_skill_missing_detail_authority";
     public const string MissingRelationshipAuthorityCode = "quest_reward_relationship_missing_detail_authority";
     public const string MissingHistoryReasonCode = "quest_reward_history_reason_missing";
+    public const string MortalItemTransitionAuthorityMismatchCode =
+        "mortal_item_materialization_quest_reward_authority_mismatch";
 
     private const string QuestHistoryPath = "game_state/quests/quest_history.json";
 
@@ -91,6 +93,131 @@ internal static class QuestRewardAuthority
         }
 
         return issues;
+    }
+
+    internal static IReadOnlyList<QuestRewardAuthorityIssue>
+        ValidateMortalItemTransitionAuthorities(
+            JsonNode? questHistoryRoot,
+            MortalItemIdentityParseResult identityIndex)
+    {
+        ArgumentNullException.ThrowIfNull(identityIndex);
+
+        var issues = new List<QuestRewardAuthorityIssue>();
+        if (questHistoryRoot is not JsonObject root ||
+            root["questRewards"] is not JsonArray rewards)
+        {
+            return issues;
+        }
+
+        for (var rewardIndex = 0; rewardIndex < rewards.Count; rewardIndex++)
+        {
+            if (rewards[rewardIndex] is not JsonObject reward)
+                continue;
+
+            var rewardAuthorityId = ReadExactRewardIdentity(reward["rewardId"]);
+            if (reward["itemsReceived"] is not JsonArray itemRewards)
+            {
+                continue;
+            }
+
+            for (var itemIndex = 0; itemIndex < itemRewards.Count; itemIndex++)
+            {
+                var itemReward = itemRewards[itemIndex] as JsonObject;
+                if (itemReward != null &&
+                    ReadExplicitUnavailableStatus(itemReward) != null)
+                {
+                    continue;
+                }
+
+                var rewardPath =
+                    $"{QuestHistoryPath}.questRewards[{rewardIndex}].itemsReceived[{itemIndex}]";
+                var itemId = ReadExactRewardIdentity(itemReward?["itemId"]);
+                JsonObject? entry = null;
+                if (itemId != null)
+                    identityIndex.EntriesByItemId.TryGetValue(itemId, out entry);
+                var firstTransition = entry?["transitions"] is JsonArray { Count: > 0 } transitions
+                    ? transitions[0] as JsonObject
+                    : null;
+                if (rewardAuthorityId == null ||
+                    itemReward == null ||
+                    itemId == null ||
+                    entry == null ||
+                    firstTransition == null ||
+                    !string.Equals(
+                        ReadExactRewardIdentity(firstTransition["kind"]),
+                        "create",
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        ReadExactRewardIdentity(firstTransition["authorityKind"]),
+                        "quest_reward",
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        ReadExactRewardIdentity(firstTransition["authorityId"]),
+                        rewardAuthorityId,
+                        StringComparison.Ordinal))
+                {
+                    var unresolvedReference = itemId ??
+                                              ReadExactRewardIdentity(itemReward?["creationRef"]) ??
+                                              ReadExactRewardIdentity(itemRewards[itemIndex]);
+                    issues.Add(new QuestRewardAuthorityIssue(
+                        rewardPath,
+                        MortalItemTransitionAuthorityMismatchCode,
+                        "Quest item reward must resolve to its exact accepted Mortal item creation transition.",
+                        rewardAuthorityId == null
+                            ? "exact rewardId and itemId with matching create/quest_reward transition"
+                            : $"itemId with create/quest_reward authority {rewardAuthorityId}",
+                        DescribeMortalItemTransitionActual(
+                            rewardAuthorityId,
+                            itemId,
+                            entry),
+                        "Исправь exact rewardId/itemId в quest history по принятому ходу; не переигрывай награду и не создавай receipt/index вручную.",
+                        itemId != null
+                            ? $"mortal_item:existing:{itemId}"
+                            : unresolvedReference != null
+                                ? $"mortal_item:unresolved:{unresolvedReference}"
+                                : "mortal_item:quest_reward:unknown"));
+                }
+            }
+        }
+
+        return issues;
+    }
+
+    private static string DescribeMortalItemTransitionActual(
+        string? rewardAuthorityId,
+        string? itemId,
+        JsonObject? entry)
+    {
+        if (entry?["transitions"] is not JsonArray transitions ||
+            transitions.Count == 0 ||
+            transitions[0] is not JsonObject transition)
+        {
+            var itemEvidence = itemId == null
+                ? "missing exact itemId"
+                : $"{itemId}: missing index transition";
+            return rewardAuthorityId == null
+                ? $"missing exact rewardId; {itemEvidence}"
+                : itemEvidence;
+        }
+
+        return $"rewardId={rewardAuthorityId ?? "missing"}; " +
+               $"{itemId ?? "missing itemId"}: first=" +
+               $"{ReadExactRewardIdentity(transition["kind"]) ?? "missing kind"}/" +
+               $"{ReadExactRewardIdentity(transition["authorityKind"]) ?? "missing authorityKind"}/" +
+               $"{ReadExactRewardIdentity(transition["authorityId"]) ?? "missing authorityId"}";
+    }
+
+    private static string? ReadExactRewardIdentity(JsonNode? node)
+    {
+        if (node is not JsonValue value ||
+            !value.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text) ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        return text;
     }
 
     public static string DescribePlayerReward(
@@ -302,6 +429,12 @@ internal static class QuestRewardAuthority
         }
 
         return null;
+    }
+
+    internal static bool IsExplicitlyUnavailableReward(JsonObject reward)
+    {
+        ArgumentNullException.ThrowIfNull(reward);
+        return ReadExplicitUnavailableStatus(reward) != null;
     }
 
     private static string FormatUnavailableStatus(string status) =>
@@ -594,4 +727,5 @@ internal sealed record QuestRewardAuthorityIssue(
     string Message,
     string Expected,
     string Actual,
-    string RepairHint);
+    string RepairHint,
+    string? Actor = null);
