@@ -6,7 +6,7 @@
 
 **Spec Kit feature**: `specs/1511-complete-item-materialization/`
 
-**Status**: Design approved in conversation; written-spec review pending
+**Status**: Design and written specification approved in conversation
 
 ## Purpose
 
@@ -136,7 +136,8 @@ One shared materialization validator receives normalized item candidates from ro
 - player inventory;
 - existing NPC inventory;
 - new-NPC initial inventory;
-- loot/drop carrier;
+- loot/drop acquisition adapter whose accepted destination is a real player,
+  NPC, or existing-storage carrier;
 - craft output;
 - trade output;
 - quest reward;
@@ -202,6 +203,12 @@ If any step fails, no item, reward settlement, consumed ingredient, equipment ch
 5. Update only the current carrier and transition evidence in the client authority.
 
 Display name never identifies the transferred object. A merchant sale, NPC handoff, drop, retrieval, or storage operation that moves an existing physical item follows this flow rather than independent creation.
+
+The existing local `DropAsync` action is destructive discard, not persistent
+ground placement: it retires the removed identity as destroyed. Persistent
+placement uses an already-valid storage carrier. Existing vehicle-inventory
+moves also preserve item identity and update its carrier coordinate, while
+vehicle materialization and capacity remain #1515.
 
 ### Stack split
 

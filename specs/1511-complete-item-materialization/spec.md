@@ -130,7 +130,7 @@ As a player, I can inspect an accepted item in the existing console and browser 
 ### Functional Requirements
 
 - **FR-001**: The system MUST apply one first-materialization contract to every durable ordinary Mortal World item regardless of its initial supported carrier or creation route.
-- **FR-002**: The supported route inventory MUST include player acquisition, existing-NPC acquisition, new-NPC initial inventory, loot/drop creation, crafting output, trade output, quest reward, and placement into an already valid location-storage carrier.
+- **FR-002**: The supported route inventory MUST include player acquisition, existing-NPC acquisition, new-NPC initial inventory, loot/drop acquisition into a real canonical destination, crafting output, trade output, quest reward, and placement into an already valid location-storage carrier; it MUST NOT invent a durable ground-loot carrier.
 - **FR-003**: First creation MUST be determined against a validated pre-turn snapshot and current accepted identity authority, not by display name, prose, route keywords, or missing optional data.
 - **FR-004**: Every first creation MUST include a complete semantic item object and a versioned GM-authored materialization envelope in the same atomic package.
 - **FR-005**: The envelope MUST identify the Mortal realm, creation route, source turn, source authority, unique independent-root materialization identity, and disposition of every governed semantic section.
@@ -179,7 +179,7 @@ As a player, I can inspect an accepted item in the existing console and browser 
 - **Materialization Envelope**: GM-authored, versioned declaration of one independent root creation, its route/source, and the populated or intentionally empty state of every governed section.
 - **Sealed Materialization Receipt**: Immutable client evidence binding an accepted item instance to an envelope, permanent identity, and accepted turn.
 - **Identity Authority Entry**: Client-owned record of an item instance's active/retired state, current carrier, origin materializations, and transition lineage.
-- **Carrier**: The exact canonical player, NPC, loot/drop, or already valid location-storage owner/placement that contains one active item.
+- **Carrier**: The exact canonical player, NPC, already-valid location-storage, or already-valid vehicle owner/placement that contains one active item. Loot/drop is a creation route, not an independent durable carrier.
 - **Companion Authority**: Canonical state outside the core item that provides item text, sentient journals, equipment, mechanics, bonds, recipes, quest linkage, or placement evidence.
 - **Item Transition**: A creation, transfer, split, merge, consumption, destruction, crafting, or retirement operation that changes identity authority without rewriting prior evidence.
 - **Stack Lineage**: Auditable relationship among source, child, survivor, and retired item identities with conserved quantities and retained origin materializations.
@@ -190,7 +190,7 @@ As a player, I can inspect an accepted item in the existing console and browser 
 
 - **SC-001**: All eight enumerated first-creation route classes accept a complete representative item and reject the same missing required section with no partial grant.
 - **SC-002**: One hundred percent of current-schema durable items in active repository bootstrap state, examples, and positive fixtures carry valid materialization evidence; explicitly malformed negative fixtures remain isolated and labelled.
-- **SC-003**: Every tested transfer among player, NPC, loot, and existing-storage carriers preserves the exact permanent identity and original receipt with exactly one active carrier.
+- **SC-003**: Every tested transfer among player, NPC, existing-storage, and already-valid vehicle carriers preserves the exact permanent identity and original receipt with exactly one active carrier; destructive discard retires the identity instead of creating ground loot.
 - **SC-004**: Every tested split and merge conserves quantity exactly and leaves complete origin lineage for all active and retired identities.
 - **SC-005**: Every tested structured reward, purchase, crafting, and quest outcome without matching item authority is rejected before the player can inspect or use the claimed item.
 - **SC-006**: Every malformed creation scenario produces one bounded repair packet that names all required item-specific targets and no unrelated canonical target.
