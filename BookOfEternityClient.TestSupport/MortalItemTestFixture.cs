@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Tests;
 
@@ -137,6 +138,85 @@ internal static class MortalItemTestFixture
         return item;
     }
 
+    internal static JsonObject CreateCanonicalRootAtTurn(
+        string itemId,
+        int acceptedAtTurn,
+        string route,
+        string authorityKind,
+        string authorityId,
+        string? name = null,
+        int? price = null,
+        int? baseSellPrice = null)
+    {
+        var suffix = IdentitySuffix(itemId);
+        var creationRef = $"new_item_{suffix}";
+        var materializationId = $"mat_item_{suffix}";
+        var item = CreateRawRoot(
+            route,
+            authorityKind,
+            authorityId,
+            acceptedAtTurn,
+            creationRef,
+            materializationId);
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            item["name"] = name;
+            item["description"] = $"Тестовый canonical предмет «{name}».";
+        }
+        if (price.HasValue)
+            item["price"] = price.Value;
+        if (baseSellPrice.HasValue)
+            item["baseSellPrice"] = baseSellPrice.Value;
+
+        var receipt = MortalItemIdentityState.CreateRootReceipt(
+            item,
+            itemId,
+            acceptedAtTurn);
+        item["itemId"] = itemId;
+        item["existedId"] = itemId;
+        item.Remove("creationRef");
+        item["materializationReceipt"] = receipt;
+        return item;
+    }
+
+    internal static JsonObject CreateCanonicalTradeStock(
+        JsonObject slot,
+        string npcId,
+        int acceptedAtTurn)
+    {
+        var itemData = slot["itemData"]?.AsObject() ??
+                       throw new InvalidOperationException("Trade slot requires itemData.");
+        var itemId = slot["itemId"]?.GetValue<string>() ??
+                     itemData["itemId"]?.GetValue<string>() ??
+                     throw new InvalidOperationException("Trade slot requires itemId.");
+        var item = CreateCanonicalRootAtTurn(
+            itemId,
+            acceptedAtTurn,
+            route: "new_npc_inventory",
+            authorityKind: "new_npc",
+            authorityId: npcId,
+            name: itemData["name"]?.GetValue<string>(),
+            price: ReadInt(itemData["price"], 10),
+            baseSellPrice: ReadInt(itemData["baseSellPrice"], 0));
+
+        foreach (var property in new[]
+                 {
+                     "description", "type", "tradeItemClass", "quality", "rarity", "group"
+                 })
+        {
+            if (itemData[property] != null)
+                item[property] = itemData[property]!.DeepClone();
+        }
+        var quality = itemData["quality"]?.GetValue<string>() ??
+                      itemData["rarity"]?.GetValue<string>() ??
+                      "Common";
+        item["quality"] = quality;
+        item["rarity"] = itemData["rarity"]?.GetValue<string>() ?? quality;
+        item["weight"] = ReadDouble(itemData["weight"], 0.1);
+        item["volume"] = ReadDouble(itemData["volume"], 0.05);
+        return item;
+    }
+
     internal static JsonObject CreateIndex(params JsonObject[] canonicalItems)
     {
         var entries = new JsonArray();
@@ -170,6 +250,21 @@ internal static class MortalItemTestFixture
                 ownerId,
                 containerId,
                 containerPath))
+        };
+
+    internal static JsonObject CreateIndexForCarriers(
+        params (JsonObject Item, string Kind, string OwnerId, string? ContainerId)[] carriers) =>
+        new()
+        {
+            ["schemaVersion"] = 1,
+            ["entries"] = new JsonArray(
+                carriers
+                    .Select(carrier => (JsonNode?)CreateIndexEntry(
+                        carrier.Item,
+                        carrier.Kind,
+                        carrier.OwnerId,
+                        carrier.ContainerId))
+                    .ToArray())
         };
 
     internal static JsonObject CreateCarrier(
@@ -350,5 +445,28 @@ internal static class MortalItemTestFixture
             char.IsLetterOrDigit(character) || character is '_' or '-'
                 ? character
                 : '_'));
+    }
+
+    private static int ReadInt(JsonNode? node, int fallback)
+    {
+        if (node is not JsonValue value)
+            return fallback;
+        if (value.TryGetValue<int>(out var number))
+            return number;
+        return value.TryGetValue<string>(out var text) && int.TryParse(text, out number)
+            ? number
+            : fallback;
+    }
+
+    private static double ReadDouble(JsonNode? node, double fallback)
+    {
+        if (node is not JsonValue value)
+            return fallback;
+        if (value.TryGetValue<double>(out var number))
+            return number;
+        return value.TryGetValue<string>(out var text) &&
+               double.TryParse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out number)
+            ? number
+            : fallback;
     }
 }

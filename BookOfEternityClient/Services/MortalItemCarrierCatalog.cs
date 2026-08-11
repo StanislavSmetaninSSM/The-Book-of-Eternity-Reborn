@@ -203,7 +203,7 @@ internal sealed class MortalItemCarrierCatalog
                     "player",
                     null,
                     Array.Empty<string>()));
-            ScanItemArray(
+            ScanCreationCommandItemArray(
                 root["UpdateInventory"] as JsonArray,
                 PlayerInventoryPath,
                 $"{PlayerInventoryPath}.UpdateInventory",
@@ -338,6 +338,8 @@ internal sealed class MortalItemCarrierCatalog
                 RouteNodesVisited++;
                 var commandPath = $"{NpcInventoryCommandsPath}.NPCInventoryAdds[{index}]";
                 if (command["item"] is not JsonObject item)
+                    continue;
+                if (!IsRawCreationCommandItem(item))
                     continue;
                 var npcId = ReadCarrierIdentity(command, NpcIdentityFields, commandPath, "npc owner");
                 if (ReadString(command["destinationContainerId"]) is { } containerReference)
@@ -508,6 +510,33 @@ internal sealed class MortalItemCarrierCatalog
                     rootCarrier with { ContainerPath = ReadContainerPath(item, itemPath) });
             }
         }
+
+        private void ScanCreationCommandItemArray(
+            JsonArray? items,
+            string filePath,
+            string arrayPath,
+            MortalItemCarrierCoordinate rootCarrier)
+        {
+            if (items == null)
+                return;
+            for (var index = 0; index < items.Count; index++)
+            {
+                if (items[index] is not JsonObject item ||
+                    !IsRawCreationCommandItem(item))
+                {
+                    continue;
+                }
+                var itemPath = $"{arrayPath}[{index}]";
+                AddItem(
+                    item,
+                    filePath,
+                    itemPath,
+                    rootCarrier with { ContainerPath = ReadContainerPath(item, itemPath) });
+            }
+        }
+
+        private static bool IsRawCreationCommandItem(JsonObject item) =>
+            ReadString(item["creationRef"]) != null;
 
         private static bool ContainsItemObject(JsonArray items)
         {

@@ -461,12 +461,22 @@ internal static class MortalItemIdentityState
         var valid = JsonNode.DeepEquals(
             lastTransition["destinationCarrier"],
             current["currentCarrier"]);
+        var reportedSpecificMismatch = false;
         if (previousState == "active" && currentState == "active" && carrierChanged)
         {
             valid &= string.Equals(kind, "transfer", StringComparison.Ordinal) &&
                      JsonNode.DeepEquals(
                          lastTransition["sourceCarrier"],
                          previous["currentCarrier"]);
+            if (valid && !ValidateTransferTransitionContinuity(
+                    previous,
+                    lastTransition,
+                    itemId,
+                    issues))
+            {
+                valid = false;
+                reportedSpecificMismatch = true;
+            }
         }
         else if (previousState == "active" && currentState is "merged" or "consumed" or "destroyed")
         {
@@ -481,8 +491,48 @@ internal static class MortalItemIdentityState
                      lastTransition["destinationCarrier"] == null;
         }
 
-        if (!valid)
+        if (!valid && !reportedSpecificMismatch)
             issues.Add(UnrecordedStateChangeIssue(itemId, previous, current));
+    }
+
+    private static bool ValidateTransferTransitionContinuity(
+        JsonObject previous,
+        JsonObject transition,
+        string itemId,
+        List<ValidationIssue> issues)
+    {
+        var sourceItemIds = transition["sourceItemIds"] as JsonArray;
+        var hasExactSourceIdentity = sourceItemIds is { Count: 1 } &&
+                                     string.Equals(
+                                         ReadExactIdentity(sourceItemIds[0]),
+                                         itemId,
+                                         StringComparison.Ordinal);
+        var previousTransitions = previous["transitions"] as JsonArray;
+        var previousLast = previousTransitions is { Count: > 0 }
+            ? previousTransitions[^1] as JsonObject
+            : null;
+        var previousQuantity = -1;
+        var quantityBefore = -1;
+        var quantityAfter = -1;
+        var hasQuantities = previousLast != null &&
+                            TryGetInt(previousLast, "quantityAfter", out previousQuantity) &&
+                            TryGetInt(transition, "quantityBefore", out quantityBefore) &&
+                            TryGetInt(transition, "quantityAfter", out quantityAfter);
+        var preservesQuantity = hasQuantities &&
+                                previousQuantity > 0 &&
+                                quantityBefore == previousQuantity &&
+                                quantityAfter == quantityBefore;
+        if (hasExactSourceIdentity && preservesQuantity)
+            return true;
+
+        issues.Add(Issue(
+            $"{StatePath}.entries[{itemId}].transitions",
+            "mortal_item_identity_transfer_transition_mismatch",
+            "A Mortal item transfer must name the exact moved identity and preserve its recorded quantity.",
+            $"sourceItemIds=[{itemId}]; quantityBefore=quantityAfter={Describe(previousLast?["quantityAfter"])}",
+            transition.ToJsonString(),
+            itemId));
+        return false;
     }
 
     private static ValidationIssue UnrecordedStateChangeIssue(

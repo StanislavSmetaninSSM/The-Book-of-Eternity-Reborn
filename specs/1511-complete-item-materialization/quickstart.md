@@ -365,3 +365,49 @@ fails closed, and trade/NPC-command lookups are built once with ordinal keys.
 | complete materialization control after current-schema trade binding | PASS | 77/77 | `TestResults/test-lanes/20260811-172543-854-18324-8668ef3490e8488c91759adbbf3335c9-focused` |
 | related normalizer control after current-schema trade binding | PASS | 14/14 | `TestResults/test-lanes/20260811-172811-815-29492-3d421069d747400ba9d7503310247f15-focused` |
 | final US1 Fast checkpoint after current-schema trade binding | PASS | 2835/2835 | `TestResults/test-lanes/20260811-172844-250-33132-9c187074d1a4465d9faa5b1ef3102067-fast` |
+
+## 12. Identity-preserving transfer and Mortal trade evidence
+
+US2 routes every supported local move through one client-owned transition
+writer. Player, NPC, location-storage, vehicle, buy, sell, and buyback actions
+now preserve the exact permanent `itemId`, materialization envelope, root
+receipt, quantity, and stable companions. The carrier and identity index move
+together under one canonical write lease; injected write failures restore the
+exact carrier, index, money, and merchant-state before-images.
+
+Trade offers have two explicit outcomes. A slot already backed by a physical
+NPC item transfers that exact item. A ready GM-authored template-only slot is
+sealed once as a new independent `trade_output` item whose route authority is
+the exact request/receipt and unique `slotId`; offer-local identity metadata is
+not copied into the physical item.
+
+Representative red/green evidence from the US2 TDD loop:
+
+| Selection | Result | Tests | Result directory |
+| --- | --- | ---: | --- |
+| console buy/sell/buyback identity (RED) | FAIL as expected | 0/3 | `TestResults/test-lanes/20260811-183907-031-46756-3c946994668f456aaf7cc7403c2c87b3-focused` |
+| browser buy/sell/buyback identity (RED) | FAIL as expected | 0/3 | `TestResults/test-lanes/20260811-184048-325-20332-105db3038e034ec3a46381cbf1ad0577-focused` |
+| console buy/sell/buyback identity (GREEN) | PASS | 3/3 | `TestResults/test-lanes/20260811-184954-328-37548-ff39fcf2dada4a3eb76ee7736a1f6a6e-focused` |
+| browser buy/sell/buyback identity (GREEN) | PASS | 3/3 | `TestResults/test-lanes/20260811-185042-904-21352-9683468a381e4ea8bbf3cd5f62a8110a-focused` |
+| template-only trade output (RED) | FAIL as expected | 0/1 | `TestResults/test-lanes/20260811-190756-595-13412-276eef1fe35840a2ae8531d02b4d4299-focused` |
+| template-only trade output (GREEN) | PASS | 1/1 | `TestResults/test-lanes/20260811-191047-119-35900-d73b38268b03480e9ae29457ac29707e-focused` |
+| transition/storage/trade fast-project control | PASS | 81/81 | `TestResults/test-lanes/20260811-191256-821-23188-3495a5260a644be49e6adc3634ace92d-focused` |
+| transfer GM-command integration | PASS | 4/4 | `TestResults/test-lanes/20260811-192030-073-6104-8d60441e6e52498daa2a5dc0d1e56439-focused` |
+| creation-route and transfer integration | PASS | 81/81 | `TestResults/test-lanes/20260811-192458-854-29960-8ee2d34e6c68498daebe3c5b53d45980-focused` |
+| console storage/vehicle/trade integration | PASS | 5/5 | `TestResults/test-lanes/20260811-192314-781-41872-f4ff42e34a934930a42568fbb3e52b0c-focused` |
+| NPC trade request validation | PASS | 9/9 | `TestResults/test-lanes/20260811-192340-216-31232-ad87d97e4cd245239a5df71fdcca6673-focused` |
+| related web command integration | PASS | 3/3 | `TestResults/test-lanes/20260811-192413-793-19360-c9c76d52418347a59ade009a69a250fb-focused` |
+
+The first combined integration selector exceeded the five-minute Focused
+budget because it included the complete large Explorer test classes; it did
+not report a failed test. Splitting the same boundaries into the selections
+above completed within their lane budgets. The first US2 Fast checkpoint then
+found one source guard whose extraction endpoint named a deliberately removed
+local item-upsert helper. The guard still protects the explicit `relicId`
+authority rule and passed 1/1 after its endpoint was moved to the next current
+helper in
+`TestResults/test-lanes/20260811-193115-752-22156-23942a9f0a6a47178c431fb575e2f61f-focused`.
+
+The accepted US2 Fast checkpoint passed 2845/2845 tests with no timeout,
+complete owned-process cleanup, and no duplicate test IDs in
+`TestResults/test-lanes/20260811-193248-935-20344-05d9fa95249849f78fab1efc0c8799f7-fast`.

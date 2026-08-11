@@ -159,7 +159,7 @@ public sealed class ValidationSourceGuardTests
             "private static bool IsSoulRelicLikeItem(",
             StringComparison.Ordinal);
         var nextTradeHelperStart = tradeSource.IndexOf(
-            "private static void UpsertInventoryItem(",
+            "private static int FindInventoryItemIndex(",
             soulRelicHelperStart,
             StringComparison.Ordinal);
         Assert.True(

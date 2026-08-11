@@ -107,20 +107,20 @@ forged transitions fail atomically.
 
 ### Tests for User Story 2
 
-- [ ] T028 [US2] Add red transfer-continuity, duplicate-carrier, immutable-envelope/receipt, retired-ID reuse, and exact-name-collision tests in `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.cs`
-- [ ] T029 [US2] Add red player/NPC GM-command transfer and companion-retention integration tests in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Transfers.cs`
-- [ ] T030 [P] [US2] Add red atomic player/storage/vehicle move, write-failure rollback, and index-carrier tests in `BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs`
-- [ ] T031 [P] [US2] Add red NPC buy/sell/buyback identity-preservation and receipt immutability tests in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs` and `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
+- [x] T028 [US2] Add red transfer-continuity, duplicate-carrier, immutable-envelope/receipt, retired-ID reuse, and exact-name-collision tests in `BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.cs`
+- [x] T029 [US2] Add red player/NPC GM-command transfer and companion-retention integration tests in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Transfers.cs`
+- [x] T030 [P] [US2] Add red atomic player/storage/vehicle move, write-failure rollback, and index-carrier tests in `BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs`
+- [x] T031 [P] [US2] Add red NPC buy/sell/buyback identity-preservation and receipt immutability tests in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.TradeAndInventory.cs` and `BookOfEternityClient.Tests/WebUi/BrowserTradeParityTests.cs`
 
 ### Implementation for User Story 2
 
-- [ ] T032 [US2] Implement operation-intent-based coordinated carrier/index before-image validation, conditional writes, and exact rollback in `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
-- [ ] T033 [US2] Route player/location-storage and player/vehicle moves through the transition writer while preserving the same JSON item/receipt in `BookOfEternityClient/Services/StorageTransportMoveService.cs`
-- [ ] T034 [US2] Preserve item identity across NPC buy, sell, buyback, and existing-item handoff while keeping merchant stock settlement atomic in `BookOfEternityClient/Services/NpcTradeService.cs` and `BookOfEternityClient/Services/NpcTradeRequestState.cs`
-- [ ] T035 [US2] Classify accepted GM inventory remove/add/move surfaces as one exact transfer and reject remove-plus-recreate behavior in `BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
-- [ ] T036 [US2] Move or clear equipment, text/journal, bond, recipe, quest, ownership, and container-path companions according to their authority in `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
-- [ ] T037 [US2] Include `item_identity_index.json` in browser local-write tracked paths and preserve session-lock ordering in `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
-- [ ] T038 [US2] Run the US2 Focused filters and verify exact pre/post bytes on injected write failure; record result directories in `specs/1511-complete-item-materialization/quickstart.md`
+- [x] T032 [US2] Implement operation-intent-based coordinated carrier/index before-image validation, conditional writes, and exact rollback in `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
+- [x] T033 [US2] Route player/location-storage and player/vehicle moves through the transition writer while preserving the same JSON item/receipt in `BookOfEternityClient/Services/StorageTransportMoveService.cs`
+- [x] T034 [US2] Preserve item identity across NPC buy, sell, buyback, and existing-item handoff while keeping merchant stock settlement atomic in `BookOfEternityClient/Services/NpcTradeService.cs` and `BookOfEternityClient/Services/NpcTradeRequestState.cs`
+- [x] T035 [US2] Classify accepted GM inventory remove/add/move surfaces as one exact transfer and reject remove-plus-recreate behavior in `BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
+- [x] T036 [US2] Move or clear equipment, text/journal, bond, recipe, quest, ownership, and container-path companions according to their authority in `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
+- [x] T037 [US2] Include `item_identity_index.json` in browser local-write tracked paths and preserve session-lock ordering in `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
+- [x] T038 [US2] Run the US2 Focused filters and verify exact pre/post bytes on injected write failure; record result directories in `specs/1511-complete-item-materialization/quickstart.md`
 
 **Checkpoint**: Existing items have stable physical identity across every
 supported transfer; storage/vehicle entity completeness remains outside #1511.

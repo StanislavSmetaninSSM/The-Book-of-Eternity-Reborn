@@ -138,6 +138,13 @@ public partial class ValidationService
                 repairTargetFiles: new[] { MortalItemIdentityState.StatePath }));
         }
 
+        var transferCatalog = await MortalItemAcceptedTransferCatalog.BuildAsync(
+            _fs,
+            writeLease: null,
+            previous.Catalog,
+            current.Catalog,
+            snapshotLookup.Manifest.TurnNumber);
+        issues.AddRange(transferCatalog.Issues);
         ValidateRawCurrentItemContinuity(previous.Catalog, current.Catalog, issues);
     }
 

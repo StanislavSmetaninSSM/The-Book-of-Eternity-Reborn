@@ -656,7 +656,11 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Перемещение предмета в хранилище",
-            [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.CurrentLocationPath],
+            [
+                StorageTransportMoveService.InventoryPath,
+                StorageTransportMoveService.CurrentLocationPath,
+                MortalItemIdentityState.StatePath
+            ],
             async writeLease =>
             {
                 var outcome = await StorageTransportMoveService.MoveStorageItemAsync(
@@ -704,7 +708,11 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Перемещение предмета в транспорт",
-            [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.VehiclesPath],
+            [
+                StorageTransportMoveService.InventoryPath,
+                StorageTransportMoveService.VehiclesPath,
+                MortalItemIdentityState.StatePath
+            ],
             async writeLease =>
             {
                 var outcome = await StorageTransportMoveService.MoveVehicleItemAsync(

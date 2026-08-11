@@ -98,6 +98,7 @@ public partial class CanonicalStateNormalizer
         {
             GuardianProjectState.JournalPath,
             "game_state/npcs/npc_inventory.json",
+            MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
             "game_state/inventory/recipes.json",
             CraftRequestState.PendingRequestPath,
             NpcTradeRequestState.PendingRequestPath

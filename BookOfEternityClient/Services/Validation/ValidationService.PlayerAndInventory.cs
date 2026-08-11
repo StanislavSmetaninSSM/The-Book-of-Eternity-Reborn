@@ -4355,8 +4355,11 @@ public partial class ValidationService
                 continue;
             }
 
+            var isMaterializedTransferPayload =
+                IsCanonicalMortalItemTransferPayload(item);
             if (preTurnInventoryItemIds.Count > 0 &&
-                !preTurnInventoryItemIds.Contains(existedId))
+                !preTurnInventoryItemIds.Contains(existedId) &&
+                !isMaterializedTransferPayload)
             {
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.existedId",
@@ -4381,6 +4384,32 @@ public partial class ValidationService
 
             ValidatePartialInventoryItemUpdate(item, itemContext, issues);
         }
+    }
+
+    private static bool IsCanonicalMortalItemTransferPayload(JsonElement item)
+    {
+        if (item.ValueKind != JsonValueKind.Object ||
+            !item.TryGetProperty("itemId", out var itemIdNode) ||
+            itemIdNode.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(itemIdNode.GetString()) ||
+            !item.TryGetProperty("existedId", out var existedIdNode) ||
+            existedIdNode.ValueKind != JsonValueKind.String ||
+            !string.Equals(
+                itemIdNode.GetString(),
+                existedIdNode.GetString(),
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return item.TryGetProperty(
+                   MortalItemMaterializationContract.EnvelopeProperty,
+                   out var envelope) &&
+               envelope.ValueKind == JsonValueKind.Object &&
+               item.TryGetProperty(
+                   MortalItemMaterializationContract.ReceiptProperty,
+                   out var receipt) &&
+               receipt.ValueKind == JsonValueKind.Object;
     }
 
     private void ValidateFullInventoryItemObject(JsonElement item, string itemContext, List<ValidationIssue> issues, bool requireStringExistedId)

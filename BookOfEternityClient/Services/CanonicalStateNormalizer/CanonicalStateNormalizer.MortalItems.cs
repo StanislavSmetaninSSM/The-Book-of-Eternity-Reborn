@@ -10,7 +10,7 @@ public partial class CanonicalStateNormalizer
     private async Task NormalizeMortalItemsAsync(
         IReadOnlyDictionary<string, string>? backups)
     {
-        _ = backups;
+        await NormalizeMortalItemTransfersAsync(backups);
 
         var playerRoot = await ReadMortalItemObjectRootAsync(
             InventoryEquipmentService.ItemsPath);
@@ -200,6 +200,188 @@ public partial class CanonicalStateNormalizer
             MortalItemIdentityState.StatePath,
             normalizedIndex.Root.ToJsonString(JsonOpts));
     }
+
+    private async Task NormalizeMortalItemTransfersAsync(
+        IReadOnlyDictionary<string, string>? backups)
+    {
+        var previousPlayer = await ReadBackupObjectAsync(
+            InventoryEquipmentService.ItemsPath,
+            backups);
+        var previousNpc = await ReadBackupObjectAsync(
+            NpcCoreChangesContract.NpcCorePath,
+            backups);
+        var previousLocation = await ReadBackupObjectAsync(
+            StorageTransportMoveService.CurrentLocationPath,
+            backups);
+        var previousVehicles = WrapMortalItemVehicles(
+            await ReadBackupNodeAsync(StorageTransportMoveService.VehiclesPath, backups));
+        var previousCatalog = MortalItemCarrierCatalog.Build(
+            new MortalItemCarrierCatalogInput(
+                previousPlayer,
+                previousNpc,
+                null,
+                previousLocation,
+                previousVehicles,
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+
+        var currentPlayer = await ReadMortalItemObjectRootAsync(
+            InventoryEquipmentService.ItemsPath);
+        var currentNpc = await ReadMortalItemObjectRootAsync(
+            NpcCoreChangesContract.NpcCorePath);
+        var currentLocation = await ReadMortalItemObjectRootAsync(
+            StorageTransportMoveService.CurrentLocationPath);
+        var currentVehicles = await ReadMortalItemVehiclesRootAsync();
+        var currentCatalog = MortalItemCarrierCatalog.Build(
+            new MortalItemCarrierCatalogInput(
+                currentPlayer,
+                currentNpc,
+                null,
+                currentLocation,
+                currentVehicles,
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+        if (previousCatalog.Issues.Count > 0 || currentCatalog.Issues.Count > 0)
+        {
+            var issue = previousCatalog.Issues.FirstOrDefault() ?? currentCatalog.Issues[0];
+            throw new InvalidDataException(
+                $"Mortal item transfer carrier authority failed: {issue.Code}.");
+        }
+
+        var acceptedTurn = await TryReadCurrentTurnNumberAsync();
+        var transfers = await MortalItemAcceptedTransferCatalog.BuildAsync(
+            _fs,
+            _writeLease,
+            previousCatalog,
+            currentCatalog,
+            acceptedTurn);
+        if (transfers.Issues.Count > 0)
+        {
+            throw new InvalidDataException(
+                $"Mortal item transfer authority failed: {transfers.Issues[0].Code}.");
+        }
+        if (transfers.Transfers.Count == 0)
+            return;
+
+        if (_writeLease == null)
+        {
+            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            await ApplyMortalItemTransfersAsync(ownedLease, transfers.Transfers);
+        }
+        else
+        {
+            await ApplyMortalItemTransfersAsync(_writeLease, transfers.Transfers);
+        }
+        await RemoveAppliedMortalItemTransferCommandsAsync(transfers.Transfers);
+    }
+
+    private async Task ApplyMortalItemTransfersAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IReadOnlyList<MortalItemAcceptedTransfer> transfers)
+    {
+        var writer = new MortalItemTransitionWriter(_fs);
+        foreach (var transfer in transfers)
+        {
+            var result = await writer.ExecuteAsync(
+                writeLease,
+                new MortalItemTransitionIntent(
+                    MortalItemTransitionKind.Transfer,
+                    new[] { transfer.ItemId },
+                    transfer.SourceCarrier,
+                    transfer.DestinationCarrier,
+                    transfer.Quantity,
+                    transfer.Turn,
+                    transfer.AuthorityKind,
+                    transfer.AuthorityId));
+            if (!result.Success)
+            {
+                throw new InvalidDataException(
+                    $"Mortal item transfer '{transfer.ItemId}' failed: {result.Message}");
+            }
+        }
+    }
+
+    private async Task RemoveAppliedMortalItemTransferCommandsAsync(
+        IReadOnlyList<MortalItemAcceptedTransfer> transfers)
+    {
+        var player = await ReadMortalItemObjectRootAsync(
+            InventoryEquipmentService.ItemsPath);
+        var npcCommands = await ReadMortalItemObjectRootAsync(
+            MortalItemAcceptedTransferCatalog.NpcCommandsPath);
+        var playerRemovals = await ReadMortalItemObjectRootAsync(
+            MortalItemAcceptedTransferCatalog.PlayerRemovalPath);
+
+        var playerChanged = RemoveCommandIndexes(
+            player,
+            "UpdateInventory",
+            transfers
+                .Where(transfer => transfer.DestinationSurface == MortalItemTransferCommandSurface.PlayerUpdate)
+                .Select(transfer => transfer.DestinationIndex));
+        var npcAddsChanged = RemoveCommandIndexes(
+            npcCommands,
+            "NPCInventoryAdds",
+            transfers
+                .Where(transfer => transfer.DestinationSurface == MortalItemTransferCommandSurface.NpcAdd)
+                .Select(transfer => transfer.DestinationIndex));
+        var npcRemovalsChanged = RemoveCommandIndexes(
+            npcCommands,
+            "NPCInventoryRemovals",
+            transfers
+                .Where(transfer => transfer.RemovalSurface == MortalItemTransferCommandSurface.NpcRemoval)
+                .Select(transfer => transfer.RemovalIndex));
+        var playerRemovalsChanged = RemoveCommandIndexes(
+            playerRemovals,
+            "removeInventoryItems",
+            transfers
+                .Where(transfer => transfer.RemovalSurface == MortalItemTransferCommandSurface.PlayerRemoval)
+                .Select(transfer => transfer.RemovalIndex));
+
+        if (playerChanged && player != null)
+        {
+            await WriteCanonicalFileAtomicAsync(
+                InventoryEquipmentService.ItemsPath,
+                player.ToJsonString(JsonOpts));
+        }
+        if ((npcAddsChanged || npcRemovalsChanged) && npcCommands != null)
+        {
+            await WriteCanonicalFileAtomicAsync(
+                MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+                npcCommands.ToJsonString(JsonOpts));
+        }
+        if (playerRemovalsChanged && playerRemovals != null)
+        {
+            await WriteCanonicalFileAtomicAsync(
+                MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                playerRemovals.ToJsonString(JsonOpts));
+        }
+    }
+
+    private static bool RemoveCommandIndexes(
+        JsonObject? root,
+        string property,
+        IEnumerable<int> indexes)
+    {
+        if (root?[property] is not JsonArray array)
+            return false;
+        var ordered = indexes.Distinct().OrderByDescending(index => index).ToArray();
+        if (ordered.Length == 0)
+            return false;
+        foreach (var index in ordered)
+        {
+            if (index < 0 || index >= array.Count)
+                throw new InvalidDataException($"Mortal item transfer command index {index} is stale.");
+            array.RemoveAt(index);
+        }
+        if (array.Count == 0)
+            root.Remove(property);
+        return true;
+    }
+
+    private static JsonObject? WrapMortalItemVehicles(JsonNode? node) =>
+        node switch
+        {
+            JsonObject root => root,
+            JsonArray vehicles => new JsonObject { ["vehicles"] = vehicles.DeepClone() },
+            _ => null
+        };
 
     private static void EnsureRawMortalItemCreation(
         JsonObject rawItem,

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Reflection;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -523,6 +524,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_NpcTradeBuy_SucceedsAndMarksOfferSoldOut()
     {
         await SeedNpcTradeStateAsync();
+        var npcBefore = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var stockBefore = npcBefore["UpdateNPCs"]![0]!["inventory"]!.AsArray()
+            .OfType<JsonObject>()
+            .ToDictionary(item => item["itemId"]!.GetValue<string>(), StringComparer.Ordinal);
         _console.QueueSelection("Действие", "🛒 Торговать", "🛍 Купить");
         await _stateManager.RefreshGameStateAsync();
 
@@ -536,6 +541,28 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("\"soldOut\": true", npcRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"items\"", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.DoesNotContain("\"money\": 500", statusRaw ?? string.Empty, StringComparison.Ordinal);
+        var inventory = JsonNode.Parse(inventoryRaw!)!.AsObject();
+        var npcAfter = JsonNode.Parse(npcRaw!)!.AsObject()["UpdateNPCs"]![0]!.AsObject();
+        var soldSlot = Assert.Single(
+            npcAfter["tradeInventory"]!["items"]!.AsArray(),
+            item => item!["soldOut"]!.GetValue<bool>());
+        var purchasedItemId = soldSlot!["itemId"]!.GetValue<string>();
+        var receiptBefore = stockBefore[purchasedItemId]["materializationReceipt"]!.DeepClone();
+        var envelopeBefore = stockBefore[purchasedItemId]["materialization"]!.DeepClone();
+        var purchased = Assert.Single(
+            inventory["items"]!.AsArray(),
+            item => item!["itemId"]!.GetValue<string>() == purchasedItemId);
+        Assert.True(JsonNode.DeepEquals(receiptBefore, purchased!["materializationReceipt"]));
+        Assert.True(JsonNode.DeepEquals(envelopeBefore, purchased["materialization"]));
+        Assert.DoesNotContain(
+            npcAfter["inventory"]!.AsArray(),
+            item => item!["itemId"]!.GetValue<string>() == purchasedItemId);
+        var index = MortalItemIdentityState.Parse(
+            (await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Equal(
+            "player_inventory",
+            index.EntriesByItemId[purchasedItemId]["currentCarrier"]!["kind"]!.GetValue<string>());
+        Assert.Equal(2, index.EntriesByItemId[purchasedItemId]["transitions"]!.AsArray().Count);
     }
 
     [Fact]
@@ -614,6 +641,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_NpcTradeSell_SucceedsAndRemovesSoldItem()
     {
         await SeedNpcTradeStateAsync(includeSellableInventoryItem: true);
+        var inventoryBefore = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        var soldBefore = Assert.Single(inventoryBefore["items"]!.AsArray())!.AsObject();
+        var receiptBefore = soldBefore["materializationReceipt"]!.DeepClone();
+        var envelopeBefore = soldBefore["materialization"]!.DeepClone();
         _console.QueueSelection("Выберите раздел", "💰 Продать товары");
         _console.QueueSelection("Действие", "🛒 Торговать", "💰 Продать");
         await _stateManager.RefreshGameStateAsync();
@@ -629,12 +661,33 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("\"money\": 500", statusRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"buybackInventory\"", npcRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"status\": \"available\"", npcRaw ?? string.Empty, StringComparison.Ordinal);
+        var npc = JsonNode.Parse(npcRaw!)!.AsObject()["UpdateNPCs"]![0]!.AsObject();
+        var soldAfter = Assert.Single(
+            npc["inventory"]!.AsArray(),
+            item => item!["itemId"]!.GetValue<string>() == "item_sell_lantern_001");
+        Assert.True(JsonNode.DeepEquals(receiptBefore, soldAfter!["materializationReceipt"]));
+        Assert.True(JsonNode.DeepEquals(envelopeBefore, soldAfter["materialization"]));
+        var buybackProjection = Assert.Single(npc["buybackInventory"]!.AsArray())!["itemData"]!.AsObject();
+        Assert.False(buybackProjection.ContainsKey("materialization"));
+        Assert.False(buybackProjection.ContainsKey("materializationReceipt"));
+        var index = MortalItemIdentityState.Parse(
+            (await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Equal(
+            "npc_inventory",
+            index.EntriesByItemId["item_sell_lantern_001"]["currentCarrier"]!["kind"]!.GetValue<string>());
+        Assert.Equal(2, index.EntriesByItemId["item_sell_lantern_001"]["transitions"]!.AsArray().Count);
     }
 
     [Fact]
     public async Task TryProcessCommand_NpcTradeBuyback_ReacquiresPreviouslySoldItem()
     {
         await SeedNpcTradeStateAsync(includeBuybackInventory: true);
+        var npcBefore = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var buybackBefore = Assert.Single(
+            npcBefore["UpdateNPCs"]![0]!["inventory"]!.AsArray(),
+            item => item!["itemId"]!.GetValue<string>() == "item_sell_lantern_001")!.AsObject();
+        var receiptBefore = buybackBefore["materializationReceipt"]!.DeepClone();
+        var envelopeBefore = buybackBefore["materialization"]!.DeepClone();
         _console.QueueSelection("Выберите раздел", "🔁 Выкупить обратно");
         _console.QueueSelection("Действие", "🛒 Торговать", "🔁 Выкупить");
         await _stateManager.RefreshGameStateAsync();
@@ -647,6 +700,22 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var npcRaw = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
         Assert.Contains("Походный фонарь", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"status\": \"rebought\"", npcRaw ?? string.Empty, StringComparison.Ordinal);
+        var inventory = JsonNode.Parse(inventoryRaw!)!.AsObject();
+        var rebought = Assert.Single(
+            inventory["items"]!.AsArray(),
+            item => item!["itemId"]!.GetValue<string>() == "item_sell_lantern_001");
+        Assert.True(JsonNode.DeepEquals(receiptBefore, rebought!["materializationReceipt"]));
+        Assert.True(JsonNode.DeepEquals(envelopeBefore, rebought["materialization"]));
+        var npcAfter = JsonNode.Parse(npcRaw!)!.AsObject()["UpdateNPCs"]![0]!.AsObject();
+        Assert.DoesNotContain(
+            npcAfter["inventory"]!.AsArray(),
+            item => item!["itemId"]!.GetValue<string>() == "item_sell_lantern_001");
+        var index = MortalItemIdentityState.Parse(
+            (await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Equal(
+            "player_inventory",
+            index.EntriesByItemId["item_sell_lantern_001"]["currentCarrier"]!["kind"]!.GetValue<string>());
+        Assert.Equal(2, index.EntriesByItemId["item_sell_lantern_001"]["transitions"]!.AsArray().Count);
         Assert.Contains(_console.SelectionChoicesHistory,
             entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
                      entry.Choices.Contains("🔁 Выкупить обратно", StringComparer.Ordinal));

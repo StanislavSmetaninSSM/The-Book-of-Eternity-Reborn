@@ -7405,7 +7405,8 @@ public partial class ValidationService
             {
                 ValidateFullInventoryItemObject(inventoryItem, $"{itemContext}.item", issues, requireStringExistedId: false);
                 if (inventoryItem.TryGetProperty("existedId", out var existedId) &&
-                    existedId.ValueKind != JsonValueKind.Null)
+                    existedId.ValueKind != JsonValueKind.Null &&
+                    !IsCanonicalMortalItemTransferPayload(inventoryItem))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.item.existedId",

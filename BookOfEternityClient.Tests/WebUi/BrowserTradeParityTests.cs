@@ -143,6 +143,19 @@ public sealed class BrowserTradeParityTests : IDisposable
             includeSellableInventoryItem: operation.StartsWith("sell:", StringComparison.Ordinal),
             includeBuybackInventory: operation.StartsWith("buyback:", StringComparison.Ordinal));
 
+        var beforeInventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        var beforeNpcRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var beforeNpc = beforeNpcRoot["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        var physicalBefore = operation.StartsWith("sell:", StringComparison.Ordinal)
+            ? Assert.Single(
+                beforeInventory["items"]!.AsArray(),
+                item => item!["itemId"]!.GetValue<string>() == affectedItemId)
+            : Assert.Single(
+                beforeNpc["inventory"]!.AsArray(),
+                item => item!["itemId"]!.GetValue<string>() == affectedItemId);
+        var receiptBefore = physicalBefore!["materializationReceipt"]!.DeepClone();
+        var envelopeBefore = physicalBefore["materialization"]!.DeepClone();
+
         var result = await _mortalWriteService.TryApplyAsync(
             "/npc_trade npc_merchant_001",
             Answers(("npc_trade_choice", operation), ("confirm_trade_write", true)),
@@ -174,6 +187,31 @@ public sealed class BrowserTradeParityTests : IDisposable
             Assert.Contains(items, item => item!["itemId"]!.GetValue<string>() == affectedItemId);
             Assert.Equal("rebought", npc["buybackInventory"]!.AsArray()[0]!["status"]!.GetValue<string>());
         }
+
+        var npcItems = npc["inventory"]!.AsArray();
+        var physicalOccurrences = items
+            .Concat(npcItems)
+            .Where(item => item!["itemId"]!.GetValue<string>() == affectedItemId)
+            .ToArray();
+        var physicalAfter = Assert.Single(physicalOccurrences);
+        Assert.True(JsonNode.DeepEquals(receiptBefore, physicalAfter!["materializationReceipt"]));
+        Assert.True(JsonNode.DeepEquals(envelopeBefore, physicalAfter["materialization"]));
+        if (operation.StartsWith("sell:", StringComparison.Ordinal))
+        {
+            var projection = Assert.Single(npc["buybackInventory"]!.AsArray())!["itemData"]!.AsObject();
+            Assert.False(projection.ContainsKey("materialization"));
+            Assert.False(projection.ContainsKey("materializationReceipt"));
+        }
+
+        var identity = MortalItemIdentityState.Parse(
+            (await _fs.ReadFileAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Empty(identity.Issues);
+        Assert.Equal(
+            operation.StartsWith("sell:", StringComparison.Ordinal)
+                ? "npc_inventory"
+                : "player_inventory",
+            identity.EntriesByItemId[affectedItemId]["currentCarrier"]!["kind"]!.GetValue<string>());
+        Assert.Equal(2, identity.EntriesByItemId[affectedItemId]["transitions"]!.AsArray().Count);
     }
 
     [Fact]
@@ -1085,6 +1123,72 @@ public sealed class BrowserTradeParityTests : IDisposable
           ]
         }
         """);
+
+        var soldItem = includeSellableInventoryItem
+            ? MortalItemTestFixture.CreateCanonicalRootAtTurn(
+                "item_sell_lantern_001",
+                acceptedAtTurn: 5,
+                route: "player_acquisition",
+                authorityKind: "turn_outcome",
+                authorityId: "turn_5",
+                name: "Походный фонарь",
+                price: 20,
+                baseSellPrice: 8)
+            : null;
+        var buybackItem = includeBuybackInventory && !includeSellableInventoryItem
+            ? MortalItemTestFixture.CreateCanonicalRootAtTurn(
+                "item_sell_lantern_001",
+                acceptedAtTurn: 5,
+                route: "player_acquisition",
+                authorityKind: "turn_outcome",
+                authorityId: "turn_5",
+                name: "Походный фонарь",
+                price: 20,
+                baseSellPrice: 8)
+            : null;
+
+        var npcRoot = JsonNode.Parse(
+            (await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        var seededNpc = npcRoot["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        var stockItems = includeTradeInventory
+            ? seededNpc["tradeInventory"]!["items"]!.AsArray()
+                .OfType<JsonObject>()
+                .Select(slot => MortalItemTestFixture.CreateCanonicalTradeStock(
+                    slot,
+                    "npc_merchant_001",
+                    acceptedAtTurn: 5))
+                .ToArray()
+            : Array.Empty<JsonObject>();
+        seededNpc["inventory"] = new JsonArray(
+            stockItems.Cast<JsonObject?>().Append(buybackItem)
+                .Where(static item => item != null)
+                .Select(item => (JsonNode?)item!.DeepClone())
+                .ToArray());
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            npcRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = soldItem == null
+                    ? new JsonArray()
+                    : new JsonArray(soldItem.DeepClone()),
+                ["equipment"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var indexedCarriers = new List<(JsonObject Item, string Kind, string OwnerId, string? ContainerId)>();
+        indexedCarriers.AddRange(stockItems.Select(item =>
+            (item, "npc_inventory", "npc_merchant_001", (string?)null)));
+        if (soldItem != null)
+            indexedCarriers.Add((soldItem, "player_inventory", "player", null));
+        if (buybackItem != null)
+            indexedCarriers.Add((buybackItem, "npc_inventory", "npc_merchant_001", null));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndexForCarriers(indexedCarriers.ToArray())
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
     private async Task SeedShiningTradeStateAsync(bool withReadyInventory, bool includeStoredRelic = false)

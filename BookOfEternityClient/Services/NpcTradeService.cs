@@ -274,6 +274,11 @@ public sealed partial class NpcTradeService
     {
         if (currentTurn <= 0)
             return new NpcTradeOperationResult(false, false, "Локальная покупка товара требует актуальный номер хода.");
+        if (writeLease == null)
+        {
+            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            return await BuyCoreAsync(ownedLease, npcId, slotId, currentTurn);
+        }
 
         var localScope = await ResolveMortalTradeScopeAsync(writeLease);
         if (localScope == null)
@@ -285,8 +290,6 @@ public sealed partial class NpcTradeService
         if (npcRoot == null || itemsRoot == null || statusRoot == null)
             return new NpcTradeOperationResult(false, false, "Не удалось прочитать состояние торговли, инвентаря или денег.");
         var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
-        var itemsRootBaseline = itemsRoot.ToJsonString(JsonOpts);
-        var statusRootBaseline = statusRoot.ToJsonString(JsonOpts);
 
         var npc = FindNpcEntry(npcRoot, npcId);
         if (npc == null)
@@ -333,6 +336,34 @@ public sealed partial class NpcTradeService
         if (slot["itemData"] is not JsonObject itemData)
             return new NpcTradeOperationResult(false, false, "Данные товара повреждены.");
 
+        var itemId = GetNodeString(slot["itemId"]) ?? GetNodeString(itemData["itemId"]);
+        if (string.IsNullOrWhiteSpace(itemId) ||
+            !string.Equals(itemId, GetNodeString(itemData["itemId"]), StringComparison.Ordinal))
+        {
+            return new NpcTradeOperationResult(false, false, "Витрина не связывает слот с точным физическим предметом.");
+        }
+        var stockItem = FindNpcInventoryItemExact(npc, itemId);
+        JsonObject? rawTradeOutput = null;
+        var tradeOutputSourceTurn = 0;
+        string? tradeOutputReceiptId = null;
+        if (stockItem == null && !TryBuildTemplateTradeOutput(
+                npc,
+                tradeInventory,
+                slot,
+                itemData,
+                out rawTradeOutput,
+                out tradeOutputSourceTurn,
+                out tradeOutputReceiptId,
+                out var templateError))
+        {
+            return new NpcTradeOperationResult(false, false, templateError!);
+        }
+        var quantity = GetNodeInt(stockItem?["count"] ?? rawTradeOutput?["count"], 0);
+        if (quantity <= 0)
+            return new NpcTradeOperationResult(false, false, "Количество физического товара повреждено.");
+        if (rawTradeOutput != null && tradeOutputSourceTurn > currentTurn)
+            return new NpcTradeOperationResult(false, false, "GM-шаблон товара относится к будущему ходу.");
+
         var commitScope = await ResolveCurrentMortalTradeTargetScopeAsync(
             writeLease,
             npcId,
@@ -340,25 +371,66 @@ public sealed partial class NpcTradeService
         if (commitScope == null)
             return new NpcTradeOperationResult(false, false, "Торговец покинул текущую локацию до завершения покупки. Деньги не списаны.");
 
-        NormalizeInventoryShape(itemsRoot);
-        var inventoryItems = itemsRoot["items"]!.AsArray();
-        UpsertInventoryItem(inventoryItems, BuildCanonicalInventoryItemForLocalPurchase(CloneObject(itemData), slot));
-        statusRoot["money"] = money - price;
-        slot["soldOut"] = true;
-        SyncNpcEntries(npcRoot, GetNpcIdentity(npc), npc);
-
-        if (!await TryCommitAsync(
-                writeLease,
-                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
-                    .Concat(new[]
+        var canonicalNpcId = GetNpcIdentity(npc);
+        var repricedInventory = changed
+            ? npc["tradeInventory"]?.DeepClone()
+            : null;
+        var settlementMutation = new MortalItemTransitionMutation(
+                new[] { NpcCorePath, PlayerStatusPath },
+                context =>
+                {
+                    var mutableNpcRoot = context.GetRequiredRoot(NpcCorePath);
+                    var mutableNpc = FindNpcEntryExact(mutableNpcRoot, canonicalNpcId);
+                    if (mutableNpc == null)
+                        return "Торговец изменился до фиксации покупки.";
+                    if (repricedInventory != null)
+                        mutableNpc["tradeInventory"] = repricedInventory.DeepClone();
+                    if (mutableNpc["tradeInventory"]?["items"] is not JsonArray mutableSlots)
+                        return "Витрина торговца исчезла до фиксации покупки.";
+                    var mutableSlot = mutableSlots.OfType<JsonObject>().SingleOrDefault(candidate =>
+                        string.Equals(GetNodeString(candidate["slotId"]), slotId, StringComparison.Ordinal));
+                    if (mutableSlot == null || GetNodeBool(mutableSlot["soldOut"]) ||
+                        !string.Equals(GetNodeString(mutableSlot["itemId"]), itemId, StringComparison.Ordinal))
                     {
-                new CoordinatedStateWriteHelper.PlannedWrite(ItemsPath, itemsRootBaseline, itemsRoot.ToJsonString(JsonOpts), true),
-                new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
-                new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
-                    })
-                    .ToArray()))
+                        return "Выбранный слот изменился до фиксации покупки.";
+                    }
+
+                    var mutableStatus = context.GetRequiredRoot(PlayerStatusPath);
+                    if (GetNodeInt(mutableStatus["money"], 0) != money)
+                        return "Баланс игрока изменился до фиксации покупки.";
+                    mutableStatus["money"] = money - price;
+                    mutableSlot["soldOut"] = true;
+                    return null;
+                },
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope));
+        var writer = new MortalItemTransitionWriter(_fs);
+        var transition = stockItem != null
+            ? await writer.ExecuteAsync(
+                writeLease,
+                new MortalItemTransitionIntent(
+                    MortalItemTransitionKind.Transfer,
+                    new[] { itemId },
+                    NpcItemCarrier(canonicalNpcId),
+                    PlayerItemCarrier(),
+                    quantity,
+                    currentTurn,
+                    "npc_trade_buy",
+                    $"npc_trade_buy:{canonicalNpcId}:{slotId}:{currentTurn}"),
+                settlementMutation)
+            : await writer.CreateAsync(
+                writeLease,
+                rawTradeOutput!,
+                PlayerItemCarrier(),
+                tradeOutputSourceTurn,
+                "npc_trade_receipt",
+                tradeOutputReceiptId!,
+                settlementMutation);
+        if (!transition.Success)
         {
-            return new NpcTradeOperationResult(false, false, "Состояние торговли изменилось до фиксации покупки. Деньги и инвентарь не изменены.");
+            return new NpcTradeOperationResult(
+                false,
+                false,
+                $"Покупка не зафиксирована: {transition.Message}");
         }
 
         var itemName = GetNodeString(itemData["name"]) ?? "Товар";
@@ -386,6 +458,11 @@ public sealed partial class NpcTradeService
     {
         if (currentTurn <= 0)
             return new NpcTradeOperationResult(false, false, "Локальная продажа товара требует актуальный номер хода.");
+        if (writeLease == null)
+        {
+            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            return await SellCoreAsync(ownedLease, npcId, itemId, currentTurn);
+        }
 
         var localScope = await ResolveMortalTradeScopeAsync(writeLease);
         if (localScope == null)
@@ -397,8 +474,6 @@ public sealed partial class NpcTradeService
         if (npcRoot == null || itemsRoot == null || statusRoot == null)
             return new NpcTradeOperationResult(false, false, "Не удалось прочитать состояние торговли, инвентаря или денег.");
         var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
-        var itemsRootBaseline = itemsRoot.ToJsonString(JsonOpts);
-        var statusRootBaseline = statusRoot.ToJsonString(JsonOpts);
 
         var npc = FindNpcEntry(npcRoot, npcId);
         if (npc == null)
@@ -424,6 +499,9 @@ public sealed partial class NpcTradeService
 
         if (items[itemIndex] is not JsonObject item)
             return new NpcTradeOperationResult(false, false, "Данные товара повреждены.");
+        var canonicalItemId = GetNodeString(item["itemId"]);
+        if (!string.Equals(canonicalItemId, itemId, StringComparison.Ordinal))
+            return new NpcTradeOperationResult(false, false, "Товар не найден по точному itemId.");
         if (IsQuestBoundItem(item))
             return new NpcTradeOperationResult(false, false, "Этот предмет нельзя продать через локальную торговлю.");
         if (IsSoulRelicLikeItem(item))
@@ -447,33 +525,55 @@ public sealed partial class NpcTradeService
         if (commitScope == null)
             return new NpcTradeOperationResult(false, false, "Торговец покинул текущую локацию до завершения продажи. Предмет не изменён.");
 
+        var quantity = GetNodeInt(item["count"], 0);
+        if (quantity <= 0)
+            return new NpcTradeOperationResult(false, false, "Количество продаваемого предмета повреждено.");
         var merchantProfile = ResolveMerchantProfile(npc)?.Key ?? DefaultMerchantProfileKey;
-        var buybackInventory = EnsureBuybackInventoryArray(npc);
-        buybackInventory.Add(CreateBuybackEntry(
-            npcId,
-            GetNodeString(npc["name"]) ?? npcId,
-            CloneObject(item),
-            merchantProfile,
-            price,
-            Math.Max(0, currentTurn),
-            currentWorldMinutes));
+        var canonicalNpcId = GetNpcIdentity(npc);
+        var npcName = GetNodeString(npc["name"]) ?? canonicalNpcId;
+        var moneyBefore = GetNodeInt(statusRoot["money"], 0);
+        var transition = await new MortalItemTransitionWriter(_fs).ExecuteAsync(
+            writeLease,
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Transfer,
+                new[] { canonicalItemId! },
+                PlayerItemCarrier(),
+                NpcItemCarrier(canonicalNpcId),
+                quantity,
+                currentTurn,
+                "npc_trade_sell",
+                $"npc_trade_sell:{canonicalNpcId}:{canonicalItemId}:{currentTurn}"),
+            new MortalItemTransitionMutation(
+                new[] { PlayerStatusPath },
+                context =>
+                {
+                    var mutableNpc = FindNpcEntryExact(
+                        context.GetRequiredRoot(NpcCorePath),
+                        canonicalNpcId);
+                    if (mutableNpc == null)
+                        return "Торговец изменился до фиксации продажи.";
+                    var mutableStatus = context.GetRequiredRoot(PlayerStatusPath);
+                    if (GetNodeInt(mutableStatus["money"], 0) != moneyBefore)
+                        return "Баланс игрока изменился до фиксации продажи.";
 
-        items.RemoveAt(itemIndex);
-        statusRoot["money"] = GetNodeInt(statusRoot["money"], 0) + price;
-        SyncNpcEntries(npcRoot, npcId, npc);
-
-        if (!await TryCommitAsync(
-                writeLease,
-                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
-                    .Concat(new[]
-                    {
-                new CoordinatedStateWriteHelper.PlannedWrite(ItemsPath, itemsRootBaseline, itemsRoot.ToJsonString(JsonOpts), true),
-                new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
-                new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
-                    })
-                    .ToArray()))
+                    EnsureBuybackInventoryArray(mutableNpc).Add(CreateBuybackEntry(
+                        canonicalNpcId,
+                        npcName,
+                        CreateTradeItemProjection(context.Item),
+                        merchantProfile,
+                        price,
+                        currentTurn,
+                        currentWorldMinutes));
+                    mutableStatus["money"] = moneyBefore + price;
+                    return null;
+                },
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)));
+        if (!transition.Success)
         {
-            return new NpcTradeOperationResult(false, false, "Состояние торговли изменилось до фиксации продажи. Предмет и деньги не изменены.");
+            return new NpcTradeOperationResult(
+                false,
+                false,
+                $"Продажа не зафиксирована: {transition.Message}");
         }
 
         var itemName = GetNodeString(item["name"]) ?? "Товар";
@@ -501,6 +601,11 @@ public sealed partial class NpcTradeService
     {
         if (currentTurn <= 0)
             return new NpcTradeOperationResult(false, false, "Локальный выкуп товара требует актуальный номер хода.");
+        if (writeLease == null)
+        {
+            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            return await BuyBackCoreAsync(ownedLease, npcId, buybackEntryId, currentTurn);
+        }
 
         var localScope = await ResolveMortalTradeScopeAsync(writeLease);
         if (localScope == null)
@@ -512,8 +617,6 @@ public sealed partial class NpcTradeService
         if (npcRoot == null || itemsRoot == null || statusRoot == null)
             return new NpcTradeOperationResult(false, false, "Не удалось прочитать состояние торговли, инвентаря или денег.");
         var npcRootBaseline = npcRoot.ToJsonString(JsonOpts);
-        var itemsRootBaseline = itemsRoot.ToJsonString(JsonOpts);
-        var statusRootBaseline = statusRoot.ToJsonString(JsonOpts);
 
         var npc = FindNpcEntry(npcRoot, npcId);
         if (npc == null)
@@ -537,6 +640,18 @@ public sealed partial class NpcTradeService
 
         if (buybackEntry["itemData"] is not JsonObject itemData)
             return new NpcTradeOperationResult(false, false, "Данные товара для обратного выкупа повреждены.");
+        var itemId = GetNodeString(buybackEntry["itemId"]);
+        if (string.IsNullOrWhiteSpace(itemId) ||
+            !string.Equals(itemId, GetNodeString(itemData["itemId"]), StringComparison.Ordinal))
+        {
+            return new NpcTradeOperationResult(false, false, "Запись обратного выкупа не связана с точным предметом.");
+        }
+        var physicalItem = FindNpcInventoryItemExact(npc, itemId);
+        if (physicalItem == null)
+            return new NpcTradeOperationResult(false, false, "Физический предмет обратного выкупа отсутствует у торговца.");
+        var quantity = GetNodeInt(physicalItem["count"], 0);
+        if (quantity <= 0)
+            return new NpcTradeOperationResult(false, false, "Количество предмета обратного выкупа повреждено.");
 
         var price = GetNodeInt(buybackEntry["buybackPrice"], GetNodeInt(buybackEntry["soldForPrice"], 0));
         if (price <= 0)
@@ -553,28 +668,57 @@ public sealed partial class NpcTradeService
         if (commitScope == null)
             return new NpcTradeOperationResult(false, false, "Торговец покинул текущую локацию до завершения выкупа. Деньги не списаны.");
 
-        NormalizeInventoryShape(itemsRoot);
-        var inventoryItems = itemsRoot["items"]!.AsArray();
-        UpsertInventoryItem(inventoryItems, BuildCanonicalInventoryItemForLocalPurchase(CloneObject(itemData), buybackEntry));
-        statusRoot["money"] = money - price;
+        var canonicalNpcId = GetNpcIdentity(npc);
+        var reboughtAtUtc = DateTimeOffset.UtcNow.ToString("O");
+        var transition = await new MortalItemTransitionWriter(_fs).ExecuteAsync(
+            writeLease,
+            new MortalItemTransitionIntent(
+                MortalItemTransitionKind.Transfer,
+                new[] { itemId },
+                NpcItemCarrier(canonicalNpcId),
+                PlayerItemCarrier(),
+                quantity,
+                currentTurn,
+                "npc_trade_buyback",
+                $"npc_trade_buyback:{canonicalNpcId}:{buybackEntryId}:{currentTurn}"),
+            new MortalItemTransitionMutation(
+                new[] { PlayerStatusPath },
+                context =>
+                {
+                    var mutableNpc = FindNpcEntryExact(
+                        context.GetRequiredRoot(NpcCorePath),
+                        canonicalNpcId);
+                    if (mutableNpc?[BuybackInventoryProperty] is not JsonArray mutableBuyback)
+                        return "Запись обратного выкупа исчезла до фиксации.";
+                    var mutableEntry = mutableBuyback.OfType<JsonObject>().SingleOrDefault(entry =>
+                        string.Equals(
+                            GetNodeString(entry["buybackEntryId"]),
+                            buybackEntryId,
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            GetNodeString(entry["status"]),
+                            BuybackStatusAvailable,
+                            StringComparison.Ordinal) &&
+                        string.Equals(GetNodeString(entry["itemId"]), itemId, StringComparison.Ordinal));
+                    if (mutableEntry == null)
+                        return "Запись обратного выкупа изменилась до фиксации.";
 
-        buybackEntry["status"] = BuybackStatusRebought;
-        buybackEntry["reboughtAtTurn"] = Math.Max(0, currentTurn);
-        buybackEntry["reboughtAtUtc"] = DateTimeOffset.UtcNow.ToString("O");
-        SyncNpcEntries(npcRoot, npcId, npc);
-
-        if (!await TryCommitAsync(
-                writeLease,
-                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)
-                    .Concat(new[]
-                    {
-                new CoordinatedStateWriteHelper.PlannedWrite(ItemsPath, itemsRootBaseline, itemsRoot.ToJsonString(JsonOpts), true),
-                new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
-                new CoordinatedStateWriteHelper.PlannedWrite(NpcCorePath, npcRootBaseline, npcRoot.ToJsonString(JsonOpts), true)
-                    })
-                    .ToArray()))
+                    var mutableStatus = context.GetRequiredRoot(PlayerStatusPath);
+                    if (GetNodeInt(mutableStatus["money"], 0) != money)
+                        return "Баланс игрока изменился до фиксации выкупа.";
+                    mutableStatus["money"] = money - price;
+                    mutableEntry["status"] = BuybackStatusRebought;
+                    mutableEntry["reboughtAtTurn"] = currentTurn;
+                    mutableEntry["reboughtAtUtc"] = reboughtAtUtc;
+                    return null;
+                },
+                CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(commitScope)));
+        if (!transition.Success)
         {
-            return new NpcTradeOperationResult(false, false, "Состояние торговли изменилось до фиксации выкупа. Деньги и инвентарь не изменены.");
+            return new NpcTradeOperationResult(
+                false,
+                false,
+                $"Обратный выкуп не зафиксирован: {transition.Message}");
         }
 
         var itemName = GetNodeString(itemData["name"]) ?? "Товар";
@@ -1078,6 +1222,109 @@ public sealed partial class NpcTradeService
         return null;
     }
 
+    private static JsonObject? FindNpcEntryExact(JsonObject root, string npcId)
+    {
+        var matches = EnumerateNpcArrays(root)
+            .SelectMany(static array => array.OfType<JsonObject>())
+            .Where(item => string.Equals(GetNpcIdentity(item), npcId, StringComparison.Ordinal))
+            .ToArray();
+        return matches.Length == 1 ? matches[0] : null;
+    }
+
+    private static JsonObject? FindNpcInventoryItemExact(JsonObject npc, string itemId)
+    {
+        if (npc["inventory"] is not JsonArray inventory)
+            return null;
+        var matches = inventory.OfType<JsonObject>()
+            .Where(item => string.Equals(GetNodeString(item["itemId"]), itemId, StringComparison.Ordinal))
+            .ToArray();
+        return matches.Length == 1 ? matches[0] : null;
+    }
+
+    private static bool TryBuildTemplateTradeOutput(
+        JsonObject npc,
+        JsonObject tradeInventory,
+        JsonObject slot,
+        JsonObject itemData,
+        out JsonObject? rawItem,
+        out int sourceTurn,
+        out string? authorityId,
+        out string? error)
+    {
+        rawItem = null;
+        sourceTurn = 0;
+        authorityId = null;
+        error = null;
+
+        var npcId = GetNpcIdentity(npc);
+        var slotId = GetNodeString(slot["slotId"]);
+        var tradeCycleId = GetNodeString(tradeInventory["tradeCycleId"]);
+        var merchantProfile = GetNodeString(slot["merchantProfile"]);
+        if (string.IsNullOrWhiteSpace(npcId) || string.IsNullOrWhiteSpace(slotId) ||
+            string.IsNullOrWhiteSpace(tradeCycleId) || string.IsNullOrWhiteSpace(merchantProfile) ||
+            tradeInventory["items"] is not JsonArray slots || slots.Count < 1)
+        {
+            error = "Витрина не содержит точную authority для materialization товара.";
+            return false;
+        }
+
+        var matchingReceipts = (npc[NpcTradeRequestState.ReceiptsProperty] as JsonArray)?
+            .OfType<JsonObject>()
+            .Where(receipt =>
+                string.Equals(GetNodeString(receipt["npcId"]), npcId, StringComparison.Ordinal) &&
+                string.Equals(GetNodeString(receipt["tradeCycleId"]), tradeCycleId, StringComparison.Ordinal) &&
+                string.Equals(GetNodeString(receipt["merchantProfile"]), merchantProfile, StringComparison.Ordinal) &&
+                string.Equals(
+                    GetNodeString(receipt["status"]),
+                    NpcTradeRequestState.ReceiptStatusReady,
+                    StringComparison.Ordinal) &&
+                GetNodeInt(receipt["itemCount"], 0) == slots.Count)
+            .ToArray() ?? Array.Empty<JsonObject>();
+        if (matchingReceipts.Length != 1)
+        {
+            error = "Шаблон товара не связан с единственным ready receipt витрины.";
+            return false;
+        }
+
+        var receipt = matchingReceipts[0];
+        authorityId = GetNodeString(receipt["requestId"]);
+        sourceTurn = GetNodeInt(receipt["resolvedAtTurn"], 0);
+        if (string.IsNullOrWhiteSpace(authorityId) || sourceTurn < 1 ||
+            itemData[MortalItemMaterializationContract.EnvelopeProperty] is not JsonObject envelope ||
+            !string.Equals(GetNodeString(envelope["route"]), "trade_output", StringComparison.Ordinal) ||
+            !string.Equals(GetNodeString(envelope["creationRef"]), slotId, StringComparison.Ordinal) ||
+            GetNodeInt(envelope["sourceTurn"], 0) != sourceTurn ||
+            envelope["sourceAuthority"] is not JsonObject sourceAuthority ||
+            !string.Equals(
+                GetNodeString(sourceAuthority["kind"]),
+                "npc_trade_receipt",
+                StringComparison.Ordinal) ||
+            !string.Equals(GetNodeString(sourceAuthority["authorityId"]), authorityId, StringComparison.Ordinal))
+        {
+            error = "GM-шаблон товара не связан с exact slotId, sourceTurn и npc_trade_receipt.";
+            return false;
+        }
+
+        rawItem = itemData.DeepClone().AsObject();
+        foreach (var property in new[]
+                 {
+                     "itemId", "id", "initialId", "existedId",
+                     MortalItemMaterializationContract.ReceiptProperty
+                 })
+        {
+            rawItem.Remove(property);
+        }
+        rawItem["existedId"] = null;
+        rawItem["creationRef"] = slotId;
+        return true;
+    }
+
+    private static MortalItemCarrierCoordinate PlayerItemCarrier() =>
+        new("player_inventory", "player", null, Array.Empty<string>());
+
+    private static MortalItemCarrierCoordinate NpcItemCarrier(string npcId) =>
+        new("npc_inventory", npcId, null, Array.Empty<string>());
+
     private static IEnumerable<JsonArray> EnumerateNpcArrays(JsonObject root) =>
         GuardianPolicyContracts.EnumerateCanonicalNpcObjectArrays(root);
 
@@ -1563,114 +1810,6 @@ public sealed partial class NpcTradeService
             GetNodeString(item["relicId"]));
     }
 
-    private static void UpsertInventoryItem(JsonArray items, JsonObject item)
-    {
-        var itemId = GetNodeString(item["itemId"]) ?? GetNodeString(item["id"]) ?? GetNodeString(item["existedId"]);
-        if (!string.IsNullOrWhiteSpace(itemId))
-        {
-            for (var i = 0; i < items.Count; i++)
-            {
-                if (items[i] is not JsonObject existing)
-                    continue;
-                var existingId = GetNodeString(existing["itemId"]) ?? GetNodeString(existing["id"]) ?? GetNodeString(existing["existedId"]);
-                if (!string.IsNullOrWhiteSpace(existingId) && string.Equals(existingId, itemId, StringComparison.OrdinalIgnoreCase))
-                {
-                    items[i] = item;
-                    return;
-                }
-            }
-        }
-
-        items.Add(item);
-    }
-
-    private static JsonObject BuildCanonicalInventoryItemForLocalPurchase(JsonObject item, JsonObject? tradeSource)
-    {
-        var itemId = FirstNonEmpty(
-            GetNodeString(item["itemId"]),
-            GetNodeString(item["id"]),
-            GetNodeString(item["existedId"]),
-            GetNodeString(tradeSource?["itemId"]),
-            "npc_trade_item_" + Guid.NewGuid().ToString("N"));
-        var name = FirstNonEmpty(GetNodeString(item["name"]), "Купленный товар");
-        var description = FirstNonEmpty(GetNodeString(item["description"]), name);
-        var quality = NormalizeInventoryItemQuality(FirstNonEmpty(GetNodeString(item["quality"]), GetNodeString(item["rarity"]), "Common"));
-        var price = Math.Max(0, GetNodeInt(item["price"], GetNodeInt(tradeSource?["price"], 0)));
-        var count = Math.Max(1, GetNodeInt(item["count"], GetNodeInt(item["quantity"], GetNodeInt(tradeSource?["quantity"], 1))));
-        var isContainer = GetNodeBool(item["isContainer"]);
-        var isConsumption = GetNodeBool(item["isConsumption"]);
-
-        EnsureStringField(item, "itemId", itemId);
-        EnsureStringField(item, "id", itemId);
-        EnsureStringField(item, "existedId", itemId);
-        EnsureStringField(item, "name", name);
-        EnsureStringField(item, "description", description);
-        EnsureStringField(item, "image_prompt", FirstNonEmpty(
-            GetNodeString(item["image_prompt"]),
-            GetNodeString(item["imagePrompt"]),
-            $"{name}. {description}"));
-
-        item["quality"] = quality;
-        item["price"] = price;
-        item["count"] = count;
-        item["weight"] = Math.Max(0, GetNodeDouble(item["weight"], 0));
-        item["volume"] = Math.Max(0, GetNodeDouble(item["volume"], 0));
-        item["isContainer"] = isContainer;
-        item["isConsumption"] = isConsumption;
-        item["requiresTwoHands"] = GetNodeBool(item["requiresTwoHands"]);
-        item["durability"] = NormalizeInventoryDurability(GetNodeString(item["durability"]));
-
-        if (!IsJsonNullOrArray(item["contentsPath"]))
-            item["contentsPath"] = null;
-        if (!item.ContainsKey("contentsPath"))
-            item["contentsPath"] = null;
-        if (!item.ContainsKey("equipmentSlot"))
-            item["equipmentSlot"] = null;
-        if (!item.ContainsKey("accessoryForSlot"))
-            item["accessoryForSlot"] = null;
-
-        return item;
-    }
-
-    private static void EnsureStringField(JsonObject item, string propertyName, string fallback)
-    {
-        if (string.IsNullOrWhiteSpace(GetNodeString(item[propertyName])))
-            item[propertyName] = fallback;
-    }
-
-    private static string FirstNonEmpty(params string?[] values) =>
-        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
-
-    private static bool IsJsonNullOrArray(JsonNode? node) =>
-        node == null || node is JsonArray;
-
-    private static string NormalizeInventoryDurability(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return "100%";
-
-        var trimmed = value.Trim();
-        if (trimmed.EndsWith('%') && int.TryParse(trimmed.TrimEnd('%').Trim(), out var percent))
-            return $"{Math.Clamp(percent, 0, 100)}%";
-        if (int.TryParse(trimmed, out percent))
-            return $"{Math.Clamp(percent, 0, 100)}%";
-        return "100%";
-    }
-
-    private static string NormalizeInventoryItemQuality(string quality) =>
-        quality.Trim().ToLowerInvariant() switch
-        {
-            "trash" => "Trash",
-            "common" => "Common",
-            "uncommon" => "Uncommon",
-            "good" => "Good",
-            "rare" => "Rare",
-            "epic" => "Epic",
-            "legendary" => "Legendary",
-            "unique" => "Unique",
-            _ => "Common"
-        };
-
     private static int FindInventoryItemIndex(JsonArray items, string itemId)
     {
         for (var i = 0; i < items.Count; i++)
@@ -1678,7 +1817,7 @@ public sealed partial class NpcTradeService
             if (items[i] is not JsonObject item)
                 continue;
             var existingId = GetNodeString(item["itemId"]) ?? GetNodeString(item["id"]) ?? GetNodeString(item["existedId"]);
-            if (!string.IsNullOrWhiteSpace(existingId) && string.Equals(existingId, itemId, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(existingId) && string.Equals(existingId, itemId, StringComparison.Ordinal))
                 return i;
         }
         return -1;
@@ -1752,6 +1891,29 @@ public sealed partial class NpcTradeService
         };
     }
 
+    private static JsonObject CreateTradeItemProjection(JsonObject item)
+    {
+        var projection = new JsonObject();
+        foreach (var property in new[]
+                 {
+                     "itemId", "name", "description", "type", "tradeItemClass", "quality", "rarity",
+                     "price", "baseSellPrice", "count", "weight", "volume", "group", "durability",
+                     "isContainer", "isConsumption"
+                 })
+        {
+            if (item[property] != null)
+                projection[property] = item[property]!.DeepClone();
+        }
+
+        var itemId = GetNodeString(item["itemId"]) ?? string.Empty;
+        projection["itemId"] = itemId;
+        projection["name"] = GetNodeString(item["name"]) ?? "Товар";
+        projection["description"] = GetNodeString(item["description"]) ?? projection["name"]!.GetValue<string>();
+        projection["price"] = Math.Max(1, GetNodeInt(item["price"], GetBaseBuyPrice(GetItemRarity(item))));
+        projection["baseSellPrice"] = Math.Max(0, GetNodeInt(item["baseSellPrice"], GetBaseSellPrice(GetItemRarity(item))));
+        return projection;
+    }
+
     private static int GetRefreshAfterWorldMinutes(JsonObject? tradeInventory, int fallback) =>
         tradeInventory == null ? fallback + RefreshWindowMinutes : GetNodeInt(tradeInventory["refreshAfterWorldDate"], fallback + RefreshWindowMinutes);
 
@@ -1820,23 +1982,6 @@ public sealed partial class NpcTradeService
                 return parsed;
             if (value.TryGetValue<string>(out var str) && int.TryParse(str, out parsed))
                 return parsed;
-        }
-        return fallback;
-    }
-
-    private static double GetNodeDouble(JsonNode? node, double fallback = 0)
-    {
-        if (node is JsonValue value)
-        {
-            if (value.TryGetValue<double>(out var parsed))
-                return parsed;
-            if (value.TryGetValue<int>(out var intValue))
-                return intValue;
-            if (value.TryGetValue<string>(out var str) &&
-                double.TryParse(str, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out parsed))
-            {
-                return parsed;
-            }
         }
         return fallback;
     }
