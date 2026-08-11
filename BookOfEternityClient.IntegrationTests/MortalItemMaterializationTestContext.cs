@@ -29,11 +29,11 @@ internal sealed partial class MortalItemMaterializationTestContext : IAsyncDispo
             NullLogger<CanonicalStateNormalizer>.Instance);
     }
 
-    internal FileSystemManager FileSystem { get; }
+    internal FileSystemManager FileSystem { get; private set; }
 
-    internal ValidationService Validator { get; }
+    internal ValidationService Validator { get; private set; }
 
-    internal CanonicalStateNormalizer Normalizer { get; }
+    internal CanonicalStateNormalizer Normalizer { get; private set; }
 
     internal string RootPath { get; }
 

@@ -172,6 +172,7 @@ public partial class CanonicalStateNormalizer
     {
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
+        await NormalizeMortalItemsAsync(backups);
         await NormalizeGuardiansAsync(backups);
         await NormalizeGuardianAbodeResidentsAsync(backups);
         await NormalizeShiningAbodeStateAsync(backups);

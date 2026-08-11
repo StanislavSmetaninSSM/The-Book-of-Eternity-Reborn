@@ -20,6 +20,28 @@ public sealed class MortalItemMaterializationValidationTests
     }
 
     [Fact]
+    public async Task RawCompletePlayerCreation_NormalizesToValidSealedState()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        await context.WritePlayerUpdateAsync(MortalItemTestFixture.CreateRawRoot());
+
+        await context.NormalizeAcceptedTurnAsync();
+
+        var itemsRoot = (await context.ReadJsonAsync(
+            InventoryEquipmentService.ItemsPath))!.AsObject();
+        var item = Assert.Single(itemsRoot["items"]!.AsArray().OfType<JsonObject>());
+        Assert.False(itemsRoot.ContainsKey("UpdateInventory"));
+        Assert.Equal(
+            item["itemId"]!.GetValue<string>(),
+            item["existedId"]!.GetValue<string>());
+        Assert.NotNull(item["materializationReceipt"]);
+        Assert.DoesNotContain(
+            await context.Validator.ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Fact]
     public async Task RawPlayerCreation_WithWrongAcceptedTurn_IsRejected()
     {
         await using var context = await MortalItemMaterializationTestContext.CreateAsync();

@@ -222,3 +222,26 @@ name (`CanonicalStateNormalizerTests.Inventory`) and correctly failed the lane
 guard with zero discovered tests. Repository inspection showed the actual
 partial class/method name; the corrected exact selector above passed 1/1. The
 zero-discovery invocation is diagnostic evidence, not an accepted baseline.
+
+## 10. Player sealing and rollback evidence
+
+The first player-sealing test failed before implementation because
+`UpdateInventory` remained in the canonical file. The rollback test then
+failed at compile time until the one-lease refresh transaction existed.
+
+| Selection | Result | Tests | Timeout | Cleanup | Result directory |
+| --- | --- | ---: | --- | --- | --- |
+| `CanonicalStateNormalizerTests.Normalize_PlayerCreation_SealsOneCanonicalItemAndIndexEntry` (RED) | FAIL as expected | 0/1 | false | complete | `TestResults/test-lanes/20260811-130547-546-45312-3cc528fe862d4c42b345dd02f9a8230b-focused` |
+| same selection (GREEN) | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-130930-334-24832-ee218881a25048fbab39179bbe79d9e1-focused` |
+| rollback transaction compile gate (RED) | FAIL as expected | build gate | false | complete | `TestResults/test-lanes/20260811-131142-659-17080-baf2530ca9d845efaa21617fdc3f0f04-focused` |
+| injected write-failure rollback (GREEN; test was subsequently renamed for precision) | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-131245-830-47096-c9a74884b67246e1b609bbdcfb3fa082-focused` |
+| normalizer rollback selection, including actual post-seal rejection | PASS | 13/13 | false | complete | `TestResults/test-lanes/20260811-131400-594-18360-330410f0b0e947188637ccbe6c7bba43-focused` |
+| normalizer, snapshot, and Mortal item validation checkpoint | PASS | 31/31 | false | complete | `TestResults/test-lanes/20260811-131515-670-21520-7ef9cf4917804c0b95a158246000e671-focused` |
+| same-turn container/equipment reference rewrite | PASS | 1/1 | false | complete | `TestResults/test-lanes/20260811-131724-067-30024-8594841a501e451da8a11cf335e8f693-focused` |
+| complete `CanonicalStateNormalizerTests` regression control | PASS | 224/224 | false | complete | `TestResults/test-lanes/20260811-132110-187-18448-01cac83525424e7c96cd59a74b303e22-focused` |
+| complete Mortal item materialization validation selection | PASS | 16/16 | false | complete | `TestResults/test-lanes/20260811-132343-846-32956-323931797d48455da4561e108afc4955-focused` |
+
+The refresh transaction holds one `CanonicalWriteLease`, captures exact byte
+before-images for the shared normalizer/QTE/browser rollback contour, and
+restores every changed or newly created tracked path on write exceptions or
+post-seal validation errors.

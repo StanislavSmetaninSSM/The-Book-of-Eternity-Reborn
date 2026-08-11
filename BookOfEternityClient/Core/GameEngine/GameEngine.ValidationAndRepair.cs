@@ -257,7 +257,10 @@ public partial class GameEngine
                 continue;
             }
 
-            if (!await RefreshAcceptedTurnCanonicalStateForValidationAsync(expectedTurn, activeSnapshotContext))
+            var canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(
+                expectedTurn,
+                activeSnapshotContext);
+            if (!canonicalRefresh.BaselineUsable)
             {
                 criticalRepairAttempt++;
                 var baselineErrors = new List<ValidationIssue>
@@ -294,6 +297,38 @@ public partial class GameEngine
                     baselineErrors,
                     baselineRepairStartedAtUtc);
 
+                continue;
+            }
+
+            var postSealErrors = PrioritizeValidationErrors(
+                    canonicalRefresh.PostSealIssues.Where(issue => issue.Severity == IssueSeverity.Error))
+                .ToList();
+            if (postSealErrors.Count > 0)
+            {
+                criticalRepairAttempt++;
+                _logger.LogError(
+                    "Critical accepted-turn Mortal item post-seal validation failure after {Source}: {Count} errors",
+                    source,
+                    postSealErrors.Count);
+
+                lastCriticalRepairErrors = postSealErrors;
+                lastCriticalRepairAttempt = criticalRepairAttempt;
+                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                var postSealRepairStartedAtUtc = DateTime.UtcNow;
+                if (!await WaitForContractRepairAsync(
+                        source,
+                        postSealErrors,
+                        criticalRepairAttempt,
+                        rollbackSnapshot,
+                        lastCriticalRepairSessionGeneration))
+                {
+                    return false;
+                }
+
+                lastCriticalRepairStartedAtUtc = postSealRepairStartedAtUtc;
+                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                    postSealErrors,
+                    postSealRepairStartedAtUtc);
                 continue;
             }
 
@@ -388,17 +423,22 @@ public partial class GameEngine
         return accepted;
     }
 
-    private async Task<bool> RefreshAcceptedTurnCanonicalStateForValidationAsync(
+    private async Task<AcceptedTurnCanonicalRefreshResult>
+        RefreshAcceptedTurnCanonicalStateForValidationAsync(
         int expectedTurn,
         ValidatedPendingTurnSnapshotContext? activeSnapshotContext)
     {
         var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn, activeSnapshotContext);
         if (snapshot == null)
-            return false;
+            return new AcceptedTurnCanonicalRefreshResult(false, Array.Empty<ValidationIssue>());
 
-        await RefreshCanonicalStateAsync(snapshot);
-        return true;
+        var postSealIssues = await RefreshCanonicalStateAsync(snapshot);
+        return new AcceptedTurnCanonicalRefreshResult(true, postSealIssues);
     }
+
+    private sealed record AcceptedTurnCanonicalRefreshResult(
+        bool BaselineUsable,
+        IReadOnlyList<ValidationIssue> PostSealIssues);
 
     private async Task CleanupAcceptedTurnCommandSurfacesAsync(string? expectedSessionGeneration = null)
     {
