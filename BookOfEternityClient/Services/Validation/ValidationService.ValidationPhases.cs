@@ -101,6 +101,11 @@ public partial class ValidationService
         {
             await ValidateAcceptedTurnFactionMaterializationCompletenessAsync(issues);
         }
+        if (phases.HasFlag(
+                GameStateValidationPhase.AcceptedTurnItemMaterializationCompleteness))
+        {
+            await ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(issues, null);
+        }
         if (phases.Includes(GameStateValidationPhase.AfterlifeSpiritualConflictState))
             await ValidateAfterlifeSpiritualConflictStateAsync(issues);
         if (phases.Includes(GameStateValidationPhase.SourceOfLightCapstoneGlobalState))

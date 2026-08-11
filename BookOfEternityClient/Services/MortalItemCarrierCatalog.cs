@@ -533,20 +533,34 @@ internal sealed class MortalItemCarrierCatalog
             }
 
             var result = new List<string>(contentsPath.Count);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var itemId = ReadString(item["itemId"]);
             for (var index = 0; index < contentsPath.Count; index++)
             {
                 var value = ReadString(contentsPath[index]);
-                if (value == null)
+                if (value == null ||
+                    string.IsNullOrWhiteSpace(value) ||
+                    !string.Equals(value, value.Trim(), StringComparison.Ordinal))
                 {
                     Issues.Add(new MortalItemCarrierCatalogIssue(
                         "mortal_item_materialization_invalid_container_path",
                         $"{itemPath}.contentsPath[{index}]",
                         "Every contentsPath entry must be a non-empty exact item ID.",
                         "contentsPath",
-                        null));
-                    continue;
+                        value));
+                    if (value == null)
+                        continue;
                 }
 
+                if (!seen.Add(value) || string.Equals(value, itemId, StringComparison.Ordinal))
+                {
+                    Issues.Add(new MortalItemCarrierCatalogIssue(
+                        "mortal_item_materialization_invalid_container_path",
+                        $"{itemPath}.contentsPath[{index}]",
+                        "contentsPath cannot repeat an item ID or contain the child item itself.",
+                        "contentsPath",
+                        value));
+                }
                 result.Add(value);
                 _ambiguity.Observe("containerPathItemId", value, $"{itemPath}.contentsPath[{index}]");
             }

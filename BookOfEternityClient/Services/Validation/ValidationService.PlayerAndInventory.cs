@@ -4419,6 +4419,21 @@ public partial class ValidationService
                 "existedId должен быть непустой строкой или null"));
         }
 
+        var isRawMortalCreation = item.TryGetProperty("existedId", out var materializationExistedId) &&
+                                  materializationExistedId.ValueKind == JsonValueKind.Null;
+        var isCanonicalMortalCarrierItem =
+            materializationExistedId.ValueKind == JsonValueKind.String &&
+            IsCanonicalMortalItemCarrierContext(itemContext);
+        if (isRawMortalCreation || isCanonicalMortalCarrierItem)
+        {
+            issues.AddRange(MortalItemMaterializationContract.Validate(
+                item,
+                itemContext,
+                isRawMortalCreation
+                    ? MortalItemMaterializationPhase.RawPreSeal
+                    : MortalItemMaterializationPhase.CanonicalPostSeal));
+        }
+
         RequireString(item, itemContext, issues, "name");
         RequireString(item, itemContext, issues, "description");
         RequireString(item, itemContext, issues, "image_prompt");
@@ -4536,6 +4551,11 @@ public partial class ValidationService
                 "accessoryForSlot должен быть строкой, массивом строк или null"));
         }
     }
+
+    private static bool IsCanonicalMortalItemCarrierContext(string itemContext) =>
+        itemContext.Contains("game_state/inventory/items.json.items[", StringComparison.Ordinal) ||
+        itemContext.Contains(".NPCsInScene[", StringComparison.Ordinal) &&
+        itemContext.Contains(".inventory[", StringComparison.Ordinal);
 
     private void ValidateRequiredItemQualityField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {

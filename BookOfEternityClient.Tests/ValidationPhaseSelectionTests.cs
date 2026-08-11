@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -169,6 +170,70 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
         Assert.True(
             GameStateValidationPhase.Selectable.HasFlag(
                 GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness));
+    }
+
+    [Fact]
+    public void ItemMaterializationPhase_IsIncludedInAllAndSelectable()
+    {
+        Assert.True(
+            GameStateValidationPhase.All.HasFlag(
+                GameStateValidationPhase.AcceptedTurnItemMaterializationCompleteness));
+        Assert.True(
+            GameStateValidationPhase.Selectable.HasFlag(
+                GameStateValidationPhase.AcceptedTurnItemMaterializationCompleteness));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ItemMaterializationSelection_DoesNotRunJsonIntegrity()
+    {
+        await _fileSystem.WriteFileAtomicAsync(
+            "game_state/misc/phase_selection_invalid.json",
+            "{");
+        await _fileSystem.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(MortalItemTestFixture.CreateReceiptlessNegative())
+            }.ToJsonString());
+        await _fileSystem.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnItemMaterializationCompleteness);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_item_materialization_receiptless_current_item");
+        Assert.DoesNotContain(issues, issue => issue.Code == "invalid_json_file");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CombinedItemSelection_PreservesCanonicalOrder()
+    {
+        await _fileSystem.WriteFileAtomicAsync(
+            "game_state/misc/phase_selection_invalid.json",
+            "{");
+        await _fileSystem.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(MortalItemTestFixture.CreateReceiptlessNegative())
+            }.ToJsonString());
+        await _fileSystem.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+
+        var jsonIssues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.JsonIntegrity);
+        var itemIssues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnItemMaterializationCompleteness);
+        var combinedIssues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnItemMaterializationCompleteness |
+            GameStateValidationPhase.JsonIntegrity);
+
+        Assert.Equal(
+            Snapshot(jsonIssues.Concat(itemIssues)),
+            Snapshot(combinedIssues));
     }
 
     [Fact]

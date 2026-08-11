@@ -67,6 +67,32 @@ public sealed class MortalItemCarrierCatalogTests
             occurrence.JsonPath);
     }
 
+    [Theory]
+    [InlineData(" itm_parent ")]
+    [InlineData(" ")]
+    public void Build_RejectsNonExactContentsPathIdentity(string parentId)
+    {
+        var child = MortalItemTestFixture.CreateCanonicalRoot("itm_child");
+        child["contentsPath"] = new JsonArray(parentId);
+
+        var result = MortalItemCarrierCatalog.Build(InputWithPlayerItems(child));
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_materialization_invalid_container_path");
+    }
+
+    [Fact]
+    public void Build_RejectsDuplicateContentsPathIdentity()
+    {
+        var child = MortalItemTestFixture.CreateCanonicalRoot("itm_child");
+        child["contentsPath"] = new JsonArray("itm_parent", "itm_parent");
+
+        var result = MortalItemCarrierCatalog.Build(InputWithPlayerItems(child));
+
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_materialization_invalid_container_path");
+    }
+
     [Fact]
     public void Build_ReportsDuplicatePermanentAndReceiptIdentityAcrossCarriers()
     {
