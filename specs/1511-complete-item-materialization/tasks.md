@@ -41,9 +41,9 @@ before any production behavior changes.
 **Critical**: User-story implementation does not begin until these helpers
 compile and existing focused tests remain green.
 
-- [ ] T005 Create a dependency-free complete item/envelope/receipt/index fixture builder with deterministic IDs in `BookOfEternityClient.TestSupport/MortalItemTestFixture.cs`
-- [ ] T006 [P] Create file-backed player/NPC/storage/vehicle carrier and validated pending-snapshot setup helpers in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.cs`
-- [ ] T007 Add fixture-builder shape tests and explicit fragment-only labeling tests in `BookOfEternityClient.Tests/MortalItemTestFixtureTests.cs`, then run their Focused filter green without production changes
+- [x] T005 Create a dependency-free complete item/envelope/receipt/index fixture builder with deterministic IDs in `BookOfEternityClient.TestSupport/MortalItemTestFixture.cs`
+- [x] T006 [P] Create file-backed player/NPC/storage/vehicle carrier and validated pending-snapshot setup helpers in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationTestContext.cs`
+- [x] T007 Add fixture-builder shape tests and explicit fragment-only labeling tests in `BookOfEternityClient.Tests/MortalItemTestFixtureTests.cs`, then run their Focused filter green without production changes
 
 **Checkpoint**: Current-schema tests can express complete roots, split-derived
 items, retired entries, every carrier, and intentionally malformed receipt-less
