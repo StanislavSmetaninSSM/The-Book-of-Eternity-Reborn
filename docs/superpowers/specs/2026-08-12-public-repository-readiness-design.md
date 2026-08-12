@@ -141,9 +141,15 @@ Public visibility is applied only after all of the following checks complete:
    sounds, or visual assets.
 
 A confirmed credential, private key, or other operational secret blocks the
-visibility change until it is revoked and removed from the reachable history
-or the affected public artifact. Mere internal story information does not block
-publication.
+visibility change until it is revoked. Its literal value must also be removed
+from the current tracked tree and from downloadable GitHub artifacts before
+publication. A historical occurrence may remain only when revocation is
+confirmed, the owner explicitly accepts the residual scanner finding, and the
+audit proves there are no additional active exposures. History rewriting is
+reserved for a secret that cannot be made harmless by revocation, or for a
+separate owner-approved cleanup after weighing the disruption to clones,
+branches, tags, and pull requests. Mere internal story information does not
+block publication.
 
 Once public, enable the security features available to public repositories:
 
@@ -176,8 +182,10 @@ without adding or repairing a workflow.
 
 ## Failure Handling
 
-- If the audit finds a confirmed secret, stop before changing visibility and
-  report the exact remediation without printing the secret value.
+- If the audit finds a confirmed active secret, stop before changing visibility
+  and report the exact remediation without printing the secret value. A known
+  historical finding may be accepted only after confirmed revocation, removal
+  from the current tree and artifacts, and an owner-recorded audit disposition.
 - If visibility succeeds but protection configuration fails, stop all other
   work and apply protection immediately; until verified, the owner must not
   grant collaborator write access.
