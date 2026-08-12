@@ -363,7 +363,7 @@ public sealed class IntegrationTestBoundaryTests
             "Filter = \"Category=ProcessIntegration\" TimeoutMinutes = 15 }",
             "E2E = @{ Project = \"Integration\" " +
             "Filter = \"Category=E2E\" TimeoutMinutes = 15 }",
-            "PreMerge = @{ Project = \"Both\" Filter = $null TimeoutMinutes = 15 }"
+            "PreMerge = @{ Project = \"Both\" Filter = $null TimeoutMinutes = 20 }"
         };
         Assert.All(diagnosticDefinitions, definition =>
             Assert.Contains(definition, normalized, StringComparison.Ordinal));
@@ -461,9 +461,231 @@ public sealed class IntegrationTestBoundaryTests
             $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
             $"stderr:{Environment.NewLine}{probe.StandardError}");
         Assert.Contains(
-            "DURATION-SCHEDULE cases=105; maxCost=542; first=heavy; exclusive=True; weighted=True; bounded=True; regression=True; preMerge=True",
+            "DURATION-SCHEDULE cases=105; maxCost=542; first=heavy; exclusive=True; weighted=True; bounded=True; regression=True; preMerge=True; preMergeSmall=True",
             probe.StandardOutput,
             StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_PreMergeRetainsMeasuredSmallClassCosts()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("DurationSchedule");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"Duration-schedule probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+        Assert.Contains(
+            "preMergeSmall=True",
+            probe.StandardOutput,
+            StringComparison.Ordinal);
+
+        var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
+        var runnerSource = File.ReadAllText(runnerPath);
+        var normalizedRunner = Regex.Replace(
+            runnerSource.Replace("`", ""),
+            @"\s+",
+            " ");
+        var requiredTokens = new[]
+        {
+            "$PreMergeClassDurationCosts = @{",
+            "\"BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests\" = 112",
+            "\"BookOfEternityClient.Tests.FactionMaterializationValidationTests\" = 194",
+            "\"BookOfEternityClient.Tests.LocalWebUiHostTests\" = 119",
+            "\"BookOfEternityClient.Tests.FullValidationEquivalenceTests\" = 27",
+            "\"BookOfEternityClient.Tests.MortalCommandDisplaySaveTests\" = 8",
+            "\"BookOfEternityClient.Tests.FactionCoreChangesTests\" = 62",
+            "\"BookOfEternityClient.Tests.MortalItemMaterializationValidationTests\" = 60",
+            "\"PreMerge\" { $PreMergeClassDurationCosts }"
+        };
+        Assert.All(
+            requiredTokens,
+            token => Assert.Contains(token, normalizedRunner, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task CSharpLaneRunner_PreMergeDrainsExplorerWebWaveBeforeFast()
+    {
+        var probe = await RunCSharpRunnerSelfTestAsync("PreMergeWaves");
+
+        Assert.True(
+            probe.ExitCode == 0,
+            $"PreMerge-wave probe failed.{Environment.NewLine}" +
+            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
+            $"stderr:{Environment.NewLine}{probe.StandardError}");
+        Assert.Contains(
+            "PREMERGE-WAVES explorer=4; remaining=True; cases=True",
+            probe.StandardOutput,
+            StringComparison.Ordinal);
+
+        var runnerSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "scripts",
+            "test-csharp.ps1"));
+        Assert.Contains("function Get-PreMergeParallelWaves", runnerSource, StringComparison.Ordinal);
+        Assert.Contains(
+            "Get-PreMergeParallelWaves -Descriptors $parallelRuns",
+            runnerSource.Replace("`", ""),
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "-Descriptors @($parallelWave.Descriptors)",
+            runnerSource.Replace("`", ""),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BrowserPresentationAudit_UsesSharedLoadedTemplatesWithIsolatedCases()
+    {
+        var auditSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient.IntegrationTests",
+            "BrowserCommandPresentationAuditTests.cs"));
+        var paritySource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient.IntegrationTests",
+            "BrowserCommandPresentationAuditTests.Parity.cs"));
+        var fixtureSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient.IntegrationTests",
+            "BrowserCommandPresentationAuditFixture.cs"));
+
+        Assert.Contains(
+            "IClassFixture<BrowserCommandPresentationAuditFixture>",
+            auditSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "BrowserCommandPresentationAuditTests(BrowserCommandPresentationAuditFixture fixture)",
+            auditSource,
+            StringComparison.Ordinal);
+        Assert.Contains("_fixture.ExecuteBrowserCommandAsync", auditSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("new SaveLoadService", auditSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Copy(sourceArchive", auditSource, StringComparison.Ordinal);
+        Assert.Contains("_fixture.ExecuteConsoleCommandAsync", paritySource, StringComparison.Ordinal);
+        Assert.DoesNotContain("new SaveLoadService", paritySource, StringComparison.Ordinal);
+        Assert.DoesNotContain("File.Copy(sourceArchive", paritySource, StringComparison.Ordinal);
+        Assert.Single(Regex.Matches(fixtureSource, "LoadGameAsync\\(").Cast<Match>());
+
+        var requiredFixtureTokens = new[]
+        {
+            "Lazy<Task<PreparedSaveContext>>",
+            "LoadGameAsync(savePath)",
+            "CaptureFileHashesAsync",
+            "VerifyPreparedRootsUnchangedAsync",
+            "CreateStateManagerAsync",
+            "CopyDirectory(prepared.RootPath, rootPath)",
+            "DeleteOwnedCaseRoot"
+        };
+        Assert.All(
+            requiredFixtureTokens,
+            token => Assert.Contains(token, fixtureSource, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ExplorerWebCommandAudit_ReusesPreparedSeedProfilesWithIsolatedCases()
+    {
+        var auditSource = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient.IntegrationTests",
+            "ExplorerWebCommandServiceTests.cs"));
+        var fixturePath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient.IntegrationTests",
+            "ExplorerWebCommandSeedTemplateFixture.cs");
+
+        Assert.True(
+            File.Exists(fixturePath),
+            "The Explorer web command audit must own a reusable prepared-seed fixture.");
+        var fixtureSource = File.ReadAllText(fixturePath);
+
+        Assert.Contains(
+            "IClassFixture<ExplorerWebCommandSeedTemplateFixture>",
+            auditSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ExplorerWebCommandServiceTests(ExplorerWebCommandSeedTemplateFixture seedFixture)",
+            auditSource,
+            StringComparison.Ordinal);
+        Assert.Contains("seedFixture.CreateIsolatedCaseRoot()", auditSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("_fs.EnsureDirectoryStructure()", auditSource, StringComparison.Ordinal);
+        Assert.Contains("PreparePlayerDefaultCommandAuditFilesAsync", auditSource, StringComparison.Ordinal);
+        Assert.Contains("PrepareRepresentativeMigratedCommandFilesAsync", auditSource, StringComparison.Ordinal);
+        Assert.Contains("PrepareMortalReadOnlySummaryFilesAsync", auditSource, StringComparison.Ordinal);
+        Assert.Contains("PrepareLifecycleAndLocalTurnFilesAsync", auditSource, StringComparison.Ordinal);
+        var repeatedSeedPreparers = new[]
+        {
+            "PrepareMigratedMortalFilesAsync",
+            "PrepareRichMortalReferenceDetailFilesAsync",
+            "PrepareIssue1124AfterlifeFilesAsync",
+            "PrepareMigratedAfterlifeFilesAsync",
+            "PrepareRichAfterlifeRelicArchiveFilesAsync",
+            "PrepareMigratedUniversalFilesAsync",
+            "PrepareMigratedShiningFilesAsync",
+            "PrepareMigratedChaosSeaFilesAsync",
+            "PrepareRichChaosSeaGuardianFilesAsync",
+            "PrepareMortalActionPromptFilesAsync"
+        };
+        Assert.All(
+            repeatedSeedPreparers,
+            preparer => Assert.Contains(preparer, auditSource, StringComparison.Ordinal));
+        Assert.True(
+            Regex.Matches(auditSource, "PrepareRichAfterlifeRelicArchiveFilesAsync\\(").Count >= 4,
+            "All repeated afterlife archive audit theories must reuse their prepared seed profile.");
+        Assert.True(
+            Regex.Matches(auditSource, "PrepareRichChaosSeaGuardianFilesAsync\\(").Count >= 3,
+            "Both repeated Chaos Sea guardian audit theories must reuse their prepared seed profile.");
+
+        var requiredFixtureTokens = new[]
+        {
+            "Lazy<Task<PreparedSeedProfile>>",
+            "SeedFactoryInvocationCounts",
+            "PrepareEmptySkeletonAsync",
+            "CreateIsolatedCaseRoot",
+            "CopyDirectory(emptySkeleton.RootPath, rootPath)",
+            "CopyDirectory(prepared.RootPath, destinationRootPath)",
+            "CaptureFileHashesAsync",
+            "VerifyPreparedRootsUnchangedAsync",
+            "DeleteOwnedFixtureRoot"
+        };
+        Assert.All(
+            requiredFixtureTokens,
+            token => Assert.Contains(token, fixtureSource, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ExplorerWebCommandSeedTemplateFixture_CachesSeedsAndIsolatesCaseRoots()
+    {
+        var fixture = new ExplorerWebCommandSeedTemplateFixture();
+        try
+        {
+            var firstRoot = fixture.CreateIsolatedCaseRoot();
+            var secondRoot = fixture.CreateIsolatedCaseRoot();
+            var relativeMarker = Path.Combine("game_session", "game_state", "meta", "seed-probe.txt");
+            var firstMarker = Path.Combine(firstRoot, relativeMarker);
+            var secondMarker = Path.Combine(secondRoot, relativeMarker);
+
+            Assert.NotEqual(firstRoot, secondRoot);
+            Assert.True(Directory.Exists(Path.Combine(firstRoot, "game_session", "game_state", "control")));
+            Assert.True(Directory.Exists(Path.Combine(secondRoot, "game_session", "game_state", "control")));
+
+            await fixture.PrepareSeededRootAsync(
+                "probe",
+                firstRoot,
+                async () => await File.WriteAllTextAsync(firstMarker, "prepared"));
+            await File.WriteAllTextAsync(firstMarker, "mutated-case");
+            await fixture.PrepareSeededRootAsync(
+                "probe",
+                secondRoot,
+                () => Task.FromException(new InvalidOperationException("seed factory ran twice")));
+
+            Assert.Equal("mutated-case", await File.ReadAllTextAsync(firstMarker));
+            Assert.Equal("prepared", await File.ReadAllTextAsync(secondMarker));
+            Assert.Equal(1, fixture.SeedFactoryInvocationCounts["probe"]);
+        }
+        finally
+        {
+            await fixture.DisposeAsync();
+        }
     }
 
     [Fact]

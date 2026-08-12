@@ -1,20 +1,20 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.CommandProtocol;
-using BookOfEternityClient.Configuration;
-using BookOfEternityClient.Core;
-using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
-using BookOfEternityClient.WebUi;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
+public sealed partial class BrowserCommandPresentationAuditTests : IClassFixture<BrowserCommandPresentationAuditFixture>
 {
-    private readonly string _rootPath = Path.Combine(Path.GetTempPath(), "boe-browser-command-presentation-" + Guid.NewGuid().ToString("N"));
+    private readonly BrowserCommandPresentationAuditFixture _fixture;
+
+    public BrowserCommandPresentationAuditTests(BrowserCommandPresentationAuditFixture fixture)
+    {
+        _fixture = fixture;
+    }
 
     [Theory]
     [MemberData(nameof(MortalEntityCommandInvocations))]
@@ -763,74 +763,9 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         Assert.DoesNotContain("locationStorages", storagesText, StringComparison.OrdinalIgnoreCase);
     }
 
-    public void Dispose()
-    {
-        try
-        {
-            if (Directory.Exists(_rootPath))
-                Directory.Delete(_rootPath, recursive: true);
-        }
-        catch
-        {
-            // Best-effort temp cleanup.
-        }
-    }
-
     private async Task<ExplorerCommandResult> ExecuteFromLoadedSaveAsync(string saveFileName, string command)
     {
-        var sourceArchive = Path.Combine(TestRepoPaths.BaseSessionRoot, "saves", "manual_saves", saveFileName);
-        Assert.True(File.Exists(sourceArchive), $"Missing reusable command display save: {sourceArchive}");
-
-        var loadRoot = CreateIsolatedRoot();
-        var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);
-        fs.EnsureDirectoryStructure();
-        CopyCleanCheckoutDependencies(loadRoot);
-
-        var savePath = fs.ResolvePath("saves/manual_saves/" + saveFileName);
-        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
-        File.Copy(sourceArchive, savePath, overwrite: true);
-
-        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-        Assert.True(await saveLoad.LoadGameAsync(savePath));
-        await stateManager.LoadSettingsAsync();
-        await stateManager.RefreshGameStateAsync();
-
-        var validation = new ValidationService(fs, NullLogger<ValidationService>.Instance);
-        var service = new ExplorerWebCommandService(fs, stateManager, new LocalizationManager(), validation);
-        return await service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
-    }
-
-    private string CreateIsolatedRoot()
-    {
-        var root = Path.Combine(_rootPath, Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(root);
-        return root;
-    }
-
-    private static void CopyCleanCheckoutDependencies(string loadRoot)
-    {
-        CopyDirectory(
-            Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "system_guardians"),
-            Path.Combine(loadRoot, "system_guardians"));
-    }
-
-    private static void CopyDirectory(string source, string destination)
-    {
-        Directory.CreateDirectory(destination);
-        foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
-        {
-            var target = Path.Combine(destination, Path.GetRelativePath(source, directory));
-            Directory.CreateDirectory(target);
-        }
-
-        foreach (var file in Directory.GetFiles(source, "*", SearchOption.AllDirectories))
-        {
-            var target = Path.Combine(destination, Path.GetRelativePath(source, file));
-            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-            File.Copy(file, target, overwrite: true);
-        }
+        return await _fixture.ExecuteBrowserCommandAsync(saveFileName, command);
     }
 
     private static void AssertNoPresentationAntiPatterns(string command, ExplorerCommandResult result)

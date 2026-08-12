@@ -12,20 +12,22 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class ExplorerWebCommandServiceTests : IDisposable
+public sealed class ExplorerWebCommandServiceTests :
+    IDisposable,
+    IClassFixture<ExplorerWebCommandSeedTemplateFixture>
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly ExplorerWebCommandService _service;
     private readonly ValidationService _validationService;
+    private readonly ExplorerWebCommandSeedTemplateFixture _seedFixture;
 
-    public ExplorerWebCommandServiceTests()
+    public ExplorerWebCommandServiceTests(ExplorerWebCommandSeedTemplateFixture seedFixture)
     {
-        _rootPath = Path.Combine(Path.GetTempPath(), "boe-web-command-service-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(_rootPath);
+        _seedFixture = seedFixture;
+        _rootPath = seedFixture.CreateIsolatedCaseRoot();
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
-        _fs.EnsureDirectoryStructure();
         _stateManager = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
         _validationService = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         _service = new ExplorerWebCommandService(_fs, _stateManager, new LocalizationManager(), _validationService);
@@ -294,7 +296,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/взаимодействия", "странной печати")]
     public async Task ExecuteAsync_MortalReadOnlySummaries_ReadCanonicalStateKeys(string command, string expectedText)
     {
-        await SeedCanonicalMortalSummaryFilesAsync();
+        await PrepareMortalReadOnlySummaryFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -893,7 +895,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedDetailCommand,
         string expectedLabelText)
     {
-        await SeedRichMortalReferenceDetailFilesAsync();
+        await PrepareRichMortalReferenceDetailFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -920,7 +922,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedEntityType,
         string expectedTitle)
     {
-        await SeedRichMortalReferenceDetailFilesAsync();
+        await PrepareRichMortalReferenceDetailFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -966,7 +968,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedTitle,
         string expectedDetail)
     {
-        await SeedRichMortalReferenceDetailFilesAsync();
+        await PrepareRichMortalReferenceDetailFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -1410,11 +1412,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/spiritual_action")]
     public async Task ExecuteAsync_RepresentativeMigratedCommands_MatchDirectDtoBuilders(string command)
     {
-        await SeedUniversalMetaFilesAsync();
-        await SeedMortalFilesAsync();
-        await SeedChaosSeaFilesAsync();
-        await SeedShiningAbodeFilesAsync();
-        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await PrepareRepresentativeMigratedCommandFilesAsync();
 
         var expected = await BuildDirectMigratedResultAsync(command, advancedEnabled: true);
         var actual = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: true));
@@ -2209,7 +2207,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string command,
         ExplorerCommandGroup group)
     {
-        await SeedPlayerDefaultCommandAuditFilesAsync(commandId, group);
+        await PreparePlayerDefaultCommandAuditFilesAsync(commandId, group);
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
 
@@ -2226,7 +2224,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string command,
         ExplorerCommandGroup group)
     {
-        await SeedPlayerDefaultCommandAuditFilesAsync(commandId, group);
+        await PreparePlayerDefaultCommandAuditFilesAsync(commandId, group);
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command, AdvancedEnabled: false));
 
@@ -2342,10 +2340,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/spiritual_action", "Духовное действие")]
     public async Task ExecuteAsync_LifecycleAndLocalTurnCommands_ReturnProtocolDtos(string command, string expectedRussianLabel)
     {
-        await SeedUniversalMetaFilesAsync();
-        await SeedMortalFilesAsync();
-        await SeedChaosSeaFilesAsync();
-        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await PrepareLifecycleAndLocalTurnFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -2660,8 +2655,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string entityType,
         string expectedTitle)
     {
-        await SeedUniversalMetaFilesAsync();
-        await SeedMortalActionPromptDataAsync();
+        await PrepareMortalActionPromptFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
         var text = CollectBlockText(result.Blocks);
@@ -3377,7 +3371,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/saref")]
     public async Task ExecuteAsync_MigratedUniversalMetaCommands_ReturnCompletedDtos(string command)
     {
-        await SeedUniversalMetaFilesAsync();
+        await PrepareMigratedUniversalFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -3654,7 +3648,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/interactions")]
     public async Task ExecuteAsync_MigratedMortalReadOnlyCommands_ReturnCompletedDtos(string command)
     {
-        await SeedMortalFilesAsync();
+        await PrepareMigratedMortalFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -5234,7 +5228,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedLabelText,
         string expectedPromptId)
     {
-        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+        await PrepareRichAfterlifeRelicArchiveFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
             command,
@@ -5267,7 +5261,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedTitle,
         string expectedSectionTitle)
     {
-        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+        await PrepareRichAfterlifeRelicArchiveFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -5340,7 +5334,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/archive_project_fuel проект guardian_azalia::missing_project")]
     public async Task ExecuteAsync_AfterlifeRelicArchiveDetails_UnknownIdsReturnPlayerFacingUnavailableText(string command)
     {
-        await SeedRichAfterlifeRelicArchiveDrilldownFilesAsync();
+        await PrepareRichAfterlifeRelicArchiveFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -6232,7 +6226,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/abodes")]
     public async Task ExecuteAsync_MigratedChaosSeaReadOnlyCommands_ReturnCompletedDtos(string command)
     {
-        await SeedChaosSeaFilesAsync();
+        await PrepareMigratedChaosSeaFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -6256,7 +6250,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedDetailCommand,
         string expectedLabelText)
     {
-        await SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync();
+        await PrepareRichChaosSeaGuardianFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -6309,7 +6303,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedDetail,
         string excludedOtherEntity)
     {
-        await SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync();
+        await PrepareRichChaosSeaGuardianFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -6929,7 +6923,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/source_of_light", CommandExecutionState.RequiresInput)]
     public async Task ExecuteAsync_MigratedShiningAbodeCommands_ReturnDtos(string command, CommandExecutionState expectedState)
     {
-        await SeedShiningAbodeFilesAsync();
+        await PrepareMigratedShiningFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -6954,7 +6948,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedRussianLabel,
         CommandExecutionState expectedState)
     {
-        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await PrepareMigratedAfterlifeFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -6982,9 +6976,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedDetailCommand,
         string expectedLabelText)
     {
-        await SeedAfterlifeCombatAndEntityFilesAsync();
-        await WriteAfterlifeThreatsDrilldownFixtureAsync();
-        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+        await PrepareIssue1124AfterlifeFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -7045,9 +7037,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         string expectedText,
         string excludedText)
     {
-        await SeedAfterlifeCombatAndEntityFilesAsync();
-        await WriteAfterlifeThreatsDrilldownFixtureAsync();
-        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+        await PrepareIssue1124AfterlifeFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -7280,9 +7270,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/spiritual_arts искусство missing_art")]
     public async Task ExecuteAsync_ChaosSeaAfterlifeDetails_UnknownIssue1124TargetsReturnPlayerFacingUnavailableText(string command)
     {
-        await SeedAfterlifeCombatAndEntityFilesAsync();
-        await WriteAfterlifeThreatsDrilldownFixtureAsync();
-        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+        await PrepareIssue1124AfterlifeFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -10919,6 +10907,147 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
             yield return [descriptor.Id, descriptor.PrimaryAlias, descriptor.Group];
         }
+    }
+
+    private Task PreparePlayerDefaultCommandAuditFilesAsync(
+        string commandId,
+        ExplorerCommandGroup group)
+    {
+        var profileKey = group == ExplorerCommandGroup.MortalWorld &&
+                         commandId is "inventory" or "books"
+            ? $"player-default:{group}:{commandId}"
+            : $"player-default:{group}";
+
+        return _seedFixture.PrepareSeededRootAsync(
+            profileKey,
+            _rootPath,
+            () => SeedPlayerDefaultCommandAuditFilesAsync(commandId, group));
+    }
+
+    private Task PrepareRepresentativeMigratedCommandFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "representative-migrated-commands",
+            _rootPath,
+            async () =>
+            {
+                await SeedUniversalMetaFilesAsync();
+                await SeedMortalFilesAsync();
+                await SeedChaosSeaFilesAsync();
+                await SeedShiningAbodeFilesAsync();
+                await SeedAfterlifeCombatAndEntityFilesAsync();
+            });
+    }
+
+    private Task PrepareMortalReadOnlySummaryFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "mortal-read-only-summaries",
+            _rootPath,
+            SeedCanonicalMortalSummaryFilesAsync);
+    }
+
+    private Task PrepareLifecycleAndLocalTurnFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "lifecycle-and-local-turn-commands",
+            _rootPath,
+            async () =>
+            {
+                await SeedUniversalMetaFilesAsync();
+                await SeedMortalFilesAsync();
+                await SeedChaosSeaFilesAsync();
+                await SeedAfterlifeCombatAndEntityFilesAsync();
+            });
+    }
+
+    private Task PrepareMigratedMortalFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "migrated-mortal-commands",
+            _rootPath,
+            SeedMortalFilesAsync);
+    }
+
+    private Task PrepareRichMortalReferenceDetailFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "rich-mortal-reference-details",
+            _rootPath,
+            SeedRichMortalReferenceDetailFilesAsync);
+    }
+
+    private Task PrepareIssue1124AfterlifeFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "issue-1124-afterlife-details",
+            _rootPath,
+            async () =>
+            {
+                await SeedAfterlifeCombatAndEntityFilesAsync();
+                await WriteAfterlifeThreatsDrilldownFixtureAsync();
+                await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+            });
+    }
+
+    private Task PrepareMigratedAfterlifeFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "migrated-afterlife-commands",
+            _rootPath,
+            SeedAfterlifeCombatAndEntityFilesAsync);
+    }
+
+    private Task PrepareRichAfterlifeRelicArchiveFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "rich-afterlife-relic-archive",
+            _rootPath,
+            SeedRichAfterlifeRelicArchiveDrilldownFilesAsync);
+    }
+
+    private Task PrepareMigratedUniversalFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "migrated-universal-commands",
+            _rootPath,
+            SeedUniversalMetaFilesAsync);
+    }
+
+    private Task PrepareMigratedShiningFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "migrated-shining-commands",
+            _rootPath,
+            SeedShiningAbodeFilesAsync);
+    }
+
+    private Task PrepareMigratedChaosSeaFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "migrated-chaos-sea-commands",
+            _rootPath,
+            SeedChaosSeaFilesAsync);
+    }
+
+    private Task PrepareRichChaosSeaGuardianFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "rich-chaos-sea-guardian-details",
+            _rootPath,
+            SeedRichChaosSeaGuardianAbodeDrilldownFilesAsync);
+    }
+
+    private Task PrepareMortalActionPromptFilesAsync()
+    {
+        return _seedFixture.PrepareSeededRootAsync(
+            "mortal-action-prompts",
+            _rootPath,
+            async () =>
+            {
+                await SeedUniversalMetaFilesAsync();
+                await SeedMortalActionPromptDataAsync();
+            });
     }
 
     private async Task SeedPlayerDefaultCommandAuditFilesAsync(string commandId, ExplorerCommandGroup group)

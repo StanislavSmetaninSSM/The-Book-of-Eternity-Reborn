@@ -10,7 +10,7 @@
 
 ## Source Issues & Scope
 
-- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
+- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
 - **Issue type**: Test-infrastructure performance, reliability, and developer experience.
 - **Spec Kit justification**: The implementation spans the production validation orchestrator, a large multi-file guardian regression suite, test classification and source guards, verification scripts or documentation, and performance evidence across multiple sessions.
 - **Contract scope**: Internal validation orchestration and test infrastructure. There is no player-facing, GM-facing, gameplay, canonical-state schema, console, browser, frontend, prompt, documentation-example, or afterlife contract change.
@@ -42,6 +42,28 @@ the exhaustive 358-case `AfterlifeSpiritualConflictValidationTests` matrix in
 RegressionIntegration, retains an exact ten-method PreMerge sentinel, and
 applies measured long-first costs to overlapping PreMerge classes. No test or
 assertion is removed.
+
+Later suite growth reproduced a capacity-only failure under #1526: all
+`4,326/4,326` completed core results passed, but the 15-minute deadline expired
+during ProcessIntegration. TRX and focused evidence showed the two unchanged
+browser-presentation shards roughly doubled in duration only while they
+overlapped the internally parallel Fast hosts. A Fast-drain-only exact run still
+timed out. Source tracing then showed that every browser and console audit row
+repeated save copy/load setup. PreMerge now uses measured retained costs for
+underestimated classes, while the audit loads each source save once and clones
+that prepared tree per row to preserve isolation. Each generated audit
+descriptor has its own test host and fixture.
+
+The ExplorerWeb class also repeated large deterministic seed families for
+every parameterized row. Its class fixture now owns one hashed empty canonical
+skeleton per test host, clones a distinct writable root for every row, and
+reuses immutable keyed seed profiles. The full class passes `436/436` in
+`3:51` test time. Because multiple exact 15-minute runs remained
+correctness-green but capacity-red before both exclusive tail phases could
+finish, #1526 explicitly changes only the PreMerge hard limit to 20 minutes.
+The accepted exact control then passed `4,836/4,836` results in `14:18.302`,
+including ProcessIntegration `490/490` and E2E `15/15`, with zero duplicate
+IDs and complete owned-tree cleanup.
 
 ## User Scenarios & Testing
 
@@ -112,7 +134,7 @@ changed boundary, and one final PreMerge control.
    **when** DeepValidation runs explicitly, **then** the Integration-only union
    completes below 15 minutes with at least 1,950 non-duplicate results.
 7. **Given** the PreMerge command, **when** it runs under the final bounded
-   control, **then** one 15-minute deadline covers frontend verification,
+   control, **then** one 20-minute deadline covers frontend verification,
    builds, tests, and cleanup; at least 4,240 non-duplicate results complete,
    including ProcessIntegration, E2E, and exactly ten reviewed GameEngine
    lifecycle sentinels rather than the complete lifecycle class, plus exactly
@@ -193,7 +215,17 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   exactly ten reviewed lifecycle sentinels and exactly ten reviewed
   spiritual-conflict sentinels; include ProcessIntegration and E2E through
   exclusive non-overlapping phases; and use one deadline across frontend
-  verification, builds, tests, and cleanup.
+  verification, builds, tests, and cleanup. It MUST retain measured scheduling
+  costs for materially underestimated integration classes and MUST prepare each
+  selected browser-presentation source save once per fixture while preserving
+  isolated state for every browser and console assertion. Neither external-process concurrency
+  ceiling may change. The four ExplorerWeb descriptors MUST form a startup wave
+  that drains before any remaining parallel descriptor starts. The remaining
+  descriptors MUST then use the ordinary scheduler, and ProcessIntegration/E2E
+  phase membership and ordering MUST remain unchanged.
+  PreMerge's lane-wide hard limit MUST be 20 minutes. Every other lane timeout,
+  external-process ceiling, filter, case, assertion, and phase boundary MUST
+  remain unchanged.
 - **FR-015**: Performance comparisons and final controls MUST use bounded
   execution, retain JSON/TRX/log results, detect cross-descriptor duplicate test
   IDs, and verify cleanup of owned child processes.
@@ -245,7 +277,7 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **SC-005**: One explicit LifecycleIntegration control completes within ten
   minutes with all 186 reviewed cases, zero failures, and complete owned-tree
   cleanup.
-- **SC-006**: One PreMerge control completes within one 15-minute deadline on
+- **SC-006**: One PreMerge control completes within one 20-minute deadline on
   the baseline Windows machine, preferably below ten minutes, and retains
   JSON/TRX/log evidence.
 - **SC-007**: PreMerge produces at least 4,240 results, completes
@@ -273,6 +305,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   - Retain the meaningful Fast checkpoint plus relevant conditional-lane and
     final PreMerge JSON/TRX/log and wall-time evidence. Do not use an unbounded
     40–60 minute control.
+  - For #1526, retain the capacity-red PreMerge, isolated and browser-only
+    shard timings, the rejected Fast-drain exact run, executable scheduling and
+    fixture guards, a full 166-row audit benchmark, updated PlanOnly contract,
+    one meaningful Fast checkpoint, and one exact final PreMerge control.
 - **Documentation/contract verification**: Run the new test-lane/source-guard coverage. GM prompts, Mortal/afterlife docs, worked examples, manifests, and contract matrices are N/A because FR-016 prohibits gameplay or GM-authored contract changes.
 - **Frontend verification**: N/A; no frontend files or browser behavior are in scope.
 - **Manual/player-facing verification**: N/A; compare process inventory before and after bounded integration runs to verify owned child cleanup.

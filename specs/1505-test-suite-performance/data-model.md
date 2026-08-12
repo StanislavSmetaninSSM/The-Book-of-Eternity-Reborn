@@ -1,6 +1,6 @@
 # Data Model: Validation Selection and Test Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
 
 This feature adds no persisted gameplay data. The model consists of internal
 runtime/test values and lane-result artifacts.
@@ -93,8 +93,8 @@ domain.
 | `E2E` | Integration project; `Category=E2E` | 15 min | Diagnostic end-to-end workflows |
 | `LifecycleIntegration` | Integration project; `Category=LifecycleIntegration&Category!=ProcessIntegration&Category!=E2E` | 10 min | Conditional complete GameEngine lifecycle control |
 | `DeepValidation` | Integration project; `(Category=FullValidation|Category=DeepValidation)&Category!=LifecycleIntegration&Category!=ProcessIntegration&Category!=E2E` | 15 min | Conditional exhaustive validation control |
-| `PreMerge` | Both projects; non-overlapping parallel and exclusive phases | 15 min total | Final integration control |
-| `Complete` | Temporary alias for `PreMerge` | 15 min total | Compatibility only |
+| `PreMerge` | Both projects; non-overlapping parallel and exclusive phases | 20 min total | Final integration control |
+| `Complete` | Temporary alias for `PreMerge` | 20 min total | Compatibility only |
 
 The fast and integration assemblies are the classification boundary. Fast does
 not use negative category filters: it discovers
@@ -118,6 +118,31 @@ complete lifecycle lane and routine PreMerge. The exhaustive 358-case
 `PreMergeSentinel`, while all 358 remain available through
 RegressionIntegration. The Phase 45 PreMerge minimum is 4,240 merged,
 non-duplicate results plus completed ProcessIntegration and E2E phases.
+
+PreMerge has its own retained class-duration map for small, slow integration
+classes whose case-count fallback materially understates wall time. The map
+affects long-first bin packing only; it never changes filters, case discovery,
+phase membership, concurrency ceilings, or assertions.
+
+PreMerge partitions its existing parallel phase into two resource-isolation
+waves. Wave one contains every `ExplorerWebCommandServiceTests` descriptor and
+must drain completely. Wave two contains every remaining parallel descriptor
+and uses the ordinary four-host/two-Fast scheduler. No descriptor, filter, test,
+or assertion moves between the parallel, ProcessIntegration, or E2E phases;
+ProcessIntegration and E2E remain exclusive and sequential after both waves.
+
+`BrowserCommandPresentationAuditFixture` owns three lazy prepared save
+contexts. Each context stores an already loaded template root plus its file-hash
+snapshot. Every theory row receives a cloned case root and fresh state/service
+objects, and the case root is deleted after execution. Fixture disposal compares
+the prepared roots with their snapshots before deleting the owned fixture tree.
+
+`ExplorerWebCommandSeedTemplateFixture` owns one lazy empty canonical skeleton
+per test host and a keyed set of lazy prepared seed profiles. A test instance
+starts from a distinct clone of the empty skeleton; deterministic repeated
+theory setup is materialized once into a hashed prepared profile and copied
+into each row root. Fixture disposal verifies that neither the skeleton nor a
+prepared profile changed.
 
 Default Fast is the ordinary post-edit control. Final merge verification is one
 Fast checkpoint plus one PreMerge run. DeepValidation, LifecycleIntegration,

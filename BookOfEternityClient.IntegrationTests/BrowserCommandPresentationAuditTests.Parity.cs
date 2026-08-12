@@ -96,31 +96,17 @@ public sealed partial class BrowserCommandPresentationAuditTests
 
     private async Task<string> ExecuteConsoleCommandFromLoadedSaveAsync(string saveFileName, string command)
     {
-        var sourceArchive = Path.Combine(TestRepoPaths.BaseSessionRoot, "saves", "manual_saves", saveFileName);
-        Assert.True(File.Exists(sourceArchive), $"Missing reusable command display save: {sourceArchive}");
+        return await _fixture.ExecuteConsoleCommandAsync(
+            saveFileName,
+            async (fs, stateManager) =>
+            {
+                var console = new TestExplorerConsole();
+                var explorer = BuildConsoleExplorer(fs, stateManager, console);
+                var exception = await Record.ExceptionAsync(() => explorer.TryProcessCommand(command));
+                Assert.Null(exception);
 
-        var loadRoot = CreateIsolatedRoot();
-        var fs = new FileSystemManager(loadRoot, NullLogger<FileSystemManager>.Instance);
-        fs.EnsureDirectoryStructure();
-        CopyCleanCheckoutDependencies(loadRoot);
-
-        var savePath = fs.ResolvePath("saves/manual_saves/" + saveFileName);
-        Directory.CreateDirectory(Path.GetDirectoryName(savePath)!);
-        File.Copy(sourceArchive, savePath, overwrite: true);
-
-        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        await stateManager.RefreshGameStateAsync();
-        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
-        Assert.True(await saveLoad.LoadGameAsync(savePath));
-        await stateManager.LoadSettingsAsync();
-        await stateManager.RefreshGameStateAsync();
-
-        var console = new TestExplorerConsole();
-        var explorer = BuildConsoleExplorer(fs, stateManager, console);
-        var exception = await Record.ExceptionAsync(() => explorer.TryProcessCommand(command));
-        Assert.Null(exception);
-
-        return ExtractConsoleText(console);
+                return ExtractConsoleText(console);
+            });
     }
 
     private static ExplorerMode BuildConsoleExplorer(

@@ -1,6 +1,6 @@
 # Research: Test Suite Performance and Verification Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
 
 ## Baseline Findings
 
@@ -199,7 +199,7 @@ establish the root-exited/child-live precondition and verify exact-PID
 descendant cleanup before output streams are drained. The script records an
 error unless both the launcher has exited and its containment is empty.
 
-PreMerge uses one 15-minute deadline across frontend verification, both
+PreMerge uses one 20-minute deadline across frontend verification, both
 test-project builds, discovery, tests, and cleanup. Its non-overlapping
 schedule is:
 
@@ -258,6 +258,77 @@ Keeping the exhaustive 358-case spiritual-conflict class in its diagnostic
 lane and admitting ten representative sentinels saves about another 126
 parallel slot-seconds. This changes selection, not coverage ownership: the
 full matrix remains in RegressionIntegration and no assertion is removed.
+
+## Decision 8: Retain Measured Costs and Prepare Browser-Audit Saves Once
+
+**Evidence**: Issue #1526 retained a PreMerge timeout at `15:00.187` after all
+`4,326/4,326` completed core results passed with zero failures and duplicates.
+The browser-presentation shards took `340.801s` and `435.133s` while they ran
+beside two internally parallel Fast hosts. The same exact filters took
+`156.631s` and `205.832s` alone. Running only the two shards concurrently took
+`169.210s` and `219.204s`, isolating the material slowdown to Fast overlap
+rather than the shard split or deterministic test growth.
+
+An exact experiment that delayed browser audit descriptors until Fast drained
+still timed out at `15:00.341`, with all `4,327/4,327` completed results green.
+The prerequisite moved contention rather than removing the critical path and
+was rejected.
+
+**Decision**: Retain measured PreMerge costs for underestimated slow classes so
+long-first bin packing does not leave a two-minute small-case class at the tail.
+For `BrowserCommandPresentationAuditTests`, load each selected source save once
+per test-host fixture into a lazy template. Preserve isolation by cloning the
+prepared tree for every browser and console row and constructing fresh state/service
+objects. Hash each prepared tree after load and compare it once during fixture
+disposal; do not hash the tree after every row.
+
+Run the four ExplorerWeb shards as an isolated startup wave before Fast. Their
+no-Fast walls were `180.81s`, `120.83s`, `159.88s`, and `125.34s`; the two
+ExplorerWeb shards that started with Fast in the rejected run took `364.54s`
+and `293.45s`. An order-only exact run demonstrated that admitting Fast after
+the first ExplorerWeb completion still stretched the two remaining shards to
+`291.17s` and `258.72s`; it timed out at `15:00.199` after `4,819/4,819`
+completed results and `490/490` ProcessIntegration results passed, before E2E
+could publish a TRX. Therefore all four startup descriptors drain before the
+ordinary second wave begins under the unchanged four-host/two-Fast limits.
+
+**Guard evidence**: The source guard requires the retained cost map, one
+fixture-owned `LoadGameAsync` call site, isolated clone/delete calls, browser and
+console fixture routing, and template hash verification. The full class passes
+all `166/166` rows in `1:49` test time, versus `362.463s` combined for the two
+old isolated shards. PlanOnly retains 22 unique descriptors and 4,825 estimated
+cases without a project prerequisite; its first four rows are the four
+ExplorerWeb shards. A direct cap-two run of the generated browser shards passes
+`85/85` and `81/81` in `59.24s` and `51.47s` test time.
+
+## Decision 9: Reuse Explorer Seed Profiles and Set the PreMerge Budget to 20 Minutes
+
+**Evidence**: Source tracing found that the two 50-row player-default theories
+rewrote the same large realm fixture families for every row. Their rows summed
+`165.50s` and `138.60s` in the retained true-wave run. A class fixture now
+creates one empty canonical skeleton per test host, clones it into a distinct
+writable root per row, and lazily prepares immutable keyed seed profiles for
+repeated deterministic theory setup. A focused isolation contract proves that
+two case roots differ, a seed factory runs once per profile, and a mutation in
+one case is absent from the next. Fixture disposal hashes the skeleton and all
+created seed profiles. The full ExplorerWeb class passes `436/436` in `3:51`
+test time. The final four-host diagnostic passed all four shard selections at
+`96.83s`, `90.76s`, `95.88s`, and `91.88s` TRX wall time without Fast.
+
+Later exact 15-minute controls remained correctness-green but capacity-red:
+the prefix-only run reached `4,819/4,819` plus completed
+ProcessIntegration before E2E, and the true-drain run reached `4,329/4,329`
+core results before its in-progress ProcessIntegration phase was terminated.
+The user therefore explicitly approved changing only the PreMerge lane-wide
+hard limit from 15 to 20 minutes. All other lane limits, the four-host and
+two-Fast ceilings, filters, cases, assertions, and parallel/exclusive phase
+boundaries remain unchanged.
+
+**Accepted control**: The exact 20-minute PreMerge run passed `4,836/4,836`
+results in `14:18.302`, including ProcessIntegration `490/490` and E2E
+`15/15`. It reported exit `0`, no timeout, no duplicate IDs, and complete
+owned-tree cleanup. Its result directory is
+`20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
 
 The documented runner interface is:
 
