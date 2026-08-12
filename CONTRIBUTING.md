@@ -41,9 +41,8 @@ as part of your contribution.
 Software, code, and script contributions are licensed under
 `AGPL-3.0-or-later`; see [LICENSE](LICENSE). Original project-owned narrative
 and content contributions are licensed under `CC BY-NC-SA 4.0`; see
-[CONTENT_LICENSE.md](CONTENT_LICENSE.md). Third-party and excluded assets are
-not swept into either blanket grant: contribute them only with appropriate
-rights, provenance, and required notices.
+[CONTENT_LICENSE.md](CONTENT_LICENSE.md). Third-party/excluded assets are not covered by either blanket grant:
+contribute them only with appropriate rights, provenance, and required notices.
 
 Follow the contribution and asset requirements in [AGENTS.md](AGENTS.md),
 including its GM and afterlife documentation synchronization rules; changes to

@@ -59,6 +59,8 @@ public sealed class RepositoryPublicationDocumentationTests
         Assert.Contains("@StanislavSmetaninSSM", contributing, StringComparison.Ordinal);
         Assert.Contains("AGPL-3.0-or-later", contributing, StringComparison.Ordinal);
         Assert.Contains("CC BY-NC-SA 4.0", contributing, StringComparison.Ordinal);
+        Assert.Contains("Third-party/excluded assets are not covered by either blanket grant", contributing, StringComparison.Ordinal);
+        Assert.Contains("appropriate rights, provenance, and required notices", contributing, StringComparison.Ordinal);
 
         var template = Read(".github/pull_request_template.md");
         Assert.Contains("Tracked issue", template, StringComparison.OrdinalIgnoreCase);
