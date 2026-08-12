@@ -153,5 +153,5 @@ affected; it remains a conditional diagnostic lane.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs\1511-complete-item-materialization\plan.md
+at specs/1520-complete-location-materialization/plan.md
 <!-- SPECKIT END -->

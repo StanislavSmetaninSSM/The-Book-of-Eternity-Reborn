@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-12
 
-**Status**: Draft
+**Status**: Approved
 
 **Input**: Enforce complete first materialization of every durable Mortal World location and its topology, with one canonical map authority, exact identity, atomic current-scene projection, bounded repair, and no runtime compatibility for obsolete development saves.
 
