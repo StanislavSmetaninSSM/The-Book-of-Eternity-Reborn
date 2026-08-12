@@ -39,11 +39,11 @@ transaction harness before production behavior changes.
 **Critical**: No user-story implementation begins until this phase compiles and
 existing focused controls remain green.
 
-- [ ] T006 Create deterministic complete raw/canonical Mortal location, link, envelope, receipt, current projection, and identity-index builders in `BookOfEternityClient.TestSupport/MortalLocationTestFixture.cs`
-- [ ] T007 [P] Create file-backed pre-turn/raw/current/composed-state and injected-write-failure helpers in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationTestContext.cs`
-- [ ] T008 Add fixture shape, unique identity, and explicitly-malformed labeling tests in `BookOfEternityClient.Tests/MortalLocationTestFixtureTests.cs`, run them red then green without production changes
-- [ ] T009 Add shared assertion helpers for byte-exact rollback and forbidden player authority tokens in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationAssertions.cs`
-- [ ] T010 Run the smallest existing map/bootstrap focused controls from `specs/1520-complete-location-materialization/plan.md` and record the result directories in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T006 Create deterministic complete raw/canonical Mortal location, link, envelope, receipt, current projection, and identity-index builders in `BookOfEternityClient.TestSupport/MortalLocationTestFixture.cs`
+- [x] T007 [P] Create file-backed pre-turn/raw/current/composed-state and injected-write-failure helpers in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationTestContext.cs`
+- [x] T008 Add fixture shape, unique identity, and explicitly-malformed labeling tests in `BookOfEternityClient.Tests/MortalLocationTestFixtureTests.cs`, run them red then green without production changes
+- [x] T009 Add shared assertion helpers for byte-exact rollback and forbidden player authority tokens in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationAssertions.cs`
+- [x] T010 Run the smallest existing map/bootstrap focused controls from `specs/1520-complete-location-materialization/plan.md` and record the result directories in `specs/1520-complete-location-materialization/quickstart.md`
 
 **Checkpoint**: Tests can express complete/empty-by-design locations, links,
 hidden/rumored state, same-turn references, neutral bootstrap, and every

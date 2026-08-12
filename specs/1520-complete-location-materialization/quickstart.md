@@ -634,6 +634,9 @@ TDD slices below; it is recorded here rather than repeated.
 | Stage | Command | Result directory | Passed | Failed | Timed out | Duplicate tests | Cleanup |
 |---|---|---|---:|---:|---:|---:|---|
 | Baseline | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260812-114707-101-31724-220f790e8f1b43a797dd7a5c968d90af-fast` | 2937 | 0 | 0 | 0 | Successful |
+| T006–T010 RED | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalLocationTestFixtureTests"` | `TestResults/test-lanes/20260812-133040-766-29608-8b9a4217dd3e43e1887a017a9e902b0a-focused` | 0 | Expected compile failure: missing `MortalLocationTestFixture` | 0 | 0 | Complete |
+| T006–T010 GREEN + map control | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalLocationTestFixtureTests|FullyQualifiedName~LocalMapViewerServiceTests"` | `TestResults/test-lanes/20260812-134015-431-48380-f77489f98dd948d0895c532e9ef098fd-focused` | 23 | 0 | 0 | 0 | Complete |
+| T006–T010 bootstrap/integration compile control | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalBootstrapValidationTests"` | `TestResults/test-lanes/20260812-133806-711-47084-fa4285b3f16b4a009726dc5bb5048ea9-focused` | 32 | 0 | 0 | 0 | Complete |
 
 Focused RED/GREEN evidence, the integrated Fast checkpoint, conditional
 FullValidation/LifecycleIntegration evidence, and the single final PreMerge
