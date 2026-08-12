@@ -32,7 +32,7 @@ public sealed class RepositoryPublicationDocumentationTests
         var notices = Read("THIRD_PARTY_NOTICES.md");
         var license = Read("LICENSE");
 
-        Assert.StartsWith("GNU AFFERO GENERAL PUBLIC LICENSE", license);
+        Assert.StartsWith("GNU AFFERO GENERAL PUBLIC LICENSE", license.TrimStart());
         Assert.Equal(
             "0D96A4FF68AD6D4B6F1F30F713B18D5184912BA8DD389F86AA7710DB079ABCB0",
             Sha256("LICENSE"));
