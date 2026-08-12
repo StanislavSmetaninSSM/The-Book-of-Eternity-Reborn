@@ -31,6 +31,7 @@ public sealed class RepositoryPublicationDocumentationTests
         var content = Read("CONTENT_LICENSE.md");
         var notices = Read("THIRD_PARTY_NOTICES.md");
         var license = Read("LICENSE");
+        var readmeDisclosure = Regex.Replace(readme, @"\r?\n>\s?", " ");
 
         Assert.StartsWith("GNU AFFERO GENERAL PUBLIC LICENSE", license.TrimStart());
         Assert.Equal(
@@ -42,8 +43,16 @@ public sealed class RepositoryPublicationDocumentationTests
         Assert.Contains("Copyright © 2026 Stanislav Smetanin (Lottarend)", content, StringComparison.Ordinal);
         Assert.Contains("unreleased", readme, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("non-commercial", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Игра ещё не вышла", readme, StringComparison.Ordinal);
-        Assert.Contains("Совместимость сохранений не является требованием", readme, StringComparison.Ordinal);
+        Assert.Contains("Current version: 0.5 Pre-Alpha", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("Use and play entirely at your own risk", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("the game’s functionality is not guaranteed", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("Save compatibility between pre-release versions is not supported", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("Any update may make existing saves unusable", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("Текущая версия: 0.5 Pre-Alpha", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("играйте исключительно на свой страх и риск", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("До релиза работоспособность игры не гарантируется", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("Совместимость сохранений между версиями до релиза не поддерживается", readmeDisclosure, StringComparison.Ordinal);
+        Assert.Contains("Любое следующее обновление может сделать старые сохранения непригодными", readmeDisclosure, StringComparison.Ordinal);
         Assert.Contains("Suno Basic", notices, StringComparison.Ordinal);
         Assert.Contains("not licensed under", notices, StringComparison.OrdinalIgnoreCase);
     }

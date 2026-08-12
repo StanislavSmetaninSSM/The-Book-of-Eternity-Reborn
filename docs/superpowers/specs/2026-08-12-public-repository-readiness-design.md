@@ -12,8 +12,12 @@ keeping the project owner's workflow authoritative, separating the licenses of
 code, original game content, and restricted or third-party assets, and
 preventing unreviewed collaborator changes to `main`.
 
-The game is unreleased, under active development, and non-commercial. Public
-visibility is not a release announcement or a compatibility promise.
+The game is currently version 0.5 Pre-Alpha, unreleased, under active
+development, and non-commercial. Public visibility is not a release
+announcement, a functionality guarantee, or a compatibility promise. The
+README must prominently warn in English and Russian that use is at the player's
+own risk, the game may work partially or not at all, and any pre-release update
+may make existing saves unusable.
 
 ## Chosen Approach
 
@@ -36,7 +40,10 @@ The preparation pull request will add or update the following surfaces:
 
 1. `README.md`
    - English summary followed by a complete Russian description.
-   - Explicit unreleased and non-commercial status.
+   - Explicit version 0.5 Pre-Alpha, unreleased, and non-commercial status.
+   - Prominent English and Russian warnings that functionality is not
+     guaranteed before release, use is at the player's own risk, save
+     compatibility is unsupported, and any update may invalidate old saves.
    - Project concept, current architecture, supported clients, prerequisites,
      local development, bounded test commands, current limitations, and
      contribution workflow.

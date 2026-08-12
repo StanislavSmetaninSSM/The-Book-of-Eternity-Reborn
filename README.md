@@ -6,13 +6,26 @@ contains the .NET 8 game runtime, console client, React Browser Client, game
 contracts, examples, and development tooling. Public source availability is
 not a release, stability promise, or save-compatibility promise.
 
+> **Current version: 0.5 Pre-Alpha**
+>
+> ⚠️ Use and play entirely at your own risk. Until release, the game’s
+> functionality is not guaranteed: it may work partially or not work at all.
+> Save compatibility between pre-release versions is not supported. Any update
+> may make existing saves unusable.
+
+> **Текущая версия: 0.5 Pre-Alpha**
+>
+> ⚠️ Запускайте игру и играйте исключительно на свой страх и риск. До релиза
+> работоспособность игры не гарантируется: она может работать частично или не
+> работать вообще. Совместимость сохранений между версиями до релиза не
+> поддерживается. Любое следующее обновление может сделать старые сохранения
+> непригодными.
+
 ## О проекте
 
 «The Book of Eternity: Reborn» — ещё не вышедшая некоммерческая ролевая игра
 в жанре тёмного фэнтези. Внешний ИИ-ведущий формирует повествование, а клиент
 проверяет, материализует и безопасно сохраняет состояние живого мира.
-
-> Игра ещё не вышла. Совместимость сохранений не является требованием.
 
 ## Текущая концепция
 

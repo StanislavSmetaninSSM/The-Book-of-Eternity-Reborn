@@ -12,7 +12,11 @@
 
 - Source task: [GitHub Issue #1525](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1525). Keep the issue open until public settings are verified; the preparation PR uses `Refs #1525`, not an auto-closing keyword.
 - Work on branch `1525-public-repository-readiness` in `E:\Games\worktrees\boe-1525-public-readiness` and preserve unrelated `BookOfEternityClient.TestSupport/bin/` and `obj/` artifacts.
-- The game has not been released. Do not promise stability or save compatibility, and do not describe the visibility change as a game release.
+- The game is version 0.5 Pre-Alpha and has not been released. Do not promise
+  functionality, stability, or save compatibility, and do not describe the
+  visibility change as a game release. The README must prominently warn in
+  English and Russian that the game is used at the player's own risk, may work
+  partially or not at all, and any update may invalidate existing saves.
 - The project is non-commercial. The software license is `AGPL-3.0-or-later`; original project-owned story/world/lore/rules prose is `CC BY-NC-SA 4.0`; music and third-party assets remain outside both grants unless an asset-specific notice says otherwise.
 - Preserve all music files. State that they were generated on Suno Basic/free for this non-commercial project, require Suno attribution, remain subject to Suno terms and third-party rights, and are not sublicensed by this repository.
 - Use `Copyright © 2026 Stanislav Smetanin (Lottarend)` exactly.
@@ -95,6 +99,7 @@ var readme = Read("README.md");
 var content = Read("CONTENT_LICENSE.md");
 var notices = Read("THIRD_PARTY_NOTICES.md");
 var license = Read("LICENSE");
+var readmeDisclosure = Regex.Replace(readme, @"\r?\n>\s?", " ");
 
 Assert.StartsWith("GNU AFFERO GENERAL PUBLIC LICENSE", license);
 Assert.Equal(
@@ -105,8 +110,16 @@ Assert.Contains("CC BY-NC-SA 4.0", content, StringComparison.Ordinal);
 Assert.Contains("Copyright © 2026 Stanislav Smetanin (Lottarend)", content, StringComparison.Ordinal);
 Assert.Contains("unreleased", readme, StringComparison.OrdinalIgnoreCase);
 Assert.Contains("non-commercial", readme, StringComparison.OrdinalIgnoreCase);
-Assert.Contains("Игра ещё не вышла", readme, StringComparison.Ordinal);
-Assert.Contains("Совместимость сохранений не является требованием", readme, StringComparison.Ordinal);
+Assert.Contains("Current version: 0.5 Pre-Alpha", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("Use and play entirely at your own risk", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("the game’s functionality is not guaranteed", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("Save compatibility between pre-release versions is not supported", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("Any update may make existing saves unusable", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("Текущая версия: 0.5 Pre-Alpha", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("играйте исключительно на свой страх и риск", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("До релиза работоспособность игры не гарантируется", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("Совместимость сохранений между версиями до релиза не поддерживается", readmeDisclosure, StringComparison.Ordinal);
+Assert.Contains("Любое следующее обновление может сделать старые сохранения непригодными", readmeDisclosure, StringComparison.Ordinal);
 Assert.Contains("Suno Basic", notices, StringComparison.Ordinal);
 Assert.Contains("not licensed under", notices, StringComparison.OrdinalIgnoreCase);
 ```
@@ -218,13 +231,26 @@ contains the .NET 8 game runtime, console client, React Browser Client, game
 contracts, examples, and development tooling. Public source availability is
 not a release, stability promise, or save-compatibility promise.
 
+> **Current version: 0.5 Pre-Alpha**
+>
+> ⚠️ Use and play entirely at your own risk. Until release, the game’s
+> functionality is not guaranteed: it may work partially or not work at all.
+> Save compatibility between pre-release versions is not supported. Any update
+> may make existing saves unusable.
+
+> **Текущая версия: 0.5 Pre-Alpha**
+>
+> ⚠️ Запускайте игру и играйте исключительно на свой страх и риск. До релиза
+> работоспособность игры не гарантируется: она может работать частично или не
+> работать вообще. Совместимость сохранений между версиями до релиза не
+> поддерживается. Любое следующее обновление может сделать старые сохранения
+> непригодными.
+
 ## О проекте
 
 «The Book of Eternity: Reborn» — ещё не вышедшая некоммерческая ролевая игра
 в жанре тёмного фэнтези. Внешний ИИ-ведущий формирует повествование, а клиент
 проверяет, материализует и безопасно сохраняет состояние живого мира.
-
-> Игра ещё не вышла. Совместимость сохранений не является требованием.
 ```
 
 Continue with complete Russian sections for:
