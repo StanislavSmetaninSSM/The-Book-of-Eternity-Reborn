@@ -21,4 +21,5 @@ Eternity: Reborn** and **Stanislav Smetanin (Lottarend)**, include a link to
 the CC BY-NC-SA 4.0 license, and identify any modifications. Derivatives must
 remain non-commercial and be offered under the same CC BY-NC-SA 4.0 license.
 
-Software code and scripts are governed by [LICENSE](LICENSE) instead.
+Software code and scripts are licensed under
+[GNU AGPL-3.0-or-later](LICENSE) instead.

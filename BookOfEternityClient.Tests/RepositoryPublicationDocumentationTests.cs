@@ -37,6 +37,7 @@ public sealed class RepositoryPublicationDocumentationTests
             "0D96A4FF68AD6D4B6F1F30F713B18D5184912BA8DD389F86AA7710DB079ABCB0",
             Sha256("LICENSE"));
         Assert.Contains("AGPL-3.0-or-later", readme, StringComparison.Ordinal);
+        Assert.Contains("AGPL-3.0-or-later", content, StringComparison.Ordinal);
         Assert.Contains("CC BY-NC-SA 4.0", content, StringComparison.Ordinal);
         Assert.Contains("Copyright © 2026 Stanislav Smetanin (Lottarend)", content, StringComparison.Ordinal);
         Assert.Contains("unreleased", readme, StringComparison.OrdinalIgnoreCase);
