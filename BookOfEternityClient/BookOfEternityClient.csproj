@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>BookOfEternityClient</RootNamespace>
     <AssemblyName>BookOfEternityClient</AssemblyName>
-    <Version>1.0.0</Version>
+    <Version>0.5.0-prealpha</Version>
     <Description>The Book of Eternity: Reborn - C# Console RPG Client</Description>
   </PropertyGroup>
 

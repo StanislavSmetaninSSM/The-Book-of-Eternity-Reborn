@@ -1,6 +1,6 @@
 # Quickstart: C# Verification Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
 
 Run commands from the repository root with PowerShell 7.
 
@@ -39,12 +39,25 @@ the complete 186-case GameEngine lifecycle class in one external test process
 under a ten-minute cap.
 
 `Complete` is a temporary alias for `PreMerge`. PreMerge verifies both test
-projects with non-overlapping filters and one 15-minute deadline covering
+projects with non-overlapping filters and one 20-minute deadline covering
 frontend verification, builds, discovery, tests, and cleanup. It excludes the
 complete lifecycle class while retaining exactly ten reviewed
 `PreMergeSentinel` lifecycle methods. It also excludes the exhaustive
 358-case `AfterlifeSpiritualConflictValidationTests` matrix while retaining
 exactly ten reviewed sentinels from that class.
+
+Within that parallel phase, retained PreMerge class costs keep slow,
+small-case integration classes from being packed at the tail. Each file-backed
+browser-presentation test host prepares each selected save once, then runs every
+browser and console row against an isolated clone. This keeps the same
+four-host/two-Fast ceilings and does not change selection or assertions.
+Each ExplorerWeb test host also prepares one empty canonical skeleton, clones
+it for every row, and reuses immutable, hashed seed profiles for repeated
+deterministic theory setup. Every row retains its own writable root.
+The four ExplorerWeb shards form the first resource-isolation wave and all four
+must finish before the remaining parallel descriptors start. The second wave
+then uses the ordinary scheduler. Both waves remain inside the existing
+parallel phase and keep the same four-host/two-Fast ceilings.
 
 The full spiritual-conflict matrix is not deleted or weakened. Run
 `RegressionIntegration` when changing that validator/normalizer boundary,
@@ -115,6 +128,19 @@ non-overlapping descriptors and 4,262 estimated cases, including exactly ten
 spiritual-conflict sentinels; Theory rows make merged TRX totals
 authoritative. Its exact clean-checkout executable result is retained in the
 #1502 PR/issue evidence before merge.
+
+The #1526 PlanOnly contract contains 22 unique descriptors and 4,825 estimated
+cases. The two browser-presentation descriptors retain all 166 parameterized
+rows and use the measured prepared-template cost. Parameterized rows mean the
+merged TRX total remains the authoritative coverage count. The first four plan
+rows are the four ExplorerWeb shards; the executable wave guard proves they
+drain before Fast begins in the second wave.
+
+The accepted #1526 exact PreMerge control passed `4,836/4,836` results in
+`14:18.302` under the 20-minute deadline. ProcessIntegration passed `490/490`,
+E2E passed `15/15`, duplicate IDs were zero, and owned-tree cleanup completed.
+The result directory is
+`20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
 
 The rejected historical all-inclusive attempt ended at `15:00.393` with exit
 `124`: all `4,738/4,738` completed tests passed, failures and duplicates were

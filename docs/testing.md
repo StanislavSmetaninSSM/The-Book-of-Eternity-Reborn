@@ -31,7 +31,7 @@ evidence.
 ```
 
 `Complete` is a temporary alias for `PreMerge`; it has the same schedule and
-the same 15-minute hard limit. New automation and documentation should use
+the same 20-minute hard limit. New automation and documentation should use
 `PreMerge`.
 
 ## Project and Lane Boundaries
@@ -46,7 +46,7 @@ the same 15-minute hard limit. New automation and documentation should use
 | `E2E` | Integration project, `Category=E2E` | 15 min | Diagnostic end-to-end checks |
 | `LifecycleIntegration` | Integration project, `Category=LifecycleIntegration`, one external test process | 10 min | Conditional complete GameEngine lifecycle control |
 | `DeepValidation` | Integration project, union of `FullValidation` and `DeepValidation`, excluding lifecycle/process/E2E | 15 min | Conditional exhaustive validation control |
-| `PreMerge` | Both projects in a non-overlapping schedule | 15 min total | One final integration control |
+| `PreMerge` | Both projects in a non-overlapping schedule | 20 min total | One final integration control |
 
 Fast selects `BookOfEternityClient.Tests.csproj` directly. It does not rely on
 category exclusions to hide slow tests; source/project-boundary guards keep
@@ -82,6 +82,29 @@ ProcessIntegration and E2E then run sequentially with non-overlapping filters.
 External test-process concurrency is capped at four overall and two for the
 fast project.
 
+PreMerge retains measured class-duration costs for integration classes whose
+case counts understate their wall time. Each browser-presentation audit test
+host also loads each selected source save once into a fixture-owned prepared
+template. Every browser or console row clones that template into an isolated
+case root and creates fresh state/service objects; fixture disposal hashes the
+prepared roots to prove that they stayed unchanged. Filters, cases, assertions,
+the four-process ceiling, and the two-Fast ceiling are unchanged.
+
+Each `ExplorerWebCommandServiceTests` host likewise prepares one empty
+canonical directory skeleton, clones it for every xUnit row, and reuses lazy,
+immutable seed profiles for deterministic repeated theory setup. Every row
+still owns a distinct writable root. Fixture disposal hashes both the empty
+skeleton and every created seed profile, so a test cannot silently turn a
+prepared template into shared mutable state.
+
+The four `ExplorerWebCommandServiceTests` shards occupy the initial PreMerge
+startup wave and must all drain before Fast or any other parallel descriptor
+starts. Their measured walls were `180.81s`, `120.83s`,
+`159.88s`, and `125.34s` without Fast overlap, while the two that started with
+Fast in the rejected run rose to `364.54s` and `293.45s`. This is an initial
+resource-isolation wave inside the existing parallel phase; the remaining
+descriptors then use the ordinary scheduler under the same caps.
+
 `AfterlifeSpiritualConflictValidationTests` remains complete and selectable:
 `RegressionIntegration` runs all 358 cases. Run that diagnostic lane when
 changing spiritual-conflict validation/normalization, investigating a related
@@ -114,13 +137,16 @@ reserves two of the existing four external-process slots while it runs, leaving
 capacity for two ordinary descriptors; this is a capacity weight, not
 additional parallelism. The weight is bounded by a caller's lower
 `-Parallelism`, so a serial diagnostic run still makes progress. Both lanes
-keep the same four-process ceiling and 15-minute hard deadline.
+keep the same four-process ceiling. DeepValidation retains its 15-minute
+deadline; PreMerge has the explicitly approved 20-minute deadline.
 
 When either lane approaches its deadline, inspect one plan and the completed
 TRX durations before changing it. Preserve every discovered case and
 assertion; adjust retained costs, binning, or resource weights only from
-measured evidence. Do not raise the timeout or concurrency to turn a capacity
-failure green.
+measured evidence. Do not change a lane timeout or concurrency ceiling without
+an explicit tracked contract decision. Issue #1526 is the tracked decision
+that changes only PreMerge from 15 to 20 minutes; all process ceilings,
+filters, phase boundaries, cases, and assertions remain unchanged.
 
 ## Working Rhythm
 
@@ -222,6 +248,46 @@ The Phase 45 amendment uses a 4,240-result floor. Its final PlanOnly contract
 contains 19 non-overlapping descriptors and 4,262 estimated cases; Theory rows
 make the merged TRX count authoritative. The exact clean-checkout executable
 result is retained in the #1502 PR/issue evidence before merge.
+
+Issue [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
+records later suite-growth evidence. A PreMerge run timed out at `15:00.187`
+after all `4,326/4,326` completed core results passed. Its two browser-audit
+shards took `340.801s` and `435.133s` while overlapping Fast; isolated runs took
+`156.631s` and `205.832s`, and a browser-only concurrent pair took `169.210s`
+and `219.204s`. A Fast-drain-only scheduling experiment still timed out at
+`15:00.341` after `4,327/4,327` completed results passed, so that prerequisite
+was rejected. Source tracing instead found that every audit row repeated save
+copy/load setup. The shared-template implementation passes all `166/166` audit
+rows in `1:49` test time while preserving per-row isolation and verifying the
+prepared roots once at fixture disposal. The updated PlanOnly contract contains
+22 unique descriptors and 4,825 estimated cases. Its first four descriptors are
+the ExplorerWeb shards; the paired new browser shards pass `85/85` and `81/81`
+in `59.24s` and `51.47s` test time without Fast. Theory rows still make the
+merged TRX count authoritative.
+
+An initial-order-only exact run proved that list order alone was insufficient:
+Fast started as soon as the first two ExplorerWeb shards finished, stretching
+the other two to `291.17s` and `258.72s`. The run reached `15:00.199` after
+`4,819/4,819` completed results and all `490/490` ProcessIntegration results
+passed; E2E started but could not publish a TRX. The executable wave guard now
+requires all four ExplorerWeb descriptors to drain before the remaining
+parallel wave begins.
+
+The ExplorerWeb fixture optimization keeps a distinct writable root for every
+row while reusing a hashed empty skeleton and immutable keyed seed profiles.
+The full class passes `436/436` in `3:51` test time. A four-host diagnostic of
+the generated shards passed all `436` rows at `96.83s`, `90.76s`, `95.88s`,
+and `91.88s` TRX wall time without Fast. After multiple correctness-green
+15-minute capacity runs still could not finish both exclusive tail phases,
+Issue #1526 explicitly changed only the PreMerge hard limit to 20 minutes.
+All other lane limits, process ceilings, filters, cases, assertions, and phase
+boundaries are unchanged.
+
+The accepted exact 20-minute PreMerge control passed `4,836/4,836` results in
+`14:18.302`, including ProcessIntegration `490/490` and E2E `15/15`. It
+reported exit `0`, no timeout, no duplicate IDs, complete owned-tree cleanup,
+and result directory
+`20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
 
 ## Rejected All-Inclusive Evidence
 

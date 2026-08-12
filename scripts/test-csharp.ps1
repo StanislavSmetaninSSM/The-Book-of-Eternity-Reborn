@@ -42,6 +42,7 @@ param(
         "ResultDirectory",
         "TrxSummary",
         "DurationSchedule",
+        "PreMergeWaves",
         "OwnedPostStartFailure",
         "OwnedPostStartCleanupRetry",
         "OwnedExitedRootDescendant",
@@ -102,9 +103,20 @@ $DeepValidationClassDurationCosts = @{
 }
 $RegressionIntegrationClassDurationCosts = @{
     "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests" = 350
-    "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" = 339
+    "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" = 112
     "BookOfEternityClient.Tests.ExplorerModeCommandTests" = 251
     "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests" = 548
+}
+$PreMergeClassDurationCosts = @{
+    "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" = 112
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests" = 251
+    "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests" = 548
+    "BookOfEternityClient.Tests.FactionMaterializationValidationTests" = 194
+    "BookOfEternityClient.Tests.LocalWebUiHostTests" = 119
+    "BookOfEternityClient.Tests.FullValidationEquivalenceTests" = 27
+    "BookOfEternityClient.Tests.MortalCommandDisplaySaveTests" = 8
+    "BookOfEternityClient.Tests.FactionCoreChangesTests" = 62
+    "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests" = 60
 }
 $RetainedGuardianShardDurationCosts = @{
     AcceptedAuthority = 280
@@ -179,7 +191,7 @@ $laneDefinitions = @{
     PreMerge = @{
         Project = "Both"
         Filter = $null
-        TimeoutMinutes = 15
+        TimeoutMinutes = 20
     }
 }
 
@@ -1125,7 +1137,7 @@ function Get-IntegrationClassDurationCost {
     $durationCosts = switch ($LaneName) {
         "DeepValidation" { $DeepValidationClassDurationCosts }
         "RegressionIntegration" { $RegressionIntegrationClassDurationCosts }
-        "PreMerge" { $RegressionIntegrationClassDurationCosts }
+        "PreMerge" { $PreMergeClassDurationCosts }
         default { $null }
     }
     if ($null -ne $durationCosts -and $durationCosts.ContainsKey($ClassName)) {
@@ -1723,7 +1735,7 @@ function New-TestRuns {
                 [void]$preMergeRuns.Add($descriptor)
             }
         }
-        return @($preMergeRuns)
+        return @(Order-PreMergeTestRuns -Descriptors @($preMergeRuns))
     }
 
     $projectPath = if ($selectedProject -eq "Fast") {
@@ -1842,6 +1854,57 @@ function Invoke-DescriptorBatch {
             }
         }
     }
+}
+
+function Get-PreMergeParallelWaves {
+    param(
+        [Parameter(Mandatory)]
+        [object[]]$Descriptors
+    )
+
+    $explorerWebPrefix = "Integration-Base-ExplorerWebCommandServiceTests-"
+    $explorerWebRuns = @(
+        $Descriptors |
+            Where-Object {
+                $_.Phase -eq "Parallel" -and
+                $_.Name.StartsWith($explorerWebPrefix, [StringComparison]::Ordinal)
+            }
+    )
+    $remainingRuns = @(
+        $Descriptors |
+            Where-Object {
+                $_.Phase -eq "Parallel" -and
+                -not $_.Name.StartsWith($explorerWebPrefix, [StringComparison]::Ordinal)
+            }
+    )
+
+    if ($explorerWebRuns.Count -gt 0) {
+        [pscustomobject]@{
+            Name = "ExplorerWebStartup"
+            Descriptors = $explorerWebRuns
+        }
+    }
+    if ($remainingRuns.Count -gt 0) {
+        [pscustomobject]@{
+            Name = "RemainingParallel"
+            Descriptors = $remainingRuns
+        }
+    }
+}
+
+function Order-PreMergeTestRuns {
+    param(
+        [Parameter(Mandatory)]
+        [object[]]$Descriptors
+    )
+
+    $parallelRuns = @($Descriptors | Where-Object Phase -eq "Parallel")
+    foreach ($parallelWave in @(
+        Get-PreMergeParallelWaves -Descriptors $parallelRuns
+    )) {
+        @($parallelWave.Descriptors)
+    }
+    @($Descriptors | Where-Object Phase -ne "Parallel")
 }
 
 function Get-TrxSummary {
@@ -2180,7 +2243,7 @@ try {
                     (Get-IntegrationClassDurationCost `
                         -LaneName "RegressionIntegration" `
                         -ClassName "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" `
-                        -FallbackCost 166) -eq 339 -and
+                        -FallbackCost 166) -eq 112 -and
                     (Get-RetainedGuardianShardDurationCost `
                         -ShardName "TradeOfferingResonance" `
                         -FallbackCost 160 `
@@ -2189,11 +2252,20 @@ try {
                     (Get-IntegrationClassDurationCost `
                         -LaneName "PreMerge" `
                         -ClassName "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" `
-                        -FallbackCost 166) -eq 339 -and
+                        -FallbackCost 166) -eq 112 -and
                     (Get-IntegrationClassDurationCost `
                         -LaneName "PreMerge" `
                         -ClassName "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests" `
                         -FallbackCost 10) -eq 10
+                $preMergeSmall =
+                    (Get-IntegrationClassDurationCost `
+                        -LaneName "PreMerge" `
+                        -ClassName "BookOfEternityClient.Tests.LocalWebUiHostTests" `
+                        -FallbackCost 54) -eq 119 -and
+                    (Get-IntegrationClassDurationCost `
+                        -LaneName "PreMerge" `
+                        -ClassName "BookOfEternityClient.Tests.FactionCoreChangesTests" `
+                        -FallbackCost 31) -eq 62
                 if ($caseCount -ne 105 -or
                     $maxCost -ne 542 -or
                     $firstSelection -ne "heavy" -or
@@ -2201,7 +2273,8 @@ try {
                     -not $weighted -or
                     -not $bounded -or
                     -not $regression -or
-                    -not $preMerge) {
+                    -not $preMerge -or
+                    -not $preMergeSmall) {
                     throw "Duration schedule did not preserve case counts or long-first order."
                 }
                 Write-Host (
@@ -2209,7 +2282,45 @@ try {
                     "maxCost=$maxCost; first=$firstSelection; " +
                     "exclusive=$exclusive; weighted=$weighted; " +
                     "bounded=$bounded; regression=$regression; " +
-                    "preMerge=$preMerge")
+                    "preMerge=$preMerge; preMergeSmall=$preMergeSmall")
+            }
+            "PreMergeWaves" {
+                $syntheticRuns = @(
+                    [pscustomobject]@{ Phase = "Parallel"; Name = "Fast-01"; EstimatedCases = 733 },
+                    [pscustomobject]@{ Phase = "Parallel"; Name = "Fast-02"; EstimatedCases = 733 },
+                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-07"; EstimatedCases = 111 },
+                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-09"; EstimatedCases = 108 },
+                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-08"; EstimatedCases = 110 },
+                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-10"; EstimatedCases = 107 },
+                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-mixed-13"; EstimatedCases = 54 },
+                    [pscustomobject]@{ Phase = "ProcessIntegration"; Name = "ProcessIntegration"; EstimatedCases = 490 },
+                    [pscustomobject]@{ Phase = "E2E"; Name = "E2E"; EstimatedCases = 15 }
+                )
+                $parallelRuns = @($syntheticRuns | Where-Object Phase -eq "Parallel")
+                $waves = @(Get-PreMergeParallelWaves -Descriptors $parallelRuns)
+                $explorerCount = @($waves[0].Descriptors).Count
+                $explorerWave =
+                    $waves.Count -eq 2 -and
+                    $explorerCount -eq 4 -and
+                    @(
+                        $waves[0].Descriptors |
+                            Where-Object {
+                                $_.Name -like "Integration-Base-ExplorerWebCommandServiceTests-*"
+                            }
+                    ).Count -eq 4
+                $remaining =
+                    $waves[1].Name -eq "RemainingParallel" -and
+                    @($waves[1].Descriptors).Count -eq 3 -and
+                    $waves[1].Descriptors[0].Name -eq "Fast-01"
+                $casesPreserved =
+                    ($waves.Descriptors | Measure-Object EstimatedCases -Sum).Sum -eq
+                    ($parallelRuns | Measure-Object EstimatedCases -Sum).Sum
+                if (-not $explorerWave -or -not $remaining -or -not $casesPreserved) {
+                    throw "PreMerge startup waves did not preserve the parallel descriptors."
+                }
+                Write-Host (
+                    "PREMERGE-WAVES explorer=$explorerCount; " +
+                    "remaining=$remaining; cases=$casesPreserved")
             }
             "ResultDirectory" {
                 Add-Content -LiteralPath $logPath -Value (
@@ -2501,10 +2612,14 @@ try {
     else {
         if ($effectiveLane -eq "PreMerge") {
             $parallelRuns = @($testRuns | Where-Object Phase -eq "Parallel")
-            Invoke-DescriptorBatch `
-                -Descriptors $parallelRuns `
-                -MaximumParallelism ([Math]::Min($Parallelism, $PreMergeParallelism)) `
-                -MaximumFastParallelism $PreMergeFastParallelismLimit
+            foreach ($parallelWave in @(
+                Get-PreMergeParallelWaves -Descriptors $parallelRuns
+            )) {
+                Invoke-DescriptorBatch `
+                    -Descriptors @($parallelWave.Descriptors) `
+                    -MaximumParallelism ([Math]::Min($Parallelism, $PreMergeParallelism)) `
+                    -MaximumFastParallelism $PreMergeFastParallelismLimit
+            }
 
             foreach ($phase in @("ProcessIntegration", "E2E")) {
                 $exclusiveRuns = @($testRuns | Where-Object Phase -eq $phase)

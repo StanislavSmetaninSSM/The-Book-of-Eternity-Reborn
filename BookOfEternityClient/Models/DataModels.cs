@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 
 namespace BookOfEternityClient.Models;
 
@@ -38,7 +39,7 @@ public class SaveMetadata
     public DateTime Timestamp { get; set; }
 
     [JsonPropertyName("gameVersion")]
-    public string GameVersion { get; set; } = "1.0";
+    public string GameVersion { get; set; } = ProductVersion.Current;
 
     [JsonPropertyName("turnNumber")]
     public int TurnNumber { get; set; }

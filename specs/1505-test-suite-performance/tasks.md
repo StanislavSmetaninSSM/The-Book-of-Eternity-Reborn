@@ -2,7 +2,7 @@
 
 **Input**: Design documents from `specs/1505-test-suite-performance/`
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
 
 **Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [quickstart.md](quickstart.md)
 
@@ -98,7 +98,8 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
   move every reviewed slow source without reverse project references or split
   partial classes.
 - [x] T027 [US3] Implement `scripts/test-csharp.ps1` with explicit project
-  routing, hard five-/fifteen-minute caps, one PreMerge deadline,
+  routing, lane-specific hard caps including the amended 20-minute PreMerge
+  deadline,
   non-overlapping phases, JSON/TRX/log evidence, duplicate detection, and
   exact-owned-tree cleanup.
 - [x] T028 [US3] Add and run focused project/source/runner guards, enumerate
@@ -157,11 +158,37 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
   RegressionIntegration, admit only the exact ten reviewed sentinels to
   routine PreMerge, and verify discovery plus the ten-case executable sample.
 - [ ] T042 Synchronize the runner contract and agent guidance, then run one
-  final exact clean-checkout PreMerge below 15 minutes with at least 4,240
+  final exact clean-checkout PreMerge below 20 minutes with at least 4,240
   non-duplicate results, completed ProcessIntegration/E2E, and complete owned
   cleanup.
 - [ ] T043 Record final evidence in #1502/T253, complete exact-diff review, and
   integrate the issue-linked Phase 45 PR only after the bounded gate is green.
+
+---
+
+## Phase 9: Issue #1526 Suite-Growth Capacity Correction
+
+- [x] T044 Retain the `15:00.187` capacity failure and compare both browser
+  shards against isolated and browser-only concurrent focused controls.
+- [x] T045 Reject the Fast-drain-only experiment after its exact timeout, then
+  add RED/GREEN executable guards for retained PreMerge class costs and shared
+  loaded browser-audit templates.
+- [x] T046 Route all browser and console audit rows through prepared templates
+  with isolated per-row clones, fresh state/service objects, and one fixture
+  disposal hash verification; preserve every filter, case, assertion, phase,
+  and concurrency ceiling. Verify all `166/166` rows and both generated shards
+  together. Drain a four-descriptor ExplorerWeb startup wave before the
+  remaining parallel descriptors without changing either concurrency ceiling
+  or any exclusive phase boundary.
+- [x] T047 Preserve the green browser/Explorer fixture optimizations, update
+  the executable and documented PreMerge hard limit from 15 to the explicitly
+  approved 20 minutes, then run one exact PreMerge below 20 minutes with at
+  least 4,240 non-duplicate results, completed ProcessIntegration/E2E, and
+  complete owned cleanup. Accepted evidence: `4,836/4,836` passed in
+  `14:18.302`, ProcessIntegration `490/490`, E2E `15/15`, zero duplicate IDs,
+  and complete cleanup in
+  `20260813-044749-940-43368-f64c53dc7a7e48f5a30055b05c1b7e95-premerge`.
+- [ ] T048 Record #1526 evidence and integrate only after review.
 
 ## Dependencies and Execution Order
 
@@ -176,6 +203,9 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
   LifecycleIntegration and DeepValidation evidence.
 - T039–T043 are the #1502 capacity amendment. They preserve the completed
   #1505 history while updating the current PreMerge contract and final evidence.
+- T044–T048 are the #1526 capacity correction. They retain the same selected
+  coverage and depend on measured contention/setup evidence plus a green exact
+  gate.
 
 ## Notes
 

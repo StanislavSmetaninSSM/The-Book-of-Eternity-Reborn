@@ -80,7 +80,7 @@ public class GameSettings
     /// </summary>
     public List<WorkerBridgeProfile> GmWorkerBridgeProfiles { get; set; } =
         GmWorkerBridgeProfileTemplates.CreateDefaultTemplates().ToList();
-    public string GameVersion { get; set; } = "1.0.0";
+    public string GameVersion { get; set; } = ProductVersion.Current;
     /// <summary>
     /// Game difficulty: "normal", "hard", or "impossible".
     /// Affects enemy stats, action check difficulty, experience and loot (see Block_0.5, Block_0.6).
@@ -154,6 +154,7 @@ public class GameSettings
         foreach (var property in WritableProperties)
             property.SetValue(this, property.GetValue(loaded));
 
+        GameVersion = ProductVersion.Current;
         MusicVolume = Math.Clamp(MusicVolume, 0, 100);
         SoundVolume = Math.Clamp(SoundVolume, 0, 100);
         BrowserFontScalePercent = loaded.BrowserFontScalePercent > 0

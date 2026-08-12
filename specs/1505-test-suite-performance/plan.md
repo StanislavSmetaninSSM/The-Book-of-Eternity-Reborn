@@ -20,6 +20,10 @@ LifecycleIntegration lane and retain only ten reviewed lifecycle sentinels in
 routine PreMerge. The Phase 45 capacity amendment tracked by #1502 likewise
 keeps all 358 afterlife spiritual-conflict cases in RegressionIntegration and
 admits only an exact ten-method sentinel manifest to routine PreMerge.
+The #1526 suite-growth correction keeps the same plan and caps, retains measured
+PreMerge costs for underestimated integration classes, and removes repeated
+save loading from the browser-presentation audit through prepared templates
+with isolated per-row clones.
 
 ## Technical Context
 
@@ -43,14 +47,14 @@ integration test projects.
 
 **Performance Goals**: At least 5x on the fixed two-test guardian benchmark;
 Fast at most 5 minutes; LifecycleIntegration at most 10 minutes;
-DeepValidation and PreMerge at most 15 minutes;
+DeepValidation at most 15 minutes; PreMerge at most 20 minutes;
 PreMerge preferably below 10 minutes on the baseline machine.
 
 **Constraints**: Public validation still runs all 26 phases in canonical order; no gameplay, state schema, issue-code, prompt, documentation-example, console, browser, or frontend behavior changes; no unbounded full-suite run.
 
 **Scale/Scope**: 6,560 discovered cases, 965 broad validation calls, 460 guardian cases, and 295 broad guardian calls across eight partial source files.
 
-**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502)
+**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526)
 
 **Contract Scope**: Internal validation orchestration and test infrastructure only.
 
@@ -198,8 +202,9 @@ guide as the stable local interface.
 4. Add source/project guards for partial-class ownership, dependency direction,
    direct/fixture-mediated full validation, file-backed regression integration,
    and known process/E2E entry points.
-5. Implement `scripts/test-csharp.ps1` with explicit project routing, hard
-   five-/fifteen-minute caps, one deadline, timestamp/PID/GUID result
+5. Implement `scripts/test-csharp.ps1` with explicit project routing,
+   lane-specific hard caps including the amended 20-minute PreMerge deadline,
+   timestamp/PID/GUID result
    directories, JSON/TRX/log output, cross-descriptor duplicate detection,
    a gated Windows launcher assigned to kill-on-close Job Object containment
    before target release, exact owned-tree verification after root exit, and
@@ -220,7 +225,7 @@ guide as the stable local interface.
 6. Retain the accepted DeepValidation result because PlanOnly proves the
    23-descriptor/1,950-case selection is unchanged and excludes lifecycle
    tests; require at least 1,950 results below 15 minutes.
-7. Run exactly one PreMerge control below its single 15-minute deadline,
+7. Run exactly one PreMerge control below its single 20-minute deadline,
    retaining JSON/TRX/log evidence and at least 4,240 results, including
    completed ProcessIntegration and E2E phases, the exact ten lifecycle
    sentinels, and the exact ten spiritual-conflict sentinels. The full
@@ -231,6 +236,32 @@ guide as the stable local interface.
 Final verification does not serially execute all diagnostic lanes. A failing
 bounded control is narrowed with only the smallest relevant focused or
 diagnostic selection.
+
+## Phase 5: Suite-Growth PreMerge Capacity Correction
+
+1. Retain the #1526 capacity-red PreMerge and compare its descriptor TRX
+   timings with isolated and browser-only concurrent focused controls.
+2. Reject the Fast-drain-only experiment after its exact run still exceeds the
+   deadline, then trace the repeated setup on the remaining critical path.
+3. Add RED/GREEN executable guards for retained PreMerge class costs and for
+   one loaded browser-audit template per selected save in each test-host fixture
+   with isolated per-row clones.
+   Preserve filters, cases, assertions, phase order, the four-host ceiling, and
+   the two-Fast ceiling.
+4. Run the four ExplorerWeb shards as the first resource-isolation wave because
+   paired evidence shows severe Fast-overlap contention. Drain that wave before
+   starting the remaining parallel descriptors; do not change either cap,
+   filter, or exclusive phase boundary.
+5. Benchmark all 166 browser-audit rows, verify template immutability at fixture
+   disposal, measure the two generated shards together, and replay the updated
+   plan before the final control.
+6. Reuse one empty ExplorerWeb directory skeleton per test host and immutable,
+   hashed seed profiles for repeated deterministic theory setup; preserve a
+   distinct writable root for every row.
+7. Verify the focused guards, one PlanOnly contract, one meaningful Fast
+   checkpoint, and one exact PreMerge control under the explicitly approved
+   20-minute deadline. No other lane timeout, concurrency cap, filter, phase,
+   case, or assertion changes.
 
 ## Complexity Tracking
 
