@@ -27,7 +27,10 @@
 - The previously detected generation-service credential is confirmed revoked by the owner. Remove its literal from the current tree; retain history without rewriting it; accept only the two known historical occurrences plus the known prose false positive. Any additional or active credential blocks publication.
 - Use official license/service sources: [GNU AGPL v3](https://www.gnu.org/licenses/agpl-3.0.html), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/), [Suno Terms](https://suno.com/terms), and [Suno Basic ownership guidance](https://help.suno.com/en/articles/2416769).
 - Use PowerShell 7 and `./scripts/test-csharp.ps1`. During implementation run the smallest relevant `Focused` filter, one meaningful `Fast` checkpoint, and exactly one final `PreMerge` control without a duplicate final Fast run.
-- This work changes repository governance and documentation only. It does not change a GM-authored game contract, afterlife contract, runtime capability, or player UI, so no Rules, TaskGuides, GM examples, manifests, or afterlife matrix updates are required.
+- The product-version correction changes assembly metadata and the client-owned
+  version recorded in new save metadata, but does not change a GM-authored game
+  contract, afterlife contract, gameplay capability, or player UI. No Rules,
+  TaskGuides, GM examples, manifests, or afterlife matrix updates are required.
 
 ## File Responsibility Map
 
@@ -41,6 +44,10 @@
 | `.github/CODEOWNERS` | Repository-wide owner assignment. |
 | `.github/pull_request_template.md` | Issue, scope, verification, docs, license, and asset-impact checklist. |
 | `.github/ISSUE_TRACKING.md` | Public-readable/collaborator-created issue policy and contribution intake. |
+| `.github/SECURITY.md` | Private vulnerability-reporting route for outside users; public security disclosures are forbidden. |
+| `BookOfEternityClient/BookOfEternityClient.csproj` | SemVer-compatible `0.5.0-prealpha` assembly/package version. |
+| `BookOfEternityClient/Configuration/ProductVersion.cs` | Single runtime version source derived from assembly informational metadata. |
+| `BookOfEternityClient/Configuration/GameSettings.cs` and `BookOfEternityClient/Models/DataModels.cs` | Current runtime/save version defaults; stale configured version values cannot override the running build. |
 | `BookOfEternityClient/Music/README.md` | Suno Basic attribution, non-commercial boundary, inspirations, and takedown contact. |
 | `BookOfEternityClient/Sounds/README.md` | Exact Freesound CC BY 4.0 credits and original notification-chime provenance. |
 | `BookOfEternityClient/Sounds/sound-notification.wav` | Deterministic project-original replacement for the asset with insufficient redistribution evidence. |
@@ -259,10 +266,13 @@ Continue with complete Russian sections for:
 2. console and Browser clients;
 3. repository layout;
 4. prerequisites: .NET 8 SDK, Node.js/npm for frontend development, PowerShell 7, and a separately configured compatible external GM command;
-5. quick start:
+5. separate console and Browser Client quick-start alternatives:
 
 ```powershell
 dotnet run --project BookOfEternityClient
+```
+
+```powershell
 npm ci --prefix BookOfEternityClient.WebFrontend
 npm run dev:local --prefix BookOfEternityClient.WebFrontend
 ```
@@ -275,8 +285,10 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
 ```
 
 7. contribution link to `CONTRIBUTING.md` and the tracked-task requirement;
-8. the exact license map and links to all three notices;
-9. the copyright line.
+8. a security section linking `.github/SECURITY.md` and forbidding public
+   vulnerability or credential disclosure;
+9. the exact license map and links to all three notices;
+10. the copyright line.
 
 Do not claim that a specific external provider is built in, free, supported, or ready. Describe only the existing external-GM command boundary.
 
@@ -615,6 +627,51 @@ git commit -m "docs: require owner-reviewed contribution workflow (#1525)"
 
 ---
 
+### Task 4A: Align the Public Version and Private Security Intake
+
+**Files:**
+- Modify: `BookOfEternityClient/BookOfEternityClient.csproj`
+- Create: `BookOfEternityClient/Configuration/ProductVersion.cs`
+- Modify: `BookOfEternityClient/Configuration/GameSettings.cs`
+- Modify: `BookOfEternityClient/Models/DataModels.cs`
+- Modify: `FileSystemExample/game_session/saves/manual_saves/*_metadata.json`
+- Create: `.github/SECURITY.md`
+- Modify: `.github/ISSUE_TRACKING.md`
+- Modify: `README.md`
+- Modify: `BookOfEternityClient.Tests/RepositoryPublicationDocumentationTests.cs`
+
+- [ ] **Step 1: Add RED version, security-policy, and quick-start guards**
+
+Require the project version `0.5.0-prealpha`, assembly informational version,
+runtime settings, save defaults, and checked-in example save metadata to agree.
+Require `.github/SECURITY.md` to link GitHub's private vulnerability-reporting
+flow and forbid public disclosure. Require separate console and Browser Client
+quick starts.
+
+- [ ] **Step 2: Establish one runtime product-version source**
+
+Set the project `<Version>` to `0.5.0-prealpha`. Derive
+`ProductVersion.Current` from the assembly informational version, stripping
+only build metadata, and use it for runtime settings and new save metadata.
+Ignore stale configured `GameVersion` values when loading settings so an old
+local config cannot relabel the running build.
+
+- [ ] **Step 3: Add the private security-reporting policy**
+
+Add `.github/SECURITY.md` with no personal email. Direct outside reporters to
+`/security/advisories/new`, prohibit reports through public Issues or pull
+requests, and cross-link the policy from `.github/ISSUE_TRACKING.md`.
+
+- [ ] **Step 4: Run focused verification**
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~RepositoryPublicationDocumentationTests"
+```
+
+Expected: PASS.
+
+---
+
 ### Task 5: Verify Repository-Owned Publication Files
 
 **Files:**
@@ -949,11 +1006,16 @@ $protection | gh api --method PUT "repos/$repo/branches/main/protection" --input
 - [ ] **Step 4: Enable public-repository security features**
 
 ```powershell
+gh api --method PUT "repos/$repo/private-vulnerability-reporting"
 gh repo edit $repo --enable-secret-scanning=true --enable-secret-scanning-push-protection=true
 gh api --method PUT "repos/$repo/vulnerability-alerts"
 ```
 
-If GitHub rejects a feature for plan/account reasons, record the actual response and do not claim it is enabled. Do not weaken branch protection to compensate.
+Private vulnerability reporting is required because public Issue creation is
+restricted to collaborators and `.github/SECURITY.md` directs outside reporters
+to this private channel. If GitHub rejects a feature for plan/account reasons,
+record the actual response and do not claim it is enabled. Do not weaken branch
+protection to compensate.
 
 - [ ] **Step 5: Resolve only the known historical secret alert**
 
@@ -983,6 +1045,7 @@ Resolve an alert as `revoked` only when its path/commit/rule matches the accepte
 gh repo view $repo --json visibility,description,defaultBranchRef,hasIssuesEnabled,hasWikiEnabled,hasDiscussionsEnabled,licenseInfo,repositoryTopics
 gh api "repos/$repo/branches/main/protection"
 gh api "repos/$repo" --jq '.security_and_analysis'
+gh api "repos/$repo/private-vulnerability-reporting" --jq '.enabled'
 ```
 
 Assert:
@@ -998,6 +1061,8 @@ Assert:
 - `enforce_admins.enabled == false` so owner bypass remains;
 - no required status checks;
 - configured security features report enabled or have a recorded limitation.
+- private vulnerability reporting is enabled and matches the public
+  `.github/SECURITY.md` route.
 
 - [ ] **Step 2: Verify issue and PR creation policies**
 

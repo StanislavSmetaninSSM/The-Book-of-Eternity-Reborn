@@ -1,6 +1,10 @@
 using System.Security.Cryptography;
+using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -58,6 +62,44 @@ public sealed class RepositoryPublicationDocumentationTests
     }
 
     [Fact]
+    public void ProductVersion_MatchesPublishedPreAlphaStatusAcrossBuildRuntimeAndSaves()
+    {
+        const string expectedVersion = "0.5.0-prealpha";
+        var project = Read("BookOfEternityClient/BookOfEternityClient.csproj");
+        var settingsSource = Read("BookOfEternityClient/Configuration/GameSettings.cs");
+        var metadataSource = Read("BookOfEternityClient/Models/DataModels.cs");
+        var informationalVersion = typeof(GameSettings).Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion;
+
+        Assert.Contains($"<Version>{expectedVersion}</Version>", project, StringComparison.Ordinal);
+        Assert.StartsWith(expectedVersion, informationalVersion, StringComparison.Ordinal);
+        Assert.Equal(expectedVersion, new GameSettings().GameVersion);
+        Assert.Equal(expectedVersion, new SaveMetadata().GameVersion);
+
+        var loadedSettings = new GameSettings();
+        loadedSettings.ApplyLoadedValues(new GameSettings { GameVersion = "1.0.0" });
+        Assert.Equal(expectedVersion, loadedSettings.GameVersion);
+        Assert.Contains("GameVersion = ProductVersion.Current", settingsSource, StringComparison.Ordinal);
+        Assert.Contains("GameVersion { get; set; } = ProductVersion.Current", metadataSource, StringComparison.Ordinal);
+
+        string[] versionBearingExampleMetadata =
+        [
+            "FileSystemExample/game_session/saves/manual_saves/chaos_sea_command_display_fixture_metadata.json",
+            "FileSystemExample/game_session/saves/manual_saves/first_character_save_metadata.json",
+            "FileSystemExample/game_session/saves/manual_saves/mortal_world_command_display_fixture_metadata.json"
+        ];
+        foreach (var relativePath in versionBearingExampleMetadata)
+        {
+            using var metadata = JsonDocument.Parse(Read(relativePath));
+            Assert.True(
+                metadata.RootElement.TryGetProperty("gameVersion", out var gameVersion),
+                $"Example save metadata is missing gameVersion: {relativePath}");
+            Assert.Equal(expectedVersion, gameVersion.GetString());
+        }
+    }
+
+    [Fact]
     public void RepositoryGovernanceFiles_RequireOwnerReviewedPullRequests()
     {
         Assert.Equal("* @StanislavSmetaninSSM\n", Read(".github/CODEOWNERS").Replace("\r\n", "\n"));
@@ -80,6 +122,23 @@ public sealed class RepositoryPublicationDocumentationTests
         var issuePolicy = Read(".github/ISSUE_TRACKING.md");
         Assert.Contains("Collaborators only", issuePolicy, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("publicly readable", issuePolicy, StringComparison.OrdinalIgnoreCase);
+
+        var security = Read(".github/SECURITY.md");
+        Assert.Contains("Report a vulnerability", security, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("security/advisories/new", security, StringComparison.Ordinal);
+        Assert.Contains("Do not report security vulnerabilities through public GitHub Issues", security, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("[SECURITY.md](.github/SECURITY.md)", Read("README.md"), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RootReadme_OffersSeparateConsoleAndBrowserQuickStarts()
+    {
+        var readme = Read("README.md");
+
+        Assert.Contains("### Консольный клиент", readme, StringComparison.Ordinal);
+        Assert.Contains("### Browser Client", readme, StringComparison.Ordinal);
+        Assert.Contains("dotnet run --project BookOfEternityClient", readme, StringComparison.Ordinal);
+        Assert.Contains("npm run dev:local --prefix BookOfEternityClient.WebFrontend", readme, StringComparison.Ordinal);
     }
 
     [Fact]

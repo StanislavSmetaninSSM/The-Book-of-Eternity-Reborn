@@ -68,8 +68,15 @@ not a release, stability promise, or save-compatibility promise.
 
 ## Быстрый старт
 
+### Консольный клиент
+
 ```powershell
 dotnet run --project BookOfEternityClient
+```
+
+### Browser Client
+
+```powershell
 npm ci --prefix BookOfEternityClient.WebFrontend
 npm run dev:local --prefix BookOfEternityClient.WebFrontend
 ```
@@ -93,6 +100,11 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
 Порядок работы, требования к проверкам и правило обязательной задачи описаны
 в [CONTRIBUTING.md](CONTRIBUTING.md). Любое изменение репозитория должно быть
 привязано к отслеживаемой задаче (tracked GitHub Issue) до начала реализации.
+
+## Безопасность
+
+Не публикуйте сведения об уязвимостях или секреты в Issues и pull requests.
+Используйте приватный порядок из [SECURITY.md](.github/SECURITY.md).
 
 ## Лицензии и исключения
 

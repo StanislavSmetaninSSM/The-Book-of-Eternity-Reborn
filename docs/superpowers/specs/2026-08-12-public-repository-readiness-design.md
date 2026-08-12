@@ -46,8 +46,10 @@ The preparation pull request will add or update the following surfaces:
      compatibility is unsupported, and any update may invalidate old saves.
    - Project concept, current architecture, supported clients, prerequisites,
      local development, bounded test commands, current limitations, and
-     contribution workflow.
+     contribution workflow, plus a link to the private security-reporting
+     policy.
    - No claim that an unimplemented integration or provider is available.
+   - Console and Browser Client quick starts are separate alternatives.
 2. `LICENSE`
    - Standard GNU Affero General Public License v3 text.
    - Repository notices identify the software license as
@@ -79,6 +81,14 @@ The preparation pull request will add or update the following surfaces:
      or asset impact, and documentation impact.
 8. Existing music, sound, and generated-asset provenance files
    - Updated only where needed to agree with the root licensing notices.
+9. Product version metadata
+   - Assembly/package version is `0.5.0-prealpha`.
+   - Runtime settings and new save metadata derive the same value from assembly
+     metadata instead of maintaining independent version literals.
+10. `.github/SECURITY.md`
+   - Directs outside reporters to GitHub Private Vulnerability Reporting.
+   - Explicitly forbids posting vulnerability details or credentials in public
+     Issues, pull requests, discussions, or commits.
 
 The copyright notice will identify:
 
@@ -160,6 +170,7 @@ block publication.
 
 Once public, enable the security features available to public repositories:
 
+- private vulnerability reporting;
 - secret scanning;
 - secret push protection;
 - dependency graph and Dependabot alerts.
@@ -180,8 +191,9 @@ without adding or repairing a workflow.
 6. Change repository visibility from private to public, accepting that code,
    reachable history, branches, Issues, and Actions history become visible and
    the repository can be forked.
-7. Immediately configure `main` protection, `Collaborators only` Issues, and
-   the public-repository security features.
+7. Immediately configure `main` protection, `Collaborators only` Issues,
+   private vulnerability reporting, and the public-repository security
+   features.
 8. Verify the public page without relying on the owner's authenticated view,
    then verify repository settings through the GitHub API or settings UI.
 9. Create the CI repair follow-up task and record the final settings and audit

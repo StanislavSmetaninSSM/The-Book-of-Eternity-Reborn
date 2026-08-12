@@ -11,6 +11,10 @@ enforced by the GitHub repository setting, not by
 Outside pull requests remain possible, but their implementation must be tied
 to a maintainer-created or accepted issue.
 
+Security vulnerabilities must be reported privately through the repository's
+GitHub **Report a vulnerability** flow described in [SECURITY.md](SECURITY.md),
+not through public Issues or pull requests.
+
 Use GitHub Issues for:
 
 - bugs
