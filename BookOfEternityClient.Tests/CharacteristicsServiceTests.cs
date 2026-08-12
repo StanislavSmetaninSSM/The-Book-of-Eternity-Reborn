@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Linq;
 using BookOfEternityClient.Configuration;
@@ -154,6 +155,78 @@ public sealed class CharacteristicsServiceTests : IDisposable
 
         Assert.Equal(0, result.Stats[Characteristics.Attractiveness].PermanentBonus);
         Assert.Equal(1, result.Stats[Characteristics.Attractiveness].PermanentlyModified);
+    }
+
+    [Fact]
+    public async Task ComputeAsync_EquipmentBonusesUseAcceptedItemsAndExactEquippedItemsReferences()
+    {
+        var accepted = CreateAcceptedEquipmentBonusItem(
+            "itm_characteristic_blade",
+            "Клинок точной силы",
+            bonus: 2);
+        var rejected = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_rejected_characteristic_bonus",
+            materializationId: "mat_item_rejected_characteristic_bonus");
+        rejected["name"] = "Непринятый клинок";
+        rejected["status"] = "equipped";
+        rejected["structuredBonuses"] = CreateCharacteristicBonuses(99);
+        rejected["materialization"]!["sections"]!["mechanics"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        await WriteInventoryAsync(
+            accepted,
+            rejected,
+            new JsonObject { ["MainHand"] = "itm_characteristic_blade" });
+
+        var exactResult = await _service.ComputeAsync();
+
+        Assert.Equal(2, exactResult.Stats[Characteristics.Strength].PermanentBonus);
+
+        await WriteInventoryAsync(
+            accepted,
+            rejected,
+            new JsonObject { ["MainHand"] = "ITM_CHARACTERISTIC_BLADE" });
+
+        var caseVariantResult = await _service.ComputeAsync();
+
+        Assert.Equal(0, caseVariantResult.Stats[Characteristics.Strength].PermanentBonus);
+
+        await WriteInventoryAsync(
+            accepted,
+            rejected,
+            new JsonObject
+            {
+                ["MainHand"] = "itm_characteristic_blade",
+                ["mainHand"] = "itm_characteristic_blade"
+            });
+
+        var ambiguousSlotResult = await _service.ComputeAsync();
+
+        Assert.Equal(0, ambiguousSlotResult.Stats[Characteristics.Strength].PermanentBonus);
+
+        await WriteInventoryAsync(
+            accepted,
+            rejected,
+            new JsonObject { ["UnknownSlot"] = "itm_characteristic_blade" });
+
+        var unknownSlotResult = await _service.ComputeAsync();
+
+        Assert.Equal(0, unknownSlotResult.Stats[Characteristics.Strength].PermanentBonus);
+
+        await WriteInventoryAsync(
+            accepted,
+            rejected,
+            new JsonObject
+            {
+                ["MainHand"] = "itm_characteristic_blade",
+                ["UnknownSlot"] = null
+            });
+
+        var invalidSiblingSlotResult = await _service.ComputeAsync();
+
+        Assert.Equal(0, invalidSiblingSlotResult.Stats[Characteristics.Strength].PermanentBonus);
     }
 
     [Fact]
@@ -553,6 +626,56 @@ public sealed class CharacteristicsServiceTests : IDisposable
             relativePath,
             JsonSerializer.Serialize(payload, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
+
+    private async Task WriteInventoryAsync(
+        JsonObject accepted,
+        JsonObject rejected,
+        JsonObject equippedItems)
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = new JsonArray(accepted.DeepClone()),
+                ["UpdateInventory"] = new JsonArray(rejected.DeepClone()),
+                ["equippedItems"] = equippedItems
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static JsonObject CreateAcceptedEquipmentBonusItem(
+        string itemId,
+        string name,
+        int bonus)
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
+        item["name"] = name;
+        item["equipmentSlot"] = "MainHand";
+        item["structuredBonuses"] = CreateCharacteristicBonuses(bonus);
+        foreach (var section in new[] { "mechanics", "equipment" })
+        {
+            item["materialization"]!["sections"]![section] = new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
+        }
+
+        MortalItemTestFixture.ResealCanonical(item);
+        return item;
+    }
+
+    private static JsonArray CreateCharacteristicBonuses(int bonus) =>
+        new(
+            new JsonObject
+            {
+                ["description"] = $"Сила +{bonus}",
+                ["bonusType"] = "Characteristic",
+                ["target"] = Characteristics.Strength,
+                ["valueType"] = "Flat",
+                ["value"] = bonus,
+                ["application"] = "Permanent",
+                ["condition"] = null
+            });
 
     private async Task WritePendingTurnSnapshotManifestAsync(params string[] trackedPaths)
     {

@@ -99,8 +99,15 @@ public partial class GameEngine
         public List<string> TargetFiles { get; set; } = new();
         public List<string> TemplateRefs { get; set; } = new();
         public List<string> CanonicalActorNames { get; set; } = new();
+        public string? TransitionClass { get; set; }
+        public string? Route { get; set; }
+        public JsonElement? SourceCarrier { get; set; }
+        public JsonElement? DestinationCarrier { get; set; }
         public List<string>? MissingFields { get; set; }
         public List<ValidationRepairExactFieldCorrection> ExactFieldCorrections { get; set; } = new();
+        public List<string>? RequiredCompanionTargets { get; set; }
+        public List<string>? ExpectedAuthority { get; set; }
+        public List<string>? ActualEvidence { get; set; }
         public JsonObject? CanonicalCreateSkeleton { get; set; }
         public JsonObject? AllowedEnums { get; set; }
         public List<string> ExpectedShape { get; set; } = new();
@@ -116,6 +123,7 @@ public partial class GameEngine
         public string Expected { get; set; } = "";
         public string Actual { get; set; } = "";
         public string Code { get; set; } = "";
+        public string? RepairHint { get; set; }
     }
 
     private sealed class ValidationRepairIssue

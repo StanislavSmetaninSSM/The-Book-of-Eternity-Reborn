@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "itemId": "traveler_lantern_01",
+      "receiptId": "mirec_4427cc94e9e94a339e66c60dc29099d4",
+      "state": "active",
+      "currentCarrier": {
+        "kind": "player_inventory",
+        "ownerId": "player",
+        "containerId": null,
+        "containerPath": []
+      },
+      "originMaterializationIds": ["mat_item_traveler_lantern_01"],
+      "originCreationRefs": ["new_item_traveler_lantern_01"],
+      "parentItemIds": [],
+      "mergedIntoItemId": null,
+      "transitions": [
+        {
+          "transitionId": "mitrn_traveler_lantern_01_create",
+          "kind": "create",
+          "turn": 42,
+          "sourceItemIds": [],
+          "sourceCarrier": null,
+          "destinationCarrier": {
+            "kind": "player_inventory",
+            "ownerId": "player",
+            "containerId": null,
+            "containerPath": []
+          },
+          "quantityBefore": 0,
+          "quantityAfter": 1,
+          "authorityKind": "turn_outcome",
+          "authorityId": "fixture_item_bond_fate_card_contract"
+        }
+      ]
+    }
+  ]
+}

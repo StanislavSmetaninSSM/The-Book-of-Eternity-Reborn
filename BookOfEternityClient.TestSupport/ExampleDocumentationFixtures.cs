@@ -148,6 +148,7 @@ internal sealed class ExampleValidationManifest
     public List<ActorMaterializationExampleCoverage> MortalNpcCoreChangesCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> AfterlifeEntityProfileCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> FactionMaterializationCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> MortalItemMaterializationCoverage { get; set; } = new();
     public List<ExampleContractCoverage> TrainingShowcaseCoverage { get; set; } = new();
     public List<ExampleContractCoverage> GmWorkerBridgeCoverage { get; set; } = new();
 

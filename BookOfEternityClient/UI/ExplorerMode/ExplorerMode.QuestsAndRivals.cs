@@ -64,7 +64,8 @@ public partial class ExplorerMode
         var historyQuests = new List<(string label, JsonElement el, JsonElement? rewardInfo, List<JsonElement> relatedChains)>();
         if (histDoc != null)
         {
-            var rewardByQuestId = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+            var rewardByQuestId = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+            var ambiguousRewardQuestIds = new HashSet<string>(StringComparer.Ordinal);
             var chainEntries = new List<JsonElement>();
 
             if (histDoc.RootElement.TryGetProperty("questRewards", out var questRewards) &&
@@ -73,9 +74,17 @@ public partial class ExplorerMode
                 foreach (var reward in questRewards.EnumerateArray())
                 {
                     if (reward.ValueKind != JsonValueKind.Object) continue;
-                    var rewardQuestId = GetStr(reward, "questId", "");
-                    if (!string.IsNullOrWhiteSpace(rewardQuestId))
-                        rewardByQuestId[rewardQuestId] = reward;
+                    if (!TryReadExactQuestId(reward, out var rewardQuestId) ||
+                        ambiguousRewardQuestIds.Contains(rewardQuestId))
+                    {
+                        continue;
+                    }
+
+                    if (!rewardByQuestId.TryAdd(rewardQuestId, reward))
+                    {
+                        rewardByQuestId.Remove(rewardQuestId);
+                        ambiguousRewardQuestIds.Add(rewardQuestId);
+                    }
                 }
             }
 
@@ -98,7 +107,7 @@ public partial class ExplorerMode
                     var name = GetStr(item, "questName", GetStr(item, "title", GetStr(item, "name", "?")));
                     var outcome = GetStr(item, "outcome", GetStr(item, "status", "")).ToLowerInvariant();
                     var icon = outcome switch { "completed" or "завершён" or "success" => "✅", "failed" or "провален" => "❌", _ => "📋" };
-                    var questId = GetStr(item, "questId", "");
+                    var questId = TryReadExactQuestId(item, out var exactQuestId) ? exactQuestId : string.Empty;
                     rewardByQuestId.TryGetValue(questId, out var rewardInfo);
                     var relatedChains = chainEntries
                         .Where(chain => HistoryChainMatchesQuest(chain, questId, name))
@@ -161,9 +170,20 @@ public partial class ExplorerMode
         }
     }
 
-    private static void RenderReadableJsonValue(List<string> lines, string label, JsonElement value, string indent, HashSet<string>? excluded = null, int depth = 0)
+    private static void RenderReadableJsonValue(
+        List<string> lines,
+        string label,
+        JsonElement value,
+        string indent,
+        HashSet<string>? excluded = null,
+        bool itemContext = false,
+        int depth = 0)
     {
-        if (depth > 5)
+        var labelIsInternal = itemContext
+            ? MortalItemPlayerProjection.IsInternalItemField(label)
+            : MortalItemPlayerProjection.IsInternalField(label);
+        if (depth > 5 || labelIsInternal ||
+            (itemContext && MortalItemPlayerProjection.IsInternalItemDto(value)))
             return;
 
         switch (value.ValueKind)
@@ -172,11 +192,21 @@ public partial class ExplorerMode
                 lines.Add($"{indent}[dim]{Markup.Escape(NpcFieldToRussian(label))}:[/]");
                 foreach (var prop in value.EnumerateObject())
                 {
-                    if (prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+                    var propertyIsInternal = itemContext
+                        ? MortalItemPlayerProjection.IsInternalItemField(prop.Name)
+                        : MortalItemPlayerProjection.IsInternalField(prop.Name);
+                    if (prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase) ||
+                        propertyIsInternal)
                         continue;
                     if (excluded != null && excluded.Contains(prop.Name))
                         continue;
-                    RenderReadableJsonValue(lines, prop.Name, prop.Value, indent + "  ", null, depth + 1);
+                    RenderReadableJsonValue(
+                        lines,
+                        prop.Name,
+                        prop.Value,
+                        indent + "  ",
+                        itemContext: itemContext,
+                        depth: depth + 1);
                 }
                 break;
             case JsonValueKind.Array:
@@ -186,7 +216,13 @@ public partial class ExplorerMode
                 {
                     if (item.ValueKind is JsonValueKind.Object or JsonValueKind.Array)
                     {
-                        RenderReadableJsonValue(lines, $"элемент {++index}", item, indent + "  ", null, depth + 1);
+                        RenderReadableJsonValue(
+                            lines,
+                            $"элемент {++index}",
+                            item,
+                            indent + "  ",
+                            itemContext: itemContext,
+                            depth: depth + 1);
                     }
                     else
                     {
@@ -327,6 +363,8 @@ public partial class ExplorerMode
             {
                 foreach (var item in items.EnumerateArray())
                 {
+                    if (MortalItemPlayerProjection.IsInternalItemDto(item))
+                        continue;
                     if (item.ValueKind == JsonValueKind.String)
                     {
                         lines.Add($"    📦 {Markup.Escape(item.GetString() ?? "?")}");
@@ -334,7 +372,7 @@ public partial class ExplorerMode
                     }
 
                     lines.Add("    📦 Составная награда:");
-                    RenderReadableJsonValue(lines, "награда", item, "      ");
+                    RenderReadableJsonValue(lines, "награда", item, "      ", itemContext: true);
                 }
             }
             var other = GetStr(rewards, "other", "");
@@ -442,7 +480,7 @@ public partial class ExplorerMode
 
     private async Task<QuestRewardAuthorityContext> ReadQuestRewardAuthorityContextAsync()
     {
-        return QuestRewardAuthorityContext.Create(
+        return QuestRewardAuthorityContext.CreatePlayerProjection(
             ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/inventory/items.json")),
             ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/player/skills_active.json")),
             ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/player/skills_passive.json")),
@@ -497,6 +535,27 @@ public partial class ExplorerMode
         }
     }
 
+    private static bool TryReadExactQuestId(JsonElement value, out string questId)
+    {
+        questId = string.Empty;
+        if (value.ValueKind != JsonValueKind.Object ||
+            !value.TryGetProperty("questId", out var questIdNode) ||
+            questIdNode.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        var candidate = questIdNode.GetString();
+        if (string.IsNullOrWhiteSpace(candidate) ||
+            !string.Equals(candidate, candidate.Trim(), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        questId = candidate;
+        return true;
+    }
+
     private static bool HistoryChainMatchesQuest(JsonElement chain, string questId, string questName)
     {
         var currentQuest = GetStr(chain, "currentQuest", "");
@@ -543,6 +602,7 @@ public partial class ExplorerMode
         return element.ValueKind switch
         {
             JsonValueKind.Object => string.Join("; ", element.EnumerateObject()
+                .Where(property => !MortalItemPlayerProjection.IsInternalField(property.Name))
                 .Select(property => $"{NpcFieldToRussian(property.Name)} — {DescribeQuestStructuredValue(property.Value)}")
                 .Where(value => !string.IsNullOrWhiteSpace(value))),
             JsonValueKind.Array => string.Join(", ", element.EnumerateArray()

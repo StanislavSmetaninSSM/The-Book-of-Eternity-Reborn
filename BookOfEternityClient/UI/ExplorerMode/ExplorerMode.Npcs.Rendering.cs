@@ -293,10 +293,9 @@ public partial class ExplorerMode
     }
 
 
-    private void RenderNpcInventory(List<string> lines, JsonDocument? doc, string npcId, string npcName, bool debugMode)
+    private void RenderNpcInventory(List<string> lines, JsonElement npc, bool debugMode)
     {
-        if (doc == null) return;
-        var display = BuildNpcInventoryDisplay(doc, npcId, npcName);
+        var display = BuildNpcInventoryDisplay(npc);
         if (display.IsEmpty) return;
 
         if (display.Items.Count > 0)

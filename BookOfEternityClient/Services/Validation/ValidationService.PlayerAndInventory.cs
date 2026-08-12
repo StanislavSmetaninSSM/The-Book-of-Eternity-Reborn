@@ -4355,8 +4355,11 @@ public partial class ValidationService
                 continue;
             }
 
+            var isMaterializedTransferPayload =
+                IsCanonicalMortalItemTransferPayload(item);
             if (preTurnInventoryItemIds.Count > 0 &&
-                !preTurnInventoryItemIds.Contains(existedId))
+                !preTurnInventoryItemIds.Contains(existedId) &&
+                !isMaterializedTransferPayload)
             {
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.existedId",
@@ -4381,6 +4384,32 @@ public partial class ValidationService
 
             ValidatePartialInventoryItemUpdate(item, itemContext, issues);
         }
+    }
+
+    private static bool IsCanonicalMortalItemTransferPayload(JsonElement item)
+    {
+        if (item.ValueKind != JsonValueKind.Object ||
+            !item.TryGetProperty("itemId", out var itemIdNode) ||
+            itemIdNode.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(itemIdNode.GetString()) ||
+            !item.TryGetProperty("existedId", out var existedIdNode) ||
+            existedIdNode.ValueKind != JsonValueKind.String ||
+            !string.Equals(
+                itemIdNode.GetString(),
+                existedIdNode.GetString(),
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return item.TryGetProperty(
+                   MortalItemMaterializationContract.EnvelopeProperty,
+                   out var envelope) &&
+               envelope.ValueKind == JsonValueKind.Object &&
+               item.TryGetProperty(
+                   MortalItemMaterializationContract.ReceiptProperty,
+                   out var receipt) &&
+               receipt.ValueKind == JsonValueKind.Object;
     }
 
     private void ValidateFullInventoryItemObject(JsonElement item, string itemContext, List<ValidationIssue> issues, bool requireStringExistedId)
@@ -4417,6 +4446,21 @@ public partial class ValidationService
                 $"{itemContext}.existedId",
                 IssueSeverity.Error,
                 "existedId должен быть непустой строкой или null"));
+        }
+
+        var isRawMortalCreation = item.TryGetProperty("existedId", out var materializationExistedId) &&
+                                  materializationExistedId.ValueKind == JsonValueKind.Null;
+        var isCanonicalMortalCarrierItem =
+            materializationExistedId.ValueKind == JsonValueKind.String &&
+            IsCanonicalMortalItemCarrierContext(itemContext);
+        if (isRawMortalCreation || isCanonicalMortalCarrierItem)
+        {
+            issues.AddRange(MortalItemMaterializationContract.Validate(
+                item,
+                itemContext,
+                isRawMortalCreation
+                    ? MortalItemMaterializationPhase.RawPreSeal
+                    : MortalItemMaterializationPhase.CanonicalPostSeal));
         }
 
         RequireString(item, itemContext, issues, "name");
@@ -4456,8 +4500,8 @@ public partial class ValidationService
             RequireArrayOfObjects(customProperties, $"{itemContext}.customProperties", issues);
         if (item.TryGetProperty("combatEffect", out var combatEffect))
             ValidateCombatActionArray(combatEffect, $"{itemContext}.combatEffect", issues);
-        ValidateOptionalString(item, itemContext, issues, "mechanicalSummaryAuthority");
-        ValidateOptionalString(item, itemContext, issues, "mechanicalSummaryUnresolvedReason");
+        ValidateOptionalNullableStringField(item, itemContext, issues, "mechanicalSummaryAuthority");
+        ValidateOptionalNullableStringField(item, itemContext, issues, "mechanicalSummaryUnresolvedReason");
         ValidateInventoryMechanicalSummaryAuthority(item, itemContext, issues);
         if (item.TryGetProperty("disassembleTo", out var disassembleTo) && disassembleTo.ValueKind != JsonValueKind.Null)
             ValidateItemDisassemblyArray(disassembleTo, $"{itemContext}.disassembleTo", issues);
@@ -4536,6 +4580,11 @@ public partial class ValidationService
                 "accessoryForSlot должен быть строкой, массивом строк или null"));
         }
     }
+
+    private static bool IsCanonicalMortalItemCarrierContext(string itemContext) =>
+        itemContext.Contains("game_state/inventory/items.json.items[", StringComparison.Ordinal) ||
+        itemContext.Contains(".NPCsInScene[", StringComparison.Ordinal) &&
+        itemContext.Contains(".inventory[", StringComparison.Ordinal);
 
     private void ValidateRequiredItemQualityField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {

@@ -236,6 +236,114 @@ public sealed class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var entries = manifest.MortalItemMaterializationCoverage;
+        var requiredEntries = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["mortal_item_player_acquisition_empty_sections_v1"] = "E_CLI_Mortal_Item_Materialization.txt",
+            ["mortal_item_mechanic_trade_output_v1"] = "E_CLI_Mortal_Item_Materialization.txt",
+            ["mortal_item_existing_transfer_v1"] = "E_CLI_Mortal_Item_Materialization.txt",
+            ["mortal_item_split_merge_lineage_v1"] = "E_CLI_Mortal_Item_Materialization.txt",
+            ["mortal_item_receiptless_rejection_v1"] = "E_CLI_Mortal_Item_Materialization.txt"
+        };
+
+        Assert.Equal(requiredEntries.Count, entries.Count);
+        var entriesById = entries.ToDictionary(entry => entry.ContractId, StringComparer.Ordinal);
+        foreach (var (contractId, expectedFile) in requiredEntries)
+        {
+            Assert.True(entriesById.TryGetValue(contractId, out var entry),
+                $"Missing manifest coverage for {contractId}.");
+            Assert.Equal(expectedFile, entry.File);
+            Assert.Equal("Mortal World", Assert.Single(entry.Realms));
+            Assert.False(string.IsNullOrWhiteSpace(entry.StatePath));
+            Assert.False(string.IsNullOrWhiteSpace(entry.ResponseSurface));
+            Assert.False(string.IsNullOrWhiteSpace(entry.CoverageLimit));
+            Assert.Contains(entry.ValidationKind, new[] { "production-validator", "focused-fragment" });
+            Assert.NotEmpty(entry.RequiredText);
+
+            var example = File.ReadAllText(Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "Examples",
+                expectedFile));
+            Assert.All(entry.RequiredText, token =>
+                Assert.Contains(token, example, StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void MortalItemMaterializationWorkedExamples_UseCurrentSchemaAndExactRejection()
+    {
+        var mundaneResponse = ParseNamedJsonFence(
+            "E_CLI_Mortal_Item_Materialization.txt",
+            "mortal_item_player_acquisition_empty_sections_v1");
+        var tradeResponse = ParseNamedJsonFence(
+            "E_CLI_Mortal_Item_Materialization.txt",
+            "mortal_item_mechanic_trade_output_v1");
+
+        foreach (var response in new[] { mundaneResponse, tradeResponse })
+        {
+            var item = Assert.Single(
+                Assert.IsType<JsonArray>(response["UpdateInventory"])
+                    .OfType<JsonObject>());
+            Assert.Null(item["existedId"]);
+            Assert.NotNull(item["creationRef"]);
+            Assert.Null(item["itemId"]);
+            Assert.Null(item["materializationReceipt"]);
+            Assert.Empty(MortalItemMaterializationContract.Validate(
+                JsonDocument.Parse(item.ToJsonString()).RootElement,
+                "items.UpdateInventory[0]",
+                MortalItemMaterializationPhase.RawPreSeal));
+        }
+
+        var tradeItem = Assert.Single(
+            Assert.IsType<JsonArray>(tradeResponse["UpdateInventory"])
+                .OfType<JsonObject>());
+        Assert.Equal("trade_output", tradeItem["materialization"]!["route"]!.GetValue<string>());
+        Assert.Equal("npc_trade_receipt",
+            tradeItem["materialization"]!["sourceAuthority"]!["kind"]!.GetValue<string>());
+        Assert.Equal("populated",
+            tradeItem["materialization"]!["sections"]!["mechanics"]!["state"]!.GetValue<string>());
+        Assert.NotEmpty(Assert.IsType<JsonArray>(tradeItem["structuredBonuses"]));
+
+        var transfer = ParseNamedJsonFence(
+            "E_CLI_Mortal_Item_Materialization.txt",
+            "mortal_item_existing_transfer_v1");
+        var before = Assert.IsType<JsonObject>(transfer["before"]);
+        var after = Assert.IsType<JsonObject>(transfer["after"]);
+        Assert.Equal(before["itemId"]!.GetValue<string>(), after["itemId"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(before["materialization"], after["materialization"]));
+        Assert.True(JsonNode.DeepEquals(before["materializationReceipt"], after["materializationReceipt"]));
+        Assert.Equal("transfer", transfer["transition"]!["kind"]!.GetValue<string>());
+
+        var lineage = ParseNamedJsonFence(
+            "E_CLI_Mortal_Item_Materialization.txt",
+            "mortal_item_split_merge_lineage_v1");
+        Assert.Equal("split", lineage["split"]!["transition"]!["kind"]!.GetValue<string>());
+        Assert.Equal("split_derived",
+            lineage["split"]!["childReceipt"]!["instanceKind"]!.GetValue<string>());
+        Assert.Equal("merge", lineage["merge"]!["transition"]!["kind"]!.GetValue<string>());
+        Assert.Equal("merged", lineage["merge"]!["contributorState"]!.GetValue<string>());
+
+        var rejected = ParseNamedJsonFence(
+            "E_CLI_Mortal_Item_Materialization.txt",
+            "mortal_item_receiptless_rejection_v1");
+        var rejectedItem = Assert.Single(
+            Assert.IsType<JsonArray>(rejected["items"])
+                .OfType<JsonObject>());
+        var rejectionIssues = MortalItemMaterializationContract.Validate(
+            JsonDocument.Parse(rejectedItem.ToJsonString()).RootElement,
+            "items[0]",
+            MortalItemMaterializationPhase.CanonicalPostSeal);
+        Assert.Contains(rejectionIssues,
+            issue => issue.Code == "mortal_item_materialization_receiptless_current_item");
+        Assert.Equal(
+            "mortal_item_materialization_receiptless_current_item",
+            rejected["expectedDiagnostic"]!.GetValue<string>());
+    }
+
+    [Fact]
     public void ExampleValidationManifest_RejectsUnknownRootCoverageContainers()
     {
         const string unknownContainerManifest = """
@@ -1221,6 +1329,9 @@ public sealed class ExampleDocumentationValidationTests
   "maxWeight": "45.0kg"
 }
 """);
+        await fs.WriteFileAtomicAsync(
+            "game_state/inventory/item_identity_index.json",
+            """{ "schemaVersion": 1, "entries": [] }""");
 
         await fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
 {

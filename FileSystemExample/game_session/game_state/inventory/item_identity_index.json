@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "itemId": "item_ancient_sword",
+      "receiptId": "mirec_ancient_sword",
+      "state": "active",
+      "currentCarrier": {
+        "kind": "player_inventory",
+        "ownerId": "player",
+        "containerId": null,
+        "containerPath": []
+      },
+      "originMaterializationIds": [
+        "mat_item_ancient_sword"
+      ],
+      "originCreationRefs": [
+        "new_item_ancient_sword"
+      ],
+      "parentItemIds": [],
+      "mergedIntoItemId": null,
+      "transitions": [
+        {
+          "transitionId": "mitrn_ancient_sword_create",
+          "kind": "create",
+          "turn": 42,
+          "sourceItemIds": [],
+          "sourceCarrier": null,
+          "destinationCarrier": {
+            "kind": "player_inventory",
+            "ownerId": "player",
+            "containerId": null,
+            "containerPath": []
+          },
+          "quantityBefore": 0,
+          "quantityAfter": 1,
+          "authorityKind": "turn_outcome",
+          "authorityId": "turn_42"
+        }
+      ]
+    }
+  ]
+}

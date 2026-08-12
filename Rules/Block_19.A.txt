@@ -288,4 +288,12 @@
    </content>
   </rule>
  </content>
+ <rule id="19A.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 NPC and trade routes</description>
+  <content><![CDATA[
+  A complete new item added to an existing NPC uses npc_acquisition with sourceAuthority.kind npc_inventory_add and exact NPCInventoryAdds authority. Initial inventory of a genuinely new NPC uses new_npc_inventory with sourceAuthority.kind new_npc and exact new-actor creation authority. A never-before-existing merchant stock instance bought by the player uses trade_output with sourceAuthority.kind npc_trade_receipt; its creationRef equals the unique current-schema offer slotId and the authorityId matches the exact trade request/receipt.
+
+  Existing-item sale, purchase, buyback, theft, or handoff is a transfer preserving exact itemId, envelope, and receipt, never a fresh null-ID creation. NPC equipment and container references resolve exact IDs (or same-turn creationRef before sealing). Do not create itemId, materializationReceipt, item_identity_index.json, seals, transitions, or lineage. Receipt-less canonical NPC/trade items are invalid because the game has not shipped and no runtime legacy promotion is allowed.
+  ]]></content>
+ </rule>
 </instructionblock>

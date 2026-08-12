@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -56,8 +57,8 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         }
 
         Assert.Equal(100, observed.Max(item => item.EntryCount));
-        Assert.Equal(214_559, observed.Max(item => item.ExpandedBytes));
-        Assert.Equal(45_351, observed.Max(item => item.LargestEntryBytes));
+        Assert.Equal(285_015, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(61_375, observed.Max(item => item.LargestEntryBytes));
         Assert.Equal(3_552, observed.Max(item => item.NameUtf8Bytes));
 
         var budget = SaveLoadService.TrustedArchiveBudget;
@@ -225,6 +226,139 @@ public sealed class FileSystemExampleFixtureIntegrityTests
     }
 
     [Fact]
+    public void GameSessionFixture_MortalItemsUseCurrentMaterializationAndIdentityIndex()
+    {
+        var inventoryPath = Path.Combine(TestRepoPaths.BaseSessionRoot, "game_state", "inventory", "items.json");
+        var indexPath = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "game_state",
+            "inventory",
+            "item_identity_index.json");
+        Assert.True(File.Exists(indexPath), "Current Mortal item fixtures require item_identity_index.json.");
+
+        using var inventoryDoc = JsonDocument.Parse(File.ReadAllText(inventoryPath));
+        var items = inventoryDoc.RootElement.GetProperty("items").EnumerateArray().ToArray();
+        Assert.NotEmpty(items);
+        foreach (var item in items)
+        {
+            var issues = MortalItemMaterializationContract.Validate(
+                item,
+                "FileSystemExample inventory item",
+                MortalItemMaterializationPhase.CanonicalPostSeal);
+            Assert.True(issues.Count == 0, string.Join(Environment.NewLine, issues.Select(issue => issue.Message)));
+        }
+
+        var index = MortalItemIdentityState.Parse(File.ReadAllText(indexPath));
+        Assert.Empty(index.Issues);
+        Assert.Equal(items.Length, index.EntriesByItemId.Count);
+        foreach (var item in items)
+        {
+            Assert.True(MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var itemId));
+            Assert.True(index.EntriesByItemId.TryGetValue(itemId, out var entry));
+            Assert.Equal(
+                item.GetProperty("materializationReceipt").GetProperty("receiptId").GetString(),
+                entry!["receiptId"]!.GetValue<string>());
+            Assert.Equal("active", entry["state"]!.GetValue<string>());
+            Assert.Equal("player_inventory", entry["currentCarrier"]!["kind"]!.GetValue<string>());
+        }
+    }
+
+    [Fact]
+    public void MortalCommandDisplaySaveFixture_MortalItemsUseCurrentMaterializationAndIdentityIndex()
+    {
+        var fixturePath = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "saves",
+            "manual_saves",
+            "mortal_world_command_display_fixture.zip");
+        using var archive = ZipFile.OpenRead(fixturePath);
+        var inventory = ReadArchiveObject(archive, "game_state/inventory/items.json");
+        var npcCore = ReadArchiveObject(archive, "game_state/npcs/npc_core.json");
+        var npcCommands = ReadArchiveObject(archive, "game_state/npcs/npc_inventory.json");
+        var currentLocation = ReadArchiveObject(archive, "game_state/world/current_location.json");
+        var vehicles = ReadArchiveObject(archive, "game_state/misc/vehicles.json");
+        var indexRoot = ReadArchiveObject(archive, MortalItemIdentityState.StatePath);
+
+        Assert.False(inventory.ContainsKey("equipment"));
+        Assert.IsType<JsonObject>(inventory["equippedItems"]);
+        Assert.Empty(npcCommands["NPCInventoryAdds"]?.AsArray() ?? new JsonArray());
+
+        var catalog = MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(
+            inventory,
+            npcCore,
+            npcCommands,
+            currentLocation,
+            vehicles,
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+        Assert.Empty(catalog.Issues);
+        Assert.Equal(15, catalog.Occurrences.Count);
+
+        var index = MortalItemIdentityState.Parse(indexRoot.ToJsonString());
+        Assert.Empty(index.Issues);
+        Assert.Equal(catalog.Occurrences.Count, index.EntriesByItemId.Count);
+
+        foreach (var occurrence in catalog.Occurrences)
+        {
+            Assert.True(
+                MortalItemMaterializationContract.TryReadAcceptedIdentity(occurrence.Item, out var itemId),
+                $"{occurrence.JsonPath} must be a receipt-bearing accepted item.");
+            using var itemDocument = JsonDocument.Parse(occurrence.Item.ToJsonString());
+            var issues = MortalItemMaterializationContract.Validate(
+                itemDocument.RootElement,
+                occurrence.JsonPath,
+                MortalItemMaterializationPhase.CanonicalPostSeal);
+            Assert.True(
+                issues.Count == 0,
+                string.Join(Environment.NewLine, issues.Select(issue => issue.Message)));
+
+            Assert.True(index.EntriesByItemId.TryGetValue(itemId, out var entry));
+            Assert.Equal("active", entry!["state"]!.GetValue<string>());
+            Assert.Equal(
+                occurrence.Item["materializationReceipt"]!["receiptId"]!.GetValue<string>(),
+                entry["receiptId"]!.GetValue<string>());
+            var carrier = entry["currentCarrier"]!.AsObject();
+            Assert.Equal(occurrence.Carrier.Kind, carrier["kind"]!.GetValue<string>());
+            Assert.Equal(occurrence.Carrier.OwnerId, carrier["ownerId"]!.GetValue<string>());
+            Assert.Equal(occurrence.Carrier.ContainerId, carrier["containerId"]?.GetValue<string>());
+        }
+    }
+
+    [Theory]
+    [InlineData("fixed")]
+    [InlineData("broken")]
+    public void ItemBondFateCardFixture_UsesCurrentMaterializationAndMatchingIdentityIndex(string variant)
+    {
+        var fixtureRoot = Path.Combine(
+            TestRepoPaths.ValidatorFixturesRoot,
+            "item_bond_fate_card_contract",
+            variant);
+        var inventoryPath = Path.Combine(fixtureRoot, "items.json");
+        var indexPath = Path.Combine(fixtureRoot, "item_identity_index.json");
+        Assert.True(File.Exists(indexPath), $"{variant} item bond fixture requires item_identity_index.json.");
+
+        using var inventoryDoc = JsonDocument.Parse(File.ReadAllText(inventoryPath));
+        var root = inventoryDoc.RootElement;
+        Assert.Equal(JsonValueKind.Object, root.GetProperty("equippedItems").ValueKind);
+        var item = Assert.Single(root.GetProperty("items").EnumerateArray());
+        var issues = MortalItemMaterializationContract.Validate(
+            item,
+            $"item_bond_fate_card_contract/{variant}/items[0]",
+            MortalItemMaterializationPhase.CanonicalPostSeal);
+        Assert.True(issues.Count == 0, string.Join(Environment.NewLine, issues.Select(issue => issue.Message)));
+        Assert.True(MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var itemId));
+
+        var index = MortalItemIdentityState.Parse(File.ReadAllText(indexPath));
+        Assert.Empty(index.Issues);
+        var entry = Assert.Single(index.EntriesByItemId);
+        Assert.Equal(itemId, entry.Key);
+        Assert.Equal(
+            item.GetProperty("materializationReceipt").GetProperty("receiptId").GetString(),
+            entry.Value["receiptId"]!.GetValue<string>());
+        Assert.Equal("active", entry.Value["state"]!.GetValue<string>());
+        Assert.Equal("player_inventory", entry.Value["currentCarrier"]!["kind"]!.GetValue<string>());
+    }
+
+    [Fact]
     public void GameSessionFixture_ItemJournalsReferenceExistingItems()
     {
         var inventoryPath = Path.Combine(TestRepoPaths.BaseSessionRoot, "game_state", "inventory", "items.json");
@@ -238,7 +372,7 @@ public sealed class FileSystemExampleFixtureIntegrityTests
                            item.TryGetProperty("itemId", out var id) &&
                            id.ValueKind == JsonValueKind.String)
             .Select(item => item.GetProperty("itemId").GetString() ?? string.Empty)
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            .ToHashSet(StringComparer.Ordinal);
         var unknownItemIds = journalsDoc.RootElement
             .GetProperty("entries")
             .EnumerateArray()
@@ -461,6 +595,15 @@ public sealed class FileSystemExampleFixtureIntegrityTests
     private static string ToFixtureRelativePath(string fullPath)
     {
         return Path.GetRelativePath(TestRepoPaths.BaseSessionRoot, fullPath).Replace(Path.DirectorySeparatorChar, '/');
+    }
+
+    private static JsonObject ReadArchiveObject(ZipArchive archive, string entryPath)
+    {
+        var entry = archive.GetEntry(entryPath);
+        Assert.NotNull(entry);
+        using var reader = new StreamReader(entry!.Open(), Encoding.UTF8);
+        return JsonNode.Parse(reader.ReadToEnd())?.AsObject() ??
+               throw new InvalidDataException($"Archive entry '{entryPath}' must contain a JSON object.");
     }
 
     private static void CopyDirectory(string sourceDir, string destinationDir)

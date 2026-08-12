@@ -4040,4 +4040,12 @@
    </content>
   </rule>
  </content>
+ <rule id="5.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 loot route</description>
+  <content><![CDATA[
+  A durable loot item uses route loot_acquisition and sourceAuthority.kind loot_template. Bind authorityId to the exact validated current-turn loot template key; prose such as "the player finds it" is not authority. The item is a complete raw object with existedId = null, turn-unique creationRef, every semantic field, and all twelve materialization.sections. Use exact item IDs in canonical contentsPath after sealing; a raw same-turn parent may be named by creationRef and the client rewrites it atomically.
+
+  Never create itemId, materializationReceipt, item_identity_index.json, seals, transitions, or lineage. Loot transfer of an already accepted physical item is not loot_acquisition: preserve its exact itemId, envelope, and receipt and use transfer authority. Receipt-less canonical loot is invalid because the game has not shipped and no save-compatibility promotion exists.
+  ]]></content>
+ </rule>
 </instructionblock>

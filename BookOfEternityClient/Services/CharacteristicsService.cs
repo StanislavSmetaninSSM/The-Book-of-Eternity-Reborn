@@ -468,18 +468,35 @@ public class CharacteristicsService
 
         try
         {
-            using var doc = JsonDocument.Parse(json);
-            var items = FindPreferredArray(doc.RootElement, "UpdateInventory", "items", "inventory");
-            if (items == null) return;
-
-            foreach (var item in items.Value.EnumerateArray())
+            var root = JsonNode.Parse(json) as JsonObject;
+            if (root == null ||
+                !MortalItemEquipmentAuthority.TryRead(
+                    root,
+                    root["items"] as JsonArray,
+                    "game_state/inventory/items.json",
+                    out var equipmentState,
+                    out _))
             {
-                // Only process equipped items
-                var status = GetStr(item, "status", "");
-                var equipped = GetStr(item, "equippedSlot", GetStr(item, "slot", ""));
-                if (!status.Equals("equipped", StringComparison.OrdinalIgnoreCase) &&
-                    string.IsNullOrEmpty(equipped))
+                return;
+            }
+
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty("items", out var items) ||
+                items.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            var equippedItemIds = equipmentState.EquippedItemIds();
+
+            foreach (var item in items.EnumerateArray())
+            {
+                if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var itemId) ||
+                    !equippedItemIds.Contains(itemId))
+                {
                     continue;
+                }
 
                 var itemName = GetStr(item, "itemName", GetStr(item, "name", "Предмет"));
                 ExtractStructuredBonuses(item, itemName, "⚔️", permanent, temporary);

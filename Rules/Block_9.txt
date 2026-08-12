@@ -552,4 +552,12 @@
    </content>
   </rule>
  </content>
+ <rule id="9.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 craft output</description>
+  <content><![CDATA[
+  A new durable crafted output uses route craft_output, sourceAuthority.kind craft_request, and the exact validated pending craft request ID. Author one complete raw root with existedId = null, turn-unique creationRef, every governed semantic field, and all twelve materialization.sections. If mechanics are populated, every mechanical summary has matching structuredBonuses/combatEffect authority. Record consumed inputs through the existing exact-item ingredient update/removal surfaces; the client commits ingredient quantities, output sealing, and index transition atomically.
+
+  The output is an independent root, never a renamed ingredient or split child. Do not create itemId, materializationReceipt, item_identity_index.json, seals, transitions, parentItemIds, or lineage. Existing tools/ingredients use exact itemId and preserve their accepted envelope/receipt. Receipt-less canonical craft output is rejected; the game has not shipped and runtime legacy promotion is not supported.
+  ]]></content>
+ </rule>
 </instructionblock>

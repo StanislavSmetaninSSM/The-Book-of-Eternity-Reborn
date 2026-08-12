@@ -243,4 +243,12 @@
    </content>
   </rule>
  </content>
+ <rule id="11.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 transfer and stack lifecycle</description>
+  <content><![CDATA[
+  Every transfer binds the selected physical item by exact itemId, removes exactly one source copy, creates exactly one destination copy, and preserves the immutable materialization envelope, materializationReceipt, and unrelated semantics. Player inventory, NPC inventory, existing location storage, and already-valid vehicle inventory are supported roots. Name-only authority and case-folded IDs are invalid. contentsPath is an ordered chain of permanent parent item IDs.
+
+  Split keeps the selected source ID, reduces its count, and lets the client create one split-derived child receipt and lineage entry. Merge keeps the explicitly selected survivor and receipt, conserves total quantity, and lets the client retire contributors as merged. Full discard retires as destroyed; persistent handoff is transfer, not removal plus recreation. The GM never writes item_identity_index.json, seals, transitions, receipt, parentItemIds, mergedIntoItemId, or retired states. Receipt-less canonical items are rejected; the game has not shipped and no legacy promotion exists.
+  ]]></content>
+ </rule>
 </instructionblock>

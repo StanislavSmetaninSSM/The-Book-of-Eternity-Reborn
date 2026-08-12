@@ -91,6 +91,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - `playerAuthoredStart` является только нарративным контекстом и не выдаёт механику. Клиент оставляет `structuredGmAuthority` пустым, `experience.json` создаёт пустым, faction/quest collections оставляет пустыми и не назначает тип/сложность/способ перехода локации, порог XP, грузоподъёмность, ресурсы/влияние/контроль фракций или универсальный `powerProfile`. Каждая запись `playerProgression`, `carryingRules` или `factionMechanics` обязана содержать точный `canonicalPath` и непустой `values`, повторяющий все разрешённые канонические значения; `{}`, одна строка `reason`, несвязанный путь и проза не дают authority. Остальные setting-aware решения ГМ записывает в `playerSkills`, `inventoryItems`, `actorCapabilities` или `resources` и создаёт соответствующее полное каноническое состояние; active skill также получает matching `skill_mastery.json` entry.
 - `worldEventRequirements.requiredEventIds[]` перечисляет стартовые события, которые должны остаться в `game_state/world/world_events.json.worldEventsLog`, чтобы `/новости_мира` было полезно сразу после воплощения.
 - `preMaterializedBaselineFiles` не делает NPC, фракцию или квест обязательными. Новые сущности появляются только после явного setting-aware решения ГМа и сразу получают полный канонический контракт.
+- Клиент обнуляет текущий item baseline новой жизни: `game_state/inventory/items.json`, `game_state/inventory/item_identity_index.json`, `game_state/inventory/item_resources.json`, `game_state/inventory/item_bonds.json`, `game_state/inventory/item_text_updates.json` и `game_state/npcs/item_journals.json`. Previous-life item sidecars are rollback-only and are not the current GM baseline. Не восстанавливай старые entries, receipts, item IDs и lineage: данные прежней жизни хранятся только для client rollback отклонённого bootstrap. Новые предметы создавай только через разрешённый Mortal item route.
 - Технические identity/title поля нейтральных локаций и выходов нужно заменить конкретными названиями мира, сохранив стабильные id и навигационную связь. Фразы вроде «стартовая сцена» в обычном narrative description не являются ошибкой placeholder.
 
 Если один из этих якорей потерян, repair packet `mortal_bootstrap_materialization_repair` указывает точные `targetFiles` и требует восстановить baseline in place. Не удаляй явно заданную компетенцию, NPC или первую новость ради уменьшения объёма первого хода.
@@ -737,3 +738,30 @@ $guardian | ConvertTo-Json -Depth 100 | Set-Content "game_state/meta/guardians.j
 ## Faction Materialization
 
 The daemon always routes a Mortal faction creation or ordinary faction update through the compact Mortal faction template. Only a genuinely new faction uses a full object with a complete materialization envelope and explicit `populated`/`empty_by_design` section dispositions. An existing faction must already carry and preserve its accepted envelope and uses `factionCoreChanges` for ordinary semantic updates. Receipt-less canonical faction state and a full resend of an existing identity are invalid; large examples are opened only when compact guidance does not cover the route-specific shape.
+
+## Mortal Item Materialization v1
+
+Before any Mortal item creation, repair, transfer, stack operation, storage
+move, or NPC trade turn, the daemon must load the compact Mortal item template.
+The approved creation routes are `player_acquisition`, `npc_acquisition`,
+`new_npc_inventory`, `loot_acquisition`, `craft_output`, `trade_output`,
+`quest_reward`, and `storage_placement`, with the exact route-authority mapping
+shown in the CLI API specification.
+
+For a new root, the GM writes `existedId = null`, one turn-unique
+`creationRef`, every semantic field, and all twelve
+`materialization.sections`. Не создавай itemId and не создавай materializationReceipt.
+Permanent IDs, seals,
+`game_state/inventory/item_identity_index.json`, transitions, retirement, and
+lineage are client-owned. Existing transfers bind exact itemId and preserve the
+envelope/receipt; `contentsPath` is a permanent-parent-ID chain.
+`isCarried`, `currentLocationId`, and `currentLocationName` are not placement
+authority and must not be authored on items. Split creates a client-derived
+child, merge keeps the selected survivor, and discard retires
+as `destroyed`.
+
+For `mortal_item_materialization_repair`, open only the bounded packet targets.
+Never ask the GM to repair client identity/index evidence, and never broaden an
+unknown coordinate into a whole-carrier rewrite. Receipt-less current items
+are rejected: игра ещё не вышла, so runtime save compatibility and legacy
+promotion are intentionally absent.

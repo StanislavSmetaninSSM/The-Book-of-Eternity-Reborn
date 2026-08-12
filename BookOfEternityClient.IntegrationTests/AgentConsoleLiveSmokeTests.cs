@@ -502,6 +502,7 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
             fixtureGameSessionPath,
             _tempRoot,
             preserveArtifacts: true);
+        SeedAcceptedReadableDocument(sandbox.GameSessionPath);
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         var token = "agent-console-smoke-" + Guid.NewGuid().ToString("N");
@@ -755,6 +756,48 @@ public sealed class AgentConsoleLiveSmokeTests : IDisposable
     {
         if (Directory.Exists(_tempRoot))
             Directory.Delete(_tempRoot, recursive: true);
+    }
+
+    private static void SeedAcceptedReadableDocument(string gameSessionPath)
+    {
+        const string itemId = "itm_agent_console_readable_document";
+        var document = MortalItemTestFixture.CreateCanonicalRoot(itemId);
+        document["name"] = "Путевой журнал";
+        document["description"] = "Журнал для проверки меню чтения в Agent Console.";
+        document["type"] = "Книга";
+        document["group"] = "Документы и медиа";
+        document["textContent"] = new JsonArray(
+            "На первой странице отмечен безопасный путь к северным воротам.");
+        document["materialization"]!["sections"]!["readableOrSentient"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        MortalItemTestFixture.ResealCanonical(document);
+
+        var inventoryPath = Path.Combine(gameSessionPath, "game_state", "inventory", "items.json");
+        var inventory = JsonNode.Parse(File.ReadAllText(inventoryPath))?.AsObject()
+                        ?? throw new InvalidDataException("Agent Console E2E inventory fixture must be a JSON object.");
+        var items = inventory["items"]?.AsArray()
+                    ?? throw new InvalidDataException("Agent Console E2E inventory fixture must contain items[].");
+        items.Add(document);
+        File.WriteAllText(
+            inventoryPath,
+            inventory.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var indexPath = Path.Combine(gameSessionPath, "game_state", "inventory", "item_identity_index.json");
+        var index = JsonNode.Parse(File.ReadAllText(indexPath))?.AsObject()
+                    ?? throw new InvalidDataException("Agent Console E2E item identity fixture must be a JSON object.");
+        var entries = index["entries"]?.AsArray()
+                      ?? throw new InvalidDataException("Agent Console E2E item identity fixture must contain entries[].");
+        var documentIndex = MortalItemTestFixture.CreateIndexForCarrier(
+            document,
+            "player_inventory",
+            "player");
+        entries.Add(documentIndex["entries"]![0]!.DeepClone());
+        File.WriteAllText(
+            indexPath,
+            index.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
     private static Process StartAgentConsoleClient(string repoRoot, string sandboxBasePath, string url, string token)

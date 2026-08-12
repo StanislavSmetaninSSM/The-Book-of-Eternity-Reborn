@@ -1883,6 +1883,10 @@ public sealed class QteSceneServiceTests : IDisposable
 
     private async Task SeedMinimalValidatedMortalStateAsync()
     {
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "soulName": "Тестовая душа",

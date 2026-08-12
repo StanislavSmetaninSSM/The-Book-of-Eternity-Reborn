@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Reflection;
 using System.Collections;
 using BookOfEternityClient.Configuration;
@@ -947,6 +948,72 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 items = Array.Empty<object>(),
                 equipment = new { }
             });
+
+        var soldItem = includeSellableInventoryItem
+            ? MortalItemTestFixture.CreateCanonicalRootAtTurn(
+                "item_sell_lantern_001",
+                acceptedAtTurn: 5,
+                route: "player_acquisition",
+                authorityKind: "turn_outcome",
+                authorityId: "turn_5",
+                name: "Походный фонарь",
+                price: 20,
+                baseSellPrice: 8)
+            : null;
+        var buybackItem = includeBuybackInventory && !includeSellableInventoryItem
+            ? MortalItemTestFixture.CreateCanonicalRootAtTurn(
+                "item_sell_lantern_001",
+                acceptedAtTurn: 5,
+                route: "player_acquisition",
+                authorityKind: "turn_outcome",
+                authorityId: "turn_5",
+                name: "Походный фонарь",
+                price: 20,
+                baseSellPrice: 8)
+            : null;
+
+        var npcRoot = JsonNode.Parse(
+            await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}")!.AsObject();
+        var seededNpc = npcRoot["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        var stockItems = includeTradeInventory
+            ? seededNpc["tradeInventory"]!["items"]!.AsArray()
+                .OfType<JsonObject>()
+                .Select(slot => MortalItemTestFixture.CreateCanonicalTradeStock(
+                    slot,
+                    "npc_merchant_001",
+                    acceptedAtTurn: 5))
+                .ToArray()
+            : Array.Empty<JsonObject>();
+        seededNpc["inventory"] = new JsonArray(
+            stockItems.Cast<JsonObject?>().Append(buybackItem)
+                .Where(static item => item != null)
+                .Select(item => (JsonNode?)item!.DeepClone())
+                .ToArray());
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            npcRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = soldItem == null
+                    ? new JsonArray()
+                    : new JsonArray(soldItem.DeepClone()),
+                ["equipment"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var indexedCarriers = new List<(JsonObject Item, string Kind, string OwnerId, string? ContainerId)>();
+        indexedCarriers.AddRange(stockItems.Select(item =>
+            (item, "npc_inventory", "npc_merchant_001", (string?)null)));
+        if (soldItem != null)
+            indexedCarriers.Add((soldItem, "player_inventory", "player", null));
+        if (buybackItem != null)
+            indexedCarriers.Add((buybackItem, "npc_inventory", "npc_merchant_001", null));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndexForCarriers(indexedCarriers.ToArray())
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
 

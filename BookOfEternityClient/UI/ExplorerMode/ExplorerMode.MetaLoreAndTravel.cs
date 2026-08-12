@@ -862,14 +862,20 @@ public partial class ExplorerMode
             // Inventory
             if (v.el.TryGetProperty("inventory", out var vInv) && vInv.ValueKind == JsonValueKind.Array && vInv.GetArrayLength() > 0)
             {
-                lines.Add(""); lines.Add($"  [bold]🎒 Содержимое ({vInv.GetArrayLength()}):[/]");
-                foreach (var item in vInv.EnumerateArray())
+                var acceptedItems = vInv.EnumerateArray()
+                    .Where(item => MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
+                    .ToArray();
+                if (acceptedItems.Length > 0)
                 {
-                    var iName = GetStr(item, "name", "?");
-                    var iQty = GetStr(item, "quantity", "");
-                    var iLine = $"    • {Markup.Escape(iName)}";
-                    if (!string.IsNullOrEmpty(iQty) && iQty != "1") iLine += $" ×{Markup.Escape(iQty)}";
-                    lines.Add(iLine);
+                    lines.Add(""); lines.Add($"  [bold]🎒 Содержимое ({acceptedItems.Length}):[/]");
+                    foreach (var item in acceptedItems)
+                    {
+                        var iName = GetStr(item, "name", "?");
+                        var iQty = GetStr(item, "quantity", GetStr(item, "count", ""));
+                        var iLine = $"    • {Markup.Escape(iName)}";
+                        if (!string.IsNullOrEmpty(iQty) && iQty != "1") iLine += $" ×{Markup.Escape(iQty)}";
+                        lines.Add(iLine);
+                    }
                 }
             }
 

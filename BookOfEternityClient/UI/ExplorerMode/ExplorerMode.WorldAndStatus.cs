@@ -257,7 +257,10 @@ public partial class ExplorerMode
                 // Contents — show item names, not just count
                 if (st.TryGetProperty("contents", out var cont) && cont.ValueKind == JsonValueKind.Array)
                 {
-                    var contCount = cont.GetArrayLength();
+                    var acceptedContents = cont.EnumerateArray()
+                        .Where(static item => MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
+                        .ToArray();
+                    var contCount = acceptedContents.Length;
                     if (contCount == 0)
                     {
                         lines.Add($"      [dim]Пусто[/]");
@@ -266,7 +269,7 @@ public partial class ExplorerMode
                     {
                         lines.Add($"      Предметов: [white]{contCount}[/]");
                         var shown = 0;
-                        foreach (var ci in cont.EnumerateArray())
+                        foreach (var ci in acceptedContents)
                         {
                             if (++shown > 8)
                             {
@@ -274,7 +277,7 @@ public partial class ExplorerMode
                                 break;
                             }
                             var ciName = GetStr(ci, "name", "?");
-                            var ciQty = GetStr(ci, "quantity", "1");
+                            var ciQty = GetStr(ci, "count", GetStr(ci, "quantity", "1"));
                             var ciLine = $"        • {Markup.Escape(ciName)}";
                             if (!string.IsNullOrEmpty(ciQty) && ciQty != "1") ciLine += $" ×{Markup.Escape(ciQty)}";
                             lines.Add(ciLine);

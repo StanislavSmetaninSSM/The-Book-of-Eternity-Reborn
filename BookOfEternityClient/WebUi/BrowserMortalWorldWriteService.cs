@@ -530,7 +530,7 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Выброс предмета",
-            [InventoryEquipmentService.ItemsPath],
+            [InventoryEquipmentService.ItemsPath, MortalItemIdentityState.StatePath],
             async lease =>
             {
                 var outcome = await InventoryManagementService.DropAsync(_fs, lease, itemIdentity);
@@ -574,7 +574,7 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Разделение стопки",
-            [InventoryEquipmentService.ItemsPath],
+            [InventoryEquipmentService.ItemsPath, MortalItemIdentityState.StatePath],
             async lease =>
             {
                 var outcome = await InventoryManagementService.SplitAsync(
@@ -613,7 +613,7 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Объединение стопок",
-            [InventoryEquipmentService.ItemsPath],
+            [InventoryEquipmentService.ItemsPath, MortalItemIdentityState.StatePath],
             async lease =>
             {
                 var outcome = await InventoryManagementService.MergeAsync(_fs, lease, itemIdentity);
@@ -656,7 +656,11 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Перемещение предмета в хранилище",
-            [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.CurrentLocationPath],
+            [
+                StorageTransportMoveService.InventoryPath,
+                StorageTransportMoveService.CurrentLocationPath,
+                MortalItemIdentityState.StatePath
+            ],
             async writeLease =>
             {
                 var outcome = await StorageTransportMoveService.MoveStorageItemAsync(
@@ -704,7 +708,11 @@ public sealed class BrowserMortalWorldWriteService
             writeLease,
             owner,
             "Перемещение предмета в транспорт",
-            [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.VehiclesPath],
+            [
+                StorageTransportMoveService.InventoryPath,
+                StorageTransportMoveService.VehiclesPath,
+                MortalItemIdentityState.StatePath
+            ],
             async writeLease =>
             {
                 var outcome = await StorageTransportMoveService.MoveVehicleItemAsync(
@@ -885,7 +893,12 @@ public sealed class BrowserMortalWorldWriteService
         if (string.IsNullOrWhiteSpace(message))
             return "Локальная запись не выполнена.";
 
-        return message
+        var safeFallback = "Локальная запись не выполнена: состояние требует исправления.";
+        var prelocalized = MortalItemPlayerFailureMessages.Sanitize(message, safeFallback);
+        if (!string.Equals(prelocalized, message, StringComparison.Ordinal))
+            return prelocalized;
+
+        var localized = message
             .Replace("Browser-write", "Локальная запись", StringComparison.Ordinal)
             .Replace("GM-turn", "ход ГМ", StringComparison.Ordinal)
             .Replace("rollback/snapshot artifact", "восстановление состояния", StringComparison.Ordinal)
@@ -898,6 +911,7 @@ public sealed class BrowserMortalWorldWriteService
             .Replace("pending_", string.Empty, StringComparison.OrdinalIgnoreCase)
             .Replace(".json", " файл", StringComparison.OrdinalIgnoreCase)
             .Replace("lease", "срока блокировки", StringComparison.Ordinal);
+        return MortalItemPlayerFailureMessages.Sanitize(localized, safeFallback);
     }
 
     private async Task<JsonNode?> ReadNodeAsync(

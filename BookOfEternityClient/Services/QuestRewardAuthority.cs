@@ -16,6 +16,8 @@ internal static class QuestRewardAuthority
     public const string MissingSkillAuthorityCode = "quest_reward_skill_missing_detail_authority";
     public const string MissingRelationshipAuthorityCode = "quest_reward_relationship_missing_detail_authority";
     public const string MissingHistoryReasonCode = "quest_reward_history_reason_missing";
+    public const string MortalItemTransitionAuthorityMismatchCode =
+        "mortal_item_materialization_quest_reward_authority_mismatch";
 
     private const string QuestHistoryPath = "game_state/quests/quest_history.json";
 
@@ -93,6 +95,131 @@ internal static class QuestRewardAuthority
         return issues;
     }
 
+    internal static IReadOnlyList<QuestRewardAuthorityIssue>
+        ValidateMortalItemTransitionAuthorities(
+            JsonNode? questHistoryRoot,
+            MortalItemIdentityParseResult identityIndex)
+    {
+        ArgumentNullException.ThrowIfNull(identityIndex);
+
+        var issues = new List<QuestRewardAuthorityIssue>();
+        if (questHistoryRoot is not JsonObject root ||
+            root["questRewards"] is not JsonArray rewards)
+        {
+            return issues;
+        }
+
+        for (var rewardIndex = 0; rewardIndex < rewards.Count; rewardIndex++)
+        {
+            if (rewards[rewardIndex] is not JsonObject reward)
+                continue;
+
+            var rewardAuthorityId = ReadExactRewardIdentity(reward["rewardId"]);
+            if (reward["itemsReceived"] is not JsonArray itemRewards)
+            {
+                continue;
+            }
+
+            for (var itemIndex = 0; itemIndex < itemRewards.Count; itemIndex++)
+            {
+                var itemReward = itemRewards[itemIndex] as JsonObject;
+                if (itemReward != null &&
+                    ReadExplicitUnavailableStatus(itemReward) != null)
+                {
+                    continue;
+                }
+
+                var rewardPath =
+                    $"{QuestHistoryPath}.questRewards[{rewardIndex}].itemsReceived[{itemIndex}]";
+                var itemId = ReadExactRewardIdentity(itemReward?["itemId"]);
+                JsonObject? entry = null;
+                if (itemId != null)
+                    identityIndex.EntriesByItemId.TryGetValue(itemId, out entry);
+                var firstTransition = entry?["transitions"] is JsonArray { Count: > 0 } transitions
+                    ? transitions[0] as JsonObject
+                    : null;
+                if (rewardAuthorityId == null ||
+                    itemReward == null ||
+                    itemId == null ||
+                    entry == null ||
+                    firstTransition == null ||
+                    !string.Equals(
+                        ReadExactRewardIdentity(firstTransition["kind"]),
+                        "create",
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        ReadExactRewardIdentity(firstTransition["authorityKind"]),
+                        "quest_reward",
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        ReadExactRewardIdentity(firstTransition["authorityId"]),
+                        rewardAuthorityId,
+                        StringComparison.Ordinal))
+                {
+                    var unresolvedReference = itemId ??
+                                              ReadExactRewardIdentity(itemReward?["creationRef"]) ??
+                                              ReadExactRewardIdentity(itemRewards[itemIndex]);
+                    issues.Add(new QuestRewardAuthorityIssue(
+                        rewardPath,
+                        MortalItemTransitionAuthorityMismatchCode,
+                        "Quest item reward must resolve to its exact accepted Mortal item creation transition.",
+                        rewardAuthorityId == null
+                            ? "exact rewardId and itemId with matching create/quest_reward transition"
+                            : $"itemId with create/quest_reward authority {rewardAuthorityId}",
+                        DescribeMortalItemTransitionActual(
+                            rewardAuthorityId,
+                            itemId,
+                            entry),
+                        "Исправь exact rewardId/itemId в quest history по принятому ходу; не переигрывай награду и не создавай receipt/index вручную.",
+                        itemId != null
+                            ? $"mortal_item:existing:{itemId}"
+                            : unresolvedReference != null
+                                ? $"mortal_item:unresolved:{unresolvedReference}"
+                                : "mortal_item:quest_reward:unknown"));
+                }
+            }
+        }
+
+        return issues;
+    }
+
+    private static string DescribeMortalItemTransitionActual(
+        string? rewardAuthorityId,
+        string? itemId,
+        JsonObject? entry)
+    {
+        if (entry?["transitions"] is not JsonArray transitions ||
+            transitions.Count == 0 ||
+            transitions[0] is not JsonObject transition)
+        {
+            var itemEvidence = itemId == null
+                ? "missing exact itemId"
+                : $"{itemId}: missing index transition";
+            return rewardAuthorityId == null
+                ? $"missing exact rewardId; {itemEvidence}"
+                : itemEvidence;
+        }
+
+        return $"rewardId={rewardAuthorityId ?? "missing"}; " +
+               $"{itemId ?? "missing itemId"}: first=" +
+               $"{ReadExactRewardIdentity(transition["kind"]) ?? "missing kind"}/" +
+               $"{ReadExactRewardIdentity(transition["authorityKind"]) ?? "missing authorityKind"}/" +
+               $"{ReadExactRewardIdentity(transition["authorityId"]) ?? "missing authorityId"}";
+    }
+
+    private static string? ReadExactRewardIdentity(JsonNode? node)
+    {
+        if (node is not JsonValue value ||
+            !value.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text) ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        return text;
+    }
+
     public static string DescribePlayerReward(
         QuestRewardKind kind,
         JsonNode? rewardNode,
@@ -100,6 +227,9 @@ internal static class QuestRewardAuthority
     {
         if (TryReadScalarString(rewardNode, out var scalar) && !string.IsNullOrWhiteSpace(scalar))
         {
+            if (kind == QuestRewardKind.Item && context.RequiresExactItemId)
+                return $"{FallbackRewardLabel(kind)} — подробности пока не записаны";
+
             return context.TryResolve(kind, scalar, out var scalarResolvedLabel)
                 ? FormatResolvedLabel(kind, scalar, scalarResolvedLabel)
                 : $"{FallbackRewardLabel(kind)} — подробности пока не записаны";
@@ -112,7 +242,9 @@ internal static class QuestRewardAuthority
         var status = ReadExplicitUnavailableStatus(reward);
         var reason = FirstNonEmpty(ReadReasonStrings(reward));
         var resolved = TryResolveStructuredReward(kind, reward, context, out var resolvedLabel);
-        if (string.IsNullOrWhiteSpace(label))
+        if (resolved && kind == QuestRewardKind.Item && context.RequiresExactItemId)
+            label = resolvedLabel;
+        else if (string.IsNullOrWhiteSpace(label))
             label = resolved ? resolvedLabel : FallbackRewardLabel(kind);
 
         if (kind == QuestRewardKind.Relationship)
@@ -128,6 +260,9 @@ internal static class QuestRewardAuthority
 
         if (resolved)
             return label;
+
+        if (kind == QuestRewardKind.Item)
+            label = FallbackRewardLabel(kind);
 
         return !string.IsNullOrWhiteSpace(reason)
             ? $"{label} — недоступно: {reason}"
@@ -222,6 +357,19 @@ internal static class QuestRewardAuthority
         QuestRewardAuthorityContext context,
         out string resolvedLabel)
     {
+        if (kind == QuestRewardKind.Item && context.RequiresExactItemId)
+        {
+            if (reward["itemId"] is JsonValue itemIdValue &&
+                itemIdValue.TryGetValue<string>(out var itemId) &&
+                MortalItemIdentityRules.IsExactIdentity(itemId))
+            {
+                return context.TryResolve(kind, itemId, out resolvedLabel);
+            }
+
+            resolvedLabel = string.Empty;
+            return false;
+        }
+
         foreach (var candidate in ReadStructuredAuthorityCandidates(kind, reward))
         {
             if (context.TryResolve(kind, candidate, out resolvedLabel))
@@ -241,7 +389,9 @@ internal static class QuestRewardAuthority
             _ => RelationshipIdentityFields.Concat(RelationshipLinkNameFields).ToArray()
         };
 
-        return ReadNodeStrings(reward, linkFields);
+        return kind == QuestRewardKind.Item
+            ? ReadNodeStringsUntrimmed(reward, linkFields)
+            : ReadNodeStrings(reward, linkFields);
     }
 
     private static string DescribeRewardForActual(QuestRewardKind kind, JsonObject reward)
@@ -302,6 +452,12 @@ internal static class QuestRewardAuthority
         }
 
         return null;
+    }
+
+    internal static bool IsExplicitlyUnavailableReward(JsonObject reward)
+    {
+        ArgumentNullException.ThrowIfNull(reward);
+        return ReadExplicitUnavailableStatus(reward) != null;
     }
 
     private static string FormatUnavailableStatus(string status) =>
@@ -493,6 +649,32 @@ internal static class QuestRewardAuthority
             context.Register(QuestRewardKind.Item, ReadNodeStrings(item, ItemIdentityFields), FirstNonEmpty(ReadNodeStrings(item, ItemNameFields)));
     }
 
+    internal static void RegisterAcceptedItems(QuestRewardAuthorityContext context, JsonNode? root)
+    {
+        if (root is not JsonObject obj || obj["items"] is not JsonArray items)
+            return;
+
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var itemId))
+                continue;
+
+            context.RegisterAcceptedItem(itemId, FirstNonEmpty(ReadNodeStrings(item, ItemNameFields)));
+        }
+    }
+
+    private static IEnumerable<string> ReadNodeStringsUntrimmed(JsonObject obj, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (!TryGetProperty(obj, propertyName, out var node))
+                continue;
+
+            if (TryReadScalarString(node, out var value) && !string.IsNullOrWhiteSpace(value))
+                yield return value;
+        }
+    }
+
     internal static void RegisterSkills(QuestRewardAuthorityContext context, JsonNode? root)
     {
         foreach (var skill in EnumerateObjects(root, SkillCollectionNames))
@@ -513,9 +695,17 @@ internal static class QuestRewardAuthority
 
 internal sealed class QuestRewardAuthorityContext
 {
-    private readonly Dictionary<string, string> _itemLabels = new(StringComparer.OrdinalIgnoreCase);
+    private readonly bool _exactItemAuthority;
+    private readonly Dictionary<string, string> _itemLabels;
     private readonly Dictionary<string, string> _skillLabels = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> _relationshipLabels = new(StringComparer.OrdinalIgnoreCase);
+
+    private QuestRewardAuthorityContext(bool exactItemAuthority = false)
+    {
+        _exactItemAuthority = exactItemAuthority;
+        _itemLabels = new Dictionary<string, string>(
+            exactItemAuthority ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+    }
 
     public static QuestRewardAuthorityContext Create(
         JsonNode? inventoryRoot,
@@ -531,6 +721,35 @@ internal sealed class QuestRewardAuthorityContext
         QuestRewardAuthority.RegisterRelationships(context, npcRelationshipsRoot, npcCoreRoot);
         return context;
     }
+
+    public static QuestRewardAuthorityContext CreatePlayerProjection(
+        JsonNode? inventoryRoot,
+        JsonNode? activeSkillsRoot,
+        JsonNode? passiveSkillsRoot,
+        JsonNode? npcCoreRoot,
+        JsonNode? npcRelationshipsRoot)
+    {
+        var context = new QuestRewardAuthorityContext(exactItemAuthority: true);
+        QuestRewardAuthority.RegisterAcceptedItems(context, inventoryRoot);
+        QuestRewardAuthority.RegisterSkills(context, activeSkillsRoot);
+        QuestRewardAuthority.RegisterSkills(context, passiveSkillsRoot);
+        QuestRewardAuthority.RegisterRelationships(context, npcRelationshipsRoot, npcCoreRoot);
+        return context;
+    }
+
+    internal void RegisterAcceptedItem(string itemId, string? label)
+    {
+        if (!_exactItemAuthority ||
+            string.IsNullOrWhiteSpace(itemId) ||
+            !string.Equals(itemId, itemId.Trim(), StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _itemLabels[itemId] = !string.IsNullOrWhiteSpace(label) ? label.Trim() : itemId;
+    }
+
+    internal bool RequiresExactItemId => _exactItemAuthority;
 
     public void Register(QuestRewardKind kind, IEnumerable<string> identities, string? label)
     {
@@ -565,7 +784,18 @@ internal sealed class QuestRewardAuthorityContext
     public bool TryResolve(QuestRewardKind kind, string reference, out string label)
     {
         var map = Map(kind);
-        if (map.TryGetValue(reference.Trim(), out label!))
+        var lookup = kind == QuestRewardKind.Item && _exactItemAuthority
+            ? reference
+            : reference.Trim();
+        if (kind == QuestRewardKind.Item &&
+            _exactItemAuthority &&
+            !string.Equals(lookup, lookup.Trim(), StringComparison.Ordinal))
+        {
+            label = string.Empty;
+            return false;
+        }
+
+        if (map.TryGetValue(lookup, out label!))
             return true;
 
         if (kind == QuestRewardKind.Relationship)
@@ -594,4 +824,5 @@ internal sealed record QuestRewardAuthorityIssue(
     string Message,
     string Expected,
     string Actual,
-    string RepairHint);
+    string RepairHint,
+    string? Actor = null);

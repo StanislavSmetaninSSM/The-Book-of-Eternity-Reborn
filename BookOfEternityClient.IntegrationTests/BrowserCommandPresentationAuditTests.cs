@@ -243,7 +243,7 @@ public sealed partial class BrowserCommandPresentationAuditTests : IDisposable
         yield return ["mortal_world_command_display_fixture.zip", "/душа", "Mortal World", "Смертный мир"];
         yield return ["chaos_sea_command_display_fixture.zip", "/душа", "Chaos Sea", "Море Хаоса"];
         yield return ["shining_abode_command_display_fixture.zip", "/душа", "Shining Abode", "Сияющая Обитель"];
-        yield return ["mortal_world_command_display_fixture.zip", "/инв предмет item_dark_travel_cloak", "Chest", "Тело"];
+        yield return ["mortal_world_command_display_fixture.zip", "/инв предмет item_dark_travel_cloak", "Chest", "Грудь"];
         yield return ["shining_abode_command_display_fixture.zip", "/реликвии реликвия relic_lantern_memory", "rare", "редкое"];
         yield return ["mortal_world_command_display_fixture.zip", "/достижения", "exploration", "исследование"];
         yield return ["mortal_world_command_display_fixture.zip", "/бой", "Humanoid", "гуманоид"];

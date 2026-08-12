@@ -2,6 +2,7 @@
   "entries": [
     {
       "itemId": "item_ancient_sword",
+      "existedId": "item_ancient_sword",
       "itemName": "Древний меч",
       "journalEntries": [
         {

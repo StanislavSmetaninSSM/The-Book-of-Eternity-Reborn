@@ -83,6 +83,67 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ["/взаимодействия"] = CommandKind.Interactions
         };
 
+    private static readonly HashSet<string> InventoryPlayerSemanticFieldNames = new(StringComparer.Ordinal)
+    {
+        "name",
+        "itemName",
+        "description",
+        "lore",
+        "type",
+        "group",
+        "quality",
+        "rarity",
+        "price",
+        "value",
+        "count",
+        "quantity",
+        "weight",
+        "volume",
+        "durability",
+        "maxDurability",
+        "bonuses",
+        "effects",
+        "specialProperties",
+        "structuredBonuses",
+        "combatEffect",
+        "customProperties",
+        "mechanicalSummaryAuthority",
+        "mechanicalSummaryUnresolvedReason",
+        "unresolvedMechanicsReason",
+        "unidentifiedMechanicsReason",
+        "unknownMechanicsReason",
+        "equipmentSlot",
+        "slot",
+        "equipSlot",
+        "accessoryForSlot",
+        "requiresTwoHands",
+        "isContainer",
+        "capacity",
+        "containerWeight",
+        "weightReduction",
+        "isConsumption",
+        "textContent",
+        "journalEntries",
+        "isSentient",
+        "unreadableReason",
+        "sealedReason",
+        "lockedReason",
+        "disassembleTo",
+        "resource",
+        "maximumResource",
+        "resourceType",
+        "ownerBondLevelCurrent",
+        "ownerBondLevelMax",
+        "fateCards",
+        "questLinks",
+        "isBroken",
+        "isEmpty",
+        "isCarried",
+        "isEquipped",
+        "visibility",
+        "currentLocationName"
+    };
+
     public static bool CanBuild(string command) =>
         CommandKinds.ContainsKey(ExplorerCommandCatalog.ExtractCommandToken(command.Trim()));
 
@@ -3393,7 +3454,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var entries = BuildReferenceEntries(definition, reads).ToList();
         var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
         if (request.Kind != ReferenceDetailKind.Overview)
-            return BuildReferenceDetail(command, commandToken, definition, reads.Values, entries, request);
+        {
+            var questRewardProjection = string.Equals(
+                definition.DetailTitlePrefix,
+                "Квест",
+                StringComparison.OrdinalIgnoreCase)
+                ? await ReadQuestRewardPlayerProjection(fs, reads)
+                : null;
+            return BuildReferenceDetail(
+                command,
+                commandToken,
+                definition,
+                reads.Values,
+                entries,
+                request,
+                questRewardProjection);
+        }
 
         var summaryItems = new List<UiKeyValueItem>();
         foreach (var spec in definition.Specs)
@@ -3549,7 +3625,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ReferenceCommandDefinition definition,
         IEnumerable<JsonReadResult> reads,
         IReadOnlyList<ReferenceEntrySnapshot> entries,
-        ReferenceDetailRequest request)
+        ReferenceDetailRequest request,
+        QuestRewardPlayerProjection? questRewardProjection)
     {
         var blocks = new List<UiBlock>();
         if (request.Kind == ReferenceDetailKind.Unknown)
@@ -3564,7 +3641,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var entry = FindReferenceEntry(entries, request.Selector);
             blocks.Add(entry == null
                 ? Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage)
-                : BuildReferenceDetailPanel(commandToken, definition, entry, entries));
+                : BuildReferenceDetailPanel(commandToken, definition, entry, entries, questRewardProjection));
         }
 
         AddReferenceReadWarnings(blocks, definition.Title, reads);
@@ -3595,7 +3672,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string commandToken,
         ReferenceCommandDefinition definition,
         ReferenceEntrySnapshot entry,
-        IReadOnlyList<ReferenceEntrySnapshot> entries)
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        QuestRewardPlayerProjection? questRewardProjection)
     {
         if (string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase))
             return BuildFactionReferenceDetailPanel(definition, entry, entries);
@@ -3620,7 +3698,16 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceDetailItem(detailItems, "Масштабирование", FormatReferenceCharacteristic(FirstReferenceNodeString(entry.Node, "scalingCharacteristic")));
 
         var detailBlocks = new List<UiBlock> { new UiKeyValueGridBlock { Items = detailItems } };
-        AddReferenceDetailSection(detailBlocks, "Награда", entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"]);
+        var rewardNode = entry.Node["rewardInfo"] ?? entry.Node["rewards"] ?? entry.Node["reward"];
+        if (string.Equals(definition.DetailTitlePrefix, "Квест", StringComparison.OrdinalIgnoreCase))
+        {
+            AddReferenceDetailSection(detailBlocks, "Награда", BuildQuestVisibleRewardNode(rewardNode));
+            AddQuestRewardPlayerBlock(detailBlocks, entry, questRewardProjection);
+        }
+        else
+        {
+            AddReferenceDetailSection(detailBlocks, "Награда", rewardNode);
+        }
         AddReferenceAdditionalDetailBlocks(detailBlocks, entry.Node);
         AddStructuredBonusBlock(detailBlocks, entry.Node["structuredBonuses"] as JsonArray);
 
@@ -3653,6 +3740,160 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
             ]
         };
+    }
+
+    private static async Task<QuestRewardPlayerProjection?> ReadQuestRewardPlayerProjection(
+        FileSystemManager fs,
+        IReadOnlyDictionary<string, JsonReadResult> referenceReads)
+    {
+        const string questHistoryPath = "game_state/quests/quest_history.json";
+        if (!referenceReads.TryGetValue(questHistoryPath, out var historyRead) ||
+            historyRead.Node is not JsonObject historyRoot ||
+            historyRoot["questRewards"] is not JsonArray)
+        {
+            return null;
+        }
+
+        var authorityPaths = new[]
+        {
+            InventoryEquipmentService.ItemsPath,
+            "game_state/player/skills_active.json",
+            "game_state/player/skills_passive.json",
+            "game_state/npcs/npc_core.json",
+            "game_state/npcs/npc_relationships.json"
+        };
+        var authorityReads = await Task.WhenAll(authorityPaths.Select(path => ReadJson(fs, path)));
+        var byPath = authorityReads.ToDictionary(read => read.Path, StringComparer.OrdinalIgnoreCase);
+        var context = QuestRewardAuthorityContext.CreatePlayerProjection(
+            byPath[InventoryEquipmentService.ItemsPath].Node,
+            byPath["game_state/player/skills_active.json"].Node,
+            byPath["game_state/player/skills_passive.json"].Node,
+            byPath["game_state/npcs/npc_core.json"].Node,
+            byPath["game_state/npcs/npc_relationships.json"].Node);
+        return new QuestRewardPlayerProjection(historyRoot, context);
+    }
+
+    private static JsonNode? BuildQuestVisibleRewardNode(JsonNode? rewardNode)
+    {
+        var projected = MortalItemPlayerProjection.CloneSemanticValue(rewardNode);
+        if (projected is not JsonObject reward)
+            return projected;
+
+        foreach (var itemCollection in reward
+                     .Select(static property => property.Key)
+                     .Where(static key => key.Equals("items", StringComparison.OrdinalIgnoreCase))
+                     .ToArray())
+        {
+            reward[itemCollection] = MortalItemPlayerProjection.CloneItemSemanticValue(reward[itemCollection]);
+        }
+
+        foreach (var authorityCollection in reward
+                     .Select(static property => property.Key)
+                     .Where(static key =>
+                         key.Equals("itemsReceived", StringComparison.OrdinalIgnoreCase) ||
+                         key.Equals("skillsUnlocked", StringComparison.OrdinalIgnoreCase) ||
+                         key.Equals("relationshipChanges", StringComparison.OrdinalIgnoreCase))
+                     .ToArray())
+        {
+            reward.Remove(authorityCollection);
+        }
+
+        return reward.Count == 0 ? null : reward;
+    }
+
+    private static void AddQuestRewardPlayerBlock(
+        List<UiBlock> detailBlocks,
+        ReferenceEntrySnapshot entry,
+        QuestRewardPlayerProjection? projection)
+    {
+        var reward = projection == null
+            ? null
+            : FindExactQuestReward(entry.Node, projection.HistoryRoot);
+        if (reward == null)
+            return;
+
+        var descriptions = new List<string>();
+        AddQuestRewardDescriptions(
+            descriptions,
+            reward,
+            "itemsReceived",
+            QuestRewardKind.Item,
+            "Предмет",
+            projection!.AuthorityContext);
+        AddQuestRewardDescriptions(
+            descriptions,
+            reward,
+            "skillsUnlocked",
+            QuestRewardKind.Skill,
+            "Навык",
+            projection.AuthorityContext);
+        AddQuestRewardDescriptions(
+            descriptions,
+            reward,
+            "relationshipChanges",
+            QuestRewardKind.Relationship,
+            "Отношение",
+            projection.AuthorityContext);
+        if (descriptions.Count == 0)
+            return;
+
+        detailBlocks.Add(new UiPanelBlock
+        {
+            Title = "Фактически получено",
+            Blocks = [new UiListBlock { Items = descriptions }]
+        });
+    }
+
+    private static void AddQuestRewardDescriptions(
+        List<string> descriptions,
+        JsonObject reward,
+        string propertyName,
+        QuestRewardKind kind,
+        string prefix,
+        QuestRewardAuthorityContext context)
+    {
+        if (reward[propertyName] is not JsonArray values)
+            return;
+
+        foreach (var value in values)
+        {
+            var description = QuestRewardAuthority.DescribePlayerReward(kind, value, context);
+            if (!string.IsNullOrWhiteSpace(description))
+                descriptions.Add($"{prefix}: {description}");
+        }
+    }
+
+    private static JsonObject? FindExactQuestReward(JsonObject quest, JsonObject historyRoot)
+    {
+        var questId = ReadExactQuestIdentity(quest["questId"]);
+        if (questId == null || historyRoot["questRewards"] is not JsonArray rewards)
+            return null;
+
+        JsonObject? match = null;
+        foreach (var reward in rewards.OfType<JsonObject>())
+        {
+            if (!string.Equals(ReadExactQuestIdentity(reward["questId"]), questId, StringComparison.Ordinal))
+                continue;
+
+            if (match != null)
+                return null;
+            match = reward;
+        }
+
+        return match;
+    }
+
+    private static string? ReadExactQuestIdentity(JsonNode? node)
+    {
+        if (node is not JsonValue value ||
+            !value.TryGetValue<string>(out var identity) ||
+            string.IsNullOrWhiteSpace(identity) ||
+            !string.Equals(identity, identity.Trim(), StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        return identity;
     }
 
     private static UiEntityDossierBlock BuildLocationReferenceDetailPanel(
@@ -5024,6 +5265,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "scalingCharacteristic";
 
     private static bool IsTechnicalReferenceProperty(string propertyName) =>
+        MortalItemPlayerProjection.IsInternalField(propertyName) ||
         propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("visibleToPlayer", StringComparison.OrdinalIgnoreCase) ||
@@ -5354,7 +5596,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var request = ParseReferenceDetailRequest(remainder, definition);
         if (request.Kind != ReferenceDetailKind.Overview)
-            return BuildReferenceDetail(command, commandToken, definition, [currentRead, mapRead], entries, request);
+            return BuildReferenceDetail(command, commandToken, definition, [currentRead, mapRead], entries, request, null);
 
         var blocks = new List<UiBlock>();
         if (rows.Count > 0)
@@ -5672,6 +5914,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .SelectMany(static storage => storage["contents"] is JsonArray contents
                 ? contents.OfType<JsonObject>()
                 : [])
+            .Where(static item => MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
             .Select(static item => FirstNonEmpty(
                 GetLocationNodeString(item, "name", "itemName", "displayName"),
                 "Предмет"))
@@ -5745,6 +5988,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var blocks = new List<UiBlock>();
         foreach (var item in contents.OfType<JsonObject>())
         {
+            if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
+                continue;
+
             var name = FirstNonEmpty(GetLocationNodeString(item, "name", "itemName", "displayName"), "Предмет");
             var facts = new List<UiKeyValueItem>();
             AddLocationFact(facts, "Тип", GetLocationNodeString(item, "type"));
@@ -6187,6 +6433,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             new UiKeyValueGridBlock { Items = items }
         };
+        var inventoryBlocks = BuildLocationStorageContentBlocks(vehicle["inventory"] as JsonArray);
+        if (inventoryBlocks.Count > 0)
+        {
+            blocks.Add(new UiEntityDossierBlock
+            {
+                EntityType = "transport-inventory",
+                Title = "Содержимое",
+                Subtitle = "Предметы в транспорте",
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "inventory",
+                        Title = "Предметы",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = inventoryBlocks
+                    }
+                ]
+            });
+        }
         AddReferenceAdditionalDetailBlocks(
             blocks,
             vehicle,
@@ -6203,7 +6471,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "capacity",
             "description",
             "summary",
-            "notes");
+            "notes",
+            "inventory");
 
         return new UiEntityDossierBlock
         {
@@ -7316,6 +7585,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static bool IsTechnicalInteractionProperty(string propertyName) =>
+        MortalItemPlayerProjection.IsInternalField(propertyName) ||
         propertyName.EndsWith("Id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("id", StringComparison.OrdinalIgnoreCase) ||
         propertyName.Equals("visibleToPlayer", StringComparison.OrdinalIgnoreCase);
@@ -8848,6 +9118,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Message(UiNotificationSeverity.Warning, "Инвентарь", "Файл инвентаря найден, но его корень не похож на обычный инвентарь.")
             ]);
         }
+        var acceptedItems = EnumerateAcceptedInventoryItems(root).ToArray();
 
         var detailRequest = ParseInventoryDetailRequest(ExtractCommandRemainder(command));
         if (detailRequest.Kind == InventoryDetailKind.Unknown)
@@ -8868,7 +9139,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
 
             var sidecars = await ReadInventoryItemSidecarsAsync(fs, selected);
-            return Completed(command, BuildInventoryItemDetailBlocks(selected, sidecars), BuildInventoryBackActions(commandToken));
+            var semanticItem = ProjectInventoryItemForPlayer(selected);
+            return Completed(command, BuildInventoryItemDetailBlocks(semanticItem, sidecars), BuildInventoryBackActions(commandToken));
         }
 
         var sections = new List<UiEntityDossierSection>();
@@ -8929,11 +9201,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
         }
 
-        var equipment = (root["equipment"] ?? root["equippedItems"]) as JsonObject;
+        var equipment = inventoryContext?.Root["equippedItems"] as JsonObject;
         if (equipment != null)
         {
             var equipmentRows = new List<UiKeyValueItem>();
-            foreach (var prop in equipment)
+            var equipmentProperties = equipment
+                .Select(prop =>
+                {
+                    var recognized = InventoryEquipmentService.TryNormalizeSlot(prop.Key, out var normalizedSlot);
+                    return new { Property = prop, Recognized = recognized, NormalizedSlot = normalizedSlot };
+                })
+                .Where(static candidate => candidate.Recognized)
+                .GroupBy(static candidate => candidate.NormalizedSlot, StringComparer.Ordinal)
+                .Where(static group => group.Count() == 1)
+                .Select(static group => group.Single().Property);
+
+            foreach (var prop in equipmentProperties)
             {
                 if (prop.Value == null || prop.Value.GetValueKind() == JsonValueKind.Null)
                 {
@@ -8942,6 +9225,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 }
 
                 var itemName = DescribeEquipmentValue(prop.Value, inventoryContext);
+                if (string.IsNullOrWhiteSpace(itemName))
+                    continue;
                 equipmentRows.Add(new UiKeyValueItem { Key = FormatSlotName(prop.Key), Value = itemName });
             }
 
@@ -8960,17 +9245,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
         }
 
-        if (root["items"] is JsonArray itemsArray && itemsArray.Count > 0)
+        if (acceptedItems.Length > 0)
         {
             var itemCards = new List<UiBlock>();
-            foreach (var item in itemsArray)
-            {
-                if (item == null)
-                    continue;
-
-                if (item is JsonObject obj)
-                    itemCards.Add(BuildInventoryOverviewItemCard(commandToken, obj));
-            }
+            foreach (var item in acceptedItems)
+                itemCards.Add(BuildInventoryOverviewItemCard(commandToken, item));
 
             if (itemCards.Count > 0)
             {
@@ -9012,8 +9291,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 [
                     new UiEntityBadge
                     {
-                        Label = root["items"] is JsonArray itemArray
-                            ? DescribeInventoryCount(itemArray.Count, "предмет", "предмета", "предметов")
+                        Label = acceptedItems.Length > 0
+                            ? DescribeInventoryCount(acceptedItems.Length, "предмет", "предмета", "предметов")
                             : "без предметов",
                         Tone = UiTone.Accent,
                         Icon = "inventory"
@@ -9029,6 +9308,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static UiEntityDossierBlock BuildInventoryOverviewItemCard(string commandToken, JsonObject item)
     {
         var identity = FirstNonEmpty(GetInventoryItemIdentity(item), GetInventoryItemName(item));
+        item = ProjectInventoryItemForPlayer(item);
         var name = GetNodeString(item, "name") ?? GetNodeString(item, "itemName") ?? "???";
         var type = FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty);
         var quality = FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity")));
@@ -9046,12 +9326,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
         if (!string.IsNullOrWhiteSpace(durability))
             facts.Add(new UiKeyValueItem { Key = "Прочность", Value = durability });
-        AddInventoryFact(facts, "Слот", FormatInventorySlot(FirstNonEmpty(
-            GetNodeString(item, "equipmentSlot"),
-            GetNodeString(item, "slot"),
-            GetNodeString(item, "equipSlot"))));
-        AddInventoryFact(facts, "Аксессуар для", GetNodeString(item, "accessoryForSlot"));
+        AddInventoryFact(facts, "Слот", FormatInventorySlots(item["equipmentSlot"]));
+        AddInventoryFact(facts, "Аксессуар для", FormatInventorySlots(item["accessoryForSlot"]));
         AddInventoryFact(facts, "Группа", GetNodeString(item, "group"));
+        AddInventoryPlacementFact(facts, item);
 
         var broken = item["isBroken"]?.GetValueKind() == JsonValueKind.True;
         var empty = item["isEmpty"]?.GetValueKind() == JsonValueKind.True;
@@ -9170,7 +9448,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         foreach (var item in inventory.Items
-                     .Where(static item => item.IsEquippable &&
+                     .Where(static item => !string.IsNullOrWhiteSpace(item.Identity) &&
+                                           item.IsEquippable &&
                                            string.IsNullOrWhiteSpace(item.EquippedSlot) &&
                                            !item.IsSoulRelic &&
                                            !item.IsBroken))
@@ -9256,33 +9535,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static JsonObject? FindInventoryItemNode(JsonObject root, string selector)
     {
-        var items = GetInventoryItemsArrayNode(root);
-        if (items == null)
+        var items = EnumerateAcceptedInventoryItems(root).ToArray();
+        if (items.Length == 0)
             return null;
 
-        var normalizedSelector = NormalizeInventoryLookup(selector);
-        for (var index = 0; index < items.Count; index++)
+        if (!string.Equals(selector, selector.Trim(), StringComparison.Ordinal))
+            return null;
+
+        foreach (var item in items)
         {
-            if (items[index] is not JsonObject item)
-                continue;
-
-            if (string.Equals((index + 1).ToString(), normalizedSelector, StringComparison.OrdinalIgnoreCase))
+            if (MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var identity) &&
+                string.Equals(identity, selector, StringComparison.Ordinal))
                 return item;
-
-            var identities = new[]
-            {
-                GetInventoryItemIdentity(item),
-                GetInventoryItemName(item),
-                NormalizeReferenceSelector(GetInventoryItemName(item))
-            };
-
-            if (identities.Any(identity =>
-                    !string.IsNullOrWhiteSpace(identity) &&
-                    string.Equals(NormalizeInventoryLookup(identity), normalizedSelector, StringComparison.OrdinalIgnoreCase)))
-            {
-                return item;
-            }
         }
+
+        if (int.TryParse(selector, out var ordinal) && ordinal > 0 && ordinal <= items.Length)
+            return items[ordinal - 1];
 
         return null;
     }
@@ -9290,20 +9558,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static async Task<InventoryItemSidecars> ReadInventoryItemSidecarsAsync(FileSystemManager fs, JsonObject item)
     {
         var identity = GetInventoryItemIdentity(item);
-        var name = GetInventoryItemName(item);
         var resources = await ReadJson(fs, "game_state/inventory/item_resources.json");
         var bonds = await ReadJson(fs, "game_state/inventory/item_bonds.json");
         var texts = await ReadJson(fs, "game_state/inventory/item_text_updates.json");
         var journals = await ReadJson(fs, "game_state/npcs/item_journals.json");
 
         return new InventoryItemSidecars(
-            Resource: FindInventorySidecarEntryNode(resources.Node, identity, name, "entries", "inventoryItemsResources"),
-            Bond: FindInventorySidecarEntryNode(bonds.Node, identity, name, "entries", "itemBondLevelChanges", "itemFateCardUnlocks"),
-            Text: FindInventorySidecarEntryNode(texts.Node, identity, name, "entries", "updateItemTextContents"),
-            Journal: FindInventorySidecarEntryNode(journals.Node, identity, name, "entries", "itemJournals", "itemJournalUpdates"));
+            Resource: FindInventorySidecarEntryNode(resources.Node, identity),
+            Bond: FindInventorySidecarEntryNode(bonds.Node, identity),
+            Text: FindInventorySidecarEntryNode(texts.Node, identity),
+            Journal: FindInventorySidecarEntryNode(journals.Node, identity));
     }
 
-    private static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocks(JsonObject item, InventoryItemSidecars sidecars)
+    internal static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocksForPlayer(JsonObject item) =>
+        BuildInventoryItemDetailBlocks(
+            ProjectInventoryItemForPlayer(item),
+            new InventoryItemSidecars(null, null, null, null),
+            includeInventoryBackHint: false);
+
+    private static IReadOnlyList<UiBlock> BuildInventoryItemDetailBlocks(
+        JsonObject item,
+        InventoryItemSidecars sidecars,
+        bool includeInventoryBackHint = true)
     {
         var itemName = GetInventoryItemName(item);
         var blocks = new List<UiBlock>();
@@ -9317,21 +9593,25 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddInventoryFact(facts, "Тип", FormatInventoryProtocolValue(GetNodeString(item, "type") ?? string.Empty));
         AddInventoryFact(facts, "Качество", FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "quality"), GetNodeString(item, "rarity"))));
         AddInventoryFact(facts, "Вес", FormatInventoryMeasure(GetNodeString(item, "weight"), "кг"));
+        AddInventoryFact(facts, "Объём", FormatInventoryMeasure(GetNodeString(item, "volume"), "дм³"));
         AddInventoryFact(facts, "Цена", GetNodeString(item, "price"));
         AddInventoryFact(facts, "Прочность", FormatInventoryDurability(item));
         AddInventoryFact(facts, "Количество", FirstNonEmpty(GetNodeString(item, "count"), GetNodeString(item, "quantity")));
-        AddInventoryFact(facts, "Слот", FormatInventorySlot(FirstNonEmpty(
-            GetNodeString(item, "equipmentSlot"),
-            GetNodeString(item, "slot"),
-            GetNodeString(item, "equipSlot"))));
-        AddInventoryFact(facts, "Аксессуар для", GetNodeString(item, "accessoryForSlot"));
+        AddInventoryFact(facts, "Слот", FormatInventorySlots(item["equipmentSlot"]));
+        AddInventoryFact(facts, "Аксессуар для", FormatInventorySlots(item["accessoryForSlot"]));
         AddInventoryFact(facts, "Группа", GetNodeString(item, "group"));
+        AddInventoryPlacementFact(facts, item);
         if (TryGetNodeBool(item, "requiresTwoHands", out var requiresTwoHands) && requiresTwoHands)
             facts.Add(new UiKeyValueItem { Key = "Хват", Value = "двуручное" });
         if (TryGetNodeBool(item, "isBroken", out var isBroken) && isBroken)
             facts.Add(new UiKeyValueItem { Key = "Состояние", Value = "сломано" });
         if (TryGetNodeBool(item, "isSentient", out var isSentient) && isSentient)
             facts.Add(new UiKeyValueItem { Key = "Разумность", Value = "разумный предмет" });
+        if (TryGetNodeBool(item, "isConsumption", out var isConsumption) && isConsumption)
+            facts.Add(new UiKeyValueItem { Key = "Использование", Value = "Расходуемый предмет" });
+        AddInventoryFact(facts, "Причина недоступности чтения", GetNodeString(item, "unreadableReason"));
+        AddInventoryFact(facts, "Причина сохранения печати", GetNodeString(item, "sealedReason"));
+        AddInventoryFact(facts, "Причина блокировки", GetNodeString(item, "lockedReason"));
         if (facts.Count > 0)
             overviewBlocks.Add(new UiKeyValueGridBlock { Items = facts });
 
@@ -9349,18 +9629,41 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
-        AddInventorySummarySection(sections, "Бонусы", item["bonuses"]);
-        AddInventorySummarySection(sections, "Эффекты", item["effects"]);
+        var mechanicalSummaryAuthority = GetNodeString(item, "mechanicalSummaryAuthority");
+        var mechanicalSummaryReason = FirstNonEmpty(
+            GetNodeString(item, "mechanicalSummaryUnresolvedReason"),
+            GetNodeString(item, "unresolvedMechanicsReason"),
+            GetNodeString(item, "unidentifiedMechanicsReason"),
+            GetNodeString(item, "unknownMechanicsReason"),
+            GetNodeString(item, "sealedReason"),
+            GetNodeString(item, "unreadableReason"),
+            GetNodeString(item, "lockedReason"),
+            "причина не указана");
+        AddInventoryMechanicalSummarySection(
+            sections,
+            "Бонусы",
+            "свойства",
+            item["bonuses"],
+            mechanicalSummaryAuthority,
+            mechanicalSummaryReason);
+        AddInventoryMechanicalSummarySection(
+            sections,
+            "Эффекты",
+            "эффекты",
+            item["effects"],
+            mechanicalSummaryAuthority,
+            mechanicalSummaryReason);
         AddInventorySummarySection(sections, "Особые свойства", item["specialProperties"]);
-        AddStructuredBonusSection(sections, item["structuredBonuses"] as JsonArray);
+        AddStructuredBonusSection(sections, item["structuredBonuses"] as JsonArray, itemContext: true);
 
         var detailBlocks = new List<UiBlock>();
         AddInventoryCombatEffectBlock(detailBlocks, item["combatEffect"]);
-        AddInventoryCustomPropertiesBlock(detailBlocks, item["customProperties"]);
+        AddInventoryCustomPropertiesBlock(detailBlocks, item["customProperties"], itemContext: true);
         AddInventoryContainerBlock(detailBlocks, item);
         AddInventoryDisassemblyBlock(detailBlocks, item["disassembleTo"] as JsonArray);
         AddInventoryResourceBlock(detailBlocks, item, sidecars.Resource);
-        AddInventoryBondBlock(detailBlocks, sidecars.Bond);
+        AddInventoryBondBlock(detailBlocks, item, sidecars.Bond);
+        AddInventoryQuestLinksBlock(detailBlocks, item["questLinks"] as JsonArray);
         AddInventoryContentBlock(detailBlocks, item["textContent"], sidecars.Text?["textContent"]);
         AddInventoryJournalBlock(detailBlocks, item["journalEntries"], sidecars.Journal?["journalEntries"]);
 
@@ -9408,14 +9711,36 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ],
             Sections = sections
         });
-        blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /инв.", Tone = UiTone.Muted });
+        if (includeInventoryBackHint)
+            blocks.Add(new UiTextBlock { Text = "Вернуться к списку можно командой /инв.", Tone = UiTone.Muted });
         return blocks;
     }
 
     private static void AddInventoryFact(List<UiKeyValueItem> items, string key, string? value)
     {
-        if (!string.IsNullOrWhiteSpace(value) && value.Trim() != "1")
+        if (!string.IsNullOrWhiteSpace(value))
             items.Add(new UiKeyValueItem { Key = key, Value = value.Trim() });
+    }
+
+    private static void AddInventoryPlacementFact(List<UiKeyValueItem> items, JsonObject item)
+    {
+        if (!item.ContainsKey("isCarried"))
+            return;
+
+        if (MortalItemLocalActionPolicy.IsCarriedByPlayer(item))
+        {
+            items.Add(new UiKeyValueItem { Key = "Местонахождение", Value = "В рюкзаке" });
+            return;
+        }
+
+        var locationName = GetNodeString(item, "currentLocationName");
+        items.Add(new UiKeyValueItem
+        {
+            Key = "Местонахождение",
+            Value = string.IsNullOrWhiteSpace(locationName)
+                ? "В текущей локации"
+                : $"В текущей локации: {locationName}"
+        });
     }
 
     private static void AddInventorySummaryList(List<UiBlock> blocks, string title, JsonNode? node)
@@ -9463,6 +9788,66 @@ public static class ExplorerMortalWorldCommandResultBuilder
         });
     }
 
+    private static void AddInventoryMechanicalSummarySection(
+        List<UiEntityDossierSection> sections,
+        string defaultTitle,
+        string subject,
+        JsonNode? node,
+        string? authority,
+        string unresolvedReason)
+    {
+        var items = EnumerateInventorySummaryTexts(node).ToList();
+        if (items.Count == 0)
+            return;
+
+        var unresolved = StringEqualsAnyInventoryAuthority(
+            authority,
+            "Unresolved",
+            "Unknown",
+            "Unidentified",
+            "Sealed");
+        var narrativeOnly = StringEqualsAnyInventoryAuthority(
+            authority,
+            "NarrativeOnly",
+            "FlavorOnly",
+            "Narrative",
+            "Flavor",
+            "narrative-only",
+            "flavor-only");
+        var title = unresolved
+            ? $"Нераскрытые {subject}"
+            : narrativeOnly
+                ? $"Описательные {subject}"
+                : defaultTitle;
+        var summary = unresolved
+            ? $"Механика не раскрыта: {unresolvedReason}"
+            : narrativeOnly
+                ? "Описание без применяемой механики."
+                : "Краткое игровое описание эффектов предмета.";
+
+        sections.Add(new UiEntityDossierSection
+        {
+            Id = StableId(title),
+            Title = title,
+            Summary = summary,
+            Icon = "inventory",
+            Collapsible = true,
+            InitiallyExpanded = true,
+            Blocks =
+            [
+                new UiListBlock
+                {
+                    Items = items,
+                    Ordered = false
+                }
+            ]
+        });
+    }
+
+    private static bool StringEqualsAnyInventoryAuthority(string? value, params string[] candidates) =>
+        !string.IsNullOrWhiteSpace(value) &&
+        candidates.Any(candidate => string.Equals(value.Trim(), candidate, StringComparison.OrdinalIgnoreCase));
+
     private static IEnumerable<string> EnumerateInventorySummaryTexts(JsonNode? node)
     {
         if (node is JsonArray array)
@@ -9499,9 +9884,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
             GetNodeString(obj, "stat"));
     }
 
-    private static void AddStructuredBonusBlock(List<UiBlock> blocks, JsonArray? bonuses)
+    private static void AddStructuredBonusBlock(List<UiBlock> blocks, JsonArray? bonuses, bool itemContext = false)
     {
-        var cards = BuildStructuredBonusCards(bonuses);
+        var cards = BuildStructuredBonusCards(bonuses, itemContext);
         if (cards.Count == 0)
             return;
 
@@ -9535,9 +9920,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
         });
     }
 
-    private static void AddStructuredBonusSection(List<UiEntityDossierSection> sections, JsonArray? bonuses)
+    private static void AddStructuredBonusSection(
+        List<UiEntityDossierSection> sections,
+        JsonArray? bonuses,
+        bool itemContext = false)
     {
-        var cards = BuildStructuredBonusCards(bonuses);
+        var cards = BuildStructuredBonusCards(bonuses, itemContext);
 
         if (cards.Count == 0)
             return;
@@ -9554,7 +9942,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         });
     }
 
-    private static List<UiBlock> BuildStructuredBonusCards(JsonArray? bonuses)
+    private static List<UiBlock> BuildStructuredBonusCards(JsonArray? bonuses, bool itemContext = false)
     {
         if (bonuses == null || bonuses.Count == 0)
             return [];
@@ -9566,7 +9954,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             index++;
             if (bonus is not JsonObject obj)
             {
-                var value = FormatInventoryNodeValue(bonus);
+                var value = FormatInventoryNodeValue(bonus, itemContext: itemContext);
                 if (string.IsNullOrWhiteSpace(value))
                     continue;
 
@@ -9582,10 +9970,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
             var title = FirstNonEmpty(GetNodeString(obj, "summary"), $"Бонус {index}");
             var facts = obj
+                .Where(property => itemContext
+                    ? !MortalItemPlayerProjection.IsInternalItemField(property.Key)
+                    : !MortalItemPlayerProjection.IsInternalField(property.Key))
                 .Select(property => new UiKeyValueItem
                 {
                     Key = GetStructuredBonusFieldLabel(property.Key),
-                    Value = FormatInventoryNodeValue(property.Value, property.Key)
+                    Value = FormatInventoryNodeValue(property.Value, property.Key, itemContext)
                 })
                 .Where(static item => !string.IsNullOrWhiteSpace(item.Value))
                 .ToList();
@@ -9624,6 +10015,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         return cards;
+    }
+
+    private static JsonObject ProjectInventoryItemForPlayer(JsonObject item)
+    {
+        var projected = new JsonObject();
+        foreach (var property in item)
+        {
+            if (InventoryPlayerSemanticFieldNames.Contains(property.Key))
+                projected[property.Key] = MortalItemPlayerProjection.CloneItemSemanticValue(property.Value);
+        }
+
+        return projected;
     }
 
     private static void AddInventoryCombatEffectBlock(List<UiBlock> blocks, JsonNode? node)
@@ -9742,6 +10145,16 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var cost = GetNodeString(action, "actionCost");
         if (!string.IsNullOrWhiteSpace(cost))
             parts.Add("стоимость: " + FormatInventoryProtocolValue(cost));
+        var targetPriority = GetNodeString(action, "targetPriority");
+        if (!string.IsNullOrWhiteSpace(targetPriority))
+            parts.Add("приоритет цели: " + FormatInventoryProtocolValue(targetPriority));
+        var scalingCharacteristic = GetNodeString(action, "scalingCharacteristic");
+        if (!string.IsNullOrWhiteSpace(scalingCharacteristic))
+        {
+            parts.Add(
+                "масштабирование: " +
+                StructuredBonusDisplay.FormatScalar(scalingCharacteristic, "scalingCharacteristic"));
+        }
         return string.Join("\n", parts);
     }
 
@@ -9757,33 +10170,88 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var target = FirstNonEmpty(GetNodeString(effect, "targetTypeDisplayName"), GetNodeString(effect, "targetType"));
         if (!string.IsNullOrWhiteSpace(target))
             parts.Add("цель: " + FormatInventoryProtocolValue(target));
+        var targetsCount = GetNodeString(effect, "targetsCount");
+        if (!string.IsNullOrWhiteSpace(targetsCount))
+            parts.Add("целей: " + targetsCount);
+        var damageThreshold = GetNodeString(effect, "damageThreshold");
+        if (!string.IsNullOrWhiteSpace(damageThreshold))
+            parts.Add("порог урона: " + damageThreshold);
         var duration = GetNodeString(effect, "duration");
         if (!string.IsNullOrWhiteSpace(duration) && duration != "0")
             parts.Add("длительность: " + duration);
         return string.Join("\n", parts);
     }
 
-    private static void AddInventoryCustomPropertiesBlock(List<UiBlock> blocks, JsonNode? node)
+    private static void AddInventoryCustomPropertiesBlock(
+        List<UiBlock> blocks,
+        JsonNode? node,
+        bool itemContext = false)
     {
         if (node is not JsonArray array || array.Count == 0)
             return;
 
-        var rows = array
-            .OfType<JsonObject>()
-            .Select(static item => new UiTableRow
-            {
-                Cells =
-                [
-                    FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "interactionType"), "Эффект")),
-                    FirstNonEmpty(GetNodeString(item, "targetStateName"), GetNodeString(item, "target")),
-                    GetNodeString(item, "changeValue") ?? string.Empty,
-                    FirstNonEmpty(GetNodeString(item, "description"), GetNodeString(item, "summary"))
-                ]
-            })
-            .Where(static row => row.Cells.Any(static cell => !string.IsNullOrWhiteSpace(cell)))
-            .ToList();
+        var cards = new List<UiBlock>();
+        foreach (var rawItem in array.OfType<JsonObject>())
+        {
+            var projected = itemContext
+                ? MortalItemPlayerProjection.CloneItemSemanticValue(rawItem)
+                : MortalItemPlayerProjection.CloneSemanticValue(rawItem);
+            if (projected is not JsonObject item)
+                continue;
 
-        if (rows.Count == 0)
+            var facts = new List<UiKeyValueItem>();
+            foreach (var property in item)
+            {
+                var isInternal = itemContext
+                    ? MortalItemPlayerProjection.IsInternalItemField(property.Key)
+                    : MortalItemPlayerProjection.IsInternalField(property.Key);
+                if (isInternal)
+                    continue;
+
+                var value = property.Key.Equals("interactionType", StringComparison.OrdinalIgnoreCase)
+                    ? FormatInventoryProtocolValue(GetNodeString(item, property.Key) ?? string.Empty)
+                    : StructuredBonusDisplay.FormatValue(property.Value, property.Key);
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                var label = property.Key switch
+                {
+                    "interactionType" => "Когда",
+                    "targetStateName" or "target" => "Цель",
+                    "changeValue" => "Изменение",
+                    "description" or "summary" => "Описание",
+                    _ => StructuredBonusDisplay.FieldLabel(property.Key)
+                };
+                facts.Add(new UiKeyValueItem { Key = label, Value = value });
+            }
+
+            if (facts.Count == 0)
+                continue;
+
+            cards.Add(new UiEntityDossierBlock
+            {
+                EntityType = "inventory-custom-property",
+                Title = FormatInventoryProtocolValue(FirstNonEmpty(GetNodeString(item, "interactionType"), "Свойство")),
+                Summary = FirstNonEmpty(
+                    GetNodeString(item, "description"),
+                    GetNodeString(item, "summary"),
+                    facts.First().Value),
+                Sections =
+                [
+                    new UiEntityDossierSection
+                    {
+                        Id = "fields",
+                        Title = "Подробности",
+                        Icon = "inventory",
+                        Collapsible = true,
+                        InitiallyExpanded = true,
+                        Blocks = [new UiKeyValueGridBlock { Items = facts }]
+                    }
+                ]
+            });
+        }
+
+        if (cards.Count == 0)
             return;
 
         blocks.Add(new UiEntityDossierBlock
@@ -9801,36 +10269,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     Icon = "inventory",
                     Collapsible = true,
                     InitiallyExpanded = true,
-                    Blocks = rows.Select(static row => (UiBlock)new UiEntityDossierBlock
-                    {
-                        EntityType = "inventory-custom-property",
-                        Title = row.Cells.ElementAtOrDefault(0) ?? "Свойство",
-                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
-                        Sections =
-                        [
-                            new UiEntityDossierSection
-                            {
-                                Id = "fields",
-                                Title = "Подробности",
-                                Icon = "inventory",
-                                Collapsible = true,
-                                InitiallyExpanded = true,
-                                Blocks =
-                                [
-                                    new UiKeyValueGridBlock
-                                    {
-                                        Items =
-                                        [
-                                            new UiKeyValueItem { Key = "Когда", Value = EmptyFallback(row.Cells.ElementAtOrDefault(0) ?? string.Empty) },
-                                            new UiKeyValueItem { Key = "Цель", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
-                                            new UiKeyValueItem { Key = "Изменение", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
-                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }).ToList()
+                    Blocks = cards
                 }
             ]
         });
@@ -9843,7 +10282,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         var facts = new List<UiKeyValueItem>();
         AddInventoryFact(facts, "Вместимость", GetNodeString(item, "capacity"));
-        AddInventoryFact(facts, "Объём", FormatInventoryMeasure(GetNodeString(item, "volume"), "дм³"));
         AddInventoryFact(facts, "Вес пустого", FormatInventoryMeasure(GetNodeString(item, "containerWeight"), "кг"));
         AddInventoryFact(facts, "Снижение веса", FormatInventoryMeasure(GetNodeString(item, "weightReduction"), "%"));
         if (facts.Count > 0)
@@ -9860,7 +10298,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         {
             if (TryGetScalarString(material, out var text))
             {
-                rows.Add(new UiTableRow { Cells = [text, "", "", ""] });
+                rows.Add(new UiTableRow { Cells = [text, "", "", "", "", ""] });
                 continue;
             }
 
@@ -9874,7 +10312,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     FirstNonEmpty(GetNodeString(obj, "materialName"), GetNodeString(obj, "name"), "Материал"),
                     FirstNonEmpty(GetNodeString(obj, "quantity"), "1"),
                     FormatInventoryMeasure(GetNodeString(obj, "weight"), "кг"),
-                    FirstNonEmpty(GetNodeString(obj, "description"), GetNodeString(obj, "price"))
+                    FormatInventoryMeasure(GetNodeString(obj, "volume"), "дм³"),
+                    FormatInventoryMeasure(GetNodeString(obj, "price"), "¤"),
+                    GetNodeString(obj, "description") ?? string.Empty
                 ]
             });
         }
@@ -9901,7 +10341,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     {
                         EntityType = "inventory-material",
                         Title = row.Cells.ElementAtOrDefault(0) ?? "Материал",
-                        Summary = FirstNonEmpty(row.Cells.ElementAtOrDefault(3), row.Cells.ElementAtOrDefault(2), row.Cells.ElementAtOrDefault(1)),
+                        Summary = FirstNonEmpty(
+                            row.Cells.ElementAtOrDefault(5),
+                            row.Cells.ElementAtOrDefault(4),
+                            row.Cells.ElementAtOrDefault(3),
+                            row.Cells.ElementAtOrDefault(2),
+                            row.Cells.ElementAtOrDefault(1)),
                         Sections =
                         [
                             new UiEntityDossierSection
@@ -9919,7 +10364,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
                                         [
                                             new UiKeyValueItem { Key = "Количество", Value = EmptyFallback(row.Cells.ElementAtOrDefault(1) ?? string.Empty) },
                                             new UiKeyValueItem { Key = "Вес", Value = EmptyFallback(row.Cells.ElementAtOrDefault(2) ?? string.Empty) },
-                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) }
+                                            new UiKeyValueItem { Key = "Объём", Value = EmptyFallback(row.Cells.ElementAtOrDefault(3) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Цена", Value = EmptyFallback(row.Cells.ElementAtOrDefault(4) ?? string.Empty) },
+                                            new UiKeyValueItem { Key = "Описание", Value = EmptyFallback(row.Cells.ElementAtOrDefault(5) ?? string.Empty) }
                                         ]
                                     }
                                 ]
@@ -9949,20 +10396,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }));
     }
 
-    private static void AddInventoryBondBlock(List<UiBlock> blocks, JsonObject? bondEntry)
+    private static void AddInventoryBondBlock(List<UiBlock> blocks, JsonObject item, JsonObject? bondEntry)
     {
-        if (bondEntry == null)
-            return;
-
         var panelBlocks = new List<UiBlock>();
-        var bondLevel = GetNodeString(bondEntry, "ownerBondLevelCurrent");
+        var bondLevel = FirstNonEmpty(
+            GetNodeString(bondEntry, "ownerBondLevelCurrent"),
+            GetNodeString(item, "ownerBondLevelCurrent"));
         if (!string.IsNullOrWhiteSpace(bondLevel))
         {
+            var maximum = FirstNonEmpty(
+                GetNodeString(bondEntry, "ownerBondLevelMax"),
+                GetNodeString(item, "ownerBondLevelMax"),
+                "100");
             panelBlocks.Add(new UiKeyValueGridBlock
             {
                 Items =
                 [
-                    new UiKeyValueItem { Key = "Уровень", Value = $"{bondLevel}/100" }
+                    new UiKeyValueItem { Key = "Уровень", Value = $"{bondLevel}/{maximum}" }
                 ]
             });
         }
@@ -9971,7 +10421,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (!string.IsNullOrWhiteSpace(reason))
             panelBlocks.Add(new UiTextBlock { Text = reason, Tone = UiTone.Muted });
 
-        if (bondEntry["fateCards"] is JsonArray fateCards && fateCards.Count > 0)
+        var fateCards = EnumerateInventoryFateCards(item["fateCards"] as JsonArray)
+            .Concat(EnumerateInventoryFateCards(bondEntry?["fateCards"] as JsonArray))
+            .Select(static card => MortalItemPlayerProjection.CloneItemSemanticValue(card) as JsonObject)
+            .OfType<JsonObject>()
+            .DistinctBy(GetInventoryFateCardProjectionKey, StringComparer.Ordinal)
+            .ToList();
+        if (fateCards.Count > 0)
         {
             panelBlocks.Add(new UiEntityDossierBlock
             {
@@ -9989,14 +10445,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         Collapsible = true,
                         InitiallyExpanded = true,
                         Blocks = fateCards
-                            .OfType<JsonObject>()
-                            .Select(static card => (UiBlock)new UiEntityDossierBlock
-                            {
-                                EntityType = "inventory-fate-card",
-                                Title = FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"), "Карта"),
-                                Subtitle = TryGetNodeBool(card, "isUnlocked", out var unlocked) && unlocked ? "разблокирована" : "закрыта",
-                                Summary = FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary"))
-                            })
+                            .Select(static card => (UiBlock)BuildInventoryFateCardBlock(card))
                             .ToList()
                     }
                 ]
@@ -10006,6 +10455,294 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (panelBlocks.Count > 0)
             blocks.Add(new UiPanelBlock { Title = "Связь с владельцем", Blocks = panelBlocks });
     }
+
+    private static IEnumerable<JsonObject> EnumerateInventoryFateCards(JsonArray? fateCards) =>
+        fateCards?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>();
+
+    private static string GetInventoryFateCardProjectionKey(JsonObject card)
+    {
+        var cardId = GetNodeString(card, "cardId");
+        if (!string.IsNullOrWhiteSpace(cardId))
+            return "id:" + cardId;
+
+        var name = FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"));
+        return !string.IsNullOrWhiteSpace(name)
+            ? "name:" + name
+            : "json:" + card.ToJsonString();
+    }
+
+    private static UiEntityDossierBlock BuildInventoryFateCardBlock(JsonObject card)
+    {
+        var unlocked = TryGetNodeBool(card, "isUnlocked", out var isUnlocked) && isUnlocked;
+        var facts = new List<UiEntityFact>();
+        if (!unlocked && card["unlockConditions"] is JsonObject conditions)
+        {
+            var parts = new List<string>();
+            var bondLevel = GetNodeString(conditions, "ownerBondLevel");
+            if (!string.IsNullOrWhiteSpace(bondLevel))
+                parts.Add($"связь ≥ {bondLevel}");
+
+            if (conditions["requiredMaterials"] is JsonArray requiredMaterials)
+            {
+                foreach (var material in requiredMaterials.OfType<JsonObject>())
+                {
+                    var materialName = GetNodeString(material, "materialName");
+                    var quantity = GetNodeString(material, "quantity");
+                    if (string.IsNullOrWhiteSpace(materialName))
+                        continue;
+
+                    parts.Add(string.IsNullOrWhiteSpace(quantity)
+                        ? materialName
+                        : $"{quantity}× {materialName}");
+                }
+            }
+
+            var plotCondition = GetNodeString(conditions, "plotConditionDescription");
+            if (!string.IsNullOrWhiteSpace(plotCondition))
+                parts.Add(plotCondition);
+
+            if (parts.Count > 0)
+            {
+                var conjunction = string.Equals(
+                    GetNodeString(conditions, "conjunction"),
+                    "OR",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? " ИЛИ "
+                    : " И ";
+                facts.Add(new UiEntityFact
+                {
+                    Label = "Условия",
+                    Value = string.Join(conjunction, parts)
+                });
+            }
+        }
+
+        if (unlocked && card["rewards"] is JsonObject rewards)
+        {
+            var reward = FirstNonEmpty(
+                GetNodeString(rewards, "description"),
+                GetNodeString(rewards, "summary"));
+            if (!string.IsNullOrWhiteSpace(reward))
+                facts.Add(new UiEntityFact { Label = "Награда", Value = reward });
+
+            AddInventoryFateRewardArrayFact(facts, "Улучшенные бонусы", rewards["improvedBonuses"] as JsonArray);
+            AddInventoryFateCombatRewardFact(facts, rewards["newCombatEffects"] as JsonArray);
+            AddInventoryFateRewardArrayFact(facts, "Усиление предмета", rewards["statBoostsToItemItself"] as JsonArray);
+            AddInventoryFateRewardStringFact(facts, "Новое описание", GetNodeString(rewards, "changesDescriptionTo"));
+            if (!string.IsNullOrWhiteSpace(GetNodeString(rewards, "changesImagePromptTo")))
+                facts.Add(new UiEntityFact { Label = "Новый образ", Value = "Облик предмета изменится." });
+            AddInventoryFateRewardStringFact(facts, "Иные изменения", GetNodeString(rewards, "otherNarrativeChanges"));
+        }
+
+        return new UiEntityDossierBlock
+        {
+            EntityType = "inventory-fate-card",
+            Title = FirstNonEmpty(GetNodeString(card, "name"), GetNodeString(card, "cardName"), "Карта"),
+            Subtitle = unlocked ? "разблокирована" : "закрыта",
+            Summary = FirstNonEmpty(GetNodeString(card, "description"), GetNodeString(card, "summary")),
+            Facts = facts
+        };
+    }
+
+    private static void AddInventoryFateRewardArrayFact(
+        List<UiEntityFact> facts,
+        string label,
+        JsonArray? values)
+    {
+        if (values == null)
+            return;
+
+        var projected = values
+            .Select(static value => TryGetScalarString(value, out var scalar) ? scalar : string.Empty)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        if (projected.Count > 0)
+            facts.Add(new UiEntityFact { Label = label, Value = string.Join("; ", projected) });
+    }
+
+    private static void AddInventoryFateCombatRewardFact(List<UiEntityFact> facts, JsonArray? actions)
+    {
+        if (actions == null)
+            return;
+
+        var projected = actions
+            .OfType<JsonObject>()
+            .Select(DescribeInventoryFateCombatAction)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        if (projected.Count > 0)
+            facts.Add(new UiEntityFact { Label = "Новые боевые эффекты", Value = string.Join("; ", projected) });
+    }
+
+    private static string DescribeInventoryFateCombatAction(JsonObject action)
+    {
+        var parts = new List<string>();
+        var actionName = GetNodeString(action, "actionName");
+        if (!string.IsNullOrWhiteSpace(actionName))
+            parts.Add(actionName);
+
+        if (TryGetNodeBool(action, "isActivatedEffect", out var activated))
+            parts.Add(activated ? "активируемый" : "пассивный");
+        AddInventoryFateCombatActionDetail(
+            parts,
+            action,
+            "actionCost",
+            "стоимость",
+            static value => FormatInventoryProtocolValue(value));
+        AddInventoryFateCombatActionDetail(
+            parts,
+            action,
+            "targetPriority",
+            "приоритет цели",
+            static value => FormatInventoryProtocolValue(value));
+        AddInventoryFateCombatActionDetail(
+            parts,
+            action,
+            "scalingCharacteristic",
+            "масштабирование",
+            static value => StructuredBonusDisplay.FormatScalar(value, "scalingCharacteristic"));
+
+        if (action["effects"] is JsonArray effects)
+        {
+            foreach (var effect in effects.OfType<JsonObject>())
+            {
+                var description = FirstNonEmpty(
+                    GetNodeString(effect, "effectDescription"),
+                    GetNodeString(effect, "description"),
+                    GetNodeString(effect, "effectType"));
+                if (string.IsNullOrWhiteSpace(description))
+                    continue;
+
+                var value = GetNodeString(effect, "value");
+                var effectText = string.IsNullOrWhiteSpace(value) ? description : $"{description} ({value})";
+                var effectDetails = new List<string>();
+                var target = FirstNonEmpty(
+                    GetNodeString(effect, "targetTypeDisplayName"),
+                    GetNodeString(effect, "targetType"));
+                if (!string.IsNullOrWhiteSpace(target))
+                    effectDetails.Add("цель: " + FormatInventoryProtocolValue(target));
+                var targetsCount = GetNodeString(effect, "targetsCount");
+                if (!string.IsNullOrWhiteSpace(targetsCount))
+                    effectDetails.Add("целей: " + targetsCount);
+                var duration = GetNodeString(effect, "duration");
+                if (!string.IsNullOrWhiteSpace(duration))
+                    effectDetails.Add("длительность: " + duration);
+                var poiseDamage = GetNodeString(effect, "poiseDamage");
+                if (!string.IsNullOrWhiteSpace(poiseDamage))
+                    effectDetails.Add("урон равновесию: " + poiseDamage);
+                var damageThreshold = GetNodeString(effect, "damageThreshold");
+                if (!string.IsNullOrWhiteSpace(damageThreshold))
+                    effectDetails.Add("порог урона: " + damageThreshold);
+
+                if (effectDetails.Count > 0)
+                    effectText += $" [{string.Join(", ", effectDetails)}]";
+                parts.Add(effectText);
+            }
+        }
+
+        return string.Join(": ", parts.Distinct(StringComparer.Ordinal));
+    }
+
+    private static void AddInventoryFateCombatActionDetail(
+        List<string> parts,
+        JsonObject action,
+        string propertyName,
+        string label,
+        Func<string, string> formatter)
+    {
+        var value = GetNodeString(action, propertyName);
+        if (!string.IsNullOrWhiteSpace(value))
+            parts.Add($"{label}: {formatter(value)}");
+    }
+
+    private static void AddInventoryFateRewardStringFact(
+        List<UiEntityFact> facts,
+        string label,
+        string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            facts.Add(new UiEntityFact { Label = label, Value = value });
+    }
+
+    private static void AddInventoryQuestLinksBlock(List<UiBlock> blocks, JsonArray? questLinks)
+    {
+        if (questLinks == null || questLinks.Count == 0)
+            return;
+
+        var cards = new List<UiBlock>();
+        foreach (var link in questLinks)
+        {
+            if (TryGetScalarString(link, out var scalar))
+            {
+                if (!string.IsNullOrWhiteSpace(scalar))
+                    cards.Add(new UiTextBlock { Text = scalar, Tone = UiTone.Default });
+                continue;
+            }
+
+            if (link is not JsonObject raw ||
+                MortalItemPlayerProjection.CloneItemSemanticValue(raw) is not JsonObject obj)
+                continue;
+
+            var facts = new List<UiEntityFact>();
+            foreach (var property in obj)
+            {
+                if (IsInventoryQuestLinkDisplayAlias(property.Key))
+                    continue;
+
+                var value = FormatInventoryNodeValue(property.Value, property.Key, itemContext: true);
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    facts.Add(new UiEntityFact
+                    {
+                        Label = GetStructuredBonusFieldLabel(property.Key),
+                        Value = value
+                    });
+                }
+            }
+
+            cards.Add(new UiEntityDossierBlock
+            {
+                EntityType = "inventory-quest-link",
+                Title = FirstNonEmpty(
+                    GetNodeString(obj, "questName"),
+                    GetNodeString(obj, "title"),
+                    GetNodeString(obj, "name"),
+                    "Связанное задание"),
+                Subtitle = "Роль предмета",
+                Summary = FirstNonEmpty(
+                    GetNodeString(obj, "role"),
+                    GetNodeString(obj, "questRole"),
+                    GetNodeString(obj, "description")),
+                Facts = facts
+            });
+        }
+
+        if (cards.Count == 0)
+            return;
+
+        blocks.Add(new UiEntityDossierBlock
+        {
+            EntityType = "inventory-quest-links",
+            Title = "Связанные задания",
+            Subtitle = "Сюжетная роль предмета",
+            Sections =
+            [
+                new UiEntityDossierSection
+                {
+                    Id = "quests",
+                    Title = "Задания",
+                    Icon = "inventory",
+                    Collapsible = true,
+                    InitiallyExpanded = true,
+                    Blocks = cards
+                }
+            ]
+        });
+    }
+
+    private static bool IsInventoryQuestLinkDisplayAlias(string fieldName) =>
+        fieldName is "questName" or "title" or "name" or
+            "role" or "questRole" or "description";
 
     private static void AddInventoryContentBlock(List<UiBlock> blocks, JsonNode? embedded, JsonNode? sidecar)
     {
@@ -10046,7 +10783,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         foreach (var entry in array)
         {
-            var text = FormatInventoryNodeValue(entry);
+            var text = FormatInventoryNodeValue(entry, itemContext: true);
             if (!string.IsNullOrWhiteSpace(text))
                 yield return text;
         }
@@ -10082,6 +10819,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
             var voice = GetNodeString(obj, "spiritVoice");
             if (!string.IsNullOrWhiteSpace(voice))
                 line += $" Голос: {voice}";
+            var resonance = GetNodeString(obj, "magicalResonance");
+            if (!string.IsNullOrWhiteSpace(resonance))
+                line += $" Резонанс: {resonance}";
             yield return line;
         }
     }
@@ -10091,70 +10831,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (root["items"] is JsonArray items)
             return items;
 
-        if (root["UpdateInventory"] is JsonArray updateInventory)
-            return updateInventory;
-
         return null;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateAcceptedInventoryItems(JsonObject root)
+    {
+        var items = GetInventoryItemsArrayNode(root);
+        if (items == null)
+            yield break;
+
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            if (MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
+                yield return item;
+        }
     }
 
     private static JsonObject? FindInventorySidecarEntryNode(
         JsonNode? root,
-        string itemIdentity,
-        string itemName,
-        params string[] propertyNames)
-    {
-        foreach (var item in EnumerateInventorySidecarEntryNodes(root, propertyNames))
-        {
-            if (InventoryNodeMatches(item, itemIdentity, itemName))
-                return item;
-        }
-
-        return null;
-    }
-
-    private static IEnumerable<JsonObject> EnumerateInventorySidecarEntryNodes(JsonNode? root, params string[] propertyNames)
-    {
-        if (root is JsonArray array)
-        {
-            foreach (var item in array.OfType<JsonObject>())
-                yield return item;
-            yield break;
-        }
-
-        if (root is not JsonObject obj)
-            yield break;
-
-        foreach (var propertyName in propertyNames)
-        {
-            if (obj[propertyName] is not JsonArray items)
-                continue;
-
-            foreach (var item in items.OfType<JsonObject>())
-                yield return item;
-        }
-    }
-
-    private static bool InventoryNodeMatches(JsonObject item, string itemIdentity, string itemName)
-    {
-        var identity = GetInventoryItemIdentity(item);
-        if (!string.IsNullOrWhiteSpace(itemIdentity) &&
-            string.Equals(identity, itemIdentity, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        var name = GetInventoryItemName(item);
-        return !string.IsNullOrWhiteSpace(itemName) &&
-               string.Equals(name, itemName, StringComparison.OrdinalIgnoreCase);
-    }
+        string itemIdentity) =>
+        MortalItemPlayerProjection.FindUniqueExactSidecarEntry(root, itemIdentity);
 
     private static string GetInventoryItemIdentity(JsonNode? item)
     {
-        return FirstNonEmpty(
-            GetNodeString(item, "existedId"),
-            GetNodeString(item, "itemId"),
-            GetNodeString(item, "id"),
-            GetNodeString(item, "relicId"));
+        return item is JsonObject obj &&
+               MortalItemMaterializationContract.TryReadAcceptedIdentity(obj, out var identity)
+            ? identity
+            : string.Empty;
     }
 
     private static string GetInventoryItemName(JsonNode? item) =>
@@ -10183,32 +10886,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
             : $"{value.Trim()} {unit}";
     }
 
-    private static string FormatInventorySlot(string? slot)
-    {
-        if (string.IsNullOrWhiteSpace(slot))
-            return string.Empty;
+    private static string FormatInventorySlots(JsonNode? slots) =>
+        InventoryEquipmentService.FormatSlotNames(InventoryEquipmentService.ReadCanonicalSlots(slots));
 
-        if (slot.Trim().Equals("Accessory1", StringComparison.OrdinalIgnoreCase))
-            return "Аксессуар 1";
-        if (slot.Trim().Equals("Accessory2", StringComparison.OrdinalIgnoreCase))
-            return "Аксессуар 2";
-
-        return FormatSlotName(slot.Trim() switch
-        {
-            "Accessory1" => "ring1",
-            "Accessory2" => "ring2",
-            "Hands" => "hands",
-            "Head" => "head",
-            "Chest" => "body",
-            "Body" => "body",
-            "Feet" => "feet",
-            "MainHand" => "mainHand",
-            "OffHand" => "offHand",
-            _ => slot
-        });
-    }
-
-    private static string FormatInventoryNodeValue(JsonNode? node, string? fieldName = null)
+    private static string FormatInventoryNodeValue(
+        JsonNode? node,
+        string? fieldName = null,
+        bool itemContext = false)
     {
         if (TryGetScalarString(node, out var scalar))
             return StructuredBonusDisplay.FormatScalar(scalar, fieldName);
@@ -10216,20 +10900,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (node is JsonArray array)
         {
             return string.Join("\n", array
-                .Select(item => FormatInventoryNodeValue(item, fieldName))
+                .Select(item => FormatInventoryNodeValue(item, fieldName, itemContext))
                 .Where(static value => !string.IsNullOrWhiteSpace(value)));
         }
 
         if (node is JsonObject obj)
         {
-            return FirstNonEmpty(
-                GetNodeString(obj, "summary"),
-                GetNodeString(obj, "description"),
-                GetNodeString(obj, "effectDescription"),
-                GetNodeString(obj, "name"),
-                string.Join("\n", obj
-                    .Select(property => $"{GetStructuredBonusFieldLabel(property.Key)}: {FormatInventoryNodeValue(property.Value, property.Key)}")
-                    .Where(static value => !string.IsNullOrWhiteSpace(value))));
+            return string.Join("\n", obj
+                .Where(property => itemContext
+                    ? !MortalItemPlayerProjection.IsInternalItemField(property.Key)
+                    : !MortalItemPlayerProjection.IsInternalField(property.Key))
+                .Select(property =>
+                {
+                    var value = FormatInventoryNodeValue(property.Value, property.Key, itemContext);
+                    return string.IsNullOrWhiteSpace(value)
+                        ? string.Empty
+                        : $"{GetStructuredBonusFieldLabel(property.Key)}: {value}";
+                })
+                .Where(static value => !string.IsNullOrWhiteSpace(value)));
         }
 
         return string.Empty;
@@ -10274,30 +10962,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             _ => slotKey
         });
 
-    private static string DescribeEquipmentValue(JsonNode? value, InventoryEquipmentContext? inventory)
+    private static string? DescribeEquipmentValue(JsonNode? value, InventoryEquipmentContext? inventory)
     {
-        if (TryGetScalarString(value, out var scalar))
+        if (inventory == null ||
+            value?.GetValueKind() != JsonValueKind.String ||
+            !TryGetScalarString(value, out var itemIdentity) ||
+            string.IsNullOrWhiteSpace(itemIdentity))
         {
-            var matched = inventory == null ? null : InventoryEquipmentService.FindItem(inventory.Items, scalar);
-            return matched?.Name ?? scalar;
+            return null;
         }
 
-        var itemName = GetNodeString(value, "name") ?? GetNodeString(value, "itemName");
-        if (!string.IsNullOrWhiteSpace(itemName))
-            return itemName;
-
-        var itemIdentity = FirstNonEmpty(
-            GetNodeString(value, "existedId"),
-            GetNodeString(value, "itemId"),
-            GetNodeString(value, "id"));
-        if (!string.IsNullOrWhiteSpace(itemIdentity) && inventory != null)
-        {
-            var matched = InventoryEquipmentService.FindItem(inventory.Items, itemIdentity);
-            if (matched != null)
-                return matched.Name;
-        }
-
-        return string.IsNullOrWhiteSpace(itemIdentity) ? value?.ToString() ?? "— пусто —" : itemIdentity;
+        return inventory.Items.FirstOrDefault(item =>
+            string.Equals(item.Identity, itemIdentity, StringComparison.Ordinal))?.Name;
     }
 
     private static string? GetNodeString(JsonNode? node, string property)
@@ -10605,6 +11281,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private sealed record ReferenceDetailRequest(
         ReferenceDetailKind Kind,
         string Selector);
+
+    private sealed record QuestRewardPlayerProjection(
+        JsonObject HistoryRoot,
+        QuestRewardAuthorityContext AuthorityContext);
 
     private sealed record SummarySpec(string Path, string PropertyName, string Label);
 

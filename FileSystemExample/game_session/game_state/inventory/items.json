@@ -3,9 +3,7 @@
     {
       "existedId": "item_ancient_sword",
       "itemId": "item_ancient_sword",
-      "id": "item_ancient_sword",
       "name": "Древний меч",
-      "itemName": "Древний меч",
       "description": "Старинный клинок с потемневшими рунами у гарды. В тестовом состоянии нужен для проверки журналов предметов, структурных бонусов, экипировки и подробного вывода инвентаря.",
       "image_prompt": "ancient rune etched sword with darkened guard, noble bedroom desk, realistic fantasy item",
       "type": "Оружие",
@@ -16,17 +14,12 @@
       "count": 1,
       "weight": 1.8,
       "volume": 1.0,
-      "contentsPath": null,
-      "isContainer": false,
-      "isConsumption": false,
-      "requiresTwoHands": false,
       "durability": "95%",
       "maxDurability": "100%",
-      "equipmentSlot": "MainHand",
-      "accessoryForSlot": null,
       "bonuses": [
         "Сила +1"
       ],
+      "effects": [],
       "structuredBonuses": [
         {
           "targetType": "stat",
@@ -36,7 +29,105 @@
           "source": "Древний меч",
           "summary": "Сила +1"
         }
-      ]
+      ],
+      "combatEffect": [],
+      "customProperties": [],
+      "mechanicalSummaryAuthority": null,
+      "mechanicalSummaryUnresolvedReason": null,
+      "equipmentSlot": "MainHand",
+      "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "isContainer": false,
+      "capacity": null,
+      "containerWeight": null,
+      "weightReduction": null,
+      "contentsPath": null,
+      "isConsumption": false,
+      "textContent": null,
+      "journalEntries": [],
+      "isSentient": true,
+      "unreadableReason": null,
+      "sealedReason": null,
+      "lockedReason": null,
+      "disassembleTo": null,
+      "ownerBondLevelCurrent": null,
+      "ownerBondLevelMax": null,
+      "fateCards": [],
+      "questLinks": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_item_ancient_sword",
+        "realm": "Mortal",
+        "route": "player_acquisition",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "turn_outcome",
+          "authorityId": "turn_42"
+        },
+        "creationRef": "new_item_ancient_sword",
+        "state": "complete",
+        "sections": {
+          "presentation": {
+            "state": "populated",
+            "reason": null
+          },
+          "physical": {
+            "state": "populated",
+            "reason": null
+          },
+          "mechanics": {
+            "state": "populated",
+            "reason": null
+          },
+          "equipment": {
+            "state": "populated",
+            "reason": null
+          },
+          "container": {
+            "state": "empty_by_design",
+            "reason": "Меч не является контейнером."
+          },
+          "consumption": {
+            "state": "empty_by_design",
+            "reason": "Меч не расходуется при использовании."
+          },
+          "readableOrSentient": {
+            "state": "populated",
+            "reason": null
+          },
+          "craftingAndDisassembly": {
+            "state": "empty_by_design",
+            "reason": "Для древнего меча не задан безопасный разбор."
+          },
+          "bondsAndFateCards": {
+            "state": "empty_by_design",
+            "reason": "Связь с владельцем и Карты Судьбы ещё не проявились."
+          },
+          "questRole": {
+            "state": "empty_by_design",
+            "reason": "Меч пока не связан с активным заданием."
+          },
+          "provenance": {
+            "state": "populated",
+            "reason": null
+          },
+          "ownershipAndPlacement": {
+            "state": "populated",
+            "reason": null
+          }
+        }
+      },
+      "materializationReceipt": {
+        "schemaVersion": 1,
+        "receiptId": "mirec_ancient_sword",
+        "itemId": "item_ancient_sword",
+        "materializationId": "mat_item_ancient_sword",
+        "acceptedAtTurn": 42,
+        "creationRef": "new_item_ancient_sword",
+        "instanceKind": "root",
+        "parentItemIds": [],
+        "seal": "sha256:508495f395a3b03cec821fb4c2cc7550d9f93999e6b44a879456cf2750e6710f"
+      }
     }
   ],
   "equippedItems": {

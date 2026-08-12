@@ -61,11 +61,14 @@ public partial class CanonicalStateNormalizer
         "game_state/quests/soul_quests.json",
         "game_state/quests/quest_history.json",
         "game_state/world/rival_soul_arcs.json",
+        StorageTransportMoveService.CurrentLocationPath,
+        StorageTransportMoveService.VehiclesPath,
         "game_state/factions/faction_core.json",
         "game_state/npcs/npc_core.json",
         "game_state/npcs/npc_journals.json",
         NpcInteractionJournalState.StatePath,
         "game_state/inventory/items.json",
+        MortalItemIdentityState.StatePath,
         "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
@@ -93,7 +96,12 @@ public partial class CanonicalStateNormalizer
     public static readonly string[] NormalizerRollbackTrackedFiles = NormalizerBackupInputFiles
         .Concat(new[]
         {
-            GuardianProjectState.JournalPath
+            GuardianProjectState.JournalPath,
+            "game_state/npcs/npc_inventory.json",
+            MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+            "game_state/inventory/recipes.json",
+            CraftRequestState.PendingRequestPath,
+            NpcTradeRequestState.PendingRequestPath
         })
         .Distinct(StringComparer.OrdinalIgnoreCase)
         .ToArray();
@@ -169,6 +177,7 @@ public partial class CanonicalStateNormalizer
     {
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
+        await NormalizeMortalItemsAsync(backups);
         await NormalizeGuardiansAsync(backups);
         await NormalizeGuardianAbodeResidentsAsync(backups);
         await NormalizeShiningAbodeStateAsync(backups);

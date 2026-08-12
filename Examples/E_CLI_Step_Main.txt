@@ -24,6 +24,26 @@ $narrative = [ordered]@{
 Write-BoeJson -RelativePath 'output/narrative_response.json' -Data $narrative
 ```
 
+## Mortal Item Materialization v1 — main-step routing reminder
+
+Before returning a durable Mortal item, open
+`Examples/E_CLI_Mortal_Item_Materialization.txt` and the compact daemon
+template. Creation route/kind pairs are `player_acquisition/turn_outcome`,
+`npc_acquisition/npc_inventory_add`, `new_npc_inventory/new_npc`,
+`loot_acquisition/loot_template`, `craft_output/craft_request`,
+`trade_output/npc_trade_receipt`, `quest_reward/quest_reward`, and
+`storage_placement/location_storage`.
+
+A new root uses `existedId = null`, turn-unique `creationRef`, the full semantic
+shape, and all twelve `materialization.sections`. Не создавай itemId; не
+создавай materializationReceipt or `item_identity_index.json`. Existing
+transfers use exact itemId and preserve receipt/envelope; `contentsPath` holds
+permanent parent IDs. `isCarried`, `currentLocationId`, and
+`currentLocationName` are not placement authority and must not be authored on
+items. Split/merge/destroyed lineage is client-owned. A bounded
+repair never delegates protected identity state. Receipt-less current state is
+rejected because игра ещё не вышла and no compatibility promotion exists.
+
 Faction Materialization worked-example coverage:
 mortal_faction_materialization_populated_creation_v1
 mortal_faction_materialization_seven_empty_creation_v1
@@ -919,6 +939,19 @@ If the turn request says `MORTAL BOOTSTRAP BASELINE`, do not start from large ex
 - `game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json`
 
 `playerAuthoredStart` is narrative context only. The client baseline contains no inferred or default skills, items, NPCs, capabilities, money, progression, carrying values, factions, quests, location type/traversal/difficulty, faction resources, influence/control, or universal power-profile axes; `game_state/player/experience.json` starts as an empty structural object. Every `structuredGmAuthority.playerProgression`, `carryingRules`, or `factionMechanics` entry must include the exact `canonicalPath` and a non-empty `values` object that repeats every authorized canonical value. `{}`, reason-only records, unrelated paths, and prose do not grant authority. Record other setting-aware decisions in `playerSkills`, `inventoryItems`, `actorCapabilities`, or `resources` and write matching complete canonical state. Every GM-created NPC requires the complete first-materialization envelope.
+
+The current-life ordinary-item roots are client-owned empty anchors before the GM authors any starting item:
+
+```text
+game_state/inventory/items.json                    -> items=[]
+game_state/inventory/item_identity_index.json      -> entries=[]
+game_state/inventory/item_resources.json           -> entries=[]
+game_state/inventory/item_bonds.json               -> entries=[]
+game_state/inventory/item_text_updates.json        -> entries=[]
+game_state/npcs/item_journals.json                  -> entries=[]
+```
+
+Previous-life item sidecars are rollback-only and are not the current GM baseline. Even if client rollback storage still contains an old sword, bond, journal, receipt, or identity entry, do not copy it into these roots. For example, a new-life torch must be authored through the supported `player_acquisition` route with a new turn-unique `creationRef`; the GM must not restore the old torch's `itemId`, receipt, seal, or lineage.
 
 Worked domain-bound authority example (the values below belong only to this orbital-colony example and are not universal defaults):
 

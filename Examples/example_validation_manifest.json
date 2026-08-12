@@ -1,5 +1,67 @@
 {
   "version": 1,
+  "mortalItemMaterializationCoverage": [
+    {
+      "contractId": "mortal_item_player_acquisition_empty_sections_v1",
+      "file": "E_CLI_Mortal_Item_Materialization.txt",
+      "statePath": "game_state/inventory/items.json",
+      "responseSurface": "UpdateInventory[] complete raw creation carrier",
+      "realms": ["Mortal World"],
+      "description": "Complete mundane player acquisition with all twelve materialization sections and every empty-by-design semantic surface physically present.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalItemMaterializationWorkedExamples_UseCurrentSchemaAndExactRejection -> MortalItemMaterializationContract.Validate(RawPreSeal)",
+      "coverageLimit": "Executes the extracted item through the production raw envelope/semantic contract; accepted-turn route evidence and sealing are covered by MortalItemMaterializationValidationTests.",
+      "requiredText": ["mortal_item_player_acquisition_empty_sections_v1", "new_item_turn_42_chalk", "\"route\": \"player_acquisition\"", "\"empty_by_design\""]
+    },
+    {
+      "contractId": "mortal_item_mechanic_trade_output_v1",
+      "file": "E_CLI_Mortal_Item_Materialization.txt",
+      "statePath": "game_state/inventory/items.json",
+      "responseSurface": "UpdateInventory[] plus UpdateNpcTradeInventoryReceipts[]",
+      "realms": ["Mortal World"],
+      "description": "Mechanic-bearing trade output uses exact receipt authority and matching structured mechanical evidence.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalItemMaterializationWorkedExamples_UseCurrentSchemaAndExactRejection -> MortalItemMaterializationContract.Validate(RawPreSeal)",
+      "coverageLimit": "Executes the complete raw item contract and asserts route/kind/mechanics; request-slot and offer-projection matching remain covered by accepted-turn trade tests.",
+      "requiredText": ["mortal_item_mechanic_trade_output_v1", "\"route\": \"trade_output\"", "\"kind\": \"npc_trade_receipt\"", "\"structuredBonuses\""]
+    },
+    {
+      "contractId": "mortal_item_existing_transfer_v1",
+      "file": "E_CLI_Mortal_Item_Materialization.txt",
+      "statePath": "game_state/inventory/item_identity_index.json",
+      "responseSurface": "client-owned transfer transition",
+      "realms": ["Mortal World"],
+      "description": "Existing physical transfer preserves exact item identity, envelope, and receipt while the client changes carrier authority.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "The example documents before/after identity continuity without fabricating the canonical files and lease needed by the coordinated transition writer.",
+      "coverageLimit": "Syntax, exact identity, immutable envelope/receipt equality, carrier change, and transition kind only.",
+      "requiredText": ["mortal_item_existing_transfer_v1", "itm_weathered_compass_01", "\"kind\": \"transfer\"", "location_storage"]
+    },
+    {
+      "contractId": "mortal_item_split_merge_lineage_v1",
+      "file": "E_CLI_Mortal_Item_Materialization.txt",
+      "statePath": "game_state/inventory/item_identity_index.json",
+      "responseSurface": "client-owned split and merge transitions",
+      "realms": ["Mortal World"],
+      "description": "Split creates one derived child and merge retires the contributor into the selected survivor without changing total quantity.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "The fragment demonstrates protected lineage outcomes; executable coordinated-writer tests own full carrier/index atomicity.",
+      "coverageLimit": "Syntax, split-derived parent linkage, survivor selection, merged state, and quantity conservation only.",
+      "requiredText": ["mortal_item_split_merge_lineage_v1", "split_derived", "contributorState", "mergedIntoItemId"]
+    },
+    {
+      "contractId": "mortal_item_receiptless_rejection_v1",
+      "file": "E_CLI_Mortal_Item_Materialization.txt",
+      "statePath": "game_state/inventory/items.json",
+      "responseSurface": "invalid canonical items[] entry",
+      "realms": ["Mortal World"],
+      "description": "Receipt-less current canonical item is rejected rather than promoted or migrated at runtime.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalItemMaterializationWorkedExamples_UseCurrentSchemaAndExactRejection -> MortalItemMaterializationContract.Validate(CanonicalPostSeal)",
+      "coverageLimit": "Executes the extracted invalid item through canonical post-seal validation and requires the exact receipt-less diagnostic.",
+      "requiredText": ["mortal_item_receiptless_rejection_v1", "mortal_item_materialization_receiptless_current_item", "receipt-less", "runtime promotion"]
+    }
+  ],
   "factionMaterializationCoverage": [
     {
       "contractId": "mortal_faction_materialization_populated_creation_v1",

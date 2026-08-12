@@ -131,3 +131,15 @@
   </example>
  </rule>
 </instructionblock>
+
+# Mortal Item Materialization v1 — transfer and lineage addendum
+
+Use `mortal_item_existing_transfer_v1` and
+`mortal_item_split_merge_lineage_v1` from
+`E_CLI_Mortal_Item_Materialization.txt`. Transfer resolves exact `itemId`,
+preserves the complete envelope/receipt, removes one source copy, and leaves
+one destination copy. Split keeps the selected source ID; the client creates
+the derived child and parent lineage. Merge keeps the selected survivor and
+retires contributors as `merged`; discard retires as `destroyed`. Never emulate
+handoff by removal plus receipt-less recreation, and never write client index
+transitions from a GM response.

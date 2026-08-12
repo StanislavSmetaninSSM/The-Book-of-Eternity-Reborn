@@ -12,6 +12,11 @@
       "source": "broken/items.json",
       "target": "game_state/inventory/items.json",
       "mode": "Replace"
+    },
+    {
+      "source": "broken/item_identity_index.json",
+      "target": "game_state/inventory/item_identity_index.json",
+      "mode": "Replace"
     }
   ],
   "fixed": [
@@ -23,6 +28,11 @@
     {
       "source": "fixed/items.json",
       "target": "game_state/inventory/items.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "fixed/item_identity_index.json",
+      "target": "game_state/inventory/item_identity_index.json",
       "mode": "Replace"
     }
   ],

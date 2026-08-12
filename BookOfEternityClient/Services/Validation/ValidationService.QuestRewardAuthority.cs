@@ -27,5 +27,27 @@ public partial class ValidationService
                 actual: issue.Actual,
                 repairHint: issue.RepairHint));
         }
+
+        var itemIdentityIndex = MortalItemIdentityState.Parse(
+            await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
+        foreach (var issue in QuestRewardAuthority.ValidateMortalItemTransitionAuthorities(
+                     questHistoryRoot,
+                     itemIdentityIndex))
+        {
+            issues.Add(new ValidationIssue(
+                issue.Path,
+                IssueSeverity.Error,
+                issue.Message,
+                code: issue.Code,
+                actor: issue.Actor,
+                section: "MortalItemMaterialization",
+                expected: issue.Expected,
+                actual: issue.Actual,
+                repairHint: issue.RepairHint,
+                repairTargetFiles: new[]
+                {
+                    "game_state/quests/quest_history.json"
+                }));
+        }
     }
 }

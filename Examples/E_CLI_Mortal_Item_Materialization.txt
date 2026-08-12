@@ -1,0 +1,347 @@
+# Mortal Item Materialization v1 — исполняемые примеры
+
+Эти примеры относятся только к смертным мирам. Новый долговечный предмет ГМ
+передаёт полным объектом с `existedId: null`, уникальным в пределах хода
+`creationRef` и полным `materialization`. ГМ не создаёт `itemId`,
+`materializationReceipt`, `item_identity_index.json`, seal, transition или
+lineage: эти поверхности создаёт и изменяет только клиент после успешной
+проверки. Игра ещё не вышла, поэтому receipt-less canonical предметы не
+повышаются и не мигрируют во время игры — они отклоняются.
+
+### mortal_item_player_acquisition_empty_sections_v1
+
+Обычный предмет без скрытых механик. Все двенадцать разделов объявлены, а
+каждый `empty_by_design` имеет причину и физически пустую canonical-поверхность.
+
+```json
+{
+  "UpdateInventory": [
+    {
+      "existedId": null,
+      "creationRef": "new_item_turn_42_chalk",
+      "name": "Кусочек белого мела",
+      "description": "Небольшой сухой кусочек мела для коротких отметок на камне.",
+      "image_prompt": "small worn piece of white chalk on dark stone, realistic low fantasy item",
+      "type": "Бытовой предмет",
+      "group": "Инструменты",
+      "quality": "Common",
+      "rarity": "Common",
+      "price": 1,
+      "count": 1,
+      "weight": 0.02,
+      "volume": 0.01,
+      "durability": "100%",
+      "maxDurability": "100%",
+      "bonuses": [],
+      "effects": [],
+      "structuredBonuses": [],
+      "combatEffect": [],
+      "customProperties": [],
+      "mechanicalSummaryAuthority": null,
+      "mechanicalSummaryUnresolvedReason": null,
+      "equipmentSlot": null,
+      "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "isContainer": false,
+      "capacity": null,
+      "containerWeight": null,
+      "weightReduction": null,
+      "contentsPath": null,
+      "isConsumption": false,
+      "textContent": null,
+      "journalEntries": [],
+      "isSentient": false,
+      "unreadableReason": null,
+      "sealedReason": null,
+      "lockedReason": null,
+      "disassembleTo": null,
+      "ownerBondLevelCurrent": null,
+      "ownerBondLevelMax": null,
+      "fateCards": [],
+      "questLinks": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_item_turn_42_chalk",
+        "realm": "Mortal",
+        "route": "player_acquisition",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "turn_outcome",
+          "authorityId": "turn_42"
+        },
+        "creationRef": "new_item_turn_42_chalk",
+        "state": "complete",
+        "sections": {
+          "presentation": { "state": "populated", "reason": null },
+          "physical": { "state": "populated", "reason": null },
+          "mechanics": { "state": "empty_by_design", "reason": "Мел не даёт самостоятельного механического бонуса." },
+          "equipment": { "state": "empty_by_design", "reason": "Мел не является экипировкой." },
+          "container": { "state": "empty_by_design", "reason": "Кусочек мела ничего не вмещает." },
+          "consumption": { "state": "empty_by_design", "reason": "Мел не является расходником с самостоятельным эффектом." },
+          "readableOrSentient": { "state": "empty_by_design", "reason": "На самом кусочке нет читаемого текста и собственного голоса." },
+          "craftingAndDisassembly": { "state": "empty_by_design", "reason": "Этот кусочек не задаёт рецепта или полезной разборки." },
+          "bondsAndFateCards": { "state": "empty_by_design", "reason": "Обычный мел не образует связь и не имеет Карт Судьбы." },
+          "questRole": { "state": "empty_by_design", "reason": "Мел не связан с заданием." },
+          "provenance": { "state": "populated", "reason": null },
+          "ownershipAndPlacement": { "state": "populated", "reason": null }
+        }
+      }
+    }
+  ]
+}
+```
+
+### mortal_item_mechanic_trade_output_v1
+
+Новый экземпляр торгового товара создаётся лишь при наличии точной принятой
+`UpdateNpcTradeInventoryReceipts` authority. `creationRef` равен уникальному
+`slotId`, а отображаемый бонус имеет matching structured authority.
+
+```json
+{
+  "UpdateInventory": [
+    {
+      "existedId": null,
+      "creationRef": "slot_tideglass_lens_turn_42",
+      "name": "Приливная линза",
+      "description": "Шлифованная линза проясняет дальние контуры над водой.",
+      "image_prompt": "polished blue glass lens in brass frame, maritime fantasy tool, realistic",
+      "type": "Оптический инструмент",
+      "group": "Снаряжение",
+      "quality": "Uncommon",
+      "rarity": "Uncommon",
+      "price": 90,
+      "count": 1,
+      "weight": 0.15,
+      "volume": 0.04,
+      "durability": "100%",
+      "maxDurability": "100%",
+      "bonuses": ["Наблюдение вдаль +1"],
+      "effects": [],
+      "structuredBonuses": [
+        {
+          "description": "Наблюдение вдаль +1",
+          "bonusType": "ActionCheck",
+          "target": "Наблюдение вдаль",
+          "valueType": "Flat",
+          "value": 1,
+          "application": "Permanent",
+          "condition": "Линза используется для осмотра удалённой цели."
+        }
+      ],
+      "combatEffect": [],
+      "customProperties": [],
+      "mechanicalSummaryAuthority": "Structured",
+      "mechanicalSummaryUnresolvedReason": null,
+      "equipmentSlot": null,
+      "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "isContainer": false,
+      "capacity": null,
+      "containerWeight": null,
+      "weightReduction": null,
+      "contentsPath": null,
+      "isConsumption": false,
+      "textContent": null,
+      "journalEntries": [],
+      "isSentient": false,
+      "unreadableReason": null,
+      "sealedReason": null,
+      "lockedReason": null,
+      "disassembleTo": null,
+      "ownerBondLevelCurrent": null,
+      "ownerBondLevelMax": null,
+      "fateCards": [],
+      "questLinks": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_item_tideglass_lens_turn_42",
+        "realm": "Mortal",
+        "route": "trade_output",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "npc_trade_receipt",
+          "authorityId": "trade_request_dock_optician_turn_42"
+        },
+        "creationRef": "slot_tideglass_lens_turn_42",
+        "state": "complete",
+        "sections": {
+          "presentation": { "state": "populated", "reason": null },
+          "physical": { "state": "populated", "reason": null },
+          "mechanics": { "state": "populated", "reason": null },
+          "equipment": { "state": "empty_by_design", "reason": "Линзу применяют как инструмент, но не помещают в слот экипировки." },
+          "container": { "state": "empty_by_design", "reason": "Линза ничего не вмещает." },
+          "consumption": { "state": "empty_by_design", "reason": "Линза не расходуется при обычном применении." },
+          "readableOrSentient": { "state": "empty_by_design", "reason": "У линзы нет текста или собственного голоса." },
+          "craftingAndDisassembly": { "state": "empty_by_design", "reason": "Покупка не задаёт рецепт или полезную разборку." },
+          "bondsAndFateCards": { "state": "empty_by_design", "reason": "Линза не образует связь и не имеет Карт Судьбы." },
+          "questRole": { "state": "empty_by_design", "reason": "Линза не является предметом задания." },
+          "provenance": { "state": "populated", "reason": null },
+          "ownershipAndPlacement": { "state": "populated", "reason": null }
+        }
+      }
+    }
+  ],
+  "UpdateNpcTradeInventoryReceipts": [
+    {
+      "requestId": "trade_request_dock_optician_turn_42",
+      "slotId": "slot_tideglass_lens_turn_42",
+      "status": "accepted"
+    }
+  ]
+}
+```
+
+### mortal_item_existing_transfer_v1
+
+Это иллюстрация результата клиента, а не JSON, который должен писать ГМ.
+Перенос связывается по exact `itemId`; envelope и receipt остаются побитово
+равными, меняется только carrier и добавляется клиентский transition.
+`isCarried`, `currentLocationId` и `currentLocationName` are not placement authority
+предмета и не должны добавляться ГМ: размещение задают exact route
+destination, carrier и `contentsPath`; при входе в `player_inventory` клиент
+удаляет устаревшие placement hints.
+
+```json
+{
+  "before": {
+    "itemId": "itm_weathered_compass_01",
+    "existedId": "itm_weathered_compass_01",
+    "name": "Потёртый компас",
+    "materialization": {
+      "schemaVersion": 1,
+      "materializationId": "mat_weathered_compass_turn_12",
+      "realm": "Mortal",
+      "route": "player_acquisition",
+      "sourceTurn": 12,
+      "sourceAuthority": { "kind": "turn_outcome", "authorityId": "turn_12" },
+      "creationRef": "new_weathered_compass_turn_12",
+      "state": "complete",
+      "sections": {}
+    },
+    "materializationReceipt": {
+      "schemaVersion": 1,
+      "receiptId": "mirec_weathered_compass_01",
+      "itemId": "itm_weathered_compass_01",
+      "materializationId": "mat_weathered_compass_turn_12",
+      "acceptedAtTurn": 12,
+      "creationRef": "new_weathered_compass_turn_12",
+      "instanceKind": "root",
+      "parentItemIds": [],
+      "seal": "sha256:example_unchanged_seal"
+    },
+    "carrier": { "kind": "player_inventory", "ownerId": "player", "containerId": null, "containerPath": [] }
+  },
+  "after": {
+    "itemId": "itm_weathered_compass_01",
+    "existedId": "itm_weathered_compass_01",
+    "name": "Потёртый компас",
+    "materialization": {
+      "schemaVersion": 1,
+      "materializationId": "mat_weathered_compass_turn_12",
+      "realm": "Mortal",
+      "route": "player_acquisition",
+      "sourceTurn": 12,
+      "sourceAuthority": { "kind": "turn_outcome", "authorityId": "turn_12" },
+      "creationRef": "new_weathered_compass_turn_12",
+      "state": "complete",
+      "sections": {}
+    },
+    "materializationReceipt": {
+      "schemaVersion": 1,
+      "receiptId": "mirec_weathered_compass_01",
+      "itemId": "itm_weathered_compass_01",
+      "materializationId": "mat_weathered_compass_turn_12",
+      "acceptedAtTurn": 12,
+      "creationRef": "new_weathered_compass_turn_12",
+      "instanceKind": "root",
+      "parentItemIds": [],
+      "seal": "sha256:example_unchanged_seal"
+    },
+    "carrier": { "kind": "location_storage", "ownerId": "loc_old_lighthouse", "containerId": "storage_keeper_chest", "containerPath": [] }
+  },
+  "transition": {
+    "kind": "transfer",
+    "sourceItemIds": ["itm_weathered_compass_01"],
+    "sourceCarrier": { "kind": "player_inventory", "ownerId": "player", "containerId": null, "containerPath": [] },
+    "destinationCarrier": { "kind": "location_storage", "ownerId": "loc_old_lighthouse", "containerId": "storage_keeper_chest", "containerPath": [] }
+  }
+}
+```
+
+### mortal_item_split_merge_lineage_v1
+
+Split и merge выполняет клиент через coordinated writer. ГМ не назначает
+дочерний ID, receipt, родителей, retired-state или survivor history.
+
+```json
+{
+  "split": {
+    "sourceItemId": "itm_iron_nails_stack",
+    "quantityBefore": 10,
+    "sourceQuantityAfter": 7,
+    "childItemId": "itm_iron_nails_split_child",
+    "childQuantityAfter": 3,
+    "childReceipt": {
+      "instanceKind": "split_derived",
+      "parentItemIds": ["itm_iron_nails_stack"]
+    },
+    "transition": { "kind": "split", "sourceItemIds": ["itm_iron_nails_stack"], "quantityBefore": 10, "quantityAfter": 10 }
+  },
+  "merge": {
+    "survivorItemId": "itm_iron_nails_stack",
+    "contributorItemId": "itm_iron_nails_split_child",
+    "survivorReceiptPreserved": true,
+    "survivorQuantityAfter": 10,
+    "contributorState": "merged",
+    "mergedIntoItemId": "itm_iron_nails_stack",
+    "transition": { "kind": "merge", "sourceItemIds": ["itm_iron_nails_stack", "itm_iron_nails_split_child"], "quantityBefore": 10, "quantityAfter": 10 }
+  }
+}
+```
+
+### mortal_item_receiptless_rejection_v1
+
+ОЖИДАЕМО НЕВЕРНЫЙ canonical input. Он не получает runtime promotion даже если
+раньше использовался в тестовой фикстуре.
+
+```json
+{
+  "expectedDiagnostic": "mortal_item_materialization_receiptless_current_item",
+  "items": [
+    {
+      "itemId": "itm_receiptless_example",
+      "existedId": "itm_receiptless_example",
+      "name": "Предмет без квитанции",
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_receiptless_example",
+        "realm": "Mortal",
+        "route": "player_acquisition",
+        "sourceTurn": 7,
+        "sourceAuthority": { "kind": "turn_outcome", "authorityId": "turn_7" },
+        "creationRef": "new_receiptless_example",
+        "state": "complete",
+        "sections": {
+          "presentation": { "state": "populated", "reason": null },
+          "physical": { "state": "populated", "reason": null },
+          "mechanics": { "state": "empty_by_design", "reason": "Нет механик." },
+          "equipment": { "state": "empty_by_design", "reason": "Не экипируется." },
+          "container": { "state": "empty_by_design", "reason": "Не контейнер." },
+          "consumption": { "state": "empty_by_design", "reason": "Не расходуется." },
+          "readableOrSentient": { "state": "empty_by_design", "reason": "Не читается и не говорит." },
+          "craftingAndDisassembly": { "state": "empty_by_design", "reason": "Нет рецепта или разборки." },
+          "bondsAndFateCards": { "state": "empty_by_design", "reason": "Нет связи или Карт Судьбы." },
+          "questRole": { "state": "empty_by_design", "reason": "Не предмет задания." },
+          "provenance": { "state": "populated", "reason": null },
+          "ownershipAndPlacement": { "state": "populated", "reason": null }
+        }
+      }
+    }
+  ]
+}
+```
+
+Диагностический код выше точный. Правильное исправление — откатить
+непринятый результат или заново сформировать полный raw creation package с
+новым turn-unique `creationRef`; нельзя дописывать поддельную квитанцию.

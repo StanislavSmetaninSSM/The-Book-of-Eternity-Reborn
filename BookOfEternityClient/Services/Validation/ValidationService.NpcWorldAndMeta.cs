@@ -4953,7 +4953,8 @@ public partial class ValidationService
 
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
-        return normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
+        return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith(QteSceneService.QteNormalizerBackupDirectory + "/", StringComparison.OrdinalIgnoreCase) ||
@@ -5458,6 +5459,10 @@ public partial class ValidationService
 
         if (missingFields.Count > 0)
         {
+            ValidateMortalItemMaterializationInsideIncompleteNpc(
+                item,
+                itemContext,
+                issues);
             issues.Add(new ValidationIssue(
                 itemContext,
                 IssueSeverity.Error,
@@ -5723,6 +5728,35 @@ public partial class ValidationService
 
         if (item.TryGetProperty("activeMaskId", out _))
             ValidateOptionalNullableStringField(item, itemContext, issues, "activeMaskId");
+    }
+
+    private static void ValidateMortalItemMaterializationInsideIncompleteNpc(
+        JsonElement npc,
+        string npcContext,
+        List<ValidationIssue> issues)
+    {
+        if (!npc.TryGetProperty("inventory", out var inventory) ||
+            inventory.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var item in inventory.EnumerateArray())
+        {
+            var itemContext = $"{npcContext}.inventory[{index++}]";
+            if (item.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var phase = item.TryGetProperty("existedId", out var existedId) &&
+                        existedId.ValueKind == JsonValueKind.Null
+                ? MortalItemMaterializationPhase.RawPreSeal
+                : MortalItemMaterializationPhase.CanonicalPostSeal;
+            issues.AddRange(MortalItemMaterializationContract.Validate(
+                item,
+                itemContext,
+                phase));
+        }
     }
 
     private void ValidateNpcPersonalityTraitObject(
@@ -7371,7 +7405,8 @@ public partial class ValidationService
             {
                 ValidateFullInventoryItemObject(inventoryItem, $"{itemContext}.item", issues, requireStringExistedId: false);
                 if (inventoryItem.TryGetProperty("existedId", out var existedId) &&
-                    existedId.ValueKind != JsonValueKind.Null)
+                    existedId.ValueKind != JsonValueKind.Null &&
+                    !IsCanonicalMortalItemTransferPayload(inventoryItem))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.item.existedId",

@@ -383,9 +383,16 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Боевые эффекты", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Резонансный толчок", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сбивает концентрацию цели.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Через серебряную арку", text, StringComparison.Ordinal);
+        Assert.Contains("По звону хрустального колокола", text, StringComparison.Ordinal);
+        Assert.Contains("По следу мерцающих рун", text, StringComparison.Ordinal);
         var effectDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
             block.EntityType == "effect" &&
             block.Title.Contains("Магический резонанс", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            effectDossier.Sections.SelectMany(static section => section.Facts),
+            static fact => fact.Label.Equals("Осталось ходов", StringComparison.OrdinalIgnoreCase) &&
+                           fact.Value == "1");
         Assert.Contains(effectDossier.Sections, static section =>
             section.Title.Equals("Структурные бонусы", StringComparison.OrdinalIgnoreCase) &&
             section.Cards.Any(card => card.Title.Contains("Восприятие", StringComparison.OrdinalIgnoreCase)));
@@ -821,6 +828,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("день 42, вечер", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("шифр спрятан в перчатке", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Можно спросить о знаке Вальмонтов", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("через старый фонтан", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лианна показала безопасный знак на серебряном ключе", text, StringComparison.Ordinal);
         AssertNoFlattenedStructuredDetails(result);
         Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
             block.EntityType == "interaction-record" &&
@@ -828,6 +837,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Empty(result.Blocks.SelectMany(EnumerateTables));
         Assert.DoesNotContain("argument_at_ferry", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("interactionId", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PRIVATE_INTERACTION_RECEIPT", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_INTERACTION_CREATION_REF", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_INTERACTION_RAW_ITEM", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("UpdateInventory", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("records", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/misc", payload, StringComparison.OrdinalIgnoreCase);
     }
@@ -853,12 +866,14 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Запись взаимодействия", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Игрок 1", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("player_mara", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Серебряный ключ", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лианна показала Серебряный ключ у старого фонтана", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("покрыт знаками янтарной башни", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("2", text, StringComparison.OrdinalIgnoreCase);
         AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("UpdateInventory", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UpdateInventory", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PRIVATE_CANONICAL_INTERACTION_RAW_ITEM", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_CANONICAL_INTERACTION_RECEIPT", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("game_state/misc", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
     }
@@ -1004,13 +1019,44 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "recommendedActions": [
                 "Попросить Миру отвлечь караул."
               ],
+              "rewards": {
+                "items": [
+                  {
+                    "displayName": "Ключ архивного мастера",
+                    "visibleLore": "На ключе виден герб старого архива.",
+                    "route": "Скрытый маршрут выдачи награды",
+                    "requestId": "PRIVATE_BROWSER_QUEST_REWARD_REQUEST",
+                    "removedItemId": "PRIVATE_BROWSER_QUEST_REMOVED_ITEM",
+                    "destinationContainerId": "PRIVATE_BROWSER_QUEST_DESTINATION_CONTAINER",
+                    "currentContentsPath": "PRIVATE_BROWSER_QUEST_CURRENT_CONTENTS_PATH",
+                    "removeInventoryItems": [
+                      { "itemName": "PRIVATE_BROWSER_QUEST_REMOVAL" }
+                    ]
+                  }
+                ]
+              },
+              "detailsLog": [
+                {
+                  "summary": "Мира нашла след архивной печати.",
+                  "materializationReceipt": "PRIVATE_BROWSER_QUEST_LOG_RECEIPT",
+                  "creationRef": "PRIVATE_BROWSER_QUEST_LOG_CREATION_REF",
+                  "NPCInventoryRemovals": [
+                    { "itemName": "PRIVATE_BROWSER_QUEST_LOG_REMOVAL" }
+                  ]
+                }
+              ],
               "hiddenGmNote": "Скрытая развязка: ключ у капитана."
             }
           ]
         }
         """);
 
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/квесты квест quest_archive_escape"));
+        var command = "/квесты квест quest_archive_escape";
+        var directResult = await BuildDirectMigratedResultAsync(command);
+        var directText = CollectBlockText(directResult.Blocks);
+        Assert.DoesNotContain("Скрытый маршрут выдачи награды", directText, StringComparison.Ordinal);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
@@ -1028,11 +1074,109 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Связанные лица", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мира Ключница", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Возможные действия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ключ архивного мастера", text, StringComparison.Ordinal);
+        Assert.Contains("На ключе виден герб старого архива", text, StringComparison.Ordinal);
+        Assert.Contains("Мира нашла след архивной печати", text, StringComparison.Ordinal);
         Assert.DoesNotContain("деталь", text, StringComparison.OrdinalIgnoreCase);
         AssertNoFlattenedStructuredDetails(result);
         Assert.DoesNotContain("hidden", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Скрытая развязка", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Скрытый маршрут выдачи награды", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_BROWSER_QUEST_", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("game_state/quests", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_QuestHistoryDetail_ProjectsAcceptedItemRewardsAndHistoricalReasons()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/quests/quest_history.json", """
+        {
+          "questHistory": [
+            {
+              "questId": "quest_caravan_browser",
+              "questName": "Караван у северной башни",
+              "outcome": "completed"
+            }
+          ],
+          "questRewards": [
+            {
+              "questId": "quest_caravan_browser",
+              "itemsReceived": [
+                {
+                  "itemId": "itm_caravan_seal_browser",
+                  "displayName": "Печать северного каравана"
+                },
+                "itm_raw_false_browser_reward",
+                {
+                  "itemId": "itm_first_life_ring_browser",
+                  "displayName": "Перстень прошлой жизни",
+                  "authorityStatus": "HistoricalOnly",
+                  "reason": "Перстень остался у прежнего воплощения."
+                },
+                "ITM_CASE_SENSITIVE_REWARD_BROWSER",
+                {
+                  "itemId": "itm_missing_name_only_reward_browser",
+                  "itemName": "NAME_ONLY_ACCEPTED_REWARD_MARKER"
+                },
+                {
+                  "id": "itm_caravan_seal_browser",
+                  "displayName": "FORGED_ID_FIELD_REWARD_MARKER"
+                },
+                {
+                  "itemName": "itm_caravan_seal_browser",
+                  "displayName": "FORGED_ITEM_NAME_FIELD_REWARD_MARKER"
+                },
+                {
+                  "itemId": "itm_caravan_seal_browser",
+                  "displayName": "FORGED_ACCEPTED_DISPLAY_LABEL_MARKER"
+                }
+              ]
+            }
+          ]
+        }
+        """);
+        var accepted = CreateAcceptedUiItemFromJson(
+            "itm_caravan_seal_browser",
+            """{"name":"Печать северного каравана","type":"QuestItem"}""");
+        var caseSensitive = CreateAcceptedUiItemFromJson(
+            "itm_case_sensitive_reward_browser",
+            """{"name":"CASE_SENSITIVE_ACCEPTED_REWARD_MARKER","type":"QuestItem"}""");
+        var nameOnly = CreateAcceptedUiItemFromJson(
+            "itm_name_only_reward_browser",
+            """{"name":"NAME_ONLY_ACCEPTED_REWARD_MARKER","type":"QuestItem"}""");
+        var rejected = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_itm_raw_false_browser_reward",
+            materializationId: "mat_itm_raw_false_browser_reward");
+        rejected["name"] = "RAW_FALSE_BROWSER_QUEST_REWARD_MARKER";
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(accepted, caseSensitive, nameOnly, rejected),
+                ["UpdateInventory"] = new JsonArray(rejected.DeepClone()),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/квесты квест quest_caravan_browser"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Печать северного каравана", text, StringComparison.Ordinal);
+        Assert.Contains("Перстень прошлой жизни", text, StringComparison.Ordinal);
+        Assert.Contains("Перстень остался у прежнего воплощения.", text, StringComparison.Ordinal);
+        Assert.Contains("Предмет из истории квеста — подробности пока не записаны", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("RAW_FALSE_BROWSER_QUEST_REWARD_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("CASE_SENSITIVE_ACCEPTED_REWARD_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("NAME_ONLY_ACCEPTED_REWARD_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("FORGED_ID_FIELD_REWARD_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("FORGED_ITEM_NAME_FIELD_REWARD_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("FORGED_ACCEPTED_DISPLAY_LABEL_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("itm_caravan_seal_browser", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("itm_raw_false_browser_reward", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("itm_first_life_ring_browser", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("materializationReceipt", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3526,27 +3670,61 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_Inventory_ReturnsRichInventoryBlocksAndFriendlyTitles()
     {
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "totalWeight": 17,
-          "maxWeight": 30,
-          "money": 125,
-          "resources": {
-            "wood": 4,
-            "gold": 0,
-            "cloth": "2"
-          },
-          "equipment": {
-            "head": { "name": "Железный шлем" },
-            "mainHand": { "itemName": "Кривой меч" },
-            "offHand": null
-          },
-          "items": [
-            { "name": "Факел", "type": "utility", "count": 2, "durability": "100%" },
-            { "itemName": "Сломанный лук", "type": "weapon", "quantity": 1, "durability": "0%" }
-          ]
-        }
-        """);
+        var helmet = CreateAcceptedUiItem(
+            "helmet_1",
+            "Железный шлем",
+            item =>
+            {
+                item["type"] = "helmet";
+                item["equipmentSlot"] = "Head";
+            },
+            "equipment");
+        var sword = CreateAcceptedUiItem(
+            "sword_1",
+            "Кривой меч",
+            item =>
+            {
+                item["type"] = "weapon";
+                item["equipmentSlot"] = "MainHand";
+            },
+            "equipment");
+        var torch = CreateAcceptedUiItem(
+            "torch_1",
+            "Факел",
+            item =>
+            {
+                item["type"] = "utility";
+                item["count"] = 2;
+            });
+        var brokenBow = CreateAcceptedUiItem(
+            "bow_1",
+            "Сломанный лук",
+            item =>
+            {
+                item["type"] = "weapon";
+                item["durability"] = "0%";
+            });
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["totalWeight"] = 17,
+                ["maxWeight"] = 30,
+                ["money"] = 125,
+                ["resources"] = new JsonObject
+                {
+                    ["wood"] = 4,
+                    ["gold"] = 0,
+                    ["cloth"] = "2"
+                },
+                ["equippedItems"] = new JsonObject
+                {
+                    ["Head"] = "helmet_1",
+                    ["MainHand"] = "sword_1",
+                    ["OffHand"] = null
+                },
+                ["items"] = new JsonArray(helmet, sword, torch, brokenBow)
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await _fs.WriteFileAtomicAsync("game_state/inventory/item_resources.json", """
         {
           "entries": [
@@ -3618,13 +3796,21 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_Inventory_WithItemsButWithoutAuxiliaryFiles_HidesMissingAuxiliaryState()
     {
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
-            { "name": "Факел", "type": "utility", "count": 2 }
-          ]
-        }
-        """);
+        var torch = CreateAcceptedUiItem(
+            "torch_without_sidecars",
+            "Факел",
+            item =>
+            {
+                item["type"] = "utility";
+                item["count"] = 2;
+            });
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = new JsonArray(torch),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inventory"));
         var text = CollectBlockText(result.Blocks);
@@ -3726,6 +3912,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("12/100", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Записи", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("JOURNAL_MARKER", text, StringComparison.Ordinal);
+        Assert.Contains("Резонанс северной нити", text, StringComparison.Ordinal);
         Assert.Contains(result.Actions, action =>
             action.Label.Contains("Назад", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(action.Command, "/инв", StringComparison.OrdinalIgnoreCase));
@@ -3745,18 +3932,593 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_InventoryItemDetail_WithNumericPermanentId_PrefersExactIdentityOverOrdinal()
+    {
+        var first = CreateAcceptedUiItemFromJson(
+            "itm_numeric_first",
+            """{"name":"Первый предмет","description":"FIRST_NUMERIC_ITEM_MARKER","type":"tool"}""");
+        var second = CreateAcceptedUiItemFromJson(
+            "itm_numeric_second",
+            """{"name":"Второй предмет","description":"SECOND_NUMERIC_ITEM_MARKER","type":"tool"}""");
+        var numeric = CreateAcceptedUiItemFromJson(
+            "2",
+            """{"name":"Предмет с числовым ключом","description":"EXACT_NUMERIC_ITEM_MARKER","type":"tool"}""");
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(first, second, numeric),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/инв предмет 2"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Предмет с числовым ключом", text, StringComparison.Ordinal);
+        Assert.Contains("EXACT_NUMERIC_ITEM_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("SECOND_NUMERIC_ITEM_MARKER", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_InventoryItemDetail_UsesSemanticAllowlistAndOmitsMortalItemAuthority()
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot("itm_projection_browser");
+        item["name"] = "Зубило мастера рун";
+        item["description"] = "На стали виден узор, помогающий удерживать точный угол удара.";
+        item["type"] = "tool";
+        item["requestId"] = "PRIVATE_BROWSER_ROOT_REQUEST_ID";
+        item["slotId"] = "PRIVATE_BROWSER_ROOT_SLOT_ID";
+        item["tradeCycleId"] = "PRIVATE_BROWSER_ROOT_TRADE_CYCLE_ID";
+        item["rewardId"] = "PRIVATE_BROWSER_ROOT_REWARD_ID";
+        item["UpdateInventory"] = new JsonArray("PRIVATE_BROWSER_ROOT_UPDATE_INVENTORY");
+        item["structuredBonuses"] = new JsonArray(
+            new JsonObject
+            {
+                ["bonusType"] = "Skill",
+                ["target"] = "Рунное дело",
+                ["value"] = 2,
+                ["valueType"] = "Flat",
+                ["summary"] = "Рунное дело +2",
+                ["experimentalKey"] = "BROWSER_EXPERIMENTAL_SEMANTIC",
+                ["condition"] = new JsonObject
+                {
+                    ["trigger"] = "Когда руны совпадают",
+                    ["creationRef"] = "PRIVATE_BROWSER_NESTED_CREATION_REF",
+                    ["receiptSeal"] = "PRIVATE_BROWSER_NESTED_SEAL",
+                    ["image_prompt"] = "PRIVATE_BROWSER_NESTED_IMAGE_PROMPT",
+                    ["itemCreationRef"] = "PRIVATE_BROWSER_ITEM_CREATION_REF",
+                    ["itemRef"] = "PRIVATE_BROWSER_ITEM_REF",
+                    ["sourceItemId"] = "PRIVATE_BROWSER_SOURCE_ITEM_ID",
+                    ["targetItemId"] = "PRIVATE_BROWSER_TARGET_ITEM_ID",
+                    ["parentItemId"] = "PRIVATE_BROWSER_PARENT_ITEM_ID",
+                    ["containerItemId"] = "PRIVATE_BROWSER_CONTAINER_ITEM_ID",
+                    ["rewardItemId"] = "PRIVATE_BROWSER_REWARD_ITEM_ID",
+                    ["destinationItemId"] = "PRIVATE_BROWSER_DESTINATION_ITEM_ID",
+                    ["resultItemId"] = "PRIVATE_BROWSER_RESULT_ITEM_ID",
+                    ["removedItemId"] = "PRIVATE_BROWSER_REMOVED_ITEM_ID",
+                    ["destinationContainerId"] = "PRIVATE_BROWSER_DESTINATION_CONTAINER_ID",
+                    ["currentContentsPath"] = "PRIVATE_BROWSER_CURRENT_CONTENTS_PATH",
+                    ["itemIds"] = new JsonArray("PRIVATE_BROWSER_ITEM_IDS"),
+                    ["targetItemIds"] = new JsonArray("PRIVATE_BROWSER_TARGET_ITEM_IDS"),
+                    ["UpdateInventory"] = new JsonArray("PRIVATE_BROWSER_NESTED_UPDATE_INVENTORY"),
+                    ["NPCInventoryAdds"] = new JsonArray("PRIVATE_BROWSER_NESTED_NPC_INVENTORY_ADDS"),
+                    ["UpdateNpcTradeInventoryReceipts"] = new JsonArray("PRIVATE_BROWSER_NESTED_TRADE_RECEIPTS"),
+                    ["lootForCurrentTurn"] = new JsonArray("PRIVATE_BROWSER_NESTED_LOOT"),
+                    ["removeInventoryItems"] = new JsonArray("PRIVATE_BROWSER_NESTED_REMOVE_INVENTORY"),
+                    ["NPCInventoryRemovals"] = new JsonArray("PRIVATE_BROWSER_NESTED_NPC_REMOVALS")
+                },
+                ["creationRef"] = "PRIVATE_BROWSER_CREATION_REF",
+                ["receiptId"] = "PRIVATE_BROWSER_RECEIPT",
+                ["seal"] = "PRIVATE_BROWSER_SEAL",
+                ["lineage"] = "PRIVATE_BROWSER_LINEAGE",
+                ["currentCarrier"] = "PRIVATE_BROWSER_CARRIER",
+                ["carrierPath"] = "PRIVATE_BROWSER_PATH",
+                ["sourceAuthority"] = "PRIVATE_BROWSER_SOURCE_AUTHORITY",
+                ["sourceTurn"] = "PRIVATE_BROWSER_SOURCE_TURN",
+                ["repairPacket"] = "PRIVATE_BROWSER_REPAIR",
+                ["requestId"] = "PRIVATE_BROWSER_NESTED_REQUEST_ID",
+                ["slotId"] = "PRIVATE_BROWSER_NESTED_SLOT_ID",
+                ["tradeCycleId"] = "PRIVATE_BROWSER_NESTED_TRADE_CYCLE_ID",
+                ["rewardId"] = "PRIVATE_BROWSER_NESTED_REWARD_ID"
+            });
+        item["ownerBondLevelCurrent"] = 12;
+        item["ownerBondLevelMax"] = 80;
+        item["quality"] = "Rare";
+        item["rarity"] = "Rare";
+        var lockedFateCard = MortalItemTestFixture.CreateItemFateCard(
+            "card_runic_memory",
+            "Рунная память",
+            isUnlocked: false,
+            unlockConditions: new JsonObject
+            {
+                ["ownerBondLevel"] = 35,
+                ["requiredMaterials"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["materialName"] = "Серебряная пыль",
+                        ["quantity"] = 3,
+                        ["receiptId"] = "PRIVATE_BROWSER_FATE_MATERIAL_RECEIPT"
+                    }),
+                ["plotConditionDescription"] = "Завершить гравировку в северной кузнице",
+                ["conjunction"] = "OR",
+                ["receiptId"] = "PRIVATE_BROWSER_FATE_CONDITION_RECEIPT"
+            },
+            rewards: new JsonObject
+            {
+                ["description"] = "Рунная память откроется после выполнения условий."
+            },
+            description: "Зубило помнит первый завершённый знак.",
+            imagePrompt: "runic memory sigil engraved on a steel chisel");
+        var unlockedFateCard = MortalItemTestFixture.CreateItemFateCard(
+            "card_completed_seal_memory",
+            "Память завершённой печати",
+            isUnlocked: true,
+            rewards: new JsonObject
+            {
+                ["description"] = "Открывает тайную технику рунного удара.",
+                ["improvedBonuses"] = new JsonArray("Рунное дело усиливается до +3"),
+                ["newCombatEffects"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["isActivatedEffect"] = true,
+                        ["actionName"] = "Удар завершённой печати",
+                        ["actionCost"] = "Fast",
+                        ["targetPriority"] = "enemy",
+                        ["scalingCharacteristic"] = "dexterity",
+                        ["effects"] = new JsonArray(
+                            new JsonObject
+                            {
+                                ["effectType"] = "Damage",
+                                ["value"] = "12%",
+                                ["targetType"] = "enemy",
+                                ["targetTypeDisplayName"] = "цель с печатью",
+                                ["targetsCount"] = 2,
+                                ["duration"] = 2,
+                                ["poiseDamage"] = "6%",
+                                ["effectDescription"] = "Печать выпускает рунный импульс",
+                                ["currentCarrier"] = "PRIVATE_BROWSER_FATE_COMBAT_CARRIER"
+                            },
+                            new JsonObject
+                            {
+                                ["effectType"] = "DamageReduction",
+                                ["value"] = "8%",
+                                ["targetType"] = "self",
+                                ["targetsCount"] = 1,
+                                ["duration"] = 2,
+                                ["damageThreshold"] = 9,
+                                ["effectDescription"] = "Печатный заслон смягчает удар"
+                            }),
+                    },
+                    new JsonObject
+                    {
+                        ["isActivatedEffect"] = false,
+                        ["actionName"] = "Память точного знака",
+                        ["targetPriority"] = "self",
+                        ["scalingCharacteristic"] = "wisdom",
+                        ["effects"] = new JsonArray(
+                            new JsonObject
+                            {
+                                ["effectType"] = "Buff",
+                                ["value"] = "7%",
+                                ["targetType"] = "self",
+                                ["targetsCount"] = 1,
+                                ["duration"] = 3,
+                                ["effectDescription"] = "Память печати направляет руку"
+                            })
+                    }),
+                ["statBoostsToItemItself"] = new JsonArray("+15% к максимальной прочности"),
+                ["changesDescriptionTo"] = "На зубиле проступила завершённая печать.",
+                ["changesImagePromptTo"] = "steel chisel with a completed glowing rune seal",
+                ["otherNarrativeChanges"] = "Архивисты узнают почерк мастера на зубиле.",
+                ["repairPacket"] = "PRIVATE_BROWSER_FATE_REWARD_REPAIR"
+            },
+            description: "Карта откликнулась на завершённый знак.",
+            imagePrompt: "completed rune seal shining on a steel chisel");
+        item["fateCards"] = new JsonArray(lockedFateCard);
+        item["questLinks"] = new JsonArray(
+            new JsonObject
+            {
+                ["questName"] = "Последний знак мастера",
+                ["role"] = "инструмент ритуала"
+            });
+        item["materialization"]!["sections"]!["mechanics"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        item["materialization"]!["sections"]!["bondsAndFateCards"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        item["materialization"]!["sections"]!["questRole"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        MortalItemTestFixture.ResealCanonical(item);
+        using (var fixtureDocument = JsonDocument.Parse(item.ToJsonString()))
+        {
+            Assert.Empty(MortalItemMaterializationContract.Validate(
+                fixtureDocument.RootElement,
+                "browser projection fixture",
+                MortalItemMaterializationPhase.CanonicalPostSeal));
+        }
+        var unaccepted = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_unaccepted_browser_projection",
+            materializationId: "mat_item_unaccepted_browser_projection");
+        unaccepted["name"] = "НЕПРИНЯТЫЙ БРАУЗЕРНЫЙ ПРЕДМЕТ";
+
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(item),
+                ["UpdateInventory"] = new JsonArray(unaccepted),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(item)
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/item_resources.json",
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["itemId"] = "itm_projection_browser",
+                        ["resource"] = "DUPLICATE_BROWSER_RESOURCE_FIRST",
+                        ["maximumResource"] = 5,
+                        ["resourceType"] = "заряды"
+                    },
+                    new JsonObject
+                    {
+                        ["itemId"] = "itm_projection_browser",
+                        ["resource"] = "DUPLICATE_BROWSER_RESOURCE_SECOND",
+                        ["maximumResource"] = 7,
+                        ["resourceType"] = "заряды"
+                    })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/item_bonds.json",
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["itemId"] = "itm_projection_browser",
+                        ["existedId"] = "itm_projection_browser_other",
+                        ["ownerBondLevelCurrent"] = 99,
+                        ["ownerBondLevelMax"] = 99,
+                        ["lastBondChangeReason"] = "CONFLICTING_BROWSER_BOND_REASON"
+                    },
+                    new JsonObject
+                    {
+                        ["itemId"] = "ITM_PROJECTION_BROWSER",
+                        ["itemName"] = "Зубило мастера рун",
+                        ["ownerBondLevelCurrent"] = 12,
+                        ["ownerBondLevelMax"] = 80,
+                        ["fateCards"] = new JsonArray(
+                            MortalItemTestFixture.CreateItemFateCard(
+                                "card_wrong_case_browser",
+                                "WRONG_CASE_BROWSER_FATE_CARD",
+                                isUnlocked: true,
+                                rewards: new JsonObject
+                                {
+                                    ["description"] = "WRONG_CASE_BROWSER_FATE_REWARD"
+                                }))
+                    },
+                    new JsonObject
+                    {
+                        ["itemId"] = "itm_projection_browser",
+                        ["itemName"] = "Зубило мастера рун",
+                        ["ownerBondLevelCurrent"] = 12,
+                        ["ownerBondLevelMax"] = 80,
+                        ["fateCards"] = new JsonArray(
+                            lockedFateCard.DeepClone(),
+                            unlockedFateCard)
+                    })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/item_text_updates.json",
+            new JsonObject
+            {
+                ["updateItemTextContents"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["itemName"] = "Зубило мастера рун",
+                        ["textContent"] = new JsonArray("RAW_NAME_BROWSER_TEXT_MARKER")
+                    })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/инв"));
+        var overviewPayload = SerializeResult(overview);
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest(
+                "/инв предмет itm_projection_browser",
+                AdvancedEnabled: true));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Equal(CommandExecutionState.Completed, overview.State);
+        Assert.Contains("Зубило мастера рун", text, StringComparison.Ordinal);
+        Assert.Contains("Рунное дело +2", text, StringComparison.Ordinal);
+        Assert.Contains("BROWSER_EXPERIMENTAL_SEMANTIC", text, StringComparison.Ordinal);
+        Assert.Contains("Когда руны совпадают", text, StringComparison.Ordinal);
+        Assert.Contains("12/80", text, StringComparison.Ordinal);
+        Assert.Contains("Рунная память", text, StringComparison.Ordinal);
+        Assert.Contains("связь ≥ 35", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("3× Серебряная пыль", text, StringComparison.Ordinal);
+        Assert.Contains("Завершить гравировку в северной кузнице", text, StringComparison.Ordinal);
+        Assert.Contains("Память завершённой печати", text, StringComparison.Ordinal);
+        Assert.Contains("Открывает тайную технику рунного удара", text, StringComparison.Ordinal);
+        Assert.Contains("Рунное дело усиливается до +3", text, StringComparison.Ordinal);
+        Assert.Contains("Удар завершённой печати", text, StringComparison.Ordinal);
+        Assert.Contains("активируемый", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("стоимость: быстрое действие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("приоритет цели: противник", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("масштабирование: Ловкость", text, StringComparison.Ordinal);
+        Assert.Contains("Печать выпускает рунный импульс (12%)", text, StringComparison.Ordinal);
+        Assert.Contains("цель: цель с печатью", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("целей: 2", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("длительность: 2", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("урон равновесию: 6%", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Печатный заслон смягчает удар (8%)", text, StringComparison.Ordinal);
+        Assert.Contains("порог урона: 9", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Память точного знака", text, StringComparison.Ordinal);
+        Assert.Contains("пассивный", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Память печати направляет руку (7%)", text, StringComparison.Ordinal);
+        Assert.Contains("+15% к максимальной прочности", text, StringComparison.Ordinal);
+        Assert.Contains("На зубиле проступила завершённая печать.", text, StringComparison.Ordinal);
+        Assert.Contains("Облик предмета изменится", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("steel chisel with a completed glowing rune seal", text, StringComparison.Ordinal);
+        Assert.Contains("Архивисты узнают почерк мастера на зубиле.", text, StringComparison.Ordinal);
+        Assert.Equal(1, CountOccurrences(text, "Рунная память"));
+        Assert.Contains("Последний знак мастера", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("WRONG_CASE_BROWSER_", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("CONFLICTING_BROWSER_BOND_REASON", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("DUPLICATE_BROWSER_RESOURCE_FIRST", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("DUPLICATE_BROWSER_RESOURCE_SECOND", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("RAW_NAME_BROWSER_TEXT_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("НЕПРИНЯТЫЙ БРАУЗЕРНЫЙ ПРЕДМЕТ", overviewPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("НЕПРИНЯТЫЙ БРАУЗЕРНЫЙ ПРЕДМЕТ", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_BROWSER_", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"materialization\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"materializationReceipt\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"originMaterializationIds\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"parentItemIds\"", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/inventory/item_identity_index.json", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("mortal_item_materialization_repair", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("Unresolved", "Нераскрытые свойства", "Механика не раскрыта", "Руны запечатаны до ритуала распознавания.")]
+    [InlineData("NarrativeOnly", "Описательные свойства", "Описание без применяемой механики", null)]
+    public async Task ExecuteAsync_InventoryItemDetail_RespectsMechanicalSummaryAuthority(
+        string authority,
+        string expectedTitle,
+        string expectedExplanation,
+        string? unresolvedReason)
+    {
+        var suffix = authority.ToLowerInvariant();
+        var itemId = $"itm_summary_{suffix}";
+        var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
+        item["name"] = "Перчатка со скрытыми рунами";
+        item["bonuses"] = new JsonArray("Шёпот рун вокруг ладони");
+        item["mechanicalSummaryAuthority"] = authority;
+        item["mechanicalSummaryUnresolvedReason"] = unresolvedReason;
+        item["materialization"]!["sections"]!["mechanics"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        MortalItemTestFixture.ResealCanonical(item);
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(item),
+                ["equipment"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndex(item)
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest($"/инв предмет {itemId}", AdvancedEnabled: true));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(expectedTitle, text, StringComparison.Ordinal);
+        Assert.Contains(expectedExplanation, text, StringComparison.Ordinal);
+        Assert.Contains("Шёпот рун вокруг ладони", text, StringComparison.Ordinal);
+        if (!string.IsNullOrWhiteSpace(unresolvedReason))
+            Assert.Contains(unresolvedReason, text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Краткое игровое описание эффектов предмета", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_InventoryItemDetail_DoesNotProjectUnacceptedSameFileCandidate()
+    {
+        var acceptedItem = MortalItemTestFixture.CreateCanonicalRoot("itm_accepted_projection_browser");
+        acceptedItem["name"] = "Принятый клинок браузерного дозорного";
+        MortalItemTestFixture.ResealCanonical(acceptedItem);
+        var rawItem = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_unaccepted_browser_detail",
+            materializationId: "mat_item_unaccepted_browser_detail");
+        rawItem["name"] = "UNACCEPTED_BROWSER_DETAIL_MARKER";
+
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
+            {
+                ["items"] = new JsonArray(acceptedItem, rawItem.DeepClone()),
+                ["UpdateInventory"] = new JsonArray(rawItem),
+                ["equipment"] = new JsonObject
+                {
+                    ["mainHand"] = new JsonObject
+                    {
+                        ["creationRef"] = "new_item_unaccepted_browser_detail",
+                        ["name"] = "Принятый клинок браузерного дозорного"
+                    },
+                    ["offHand"] = "ITM_ACCEPTED_PROJECTION_BROWSER"
+                }
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest(
+                "/инв предмет 2",
+                AdvancedEnabled: true));
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/инв"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        var overviewText = CollectBlockText(overview.Blocks);
+        var overviewPayload = SerializeResult(overview);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Такой предмет не найден", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Принятый клинок браузерного дозорного", overviewText, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            overview.Blocks.SelectMany(EnumerateEntityDossiers).SelectMany(static block => block.Sections),
+            static section => section.Title.Equals("Экипировка", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            overview.Actions,
+            static action => action.Label.Contains("Снять", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain("UNACCEPTED_BROWSER_DETAIL_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("UNACCEPTED_BROWSER_DETAIL_MARKER", overviewPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("new_item_unaccepted_browser_detail", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("new_item_unaccepted_browser_detail", overviewPayload, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcDetail_ProjectsAcceptedInventoryAndIgnoresRejectedCandidates()
+    {
+        var accepted = MortalItemTestFixture.CreateCanonicalRoot("itm_npc_projection_browser");
+        accepted["name"] = "Принятый ключ хранителя архива";
+        accepted["quality"] = "Rare";
+        accepted["rarity"] = "Rare";
+        accepted["structuredBonuses"] = new JsonArray(
+            new JsonObject
+            {
+                ["bonusType"] = "Skill",
+                ["target"] = "perception",
+                ["value"] = 2,
+                ["valueType"] = "Flat",
+                ["summary"] = "Архивное зрение +2"
+            });
+        accepted["combatEffect"] = new JsonArray(
+            new JsonObject
+            {
+                ["isActivatedEffect"] = true,
+                ["actionName"] = "Вспышка ключа",
+                ["actionCost"] = "Fast",
+                ["effects"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["effectType"] = "Buff",
+                        ["value"] = "5%",
+                        ["targetType"] = "self",
+                        ["duration"] = 2,
+                        ["effectDescription"] = "Ключ помогает заметить скрытые печати."
+                    })
+            });
+        accepted["fateCards"] = new JsonArray(
+            MortalItemTestFixture.CreateItemFateCard(
+                "card_archive_key_memory",
+                "Память запертого хранилища",
+                isUnlocked: true,
+                rewards: new JsonObject
+                {
+                    ["description"] = "Открывает тайный проход архива."
+                }));
+        accepted["materialization"]!["sections"]!["mechanics"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        accepted["materialization"]!["sections"]!["bondsAndFateCards"] = new JsonObject
+        {
+            ["state"] = "populated",
+            ["reason"] = null
+        };
+        MortalItemTestFixture.ResealCanonical(accepted);
+        var pending = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_pending_npc_browser",
+            materializationId: "mat_item_pending_npc_browser");
+        pending["name"] = "UNACCEPTED_NPC_BROWSER_MARKER";
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["npcId"] = "npc_projection_browser",
+                        ["name"] = "Хранитель архива",
+                        ["inventory"] = new JsonArray(accepted, pending.DeepClone()),
+                        ["equippedItems"] = new JsonObject
+                        {
+                            ["mainHand"] = "itm_npc_projection_browser",
+                            ["offHand"] = "Непринятый предмет экипировки NPC"
+                        }
+                    })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_inventory.json",
+            new JsonObject
+            {
+                ["NPCInventoryAdds"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["NPCId"] = "npc_projection_browser",
+                        ["NPCName"] = "Хранитель архива",
+                        ["item"] = pending
+                    })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/npc section npc_projection_browser mechanics"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Хранитель архива —", text, StringComparison.Ordinal);
+        Assert.Contains("Принятый ключ хранителя архива", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Экипировка", text, StringComparison.Ordinal);
+        Assert.Contains("Архивное зрение +2", text, StringComparison.Ordinal);
+        Assert.Contains("Вспышка ключа", text, StringComparison.Ordinal);
+        Assert.Contains("Память запертого хранилища", text, StringComparison.Ordinal);
+        Assert.Contains("Открывает тайный проход архива", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("UNACCEPTED_NPC_BROWSER_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("Непринятый предмет экипировки NPC", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("new_item_pending_npc_browser", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("materializationReceipt", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_InventoryItemDetail_TranslatesRawMechanicalTypeValues()
     {
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
+        var item = CreateAcceptedUiItemFromJson(
+            "raw_weapon_1",
+            """
             {
-              "existedId": "raw_weapon_1",
-              "itemId": "raw_weapon_1",
               "name": "Клинок с печатью",
               "description": "Рукоять холодна даже у огня.",
               "type": "Weapon",
               "quality": "Good",
+              "rarity": "Good",
+              "price": 1,
+              "volume": 7.25,
+              "isConsumption": true,
+              "unreadableReason": "Текст закрыт соляной коркой.",
+              "sealedReason": "Печать северной артели не снята.",
+              "lockedReason": "Замок отвечает только владельцу.",
               "structuredBonuses": [
                 {
                   "bonusType": "Skill",
@@ -3764,20 +4526,38 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "value": 1,
                   "valueType": "Flat",
                   "modifierType": "skill",
-                  "summary": "Скрытность +1"
+                  "summary": "Скрытность +1",
+                  "condition": {
+                    "summary": "Печать откликается только в сумерках.",
+                    "weatherRule": "Во время грозы бонус удваивается.",
+                    "requestId": "PRIVATE_BROWSER_BONUS_CONDITION_REQUEST"
+                  }
                 }
               ],
               "combatEffect": [
                 {
                   "actionName": "Резонансная зарубка",
                   "actionCost": "Main",
+                  "targetPriority": "enemy",
+                  "scalingCharacteristic": "dexterity",
                   "effects": [
                     {
-                      "effectType": "PoiseDamage",
-                      "poiseDamage": 2,
-                      "targetType": "Enemy",
+                      "effectType": "Damage",
+                      "value": "0%",
+                      "poiseDamage": "2%",
+                      "targetType": "enemy",
+                      "targetsCount": 2,
                       "duration": 1,
                       "effectDescription": "Сбивает стойку противника."
+                    },
+                    {
+                      "effectType": "DamageReduction",
+                      "value": "15%",
+                      "targetType": "self",
+                      "targetsCount": 1,
+                      "duration": 2,
+                      "damageThreshold": 11,
+                      "effectDescription": "Печать смягчает тяжёлый удар."
                     }
                   ]
                 },
@@ -3787,8 +4567,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "effects": [
                     {
                       "effectType": "Heal",
-                      "value": 1,
-                      "targetType": "Self",
+                      "value": "1%",
+                      "targetType": "self",
                       "duration": 1,
                       "effectDescription": "Собирает дыхание владельца."
                     }
@@ -3800,13 +4580,61 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "interactionType": "onUse",
                   "targetStateName": "печать",
                   "changeValue": "+1",
-                  "description": "Печать становится заметнее."
+                  "description": "Печать становится заметнее.",
+                  "ritualPattern": "Руна отвечает на три удара молота.",
+                  "condition": {
+                    "weatherRule": "В тумане отклик длится вдвое дольше.",
+                    "requestId": "PRIVATE_BROWSER_CUSTOM_PROPERTY_REQUEST",
+                    "ritualGuidance": {
+                      "title": "Памятка кузнеца",
+                      "steps": ["Ударить по наковальне трижды"]
+                    },
+                    "repairDebug": {
+                      "kind": "mortal_item_materialization_repair",
+                      "priority": "critical",
+                      "title": "Служебное задание ремонта предмета",
+                      "steps": ["Открыть validation_repair_request.json"],
+                      "doNotDo": ["Не изменять item_identity_index.json"],
+                      "expectedAuthority": "Внутреннее служебное поле ремонта: expectedAuthority",
+                      "actualEvidence": "Внутреннее служебное поле ремонта: actualEvidence",
+                      "targetFiles": ["Внутреннее служебное поле ремонта: targetFiles"],
+                      "canonicalActorNames": ["Внутреннее служебное поле ремонта: canonicalActorNames"],
+                      "missingFields": ["Внутреннее служебное поле ремонта: missingFields"],
+                      "exactFieldCorrections": ["Внутреннее служебное поле ремонта: exactFieldCorrections"],
+                      "requiredCompanionTargets": ["Внутреннее служебное поле ремонта: requiredCompanionTargets"],
+                      "templateRefs": ["Внутреннее служебное поле ремонта: templateRefs"],
+                      "expectedShape": "Внутреннее служебное поле ремонта: expectedShape",
+                      "safeCorrectionRules": ["Внутреннее служебное поле ремонта: safeCorrectionRules"],
+                      "transitionClass": "Внутреннее служебное поле ремонта: transitionClass",
+                      "repairHint": "Внутреннее служебное поле ремонта: repairHint"
+                    }
+                  }
+                }
+              ],
+              "questLinks": [
+                {
+                  "questName": "Путь кузнеца",
+                  "role": "ключ к кузнице",
+                  "stage": "после ритуала",
+                  "condition": {
+                    "weather": "гроза над северной кузницей",
+                    "requestId": "PRIVATE_BROWSER_QUEST_LINK_REQUEST"
+                  }
                 }
               ]
             }
-          ]
-        }
-        """);
+            """,
+            "mechanics",
+            "consumption",
+            "readableOrSentient",
+            "questRole");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = new JsonArray(item),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inventory item raw_weapon_1"));
         var text = CollectBlockText(result.Blocks);
@@ -3818,13 +4646,48 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("хорошее", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Скрытность", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("плоский бонус", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("урон равновесию", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("равновесие", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("лечение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("противник", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("сам персонаж", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("основное действие", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("быстрое действие", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("приоритет цели: противник", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("масштабирование: Ловкость", text, StringComparison.Ordinal);
+        Assert.Contains("целей: 2", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("порог урона: 11", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("при использовании", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Руна отвечает на три удара молота", text, StringComparison.Ordinal);
+        Assert.Contains("В тумане отклик длится вдвое дольше", text, StringComparison.Ordinal);
+        Assert.Contains("Памятка кузнеца", text, StringComparison.Ordinal);
+        Assert.Contains("Ударить по наковальне трижды", text, StringComparison.Ordinal);
+        Assert.Contains("Путь кузнеца", text, StringComparison.Ordinal);
+        Assert.Contains("после ритуала", text, StringComparison.Ordinal);
+        Assert.Contains("гроза над северной кузницей", text, StringComparison.Ordinal);
+        Assert.Contains("Печать откликается только в сумерках", text, StringComparison.Ordinal);
+        Assert.Contains("Во время грозы бонус удваивается", text, StringComparison.Ordinal);
+        Assert.Contains("Расходуемый предмет", text, StringComparison.Ordinal);
+        Assert.Contains("Текст закрыт соляной коркой.", text, StringComparison.Ordinal);
+        Assert.Contains("Печать северной артели не снята.", text, StringComparison.Ordinal);
+        Assert.Contains("Замок отвечает только владельцу.", text, StringComparison.Ordinal);
+        var itemDossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
+            block.EntityType == "inventory-item" &&
+            block.Title.Contains("Клинок с печатью", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(
+            itemDossier.Sections.SelectMany(static section => section.Facts),
+            static fact => fact.Label.Equals("Цена", StringComparison.OrdinalIgnoreCase) &&
+                           fact.Value == "1");
+        Assert.Contains(
+            itemDossier.Sections.SelectMany(static section => section.Facts),
+            static fact => fact.Label.Equals("Объём", StringComparison.OrdinalIgnoreCase) &&
+                           fact.Value == "7.25 дм³");
+        Assert.DoesNotContain("PRIVATE_BROWSER_CUSTOM_PROPERTY_REQUEST", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_BROWSER_BONUS_CONDITION_REQUEST", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_BROWSER_QUEST_LINK_REQUEST", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("Внутреннее служебное поле ремонта", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Служебное задание ремонта предмета", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("Открыть validation_repair_request.json", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("Не изменять item_identity_index.json", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("Weapon", defaultOutput, StringComparison.Ordinal);
         Assert.DoesNotContain("Good", defaultOutput, StringComparison.Ordinal);
         Assert.DoesNotContain("Main", defaultOutput, StringComparison.Ordinal);
@@ -3878,6 +4741,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("doc_sidecar_1", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("doc_journal_1", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("doc_sealed_1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("RAW_REJECTED_BOOK_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("ORPHAN_BOOK_SIDECAR_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("WRONG_CASE_BOOK_SIDECAR_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("RAW_COMMAND_BOOK_SIDECAR_MARKER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("MALFORMED_BOOK_SIDECAR_MARKER", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("SIDECAR_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
         Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", payload, StringComparison.Ordinal);
@@ -3896,6 +4764,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains("Записка с рынка", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("SIDECAR_FULL_BODY_MARKER", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("MALFORMED_BOOK_SIDECAR_MARKER", payload, StringComparison.Ordinal);
         Assert.Contains(result.Blocks.SelectMany(EnumerateEntityDossiers), static block =>
             block.EntityType == "document" &&
             block.Title.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase));
@@ -3918,33 +4787,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "currentRealm": "Mortal World"
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
+        var first = CreateAcceptedUiItemFromJson(
+            "doc_first_1",
+            """{"name":"Первая записка","type":"Документ","textContent":["FIRST_SHELF_ROW_BODY_MARKER"]}""",
+            "readableOrSentient");
+        var second = CreateAcceptedUiItemFromJson(
+            "doc_second_1",
+            """{"name":"Вторая записка","type":"Документ","textContent":["SECOND_SHELF_ROW_BODY_MARKER"]}""",
+            "readableOrSentient");
+        var numeric = CreateAcceptedUiItemFromJson(
+            "2",
+            """{"name":"Письмо с номером","type":"Документ","textContent":["NUMERIC_STABLE_ID_BODY_MARKER"]}""",
+            "readableOrSentient");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
             {
-              "existedId": "doc_first_1",
-              "itemId": "doc_first_1",
-              "name": "Первая записка",
-              "type": "Документ",
-              "textContent": ["FIRST_SHELF_ROW_BODY_MARKER"]
-            },
-            {
-              "existedId": "doc_second_1",
-              "itemId": "doc_second_1",
-              "name": "Вторая записка",
-              "type": "Документ",
-              "textContent": ["SECOND_SHELF_ROW_BODY_MARKER"]
-            },
-            {
-              "existedId": "2",
-              "itemId": "2",
-              "name": "Письмо с номером",
-              "type": "Документ",
-              "textContent": ["NUMERIC_STABLE_ID_BODY_MARKER"]
-            }
-          ]
-        }
-        """);
+                ["items"] = new JsonArray(first, second, numeric),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/books 2"));
         var text = CollectBlockText(result.Blocks);
@@ -3964,57 +4825,72 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "currentRealm": "Mortal World"
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
+        var inline = CreateAcceptedUiItemFromJson(
+            "doc_inline_1",
+            """
             {
-              "existedId": "doc_inline_1",
-              "itemId": "doc_inline_1",
-              "name": "Письмо с площади",
-              "type": "Документ",
-              "group": "Документы и медиа",
-              "textContent": [
-                "Лира просит встретиться у фонтана до рассвета. Это длинное письмо продолжается подробностями о стороже, мокрой мостовой и тайном знаке. INLINE_FULL_BODY_MARKER"
-              ]
-            },
-            {
-              "existedId": "doc_sidecar_1",
-              "itemId": "doc_sidecar_1",
-              "name": "Записка с рынка",
-              "type": "note",
-              "group": "Документы и медиа",
-              "textContent": null
-            },
-            {
-              "existedId": "doc_journal_1",
-              "itemId": "doc_journal_1",
-              "name": "Памятная книга",
-              "type": "Книга",
-              "group": "Документы и медиа",
-              "textContent": null
-            },
-            {
-              "existedId": "doc_sealed_1",
-              "itemId": "doc_sealed_1",
-              "name": "Запечатанное письмо",
-              "type": "Документ",
-              "group": "Документы и медиа",
-              "textContent": null,
-              "unreadableReason": "Печать не позволяет прочесть письмо сейчас."
+              "name":"Письмо с площади",
+              "type":"Документ",
+              "group":"Документы и медиа",
+              "textContent":["Лира просит встретиться у фонтана до рассвета. Это длинное письмо продолжается подробностями о стороже, мокрой мостовой и тайном знаке. INLINE_FULL_BODY_MARKER"]
             }
-          ]
-        }
-        """);
+            """,
+            "readableOrSentient");
+        var sidecar = CreateAcceptedUiItemFromJson(
+            "doc_sidecar_1",
+            """{"name":"Записка с рынка","type":"note","group":"Документы и медиа","textContent":null,"unreadableReason":"Текст хранится в принятой записи предмета."}""",
+            "readableOrSentient");
+        var journal = CreateAcceptedUiItemFromJson(
+            "doc_journal_1",
+            """{"name":"Памятная книга","type":"Книга","group":"Документы и медиа","textContent":null,"isSentient":true}""",
+            "readableOrSentient");
+        var sealedDocument = CreateAcceptedUiItemFromJson(
+            "doc_sealed_1",
+            """{"name":"Запечатанное письмо","type":"Документ","group":"Документы и медиа","textContent":null,"unreadableReason":"Печать не позволяет прочесть письмо сейчас."}""",
+            "readableOrSentient");
+        var rejected = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_rejected_book",
+            materializationId: "mat_item_rejected_book");
+        rejected["name"] = "RAW_REJECTED_BOOK_MARKER";
+        rejected["type"] = "Документ";
+        rejected["textContent"] = new JsonArray("RAW_REJECTED_BOOK_MARKER");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = new JsonArray(inline, sidecar, journal, sealedDocument, rejected),
+                ["UpdateInventory"] = new JsonArray(rejected.DeepClone()),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await _fs.WriteFileAtomicAsync("game_state/inventory/item_text_updates.json", """
         {
           "entries": [
             {
               "itemId": "doc_sidecar_1",
+              "existedId": { "invalid": true },
+              "itemName": "Не это имя",
+              "textContent": ["MALFORMED_BOOK_SIDECAR_MARKER"]
+            },
+            {
+              "existedId": "doc_sidecar_1",
               "itemName": "Не это имя",
               "textContent": [
                 "На обороте записки указан путь через северные ворота. Это длинная приписка с именами торговцев, часом встречи и предупреждением о дозорных. SIDECAR_FULL_BODY_MARKER"
               ]
+            },
+            {
+              "itemId": "DOC_INLINE_1",
+              "itemName": "Письмо с площади",
+              "textContent": ["WRONG_CASE_BOOK_SIDECAR_MARKER"]
+            },
+            {
+              "itemId": "doc_orphan_1",
+              "itemName": "ORPHAN_BOOK_SIDECAR_MARKER",
+              "textContent": ["ORPHAN_BOOK_SIDECAR_MARKER"]
             }
+          ],
+          "updateItemTextContents": [
+            { "itemId": "doc_inline_1", "textToAppend": "RAW_COMMAND_BOOK_SIDECAR_MARKER" }
           ]
         }
         """);
@@ -4047,19 +4923,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "currentRealm": "Mortal World"
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
+        var sealedDocument = CreateAcceptedUiItemFromJson(
+            "doc_sealed_only_1",
+            """{"name":"Запечатанное письмо","type":"Документ","textContent":null,"unreadableReason":"Печать не позволяет прочесть письмо сейчас."}""",
+            "readableOrSentient");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
             {
-              "existedId": "doc_sealed_only_1",
-              "name": "Запечатанное письмо",
-              "type": "Документ",
-              "textContent": null,
-              "unreadableReason": "Печать не позволяет прочесть письмо сейчас."
-            }
-          ]
-        }
-        """);
+                ["items"] = new JsonArray(sealedDocument),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/books"));
         var text = CollectBlockText(result.Blocks);
@@ -4150,8 +5024,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.False(equipAction.RequiresConfirmation);
 
         var unequipAction = Assert.Single(result.Actions, action => action.Label == "Снять «Железный шлем»");
-        Assert.Equal("inventory-unequip-head", unequipAction.Id);
-        Assert.Equal("/снять head", unequipAction.Command);
+        Assert.Equal("inventory-unequip-Head", unequipAction.Id);
+        Assert.Equal("/снять Head", unequipAction.Command);
         Assert.Equal(UiActionStyle.Secondary, unequipAction.Style);
         Assert.False(unequipAction.RequiresConfirmation);
 
@@ -4498,7 +5372,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         var slotPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "equipment_slot"));
         Assert.True(slotPrompt.Required);
-        Assert.Contains(slotPrompt.Options, option => option.Value == "mainHand" && option.Label.Contains("Основная рука", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(slotPrompt.Options, option => option.Value == "MainHand" && option.Label.Contains("Основная рука", StringComparison.OrdinalIgnoreCase));
 
         var confirmation = Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_inventory_write"));
         Assert.True(confirmation.Required);
@@ -4513,7 +5387,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
     [Theory]
     [InlineData("/экипировать sword_1", "inventory-equip", "Экипировка предмета", "Кривой меч")]
-    [InlineData("/снять head", "inventory-unequip", "Снятие предмета", "Железный шлем")]
+    [InlineData("/снять Head", "inventory-unequip", "Снятие предмета", "Железный шлем")]
     [InlineData("/выбросить_предмет torch_1", "inventory-drop", "Выброс предмета", "Факел")]
     [InlineData("/разделить_стопку torch_1", "inventory-split", "Разделение стопки", "Факел")]
     [InlineData("/объединить_стопки torch_1", "inventory-merge", "Объединение стопок", "Факел")]
@@ -4590,7 +5464,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             new Dictionary<string, JsonNode?>
             {
                 ["item_identity"] = JsonValue.Create("sword_1"),
-                ["equipment_slot"] = JsonValue.Create("mainHand"),
+                ["equipment_slot"] = JsonValue.Create("MainHand"),
                 ["confirm_inventory_write"] = JsonValue.Create(true)
             },
             OwnerId: "browser-test"));
@@ -4604,7 +5478,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block is UiRawJsonBlock raw && raw.Title.Contains("JSON: результат браузерной записи", StringComparison.OrdinalIgnoreCase));
 
         var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
-        Assert.Equal("sword_1", inventory["equipment"]!["mainHand"]!.GetValue<string>());
+        Assert.Equal("sword_1", inventory["equippedItems"]!["MainHand"]!.GetValue<string>());
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
@@ -4613,18 +5487,18 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     {
         await SeedInventoryEquipmentItemsAsync();
         var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
-            "/снять head",
+            "/снять Head",
             OwnerId: "browser-test",
             OwnerLabel: "Browser test"));
 
         var slotPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(started.Prompts, prompt => prompt.Id == "equipment_slot"));
-        Assert.Equal("head", slotPrompt.Options.Single().Value);
+        Assert.Equal("Head", slotPrompt.Options.Single().Value);
 
         var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
             started.InteractiveSession!.SessionId,
             new Dictionary<string, JsonNode?>
             {
-                ["equipment_slot"] = JsonValue.Create("head"),
+                ["equipment_slot"] = JsonValue.Create("Head"),
                 ["confirm_inventory_write"] = JsonValue.Create(true)
             },
             OwnerId: "browser-test"));
@@ -4636,7 +5510,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             block is UiRawJsonBlock raw && raw.Title.Contains("JSON: результат браузерной записи", StringComparison.OrdinalIgnoreCase));
 
         var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
-        Assert.Null(inventory["equipment"]!["head"]);
+        Assert.Null(inventory["equippedItems"]!["Head"]);
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
@@ -4648,25 +5522,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             "/экипировать sword_1",
             OwnerId: "browser-test",
             OwnerLabel: "Browser test"));
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "equipment": {
-            "head": "helmet_1",
-            "mainHand": null,
-            "offHand": null
-          },
-          "items": [
-            { "existedId": "helmet_1", "name": "Железный шлем", "type": "helmet", "durability": "100%" }
-          ]
-        }
-        """);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["equippedItems"] = new JsonObject
+                {
+                    ["Head"] = null,
+                    ["MainHand"] = null,
+                    ["OffHand"] = null
+                },
+                ["items"] = new JsonArray()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var validation = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
             started.InteractiveSession!.SessionId,
             new Dictionary<string, JsonNode?>
             {
                 ["item_identity"] = JsonValue.Create("sword_1"),
-                ["equipment_slot"] = JsonValue.Create("mainHand"),
+                ["equipment_slot"] = JsonValue.Create("MainHand"),
                 ["confirm_inventory_write"] = JsonValue.Create(true)
             },
             OwnerId: "browser-test"));
@@ -4680,7 +5554,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("rollback", notificationText, StringComparison.OrdinalIgnoreCase);
 
         var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
-        Assert.Null(inventory["equipment"]!["mainHand"]);
+        Assert.Null(inventory["equippedItems"]!["MainHand"]);
         Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
@@ -4736,7 +5610,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Форма уже открыта", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Локальная UI-блокировка", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
         var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
-        Assert.Null(inventory["equipment"]!["mainHand"]);
+        Assert.Null(inventory["equippedItems"]!["MainHand"]);
     }
 
     [Fact]
@@ -7244,30 +8118,38 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
     private async Task SeedNpcMechanicsDrilldownFilesAsync()
     {
-        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
-        {
-          "UpdateNPCs": [
+        var key = CreateAcceptedUiItem(
+            "itm_serafina_archive_key",
+            "Архивный ключ",
+            item => item["description"] = "Открывает боковую дверь.");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/npcs/npc_core.json",
+            new JsonObject
             {
-              "npcId": "npc_serafina",
-              "name": "Серафина",
-              "inventory": [
-                { "name": "Архивный ключ", "description": "Открывает боковую дверь." }
-              ]
-            }
-          ]
-        }
-        """);
+                ["UpdateNPCs"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["npcId"] = "npc_serafina",
+                        ["name"] = "Серафина",
+                        ["inventory"] = new JsonArray(key),
+                        ["equippedItems"] = new JsonObject()
+                    })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
     private async Task SeedMortalFilesAsync()
     {
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
-            { "itemId": "blade_1", "itemName": "Старый клинок", "quantity": 1 }
-          ]
-        }
-        """);
+        var blade = CreateAcceptedUiItem(
+            "blade_1",
+            "Старый клинок",
+            item => item["count"] = 1);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = new JsonArray(blade),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
@@ -7593,6 +8475,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "turn": 42,
                   "timestamp": "день 42, вечер",
                   "location": "Старый фонтан",
+                  "route": "через старый фонтан",
                   "participants": [
                     "Лианна из янтарной башни",
                     "герой"
@@ -7601,6 +8484,18 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "notes": "шифр спрятан в перчатке",
                   "outcome": "контакт сохранён",
                   "nextStep": "Можно спросить о знаке Вальмонтов.",
+                  "consequences": {
+                    "visibleChange": "Лианна показала безопасный знак на серебряном ключе",
+                    "materializationReceipt": "PRIVATE_INTERACTION_RECEIPT",
+                    "nestedAuthority": {
+                      "creationRef": "PRIVATE_INTERACTION_CREATION_REF",
+                      "UpdateInventory": [
+                        {
+                          "itemName": "PRIVATE_INTERACTION_RAW_ITEM"
+                        }
+                      ]
+                    }
+                  },
                   "tags": [
                     "тайна",
                     "печать"
@@ -7639,11 +8534,15 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "otherPlayersInteractions": {
             "player_mara": [
               {
+                "summary": "Лианна показала Серебряный ключ у старого фонтана",
+                "visibleDetails": {
+                  "appearance": "покрыт знаками янтарной башни",
+                  "quantitySeen": 2
+                },
                 "UpdateInventory": [
                   {
-                    "itemName": "Серебряный ключ",
-                    "quantity": 2,
-                    "description": "покрыт знаками янтарной башни"
+                    "itemName": "PRIVATE_CANONICAL_INTERACTION_RAW_ITEM",
+                    "materializationReceipt": "PRIVATE_CANONICAL_INTERACTION_RECEIPT"
                   }
                 ]
               }
@@ -7816,7 +8715,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "duration": "До полудня",
               "source": "Руническая перчатка",
               "severity": "minor",
-              "remainingTurns": 3,
+              "remainingTurns": 1,
               "structuredBonuses": [
                 {
                   "bonusType": "Characteristic",
@@ -7825,7 +8724,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "valueType": "Flat",
                   "modifierType": "temporary",
                   "source": "Головная боль после тяжёлых снов",
-                  "summary": "Восприятие -1"
+                  "summary": "Восприятие -1",
+                  "route": "Через серебряную арку"
+                }
+              ],
+              "customProperties": [
+                {
+                  "interactionType": "onUse",
+                  "route": "По звону хрустального колокола"
+                }
+              ],
+              "notes": [
+                {
+                  "route": "По следу мерцающих рун"
                 }
               ],
               "combatEffect": {
@@ -9466,100 +10377,223 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         """);
     }
 
+    private static JsonObject CreateAcceptedUiItem(
+        string itemId,
+        string name,
+        Action<JsonObject>? configure = null,
+        params string[] populatedSections)
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
+        item["name"] = name;
+        item["description"] = $"Тестовый принятый предмет «{name}».";
+        configure?.Invoke(item);
+        foreach (var section in populatedSections)
+        {
+            item["materialization"]!["sections"]![section] = new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
+        }
+
+        MortalItemTestFixture.ResealCanonical(item);
+        using var document = JsonDocument.Parse(item.ToJsonString());
+        var issues = MortalItemMaterializationContract.Validate(
+            document.RootElement,
+            $"accepted UI fixture {itemId}",
+            MortalItemMaterializationPhase.CanonicalPostSeal);
+        if (issues.Count != 0)
+            throw new InvalidOperationException(string.Join(" | ", issues.Select(issue => issue.Message)));
+        return item;
+    }
+
+    private static JsonObject CreateAcceptedUiItemFromJson(
+        string itemId,
+        string json,
+        params string[] populatedSections)
+    {
+        var semantic = JsonNode.Parse(json)?.AsObject() ??
+                       throw new InvalidOperationException("Accepted UI fixture must be a JSON object.");
+        var name = semantic["name"]?.GetValue<string>() ??
+                   semantic["itemName"]?.GetValue<string>() ??
+                   throw new InvalidOperationException("Accepted UI fixture requires a name.");
+        return CreateAcceptedUiItem(
+            itemId,
+            name,
+            item =>
+            {
+                foreach (var property in semantic)
+                {
+                    if (property.Key is "itemId" or "existedId" or "id" or "creationRef" or
+                        "materialization" or "materializationReceipt")
+                    {
+                        continue;
+                    }
+
+                    item[property.Key] = property.Value?.DeepClone();
+                }
+            },
+            populatedSections);
+    }
+
     private async Task SeedInventoryEquipmentItemsAsync()
     {
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "equipment": {
-            "head": "helmet_1",
-            "mainHand": null,
-            "offHand": null
-          },
-          "items": [
-            { "existedId": "sword_1", "name": "Кривой меч", "type": "weapon", "equipmentSlot": "mainHand", "durability": "100%" },
-            { "existedId": "helmet_1", "name": "Железный шлем", "type": "helmet", "equipmentSlot": "head", "durability": "100%" },
-            { "existedId": "torch_1", "name": "Факел", "type": "utility", "count": 2 },
-            { "existedId": "torch_2", "name": "Факел", "type": "utility", "count": 3 },
-            { "existedId": "broken_bow_1", "name": "Сломанный лук", "type": "weapon", "equipmentSlot": "mainHand", "durability": "0%" },
-            { "relicId": "soul_relic_1", "name": "Реликвия души", "type": "soul_relic", "equipmentSlot": "ring1" }
-          ]
-        }
-        """);
+        var sword = CreateAcceptedUiItem(
+            "sword_1",
+            "Кривой меч",
+            item =>
+            {
+                item["type"] = "weapon";
+                item["equipmentSlot"] = "MainHand";
+            },
+            "equipment");
+        var helmet = CreateAcceptedUiItem(
+            "helmet_1",
+            "Железный шлем",
+            item =>
+            {
+                item["type"] = "helmet";
+                item["equipmentSlot"] = "Head";
+            },
+            "equipment");
+        var torchOne = CreateAcceptedUiItem(
+            "torch_1",
+            "Факел",
+            item =>
+            {
+                item["type"] = "utility";
+                item["count"] = 2;
+            });
+        var torchTwo = CreateAcceptedUiItem(
+            "torch_2",
+            "Факел",
+            item =>
+            {
+                item["type"] = "utility";
+                item["count"] = 3;
+            });
+        var brokenBow = CreateAcceptedUiItem(
+            "broken_bow_1",
+            "Сломанный лук",
+            item =>
+            {
+                item["type"] = "weapon";
+                item["equipmentSlot"] = "MainHand";
+                item["durability"] = "0%";
+            },
+            "equipment");
+        var soulRelic = CreateAcceptedUiItem(
+            "soul_relic_1",
+            "Реликвия души",
+            item =>
+            {
+                item["type"] = "soul_relic";
+                item["relicId"] = "soul_relic_1";
+                item["equipmentSlot"] = "Finger1";
+            },
+            "equipment");
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["equippedItems"] = new JsonObject
+                {
+                    ["Head"] = "helmet_1",
+                    ["MainHand"] = null,
+                    ["OffHand"] = null
+                },
+                ["items"] = new JsonArray(sword, helmet, torchOne, torchTwo, brokenBow, soulRelic)
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
     private async Task SeedStorageTransportPromptDataAsync()
     {
+        var sealedLetter = CreateAcceptedUiItemFromJson(
+            "seal_letter_1",
+            """
+            { "name": "Запечатанное письмо", "type": "document", "count": 1 }
+            """);
+        var travelRation = CreateAcceptedUiItemFromJson(
+            "travel_ration_1",
+            """
+            { "name": "Дорожный паёк", "type": "consumable", "count": 2 }
+            """);
+        var deskLetter = CreateAcceptedUiItemFromJson(
+            "desk_letter_1",
+            """
+            { "name": "Письмо с печатью", "type": "document", "count": 1 }
+            """);
+        var saddlebag = CreateAcceptedUiItemFromJson(
+            "saddlebag_1",
+            """
+            { "name": "Седельная сумка", "type": "container", "count": 1 }
+            """);
+
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "currentRealm": "Mortal World"
         }
         """);
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "items": [
-            { "existedId": "seal_letter_1", "name": "Запечатанное письмо", "type": "document", "count": 1 },
-            { "existedId": "travel_ration_1", "name": "Дорожный паёк", "type": "consumable", "count": 2 }
-          ]
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_valmont_room",
-          "name": "Покои виконта де Вальмонта",
-          "locationStorages": [
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
             {
-              "storageId": "storage_valmont_private_desk",
-              "name": "Приватный письменный стол",
-              "hasFullAccess": true,
-              "contents": [
-                { "existedId": "desk_letter_1", "name": "Письмо с печатью", "type": "document", "count": 1 }
-              ]
-            }
-          ]
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", """
-        {
-          "vehicles": [
+                ["equippedItems"] = new JsonObject(),
+                ["items"] = new JsonArray(sealedLetter, travelRation)
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/world/current_location.json",
+            new JsonObject
             {
-              "vehicleId": "vehicle_gray_horse",
-              "name": "Серый конь",
-              "inventory": [
-                { "existedId": "saddlebag_1", "name": "Седельная сумка", "type": "container", "count": 1 }
-              ]
-            }
-          ]
-        }
-        """);
+                ["locationId"] = "loc_valmont_room",
+                ["name"] = "Покои виконта де Вальмонта",
+                ["locationStorages"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["storageId"] = "storage_valmont_private_desk",
+                        ["name"] = "Приватный письменный стол",
+                        ["hasFullAccess"] = true,
+                        ["contents"] = new JsonArray(deskLetter)
+                    }
+                }
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/misc/vehicles.json",
+            new JsonObject
+            {
+                ["vehicles"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["vehicleId"] = "vehicle_gray_horse",
+                        ["name"] = "Серый конь",
+                        ["inventory"] = new JsonArray(saddlebag)
+                    }
+                }
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
     private async Task SeedInventoryItemDetailStateAsync()
     {
-        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
-        {
-          "equipment": {
-            "hands": "runic_glove_1"
-          },
-          "items": [
+        var glove = CreateAcceptedUiItemFromJson(
+            "runic_glove_1",
+            """
             {
-              "existedId": "runic_glove_1",
-              "itemId": "runic_glove_1",
               "name": "Руническая перчатка",
               "description": "На тыльной стороне перчатки мерцает рунический контур.",
               "type": "Артефакт",
               "quality": "Rare",
+              "rarity": "Rare",
               "weight": 0.3,
               "price": 450,
-              "durability": "95",
-              "maxDurability": "100",
-              "equipmentSlot": "hands",
+              "durability": "95%",
+              "maxDurability": "100%",
+              "equipmentSlot": "Hands",
               "group": "Аксессуары",
-              "bonuses": [
-                "Чувство магических потоков +2"
-              ],
-              "effects": [
-                { "name": "Откликается на владельца" }
-              ],
+              "bonuses": ["Чувство магических потоков +2"],
+              "effects": [{ "name": "Откликается на владельца" }],
               "structuredBonuses": [
                 {
                   "bonusType": "Skill",
@@ -9576,9 +10610,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "isActivatedEffect": false,
                 "effects": [
                   {
-                    "effectType": "PoiseDamage",
-                    "value": 0,
-                    "poiseDamage": 1,
+                    "effectType": "Damage",
+                    "value": "0%",
+                    "poiseDamage": "1%",
+                    "targetType": "enemy",
                     "targetTypeDisplayName": "цель",
                     "effectDescription": "Сбивает концентрацию цели."
                   }
@@ -9592,14 +10627,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "description": "Подсвечивает свежие следы."
                 }
               ],
-              "specialProperties": [
-                "Перчатка реагирует на владельца."
-              ],
+              "specialProperties": ["Перчатка реагирует на владельца."],
               "lore": "Вышита тусклым золотом."
             }
-          ]
-        }
-        """);
+            """,
+            "mechanics",
+            "equipment");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["equippedItems"] = new JsonObject { ["Hands"] = "runic_glove_1" },
+                ["items"] = new JsonArray(glove)
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await _fs.WriteFileAtomicAsync("game_state/inventory/item_resources.json", """
         {
           "entries": [
@@ -9651,7 +10691,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 {
                   "event": "Пробуждение",
                   "description": "JOURNAL_MARKER: перчатка впервые отозвалась на владельца.",
-                  "spiritVoice": "Тонкий голос просит найти серебряную нить."
+                  "spiritVoice": "Тонкий голос просит найти серебряную нить.",
+                  "magicalResonance": "Резонанс северной нити"
                 }
               ]
             }

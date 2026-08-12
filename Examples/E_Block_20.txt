@@ -890,3 +890,15 @@
   </content>
  </example>
 </instructionblock>
+
+# Mortal Item Materialization v1 — storage addendum
+
+A genuinely new item whose first carrier is an existing location storage uses
+`storage_placement / location_storage` with exact location and storage
+authority. Moving an existing accepted item uses the exact-ID transfer shown in
+`mortal_item_existing_transfer_v1`; it preserves envelope and receipt.
+Canonical `contentsPath` is a permanent parent item-ID chain. This route does
+not authorize creation or repair of the storage/transport itself, and the GM
+must not write identity-index transitions. See
+`mortal_item_receiptless_rejection_v1` for the explicit rejected legacy-shaped
+case.

@@ -3084,271 +3084,44 @@ public partial class ExplorerMode
     }
 
     /// <summary>
-    /// Interactive storage panel: deposit items from inventory or retrieve items from storage.
-    /// Modifies items.json and current_location.json directly (no GM needed).
+    /// Interactive storage panel backed by the same accepted-item transition service as the browser client.
     /// Returns true if any changes were made.
     /// </summary>
     private async Task<bool> ShowStorageInteractivePanel(string storageName, string storageId)
     {
-        bool anyModified = false;
+        var anyModified = false;
 
         while (true)
         {
-            // Re-read both files each iteration
-            var invJson = await _fs.ReadFileAsync("game_state/inventory/items.json");
-            var locJson = await _fs.ReadFileAsync("game_state/world/current_location.json");
-            if (invJson == null || locJson == null)
+            var context = await StorageTransportMoveService.ReadStorageMoveContextAsync(_fs);
+            if (!context.Success)
             {
-                MarkupLine("[red]Ошибка чтения файлов инвентаря или локации.[/]");
+                MarkupLine($"[red]{Markup.Escape(context.Message)}[/]");
                 WaitForKey();
                 return anyModified;
             }
 
-            JsonNode? invNode, locNode;
-            try { invNode = JsonNode.Parse(invJson); locNode = JsonNode.Parse(locJson); }
-            catch { MarkupLine("[red]Ошибка парсинга JSON.[/]"); WaitForKey(); return anyModified; }
-            if (invNode == null || locNode == null) return anyModified;
-
-            // Find the storage in current_location
-            var storagesArr = locNode["locationStorages"]?.AsArray();
-            if (storagesArr == null) { MarkupLine("[red]Хранилища не найдены в локации.[/]"); WaitForKey(); return anyModified; }
-
-            JsonNode? storageNode = null;
-            int storageIdx = -1;
-            for (int i = 0; i < storagesArr.Count; i++)
+            var storage = context.Storages.FirstOrDefault(candidate =>
+                (!string.IsNullOrWhiteSpace(storageId) &&
+                 string.Equals(candidate.StorageId, storageId, StringComparison.Ordinal)) ||
+                (string.IsNullOrWhiteSpace(storageId) &&
+                 string.Equals(candidate.Name, storageName, StringComparison.Ordinal)));
+            if (storage == null)
             {
-                var sid = storagesArr[i]?["storageId"]?.GetValue<string>() ?? "";
-                var sname = storagesArr[i]?["name"]?.GetValue<string>() ?? "";
-                if ((!string.IsNullOrEmpty(storageId) && sid == storageId) ||
-                    sname == storageName)
-                {
-                    storageNode = storagesArr[i];
-                    storageIdx = i;
-                    break;
-                }
+                MarkupLine("[red]Хранилище не найдено или недоступно.[/]");
+                WaitForKey();
+                return anyModified;
             }
-            if (storageNode == null) { MarkupLine("[red]Хранилище не найдено.[/]"); WaitForKey(); return anyModified; }
 
-            // Gather storage contents
-            var contentsArr = storageNode["contents"]?.AsArray() ?? new JsonArray();
-            var storageEntries = new List<(string Identity, string Name, string Label)>();
-            for (int i = 0; i < contentsArr.Count; i++)
-            {
-                var iName = GetInventoryItemName(contentsArr[i]);
-                var iQty = contentsArr[i]?["quantity"]?.ToString() ??
-                           contentsArr[i]?["count"]?.ToString() ?? "1";
-                var label = Markup.Escape(iName);
-                if (iQty != "1") label += $" ×{Markup.Escape(iQty)}";
-                storageEntries.Add((GetInventoryItemIdentity(contentsArr[i]), iName, label));
-            }
-            var storageItems = MakeUniqueChoiceLabels(storageEntries.Select(e => (e.Label, e.Identity)).ToList());
-
-            // Gather player inventory items
-            var invItemsArr = GetPlayerInventoryArrayNode(invNode, createIfMissing: false) ?? new JsonArray();
-            var playerEntries = new List<(string Identity, string Name, string Label)>();
-            for (int i = 0; i < invItemsArr.Count; i++)
-            {
-                var iName = GetInventoryItemName(invItemsArr[i]);
-                var iQty = invItemsArr[i]?["quantity"]?.ToString() ??
-                           invItemsArr[i]?["count"]?.ToString() ?? "1";
-                var label = Markup.Escape(iName);
-                if (iQty != "1") label += $" ×{Markup.Escape(iQty)}";
-                playerEntries.Add((GetInventoryItemIdentity(invItemsArr[i]), iName, label));
-            }
-            var playerItems = MakeUniqueChoiceLabels(playerEntries.Select(e => (e.Label, e.Identity)).ToList());
-
-            // Capacity info
-            var capStr = storageNode["capacity"]?.ToString() ?? "";
-            var volStr = storageNode["volume"]?.ToString() ?? "";
-            var capInfo = "";
-            if (!string.IsNullOrEmpty(capStr)) capInfo += $" вместимость: {capStr}";
-            if (!string.IsNullOrEmpty(volStr)) capInfo += $" объём: {volStr} дм³";
-
-            // Show action menu
             var actionChoices = new List<string>();
-            if (playerItems.Count > 0)
-                actionChoices.Add($"📥 Положить предмет в хранилище ({playerItems.Count} в инвентаре)");
-            if (storageItems.Count > 0)
-                actionChoices.Add($"📤 Забрать предмет из хранилища ({storageItems.Count} внутри)");
+            if (context.InventoryItems.Count > 0)
+                actionChoices.Add($"📥 Положить предмет в хранилище ({context.InventoryItems.Count} в инвентаре)");
+            if (storage.Contents.Count > 0)
+                actionChoices.Add($"📤 Забрать предмет из хранилища ({storage.Contents.Count} внутри)");
             actionChoices.Add("[dim]← Назад к инвентарю[/]");
 
             var action = Prompt(new SelectionPrompt<string>()
-                .Title($"[bold cyan]📦 {Markup.Escape(storageName)}[/]" +
-                    (!string.IsNullOrEmpty(capInfo) ? $"  [dim]({capInfo.Trim()})[/]" : "") +
-                    $"\n  [dim]Предметов внутри: {contentsArr.Count}[/]")
-                .PageSize(10)
-                .HighlightStyle(new Style(Color.Cyan1))
-                .AddChoices(actionChoices));
-
-            if (action.Contains("← Назад")) return anyModified;
-
-            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-
-            if (action.StartsWith("📥")) // Deposit
-            {
-                var depositChoices = playerItems.ToList();
-                depositChoices.Add("[dim]← Отмена[/]");
-
-                var picked = Prompt(new SelectionPrompt<string>()
-                    .Title("[bold]Выберите предмет для перемещения в хранилище:[/]")
-                    .PageSize(20)
-                    .HighlightStyle(new Style(Color.Yellow))
-                    .AddChoices(depositChoices));
-
-                if (picked.Contains("← Отмена")) continue;
-
-                var pickedIdx = depositChoices.IndexOf(picked);
-                if (pickedIdx < 0 || pickedIdx >= invItemsArr.Count) continue;
-
-                try
-                {
-                    // Remove from player inventory
-                    var itemToMove = invItemsArr[pickedIdx]!;
-                    invItemsArr.RemoveAt(pickedIdx);
-
-                    // Add to storage contents
-                    if (storageNode["contents"] == null)
-                        storageNode["contents"] = new JsonArray();
-                    storageNode["contents"]!.AsArray().Add(itemToMove);
-
-                    // Write both files
-                    await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", invNode.ToJsonString(opts));
-                    await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", locNode.ToJsonString(opts));
-
-                    var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» перемещён в хранилище «{Markup.Escape(storageName)}»[/]");
-                    anyModified = true;
-                }
-                catch (Exception ex)
-                {
-                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
-                    WaitForKey();
-                }
-            }
-            else if (action.StartsWith("📤")) // Retrieve
-            {
-                var retrieveChoices = storageItems.ToList();
-                retrieveChoices.Add("[dim]← Отмена[/]");
-
-                var picked = Prompt(new SelectionPrompt<string>()
-                    .Title("[bold]Выберите предмет для извлечения из хранилища:[/]")
-                    .PageSize(20)
-                    .HighlightStyle(new Style(Color.Yellow))
-                    .AddChoices(retrieveChoices));
-
-                if (picked.Contains("← Отмена")) continue;
-
-                var pickedIdx = retrieveChoices.IndexOf(picked);
-                if (pickedIdx < 0 || pickedIdx >= contentsArr.Count) continue;
-
-                try
-                {
-                    // Remove from storage
-                    var itemToMove = contentsArr[pickedIdx]!;
-                    contentsArr.RemoveAt(pickedIdx);
-
-                    // Add to player inventory
-                    var playerInventory = GetPlayerInventoryArrayNode(invNode, createIfMissing: true);
-                    playerInventory!.Add(itemToMove);
-
-                    // Write both files
-                    await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", invNode.ToJsonString(opts));
-                    await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", locNode.ToJsonString(opts));
-
-                    var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» извлечён из хранилища в инвентарь[/]");
-                    anyModified = true;
-                }
-                catch (Exception ex)
-                {
-                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
-                    WaitForKey();
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Interactive vehicle inventory panel: move items between player inventory and vehicle inventory.
-    /// Modifies items.json and vehicles.json directly (no GM needed).
-    /// Returns true if any changes were made.
-    /// </summary>
-    private async Task<bool> ShowVehicleInventoryInteractivePanel(string vehicleName, string vehicleId)
-    {
-        bool anyModified = false;
-
-        while (true)
-        {
-            var invJson = await _fs.ReadFileAsync("game_state/inventory/items.json");
-            var vehJson = await _fs.ReadFileAsync("game_state/misc/vehicles.json");
-            if (invJson == null || vehJson == null)
-            {
-                MarkupLine("[red]Ошибка чтения файлов инвентаря или транспорта.[/]");
-                WaitForKey();
-                return anyModified;
-            }
-
-            JsonNode? invNode;
-            JsonNode? vehNode;
-            try
-            {
-                invNode = JsonNode.Parse(invJson);
-                vehNode = JsonNode.Parse(vehJson);
-            }
-            catch
-            {
-                MarkupLine("[red]Ошибка парсинга JSON.[/]");
-                WaitForKey();
-                return anyModified;
-            }
-
-            if (invNode == null || vehNode == null)
-                return anyModified;
-
-            var vehicleNode = FindVehicleNode(vehNode, vehicleName, vehicleId);
-            if (vehicleNode == null)
-            {
-                MarkupLine("[red]Транспорт не найден.[/]");
-                WaitForKey();
-                return anyModified;
-            }
-
-            var vehicleInventory = vehicleNode["inventory"]?.AsArray() ?? new JsonArray();
-            var playerInventory = GetPlayerInventoryArrayNode(invNode, createIfMissing: false) ?? new JsonArray();
-
-            var vehicleEntries = new List<(string Identity, string Name, string Label)>();
-            for (int i = 0; i < vehicleInventory.Count; i++)
-            {
-                var itemName = GetInventoryItemName(vehicleInventory[i]);
-                var qty = vehicleInventory[i]?["quantity"]?.ToString() ??
-                          vehicleInventory[i]?["count"]?.ToString() ?? "1";
-                var label = Markup.Escape(itemName);
-                if (qty != "1") label += $" ×{Markup.Escape(qty)}";
-                vehicleEntries.Add((GetInventoryItemIdentity(vehicleInventory[i]), itemName, label));
-            }
-            var vehicleItems = MakeUniqueChoiceLabels(vehicleEntries.Select(e => (e.Label, e.Identity)).ToList());
-
-            var playerEntries = new List<(string Identity, string Name, string Label)>();
-            for (int i = 0; i < playerInventory.Count; i++)
-            {
-                var itemName = GetInventoryItemName(playerInventory[i]);
-                var qty = playerInventory[i]?["quantity"]?.ToString() ??
-                          playerInventory[i]?["count"]?.ToString() ?? "1";
-                var label = Markup.Escape(itemName);
-                if (qty != "1") label += $" ×{Markup.Escape(qty)}";
-                playerEntries.Add((GetInventoryItemIdentity(playerInventory[i]), itemName, label));
-            }
-            var playerItems = MakeUniqueChoiceLabels(playerEntries.Select(e => (e.Label, e.Identity)).ToList());
-
-            var actionChoices = new List<string>();
-            if (playerItems.Count > 0)
-                actionChoices.Add($"📥 Положить предмет в транспорт ({playerItems.Count} в инвентаре)");
-            if (vehicleItems.Count > 0)
-                actionChoices.Add($"📤 Забрать предмет из транспорта ({vehicleItems.Count} внутри)");
-            actionChoices.Add("[dim]← Назад к транспорту[/]");
-
-            var action = Prompt(new SelectionPrompt<string>()
-                .Title($"[bold cyan]🚗 {Markup.Escape(vehicleName)}[/]\n  [dim]Предметов внутри: {vehicleInventory.Count}[/]")
+                .Title($"[bold cyan]📦 {Markup.Escape(storage.Name)}[/]\n  [dim]Предметов внутри: {storage.ContentsCount}[/]")
                 .PageSize(10)
                 .HighlightStyle(new Style(Color.Cyan1))
                 .AddChoices(actionChoices));
@@ -3356,86 +3129,144 @@ public partial class ExplorerMode
             if (action.Contains("← Назад"))
                 return anyModified;
 
-            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+            var direction = action.StartsWith("📥", StringComparison.Ordinal)
+                ? StorageTransportMoveService.DirectionDeposit
+                : StorageTransportMoveService.DirectionRetrieve;
+            var options = direction == StorageTransportMoveService.DirectionDeposit
+                ? context.InventoryItems
+                : storage.Contents;
+            var choices = options.Select(option => Markup.Escape(option.Label)).ToList();
+            choices.Add("[dim]← Отмена[/]");
+            var promptTitle = direction == StorageTransportMoveService.DirectionDeposit
+                ? "[bold]Выберите предмет для перемещения в хранилище:[/]"
+                : "[bold]Выберите предмет для извлечения из хранилища:[/]";
+            var picked = Prompt(new SelectionPrompt<string>()
+                .Title(promptTitle)
+                .PageSize(20)
+                .HighlightStyle(new Style(Color.Yellow))
+                .AddChoices(choices));
+            if (picked.Contains("← Отмена"))
+                continue;
 
-            if (action.StartsWith("📥"))
+            var pickedIndex = choices.IndexOf(picked);
+            if (pickedIndex < 0 || pickedIndex >= options.Count)
+                continue;
+
+            try
             {
-                var depositChoices = playerItems.ToList();
-                depositChoices.Add("[dim]← Отмена[/]");
-
-                var picked = Prompt(new SelectionPrompt<string>()
-                    .Title("[bold]Выберите предмет для перемещения в транспорт:[/]")
-                    .PageSize(20)
-                    .HighlightStyle(new Style(Color.Yellow))
-                    .AddChoices(depositChoices));
-
-                if (picked.Contains("← Отмена"))
-                    continue;
-
-                var pickedIdx = depositChoices.IndexOf(picked);
-                if (pickedIdx < 0 || pickedIdx >= playerInventory.Count)
-                    continue;
-
-                try
+                var outcome = await StorageTransportMoveService.MoveStorageItemAsync(
+                    _fs,
+                    direction,
+                    storage.Key,
+                    options[pickedIndex].Key);
+                if (outcome.Success)
                 {
-                    var itemToMove = playerInventory[pickedIdx]!;
-                    playerInventory.RemoveAt(pickedIdx);
-
-                    if (vehicleNode["inventory"] == null)
-                        vehicleNode["inventory"] = new JsonArray();
-                    vehicleNode["inventory"]!.AsArray().Add(itemToMove);
-
-                    await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", invNode.ToJsonString(opts));
-                    await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", vehNode.ToJsonString(opts));
-
-                    var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» перемещён в транспорт «{Markup.Escape(vehicleName)}»[/]");
+                    MarkupLine($"[green]✅ {Markup.Escape(outcome.Message)}[/]");
                     anyModified = true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
-                    WaitForKey();
+                    MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(outcome.Message))}[/]");
                 }
             }
-            else if (action.StartsWith("📤"))
+            catch (Exception)
             {
-                var retrieveChoices = vehicleItems.ToList();
-                retrieveChoices.Add("[dim]← Отмена[/]");
+                MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.TransitionRejected())}[/]");
+                WaitForKey();
+            }
+        }
+    }
 
-                var picked = Prompt(new SelectionPrompt<string>()
-                    .Title("[bold]Выберите предмет для извлечения из транспорта:[/]")
-                    .PageSize(20)
-                    .HighlightStyle(new Style(Color.Yellow))
-                    .AddChoices(retrieveChoices));
+    /// <summary>
+    /// Interactive vehicle inventory panel backed by the accepted-item transition service.
+    /// Returns true if any changes were made.
+    /// </summary>
+    private async Task<bool> ShowVehicleInventoryInteractivePanel(string vehicleName, string vehicleId)
+    {
+        var anyModified = false;
 
-                if (picked.Contains("← Отмена"))
-                    continue;
+        while (true)
+        {
+            var context = await StorageTransportMoveService.ReadVehicleMoveContextAsync(_fs);
+            if (!context.Success)
+            {
+                MarkupLine($"[red]{Markup.Escape(context.Message)}[/]");
+                WaitForKey();
+                return anyModified;
+            }
 
-                var pickedIdx = retrieveChoices.IndexOf(picked);
-                if (pickedIdx < 0 || pickedIdx >= vehicleInventory.Count)
-                    continue;
+            var vehicle = context.Vehicles.FirstOrDefault(candidate =>
+                (!string.IsNullOrWhiteSpace(vehicleId) &&
+                 string.Equals(candidate.VehicleId, vehicleId, StringComparison.Ordinal)) ||
+                (string.IsNullOrWhiteSpace(vehicleId) &&
+                 string.Equals(candidate.Name, vehicleName, StringComparison.Ordinal)));
+            if (vehicle == null)
+            {
+                MarkupLine("[red]Транспорт не найден.[/]");
+                WaitForKey();
+                return anyModified;
+            }
 
-                try
+            var actionChoices = new List<string>();
+            if (context.InventoryItems.Count > 0)
+                actionChoices.Add($"📥 Положить предмет в транспорт ({context.InventoryItems.Count} в инвентаре)");
+            if (vehicle.Contents.Count > 0)
+                actionChoices.Add($"📤 Забрать предмет из транспорта ({vehicle.Contents.Count} внутри)");
+            actionChoices.Add("[dim]← Назад к транспорту[/]");
+
+            var action = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold cyan]🚗 {Markup.Escape(vehicle.Name)}[/]\n  [dim]Предметов внутри: {vehicle.ContentsCount}[/]")
+                .PageSize(10)
+                .HighlightStyle(new Style(Color.Cyan1))
+                .AddChoices(actionChoices));
+
+            if (action.Contains("← Назад"))
+                return anyModified;
+
+            var direction = action.StartsWith("📥", StringComparison.Ordinal)
+                ? StorageTransportMoveService.DirectionDeposit
+                : StorageTransportMoveService.DirectionRetrieve;
+            var options = direction == StorageTransportMoveService.DirectionDeposit
+                ? context.InventoryItems
+                : vehicle.Contents;
+            var choices = options.Select(option => Markup.Escape(option.Label)).ToList();
+            choices.Add("[dim]← Отмена[/]");
+            var promptTitle = direction == StorageTransportMoveService.DirectionDeposit
+                ? "[bold]Выберите предмет для перемещения в транспорт:[/]"
+                : "[bold]Выберите предмет для извлечения из транспорта:[/]";
+            var picked = Prompt(new SelectionPrompt<string>()
+                .Title(promptTitle)
+                .PageSize(20)
+                .HighlightStyle(new Style(Color.Yellow))
+                .AddChoices(choices));
+            if (picked.Contains("← Отмена"))
+                continue;
+
+            var pickedIndex = choices.IndexOf(picked);
+            if (pickedIndex < 0 || pickedIndex >= options.Count)
+                continue;
+
+            try
+            {
+                var outcome = await StorageTransportMoveService.MoveVehicleItemAsync(
+                    _fs,
+                    direction,
+                    vehicle.Key,
+                    options[pickedIndex].Key);
+                if (outcome.Success)
                 {
-                    var itemToMove = vehicleInventory[pickedIdx]!;
-                    vehicleInventory.RemoveAt(pickedIdx);
-
-                    var playerInventoryTarget = GetPlayerInventoryArrayNode(invNode, createIfMissing: true);
-                    playerInventoryTarget!.Add(itemToMove);
-
-                    await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", invNode.ToJsonString(opts));
-                    await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", vehNode.ToJsonString(opts));
-
-                    var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» извлечён из транспорта в инвентарь[/]");
+                    MarkupLine($"[green]✅ {Markup.Escape(outcome.Message)}[/]");
                     anyModified = true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
-                    WaitForKey();
+                    MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(outcome.Message))}[/]");
                 }
+            }
+            catch (Exception)
+            {
+                MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.TransitionRejected())}[/]");
+                WaitForKey();
             }
         }
     }

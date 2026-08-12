@@ -26,6 +26,7 @@ internal sealed class TestExplorerConsole : IExplorerConsole
     public List<(string Title, IReadOnlyList<string> Choices)> SelectionChoicesHistory { get; } = new();
     public int ClearCalls { get; private set; }
     public int ReadKeyCalls { get; private set; }
+    public Action? ReadKeyCallback { get; set; }
 
     public void Clear() => ClearCalls++;
 
@@ -67,7 +68,11 @@ internal sealed class TestExplorerConsole : IExplorerConsole
             return (T)(object)ResolveSelection(selection);
 
         if (prompt is ConfirmationPrompt)
+        {
+            if (_anyConfirmResponses.Count > 0)
+                return (T)(object)_anyConfirmResponses.Dequeue();
             return (T)(object)false;
+        }
 
         if (prompt is TextPrompt<string>)
             return (T)(object)string.Empty;
@@ -91,6 +96,7 @@ internal sealed class TestExplorerConsole : IExplorerConsole
     public ConsoleKeyInfo ReadKey()
     {
         ReadKeyCalls++;
+        ReadKeyCallback?.Invoke();
         if (_readKeys.Count > 0)
             return _readKeys.Dequeue();
 

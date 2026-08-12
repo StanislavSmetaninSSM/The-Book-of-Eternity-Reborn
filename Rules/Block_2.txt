@@ -1044,4 +1044,12 @@
    </content>
   </rule>
  </content>
+ <rule id="2.mortal_item_materialization_v1">
+  <description>Mortal Item Materialization v1 response authority</description>
+  <content><![CDATA[
+  Every new durable Mortal item is a complete raw creation object, never an ID-only reward claim. Use existedId = null, one turn-unique creationRef, every governed semantic field, and a complete materialization envelope with all twelve materialization.sections declared populated or empty_by_design. The only supported routes are player_acquisition, npc_acquisition, new_npc_inventory, loot_acquisition, craft_output, trade_output, quest_reward, and storage_placement; sourceAuthority.kind and authorityId must match the exact route evidence.
+
+  For player_acquisition use turn_outcome authority. For quest_reward use exact canonical quest_reward authority and a structured itemsReceived reference that resolves after sealing. Narrative prose never proves acquisition. Do not create itemId, materializationReceipt, a seal, transition, lineage, or item_identity_index.json; those are client-owned. Existing items are addressed only by exact itemId/existedId and keep their accepted envelope and receipt. Receipt-less canonical items are invalid: the game has not shipped, so there is no runtime legacy promotion or save-compatibility path.
+  ]]></content>
+ </rule>
 </instructionblock>

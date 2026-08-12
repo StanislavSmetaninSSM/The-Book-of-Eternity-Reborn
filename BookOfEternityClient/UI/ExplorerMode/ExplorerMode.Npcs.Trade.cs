@@ -333,7 +333,7 @@ public partial class ExplorerMode
             var result = await _npcTradeService.BuyBackAsync(npcId, offer.BuybackEntryId, await TryReadCurrentTurnNumberAsync());
             MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
-                : $"[red]❌ {Markup.Escape(result.Message)}[/]");
+                : $"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(result.Message))}[/]");
             WaitForKey();
 
             if (result.StateChanged)
@@ -413,7 +413,7 @@ public partial class ExplorerMode
             var result = await _npcTradeService.BuyAsync(npcId, offer.SlotId, await TryReadCurrentTurnNumberAsync());
             MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
-                : $"[red]❌ {Markup.Escape(result.Message)}[/]");
+                : $"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(result.Message))}[/]");
             WaitForKey();
 
             if (result.StateChanged)
@@ -526,7 +526,7 @@ public partial class ExplorerMode
             var result = await _npcTradeService.SellAsync(npcId, offer.ItemId, await TryReadCurrentTurnNumberAsync());
             MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
-                : $"[red]❌ {Markup.Escape(result.Message)}[/]");
+                : $"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(result.Message))}[/]");
             WaitForKey();
 
             if (result.StateChanged)
@@ -774,7 +774,7 @@ public partial class ExplorerMode
             lines.Add("  [bold]✨ Пассивные свойства:[/]");
             foreach (var p in passiveEffects.EnumerateArray())
             {
-                var passive = p.ValueKind == JsonValueKind.String ? p.GetString() ?? "" : p.GetRawText();
+                var passive = FormatStructuredInventoryValue(p);
                 if (!string.IsNullOrEmpty(passive))
                     lines.Add($"    • [yellow]{Markup.Escape(passive)}[/]");
             }

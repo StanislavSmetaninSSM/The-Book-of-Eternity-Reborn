@@ -10,26 +10,9 @@ using BookOfEternityClient.Services;
 namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
-{    private static readonly Dictionary<string, string> SlotLabels = new()
-    {
-        ["head"] = "🪖 Голова", ["body"] = "🛡️ Тело", ["hands"] = "🧤 Руки",
-        ["feet"] = "👢 Ноги", ["mainHand"] = "⚔️ Основная рука", ["offHand"] = "🛡️ Вторая рука",
-        ["neck"] = "📿 Шея", ["ring1"] = "💍 Кольцо 1", ["ring2"] = "💍 Кольцо 2"
-    };
-
-    // Maps item type keywords → equipment slot key
-    private static readonly Dictionary<string, string> TypeToSlot = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["weapon"] = "mainHand", ["оружие"] = "mainHand", ["меч"] = "mainHand", ["посох"] = "mainHand",
-        ["armor"] = "body", ["броня"] = "body",
-        ["helmet"] = "head", ["шлем"] = "head",
-        ["shield"] = "offHand", ["щит"] = "offHand",
-        ["boots"] = "feet", ["сапоги"] = "feet",
-        ["gloves"] = "hands", ["перчатки"] = "hands",
-        ["ring"] = "ring1", ["кольцо"] = "ring1",
-        ["necklace"] = "neck", ["ожерелье"] = "neck", ["amulet"] = "neck", ["амулет"] = "neck",
-        ["accessory"] = "neck", ["аксессуар"] = "neck"
-    };
+{
+    private static readonly IReadOnlyDictionary<string, string> SlotLabels =
+        InventoryEquipmentService.SlotLabels;
 
     private async Task ShowInventory()
     {
@@ -49,32 +32,37 @@ public partial class ExplorerMode
             {
                 foreach (var item in itemArray.Value.EnumerateArray())
                 {
+                    if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var identity))
+                        continue;
+
                     var name = GetInventoryItemName(item);
                     var type = GetStr(item, "type", "");
-                    var identity = GetInventoryItemIdentity(item);
                     inventoryItems.Add((identity, name, type, item));
                 }
             }
 
             var equippedEntries = new List<(string SlotKey, string ItemIdentity, string ItemName, JsonElement? Data)>();
-            if (doc.RootElement.TryGetProperty("equipment", out var equip) &&
-                equip.ValueKind == JsonValueKind.Object)
+            var equipmentRoot = JsonNode.Parse(doc.RootElement.GetRawText()) as JsonObject;
+            if (equipmentRoot != null &&
+                MortalItemEquipmentAuthority.TryRead(
+                    equipmentRoot,
+                    equipmentRoot["items"] as JsonArray,
+                    InventoryEquipmentService.ItemsPath,
+                    out var equipmentState,
+                    out _))
             {
-                foreach (var (key, _) in SlotLabels)
+                foreach (var slot in equipmentState.Slots)
                 {
-                    if (!equip.TryGetProperty(key, out var slot) || slot.ValueKind == JsonValueKind.Null)
+                    if (slot.ItemId == null)
                         continue;
 
-                    var referenceIdentity = GetEquipmentReferenceIdentity(slot);
-                    var referenceName = GetEquipmentReferenceName(slot);
-                    var matched = inventoryItems.FirstOrDefault(i => InventoryItemMatches(i.Data, referenceIdentity, referenceName));
+                    var matched = inventoryItems.FirstOrDefault(item =>
+                        string.Equals(item.Identity, slot.ItemId, StringComparison.Ordinal));
                     var matchedData = matched.Data.ValueKind != JsonValueKind.Undefined ? matched.Data : (JsonElement?)null;
-                    var itemName = matchedData.HasValue
-                        ? matched.Name
-                        : (!string.IsNullOrWhiteSpace(referenceName) ? referenceName :
-                            (!string.IsNullOrWhiteSpace(referenceIdentity) ? referenceIdentity : "???"));
-                    var itemIdentity = matchedData.HasValue ? matched.Identity : referenceIdentity;
-                    equippedEntries.Add((key, itemIdentity, itemName, matchedData));
+                    if (!matchedData.HasValue)
+                        continue;
+
+                    equippedEntries.Add((slot.StoredSlot, matched.Identity, matched.Name, matchedData));
                 }
             }
 
@@ -91,10 +79,18 @@ public partial class ExplorerMode
                     .Select(i => (i.Identity, i.Name)).ToList();
                 if (brokenItems.Count > 0)
                 {
+                    var discardedCount = 0;
                     foreach (var broken in brokenItems)
-                        await DropItemLocal(broken.Identity, broken.Name);
-                    MarkupLine($"[dim]Авто-выброс: {brokenItems.Count} сломанных предметов удалено[/]");
-                    continue; // re-read inventory after auto-discard
+                    {
+                        if (await DropItemLocal(broken.Identity, broken.Name))
+                            discardedCount++;
+                    }
+
+                    if (discardedCount > 0)
+                    {
+                        MarkupLine($"[dim]Авто-выброс: {discardedCount} сломанных предметов удалено[/]");
+                        continue; // re-read inventory after successful auto-discard
+                    }
                 }
             }
 
@@ -122,7 +118,7 @@ public partial class ExplorerMode
                 var durStr = GetStr(data, "durability", "");
                 if (!string.IsNullOrEmpty(durStr) && int.TryParse(durStr.Replace("%", "").Trim(), out var durVal) && durVal == 0)
                     flags += " ⚠ СЛОМАН";
-                var resourceEntry = FindInventorySidecarEntry(itemResourcesDoc, identity, name, "entries", "inventoryItemsResources");
+                var resourceEntry = FindInventorySidecarEntry(itemResourcesDoc, identity);
                 var resStr = GetPreferredStr(resourceEntry, data, "resource");
                 var isSidecarEmpty = !string.IsNullOrEmpty(resStr) &&
                                      int.TryParse(resStr.Replace("%", "").Trim(), out var sidecarResVal) &&
@@ -190,7 +186,10 @@ public partial class ExplorerMode
                         var hasAccess = st.TryGetProperty("hasFullAccess", out var ha) && ha.ValueKind == JsonValueKind.True;
                         var contCount = 0;
                         if (st.TryGetProperty("contents", out var cont) && cont.ValueKind == JsonValueKind.Array)
-                            contCount = cont.GetArrayLength();
+                        {
+                            contCount = cont.EnumerateArray().Count(static item =>
+                                MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _));
+                        }
                         var choiceIndex = choices.Count;
                         if (hasAccess)
                         {
@@ -259,7 +258,9 @@ public partial class ExplorerMode
                 string? equippedInSlot = null;
                 foreach (var entry in equippedEntries)
                 {
-                    if (InventoryItemMatches(itemData, entry.ItemIdentity, entry.ItemName))
+                    var itemPermanentIdentity = GetInventoryItemIdentity(itemData);
+                    if (!string.IsNullOrWhiteSpace(itemPermanentIdentity) &&
+                        string.Equals(itemPermanentIdentity, entry.ItemIdentity, StringComparison.Ordinal))
                     {
                         equippedInSlot = entry.SlotKey;
                         break;
@@ -284,13 +285,17 @@ public partial class ExplorerMode
         lines.Add($"[bold yellow]📦 {Markup.Escape(name)}[/]");
         lines.Add("");
 
-        string itemSlot = "";
+        IReadOnlyList<string> itemSlots = [];
         string itemType = "";
         JsonElement? resourceEntry = null;
 
-	        if (itemData.HasValue)
+        using var projectedItemDocument = itemData.HasValue
+            ? CreateInventoryItemDisplayDocument(itemData.Value)
+            : null;
+
+	        if (projectedItemDocument != null)
 	        {
-	            var item = itemData.Value;
+	            var item = projectedItemDocument.RootElement;
 	            var itemResourcesDoc = allowInventorySidecars
                     ? await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_resources.json")
                     : null;
@@ -300,11 +305,13 @@ public partial class ExplorerMode
 	            var itemTextDoc = allowInventorySidecars
                     ? await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_text_updates.json")
                     : null;
-	            var itemJournalsDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/item_journals.json");
-	            resourceEntry = FindInventorySidecarEntry(itemResourcesDoc, itemIdentity, name, "entries", "inventoryItemsResources");
-	            var bondEntry = FindInventorySidecarEntry(itemBondsDoc, itemIdentity, name, "entries", "itemBondLevelChanges", "itemFateCardUnlocks");
-	            var textEntry = FindInventorySidecarEntry(itemTextDoc, itemIdentity, name, "entries", "updateItemTextContents");
-	            var journalEntry = FindInventorySidecarEntry(itemJournalsDoc, itemIdentity, name, "entries", "itemJournals", "itemJournalUpdates");
+	            var itemJournalsDoc = allowInventorySidecars
+                    ? await _stateManager.LoadGameStateFileAsync("game_state/npcs/item_journals.json")
+                    : null;
+	            resourceEntry = FindInventorySidecarEntry(itemResourcesDoc, itemIdentity);
+	            var bondEntry = FindInventorySidecarEntry(itemBondsDoc, itemIdentity);
+	            var textEntry = FindInventorySidecarEntry(itemTextDoc, itemIdentity);
+	            var journalEntry = FindInventorySidecarEntry(itemJournalsDoc, itemIdentity);
 
             var desc = GetStr(item, "description", "");
             if (!string.IsNullOrEmpty(desc)) { lines.Add($"[white]{Markup.Escape(desc)}[/]"); lines.Add(""); }
@@ -322,9 +329,30 @@ public partial class ExplorerMode
             if (!string.IsNullOrEmpty(weight))
                 lines.Add($"  ⚖ Вес: [white]{Markup.Escape(weight)} кг[/]");
 
+            var volume = GetStr(item, "volume", "");
+            if (!string.IsNullOrEmpty(volume))
+                lines.Add($"  📐 Объём: [white]{Markup.Escape(volume)} дм³[/]");
+
             var price = GetStr(item, "price", "");
             if (!string.IsNullOrEmpty(price))
                 lines.Add($"  💰 Цена: [gold1]{Markup.Escape(price)}[/]");
+
+            if (item.TryGetProperty("isConsumption", out var consumption) &&
+                consumption.ValueKind == JsonValueKind.True)
+            {
+                lines.Add("  🧪 [white]Расходуемый предмет[/]");
+            }
+
+            AddInventoryReason("Причина недоступности чтения", "unreadableReason");
+            AddInventoryReason("Причина сохранения печати", "sealedReason");
+            AddInventoryReason("Причина блокировки", "lockedReason");
+
+            void AddInventoryReason(string label, string propertyName)
+            {
+                var reason = GetStr(item, propertyName, "");
+                if (!string.IsNullOrWhiteSpace(reason))
+                    lines.Add($"  🔒 {label}: [white]{Markup.Escape(reason)}[/]");
+            }
 
             var durability = GetStr(item, "durability", "");
             var maxDurability = GetStr(item, "maxDurability", "");
@@ -344,7 +372,10 @@ public partial class ExplorerMode
                 {
                     var durPct = Math.Clamp(durNum * 100 / maxDurNum, 0, 100);
                     var durColor = durPct > 60 ? "green" : durPct > 25 ? "yellow" : "red";
-                    lines.Add($"  🔧 Прочность: {ConsoleLayout.CreateBarFromPercent(durPct, 10, durColor)}  [{durColor}]{Markup.Escape(durability)}/{Markup.Escape(maxDurability)}[/]");
+                    var durabilityLabel = durNum == maxDurNum
+                        ? FormatInventoryDurabilitySingleValue(durability)
+                        : $"{durability}/{maxDurability}";
+                    lines.Add($"  🔧 Прочность: {ConsoleLayout.CreateBarFromPercent(durPct, 10, durColor)}  [{durColor}]{Markup.Escape(durabilityLabel)}[/]");
                 }
                 else if (durNum > 0)
                 {
@@ -362,12 +393,12 @@ public partial class ExplorerMode
             if (count != "1")
                 lines.Add($"  📊 Количество: [white]{Markup.Escape(count)}[/]");
 
-            itemSlot = GetStr(item, "equipmentSlot", GetStr(item, "slot", GetStr(item, "equipSlot", "")));
-            if (!string.IsNullOrEmpty(itemSlot))
-                lines.Add($"  📌 Слот: [cyan]{Markup.Escape(FormatInventorySlotLabel(itemSlot))}[/]");
-            var accessorySlot = GetStr(item, "accessoryForSlot", "");
-            if (!string.IsNullOrEmpty(accessorySlot))
-                lines.Add($"  📎 Аксессуар для: [cyan]{Markup.Escape(FormatInventorySlotLabel(accessorySlot))}[/]");
+            itemSlots = InventoryEquipmentService.ReadCanonicalSlots(item, "equipmentSlot");
+            if (itemSlots.Count > 0)
+                lines.Add($"  📌 Слот: [cyan]{Markup.Escape(InventoryEquipmentService.FormatSlotNames(itemSlots))}[/]");
+            var accessorySlots = InventoryEquipmentService.ReadCanonicalSlots(item, "accessoryForSlot");
+            if (accessorySlots.Count > 0)
+                lines.Add($"  📎 Аксессуар для: [cyan]{Markup.Escape(InventoryEquipmentService.FormatSlotNames(accessorySlots))}[/]");
 
             var twoHanded = item.TryGetProperty("requiresTwoHands", out var th) && th.ValueKind == JsonValueKind.True;
             if (twoHanded)
@@ -459,7 +490,7 @@ public partial class ExplorerMode
                 lines.Add(""); lines.Add("  [bold]✨ Особые свойства:[/]");
                 foreach (var s in specials.EnumerateArray())
                 {
-                    var sStr = s.ValueKind == JsonValueKind.String ? s.GetString() : s.GetRawText();
+                    var sStr = FormatStructuredInventoryValue(s);
                     if (!string.IsNullOrEmpty(sStr))
                         lines.Add($"    • [yellow]{Markup.Escape(sStr!)}[/]");
                 }
@@ -492,8 +523,15 @@ public partial class ExplorerMode
                     lines.Add($"    • [green]{Markup.Escape(bonusTitle)}[/]");
                     foreach (var property in b.EnumerateObject())
                     {
+                        if (MortalItemPlayerProjection.IsInternalItemField(property.Name))
+                            continue;
+
+                        var value = FormatStructuredInventoryValue(property.Value, property.Name);
+                        if (string.IsNullOrWhiteSpace(value))
+                            continue;
+
                         lines.Add(
-                            $"      [dim]{Markup.Escape(GetStructuredBonusFieldLabel(property.Name))}:[/] [white]{Markup.Escape(FormatStructuredInventoryValue(property.Value, property.Name))}[/]");
+                            $"      [dim]{Markup.Escape(GetStructuredBonusFieldLabel(property.Name))}:[/] [white]{Markup.Escape(value)}[/]");
                     }
                 }
             }
@@ -525,11 +563,18 @@ public partial class ExplorerMode
                 {
                     // Combat Action Object has actionName, isActivatedEffect, actionCost, effects[]
                     var actName = GetStr(cao, "actionName", "");
-                    var isActivated = cao.TryGetProperty("isActivatedEffect", out var iae) && iae.ValueKind == JsonValueKind.True;
+                    var hasActivationMode = cao.TryGetProperty("isActivatedEffect", out var iae) &&
+                                            iae.ValueKind is JsonValueKind.True or JsonValueKind.False;
                     var actCost = GetStr(cao, "actionCost", "");
+                    var targetPriority = GetStr(cao, "targetPriority", "");
+                    var scalingCharacteristic = GetStr(cao, "scalingCharacteristic", "");
                     if (!string.IsNullOrEmpty(actName))
                     {
-                        var tag = isActivated ? "[yellow](активируемый)[/]" : "[dim](пассивный)[/]";
+                        var tag = !hasActivationMode
+                            ? string.Empty
+                            : iae.ValueKind == JsonValueKind.True
+                                ? "[yellow](активируемый)[/]"
+                                : "[dim](пассивный)[/]";
                         var costLabel = actCost.ToLower() switch
                         {
                             "main" or "основное" => " [red](основное действие)[/]",
@@ -537,7 +582,19 @@ public partial class ExplorerMode
                             "free" or "свободное" => " [green](свободное действие)[/]",
                             _ => ""
                         };
-                        lines.Add($"    [white]{Markup.Escape(actName)}[/] {tag}{costLabel}");
+                        var semanticDetails = new List<string>();
+                        if (!string.IsNullOrWhiteSpace(targetPriority))
+                            semanticDetails.Add("приоритет цели: " + FormatInventoryProtocolValueForPlayer(targetPriority));
+                        if (!string.IsNullOrWhiteSpace(scalingCharacteristic))
+                        {
+                            semanticDetails.Add(
+                                "масштабирование: " +
+                                StructuredBonusDisplay.FormatScalar(scalingCharacteristic, "scalingCharacteristic"));
+                        }
+                        var detailsLabel = semanticDetails.Count == 0
+                            ? string.Empty
+                            : $" [dim]({Markup.Escape(string.Join("; ", semanticDetails))})[/]";
+                        lines.Add($"    [white]{Markup.Escape(actName)}[/] {tag}{costLabel}{detailsLabel}");
                     }
                     if (cao.TryGetProperty("effects", out var effs) && effs.ValueKind == JsonValueKind.Array)
                         foreach (var e in effs.EnumerateArray()) RenderItemEffect(e);
@@ -563,11 +620,9 @@ public partial class ExplorerMode
             if (isContainer)
             {
                 var cap = GetStr(item, "capacity", "?");
-                var vol = GetStr(item, "volume", "");
                 var contWeight = GetStr(item, "containerWeight", "");
                 var wReduction = GetStr(item, "weightReduction", "");
                 var contLine = $"  📦 Контейнер: вместимость [white]{Markup.Escape(cap)}[/]";
-                if (!string.IsNullOrEmpty(vol)) contLine += $", объём [white]{Markup.Escape(vol)} дм³[/]";
                 if (!string.IsNullOrEmpty(contWeight)) contLine += $", пустой [white]{Markup.Escape(contWeight)} кг[/]";
                 lines.Add(contLine);
                 if (!string.IsNullOrEmpty(wReduction) && wReduction != "0")
@@ -619,7 +674,7 @@ public partial class ExplorerMode
 	                {
 	                    foreach (var page in entries.EnumerateArray())
 	                    {
-	                        var pageText = page.ValueKind == JsonValueKind.String ? page.GetString() ?? "" : page.GetRawText();
+	                        var pageText = FormatStructuredInventoryValue(page);
 	                        if (!string.IsNullOrWhiteSpace(pageText) && renderedTextEntries.Add(pageText))
 	                            lines.Add($"    [white italic]{Markup.Escape(pageText)}[/]");
 	                    }
@@ -657,12 +712,20 @@ public partial class ExplorerMode
             var bondLevel = GetPreferredStr(bondEntry, item, "ownerBondLevelCurrent");
             if (!string.IsNullOrEmpty(bondLevel))
             {
+                var bondMaximum = GetPreferredStr(bondEntry, item, "ownerBondLevelMax");
+                if (string.IsNullOrWhiteSpace(bondMaximum))
+                    bondMaximum = "100";
+
                 if (int.TryParse(bondLevel, out var bondInt))
                 {
-                    lines.Add($"  💎 Связь с владельцем: {ConsoleLayout.CreateBar(Math.Clamp(bondInt / 10, 0, 10), 10, "cyan")} {bondInt}/100");
+                    var maximum = int.TryParse(bondMaximum, out var parsedMaximum) && parsedMaximum > 0
+                        ? parsedMaximum
+                        : 100;
+                    var filled = (int)Math.Round(Math.Clamp((double)bondInt / maximum, 0, 1) * 10);
+                    lines.Add($"  💎 Связь с владельцем: {ConsoleLayout.CreateBar(filled, 10, "cyan")} {bondInt}/{maximum}");
                 }
                 else
-                    lines.Add($"  💎 Связь с владельцем: [cyan]{Markup.Escape(bondLevel)}[/]");
+                    lines.Add($"  💎 Связь с владельцем: [cyan]{Markup.Escape(bondLevel)}/{Markup.Escape(bondMaximum)}[/]");
 
                 var bondReason = bondEntry.HasValue ? GetStr(bondEntry.Value, "lastBondChangeReason", "") : "";
                 if (!string.IsNullOrWhiteSpace(bondReason))
@@ -698,7 +761,10 @@ public partial class ExplorerMode
                     var timestamp = GetStr(entry, "timestamp", "");
                     var eventName = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "event", ""));
                     var description = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "description", ""));
-                    var textValueObject = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "text", GetStr(entry, "content", GetStr(entry, "entry", entry.GetRawText()))));
+                    var textValueObject = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(
+                        entry,
+                        "text",
+                        GetStr(entry, "content", GetStr(entry, "entry", FormatStructuredInventoryValue(entry)))));
                     var spiritVoice = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "spiritVoice", ""));
                     var resonance = ExplorerPlayerFacingLabels.HistoricalEntry(GetStr(entry, "magicalResonance", ""));
 
@@ -747,11 +813,18 @@ public partial class ExplorerMode
             if (hasEmbeddedFateCards || hasSidecarFateCards)
             {
                 lines.Add(""); lines.Add("  [bold gold1]🃏 Карты судьбы предмета:[/]");
+                var renderedFateCards = new HashSet<string>(StringComparer.Ordinal);
 
                 void RenderFateCards(JsonElement arr)
                 {
                     foreach (var card in arr.EnumerateArray())
                     {
+                        if (card.ValueKind != JsonValueKind.Object ||
+                            !renderedFateCards.Add(GetInventoryFateCardProjectionKey(card)))
+                        {
+                            continue;
+                        }
+
                         var cardName = GetStr(card, "name", GetStr(card, "cardName", "???"));
                         var cardDesc = GetStr(card, "description", "");
                         var cardUnlocked = card.TryGetProperty("isUnlocked", out var ciu) && ciu.ValueKind == JsonValueKind.True;
@@ -765,6 +838,24 @@ public partial class ExplorerMode
                             var conditions = new List<string>();
                             var bondReq = GetStr(uc, "ownerBondLevel", "");
                             if (!string.IsNullOrEmpty(bondReq)) conditions.Add($"связь ≥ {Markup.Escape(bondReq)}");
+                            if (uc.TryGetProperty("requiredMaterials", out var requiredMaterials) &&
+                                requiredMaterials.ValueKind == JsonValueKind.Array)
+                            {
+                                foreach (var material in requiredMaterials.EnumerateArray())
+                                {
+                                    if (material.ValueKind != JsonValueKind.Object)
+                                        continue;
+
+                                    var materialName = GetStr(material, "materialName", "");
+                                    var quantity = GetStr(material, "quantity", "");
+                                    if (string.IsNullOrWhiteSpace(materialName))
+                                        continue;
+
+                                    conditions.Add(string.IsNullOrWhiteSpace(quantity)
+                                        ? Markup.Escape(materialName)
+                                        : $"{Markup.Escape(quantity)}× {Markup.Escape(materialName)}");
+                                }
+                            }
                             var plotReq = GetStr(uc, "plotConditionDescription", "");
                             if (!string.IsNullOrEmpty(plotReq)) conditions.Add(Markup.Escape(plotReq));
                             if (conditions.Count > 0)
@@ -778,6 +869,14 @@ public partial class ExplorerMode
                             var rewardDesc = GetStr(cr, "description", "");
                             if (!string.IsNullOrEmpty(rewardDesc))
                                 lines.Add($"      [italic green]📜 {Markup.Escape(rewardDesc)}[/]");
+
+                            AddInventoryFateRewardArrayLine(lines, cr, "improvedBonuses", "Улучшенные бонусы");
+                            AddInventoryFateCombatRewardLine(lines, cr);
+                            AddInventoryFateRewardArrayLine(lines, cr, "statBoostsToItemItself", "Усиление предмета");
+                            AddInventoryFateRewardStringLine(lines, cr, "changesDescriptionTo", "Новое описание");
+                            if (!string.IsNullOrWhiteSpace(GetStr(cr, "changesImagePromptTo", "")))
+                                lines.Add("      [green]Новый образ:[/] Облик предмета изменится.");
+                            AddInventoryFateRewardStringLine(lines, cr, "otherNarrativeChanges", "Иные изменения");
                         }
                     }
                 }
@@ -786,6 +885,54 @@ public partial class ExplorerMode
                     RenderFateCards(ifc);
                 if (hasSidecarFateCards)
                     RenderFateCards(sidecarFateCards);
+            }
+
+            if (item.TryGetProperty("questLinks", out var questLinks) &&
+                questLinks.ValueKind == JsonValueKind.Array &&
+                questLinks.GetArrayLength() > 0)
+            {
+                lines.Add("");
+                lines.Add("  [bold]📜 Связанные задания:[/]");
+                foreach (var link in questLinks.EnumerateArray())
+                {
+                    if (link.ValueKind == JsonValueKind.String)
+                    {
+                        var questName = link.GetString() ?? string.Empty;
+                        if (!string.IsNullOrWhiteSpace(questName))
+                            lines.Add($"    • [white]{Markup.Escape(questName)}[/]");
+                        continue;
+                    }
+
+                    if (link.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var questNameFromObject = GetStr(
+                        link,
+                        "questName",
+                        GetStr(link, "title", GetStr(link, "name", "Связанное задание")));
+                    var questRole = GetStr(link, "role", GetStr(link, "questRole", GetStr(link, "description", "")));
+                    var line = $"    • [white]{Markup.Escape(questNameFromObject)}[/]";
+                    if (!string.IsNullOrWhiteSpace(questRole))
+                        line += $" [dim]— {Markup.Escape(questRole)}[/]";
+                    lines.Add(line);
+
+                    foreach (var property in link.EnumerateObject())
+                    {
+                        if (IsInventoryQuestLinkDisplayAlias(property.Name) ||
+                            MortalItemPlayerProjection.IsInternalItemField(property.Name))
+                        {
+                            continue;
+                        }
+
+                        var value = FormatStructuredInventoryValue(property.Value, property.Name);
+                        if (!string.IsNullOrWhiteSpace(value))
+                        {
+                            lines.Add(
+                                $"      [dim]{Markup.Escape(GetStructuredBonusFieldLabel(property.Name))}:[/] " +
+                                $"[white]{Markup.Escape(value)}[/]");
+                        }
+                    }
+                }
             }
 
             // Custom properties (Rule 10.2.8) — array of interaction objects or legacy object format
@@ -798,9 +945,9 @@ public partial class ExplorerMode
                     {
                         if (cpItem.ValueKind != JsonValueKind.Object) continue;
                         var iType = GetStr(cpItem, "interactionType", "");
-                        var target = GetStr(cpItem, "targetStateName", "");
+                        var target = GetStr(cpItem, "targetStateName", GetStr(cpItem, "target", ""));
                         var changeVal = GetStr(cpItem, "changeValue", "");
-                        var cpDesc = GetStr(cpItem, "description", "");
+                        var cpDesc = GetStr(cpItem, "description", GetStr(cpItem, "summary", ""));
 
                         var triggerLabel = iType switch
                         {
@@ -810,14 +957,39 @@ public partial class ExplorerMode
                             _ => !string.IsNullOrEmpty(iType) ? iType : "Эффект"
                         };
 
-                        if (!string.IsNullOrEmpty(target))
+                        if (!string.IsNullOrEmpty(target) && !string.IsNullOrEmpty(changeVal))
                         {
                             var sign = changeVal.StartsWith("-") ? "" : "+";
                             var changeColor = changeVal.StartsWith("-") ? "green" : "yellow";
                             lines.Add($"    ⚡ [white]{Markup.Escape(triggerLabel)}[/]: [{changeColor}]{sign}{Markup.Escape(changeVal)}[/] к [cyan]{Markup.Escape(target)}[/]");
                         }
+                        else if (!string.IsNullOrEmpty(target))
+                        {
+                            lines.Add($"    ⚡ [white]{Markup.Escape(triggerLabel)}[/]: [cyan]{Markup.Escape(target)}[/]");
+                        }
                         if (!string.IsNullOrEmpty(cpDesc))
                             lines.Add($"      [dim]{Markup.Escape(cpDesc)}[/]");
+
+                        var knownCustomFields = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            "interactionType", "targetStateName", "target", "changeValue", "description", "summary"
+                        };
+                        foreach (var property in cpItem.EnumerateObject())
+                        {
+                            if (knownCustomFields.Contains(property.Name) ||
+                                MortalItemPlayerProjection.IsInternalItemField(property.Name))
+                            {
+                                continue;
+                            }
+
+                            var value = MortalItemPlayerProjection.FormatSemanticValue(property.Value, property.Name);
+                            if (string.IsNullOrWhiteSpace(value))
+                                continue;
+
+                            lines.Add(
+                                $"      [dim]{Markup.Escape(StructuredBonusDisplay.FieldLabel(property.Name))}: " +
+                                $"{Markup.Escape(value)}[/]");
+                        }
                     }
                 }
                 else if (cp.ValueKind == JsonValueKind.Object)
@@ -826,32 +998,34 @@ public partial class ExplorerMode
                     lines.Add(""); lines.Add("  [bold]🔧 Особые свойства:[/]");
                     foreach (var prop in cp.EnumerateObject())
                     {
-                        var pVal = prop.Value.ValueKind == JsonValueKind.String
-                            ? prop.Value.GetString() ?? "" : prop.Value.GetRawText();
-                        if (pVal.Length < 200)
+                        if (MortalItemPlayerProjection.IsInternalItemField(prop.Name))
+                            continue;
+
+                        var pVal = FormatStructuredInventoryValue(prop.Value, prop.Name);
+                        if (!string.IsNullOrWhiteSpace(pVal) && pVal.Length < 200)
                             lines.Add($"    • {Markup.Escape(prop.Name)}: [white]{Markup.Escape(pVal)}[/]");
                     }
                 }
             }
 
-            var knownProps = new HashSet<string> { "name", "description", "type", "quality", "rarity",
+            var knownProps = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "name", "description", "type", "quality", "rarity",
                 "weight", "price", "durability", "maxDurability", "count", "quantity", "slot", "equipSlot",
                 "bonuses", "effects", "specialProperties", "lore", "id", "itemId", "structuredBonuses",
                 "combatEffect", "isContainer", "capacity", "volume", "disassembleTo", "isSentient",
                 "journalEntries", "customProperties", "image_prompt", "existedId", "contentsPath",
                 "textContent", "updateItemTextContents", "isConsumption", "weightReduction",
                 "containerWeight", "requiresTwoHands", "accessoryForSlot", "equipmentSlot", "group",
-                "resource", "maximumResource", "resourceType", "ownerBondLevelCurrent",
-                "fateCards", "itemJournalUpdates", "isBroken", "isEmpty", "mechanicalSummaryAuthority",
+                "resource", "maximumResource", "resourceType", "ownerBondLevelCurrent", "ownerBondLevelMax",
+                "fateCards", "questLinks", "itemJournalUpdates", "isBroken", "isEmpty", "mechanicalSummaryAuthority",
                 "mechanicalSummaryUnresolvedReason", "unresolvedMechanicsReason", "unidentifiedMechanicsReason",
                 "unknownMechanicsReason", "sealedReason", "unreadableReason", "lockedReason",
                 "value", "currentLocationId", "currentLocationName", "isCarried", "isEquipped", "visibility" };
             foreach (var prop in item.EnumerateObject())
             {
-                if (knownProps.Contains(prop.Name)) continue;
-                var val = prop.Value.ValueKind == JsonValueKind.String
-                    ? prop.Value.GetString() ?? ""
-                    : (prop.Value.ValueKind is JsonValueKind.Array or JsonValueKind.Object) ? "" : prop.Value.GetRawText();
+                if (knownProps.Contains(prop.Name) || MortalItemPlayerProjection.IsInternalItemField(prop.Name)) continue;
+                var val = prop.Value.ValueKind == JsonValueKind.Object
+                    ? ""
+                    : FormatStructuredInventoryValue(prop.Value, prop.Name);
                 if (val.Length > 0 && val.Length < 200)
                     lines.Add($"  [dim]{Markup.Escape(prop.Name)}: {Markup.Escape(val)}[/]");
             }
@@ -914,9 +1088,21 @@ public partial class ExplorerMode
             if (itemCount < 1) itemCount = 1;
         }
 
+        InventoryEquipmentItem? equipmentItem = null;
+        if (!readOnly && !string.IsNullOrWhiteSpace(itemIdentity))
+        {
+            var equipmentContext = await InventoryEquipmentService.ReadContextAsync(_fs);
+            equipmentItem = equipmentContext == null
+                ? null
+                : InventoryEquipmentService.FindItem(equipmentContext.Items, itemIdentity);
+        }
+        var actionSlots = equipmentItem?.ResolvedSlots ?? [];
+
         // Action menu
         var actions = new List<string>();
-        var allowBackpackActions = !readOnly && (isCarriedByPlayer || !string.IsNullOrEmpty(equippedSlot));
+        var allowBackpackActions = !readOnly &&
+                                   !string.IsNullOrWhiteSpace(itemIdentity) &&
+                                   (isCarriedByPlayer || !string.IsNullOrEmpty(equippedSlot));
         if (allowBackpackActions)
         {
             if (!string.IsNullOrEmpty(equippedSlot))
@@ -925,8 +1111,7 @@ public partial class ExplorerMode
             }
             else
             {
-                var isEquippable = !IsQuestInventoryItemType(itemType) &&
-                    (!string.IsNullOrEmpty(itemSlot) || TypeToSlot.ContainsKey(itemType));
+                var isEquippable = equipmentItem?.IsEquippable == true;
                 if (isEquippable && !isBroken)
                     actions.Add("⚔ Экипировать");
             }
@@ -987,11 +1172,12 @@ public partial class ExplorerMode
         }
         if (action.Contains("Экипировать"))
         {
-            var targetSlot = ResolveEquipSlot(itemSlot, itemType);
-            if (targetSlot == null)
+            var targetSlot = actionSlots.Count == 1 ? actionSlots[0] : null;
+            if (actionSlots.Count > 1)
             {
-                // Let user pick a slot
-                var slotChoices = SlotLabels.Select(kv => $"{kv.Value} ({kv.Key})").ToList();
+                var slotChoices = actionSlots
+                    .Select(slot => $"{InventoryEquipmentService.FormatSlotName(slot)} ({slot})")
+                    .ToList();
                 slotChoices.Add("← Отмена");
                 var pick = Prompt(new SelectionPrompt<string>()
                     .Title("[bold]В какой слот экипировать?[/]")
@@ -1060,37 +1246,6 @@ public partial class ExplorerMode
         return false;
     }
 
-    /// <summary>Resolves the equipment slot key from item slot name or type.</summary>
-    private static string? ResolveEquipSlot(string itemSlot, string itemType)
-    {
-        // Try direct slot name match (case-insensitive)
-        if (!string.IsNullOrEmpty(itemSlot))
-        {
-            var normalized = NormalizeInventorySlotKey(itemSlot);
-            if (!string.IsNullOrEmpty(normalized) && SlotLabels.ContainsKey(normalized)) return normalized;
-            var lower = itemSlot.ToLower();
-            if (SlotLabels.ContainsKey(lower)) return lower;
-            // Try matching Russian slot names
-            foreach (var (key, label) in SlotLabels)
-                if (label.Contains(itemSlot, StringComparison.OrdinalIgnoreCase)) return key;
-            // Heuristic: "Neck", "Head", etc.
-            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ["Head"] = "head", ["Body"] = "body", ["Hands"] = "hands", ["Feet"] = "feet",
-                ["MainHand"] = "mainHand", ["OffHand"] = "offHand", ["Neck"] = "neck",
-                ["Ring"] = "ring1", ["Ring1"] = "ring1", ["Ring2"] = "ring2",
-                ["Голова"] = "head", ["Тело"] = "body", ["Руки"] = "hands", ["Ноги"] = "feet",
-                ["Основная рука"] = "mainHand", ["Вторая рука"] = "offHand", ["Шея"] = "neck",
-                ["Кольцо"] = "ring1"
-            };
-            if (map.TryGetValue(itemSlot, out var mapped)) return mapped;
-        }
-        // Try type-based mapping
-        if (!string.IsNullOrEmpty(itemType) && TypeToSlot.TryGetValue(itemType, out var slotFromType))
-            return slotFromType;
-        return null;
-    }
-
     private static string FormatInventoryProtocolValueForPlayer(string value) =>
         StructuredBonusDisplay.FormatScalar(value);
 
@@ -1105,64 +1260,8 @@ public partial class ExplorerMode
             : clean;
     }
 
-    private static string FormatInventorySlotLabel(string slot)
-    {
-        var clean = slot.Trim();
-        if (clean.Equals("Accessory1", StringComparison.OrdinalIgnoreCase))
-            return "Аксессуар 1";
-        if (clean.Equals("Accessory2", StringComparison.OrdinalIgnoreCase))
-            return "Аксессуар 2";
-
-        var normalized = NormalizeInventorySlotKey(slot);
-        if (!string.IsNullOrWhiteSpace(normalized) && SlotLabels.TryGetValue(normalized, out var label))
-            return label;
-
-        return FormatInventoryProtocolValueForPlayer(slot);
-    }
-
-    private static string NormalizeInventorySlotKey(string slot)
-    {
-        var clean = slot.Trim();
-        return clean switch
-        {
-            "Accessory1" => "ring1",
-            "Accessory2" => "ring2",
-            "Hands" => "hands",
-            "Head" => "head",
-            "Chest" => "body",
-            "Body" => "body",
-            "Feet" => "feet",
-            "MainHand" => "mainHand",
-            "OffHand" => "offHand",
-            _ => clean
-        };
-    }
-
-    private static bool IsQuestInventoryItemType(string itemType)
-    {
-        var clean = itemType.Trim();
-        return clean.Equals("QuestItem", StringComparison.OrdinalIgnoreCase) ||
-               clean.Equals("quest_item", StringComparison.OrdinalIgnoreCase) ||
-               clean.Equals("Квестовый предмет", StringComparison.OrdinalIgnoreCase) ||
-               clean.Equals("Сюжетный предмет", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsInventoryItemCarriedByPlayer(JsonElement item)
-    {
-        if (!item.TryGetProperty("isCarried", out var isCarried))
-            return true;
-
-        return isCarried.ValueKind switch
-        {
-            JsonValueKind.False => false,
-            JsonValueKind.True => true,
-            JsonValueKind.Number => isCarried.TryGetInt32(out var value) ? value != 0 : true,
-            JsonValueKind.String => !StringEqualsAnyInventoryAuthority(
-                isCarried.GetString() ?? "",
-                "false", "no", "нет", "0", "not_carried", "location"),
-            _ => true
-        };
-    }
+    private static bool IsInventoryItemCarriedByPlayer(JsonElement item) =>
+        MortalItemLocalActionPolicy.IsCarriedByPlayer(item);
 
     private static string GetInventoryMechanicalSummaryAuthority(JsonElement item)
     {
@@ -1237,10 +1336,167 @@ public partial class ExplorerMode
     }
 
     private static string FormatStructuredInventoryValue(JsonElement value, string? fieldName = null) =>
-        StructuredBonusDisplay.FormatValue(value, fieldName);
+        MortalItemPlayerProjection.FormatSemanticValue(value, fieldName);
+
+    private static JsonDocument? CreateInventoryItemDisplayDocument(JsonElement item)
+    {
+        var source = JsonNode.Parse(item.GetRawText());
+        var projected = MortalItemPlayerProjection.CloneItemSemanticValue(source);
+        return projected == null
+            ? null
+            : JsonDocument.Parse(projected.ToJsonString());
+    }
+
+    private static string GetInventoryFateCardProjectionKey(JsonElement card)
+    {
+        var cardId = GetStr(card, "cardId", "");
+        if (!string.IsNullOrWhiteSpace(cardId))
+            return "id:" + cardId;
+
+        var name = GetStr(card, "name", GetStr(card, "cardName", ""));
+        return !string.IsNullOrWhiteSpace(name)
+            ? "name:" + name
+            : "json:" + card.GetRawText();
+    }
+
+    private static void AddInventoryFateRewardArrayLine(
+        List<string> lines,
+        JsonElement rewards,
+        string propertyName,
+        string label)
+    {
+        if (!rewards.TryGetProperty(propertyName, out var values) || values.ValueKind != JsonValueKind.Array)
+            return;
+
+        var projected = values.EnumerateArray()
+            .Where(static value => value.ValueKind == JsonValueKind.String)
+            .Select(static value => value.GetString() ?? "")
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        if (projected.Count > 0)
+            lines.Add($"      [green]{Markup.Escape(label)}:[/] {Markup.Escape(string.Join("; ", projected))}");
+    }
+
+    private static void AddInventoryFateCombatRewardLine(List<string> lines, JsonElement rewards)
+    {
+        if (!rewards.TryGetProperty("newCombatEffects", out var actions) ||
+            actions.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var projected = new List<string>();
+        foreach (var action in actions.EnumerateArray())
+        {
+            if (action.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var parts = new List<string>();
+            var actionName = GetStr(action, "actionName", "");
+            if (!string.IsNullOrWhiteSpace(actionName))
+                parts.Add(actionName);
+
+            if (action.TryGetProperty("isActivatedEffect", out var activated) &&
+                activated.ValueKind is JsonValueKind.True or JsonValueKind.False)
+            {
+                parts.Add(activated.ValueKind == JsonValueKind.True ? "активируемый" : "пассивный");
+            }
+
+            AddInventoryFateCombatActionDetail(
+                parts,
+                action,
+                "actionCost",
+                "стоимость",
+                static value => FormatInventoryProtocolValueForPlayer(value));
+            AddInventoryFateCombatActionDetail(
+                parts,
+                action,
+                "targetPriority",
+                "приоритет цели",
+                static value => FormatInventoryProtocolValueForPlayer(value));
+            AddInventoryFateCombatActionDetail(
+                parts,
+                action,
+                "scalingCharacteristic",
+                "масштабирование",
+                static value => StructuredBonusDisplay.FormatScalar(value, "scalingCharacteristic"));
+
+            if (action.TryGetProperty("effects", out var effects) && effects.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var effect in effects.EnumerateArray())
+                {
+                    if (effect.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var description = GetStr(
+                        effect,
+                        "effectDescription",
+                        GetStr(effect, "description", GetStr(effect, "effectType", "")));
+                    if (string.IsNullOrWhiteSpace(description))
+                        continue;
+
+                    var value = GetStr(effect, "value", "");
+                    var effectText = string.IsNullOrWhiteSpace(value) ? description : $"{description} ({value})";
+                    var effectDetails = new List<string>();
+                    var target = GetStr(effect, "targetTypeDisplayName", GetStr(effect, "targetType", ""));
+                    if (!string.IsNullOrWhiteSpace(target))
+                        effectDetails.Add("цель: " + FormatInventoryProtocolValueForPlayer(target));
+                    var targetsCount = GetStr(effect, "targetsCount", "");
+                    if (!string.IsNullOrWhiteSpace(targetsCount))
+                        effectDetails.Add("целей: " + targetsCount);
+                    var duration = GetStr(effect, "duration", "");
+                    if (!string.IsNullOrWhiteSpace(duration))
+                        effectDetails.Add("длительность: " + duration);
+                    var poiseDamage = GetStr(effect, "poiseDamage", "");
+                    if (!string.IsNullOrWhiteSpace(poiseDamage))
+                        effectDetails.Add("урон равновесию: " + poiseDamage);
+                    var damageThreshold = GetStr(effect, "damageThreshold", "");
+                    if (!string.IsNullOrWhiteSpace(damageThreshold))
+                        effectDetails.Add("порог урона: " + damageThreshold);
+
+                    if (effectDetails.Count > 0)
+                        effectText += $" [{string.Join(", ", effectDetails)}]";
+                    parts.Add(effectText);
+                }
+            }
+
+            if (parts.Count > 0)
+                projected.Add(string.Join(": ", parts.Distinct(StringComparer.Ordinal)));
+        }
+
+        if (projected.Count > 0)
+            lines.Add($"      [green]Новые боевые эффекты:[/] {Markup.Escape(string.Join("; ", projected))}");
+    }
+
+    private static void AddInventoryFateCombatActionDetail(
+        List<string> parts,
+        JsonElement action,
+        string propertyName,
+        string label,
+        Func<string, string> formatter)
+    {
+        var value = GetStr(action, propertyName, "");
+        if (!string.IsNullOrWhiteSpace(value))
+            parts.Add($"{label}: {formatter(value)}");
+    }
+
+    private static void AddInventoryFateRewardStringLine(
+        List<string> lines,
+        JsonElement rewards,
+        string propertyName,
+        string label)
+    {
+        var value = GetStr(rewards, propertyName, "");
+        if (!string.IsNullOrWhiteSpace(value))
+            lines.Add($"      [green]{Markup.Escape(label)}:[/] {Markup.Escape(value)}");
+    }
 
     private static string GetStructuredBonusFieldLabel(string fieldName) =>
         StructuredBonusDisplay.FieldLabel(fieldName);
+
+    private static bool IsInventoryQuestLinkDisplayAlias(string fieldName) =>
+        fieldName is "questName" or "title" or "name" or
+            "role" or "questRole" or "description";
 
     private static JsonElement? GetPlayerInventoryItemsElement(JsonElement root)
     {
@@ -1249,10 +1505,6 @@ public partial class ExplorerMode
 
         if (root.TryGetProperty("items", out var items) && items.ValueKind == JsonValueKind.Array)
             return items;
-
-        if (root.TryGetProperty("UpdateInventory", out var updateInventory) &&
-            updateInventory.ValueKind == JsonValueKind.Array)
-            return updateInventory;
 
         return null;
     }
@@ -1265,39 +1517,25 @@ public partial class ExplorerMode
         if (obj["items"] is JsonArray itemsArray)
             return itemsArray;
 
-        if (obj["UpdateInventory"] is JsonArray updateInventoryArray)
-            return updateInventoryArray;
-
         if (!createIfMissing)
             return null;
 
         var created = new JsonArray();
-        obj["UpdateInventory"] = created;
+        obj["items"] = created;
         return created;
     }
 
     private static string GetInventoryItemIdentity(JsonElement item)
-    {
-        var existedId = GetStr(item, "existedId", "");
-        if (!string.IsNullOrWhiteSpace(existedId)) return existedId;
-
-        var itemId = GetStr(item, "itemId", "");
-        if (!string.IsNullOrWhiteSpace(itemId)) return itemId;
-
-        return GetStr(item, "id", "");
-    }
+        => MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out var identity)
+            ? identity
+            : string.Empty;
 
     private static string GetInventoryItemIdentity(JsonNode? item)
     {
-        if (item is not JsonObject obj) return "";
-
-        var existedId = GetNodeStr(obj, "existedId", "");
-        if (!string.IsNullOrWhiteSpace(existedId)) return existedId;
-
-        var itemId = GetNodeStr(obj, "itemId", "");
-        if (!string.IsNullOrWhiteSpace(itemId)) return itemId;
-
-        return GetNodeStr(obj, "id", "");
+        return item is JsonObject obj &&
+               MortalItemMaterializationContract.TryReadAcceptedIdentity(obj, out var identity)
+            ? identity
+            : string.Empty;
     }
 
     private static string GetInventoryItemName(JsonElement item) =>
@@ -1330,115 +1568,11 @@ public partial class ExplorerMode
                string.Equals(nodeName, relicName, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string GetEquipmentReferenceIdentity(JsonElement slotData)
+    private static JsonElement? FindInventorySidecarEntry(JsonDocument? doc, string itemIdentity)
     {
-        if (slotData.ValueKind == JsonValueKind.String)
-            return slotData.GetString() ?? "";
-
-        if (slotData.ValueKind != JsonValueKind.Object)
-            return "";
-
-        var existedId = GetStr(slotData, "existedId", "");
-        if (!string.IsNullOrWhiteSpace(existedId)) return existedId;
-
-        var itemId = GetStr(slotData, "itemId", "");
-        if (!string.IsNullOrWhiteSpace(itemId)) return itemId;
-
-        return GetStr(slotData, "id", "");
-    }
-
-    private static string GetEquipmentReferenceName(JsonElement slotData)
-    {
-        if (slotData.ValueKind == JsonValueKind.String)
-            return slotData.GetString() ?? "";
-
-        if (slotData.ValueKind != JsonValueKind.Object)
-            return "";
-
-        return GetStr(slotData, "name", GetStr(slotData, "itemName", ""));
-    }
-
-    private static bool InventoryItemMatches(JsonElement item, string itemIdentity, string itemName)
-    {
-        var identity = GetInventoryItemIdentity(item);
-        if (!string.IsNullOrWhiteSpace(itemIdentity) &&
-            string.Equals(identity, itemIdentity, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        var name = GetInventoryItemName(item);
-        return !string.IsNullOrWhiteSpace(itemName) &&
-               string.Equals(name, itemName, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool InventoryItemMatches(JsonNode? item, string itemIdentity, string itemName)
-    {
-        var identity = GetInventoryItemIdentity(item);
-        if (!string.IsNullOrWhiteSpace(itemIdentity) &&
-            string.Equals(identity, itemIdentity, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        var name = GetInventoryItemName(item);
-        return !string.IsNullOrWhiteSpace(itemName) &&
-               string.Equals(name, itemName, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool InventoryReferenceMatches(JsonNode? referenceNode, string itemIdentity, string itemName)
-    {
-        if (referenceNode == null) return false;
-
-        if (referenceNode is JsonValue value && value.TryGetValue<string>(out var reference))
-        {
-            if (!string.IsNullOrWhiteSpace(itemIdentity) &&
-                string.Equals(reference, itemIdentity, StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            return !string.IsNullOrWhiteSpace(itemName) &&
-                   string.Equals(reference, itemName, StringComparison.OrdinalIgnoreCase);
-        }
-
-        return InventoryItemMatches(referenceNode, itemIdentity, itemName);
-    }
-
-    private static IEnumerable<JsonElement> EnumerateInventorySidecarEntries(JsonElement root, params string[] propertyNames)
-    {
-        if (root.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var item in root.EnumerateArray())
-            {
-                if (item.ValueKind == JsonValueKind.Object)
-                    yield return item;
-            }
-            yield break;
-        }
-
-        if (root.ValueKind != JsonValueKind.Object)
-            yield break;
-
-        foreach (var propertyName in propertyNames)
-        {
-            if (!root.TryGetProperty(propertyName, out var arr) || arr.ValueKind != JsonValueKind.Array)
-                continue;
-
-            foreach (var item in arr.EnumerateArray())
-            {
-                if (item.ValueKind == JsonValueKind.Object)
-                    yield return item;
-            }
-        }
-    }
-
-    private static JsonElement? FindInventorySidecarEntry(JsonDocument? doc, string itemIdentity, string itemName, params string[] propertyNames)
-    {
-        if (doc == null)
+        if (doc == null || string.IsNullOrWhiteSpace(itemIdentity))
             return null;
-
-        foreach (var item in EnumerateInventorySidecarEntries(doc.RootElement, propertyNames))
-        {
-            if (InventoryItemMatches(item, itemIdentity, itemName))
-                return item;
-        }
-
-        return null;
+        return MortalItemPlayerProjection.FindUniqueExactSidecarEntry(doc.RootElement, itemIdentity);
     }
 
     private static string GetPreferredStr(JsonElement? primary, JsonElement fallback, params string[] propertyNames)
@@ -1480,288 +1614,136 @@ public partial class ExplorerMode
             }
 
             seen[entry.Label] = seen.GetValueOrDefault(entry.Label) + 1;
-            var suffix = !string.IsNullOrWhiteSpace(entry.Identity)
-                ? $" [dim]id={Markup.Escape(entry.Identity)}[/]"
-                : $" [dim](дубль {seen[entry.Label]})[/]";
+            var suffix = $" [dim](вариант {seen[entry.Label]})[/]";
             result.Add(entry.Label + suffix);
         }
 
         return result;
     }
 
-    private static int FindInventoryItemIndex(JsonArray items, string itemIdentity, string itemName)
-    {
-        for (int i = 0; i < items.Count; i++)
-        {
-            if (InventoryItemMatches(items[i], itemIdentity, itemName))
-                return i;
-        }
-
-        return -1;
-    }
-
-    private static void AssignNewInventoryIdentity(JsonObject item)
-    {
-        var newId = Guid.NewGuid().ToString();
-        var hadIdentityField = false;
-
-        foreach (var key in new[] { "existedId", "itemId", "id" })
-        {
-            if (!item.ContainsKey(key)) continue;
-            item[key] = newId;
-            hadIdentityField = true;
-        }
-
-        if (!hadIdentityField)
-            item["existedId"] = newId;
-    }
-
-    private static string CreateInventoryMergeSignature(JsonNode? item)
-    {
-        if (item is not JsonObject obj)
-            return item?.ToJsonString() ?? "";
-
-        var clone = JsonNode.Parse(obj.ToJsonString()) as JsonObject;
-        if (clone == null)
-            return "";
-
-        clone.Remove("count");
-        clone.Remove("quantity");
-        clone.Remove("id");
-        clone.Remove("itemId");
-        clone.Remove("existedId");
-        clone.Remove("initialId");
-
-        return clone.ToJsonString();
-    }
-
-    /// <summary>Sets equipment.{slot} = item identity (or fallback name) in items.json.</summary>
+    /// <summary>Equips an accepted item through the current-schema equippedItems authority.</summary>
     private async Task EquipItemLocal(string itemIdentity, string itemName, string slotKey)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            if (node == null) return;
-
-            var equipNode = node["equipment"];
-            if (equipNode == null)
+            var outcome = await InventoryEquipmentService.EquipAsync(_fs, itemIdentity, slotKey);
+            if (!outcome.Success)
             {
-                node["equipment"] = new JsonObject();
-                equipNode = node["equipment"]!;
+                MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(outcome.Message))}[/]");
+                WaitForKey();
+                return;
             }
 
-            equipNode[slotKey] = !string.IsNullOrWhiteSpace(itemIdentity) ? itemIdentity : itemName;
-
-            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-            await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
-
-            var slotLabel = SlotLabels.GetValueOrDefault(slotKey, slotKey);
+            var slotLabel = SlotLabels.GetValueOrDefault(outcome.SlotKey, outcome.SlotKey);
             MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» экипировано в {slotLabel}![/]");
             MarkupLine("[dim]Нажмите любую клавишу...[/]");
             ReadKey();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.TransitionRejected())}[/]");
             WaitForKey();
         }
     }
 
-    /// <summary>Sets equipment.{slot} = null in items.json.</summary>
+    /// <summary>Unequips an accepted item through the current-schema equippedItems authority.</summary>
     private async Task UnequipItemLocal(string slotKey)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            if (node?["equipment"] == null) return;
+            var outcome = await InventoryEquipmentService.UnequipAsync(_fs, slotKey);
+            if (!outcome.Success)
+            {
+                MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(outcome.Message))}[/]");
+                WaitForKey();
+                return;
+            }
 
-            node["equipment"]![slotKey] = null;
-
-            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-            await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
-
-            var slotLabel = SlotLabels.GetValueOrDefault(slotKey, slotKey);
+            var slotLabel = SlotLabels.GetValueOrDefault(outcome.SlotKey, outcome.SlotKey);
             MarkupLine($"[green]✅ Предмет снят с {slotLabel} и убран в рюкзак.[/]");
             MarkupLine("[dim]Нажмите любую клавишу...[/]");
             ReadKey();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.TransitionRejected())}[/]");
             WaitForKey();
         }
     }
 
-    /// <summary>Removes an item from items.json entirely (drop/discard).</summary>
-    private async Task DropItemLocal(string itemIdentity, string itemName)
+    /// <summary>Retires an item through the shared identity transition writer.</summary>
+    private async Task<bool> DropItemLocal(string itemIdentity, string itemName)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            if (node == null) return;
-
-            var itemsArr = GetPlayerInventoryArrayNode(node, createIfMissing: false);
-            if (itemsArr == null) return;
-
-            var itemIndex = FindInventoryItemIndex(itemsArr, itemIdentity, itemName);
-            if (itemIndex >= 0)
+            var outcome = await InventoryManagementService.DropAsync(_fs, itemIdentity);
+            if (outcome.Success)
             {
-                itemsArr.RemoveAt(itemIndex);
-
-                // Also clear equipment slot if equipped
-                var equipNode = node["equipment"];
-                if (equipNode is JsonObject eqObj)
-                {
-                    foreach (var prop in eqObj.ToArray())
-                    {
-                        if (InventoryReferenceMatches(prop.Value, itemIdentity, itemName))
-                            eqObj[prop.Key] = null;
-                    }
-                }
-
-                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-                await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
                 MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» выброшен.[/]");
                 MarkupLine("[dim]Нажмите любую клавишу...[/]");
                 ReadKey();
-                return;
+                return true;
             }
 
-            MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
+            MarkupLine($"[yellow]{Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(outcome.Message))}[/]");
             WaitForKey();
+            return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.TransitionRejected())}[/]");
             WaitForKey();
+            return false;
         }
     }
 
-    /// <summary>Splits an item stack: reduces count of original and creates a new item entry with the split amount.</summary>
+    /// <summary>Splits an item stack through the shared identity transition writer.</summary>
     private async Task SplitItemStack(string itemIdentity, string itemName, int splitAmount)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            var itemsArr = GetPlayerInventoryArrayNode(node, createIfMissing: false);
-            if (itemsArr == null) return;
-
-            var itemIndex = FindInventoryItemIndex(itemsArr, itemIdentity, itemName);
-            if (itemIndex >= 0)
+            var outcome = await InventoryManagementService.SplitAsync(
+                _fs,
+                itemIdentity,
+                splitAmount);
+            if (outcome.Success)
             {
-                var original = itemsArr[itemIndex]!.AsObject();
-                var countKey = original.ContainsKey("quantity") ? "quantity" : "count";
-
-                var currentCount = original[countKey]?.GetValue<int>() ?? 1;
-                if (splitAmount >= currentCount) { MarkupLine("[yellow]Нельзя отделить всё количество.[/]"); WaitForKey(); return; }
-
-                // Reduce original
-                original[countKey] = currentCount - splitAmount;
-
-                // Create copy with split amount
-                var copy = JsonNode.Parse(original.ToJsonString())!.AsObject();
-                copy[countKey] = splitAmount;
-                AssignNewInventoryIdentity(copy);
-
-                itemsArr.Add(copy);
-
-                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-                await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
-                MarkupLine($"[green]✅ Стопка разделена: {currentCount - splitAmount} + {splitAmount}[/]");
+                MarkupLine($"[green]✅ {Markup.Escape(outcome.Message)}[/]");
                 MarkupLine("[dim]Нажмите любую клавишу...[/]");
                 ReadKey();
                 return;
             }
 
-            MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
+            MarkupLine($"[yellow]{Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(outcome.Message))}[/]");
             WaitForKey();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.TransitionRejected())}[/]");
             WaitForKey();
         }
     }
 
-    /// <summary>Merges two stacks of the same item name into one.</summary>
+    /// <summary>Merges compatible stacks through the shared identity transition writer.</summary>
     private async Task MergeItemStacks(string itemIdentity, string itemName)
     {
-        const string path = "game_state/inventory/items.json";
-        var json = await _fs.ReadFileAsync(path);
-        if (json == null) return;
-
         try
         {
-            var node = JsonNode.Parse(json);
-            var itemsArr = GetPlayerInventoryArrayNode(node, createIfMissing: false);
-            if (itemsArr == null) return;
-
-            var selectedIndex = FindInventoryItemIndex(itemsArr, itemIdentity, itemName);
-            if (selectedIndex < 0)
+            var outcome = await InventoryManagementService.MergeAsync(_fs, itemIdentity);
+            if (outcome.Success)
             {
-                MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
-                WaitForKey();
+                MarkupLine($"[green]✅ {Markup.Escape(outcome.Message)}[/]");
+                MarkupLine("[dim]Нажмите любую клавишу...[/]");
+                ReadKey();
                 return;
             }
 
-            var selectedItem = itemsArr[selectedIndex];
-            var selectedSignature = CreateInventoryMergeSignature(selectedItem);
-            var matchingIndices = new List<int> { selectedIndex };
-            for (int i = 0; i < itemsArr.Count; i++)
-            {
-                if (i == selectedIndex) continue;
-                if (CreateInventoryMergeSignature(itemsArr[i]) == selectedSignature)
-                    matchingIndices.Add(i);
-            }
-
-            if (matchingIndices.Count < 2)
-            {
-                MarkupLine("[yellow]Нет другой стопки с таким же именем для объединения.[/]");
-                WaitForKey();
-                return;
-            }
-
-            // Sum all counts into the first stack, remove the rest
-            var first = itemsArr[matchingIndices[0]]!.AsObject();
-            var countKey = first.ContainsKey("quantity") ? "quantity" : "count";
-            var totalCount = 0;
-            foreach (var idx in matchingIndices)
-            {
-                var ck = itemsArr[idx]!.AsObject().ContainsKey("quantity") ? "quantity" : "count";
-                totalCount += itemsArr[idx]![ck]?.GetValue<int>() ?? 1;
-            }
-
-            first[countKey] = totalCount;
-
-            // Remove duplicates in reverse order to preserve indices
-            for (int j = matchingIndices.Count - 1; j >= 1; j--)
-                itemsArr.RemoveAt(matchingIndices[j]);
-
-            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
-            await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
-            MarkupLine($"[green]✅ Стопки объединены: {totalCount} шт.[/]");
-            MarkupLine("[dim]Нажмите любую клавишу...[/]");
-            ReadKey();
+            MarkupLine($"[yellow]{Markup.Escape(MortalItemPlayerFailureMessages.Sanitize(outcome.Message))}[/]");
+            WaitForKey();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ {Markup.Escape(MortalItemPlayerFailureMessages.TransitionRejected())}[/]");
             WaitForKey();
         }
     }

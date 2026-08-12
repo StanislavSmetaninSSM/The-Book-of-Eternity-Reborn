@@ -2190,6 +2190,57 @@ See `Examples/CLI_Example_Soul_System.md` for complete Soul Relic distribution e
 
 For a genuinely new Mortal faction, return a complete `factionDataChanges` object with an immutable Faction Materialization envelope. Every exact capability and section must be declared; an `empty_by_design` section needs an in-world reason and its canonical empty surface. Every existing faction must already carry its accepted envelope: preserve it and send ordinary semantic changes through `factionCoreChanges`. Receipt-less canonical faction state and a full resend of an existing faction identity are invalid. Continue to use the dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands for those surfaces.
 
+## Mortal Item Materialization v1
+
+Every durable ordinary Mortal item must use exactly one supported route and its
+exact authority kind:
+
+| Route | `sourceAuthority.kind` |
+| --- | --- |
+| `player_acquisition` | `turn_outcome` |
+| `npc_acquisition` | `npc_inventory_add` |
+| `new_npc_inventory` | `new_npc` |
+| `loot_acquisition` | `loot_template` |
+| `craft_output` | `craft_request` |
+| `trade_output` | `npc_trade_receipt` |
+| `quest_reward` | `quest_reward` |
+| `storage_placement` | `location_storage` |
+
+A new independent root has `existedId = null`, one turn-unique `creationRef`,
+all governed semantic fields, and a complete immutable envelope with every one
+of the twelve `materialization.sections` marked `populated` or
+`empty_by_design`. Empty sections retain their canonical empty values and a
+non-empty in-world reason. Не создавай itemId and не создавай materializationReceipt.
+The client alone assigns equal `itemId`/`existedId`,
+creates `game_state/inventory/item_identity_index.json`, computes the seal, and
+records transitions, retirement, and lineage.
+
+Existing transfers bind the exact itemId, keep one source and one destination,
+and preserve the envelope, receipt, and unrelated semantics. Canonical
+`contentsPath` is `null` or an ordered array of permanent parent item IDs.
+`isCarried`, `currentLocationId`, and `currentLocationName` are not placement
+authority and are not GM-authored item fields; exact route destination,
+carrier, and `contentsPath` govern placement.
+Split keeps the selected source ID and creates a client-derived child; merge
+keeps the selected survivor; full local discard retires as `destroyed`.
+
+Repair packet kind `mortal_item_materialization_repair` is bounded to its exact
+item coordinate and GM-owned targets. It never delegates the index, ID,
+receipt, seal, transition, carrier history, or lineage to the GM. A protected
+or unresolved coordinate rolls back client-side. Receipt-less current items
+are invalid: игра ещё не вышла, therefore runtime save compatibility and
+legacy promotion are not requirements.
+
+At a fresh Mortal bootstrap, the client establishes an empty current-life item
+baseline in `game_state/inventory/items.json`,
+`game_state/inventory/item_identity_index.json`,
+`game_state/inventory/item_resources.json`,
+`game_state/inventory/item_bonds.json`,
+`game_state/inventory/item_text_updates.json`, and
+`game_state/npcs/item_journals.json`. Previous-life item sidecars are rollback-only and are not the current GM baseline. The GM must not copy old entries,
+receipts, IDs, or lineage into these files; it creates current-life items only
+through the supported route contracts above.
+
 ---
 
 **🎮 END OF CLI API SPECIFICATION**

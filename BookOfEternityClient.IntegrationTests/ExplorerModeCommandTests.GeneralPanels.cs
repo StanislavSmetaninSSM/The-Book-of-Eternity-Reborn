@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Reflection;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -716,6 +717,46 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Locations_CurrentStorageShowsAcceptedItemsOnly()
+    {
+        await SeedMortalStateAsync();
+        var accepted = CreateAcceptedConsoleItemFromJson(
+            "itm_location_storage_accepted",
+            """{"name":"Принятая карта локации","type":"document","count":2}""");
+        var rejected = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_location_storage_rejected",
+            materializationId: "mat_item_location_storage_rejected");
+        rejected["name"] = "НЕПРИНЯТЫЙ ПРЕДМЕТ ЛОКАЦИИ";
+        rejected["quantity"] = 9;
+        await _fs.WriteFileAtomicAsync(
+            "game_state/world/current_location.json",
+            new JsonObject
+            {
+                ["locationId"] = "loc_accepted_storage_detail",
+                ["name"] = "Площадь точного хранилища",
+                ["locationStorages"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["storageId"] = "storage_location_detail",
+                        ["name"] = "Ларь площади",
+                        ["hasFullAccess"] = true,
+                        ["contents"] = new JsonArray(accepted, rejected)
+                    })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/локации"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("location_storage_accepted_items");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Принятая карта локации", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Предметов: 1", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("НЕПРИНЯТЫЙ ПРЕДМЕТ ЛОКАЦИИ", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Предметов: 2", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Locations_LocalizesLocationTypeInChooser()
     {
         await SeedMortalStateAsync();
@@ -753,30 +794,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ItemTexts_RendersWithoutHiddenErrors()
     {
         await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/inventory/item_text_updates.json", new[]
-        {
-            new
+        var book = CreateAcceptedConsoleItemFromJson(
+            "item_book_001",
+            """
             {
-                itemName = "Письмо от Лиры",
-                textToAppend = "Встретимся у фонтана до рассвета."
+              "name":"Дневник путника",
+              "type":"Книга",
+              "textContent":["Первая запись о долгой дороге.","Вторая запись о странных снах."]
             }
-        });
-        await WriteJsonAsync("game_state/inventory/items.json", new
-        {
-            items = new[]
+            """,
+            "readableOrSentient");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
             {
-                new
-                {
-                    itemId = "item_book_001",
-                    name = "Дневник путника",
-                    textContent = new[]
-                    {
-                        "Первая запись о долгой дороге.",
-                        "Вторая запись о странных снах."
-                    }
-                }
-            }
-        });
+                ["items"] = new JsonArray(book),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteJsonAsync("game_state/npcs/item_journals.json", new[]
         {
             new
@@ -806,20 +840,17 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_Books_WithOnlySealedDocument_RendersUnreadableReason()
     {
         await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/inventory/items.json", new
-        {
-            items = new[]
+        var sealedDocument = CreateAcceptedConsoleItemFromJson(
+            "doc_sealed_cli_1",
+            """{"name":"Запечатанное письмо","type":"Документ","textContent":null,"unreadableReason":"Печать не позволяет прочесть письмо сейчас."}""",
+            "readableOrSentient");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
             {
-                new
-                {
-                    existedId = "doc_sealed_cli_1",
-                    name = "Запечатанное письмо",
-                    type = "Документ",
-                    textContent = (string[]?)null,
-                    unreadableReason = "Печать не позволяет прочесть письмо сейчас."
-                }
-            }
-        });
+                ["items"] = new JsonArray(sealedDocument),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/книги"));
@@ -858,6 +889,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("INLINE_FULL_BODY_MARKER", firstRendered, StringComparison.Ordinal);
         Assert.DoesNotContain("SIDECAR_FULL_BODY_MARKER", firstRendered, StringComparison.Ordinal);
         Assert.DoesNotContain("JOURNAL_FULL_BODY_MARKER", firstRendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("RAW_REJECTED_BOOK_MARKER", firstRendered, StringComparison.Ordinal);
+        Assert.DoesNotContain("ORPHAN_BOOK_SIDECAR_MARKER", firstRendered, StringComparison.Ordinal);
         Assert.Contains(_console.SelectionChoicesHistory, history =>
             history.Choices.Any(choice => choice.Contains("Письмо с площади", StringComparison.OrdinalIgnoreCase)) &&
             history.Choices.Any(choice => choice.Contains("Записка с рынка", StringComparison.OrdinalIgnoreCase)) &&
@@ -892,47 +925,36 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
     private async Task SeedBooksReadingFlowStateAsync()
     {
-        await WriteRawJsonAsync("game_state/inventory/items.json", """
-        {
-          "items": [
+        var inline = CreateAcceptedConsoleItemFromJson(
+            "doc_inline_1",
+            """{"name":"Письмо с площади","type":"Документ","group":"Документы и медиа","textContent":["Лира просит встретиться у фонтана до рассвета. Это длинное письмо продолжается подробностями о стороже, мокрой мостовой и тайном знаке. INLINE_FULL_BODY_MARKER"]}""",
+            "readableOrSentient");
+        var sidecar = CreateAcceptedConsoleItemFromJson(
+            "doc_sidecar_1",
+            """{"name":"Записка с рынка","type":"note","group":"Документы и медиа","textContent":null,"unreadableReason":"Текст хранится в принятой записи предмета."}""",
+            "readableOrSentient");
+        var journal = CreateAcceptedConsoleItemFromJson(
+            "doc_journal_1",
+            """{"name":"Памятная книга","type":"Книга","group":"Документы и медиа","textContent":null,"isSentient":true}""",
+            "readableOrSentient");
+        var sealedDocument = CreateAcceptedConsoleItemFromJson(
+            "doc_sealed_1",
+            """{"name":"Запечатанное письмо","type":"Документ","group":"Документы и медиа","textContent":null,"unreadableReason":"Печать не позволяет прочесть письмо сейчас."}""",
+            "readableOrSentient");
+        var rejected = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_rejected_console_book",
+            materializationId: "mat_item_rejected_console_book");
+        rejected["name"] = "RAW_REJECTED_BOOK_MARKER";
+        rejected["type"] = "Документ";
+        rejected["textContent"] = new JsonArray("RAW_REJECTED_BOOK_MARKER");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
             {
-              "existedId": "doc_inline_1",
-              "itemId": "doc_inline_1",
-              "name": "Письмо с площади",
-              "type": "Документ",
-              "group": "Документы и медиа",
-              "textContent": [
-                "Лира просит встретиться у фонтана до рассвета. Это длинное письмо продолжается подробностями о стороже, мокрой мостовой и тайном знаке. INLINE_FULL_BODY_MARKER"
-              ]
-            },
-            {
-              "existedId": "doc_sidecar_1",
-              "itemId": "doc_sidecar_1",
-              "name": "Записка с рынка",
-              "type": "note",
-              "group": "Документы и медиа",
-              "textContent": null
-            },
-            {
-              "existedId": "doc_journal_1",
-              "itemId": "doc_journal_1",
-              "name": "Памятная книга",
-              "type": "Книга",
-              "group": "Документы и медиа",
-              "textContent": null
-            },
-            {
-              "existedId": "doc_sealed_1",
-              "itemId": "doc_sealed_1",
-              "name": "Запечатанное письмо",
-              "type": "Документ",
-              "group": "Документы и медиа",
-              "textContent": null,
-              "unreadableReason": "Печать не позволяет прочесть письмо сейчас."
-            }
-          ]
-        }
-        """);
+                ["items"] = new JsonArray(inline, sidecar, journal, sealedDocument, rejected),
+                ["UpdateInventory"] = new JsonArray(rejected.DeepClone()),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteRawJsonAsync("game_state/inventory/item_text_updates.json", """
         {
           "entries": [
@@ -942,6 +964,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
               "textContent": [
                 "На обороте записки указан путь через северные ворота. Это длинная приписка с именами торговцев, часом встречи и предупреждением о дозорных. SIDECAR_FULL_BODY_MARKER"
               ]
+            },
+            {
+              "itemId": "doc_orphan_console_1",
+              "itemName": "ORPHAN_BOOK_SIDECAR_MARKER",
+              "textContent": ["ORPHAN_BOOK_SIDECAR_MARKER"]
             }
           ]
         }
@@ -1552,22 +1579,26 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 }
             }
         });
-        await WriteJsonAsync("game_state/inventory/items.json", new
-        {
-            items = new[]
+        var bracketBook = CreateAcceptedConsoleItemFromJson(
+            "item_book_bracket_001",
+            """
             {
-                new
-                {
-                    itemId = "item_book_bracket_001",
-                    name = "Дневник [debug]",
-                    textContent = new[]
-                    {
-                        "Первая запись [broken",
-                        "Вторая запись [card_alpha, card_beta]."
-                    }
-                }
+              "name": "Дневник [debug]",
+              "type": "note",
+              "textContent": [
+                "Первая запись [broken",
+                "Вторая запись [card_alpha, card_beta]."
+              ]
             }
-        });
+            """,
+            "readableOrSentient");
+        await _fs.WriteFileAtomicAsync(
+            "game_state/inventory/items.json",
+            new JsonObject
+            {
+                ["items"] = new JsonArray(bracketBook),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteJsonAsync("game_state/npcs/item_journals.json", new[]
         {
             new
@@ -2066,6 +2097,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                   "itemId": "item_merchant_seal",
                   "displayName": "Печать караванного мастера"
                 },
+                "item_raw_false_reward",
                 {
                   "itemId": "item_first_life_ring",
                   "displayName": "Перстень первой жизни",
@@ -2091,18 +2123,21 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
           "questChains": []
         }
         """);
-        await WriteRawJsonAsync("game_state/inventory/items.json", """
-        {
-          "items": [
+        var acceptedReward = CreateAcceptedConsoleItemFromJson(
+            "item_merchant_seal",
+            """{"name":"Печать караванного мастера","description":"Печать, полученная за охрану каравана.","type":"QuestItem"}""");
+        var rawReward = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_raw_false_reward",
+            materializationId: "mat_item_raw_false_reward");
+        rawReward["name"] = "НЕПРИНЯТАЯ ЛОЖНАЯ НАГРАДА";
+        await _fs.WriteFileAtomicAsync(
+            InventoryEquipmentService.ItemsPath,
+            new JsonObject
             {
-              "itemId": "item_merchant_seal",
-              "name": "Печать караванного мастера",
-              "description": "Печать, полученная за охрану каравана.",
-              "type": "Квестовый предмет"
-            }
-          ]
-        }
-        """);
+                ["items"] = new JsonArray(acceptedReward, rawReward),
+                ["UpdateInventory"] = new JsonArray(rawReward.DeepClone()),
+                ["equippedItems"] = new JsonObject()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteRawJsonAsync("game_state/player/skills_active.json", """
         {
           "activeSkillChanges": [
@@ -2144,6 +2179,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Мастер гильдии", renderedText, StringComparison.Ordinal);
         Assert.Contains("Перстень первой жизни", renderedText, StringComparison.Ordinal);
         Assert.Contains("Перстень остался в прошлой инкарнации.", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Предмет из истории квеста — подробности пока не записаны", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("НЕПРИНЯТАЯ ЛОЖНАЯ НАГРАДА", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("item_raw_false_reward", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("item_merchant_seal", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("item_first_life_ring", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("npc_guild_master", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -2151,6 +2189,66 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("validation", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Quests_HistoryRewardQuestIdIsExactAndDuplicateAmbiguityFailsClosed()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/quests/quest_history.json", """
+        {
+          "questHistory": [
+            {
+              "questId": "quest_exact_reward_binding",
+              "questName": "Проверка точной награды",
+              "outcome": "completed"
+            }
+          ],
+          "questRewards": [
+            {
+              "questId": "QUEST_EXACT_REWARD_BINDING",
+              "itemsReceived": [
+                {
+                  "displayName": "CASE_VARIANT_QUEST_REWARD_MARKER",
+                  "authorityStatus": "HistoricalOnly",
+                  "reason": "Чужая запись с иным регистром."
+                }
+              ]
+            },
+            {
+              "questId": "quest_exact_reward_binding",
+              "itemsReceived": [
+                {
+                  "displayName": "DUPLICATE_QUEST_REWARD_A_MARKER",
+                  "authorityStatus": "HistoricalOnly",
+                  "reason": "Первая неоднозначная запись."
+                }
+              ]
+            },
+            {
+              "questId": "quest_exact_reward_binding",
+              "itemsReceived": [
+                {
+                  "displayName": "DUPLICATE_QUEST_REWARD_B_MARKER",
+                  "authorityStatus": "HistoricalOnly",
+                  "reason": "Вторая неоднозначная запись."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var exception = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/квесты"));
+
+        Assert.Null(exception);
+        AssertNoHiddenExplorerErrors("quest_history_exact_reward_binding");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Проверка точной награды", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("CASE_VARIANT_QUEST_REWARD_MARKER", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("DUPLICATE_QUEST_REWARD_A_MARKER", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("DUPLICATE_QUEST_REWARD_B_MARKER", renderedText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2186,6 +2284,66 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Статус", renderedText, StringComparison.Ordinal);
         Assert.Contains("Активен", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("Active", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Quests_PlannedRewardsAndStructuredLogHideItemAuthorityRecursively()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/quests/regular_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "quest_safe_structured_reward",
+              "questName": "Память северной мастерской",
+              "status": "Active",
+              "description": "Вернуть мастерам утраченный знак.",
+              "rewards": {
+                "items": [
+                  {
+                    "displayName": "Жетон северной мастерской",
+                    "visibleLore": "Мастера узнают этот знак.",
+                    "route": "PRIVATE_QUEST_REWARD_ROUTE",
+                    "materializationReceipt": "PRIVATE_QUEST_REWARD_RECEIPT",
+                    "requestId": "PRIVATE_QUEST_REWARD_REQUEST",
+                    "removedItemId": "PRIVATE_QUEST_REMOVED_ITEM",
+                    "destinationContainerId": "PRIVATE_QUEST_DESTINATION_CONTAINER",
+                    "currentContentsPath": "PRIVATE_QUEST_CURRENT_CONTENTS_PATH",
+                    "UpdateInventory": [
+                      { "name": "PRIVATE_QUEST_NESTED_UPDATE" }
+                    ],
+                    "removeInventoryItems": [
+                      { "itemName": "PRIVATE_QUEST_NESTED_REMOVAL" }
+                    ]
+                  }
+                ]
+              },
+              "detailsLog": [
+                {
+                  "summary": "Найден след старого клейма.",
+                  "creationRef": "PRIVATE_QUEST_LOG_CREATION_REF",
+                  "NPCInventoryRemovals": [
+                    { "itemName": "PRIVATE_QUEST_LOG_REMOVAL" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var exception = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/квесты"));
+
+        Assert.Null(exception);
+        AssertNoHiddenExplorerErrors("quest_structured_reward_item_privacy");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Жетон северной мастерской", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Мастера узнают этот знак", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Найден след старого клейма", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_QUEST_", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("materializationReceipt", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Update Inventory", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
