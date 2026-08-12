@@ -8,7 +8,8 @@ internal sealed record MortalLocationAcceptedTurnInput(
     JsonObject PreTurnIdentityIndex,
     JsonObject? RawCurrentLocationData,
     JsonObject? RawWorldMapUpdates,
-    int Turn);
+    int Turn,
+    JsonObject? BootstrapScaffold = null);
 
 internal sealed record MortalLocationStorageCoordinate(
     string LocationId,
@@ -38,7 +39,8 @@ internal sealed class MortalLocationAcceptedTurnPlan
         IReadOnlyList<MortalLocationStorageCoordinate> acceptedStorageCoordinates,
         IReadOnlyList<MortalLocationGovernedRewrite> governedRewrites,
         IReadOnlyList<string> touchedPaths,
-        IReadOnlyList<MortalLocationRepairContext> repairContexts)
+        IReadOnlyList<MortalLocationRepairContext> repairContexts,
+        JsonObject? finalBootstrapScaffold = null)
     {
         FinalWorldMap = finalWorldMap ?? throw new ArgumentNullException(nameof(finalWorldMap));
         FinalCurrentLocation = finalCurrentLocation;
@@ -49,6 +51,7 @@ internal sealed class MortalLocationAcceptedTurnPlan
         GovernedRewrites = governedRewrites ?? throw new ArgumentNullException(nameof(governedRewrites));
         TouchedPaths = touchedPaths ?? throw new ArgumentNullException(nameof(touchedPaths));
         RepairContexts = repairContexts ?? throw new ArgumentNullException(nameof(repairContexts));
+        FinalBootstrapScaffold = finalBootstrapScaffold;
     }
 
     internal JsonObject FinalWorldMap { get; }
@@ -68,6 +71,8 @@ internal sealed class MortalLocationAcceptedTurnPlan
     internal IReadOnlyList<string> TouchedPaths { get; }
 
     internal IReadOnlyList<MortalLocationRepairContext> RepairContexts { get; }
+
+    internal JsonObject? FinalBootstrapScaffold { get; }
 }
 
 internal sealed record MortalLocationAcceptedTurnPlanningResult(

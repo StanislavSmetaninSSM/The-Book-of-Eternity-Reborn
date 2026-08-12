@@ -198,13 +198,22 @@ public sealed class GameEngineSourceGuardTests
 
         Assert.True(baselineIndex >= 0, "Fresh Mortal bootstrap must materialize client-owned baseline files before the GM sees the first Mortal turn.");
         Assert.True(snapshotIndex >= 0, "Fresh Mortal bootstrap must create a rollback baseline before dispatch.");
-        Assert.True(baselineIndex < snapshotIndex, "Fresh Mortal bootstrap baseline files must exist before pending-turn snapshot authority is captured.");
-        Assert.True(scaffoldIndex > snapshotIndex, "Fresh Mortal bootstrap scaffold must be written after baseline authority exists.");
-        Assert.True(scaffoldIndex < requestWriteIndex, "Fresh Mortal bootstrap scaffold must be available before GM sees input/turn_request.json.");
+        Assert.True(baselineIndex < scaffoldIndex, "Fresh Mortal bootstrap neutral roots must exist before location reservations are written.");
+        Assert.True(scaffoldIndex < snapshotIndex, "Fresh Mortal bootstrap scaffold must be captured by pending-turn snapshot authority.");
+        Assert.True(snapshotIndex < requestWriteIndex, "The complete bootstrap baseline and scaffold snapshot must exist before GM sees input/turn_request.json.");
         Assert.Contains("MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles", source, StringComparison.Ordinal);
         Assert.Contains("game_state/control/mortal_bootstrap_scaffold.json", source, StringComparison.Ordinal);
         Assert.Contains("MORTAL BOOTSTRAP BASELINE", source, StringComparison.Ordinal);
         Assert.Contains("baselineMaterializedBeforeDispatch", source, StringComparison.Ordinal);
+
+        var scaffoldWriter = ExtractMethodSource(
+            source,
+            "private async Task WriteMortalBootstrapScaffoldAsync(");
+        var compactScaffoldWriter = string.Concat(scaffoldWriter.Where(c => !char.IsWhiteSpace(c)));
+        Assert.Contains(
+            "RegisterMortalBootstrapSnapshotFile(rollbackSnapshot,MortalBootstrapLocationScaffold.StatePath);",
+            compactScaffoldWriter,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -382,7 +391,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"offscreenSceneActorRule\"", method, StringComparison.Ordinal);
         Assert.Contains("NPCsInScene is only for actors physically present in currentLocationData", method, StringComparison.Ordinal);
         Assert.Contains("voices behind a door", method, StringComparison.Ordinal);
-        Assert.Contains("nearbyExitLocationId", method, StringComparison.Ordinal);
+        Assert.Contains("unmaterialized nearby place", method, StringComparison.Ordinal);
         Assert.Contains("Prevent npc_scene_location_mismatch", method, StringComparison.Ordinal);
     }
 
@@ -399,16 +408,20 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void MortalBootstrapScaffold_MustPublishCanonicalCoordinateAuthority()
+    public void MortalBootstrapScaffold_MustPublishExactLocationReservations()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var method = ExtractMethodSource(source, "private async Task WriteMortalBootstrapScaffoldAsync(");
 
-        Assert.Contains("\"canonicalCoordinateAuthority\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"currentLocationCoordinates\"", method, StringComparison.Ordinal);
-        Assert.Contains("\"nearbyExitCoordinates\"", method, StringComparison.Ordinal);
-        Assert.Contains("current_location_coordinates_mismatch", method, StringComparison.Ordinal);
-        Assert.Contains("Copy these exact coordinates", method, StringComparison.Ordinal);
+        Assert.Contains("\"locationMaterializationRequest\"", method, StringComparison.Ordinal);
+        Assert.Contains("MortalBootstrapLocationScaffold.CreatePendingRequest", method, StringComparison.Ordinal);
+        Assert.Contains("ordinary complete materialization routes", method, StringComparison.Ordinal);
+        Assert.Contains("exact temporary refs", method, StringComparison.Ordinal);
+        Assert.Contains("never author adjacency summaries", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"canonicalCoordinateAuthority\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"suggestedStableIds\"", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("knownExits", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("adjacencyMap", method, StringComparison.Ordinal);
     }
 
     [Fact]

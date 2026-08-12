@@ -105,18 +105,18 @@ bootstrap-only reduced semantics without committing playable state.
 
 ### Tests for User Story 2
 
-- [ ] T029 [US2] Add red fresh-root assertions for neutral map/current/index and exact reserved scaffold references/coordinates/IDs in `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
-- [ ] T030 [US2] Add red golden-path start+neighbor+directed-link and narrative-only unresolved-exit acceptance tests in `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
-- [ ] T031 [US2] Add red missing-start, partial-start, reservation-alias, duplicate-route, fake-neighbor, and settled-reservation replay tests in `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
-- [ ] T032 [P] [US2] Add red snapshot/tracked-path assertions for world map, current location, scaffold, and location index in `BookOfEternityClient.IntegrationTests/PendingTurnSnapshotTests.cs`
+- [x] T029 [US2] Add red fresh-root assertions for neutral map/current/index and exact reserved scaffold references/coordinates/IDs in `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
+- [x] T030 [US2] Add red golden-path start+neighbor+directed-link and narrative-only unresolved-exit acceptance tests in `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
+- [x] T031 [US2] Add red missing-start, partial-start, reservation-alias, duplicate-route, fake-neighbor, and settled-reservation replay tests in `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
+- [x] T032 [P] [US2] Add red snapshot/tracked-path assertions for world map, current location, scaffold, and location index in `BookOfEternityClient.IntegrationTests/PendingTurnSnapshotTests.cs`
 
 ### Implementation for User Story 2
 
-- [ ] T033 [US2] Replace pseudo-ready start/neighbor state with neutral canonical roots and empty location index in `BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs`
-- [ ] T034 [US2] Emit exact start/neighbor/link reservations, coordinate constraints, materialization requests, and narrative-only alternative in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
-- [ ] T035 [US2] Validate scaffold source authority, reservation consumption, pending-state retention, and ordinary contract equivalence in `BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs`
-- [ ] T036 [US2] Remove bootstrap `knownExits`/`adjacencyMap` and pseudo-location guidance from the runtime bootstrap reminder in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
-- [ ] T037 [US2] Run the bootstrap and snapshot Focused filters and record evidence in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T033 [US2] Replace pseudo-ready start/neighbor state with neutral canonical roots and empty location index in `BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs`
+- [x] T034 [US2] Emit exact start/neighbor/link reservations, coordinate constraints, materialization requests, and narrative-only alternative in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
+- [x] T035 [US2] Validate scaffold source authority, reservation consumption, pending-state retention, and ordinary contract equivalence in `BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs`
+- [x] T036 [US2] Remove bootstrap `knownExits`/`adjacencyMap` and pseudo-location guidance from the runtime bootstrap reminder in `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
+- [x] T037 [US2] Run the bootstrap and snapshot Focused filters and record evidence in `specs/1520-complete-location-materialization/quickstart.md`
 
 **Checkpoint**: A new session cannot become playable through a receipt-less
 placeholder, while ordinary first materialization handles the entire golden path.

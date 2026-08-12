@@ -31,6 +31,25 @@ public partial class CanonicalStateNormalizer
                 backups);
         }
 
+        JsonObject? preTurnBootstrapScaffold = null;
+        JsonObject? currentBootstrapScaffold = null;
+        JsonObject? bootstrapRequest = null;
+        if (backups?.ContainsKey(MortalBootstrapLocationScaffold.StatePath) == true)
+        {
+            preTurnBootstrapScaffold = await ReadRequiredMortalLocationBackupAsync(
+                MortalBootstrapLocationScaffold.StatePath,
+                backups);
+            currentBootstrapScaffold = await ReadMortalLocationObjectRootAsync(
+                MortalBootstrapLocationScaffold.StatePath);
+            if (currentBootstrapScaffold == null ||
+                !JsonNode.DeepEquals(currentBootstrapScaffold, preTurnBootstrapScaffold))
+            {
+                throw new InvalidDataException(
+                    "The client-owned Mortal bootstrap scaffold changed after pending-turn snapshot capture.");
+            }
+            bootstrapRequest = preTurnBootstrapScaffold["locationMaterializationRequest"] as JsonObject;
+        }
+
         var acceptedTurn = await TryReadCurrentTurnNumberAsync();
         if (acceptedTurn < 1)
         {
@@ -45,7 +64,8 @@ public partial class CanonicalStateNormalizer
                 preTurnIndex,
                 hasCurrentCommand ? currentProjection : null,
                 hasMapCommand ? currentMap : null,
-                acceptedTurn));
+                acceptedTurn,
+                bootstrapRequest));
         if (!result.Success || result.Plan == null)
         {
             var issue = result.Issues.FirstOrDefault();
@@ -80,6 +100,19 @@ public partial class CanonicalStateNormalizer
             await WriteCanonicalFileAtomicAsync(
                 MortalLocationIdentityState.StatePath,
                 plan.FinalIdentityIndex.ToJsonString(JsonOpts));
+        }
+        if (plan.TouchedPaths.Contains(
+                MortalBootstrapLocationScaffold.StatePath,
+                StringComparer.Ordinal) &&
+            plan.FinalBootstrapScaffold != null &&
+            preTurnBootstrapScaffold != null)
+        {
+            var settledRoot = preTurnBootstrapScaffold.DeepClone().AsObject();
+            settledRoot["locationMaterializationRequest"] =
+                plan.FinalBootstrapScaffold.DeepClone();
+            await WriteCanonicalFileAtomicAsync(
+                MortalBootstrapLocationScaffold.StatePath,
+                settledRoot.ToJsonString(JsonOpts));
         }
     }
 

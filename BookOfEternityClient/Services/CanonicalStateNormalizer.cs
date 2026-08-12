@@ -64,6 +64,7 @@ public partial class CanonicalStateNormalizer
         MortalLocationMaterializationContract.WorldMapPath,
         MortalLocationMaterializationContract.CurrentLocationPath,
         MortalLocationIdentityState.StatePath,
+        MortalBootstrapLocationScaffold.StatePath,
         StorageTransportMoveService.VehiclesPath,
         "game_state/factions/faction_core.json",
         "game_state/npcs/npc_core.json",

@@ -40,7 +40,151 @@ public partial class ValidationService
             MortalLocationMaterializationContract.WorldMapPath,
             validateCurrentLocation: false,
             issues);
+        await ValidateRawMortalBootstrapLocationReservationsAsync(issues);
         return issues;
+    }
+
+    private async Task ValidateRawMortalBootstrapLocationReservationsAsync(
+        List<ValidationIssue> issues)
+    {
+        var scaffoldJson = await _fs.ReadFileAsync(MortalBootstrapLocationScaffold.StatePath);
+        if (string.IsNullOrWhiteSpace(scaffoldJson))
+            return;
+
+        JsonObject? scaffoldRoot;
+        JsonObject? request;
+        try
+        {
+            scaffoldRoot = JsonNode.Parse(scaffoldJson) as JsonObject;
+            request = scaffoldRoot?["locationMaterializationRequest"] as JsonObject;
+        }
+        catch (JsonException exception)
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath,
+                "mortal_bootstrap_location_scaffold_invalid",
+                "The client-owned Mortal bootstrap scaffold is not readable object JSON.",
+                "exact client scaffold",
+                exception.Message));
+            return;
+        }
+
+        if (request == null)
+            return;
+        if (!MortalBootstrapLocationScaffold.TryReadRequest(
+                request,
+                out var reservationSet,
+                out var scaffoldError))
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest",
+                "mortal_bootstrap_location_scaffold_invalid",
+                "The client-owned Mortal bootstrap location request is malformed.",
+                "exact current bootstrap location request",
+                scaffoldError));
+            return;
+        }
+
+        var currentRoot = await ReadOptionalLocationObjectAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath);
+        var mapRoot = await ReadOptionalLocationObjectAsync(
+            MortalLocationMaterializationContract.WorldMapPath);
+        var hasRawCommands = currentRoot?["currentLocationData"] is JsonObject ||
+                             mapRoot?["worldMapUpdates"] is JsonObject;
+
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            lookup.Manifest == null)
+        {
+            if (hasRawCommands || reservationSet.State == "pending")
+            {
+                issues.Add(LocationIssue(
+                    MortalBootstrapLocationScaffold.StatePath,
+                    "mortal_bootstrap_location_snapshot_required",
+                    "Bootstrap location reservations require a validated pending-turn snapshot.",
+                    "tracked neutral map/current/index/scaffold baseline",
+                    DescribeValidatedPendingTurnSnapshotStatus(lookup.Status)));
+            }
+            return;
+        }
+
+        var preMap = ParseOptionalLocationObject(
+            await ReadValidatedPendingTurnSnapshotFileAsync(
+                lookup.Manifest,
+                MortalLocationMaterializationContract.WorldMapPath));
+        var preCurrent = ParseOptionalLocationObject(
+            await ReadValidatedPendingTurnSnapshotFileAsync(
+                lookup.Manifest,
+                MortalLocationMaterializationContract.CurrentLocationPath));
+        var preIndex = ParseOptionalLocationObject(
+            await ReadValidatedPendingTurnSnapshotFileAsync(
+                lookup.Manifest,
+                MortalLocationIdentityState.StatePath));
+        var preScaffoldRoot = ParseOptionalLocationObject(
+            await ReadValidatedPendingTurnSnapshotFileAsync(
+                lookup.Manifest,
+                MortalBootstrapLocationScaffold.StatePath));
+        if (preMap == null || preCurrent == null || preIndex == null || preScaffoldRoot == null)
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath,
+                "mortal_bootstrap_location_snapshot_required",
+                "Bootstrap location reservations require all four readable tracked baseline files.",
+                "world map, current location, location index, scaffold",
+                "one or more snapshot files missing"));
+            return;
+        }
+
+        if (hasRawCommands &&
+            reservationSet.State == "pending" &&
+            !JsonNode.DeepEquals(scaffoldRoot, preScaffoldRoot))
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath,
+                "mortal_bootstrap_location_scaffold_mutated",
+                "The GM cannot mutate the client-owned bootstrap reservation request.",
+                "byte-equivalent pre-turn scaffold semantics",
+                "current scaffold differs from validated snapshot"));
+            return;
+        }
+
+        var planningResult = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                preMap,
+                preCurrent,
+                preIndex,
+                currentRoot?["currentLocationData"] is JsonObject ? currentRoot : null,
+                mapRoot?["worldMapUpdates"] is JsonObject ? mapRoot : null,
+                lookup.Manifest.TurnNumber,
+                request));
+        foreach (var issue in planningResult.Issues)
+        {
+            if (issue.Code?.StartsWith("mortal_bootstrap_location_", StringComparison.Ordinal) == true ||
+                string.Equals(
+                    issue.Code,
+                    "mortal_location_materialization_duplicate_creation_route",
+                    StringComparison.Ordinal))
+            {
+                issues.Add(issue);
+            }
+        }
+    }
+
+    private async Task<JsonObject?> ReadOptionalLocationObjectAsync(string path) =>
+        ParseOptionalLocationObject(await _fs.ReadFileAsync(path));
+
+    private static JsonObject? ParseOptionalLocationObject(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 
     private async Task ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(
@@ -68,6 +212,9 @@ public partial class ValidationService
                 MortalLocationIdentityState.StatePath,
                 writeLease)
             : null;
+        var scaffoldJson = await ReadMortalLocationValidationFileAsync(
+            MortalBootstrapLocationScaffold.StatePath,
+            writeLease);
 
         if (string.IsNullOrWhiteSpace(mapJson) &&
             string.IsNullOrWhiteSpace(currentJson) &&
@@ -107,9 +254,230 @@ public partial class ValidationService
                 MortalLocationMaterializationContract.CurrentLocationPath,
                 issues);
             if (current != null)
-                ValidateCurrentLocationProjection(current, locations, issues);
+            {
+                if (IsPendingMortalLocationRoot(current))
+                {
+                    if (locations.Count != 0 ||
+                        links.Count != 0 ||
+                        identityState.LocationEntriesById.Count != 0 ||
+                        identityState.LinkEntriesById.Count != 0)
+                    {
+                        issues.Add(LocationIssue(
+                            MortalLocationMaterializationContract.CurrentLocationPath,
+                            "mortal_bootstrap_location_pending_state_mismatch",
+                            "Pending current-location state is allowed only with an empty canonical map and identity index.",
+                            "empty map/index",
+                            $"locations={locations.Count}; links={links.Count}; locationEntries={identityState.LocationEntriesById.Count}; linkEntries={identityState.LinkEntriesById.Count}"));
+                    }
+                }
+                else
+                {
+                    ValidateCurrentLocationProjection(current, locations, issues);
+                }
+            }
+        }
+
+        ValidateCanonicalMortalBootstrapLocationSettlement(
+            scaffoldJson,
+            currentJson,
+            locations,
+            links,
+            issues);
+    }
+
+    private static void ValidateCanonicalMortalBootstrapLocationSettlement(
+        string? scaffoldJson,
+        string? currentJson,
+        JsonArray locations,
+        JsonArray links,
+        List<ValidationIssue> issues)
+    {
+        if (string.IsNullOrWhiteSpace(scaffoldJson))
+            return;
+
+        var scaffoldRoot = ParseOptionalLocationObject(scaffoldJson);
+        var request = scaffoldRoot?["locationMaterializationRequest"] as JsonObject;
+        if (request == null)
+            return;
+        if (!MortalBootstrapLocationScaffold.TryReadRequest(
+                request,
+                out var reservations,
+                out var error))
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest",
+                "mortal_bootstrap_location_scaffold_invalid",
+                "The client-owned bootstrap location request is malformed.",
+                "exact pending or settled request",
+                error));
+            return;
+        }
+
+        var current = ParseOptionalLocationObject(currentJson);
+        if (reservations.State == "pending")
+        {
+            if (current == null ||
+                !IsPendingMortalLocationRoot(current) ||
+                locations.Count != 0 ||
+                links.Count != 0)
+            {
+                issues.Add(LocationIssue(
+                    MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.state",
+                    "mortal_bootstrap_location_pending_state_mismatch",
+                    "An open bootstrap request must retain the exact neutral location roots until accepted normalization succeeds.",
+                    "pending current root and empty map",
+                    "materialized or malformed canonical state"));
+            }
+            return;
+        }
+
+        if (request["settlement"] is not JsonObject settlement ||
+            ReadExactLocationNodeString(settlement, "requestId") != reservations.RequestId ||
+            ReadLocationNodeInt(settlement, "acceptedTurn") != reservations.TurnNumber)
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.settlement",
+                "mortal_bootstrap_location_settlement_invalid",
+                "A settled bootstrap request requires exact request and accepted-turn evidence.",
+                $"requestId={reservations.RequestId}; acceptedTurn={reservations.TurnNumber}",
+                request["settlement"]?.ToJsonString() ?? "missing"));
+            return;
+        }
+
+        var branch = ReadExactLocationNodeString(settlement, "branch");
+        var startLocationId = ReadExactLocationNodeString(settlement, "startLocationId");
+        var start = FindExactBootstrapLocation(
+            locations,
+            startLocationId,
+            reservations.Start,
+            reservations);
+        if (start == null ||
+            current == null ||
+            !string.Equals(
+                ReadExactLocationNodeString(current, "locationId"),
+                startLocationId,
+                StringComparison.Ordinal))
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.settlement.startLocationId",
+                "mortal_bootstrap_location_settlement_invalid",
+                "Settled bootstrap start must resolve to the exact accepted current canonical location and receipt authority.",
+                reservations.Start.ReservedLocationId,
+                startLocationId ?? "missing"));
+        }
+
+        if (branch == MortalBootstrapLocationScaffold.NarrativeOnlyBranch)
+        {
+            if (settlement["neighborLocationId"] != null || settlement["linkId"] != null)
+            {
+                issues.Add(LocationIssue(
+                    MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.settlement",
+                    "mortal_bootstrap_location_settlement_invalid",
+                    "Narrative-only bootstrap completion must not settle neighbor or link identity.",
+                    "neighborLocationId=null and linkId=null",
+                    settlement.ToJsonString()));
+            }
+            return;
+        }
+
+        if (branch != MortalBootstrapLocationScaffold.MaterializedNeighborBranch)
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.settlement.branch",
+                "mortal_bootstrap_location_settlement_invalid",
+                "Bootstrap settlement branch is outside the closed completion catalog.",
+                $"{MortalBootstrapLocationScaffold.MaterializedNeighborBranch}|{MortalBootstrapLocationScaffold.NarrativeOnlyBranch}",
+                branch ?? "missing"));
+            return;
+        }
+
+        var neighborLocationId = ReadExactLocationNodeString(settlement, "neighborLocationId");
+        var linkId = ReadExactLocationNodeString(settlement, "linkId");
+        var neighbor = FindExactBootstrapLocation(
+            locations,
+            neighborLocationId,
+            reservations.Neighbor,
+            reservations);
+        var linkMatches = links.OfType<JsonObject>()
+            .Where(candidate =>
+                string.Equals(ReadExactLocationNodeString(candidate, "linkId"), linkId, StringComparison.Ordinal) &&
+                string.Equals(ReadExactLocationNodeString(candidate, "sourceLocationId"), startLocationId, StringComparison.Ordinal) &&
+                string.Equals(ReadExactLocationNodeString(candidate, "targetLocationId"), neighborLocationId, StringComparison.Ordinal) &&
+                BootstrapReceiptMatches(
+                    candidate,
+                    reservations.Link.InitialId,
+                    reservations))
+            .Take(2)
+            .ToArray();
+        var link = linkMatches.Length == 1 ? linkMatches[0] : null;
+        if (neighbor == null || link == null ||
+            neighborLocationId != reservations.Neighbor.ReservedLocationId ||
+            linkId != reservations.Link.ReservedLinkId)
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.settlement",
+                "mortal_bootstrap_location_settlement_invalid",
+                "Materialized bootstrap completion must resolve the exact reserved neighbor and directed link.",
+                $"{reservations.Neighbor.ReservedLocationId}; {reservations.Link.ReservedLinkId}",
+                settlement.ToJsonString()));
         }
     }
+
+    private static JsonObject? FindExactBootstrapLocation(
+        JsonArray locations,
+        string? locationId,
+        MortalBootstrapLocationReservation reservation,
+        MortalBootstrapLocationReservationSet request)
+    {
+        var matches = locations.OfType<JsonObject>()
+            .Where(candidate =>
+                string.Equals(ReadExactLocationNodeString(candidate, "locationId"), locationId, StringComparison.Ordinal) &&
+                locationId == reservation.ReservedLocationId &&
+                BootstrapReceiptMatches(candidate, reservation.InitialId, request))
+            .Take(2)
+            .ToArray();
+        return matches.Length == 1 ? matches[0] : null;
+    }
+
+    private static bool BootstrapReceiptMatches(
+        JsonObject candidate,
+        string initialId,
+        MortalBootstrapLocationReservationSet request) =>
+        candidate["materializationReceipt"] is JsonObject receipt &&
+        string.Equals(ReadExactLocationNodeString(receipt, "initialId"), initialId, StringComparison.Ordinal) &&
+        string.Equals(
+            ReadExactLocationNodeString(receipt, "sourceAuthorityKind"),
+            request.AuthorityKind,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            ReadExactLocationNodeString(receipt, "sourceAuthorityId"),
+            request.AuthorityId,
+            StringComparison.Ordinal);
+
+    private static bool IsPendingMortalLocationRoot(JsonObject current) =>
+        current.Count == 4 &&
+        ReadLocationNodeInt(current, "schemaVersion") == 1 &&
+        string.Equals(ReadExactLocationNodeString(current, "realm"), "mortal_world", StringComparison.Ordinal) &&
+        current.ContainsKey("locationId") &&
+        current["locationId"] == null &&
+        string.Equals(ReadExactLocationNodeString(current, "state"), "pending_materialization", StringComparison.Ordinal);
+
+    private static string? ReadExactLocationNodeString(JsonObject? root, string field)
+    {
+        if (root?[field] is not JsonValue value ||
+            !value.TryGetValue<string>(out var text) ||
+            string.IsNullOrEmpty(text) ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return null;
+        }
+        return text;
+    }
+
+    private static int? ReadLocationNodeInt(JsonObject? root, string field) =>
+        root?[field] is JsonValue value && value.TryGetValue<int>(out var result)
+            ? result
+            : null;
 
     private Task<string?> ReadMortalLocationValidationFileAsync(
         string path,

@@ -428,51 +428,51 @@ git commit -m "feat: normalize Mortal location state (#1513)"
 - Modify: `BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs`
 - Create or modify: `BookOfEternityClient.IntegrationTests/PendingTurnSnapshotTests.cs`
 
-- [ ] **Step 1: Add neutral-root RED assertions**
+- [x] **Step 1: Add neutral-root RED assertions**
 
 Assert fresh state contains exact empty canonical map/index and pending current
 root, not `loc_life_*_start`, a pseudo neighbor, raw `newLocations`, `newLinks`,
 `knownExits`, or `adjacencyMap`.
 
-- [ ] **Step 2: Add scaffold RED assertions**
+- [x] **Step 2: Add scaffold RED assertions**
 
 Assert the client scaffold contains exact start/neighbor/link temporary
 references, coordinate constraints, permanent reservation evidence, request ID,
 and two allowed completion branches. Assert those client fields are not copied
 into GM-writable files.
 
-- [ ] **Step 3: Add golden and negative lifecycle tests**
+- [x] **Step 3: Add golden and negative lifecycle tests**
 
 Cover complete start+neighbor+link, narrative-only exit, missing start, partial
 start, alias reservation, duplicate creation carrier, fake neighbor identity,
 and settled reservation replay.
 
-- [ ] **Step 4: Run bootstrap RED**
+- [x] **Step 4: Run bootstrap RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalBootstrapValidationTests|FullyQualifiedName~PendingTurnSnapshotTests"
 ```
 
-- [ ] **Step 5: Implement neutral bootstrap files**
+- [x] **Step 5: Implement neutral bootstrap files**
 
 Change `BuildFreshMortalBootstrapFiles` to write the three exact neutral roots.
 Delete `BuildCurrentLocation` / legacy command-shaped `BuildWorldMap` behavior or
 replace them with current-schema builders; do not leave an unused compatibility
 helper.
 
-- [ ] **Step 6: Implement scaffold reservations and reminder**
+- [x] **Step 6: Implement scaffold reservations and reminder**
 
 Rewrite scaffold construction and system reminder to request ordinary complete
 materialization. Remove all claims that current/map locations are already
 materialized and all GM instructions to author adjacency summaries.
 
-- [ ] **Step 7: Validate and consume scaffold exactly once**
+- [x] **Step 7: Validate and consume scaffold exactly once**
 
 The accepted planner must match exact refs, request authority, and coordinates.
 Only successful post-validation consumes reservations. A failed/repair turn
 retains the same pending scaffold.
 
-- [ ] **Step 8: Run GREEN and commit**
+- [x] **Step 8: Run GREEN and commit**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalBootstrapValidationTests|FullyQualifiedName~PendingTurnSnapshotTests"

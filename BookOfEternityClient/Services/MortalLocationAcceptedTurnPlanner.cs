@@ -118,6 +118,32 @@ internal static class MortalLocationAcceptedTurnPlanner
         var linkCandidates = ReadLinkCandidates(updates, preTurnIndex, input.Turn, issues);
         ValidateRawLinkEndpoints(linkCandidates, preTurnLocationsById, locationCandidates, issues);
 
+        BootstrapPlanningContext? bootstrap = null;
+        if (input.BootstrapScaffold != null)
+        {
+            if (!MortalBootstrapLocationScaffold.TryReadRequest(
+                    input.BootstrapScaffold,
+                    out var reservations,
+                    out var scaffoldError))
+            {
+                issues.Add(Issue(
+                    MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest",
+                    "mortal_bootstrap_location_scaffold_invalid",
+                    "The client-owned Mortal bootstrap location request is malformed.",
+                    "exact current bootstrap location request",
+                    scaffoldError));
+            }
+            else
+            {
+                bootstrap = ValidateBootstrapReservations(
+                    reservations,
+                    locationCandidates,
+                    linkCandidates,
+                    input.Turn,
+                    issues);
+            }
+        }
+
         if (issues.Count != 0)
             return Failed(issues);
 
@@ -126,9 +152,26 @@ internal static class MortalLocationAcceptedTurnPlanner
         foreach (var candidate in locationCandidates)
         {
             var initialId = ReadExactString(candidate.Raw, "initialId")!;
-            locationIdsByInitialId.Add(initialId, identityFactory.CreateLocationId());
+            var locationId = bootstrap?.ReservedLocationIdsByInitialId.TryGetValue(initialId, out var reservedId) == true
+                ? reservedId
+                : identityFactory.CreateLocationId();
+            if (preTurnLocationsById.ContainsKey(locationId) ||
+                locationIdsByInitialId.Values.Contains(locationId, StringComparer.Ordinal))
+            {
+                issues.Add(Issue(
+                    candidate.Context + ".initialId",
+                    "mortal_bootstrap_location_reservation_conflict",
+                    "A reserved bootstrap permanent location identity is already active or duplicated.",
+                    "unused client reservation",
+                    locationId));
+                continue;
+            }
+            locationIdsByInitialId.Add(initialId, locationId);
             locationReceiptIdsByInitialId.Add(initialId, identityFactory.CreateLocationReceiptId());
         }
+
+        if (issues.Count != 0)
+            return Failed(issues);
 
         var finalWorldMap = preTurnWorldMap.DeepClone().AsObject();
         var finalLocations = finalWorldMap["locations"]!.AsArray();
@@ -161,7 +204,9 @@ internal static class MortalLocationAcceptedTurnPlanner
         foreach (var candidate in linkCandidates)
         {
             var initialId = ReadExactString(candidate.Raw, "initialId")!;
-            var linkId = identityFactory.CreateLinkId();
+            var linkId = bootstrap?.ReservedLinkIdsByInitialId.TryGetValue(initialId, out var reservedId) == true
+                ? reservedId
+                : identityFactory.CreateLinkId();
             var receiptId = identityFactory.CreateLinkReceiptId();
             linkIdsByInitialId.Add(initialId, linkId);
             var canonical = CreateCanonicalLink(
@@ -187,6 +232,23 @@ internal static class MortalLocationAcceptedTurnPlanner
         if (input.RawCurrentLocationData != null)
             touchedPaths.Add(MortalLocationMaterializationContract.CurrentLocationPath);
 
+        JsonObject? finalBootstrapScaffold = null;
+        if (bootstrap != null)
+        {
+            finalBootstrapScaffold = MortalBootstrapLocationScaffold.CreateSettledRequest(
+                input.BootstrapScaffold!,
+                bootstrap.Branch,
+                input.Turn,
+                locationIdsByInitialId[bootstrap.Reservations.Start.InitialId],
+                bootstrap.Branch == MortalBootstrapLocationScaffold.MaterializedNeighborBranch
+                    ? locationIdsByInitialId[bootstrap.Reservations.Neighbor.InitialId]
+                    : null,
+                bootstrap.Branch == MortalBootstrapLocationScaffold.MaterializedNeighborBranch
+                    ? linkIdsByInitialId[bootstrap.Reservations.Link.InitialId]
+                    : null);
+            touchedPaths.Add(MortalBootstrapLocationScaffold.StatePath);
+        }
+
         var plan = new MortalLocationAcceptedTurnPlan(
             finalWorldMap,
             finalCurrent,
@@ -196,9 +258,284 @@ internal static class MortalLocationAcceptedTurnPlanner
             storageCoordinates,
             Array.Empty<MortalLocationGovernedRewrite>(),
             touchedPaths.Distinct(StringComparer.Ordinal).ToArray(),
-            Array.Empty<MortalLocationRepairContext>());
+            Array.Empty<MortalLocationRepairContext>(),
+            finalBootstrapScaffold);
         return new MortalLocationAcceptedTurnPlanningResult(plan, Array.Empty<ValidationIssue>());
     }
+
+    private static BootstrapPlanningContext? ValidateBootstrapReservations(
+        MortalBootstrapLocationReservationSet reservations,
+        IReadOnlyList<LocationCandidate> locations,
+        IReadOnlyList<LinkCandidate> links,
+        int turn,
+        List<ValidationIssue> issues)
+    {
+        var hasBootstrapEvidence = locations.Any(candidate =>
+                HasBootstrapAuthority(candidate.Raw) ||
+                IsReservedLocationInitialId(
+                    ReadExactString(candidate.Raw, "initialId"),
+                    reservations)) ||
+            links.Any(candidate =>
+                HasBootstrapAuthority(candidate.Raw) ||
+                string.Equals(
+                    ReadExactString(candidate.Raw, "initialId"),
+                    reservations.Link.InitialId,
+                    StringComparison.Ordinal));
+
+        if (reservations.State == "settled")
+        {
+            if (hasBootstrapEvidence)
+            {
+                issues.Add(Issue(
+                    MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.state",
+                    "mortal_bootstrap_location_reservation_replay",
+                    "Settled Mortal bootstrap location reservations cannot be reused.",
+                    "ordinary turn authority with new exact origins",
+                    "settled bootstrap reservation evidence"));
+            }
+            return null;
+        }
+
+        if (reservations.TurnNumber != turn)
+        {
+            issues.Add(Issue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest.turnNumber",
+                "mortal_bootstrap_location_authority_mismatch",
+                "Bootstrap reservation turn must match the accepted turn exactly.",
+                turn.ToString(),
+                reservations.TurnNumber.ToString()));
+        }
+
+        var startMatches = locations
+            .Where(candidate => string.Equals(
+                ReadExactString(candidate.Raw, "initialId"),
+                reservations.Start.InitialId,
+                StringComparison.Ordinal))
+            .ToArray();
+        var selectedStart = startMatches.SingleOrDefault(candidate => candidate.SelectCurrent);
+        if (selectedStart == null)
+        {
+            issues.Add(Issue(
+                "currentLocationData",
+                "mortal_bootstrap_location_start_required",
+                "The first Mortal result must materialize the exact reserved visited start through currentLocationData.",
+                reservations.Start.InitialId,
+                startMatches.Length == 0 ? "missing" : "wrong carrier"));
+        }
+        else
+        {
+            ValidateBootstrapLocationReservation(
+                selectedStart,
+                reservations.Start,
+                reservations,
+                requireVisited: true,
+                issues);
+        }
+
+        foreach (var candidate in locations)
+        {
+            if (!HasBootstrapAuthority(candidate.Raw))
+                continue;
+            var initialId = ReadExactString(candidate.Raw, "initialId");
+            var allowed = candidate.SelectCurrent
+                ? string.Equals(initialId, reservations.Start.InitialId, StringComparison.Ordinal)
+                : string.Equals(initialId, reservations.Neighbor.InitialId, StringComparison.Ordinal);
+            if (!allowed)
+            {
+                issues.Add(Issue(
+                    candidate.Context + ".initialId",
+                    "mortal_bootstrap_location_reservation_mismatch",
+                    "Bootstrap source authority may use only the exact reservation assigned to that ordinary route.",
+                    candidate.SelectCurrent ? reservations.Start.InitialId : reservations.Neighbor.InitialId,
+                    initialId ?? "missing"));
+            }
+        }
+
+        foreach (var candidate in links)
+        {
+            if (!HasBootstrapAuthority(candidate.Raw))
+                continue;
+            var initialId = ReadExactString(candidate.Raw, "initialId");
+            if (!string.Equals(initialId, reservations.Link.InitialId, StringComparison.Ordinal))
+            {
+                issues.Add(Issue(
+                    candidate.Context + ".initialId",
+                    "mortal_bootstrap_location_reservation_mismatch",
+                    "Bootstrap link source authority may use only the exact reserved link origin.",
+                    reservations.Link.InitialId,
+                    initialId ?? "missing"));
+            }
+        }
+
+        var neighborMatches = locations
+            .Where(candidate => !candidate.SelectCurrent && string.Equals(
+                ReadExactString(candidate.Raw, "initialId"),
+                reservations.Neighbor.InitialId,
+                StringComparison.Ordinal))
+            .ToArray();
+        var linkMatches = links
+            .Where(candidate => string.Equals(
+                ReadExactString(candidate.Raw, "initialId"),
+                reservations.Link.InitialId,
+                StringComparison.Ordinal))
+            .ToArray();
+
+        string branch;
+        if (neighborMatches.Length == 0 && linkMatches.Length == 0)
+        {
+            branch = MortalBootstrapLocationScaffold.NarrativeOnlyBranch;
+        }
+        else if (neighborMatches.Length == 1 && linkMatches.Length == 1)
+        {
+            branch = MortalBootstrapLocationScaffold.MaterializedNeighborBranch;
+            ValidateBootstrapLocationReservation(
+                neighborMatches[0],
+                reservations.Neighbor,
+                reservations,
+                requireVisited: false,
+                issues);
+            ValidateBootstrapLinkReservation(linkMatches[0], reservations, issues);
+        }
+        else
+        {
+            branch = MortalBootstrapLocationScaffold.MaterializedNeighborBranch;
+            issues.Add(Issue(
+                "worldMapUpdates",
+                "mortal_bootstrap_location_branch_incomplete",
+                "Bootstrap neighbor materialization requires exactly one reserved neighbor and exactly one reserved directed link.",
+                "one neighbor plus one link, or neither",
+                $"neighbors={neighborMatches.Length}; links={linkMatches.Length}"));
+        }
+
+        if (issues.Count != 0)
+            return null;
+
+        var locationIds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            [reservations.Start.InitialId] = reservations.Start.ReservedLocationId
+        };
+        var linkIds = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (branch == MortalBootstrapLocationScaffold.MaterializedNeighborBranch)
+        {
+            locationIds[reservations.Neighbor.InitialId] = reservations.Neighbor.ReservedLocationId;
+            linkIds[reservations.Link.InitialId] = reservations.Link.ReservedLinkId;
+        }
+        return new BootstrapPlanningContext(reservations, branch, locationIds, linkIds);
+    }
+
+    private static void ValidateBootstrapLocationReservation(
+        LocationCandidate candidate,
+        MortalBootstrapLocationReservation reservation,
+        MortalBootstrapLocationReservationSet request,
+        bool requireVisited,
+        List<ValidationIssue> issues)
+    {
+        if (!string.Equals(candidate.ExpectedRoute, reservation.Route, StringComparison.Ordinal))
+        {
+            issues.Add(Issue(
+                candidate.Context,
+                "mortal_bootstrap_location_reservation_mismatch",
+                "Bootstrap location reservation must use its assigned ordinary route.",
+                reservation.Route,
+                candidate.ExpectedRoute));
+        }
+
+        var authority = candidate.Raw["materialization"]?["sourceAuthority"] as JsonObject;
+        if (!string.Equals(ReadExactString(authority, "kind"), request.AuthorityKind, StringComparison.Ordinal) ||
+            !string.Equals(ReadExactString(authority, "authorityId"), request.AuthorityId, StringComparison.Ordinal))
+        {
+            issues.Add(Issue(
+                candidate.Context + ".materialization.sourceAuthority",
+                "mortal_bootstrap_location_authority_mismatch",
+                "Bootstrap materialization must use the exact open scaffold authority.",
+                $"{request.AuthorityKind}:{request.AuthorityId}",
+                authority?.ToJsonString() ?? "missing"));
+        }
+
+        if (!CoordinateEquals(candidate.Raw, reservation))
+        {
+            issues.Add(Issue(
+                candidate.Context + ".coordinates",
+                "mortal_bootstrap_location_reservation_mismatch",
+                "Bootstrap location coordinates must match the exact client reservation.",
+                $"{reservation.X},{reservation.Y},{reservation.Z}",
+                candidate.Raw["coordinates"]?.ToJsonString() ?? "missing"));
+        }
+
+        if (requireVisited)
+        {
+            var discovery = candidate.Raw["discovery"] as JsonObject;
+            if (!string.Equals(ReadExactString(discovery, "tier"), "visited", StringComparison.Ordinal) ||
+                !string.Equals(ReadExactString(discovery, "audience"), "player_known", StringComparison.Ordinal))
+            {
+                issues.Add(Issue(
+                    candidate.Context + ".discovery",
+                    "mortal_bootstrap_location_reservation_mismatch",
+                    "Bootstrap start must be visited and player-known.",
+                    "visited/player_known",
+                    discovery?.ToJsonString() ?? "missing"));
+            }
+        }
+    }
+
+    private static void ValidateBootstrapLinkReservation(
+        LinkCandidate candidate,
+        MortalBootstrapLocationReservationSet request,
+        List<ValidationIssue> issues)
+    {
+        var authority = candidate.Raw["materialization"]?["sourceAuthority"] as JsonObject;
+        if (!string.Equals(ReadExactString(authority, "kind"), request.AuthorityKind, StringComparison.Ordinal) ||
+            !string.Equals(ReadExactString(authority, "authorityId"), request.AuthorityId, StringComparison.Ordinal))
+        {
+            issues.Add(Issue(
+                candidate.Context + ".materialization.sourceAuthority",
+                "mortal_bootstrap_location_authority_mismatch",
+                "Bootstrap link materialization must use the exact open scaffold authority.",
+                $"{request.AuthorityKind}:{request.AuthorityId}",
+                authority?.ToJsonString() ?? "missing"));
+        }
+
+        if (!string.Equals(
+                ReadExactString(candidate.Raw, "sourceInitialId"),
+                request.Link.SourceInitialId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                ReadExactString(candidate.Raw, "targetInitialId"),
+                request.Link.TargetInitialId,
+                StringComparison.Ordinal) ||
+            candidate.Raw["sourceLocationId"] != null ||
+            candidate.Raw["targetLocationId"] != null)
+        {
+            issues.Add(Issue(
+                candidate.Context,
+                "mortal_bootstrap_location_reservation_mismatch",
+                "Bootstrap link must use the exact reserved temporary endpoints and no permanent endpoint selectors.",
+                $"{request.Link.SourceInitialId}->{request.Link.TargetInitialId}",
+                candidate.Raw.ToJsonString()));
+        }
+    }
+
+    private static bool CoordinateEquals(
+        JsonObject candidate,
+        MortalBootstrapLocationReservation reservation) =>
+        candidate["coordinates"] is JsonObject coordinates &&
+        ReadInt(coordinates, "x") == reservation.X &&
+        ReadInt(coordinates, "y") == reservation.Y &&
+        ReadInt(coordinates, "z") == reservation.Z;
+
+    private static bool HasBootstrapAuthority(JsonObject candidate) =>
+        string.Equals(
+            ReadExactString(
+                candidate["materialization"]?["sourceAuthority"] as JsonObject,
+                "kind"),
+            MortalBootstrapLocationScaffold.AuthorityKind,
+            StringComparison.Ordinal);
+
+    private static bool IsReservedLocationInitialId(
+        string? initialId,
+        MortalBootstrapLocationReservationSet reservations) =>
+        string.Equals(initialId, reservations.Start.InitialId, StringComparison.Ordinal) ||
+        string.Equals(initialId, reservations.Neighbor.InitialId, StringComparison.Ordinal);
 
     private static void ValidatePreTurnCanonicalState(
         JsonObject worldMap,
@@ -835,4 +1172,10 @@ internal static class MortalLocationAcceptedTurnPlanner
     private sealed record LinkCandidate(JsonObject Raw, string Context);
 
     private sealed record ExistingSelection(JsonObject RawSelection, JsonObject CanonicalLocation);
+
+    private sealed record BootstrapPlanningContext(
+        MortalBootstrapLocationReservationSet Reservations,
+        string Branch,
+        IReadOnlyDictionary<string, string> ReservedLocationIdsByInitialId,
+        IReadOnlyDictionary<string, string> ReservedLinkIdsByInitialId);
 }
