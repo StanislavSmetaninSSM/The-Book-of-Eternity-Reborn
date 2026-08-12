@@ -280,3 +280,70 @@ No design clarification remains open. After Phase 1, the constitution gate still
 passes: the issue is tracked; save compatibility is intentionally absent; TDD,
 player privacy/parity, GM documentation, atomic state authority, and bounded
 verification are all explicit.
+
+## Implementation preflight and issue drift
+
+Issue #1513 remained open on 2026-08-12 and the implementation worktree was on
+`1520-complete-location-materialization`. Re-reading the repository governance,
+constitution, specification, plan, data model, contracts, quickstart, and tasks
+found no scope drift. Mortal World locations remain the only implementation
+target; Shining Abode halls and Chaos Sea Guardian planes remain assigned to
+#1514. The project is unreleased, so receipt-less repository fixtures are
+migrated or retained only as explicitly malformed negative inputs rather than
+supported by a runtime compatibility path.
+
+The preflight found generated `bin/obj` directories in the integration and
+test-support projects. They are preserved on disk and ignored explicitly; no
+generated directory was deleted or treated as source work.
+
+## Production reader/writer inventory (T005)
+
+This inventory was built from exact searches for `current_location.json`,
+`world_map.json`, `knownExits`, `adjacencyMap`, location aliases, and coordinate
+endpoints. “Replace” means the consumer must use the canonical receipt-bearing
+map/projection or the accepted-turn plan. “Retain” means the path is a raw
+authoring route or an intentionally player-facing derived projection, not a
+legacy canonical fallback.
+
+| Production surface | Present behavior / authority risk | #1513 disposition |
+|---|---|---|
+| `Configuration/FileMapping.cs` | Maps raw `currentLocationData` and `worldMapUpdates` response carriers to state files. | Retain only as pre-seal route mapping; canonical readers must not consume the wrappers. |
+| `Core/GameEngine/GameEngine.TurnLifecycle.cs` | Creates pseudo-ready Mortal start/neighbor data and emits legacy bootstrap guidance. | Replace with neutral roots, exact reservations, and ordinary materialization requests. |
+| `Core/GameEngine/GameEngine.ValidationAndRepair.cs` | Dispatches generic location repair packets and accepted-turn refresh. | Add the selectable location phase and bounded location repair/rollback path. |
+| `Core/StateManager.cs` | Reads current-location display state directly. | Read the validated canonical current projection only. |
+| `Services/MortalBootstrapStateBuilder.cs` | Writes abbreviated start, neighbor, `knownExits`, and `adjacencyMap` state. | Replace with empty canonical map/current/index plus client-owned scaffold reservations. |
+| `Services/CanonicalStateNormalizer.cs` | Tracks current location but has no location normalizer/index and runs item normalization first. | Register map/current/index and normalize locations before items under the shared lease. |
+| `Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs` | Resolves NPC location authority through recursive/current/map aliases. | Resolve only exact active canonical location IDs from the accepted plan/index. |
+| `Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs` | Validates legacy current/map wrappers, adjacency, and coordinate/name links. | Replace with exact canonical-root and current-projection coherence validation. |
+| `Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs` | Recursively enumerates location-like objects and compares identity case-insensitively. | Use one exact canonical location/link index; reject aliases and confusables. |
+| `Services/Validation/ValidationService.NpcWorldAndMeta.cs` | Accepts several location-name/ID comparison paths. | Bind governed references to exact active IDs; names remain display-only. |
+| `Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs` | Allowlists existing world/current files but not the location identity index. | Register and protect the current-schema roots and client-owned index. |
+| `Services/Validation/ValidationService.PrivateImplementation.cs` | Supplies legacy location helpers and file-shape checks. | Remove alias/name authority helpers and add exact current-schema primitives. |
+| `Services/Validation/ValidationService.CoreBootstrapAndCrossRefs.cs` | Cross-validates bootstrap/location references using present abbreviated state. | Validate neutral scaffold reservations and exact accepted canonical references. |
+| `Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs` | Participates in accepted-turn validation sequencing. | Include the location completeness phase without changing unrelated story authority. |
+| `Services/Validation/ValidationService.MortalBootstrapContentAnchors.cs` | Recognizes bootstrap content anchors in current/map state. | Resolve reserved anchors through scaffold evidence and accepted IDs only. |
+| `Services/Validation/ValidationService.MortalBootstrapPlaceholderNames.cs` | Treats placeholder names as bootstrap evidence. | Remove name-as-authority behavior; exact reserved refs are authoritative. |
+| `Services/Validation/ValidationService.MortalFactionMaterialization.cs` | Recursively gathers current/map location carriers for faction territory references. | Consume the shared exact active location index. |
+| `Services/LocalMapViewService.cs` | Reads wrappers, `knownExits`, `adjacencyMap`, name fallbacks, and derived fallback layout. | Read accepted locations/links and discovery projection only; no raw/name fallback. |
+| `Services/LocalInteractionScopeService.cs` | Uses Mortal location ID/name aliases for locality. | Compare exact canonical location IDs; names remain presentation. |
+| `Services/ActorMemoryService.cs` | Resolves current location and memories with name/case-insensitive fallback. | Resolve the canonical current ID and exact active location references. |
+| `Services/NpcTradeService.cs` | Uses location names/fallbacks to establish NPC trade locality. | Use exact accepted current/NPC location IDs. |
+| `Services/RivalSoulArcService.cs` | Reads location context for rival story state. | Use canonical current projection and exact location references. |
+| `Services/NpcCoreChangesContract.cs` | Recursively accepts current/map location evidence for NPC changes. | Bind changes to the accepted-turn location plan/exact canonical index. |
+| `Services/MortalItemCarrierCatalog.cs` | Catalogs location storage and current-location item carriers. | Bind storage carriers to exact accepted location/storage identities. |
+| `Services/MortalItemRouteAuthorityCatalog.cs` | Resolves item routes through current/map storage coordinates. | Consume post-location-normalization exact carrier coordinates. |
+| `Services/MortalItemRepairPacketBuilder.cs` | Includes location carrier coordinates in item repair context. | Retain exact coordinates, sourced from accepted location authority only. |
+| `Services/StorageTransportMoveService.cs` | Resolves location storage targets through current/map data. | Enumerate accepted storages from canonical locations and select exact IDs. |
+| `UI/ExplorerMode/ExplorerMode.MetaLoreAndTravel.cs` | Builds map/navigation from adjacency and raw update collections with name fallbacks. | Use shared discovery-filtered canonical location/link projection. |
+| `UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs` | Renders raw location details, adjacency, storage, and counts. | Render accepted projected semantics only; hidden/rejected data changes no count. |
+| `UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs` | Reads current-location context for story/status panels. | Read the canonical current projection only. |
+| `UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs` | Exposes setup/debug location state. | Keep operator-only diagnostics separate from player projection. |
+| `UI/ExplorerMode/ExplorerMode.Inventory.cs` | Resolves current-location storage links and item placement. | Use accepted canonical storage identities and the shared player projection. |
+| `UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs` | Displays NPC locality from location fields. | Resolve exact accepted location identity, then display safe semantic names. |
+| `UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs` | Carries trade locality into console actions. | Gate actions on exact accepted locality. |
+| `UI/ExplorerMortalWorldCommandResultBuilder.cs` | Builds browser current/location/map/storage DTOs from raw shapes. | Project only accepted canonical objects and recursively remove authority fields. |
+| `UI/ExplorerMortalWorldNewsCommandResultBuilder.cs` | Reads `worldMapUpdates`, `newLocations`, and `locationUpdates` for news/threats. | Resolve news against accepted canonical IDs; raw candidates are never player-visible. |
+
+No afterlife production reader is migrated by #1513. Any shared primitive touched
+later must preserve the explicit Mortal realm gate, and an afterlife docs update
+is required only if that boundary actually changes.

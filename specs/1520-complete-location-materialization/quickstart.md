@@ -624,3 +624,17 @@ It does not change Shining Abode halls, Chaos Sea Guardian planes, or their
 pending/control surfaces. `OtherGuides/Afterlife_Contract_Matrix.md` and the
 afterlife worked examples therefore receive a recorded no-update rationale;
 #1514 owns their location materialization contract.
+
+## 12. Implementation evidence
+
+The pre-implementation control was run from the isolated feature worktree after
+the specification and plan were committed. It is the accepted baseline for the
+TDD slices below; it is recorded here rather than repeated.
+
+| Stage | Command | Result directory | Passed | Failed | Timed out | Duplicate tests | Cleanup |
+|---|---|---|---:|---:|---:|---:|---|
+| Baseline | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260812-114707-101-31724-220f790e8f1b43a797dd7a5c968d90af-fast` | 2937 | 0 | 0 | 0 | Successful |
+
+Focused RED/GREEN evidence, the integrated Fast checkpoint, conditional
+FullValidation/LifecycleIntegration evidence, and the single final PreMerge
+control are appended here as the corresponding tasks complete.

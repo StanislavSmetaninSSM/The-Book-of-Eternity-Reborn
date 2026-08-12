@@ -23,11 +23,11 @@ remove obsolete aliases/fallbacks; do not add receipt-less promotion.
 
 **Purpose**: Reconfirm tracked scope and capture a clean implementation baseline.
 
-- [ ] T001 Confirm issue #1513 remains open, branch `1520-complete-location-materialization` is isolated in `E:/Games/worktrees/boe-1513-location-materialization`, and preserve unrelated `bin/obj` artifacts using `git status --short`
-- [ ] T002 Re-read `AGENTS.md`, `.specify/memory/constitution.md`, and every artifact under `specs/1520-complete-location-materialization/`; record any issue drift in `specs/1520-complete-location-materialization/research.md`
-- [ ] T003 Record the existing successful 2937-test Fast baseline and its result directory in `specs/1520-complete-location-materialization/quickstart.md`
-- [ ] T004 [P] Inventory every active, positive, negative, backup-only, and fragment-only location/map fixture in `specs/1520-complete-location-materialization/fixture-migration-inventory.md`
-- [ ] T005 [P] Inventory every production reader/writer that consumes `current_location.json`, `world_map.json`, `knownExits`, `adjacencyMap`, location names, or coordinate endpoints in `specs/1520-complete-location-materialization/research.md`
+- [x] T001 Confirm issue #1513 remains open, branch `1520-complete-location-materialization` is isolated in `E:/Games/worktrees/boe-1513-location-materialization`, and preserve unrelated `bin/obj` artifacts using `git status --short`
+- [x] T002 Re-read `AGENTS.md`, `.specify/memory/constitution.md`, and every artifact under `specs/1520-complete-location-materialization/`; record any issue drift in `specs/1520-complete-location-materialization/research.md`
+- [x] T003 Record the existing successful 2937-test Fast baseline and its result directory in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T004 [P] Inventory every active, positive, negative, backup-only, and fragment-only location/map fixture in `specs/1520-complete-location-materialization/fixture-migration-inventory.md`
+- [x] T005 [P] Inventory every production reader/writer that consumes `current_location.json`, `world_map.json`, `knownExits`, `adjacencyMap`, location names, or coordinate endpoints in `specs/1520-complete-location-materialization/research.md`
 
 ---
 
