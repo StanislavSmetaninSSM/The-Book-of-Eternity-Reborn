@@ -57,6 +57,8 @@ public sealed class RepositoryPublicationDocumentationTests
         Assert.Contains("tracked GitHub Issue", contributing, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pull request", contributing, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("@StanislavSmetaninSSM", contributing, StringComparison.Ordinal);
+        Assert.Contains("AGPL-3.0-or-later", contributing, StringComparison.Ordinal);
+        Assert.Contains("CC BY-NC-SA 4.0", contributing, StringComparison.Ordinal);
 
         var template = Read(".github/pull_request_template.md");
         Assert.Contains("Tracked issue", template, StringComparison.OrdinalIgnoreCase);

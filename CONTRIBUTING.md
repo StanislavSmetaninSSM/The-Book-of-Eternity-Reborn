@@ -38,9 +38,14 @@ as part of your contribution.
 
 ## License, assets, and game documentation
 
-By contributing, you license your contribution under the repository license.
-Do not add an asset without recording its provenance, license, and any required
-notice. Follow the contribution and asset requirements in [AGENTS.md](AGENTS.md),
+Software, code, and script contributions are licensed under
+`AGPL-3.0-or-later`; see [LICENSE](LICENSE). Original project-owned narrative
+and content contributions are licensed under `CC BY-NC-SA 4.0`; see
+[CONTENT_LICENSE.md](CONTENT_LICENSE.md). Third-party and excluded assets are
+not swept into either blanket grant: contribute them only with appropriate
+rights, provenance, and required notices.
+
+Follow the contribution and asset requirements in [AGENTS.md](AGENTS.md),
 including its GM and afterlife documentation synchronization rules; changes to
 GM-authored or afterlife contracts must keep the required prompts, docs,
 examples, manifests, and guards aligned.
