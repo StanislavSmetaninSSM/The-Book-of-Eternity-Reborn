@@ -21,9 +21,9 @@ rights; this repository grants no separate license to them.
 - *Song of Storm and Fire* (*Tsubasa Chronicle* OST) — composed by Yuki
   Kajiura.
 
-If you are a copyright holder and would like a track removed or credited
-differently, contact `lottarend1@gmail.com`; the project owner will respond and
-take action promptly.
+If you are a copyright holder with a substantiated rights request, contact
+`lottarend1@gmail.com`; the project owner will respond by changing credit or
+removing affected files.
 
 ## Freesound assets
 

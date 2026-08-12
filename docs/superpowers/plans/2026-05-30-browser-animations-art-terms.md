@@ -209,13 +209,18 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
 - Modify: `BookOfEternityClient.WebFrontend/src/styles/components.css` (hero section styles)
 - Modify: `BookOfEternityClient.WebFrontend/src/routes/HomeRoute.tsx` or GameLauncher
 
-**Context:** The main menu (HomeRoute) currently has no background art — just the dark gradient. Pollinations API key: `plln_pk_ihr4JC3Cf1VyT2JGjDpjrwbDFYZ1H22e`. Use the flux model for high-quality generation.
+**Context:** The main menu (HomeRoute) currently has no background art — just the dark gradient. Use the flux model for high-quality generation with configured environment credentials.
 
 - [ ] **Step 1: Generate background image**
 
 Generate via URL (or curl):
 ```
-https://gen.pollinations.ai/image/dark%20fantasy%20ancient%20book%20of%20eternity%20on%20stone%20altar%20glowing%20golden%20runes%20ethereal%20mist%20cinematic%20lighting%20ash%20and%20embers%20floating%20dramatic%20atmosphere%204k%20concept%20art?model=flux&width=1920&height=1080&key=plln_pk_ihr4JC3Cf1VyT2JGjDpjrwbDFYZ1H22e
+$apiKey = $env:POLLINATIONS_API_KEY
+if ([string]::IsNullOrWhiteSpace($apiKey)) {
+    throw 'POLLINATIONS_API_KEY is required for this optional generation step.'
+}
+
+Credentials must never be committed. Configure the optional generation request separately with `$apiKey`.
 ```
 
 Save to: `BookOfEternityClient.WebFrontend/public/art/main-menu-bg.jpg`
