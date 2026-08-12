@@ -73,7 +73,7 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureTrainingAsync_MortalTeacherWithContradictoryLocationAliasesFailsClosed()
+    public async Task EnsureTrainingAsync_MortalTeacherWithOnlyMatchingLocationNameFailsClosed()
     {
         await SeedMortalSoulStateWithoutLocationAsync();
         await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
@@ -81,8 +81,9 @@ public sealed class TrainingServiceTests : IDisposable
             "npc_teacher_contradictory",
             "Наставник двух дорог",
             "loc_market",
-            "Лесная сторожка",
+            "Рыночная площадь",
             includeShowcase: false);
+        contradictoryTeacher.Remove("currentLocationId");
         await _fs.WriteFileAtomicAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCs"] = new JsonArray(contradictoryTeacher) }.ToJsonString());
@@ -96,17 +97,18 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureTrainingAsync_MortalTeacherWithConflictingIdAliasesFailsClosed()
+    public async Task EnsureTrainingAsync_MortalInitialLocationAliasDoesNotAuthorizeLocality()
     {
         await SeedMortalSoulStateWithoutLocationAsync();
         await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
         var contradictoryTeacher = BuildMortalTeacher(
             "npc_teacher_contradictory_ids",
             "Наставник двух дорог",
-            "loc_market",
+            "loc_remote",
             "Рыночная площадь",
             includeShowcase: false);
-        contradictoryTeacher["initialLocationId"] = "loc_remote";
+        contradictoryTeacher.Remove("currentLocationId");
+        contradictoryTeacher["initialLocationId"] = "loc_market";
         await _fs.WriteFileAtomicAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCs"] = new JsonArray(contradictoryTeacher) }.ToJsonString());
@@ -119,18 +121,17 @@ public sealed class TrainingServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureTrainingAsync_MortalIdMatch_RemainsLocalWhenAuthorityHasNoName()
+    public async Task EnsureTrainingAsync_MortalIdMatch_RemainsLocalWhenActorHasNoLocationName()
     {
         await SeedMortalSoulStateWithoutLocationAsync();
-        await _fs.WriteFileAtomicAsync(
-            "game_state/world/current_location.json",
-            new JsonObject { ["locationId"] = "loc_market" }.ToJsonString());
+        await SeedMortalCurrentLocationAsync("loc_market", "Рыночная площадь");
         var teacher = BuildMortalTeacher(
             "npc_teacher_id_only_authority",
             "Наставник рыночной школы",
             "loc_market",
             "Рыночная площадь",
             includeShowcase: true);
+        teacher.Remove("currentLocation");
         await _fs.WriteFileAtomicAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCs"] = new JsonArray(teacher) }.ToJsonString());
@@ -2302,14 +2303,18 @@ public sealed class TrainingServiceTests : IDisposable
 
     private async Task SeedMortalCurrentLocationAsync(string locationId, string locationName)
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", new JsonObject
-        {
-            ["currentLocationData"] = new JsonObject
-            {
-                ["locationId"] = locationId,
-                ["name"] = locationName
-            }
-        }.ToJsonString());
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            locationId,
+            locationName);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
     }
 
     private static JsonObject BuildMortalTeacher(

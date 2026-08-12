@@ -102,6 +102,37 @@ public static class MortalLocationTestFixture
         return location;
     }
 
+    public static JsonObject CreateCanonicalLocationWithIdentity(
+        string locationId,
+        string displayName,
+        string discoveryTier = "visited",
+        int x = 0,
+        int y = 0,
+        int z = 0)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(locationId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(displayName);
+        var suffix = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(locationId)))
+            .ToLowerInvariant()[..16];
+        var location = CreateCanonicalLocation(discoveryTier);
+        location["locationId"] = locationId;
+        location["name"] = displayName;
+        location["displayName"] = displayName;
+        location["coordinates"] = new JsonObject { ["x"] = x, ["y"] = y, ["z"] = z };
+
+        var envelope = location["materialization"]!.AsObject();
+        envelope["initialId"] = "locref_fixture_" + suffix;
+        envelope["materializationId"] = "mlocmat_fixture_" + suffix;
+        var receipt = location["materializationReceipt"]!.AsObject();
+        receipt["receiptId"] = "mlocrec_fixture_" + suffix;
+        receipt["locationId"] = locationId;
+        receipt["initialId"] = envelope["initialId"]!.DeepClone();
+        receipt["materializationId"] = envelope["materializationId"]!.DeepClone();
+        receipt.Remove("seal");
+        receipt["seal"] = ComputeSeal(envelope, receipt);
+        return location;
+    }
+
     public static JsonObject CreateRawLink(string sourceLocationId, string targetLocationId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceLocationId);

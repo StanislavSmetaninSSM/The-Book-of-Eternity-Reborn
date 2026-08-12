@@ -22,7 +22,7 @@ public sealed class ActorMemoryService
         try
         {
             if (IsMortalRealm(currentRealm))
-                return await BuildMortalNpcDigestAsync(currentTurnNumber);
+                return await BuildMortalNpcDigestAsync(currentTurnNumber, currentRealm);
 
             if (IsAfterlifeRealm(currentRealm))
                 return await BuildAfterlifeGuardianDigestAsync();
@@ -175,17 +175,18 @@ public sealed class ActorMemoryService
         }
     }
 
-    private async Task<string?> BuildMortalNpcDigestAsync(int currentTurnNumber)
+    private async Task<string?> BuildMortalNpcDigestAsync(int currentTurnNumber, string? currentRealm)
     {
+        var localScope = await new LocalInteractionScopeService(_fs).ResolveAsync(currentRealm);
+        if (!localScope.IsResolved || localScope.RealmKind != LocalInteractionRealmKind.Mortal)
+            return null;
+
         var npcJson = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
         if (string.IsNullOrWhiteSpace(npcJson))
             return null;
 
-        var currentLocationJson = await _fs.ReadFileAsync("game_state/world/current_location.json");
-        var currentLocationId = TryReadCurrentLocationId(currentLocationJson);
-
         using var npcDoc = JsonDocument.Parse(npcJson);
-        var currentSceneNpcs = CollectCurrentSceneNpcs(npcDoc.RootElement, currentLocationId);
+        var currentSceneNpcs = CollectCurrentSceneNpcs(npcDoc.RootElement, localScope.LocationId);
         if (currentSceneNpcs.Count == 0)
             return null;
 
@@ -456,22 +457,6 @@ public sealed class ActorMemoryService
         return $"{prefix}{typePrefix}{entry.Title}";
     }
 
-    private static string TryReadCurrentLocationId(string? currentLocationJson)
-    {
-        if (string.IsNullOrWhiteSpace(currentLocationJson))
-            return string.Empty;
-
-        try
-        {
-            using var doc = JsonDocument.Parse(currentLocationJson);
-            return GetString(doc.RootElement, "locationId");
-        }
-        catch
-        {
-            return string.Empty;
-        }
-    }
-
     private static List<(string NpcId, string DisplayName)> CollectCurrentSceneNpcs(JsonElement root, string currentLocationId)
     {
         var result = new List<(string NpcId, string DisplayName)>();
@@ -485,7 +470,7 @@ public sealed class ActorMemoryService
             var npcId = GetString(npc, "NPCId") ?? GetString(npc, "npcId") ?? GetString(npc, "id");
             var name = GetString(npc, "name") ?? GetString(npc, "NPCName") ?? GetString(npc, "npcName");
             var locationId = GetString(npc, "currentLocationId");
-            var isSceneEntry = string.Equals(locationId, currentLocationId, StringComparison.OrdinalIgnoreCase);
+            var isSceneEntry = string.Equals(locationId, currentLocationId, StringComparison.Ordinal);
 
             if (!string.IsNullOrWhiteSpace(currentLocationId) && !isSceneEntry && hasExplicitSceneSection)
                 continue;

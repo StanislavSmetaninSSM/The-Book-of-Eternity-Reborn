@@ -348,19 +348,13 @@ public partial class ValidationService
             context = contextPrefix;
         }
 
-        // Complete creation carriers are owned exclusively by the Mortal location
-        // materialization contract. Running the legacy location/link validators here
-        // would reinterpret canonical fields, aliases, and historical compatibility.
-        if (updates.TryGetProperty("locationUpdates", out var locationUpdates))
-            ValidateLocationUpdateArray(locationUpdates, $"{context}.locationUpdates", issues);
+        // Mortal location creation, movement, semantic updates, discovery, and link
+        // lifecycle are owned exclusively by the exact materialization planner.
+        // This legacy validator retains only independent storage/threat commands.
         if (updates.TryGetProperty("storageUpdates", out var storageUpdates))
             ValidateLocationStorageUpdates(storageUpdates, $"{context}.storageUpdates", issues);
         if (updates.TryGetProperty("storagesToRemove", out var storagesToRemove))
             ValidateLocationStorageRemovals(storagesToRemove, $"{context}.storagesToRemove", issues);
-        if (updates.TryGetProperty("linkUpdates", out var linkUpdates))
-            ValidateLocationLinkUpdates(linkUpdates, $"{context}.linkUpdates", issues);
-        if (updates.TryGetProperty("linksToRemove", out var linksToRemove))
-            ValidateLocationLinkRemovals(linksToRemove, $"{context}.linksToRemove", issues);
         if (updates.TryGetProperty("threatsToAdd", out var threatsToAdd))
             ValidateLocationThreatAdds(threatsToAdd, $"{context}.threatsToAdd", issues);
         if (updates.TryGetProperty("threatsToUpdate", out var threatsToUpdate))

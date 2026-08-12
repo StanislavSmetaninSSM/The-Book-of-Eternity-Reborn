@@ -135,20 +135,20 @@ derived exits, and rejection of full/name/coordinate-based operations.
 
 ### Tests for User Story 3
 
-- [ ] T038 [US3] Add red link envelope/receipt, dual-endpoint, self/dangling/confusable endpoint, duplicate coordinate, parent-cycle, and no-inferred-reverse tests in `BookOfEternityClient.Tests/MortalLocationMaterializationContractTests.cs`
-- [ ] T039 [US3] Add red same-turn two-location endpoint rewrite and exact permanent link identity tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Topology.cs`
-- [ ] T040 [US3] Add red movement-only, narrow-update allowlist, receipt/envelope immutability, discovery transition, link update/removal, and replay tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Lifecycle.cs`
-- [ ] T041 [P] [US3] Replace legacy wrapper/name/coordinate map tests with receipt-bearing exact directed topology cases in `BookOfEternityClient.Tests/LocalMapViewerServiceTests.cs`
-- [ ] T042 [P] [US3] Add red exact current-location locality tests for interactions, training, and trade in `BookOfEternityClient.Tests/LocalInteractionScopeServiceTests.cs`, `BookOfEternityClient.Tests/TrainingServiceTests.cs`, and `BookOfEternityClient.Tests/ConsoleTrainingCommandTests.cs`
+- [x] T038 [US3] Add red link envelope/receipt, dual-endpoint, self/dangling/confusable endpoint, duplicate coordinate, parent-cycle, and no-inferred-reverse tests in `BookOfEternityClient.Tests/MortalLocationMaterializationContractTests.cs`
+- [x] T039 [US3] Add red same-turn two-location endpoint rewrite and exact permanent link identity tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Topology.cs`
+- [x] T040 [US3] Add red movement-only, narrow-update allowlist, receipt/envelope immutability, discovery transition, link update/removal, and replay tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Lifecycle.cs`
+- [x] T041 [P] [US3] Replace legacy wrapper/name/coordinate map tests with receipt-bearing exact directed topology cases in `BookOfEternityClient.Tests/LocalMapViewerServiceTests.cs`
+- [x] T042 [P] [US3] Add red exact current-location locality tests for interactions, training, and trade in `BookOfEternityClient.Tests/LocalInteractionScopeServiceTests.cs`, `BookOfEternityClient.Tests/TrainingServiceTests.cs`, and `BookOfEternityClient.Tests/ConsoleTrainingCommandTests.cs`
 
 ### Implementation for User Story 3
 
-- [ ] T043 [US3] Implement exact directed link creation/update/removal and retained retired history in `BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/MortalLocationIdentityState.cs`
-- [ ] T044 [US3] Implement existing movement selection, narrow semantic updates, discovery transitions, immutable field checks, and current projection rebuild in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalLocations.cs`
-- [ ] T045 [US3] Derive map nodes/edges and current exits only from accepted canonical locations/links with no name/slug/fallback layout authority in `BookOfEternityClient/Services/LocalMapViewService.cs`
-- [ ] T046 [US3] Require exact canonical Mortal current location in `BookOfEternityClient/Services/LocalInteractionScopeService.cs`, `BookOfEternityClient/Services/ActorMemoryService.cs`, `BookOfEternityClient/Services/NpcTradeService.cs`, and training service callers without changing afterlife name semantics
-- [ ] T047 [US3] Remove durable trust in `knownExits`, `adjacencyMap`, `knownLocations`, `newLocations`, `newLinks`, `locationUpdates`, name aliases, coordinate endpoints, and missing-z compatibility from `BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs`
-- [ ] T048 [US3] Run topology/lifecycle/map/locality Focused filters and record evidence in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T043 [US3] Implement exact directed link creation/update/removal and retained retired history in `BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/MortalLocationIdentityState.cs`
+- [x] T044 [US3] Implement existing movement selection, narrow semantic updates, discovery transitions, immutable field checks, and current projection rebuild in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalLocations.cs`
+- [x] T045 [US3] Derive map nodes/edges and current exits only from accepted canonical locations/links with no name/slug/fallback layout authority in `BookOfEternityClient/Services/LocalMapViewService.cs`
+- [x] T046 [US3] Require exact canonical Mortal current location in `BookOfEternityClient/Services/LocalInteractionScopeService.cs`, `BookOfEternityClient/Services/ActorMemoryService.cs`, `BookOfEternityClient/Services/NpcTradeService.cs`, and training service callers without changing afterlife name semantics
+- [x] T047 [US3] Remove durable trust in `knownExits`, `adjacencyMap`, `knownLocations`, `newLocations`, `newLinks`, `locationUpdates`, name aliases, coordinate endpoints, and missing-z compatibility from `BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs`
+- [x] T048 [US3] Run topology/lifecycle/map/locality Focused filters and record evidence in `specs/1520-complete-location-materialization/quickstart.md`
 
 **Checkpoint**: Existing locations and links evolve only through closed exact
 operations, and every map/current exit is a derived directed relation.

@@ -2,6 +2,7 @@ using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -20,220 +21,108 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task BuildMortalWorldMapAsync_ProjectsCurrentLocationNodesLinksAndZLevels()
+    public async Task BuildMortalWorldMapAsync_ProjectsReceiptBearingDirectedTopology()
     {
-        await SeedMortalMapAsync();
+        var accepted = await SeedMortalMapAsync();
 
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
         Assert.Equal("Смертный мир", map.Realm);
-        Assert.Equal("loc_square", map.CurrentNodeId);
+        Assert.Equal(accepted.SourceLocationId, map.CurrentNodeId);
         Assert.Contains(map.ZLevels, static level => level.Z == 0 && level.Label.Contains("зем", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(map.ZLevels, static level => level.Z == -1);
         Assert.Contains(map.Layers, static layer => layer.Id == "world" && layer.IsDefault);
-        Assert.Contains(map.Nodes, static node => node.Id == "loc_square" && node.IsCurrent && node.X == 10 && node.Y == 20 && node.Z == 0);
-        Assert.Contains(map.Nodes, static node => node.Id == "loc_catacombs" && node.Z == -1);
-        Assert.Contains(map.Links, static link => link.SourceNodeId == "loc_square" && link.TargetNodeId == "loc_catacombs");
+        Assert.Contains(map.Nodes, node => node.Id == accepted.SourceLocationId && node.IsCurrent && node.X == 10 && node.Y == 20 && node.Z == 0);
+        Assert.Contains(map.Nodes, node => node.Id == accepted.TargetLocationId && node.Z == -1 && !node.IsPlaceholder);
+        var link = Assert.Single(map.Links);
+        Assert.Equal(accepted.LinkId, link.Id);
+        Assert.Equal(accepted.SourceLocationId, link.SourceNodeId);
+        Assert.Equal(accepted.TargetLocationId, link.TargetNodeId);
+        Assert.DoesNotContain(map.Links, candidate =>
+            candidate.SourceNodeId == accepted.TargetLocationId &&
+            candidate.TargetNodeId == accepted.SourceLocationId);
     }
 
     [Fact]
-    public async Task BuildMortalWorldMapAsync_ProjectsWrappedCurrentLocationAndLocationCardMetadata()
+    public async Task BuildMortalWorldMapAsync_RejectsLegacyWrappers()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "currentLocationData": {
-            "locationId": "loc_tower_roof",
-            "name": "Крыша башни",
-            "locationType": "tower",
-            "description": "Ветер режет лицо, а внизу мерцает город.",
-            "knownState": "visited",
-            "discovered": true,
-            "biome": "ash_coast",
-            "lastEventsDescription": "На зубцах остались следы недавней осады.",
-            "coordinates": { "x": 4, "y": 9, "z": 2 },
-            "adjacencyMap": [
-              {
-                "targetLocationId": "loc_tower_base",
-                "targetLocationName": "Нижний зал башни",
-                "direction": "винтовая лестница",
-                "linkState": "stable",
-                "targetCoordinates": { "x": 4, "y": 9, "z": 0 }
-              }
-            ]
-          }
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "locations": [
+        var accepted = await SeedMortalMapAsync();
+        await _fs.WriteFileAtomicAsync(
+            "game_state/world/world_map.json",
+            new JsonObject
             {
-              "locationId": "loc_tower_base",
-              "locationName": "Нижний зал башни",
-              "locationType": "hall",
-              "description": "Здесь пахнет копотью и старым железом.",
-              "knownState": "known",
-              "coordinates": { "x": 4, "y": 9, "z": 0 }
-            }
-          ]
-        }
-        """);
+                ["worldMapUpdates"] = accepted.Plan.FinalWorldMap.DeepClone()
+            }.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            "game_state/world/current_location.json",
+            new JsonObject
+            {
+                ["currentLocationData"] = accepted.Plan.FinalCurrentLocation!.DeepClone()
+            }.ToJsonString());
 
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
-        var current = Assert.Single(map.Nodes, node => node.Id == "loc_tower_roof");
-        Assert.True(current.IsCurrent);
-        Assert.Equal(2, current.Z);
-        Assert.Contains(map.ZLevels, static level => level.Z == 2 && level.Label.Contains("+2", StringComparison.Ordinal));
-        Assert.Contains(current.Details, static item => item.Key == "Известность" && item.Value.Contains("visited", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(current.Details, static item => item.Key == "Открыта" && item.Value.Contains("да", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(current.Details, static item => item.Key == "Биом" && item.Value.Contains("ash coast", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(current.Details, static item => item.Key == "Последние события" && item.Value.Contains("осады", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(current.Details, static item => item.Key == "Выходы" && item.Value.Contains("винтовая лестница", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(map.Nodes, static node => node.Id == "loc_tower_base");
+        Assert.Empty(map.Nodes);
+        Assert.Empty(map.Links);
+        Assert.Empty(map.CurrentNodeId);
     }
 
     [Fact]
-    public async Task BuildMortalWorldMapAsync_DistinguishesCreatedLocationsFromExitPlaceholdersAndAttachesImages()
+    public async Task BuildMortalWorldMapAsync_OmitsInvalidNodesAndNeverCreatesAdjacencyPlaceholders()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        var accepted = await SeedMortalMapAsync();
+        var mapState = accepted.Plan.FinalWorldMap.DeepClone().AsObject();
+        var target = mapState["locations"]!.AsArray().OfType<JsonObject>()
+            .Single(location => location["locationId"]!.GetValue<string>() == accepted.TargetLocationId);
+        target["coordinates"]!.AsObject().Remove("z");
+        var current = accepted.Plan.FinalCurrentLocation!.DeepClone().AsObject();
+        current["adjacencyMap"] = new JsonArray(new JsonObject
         {
-          "locationId": "loc_parlor",
-          "name": "Гостиная виконта",
-          "description": "Комната с тяжёлыми шторами и холодным камином.",
-          "coordinates": { "x": 0, "y": 0, "z": 0 },
-          "adjacencyMap": [
-            {
-              "targetLocationId": "loc_gallery",
-              "targetLocationName": "Галерея портретов",
-              "direction": "на север",
-              "targetCoordinates": { "x": 3, "y": 0, "z": 0 }
-            },
-            {
-              "targetLocationId": "loc_servant_stairs",
-              "targetLocationName": "Служебная лестница",
-              "direction": "за ширмой",
-              "targetCoordinates": { "x": -2, "y": -1, "z": 0 }
-            }
-          ]
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "locations": [
-            {
-              "locationId": "loc_gallery",
-              "locationName": "Галерея портретов",
-              "description": "Пыльные портреты следят за каждым шагом.",
-              "knownState": "visited",
-              "coordinates": { "x": 3, "y": 0, "z": 0 }
-            }
-          ]
-        }
-        """);
+            ["targetLocationId"] = "loc_unaccepted_placeholder",
+            ["targetLocationName"] = "Ложная лестница",
+            ["targetCoordinates"] = new JsonObject { ["x"] = 99, ["y"] = 99 }
+        });
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", mapState.ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", current.ToJsonString());
         var imageDir = _fs.ResolvePath("images/locations");
         Directory.CreateDirectory(imageDir);
-        await File.WriteAllBytesAsync(Path.Combine(imageDir, "loc_gallery.png"), TinyPng);
+        await File.WriteAllBytesAsync(Path.Combine(imageDir, accepted.SourceLocationId + ".png"), TinyPng);
 
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
-        var gallery = Assert.Single(map.Nodes, node => node.Id == "loc_gallery");
-        Assert.False(gallery.IsPlaceholder);
-        Assert.Equal("Пыльные портреты следят за каждым шагом.", Assert.Single(gallery.Details, item => item.Key == "Описание").Value);
-        Assert.StartsWith("/api/media/", gallery.ImageUrl, StringComparison.Ordinal);
-        Assert.DoesNotContain("images/locations", gallery.ImageUrl, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Галерея портретов", gallery.ImageAltText, StringComparison.Ordinal);
-
-        var stairs = Assert.Single(map.Nodes, node => node.Id == "loc_servant_stairs");
-        Assert.True(stairs.IsPlaceholder);
-        Assert.Contains(stairs.Details, static item =>
-            item.Key == "Состояние" &&
-            item.Value.Contains("известный выход", StringComparison.OrdinalIgnoreCase));
-        Assert.Empty(stairs.ImageUrl);
+        var source = Assert.Single(map.Nodes);
+        Assert.Equal(accepted.SourceLocationId, source.Id);
+        Assert.False(source.IsPlaceholder);
+        Assert.StartsWith("/api/media/", source.ImageUrl, StringComparison.Ordinal);
+        Assert.DoesNotContain(map.Nodes, static node => node.Id == "loc_unaccepted_placeholder");
+        Assert.DoesNotContain(map.Nodes, node => node.Id == accepted.TargetLocationId);
+        Assert.Empty(map.Links);
     }
 
     [Fact]
-    public async Task BuildMortalWorldMapAsync_UsesSchematicFallbackForMissingCoordinates()
+    public async Task BuildMortalWorldMapAsync_RequiresOrdinalCurrentAndEndpointIdentity()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_fog_gate",
-          "name": "Туманные ворота",
-          "locationType": "gate",
-          "adjacencyMap": [
-            {
-              "targetLocationId": "loc_nameless_field",
-              "targetLocationName": "Безымянное поле",
-              "direction": "за воротами"
-            }
-          ]
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "locationUpdates": [
-            {
-              "locationId": "loc_nameless_field",
-              "locationName": "Безымянное поле",
-              "description": "Координаты этого места ещё не закреплены."
-            }
-          ]
-        }
-        """);
+        var accepted = await SeedMortalMapAsync();
+        var current = accepted.Plan.FinalCurrentLocation!.DeepClone().AsObject();
+        current["locationId"] = accepted.SourceLocationId.ToUpperInvariant();
+        var mapState = accepted.Plan.FinalWorldMap.DeepClone().AsObject();
+        var link = mapState["links"]!.AsArray().OfType<JsonObject>().Single();
+        link["sourceLocationId"] = accepted.SourceLocationId.ToUpperInvariant();
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", current.ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", mapState.ToJsonString());
 
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
         Assert.Equal(2, map.Nodes.Count);
-        Assert.All(map.Nodes, node =>
-        {
-            Assert.True(Math.Abs(node.X) > 0.01 || Math.Abs(node.Y) > 0.01);
-            Assert.Contains(node.Details, static item => item.Key == "Координаты" && item.Value.Contains("схемат", StringComparison.OrdinalIgnoreCase));
-        });
-        Assert.Contains(map.Links, static link => link.SourceNodeId == "loc_fog_gate" && link.TargetNodeId == "loc_nameless_field");
+        Assert.Empty(map.CurrentNodeId);
+        Assert.DoesNotContain(map.Nodes, static node => node.IsCurrent);
+        Assert.Empty(map.Links);
     }
 
     [Fact]
     public async Task BuildMortalWorldMapAsync_ProjectsPoliticalControlRegionsAndContestedLocations()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_gate",
-          "name": "Ворота Серой Короны",
-          "coordinates": { "x": 0, "y": 0, "z": 0 },
-          "factionControl": [
-            { "factionId": "f_crown", "factionName": "Серая Корона", "controlType": "Military", "controlLevel": 76 }
-          ],
-          "adjacencyMap": [
-            {
-              "targetLocationId": "loc_barracks",
-              "targetLocationName": "Казармы Серой Короны",
-              "targetCoordinates": { "x": 4, "y": 0, "z": 0 }
-            }
-          ]
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "locations": [
-            {
-              "locationId": "loc_barracks",
-              "locationName": "Казармы Серой Короны",
-              "coordinates": { "x": 4, "y": 0, "z": 0 },
-              "factionControl": [
-                { "factionId": "f_crown", "factionName": "Серая Корона", "controlType": "Military", "controlLevel": 82 }
-              ]
-            },
-            {
-              "locationId": "loc_market",
-              "locationName": "Спорный рынок",
-              "coordinates": { "x": 2, "y": 3, "z": 0 },
-              "factionControl": [
-                { "factionId": "f_crown", "factionName": "Серая Корона", "controlType": "Economic", "controlLevel": 48 },
-                { "factionId": "f_syndicate", "factionName": "Синдикат Тени", "controlType": "Covert", "controlLevel": 45 }
-              ]
-            }
-          ]
-        }
-        """);
+        var accepted = await SeedMortalMapAsync(withFactionControl: true);
         await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", """
         {
           "factions": [
@@ -241,27 +130,29 @@ public sealed class LocalMapViewerServiceTests : IDisposable
               "id": "f_crown",
               "name": "Серая Корона",
               "controlledTerritories": [
-                { "locationId": "loc_gate", "locationName": "Ворота Серой Короны" },
-                { "locationId": "loc_barracks", "locationName": "Казармы Серой Короны" }
+                { "locationId": "LOCATION_SOURCE", "locationName": "Старая площадь" },
+                { "locationId": "LOCATION_TARGET", "locationName": "Катакомбы" }
               ]
             }
           ]
         }
-        """);
+        """
+            .Replace("LOCATION_SOURCE", accepted.SourceLocationId, StringComparison.Ordinal)
+            .Replace("LOCATION_TARGET", accepted.TargetLocationId, StringComparison.Ordinal));
 
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
-        var gate = Assert.Single(map.Nodes, node => node.Id == "loc_gate");
+        var gate = Assert.Single(map.Nodes, node => node.Id == accepted.SourceLocationId);
         Assert.Equal("f_crown", gate.OwnerFactionId);
         Assert.Equal("Серая Корона", gate.OwnerFactionName);
         Assert.Equal(76, gate.Influence["f_crown"]);
         Assert.Contains(gate.Details, static item => item.Key == "Контроль фракций" && item.Value.Contains("Military 76", StringComparison.Ordinal));
-        Assert.Contains(map.Regions, static region =>
+        Assert.Contains(map.Regions, region =>
             region.OwnerFactionId == "f_crown" &&
-            region.NodeIds.Contains("loc_gate", StringComparer.OrdinalIgnoreCase) &&
-            region.NodeIds.Contains("loc_barracks", StringComparer.OrdinalIgnoreCase));
+            region.NodeIds.Contains(accepted.SourceLocationId, StringComparer.Ordinal) &&
+            region.NodeIds.Contains(accepted.TargetLocationId, StringComparer.Ordinal));
 
-        var market = Assert.Single(map.Nodes, node => node.Id == "loc_market");
+        var market = Assert.Single(map.Nodes, node => node.Id == accepted.TargetLocationId);
         Assert.Contains(market.Details, static item => item.Key == "Статус контроля" && item.Value.Contains("спорная", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(48, market.Influence["f_crown"]);
         Assert.Equal(45, market.Influence["f_syndicate"]);
@@ -544,41 +435,147 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.Equal(map.Nodes.Count, roundTripped.Nodes.Count);
     }
 
-    private async Task SeedMortalMapAsync()
+    private async Task<AcceptedMortalMap> SeedMortalMapAsync(bool withFactionControl = false)
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        var source = CreateRawMortalLocation(
+            "locref_map_square",
+            "mlocmat_map_square",
+            "current_scene_creation",
+            "Старая площадь",
+            x: 10,
+            y: 20,
+            z: 0,
+            discoveryTier: "visited");
+        var target = CreateRawMortalLocation(
+            "locref_map_catacombs",
+            "mlocmat_map_catacombs",
+            "world_map_creation",
+            "Катакомбы",
+            x: 10,
+            y: 19,
+            z: -1,
+            discoveryTier: "discovered");
+        SetLocationSectionPopulated(source, "topology");
+        SetLocationSectionPopulated(target, "topology");
+        if (withFactionControl)
         {
-          "locationId": "loc_square",
-          "name": "Старая площадь",
-          "locationType": "city_square",
-          "description": "Площадь с высохшим фонтаном.",
-          "coordinates": { "x": 10, "y": 20, "z": 0 },
-          "adjacencyMap": [
-            {
-              "targetLocationId": "loc_catacombs",
-              "name": "Катакомбы",
-              "direction": "вниз",
-              "linkState": "dangerous",
-              "targetCoordinates": { "x": 10, "y": 19, "z": -1 }
-            }
-          ]
+            source["factionControl"] = new JsonArray(
+                new JsonObject
+                {
+                    ["factionId"] = "f_crown",
+                    ["factionName"] = "Серая Корона",
+                    ["controlType"] = "Military",
+                    ["controlLevel"] = 76
+                });
+            target["factionControl"] = new JsonArray(
+                new JsonObject
+                {
+                    ["factionId"] = "f_crown",
+                    ["factionName"] = "Серая Корона",
+                    ["controlType"] = "Economic",
+                    ["controlLevel"] = 48
+                },
+                new JsonObject
+                {
+                    ["factionId"] = "f_syndicate",
+                    ["factionName"] = "Синдикат Тени",
+                    ["controlType"] = "Covert",
+                    ["controlLevel"] = 45
+                });
+            SetLocationSectionPopulated(source, "factionControl");
+            SetLocationSectionPopulated(target, "factionControl");
         }
-        """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "newLocations": [
+        var link = MortalLocationTestFixture.CreateRawLink("unused_source", "unused_target");
+        link["initialId"] = "linkref_map_square_to_catacombs";
+        link["sourceLocationId"] = null;
+        link["sourceInitialId"] = "locref_map_square";
+        link["targetLocationId"] = null;
+        link["targetInitialId"] = "locref_map_catacombs";
+        link["directionLabel"] = "вниз";
+        link["materialization"]!["initialId"] = "linkref_map_square_to_catacombs";
+        link["materialization"]!["materializationId"] = "mlinkmat_map_square_to_catacombs";
+
+        var input = new MortalLocationAcceptedTurnInput(
+            new JsonObject
             {
-              "locationId": "loc_catacombs",
-              "locationName": "Катакомбы",
-              "locationType": "dungeon",
-              "description": "Слепые коридоры под площадью.",
-              "coordinates": { "x": 10, "y": 19, "z": -1 }
-            }
-          ]
-        }
-        """);
+                ["schemaVersion"] = 1,
+                ["realm"] = "mortal_world",
+                ["locations"] = new JsonArray(),
+                ["links"] = new JsonArray()
+            },
+            PreTurnCurrentLocation: null,
+            PreTurnIdentityIndex: MortalLocationIdentityState.CreateEmptyRoot(),
+            RawCurrentLocationData: source,
+            RawWorldMapUpdates: new JsonObject
+            {
+                ["newLocations"] = new JsonArray(target),
+                ["newLinks"] = new JsonArray(link)
+            },
+            Turn: 42);
+        var next = 1;
+        var planning = MortalLocationAcceptedTurnPlanner.Build(
+            input,
+            new MortalLocationIdentityFactory(() =>
+                new Guid(next++, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)));
+        Assert.True(planning.Success, string.Join(Environment.NewLine, planning.Issues.Select(issue => issue.Message)));
+        var plan = Assert.IsType<MortalLocationAcceptedTurnPlan>(planning.Plan);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            plan.FinalWorldMap.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            plan.FinalCurrentLocation!.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            plan.FinalIdentityIndex.ToJsonString());
+        return new AcceptedMortalMap(
+            plan,
+            plan.LocationIdsByInitialId["locref_map_square"],
+            plan.LocationIdsByInitialId["locref_map_catacombs"],
+            plan.LinkIdsByInitialId["linkref_map_square_to_catacombs"]);
     }
+
+    private static JsonObject CreateRawMortalLocation(
+        string initialId,
+        string materializationId,
+        string route,
+        string displayName,
+        int x,
+        int y,
+        int z,
+        string discoveryTier)
+    {
+        var location = MortalLocationTestFixture.CreateRawLocation(route);
+        location["initialId"] = initialId;
+        location["name"] = displayName;
+        location["displayName"] = displayName;
+        location["coordinates"] = new JsonObject { ["x"] = x, ["y"] = y, ["z"] = z };
+        location["discovery"] = new JsonObject
+        {
+            ["tier"] = discoveryTier,
+            ["audience"] = "player_known",
+            ["rumorSummary"] = null
+        };
+        location["materialization"]!["initialId"] = initialId;
+        location["materialization"]!["materializationId"] = materializationId;
+        return location;
+    }
+
+    private static void SetLocationSectionPopulated(JsonObject location, string section)
+    {
+        location["materialization"]!["sections"]![section] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+    }
+
+    private sealed record AcceptedMortalMap(
+        MortalLocationAcceptedTurnPlan Plan,
+        string SourceLocationId,
+        string TargetLocationId,
+        string LinkId);
 
     private static readonly byte[] TinyPng = Convert.FromBase64String(
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=");

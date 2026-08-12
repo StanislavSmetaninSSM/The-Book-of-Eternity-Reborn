@@ -1,10 +1,40 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class MortalLocationTestFixtureTests
 {
+    [Fact]
+    public void CreateCanonicalLocationWithIdentity_PassesContractIndexAndPlanner()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "forest_lodge",
+            "Лесная сторожка");
+        using var locationDocument = JsonDocument.Parse(location.ToJsonString());
+        Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            locationDocument.RootElement,
+            MortalLocationMaterializationContract.WorldMapPath + ".locations[0]"));
+        var map = MortalLocationTestFixture.CreateWorldMap(location);
+        var current = MortalLocationTestFixture.CreateCurrentProjection(location);
+        var index = MortalLocationTestFixture.CreateIdentityIndex(location);
+        var parsedIndex = MortalLocationIdentityState.Parse(index);
+        Assert.Empty(parsedIndex.Issues);
+        Assert.Empty(parsedIndex.ValidateCanonicalState(map));
+
+        var planning = MortalLocationAcceptedTurnPlanner.Build(new MortalLocationAcceptedTurnInput(
+            map,
+            current,
+            index,
+            RawCurrentLocationData: null,
+            RawWorldMapUpdates: null,
+            Turn: 1));
+
+        Assert.True(planning.Success, string.Join(Environment.NewLine, planning.Issues.Select(issue => issue.Message)));
+    }
+
     private static readonly string[] LocationSections =
     {
         "presentation",

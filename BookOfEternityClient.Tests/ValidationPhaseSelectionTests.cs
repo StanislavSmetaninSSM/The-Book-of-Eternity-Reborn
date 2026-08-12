@@ -256,6 +256,67 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     }
 
     [Fact]
+    public void ValidateResponse_ExistingMortalMove_DoesNotRequireLegacyCoordinatesOrFullResend()
+    {
+        var response = new JsonObject
+        {
+            ["response"] = "Герой входит в башню.",
+            ["currentLocationData"] = new JsonObject
+            {
+                ["locationId"] = "loc_exact_tower",
+                ["lastEventsDescription"] = "Герой вошёл в башню после заката.",
+                ["currentWeather"] = new JsonObject { ["summary"] = "Сильный ветер" },
+                ["currentInteractions"] = new JsonArray()
+            }
+        };
+        using var document = JsonDocument.Parse(response.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is "current_location_missing_coordinates" or
+                "current_location_last_events_timestamp_invalid" or
+                "current_location_known_location_resends_full_object");
+    }
+
+    [Fact]
+    public void ValidateResponse_CurrentLocationAndLinkLifecycle_DoesNotRunLegacyCoordinateContracts()
+    {
+        var response = new JsonObject
+        {
+            ["response"] = "Башня изменилась, а проход теперь запечатан.",
+            ["worldMapUpdates"] = new JsonObject
+            {
+                ["locationUpdates"] = new JsonArray(new JsonObject
+                {
+                    ["locationId"] = "loc_exact_tower",
+                    ["displayName"] = "Башня под грозой",
+                    ["description"] = "Молнии освещают старые зубцы."
+                }),
+                ["linkUpdates"] = new JsonArray(new JsonObject
+                {
+                    ["linkId"] = "mlink_exact_passage",
+                    ["access"] = new JsonObject
+                    {
+                        ["state"] = "sealed",
+                        ["reason"] = "Проход завален.",
+                        ["requirements"] = new JsonArray()
+                    }
+                }),
+                ["linkRemovals"] = new JsonArray()
+            }
+        };
+        using var document = JsonDocument.Parse(response.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("location_update_", StringComparison.Ordinal) == true ||
+            issue.Code?.StartsWith("world_map_link_update_", StringComparison.Ordinal) == true ||
+            issue.Code == "world_map_link_missing_target_coordinates");
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_CanonicalMortalLocationRoots_DoNotRunLegacyAliasContract()
     {
         var canonical = MortalLocationTestFixture.CreateCanonicalLocation();

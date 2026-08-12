@@ -155,6 +155,22 @@ internal sealed class MortalLocationIdentityState
 
     internal JsonObject ToJson() => _root.DeepClone().AsObject();
 
+    internal bool IsAcceptedCanonicalLocation(JsonObject location)
+    {
+        ArgumentNullException.ThrowIfNull(location);
+        return TryGetExactIdentity(location, "locationId", out var locationId) &&
+               LocationEntriesById.TryGetValue(locationId, out var entry) &&
+               EntryMatchesCanonical(location, entry, isLink: false);
+    }
+
+    internal bool IsAcceptedCanonicalLink(JsonObject link)
+    {
+        ArgumentNullException.ThrowIfNull(link);
+        return TryGetExactIdentity(link, "linkId", out var linkId) &&
+               LinkEntriesById.TryGetValue(linkId, out var entry) &&
+               EntryMatchesCanonical(link, entry, isLink: true);
+    }
+
     internal IReadOnlyList<ValidationIssue> ValidateCanonicalState(JsonNode? worldMapNode)
     {
         var issues = new List<ValidationIssue>();

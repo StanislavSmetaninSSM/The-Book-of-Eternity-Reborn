@@ -174,7 +174,8 @@ public sealed partial class MortalLocationMaterializationValidationTests
         JsonObject? preTurnCurrentLocation = null,
         JsonObject? preTurnIdentityIndex = null,
         JsonObject? rawCurrentLocationData = null,
-        JsonObject? rawWorldMapUpdates = null)
+        JsonObject? rawWorldMapUpdates = null,
+        int turn = 42)
     {
         var input = new MortalLocationAcceptedTurnInput(
             preTurnWorldMap ?? EmptyWorldMap(),
@@ -182,7 +183,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
             preTurnIdentityIndex ?? MortalLocationIdentityState.CreateEmptyRoot(),
             rawCurrentLocationData,
             rawWorldMapUpdates,
-            Turn: 42);
+            Turn: turn);
         return MortalLocationAcceptedTurnPlanner.Build(input, CreateIdentityFactory());
     }
 

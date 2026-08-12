@@ -8055,7 +8055,6 @@ public partial class ValidationService
                 repairHint: "Используй либо incremental timeChange, либо absolute setWorldTime. Для большого time skip/rewind оставь только setWorldTime, потому что он override'ит обычный timeChange для этого хода."));
         }
 
-        ValidateCurrentLocationData(root, contextPrefix, issues);
         ValidateWorldMapUpdates(root, contextPrefix, issues);
         ValidateArrayOfObjectsField(root, contextPrefix, issues, "worldEventsLog");
         ValidateRivalSoulArcArray(root, contextPrefix, issues, "UpdateRivalSoulArcs");
