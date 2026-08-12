@@ -102,6 +102,11 @@ public partial class ValidationService
             await ValidateAcceptedTurnFactionMaterializationCompletenessAsync(issues);
         }
         if (phases.HasFlag(
+                GameStateValidationPhase.AcceptedTurnLocationMaterializationCompleteness))
+        {
+            await ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(issues);
+        }
+        if (phases.HasFlag(
                 GameStateValidationPhase.AcceptedTurnItemMaterializationCompleteness))
         {
             await ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(issues, null);

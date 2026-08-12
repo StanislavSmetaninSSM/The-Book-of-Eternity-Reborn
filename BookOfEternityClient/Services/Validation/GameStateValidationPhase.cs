@@ -34,9 +34,11 @@ internal enum GameStateValidationPhase : uint
     GuardianProjectStateFiles = 1u << 27,
     AcceptedTurnFactionMaterializationCompleteness = 1u << 28,
     AcceptedTurnItemMaterializationCompleteness = 1u << 29,
+    AcceptedTurnLocationMaterializationCompleteness = 1u << 30,
     All = ((1u << 26) - 1) |
           AcceptedTurnFactionMaterializationCompleteness |
-          AcceptedTurnItemMaterializationCompleteness,
+          AcceptedTurnItemMaterializationCompleteness |
+          AcceptedTurnLocationMaterializationCompleteness,
     Selectable = All | RivalAndResidentCrossReferences | GuardianProjectStateFiles
 }
 

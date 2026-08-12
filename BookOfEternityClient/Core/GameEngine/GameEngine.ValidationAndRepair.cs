@@ -404,6 +404,7 @@ public partial class GameEngine
         issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync());
+        issues.AddRange(await _validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync());
         return issues;
     }

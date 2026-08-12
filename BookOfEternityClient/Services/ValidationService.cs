@@ -29,7 +29,11 @@ public partial class ValidationService
     /// Validate a single GM response before distributing to files.
     /// </summary>
     public List<ValidationIssue> ValidateResponse(JsonElement response)
-        => ValidateResponseInternal(response);
+    {
+        var issues = ValidateResponseInternal(response);
+        ValidateRawMortalLocationMaterializationResponse(response, issues);
+        return issues;
+    }
 
     public Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadAsync()
         => ValidateAcceptedTurnNarrativePayloadInternalAsync();

@@ -632,6 +632,7 @@ public class ValidationIssue
     internal IReadOnlyList<string> RepairTargetFiles { get; }
     internal FactionTouchKind? FactionRepairClassification { get; set; }
     internal MortalItemRepairContext? MortalItemRepairContext { get; set; }
+    internal MortalLocationRepairContext? MortalLocationRepairContext { get; set; }
 
     public ValidationIssue(
         string filePath,
