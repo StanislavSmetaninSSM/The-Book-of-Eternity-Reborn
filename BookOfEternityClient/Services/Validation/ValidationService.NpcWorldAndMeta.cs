@@ -4954,6 +4954,8 @@ public partial class ValidationService
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
         return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals(MortalLocationIdentityState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.StartsWith(MortalLocationIdentityState.StatePath + ".", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||
@@ -6152,33 +6154,20 @@ public partial class ValidationService
 
     private HashSet<string> ReadKnownPermanentLocationIdsSync()
     {
-        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var relativePath in new[]
-                 {
-                     "game_state/world/current_location.json",
-                     "game_state/world/world_map.json"
-                 })
-        {
-            var json = ReadPreTurnTrackedFileSync(relativePath);
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+        var json = ReadPreTurnTrackedFileSync(
+            MortalLocationMaterializationContract.WorldMapPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return ids;
 
-            try
-            {
-                using var document = JsonDocument.Parse(json);
-                foreach (var location in EnumerateLocationLikeObjects(
-                             document.RootElement,
-                             includeLocationUpdates: false))
-                {
-                    var locationId = GetFirstNonEmptyString(location, "locationId");
-                    if (!string.IsNullOrWhiteSpace(locationId))
-                        ids.Add(locationId);
-                }
-            }
-            catch (JsonException)
-            {
-                // Unusable pre-turn location authority yields no trusted permanent IDs.
-            }
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            ids.UnionWith(ReadExactCanonicalWorldMapLocationIds(document.RootElement));
+        }
+        catch (JsonException)
+        {
+            // Unusable pre-turn location authority yields no trusted permanent IDs.
         }
 
         return ids;

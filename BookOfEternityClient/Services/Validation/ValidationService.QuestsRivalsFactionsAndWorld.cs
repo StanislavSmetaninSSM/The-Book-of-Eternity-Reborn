@@ -176,12 +176,22 @@ public partial class ValidationService
 
     private void ValidateCurrentLocationData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (string.Equals(
+                contextPrefix,
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                StringComparison.Ordinal) &&
+            !root.TryGetProperty("currentLocationData", out _))
+        {
+            return;
+        }
+
         var found = false;
         if (root.TryGetProperty("currentLocationData", out var location))
         {
             found = true;
             var locationContext = $"{contextPrefix}.currentLocationData";
-            ValidateCurrentLocationResponseObject(location, locationContext, issues);
+            if (!IsRawCurrentLocationCreationCandidate(location))
+                ValidateCurrentLocationResponseObject(location, locationContext, issues);
         }
         else if (root.ValueKind == JsonValueKind.Object &&
                  (root.TryGetProperty("locationId", out _) || root.TryGetProperty("locationType", out _)))
@@ -315,6 +325,15 @@ public partial class ValidationService
 
     private void ValidateWorldMapUpdates(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (string.Equals(
+                contextPrefix,
+                MortalLocationMaterializationContract.WorldMapPath,
+                StringComparison.Ordinal) &&
+            !root.TryGetProperty("worldMapUpdates", out _))
+        {
+            return;
+        }
+
         JsonElement updates;
         string context;
         if (root.TryGetProperty("worldMapUpdates", out updates))
@@ -329,22 +348,9 @@ public partial class ValidationService
             context = contextPrefix;
         }
 
-        if (updates.TryGetProperty("newLocations", out var newLocations))
-        {
-            RequireArrayOfObjects(newLocations, $"{context}.newLocations", issues);
-            if (newLocations.ValueKind == JsonValueKind.Array)
-            {
-                var index = 0;
-                foreach (var item in newLocations.EnumerateArray())
-                {
-                    if (item.ValueKind == JsonValueKind.Object)
-                        ValidateNewLocationObject(item, $"{context}.newLocations[{index}]", issues);
-                    index++;
-                }
-            }
-        }
-        if (updates.TryGetProperty("newLinks", out var newLinks))
-            ValidateWorldMapNewLinks(newLinks, $"{context}.newLinks", issues);
+        // Complete creation carriers are owned exclusively by the Mortal location
+        // materialization contract. Running the legacy location/link validators here
+        // would reinterpret canonical fields, aliases, and historical compatibility.
         if (updates.TryGetProperty("locationUpdates", out var locationUpdates))
             ValidateLocationUpdateArray(locationUpdates, $"{context}.locationUpdates", issues);
         if (updates.TryGetProperty("storageUpdates", out var storageUpdates))

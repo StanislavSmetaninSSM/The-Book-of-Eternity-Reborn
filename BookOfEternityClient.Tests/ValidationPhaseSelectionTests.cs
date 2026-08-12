@@ -219,6 +219,164 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     }
 
     [Fact]
+    public void ValidateResponse_CompleteRawMortalLocationCreation_DoesNotRunLegacyLocationContract()
+    {
+        var response = new JsonObject
+        {
+            ["response"] = "Герой выходит к Чёрному броду.",
+            ["currentLocationData"] = MortalLocationTestFixture.CreateRawLocation(
+                "current_scene_creation")
+        };
+        using var document = JsonDocument.Parse(response.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Fact]
+    public void ValidateResponse_CompleteRawMortalWorldMapCreations_DoNotRunLegacyLocationContract()
+    {
+        var response = new JsonObject
+        {
+            ["response"] = "За рекой открывается башня и ведущая к ней тропа.",
+            ["worldMapUpdates"] = new JsonObject
+            {
+                ["newLocations"] = new JsonArray(
+                    MortalLocationTestFixture.CreateRawLocation("world_map_creation")),
+                ["newLinks"] = new JsonArray(
+                    MortalLocationTestFixture.CreateRawLink("loc_source", "loc_target"))
+            }
+        };
+        using var document = JsonDocument.Parse(response.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CanonicalMortalLocationRoots_DoNotRunLegacyAliasContract()
+    {
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocation();
+        await _fileSystem.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(canonical).ToJsonString());
+        await _fileSystem.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(canonical).ToJsonString());
+        await _fileSystem.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(canonical).ToJsonString());
+        var selection = new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+            GameStateValidationPhase.AcceptedTurnLocationMaterializationCompleteness,
+            new[]
+            {
+                MortalLocationMaterializationContract.WorldMapPath,
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                MortalLocationIdentityState.StatePath
+            });
+
+        var issues = await _validator.ValidateGameStateAsync(selection);
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LocationIdentityIndexIssue_IsClientOwnedSurface()
+    {
+        var invalidIndex = MortalLocationIdentityState.CreateEmptyRoot();
+        invalidIndex["gmCanEdit"] = true;
+        await _fileSystem.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["realm"] = "mortal_world",
+                ["locations"] = new JsonArray(),
+                ["links"] = new JsonArray()
+            }.ToJsonString());
+        await _fileSystem.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            invalidIndex.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(
+            GameStateValidationPhase.AcceptedTurnLocationMaterializationCompleteness);
+
+        var issue = Assert.Single(issues, candidate =>
+            candidate.FilePath == MortalLocationIdentityState.StatePath + ".gmCanEdit" &&
+            candidate.Code == "mortal_location_identity_unknown_field");
+        Assert.Equal(IssueCategory.ClientOwnedSurface, issue.Category);
+    }
+
+    [Fact]
+    public void ValidateResponse_ClientOwnedLocationIndexRoot_IsRejected()
+    {
+        var response = new JsonObject
+        {
+            ["response"] = "Герой осматривает дорогу.",
+            ["locationIdentityIndex"] = MortalLocationIdentityState.CreateEmptyRoot()
+        };
+        using var document = JsonDocument.Parse(response.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.FilePath == "response.locationIdentityIndex" &&
+            issue.Code == "mortal_location_materialization_client_owned_surface_forbidden" &&
+            issue.Category == IssueCategory.ClientOwnedSurface);
+    }
+
+    [Fact]
+    public void ExactCanonicalMortalLocationReader_UsesDirectLocationsAndOrdinalIdentity()
+    {
+        var map = MortalLocationTestFixture.CreateWorldMap(
+            MortalLocationTestFixture.CreateCanonicalLocation(),
+            new JsonObject { ["LocationId"] = "loc_case_alias" },
+            new JsonObject { ["locationId"] = " loc_whitespace_alias " });
+        using var document = JsonDocument.Parse(map.ToJsonString());
+
+        var ids = ValidationService.ReadExactCanonicalWorldMapLocationIds(
+            document.RootElement);
+
+        Assert.Equal(new[] { MortalLocationTestFixture.LocationId }, ids);
+        Assert.DoesNotContain(MortalLocationTestFixture.LocationId.ToUpperInvariant(), ids);
+    }
+
+    [Fact]
+    public void ExactCanonicalMortalLocationReader_RejectsWrapperAndRecursiveAliases()
+    {
+        using var document = JsonDocument.Parse("""
+        {
+          "worldMapUpdates": {
+            "newLocations": [ { "locationId": "loc_raw_wrapper" } ]
+          },
+          "currentLocationData": { "locationId": "loc_recursive_current" },
+          "locations": [ { "locationId": "loc_partial_canonical" } ]
+        }
+        """);
+
+        var ids = ValidationService.ReadExactCanonicalWorldMapLocationIds(
+            document.RootElement);
+
+        Assert.Empty(ids);
+    }
+
+    [Fact]
+    public void ExactCanonicalMortalLocationReader_RejectsReceiptlessLocation()
+    {
+        var map = MortalLocationTestFixture.CreateWorldMap(
+            MortalLocationTestFixture.CreateReceiptlessNegative());
+        using var document = JsonDocument.Parse(map.ToJsonString());
+
+        var ids = ValidationService.ReadExactCanonicalWorldMapLocationIds(
+            document.RootElement);
+
+        Assert.Empty(ids);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ItemMaterializationSelection_DoesNotRunJsonIntegrity()
     {
         await _fileSystem.WriteFileAtomicAsync(

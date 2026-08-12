@@ -61,7 +61,9 @@ public partial class CanonicalStateNormalizer
         "game_state/quests/soul_quests.json",
         "game_state/quests/quest_history.json",
         "game_state/world/rival_soul_arcs.json",
-        StorageTransportMoveService.CurrentLocationPath,
+        MortalLocationMaterializationContract.WorldMapPath,
+        MortalLocationMaterializationContract.CurrentLocationPath,
+        MortalLocationIdentityState.StatePath,
         StorageTransportMoveService.VehiclesPath,
         "game_state/factions/faction_core.json",
         "game_state/npcs/npc_core.json",
@@ -103,7 +105,7 @@ public partial class CanonicalStateNormalizer
             CraftRequestState.PendingRequestPath,
             NpcTradeRequestState.PendingRequestPath
         })
-        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .Distinct(StringComparer.Ordinal)
         .ToArray();
 
     private readonly FileSystemManager _fs;
@@ -177,6 +179,7 @@ public partial class CanonicalStateNormalizer
     {
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
+        await NormalizeMortalLocationsAsync(backups);
         await NormalizeMortalItemsAsync(backups);
         await NormalizeGuardiansAsync(backups);
         await NormalizeGuardianAbodeResidentsAsync(backups);

@@ -1558,22 +1558,25 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             {
                 ["factions"] = new JsonArray()
             }.ToJsonString());
-        var location = new JsonObject
+        var location = MortalLocationTestFixture.CreateRawLocation(
+            wrapInWorldMap ? "world_map_creation" : "current_scene_creation");
+        location["factionControl"] = new JsonArray(new JsonObject
         {
-            ["locationId"] = "location_watch_road",
-            ["locationName"] = "Western Road",
-            ["factionControl"] = new JsonArray(new JsonObject
-            {
-                ["factionId"] = "faction_missing",
-                ["controlLevel"] = 35
-            })
-        };
+            ["factionId"] = "faction_missing",
+            ["controlLevel"] = 35
+        });
+        location["materialization"]!["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
         var authority = wrapInWorldMap
             ? new JsonObject
             {
-                ["locations"] = new JsonArray(location)
+                ["worldMapUpdates"] = new JsonObject
+                {
+                    ["newLocations"] = new JsonArray(location),
+                    ["newLinks"] = new JsonArray()
+                }
             }
-            : location;
+            : new JsonObject { ["currentLocationData"] = location };
         await _fs.WriteFileAtomicAsync(
             authorityPath,
             authority.ToJsonString());
@@ -1590,11 +1593,8 @@ public sealed class FactionMaterializationValidationTests : IDisposable
             issue.RepairTargetFiles);
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task MortalLocationControlUnknownFaction_SameLocationIdAcrossRoots_PreservesExactOrigin(
-        bool currentLocationIsInvalid)
+    [Fact]
+    public async Task MortalLocationControl_CurrentProjectionAliasDoesNotOverrideCanonicalMapAuthority()
     {
         await _fs.WriteFileAtomicAsync(
             MortalPath,
@@ -1603,45 +1603,30 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 ["factions"] = new JsonArray()
             }.ToJsonString());
 
-        static JsonObject BuildLocation(bool invalid) => new()
-        {
-            ["locationId"] = "location_shared_authority",
-            ["locationName"] = "Shared Authority Location",
-            ["factionControl"] = invalid
-                ? new JsonArray(new JsonObject
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocation();
+
+        await _fs.WriteFileAtomicAsync(
+            CurrentLocationPath,
+            new JsonObject
+            {
+                ["locationId"] = MortalLocationTestFixture.LocationId,
+                ["factionControl"] = new JsonArray(new JsonObject
                 {
                     ["factionId"] = "faction_missing",
                     ["controlLevel"] = 35
                 })
-                : new JsonArray()
-        };
-
-        await _fs.WriteFileAtomicAsync(
-            CurrentLocationPath,
-            BuildLocation(currentLocationIsInvalid).ToJsonString());
+            }.ToJsonString());
         await _fs.WriteFileAtomicAsync(
             WorldMapPath,
-            new JsonObject
-            {
-                ["locations"] = new JsonArray(
-                    BuildLocation(!currentLocationIsInvalid))
-            }.ToJsonString());
+            MortalLocationTestFixture.CreateWorldMap(canonical).ToJsonString());
 
         var issues = await _validator
             .ValidateAcceptedTurnRawFactionMaterializationAsync();
-        var issue = Assert.Single(issues, candidate =>
+
+        Assert.DoesNotContain(issues, candidate =>
             candidate.Code ==
                 "faction_materialization_mortal_location_control_unknown_faction" &&
             candidate.Actor == "mortal_faction:faction_missing");
-
-        Assert.Equal(
-            new[]
-            {
-                currentLocationIsInvalid
-                    ? CurrentLocationPath
-                    : WorldMapPath
-            },
-            issue.RepairTargetFiles);
     }
 
     [Fact]
@@ -2579,17 +2564,23 @@ public sealed class FactionMaterializationValidationTests : IDisposable
 
     private async Task WritePopulatedMortalLocationAuthorityAsync()
     {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        location["locationId"] = "location_watch_road";
+        location["factionControl"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = "temp-faction-watch"
+        });
+        var envelope = location["materialization"]!.AsObject();
+        envelope["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
+        var receipt = location["materializationReceipt"]!.AsObject();
+        receipt["locationId"] = "location_watch_road";
+        receipt["seal"] = MortalLocationMaterializationContract.ComputeSeal(
+            envelope,
+            receipt);
         await _fs.WriteFileAtomicAsync(
-            "game_state/world/current_location.json",
-            new JsonObject
-            {
-                ["locationId"] = "location_watch_road",
-                ["locationName"] = "Western Road",
-                ["factionControl"] = new JsonArray(new JsonObject
-                {
-                    ["factionId"] = "temp-faction-watch"
-                })
-            }.ToJsonString());
+            WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
     }
 
     private async Task WriteMortalAndShiningCreationsAsync(
@@ -3760,5 +3751,12 @@ public sealed class FactionMaterializationValidationTests : IDisposable
         new()
         {
             ["state"] = "populated"
+        };
+
+    private static JsonObject PopulatedLocationDisposition() =>
+        new()
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
         };
 }

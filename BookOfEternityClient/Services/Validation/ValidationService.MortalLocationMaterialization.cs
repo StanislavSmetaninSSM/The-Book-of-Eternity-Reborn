@@ -1,10 +1,33 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
+    public async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync()
+    {
+        var issues = new List<ValidationIssue>();
+        await ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(
+            issues,
+            writeLease: null);
+        return issues;
+    }
+
+    internal async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        var issues = new List<ValidationIssue>();
+        await ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(
+            issues,
+            writeLease);
+        return issues;
+    }
+
     public async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawMortalLocationMaterializationAsync()
     {
@@ -22,15 +45,28 @@ public partial class ValidationService
 
     private async Task ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(
         List<ValidationIssue> issues)
+        => await ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(
+            issues,
+            writeLease: null);
+
+    private async Task ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease)
     {
         var mapJson = ShouldValidateStateFile(MortalLocationMaterializationContract.WorldMapPath)
-            ? await _fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath)
+            ? await ReadMortalLocationValidationFileAsync(
+                MortalLocationMaterializationContract.WorldMapPath,
+                writeLease)
             : null;
         var currentJson = ShouldValidateStateFile(MortalLocationMaterializationContract.CurrentLocationPath)
-            ? await _fs.ReadFileAsync(MortalLocationMaterializationContract.CurrentLocationPath)
+            ? await ReadMortalLocationValidationFileAsync(
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                writeLease)
             : null;
         var indexJson = ShouldValidateStateFile(MortalLocationIdentityState.StatePath)
-            ? await _fs.ReadFileAsync(MortalLocationIdentityState.StatePath)
+            ? await ReadMortalLocationValidationFileAsync(
+                MortalLocationIdentityState.StatePath,
+                writeLease)
             : null;
 
         if (string.IsNullOrWhiteSpace(mapJson) &&
@@ -75,12 +111,21 @@ public partial class ValidationService
         }
     }
 
+    private Task<string?> ReadMortalLocationValidationFileAsync(
+        string path,
+        FileSystemManager.CanonicalWriteLease? writeLease) =>
+        writeLease == null
+            ? _fs.ReadFileAsync(path)
+            : _fs.ReadFileAsync(writeLease, path);
+
     private void ValidateRawMortalLocationMaterializationResponse(
         JsonElement response,
         List<ValidationIssue> issues)
     {
         if (response.ValueKind != JsonValueKind.Object)
             return;
+
+        ValidateRawMortalLocationClientOwnedRootFields(response, "response", issues);
 
         if (response.TryGetProperty("currentLocationData", out var current) &&
             current.ValueKind == JsonValueKind.Object)
@@ -114,6 +159,32 @@ public partial class ValidationService
             "response.worldMapUpdates",
             "worldMapUpdates",
             issues);
+    }
+
+    private static void ValidateRawMortalLocationClientOwnedRootFields(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        foreach (var property in root.EnumerateObject())
+        {
+            if (!string.Equals(property.Name, "locationIdentityIndex", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(property.Name, "linkIdentityIndex", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                $"{context}.{property.Name}",
+                IssueSeverity.Error,
+                "The GM cannot author Mortal location identity-index state.",
+                code: "mortal_location_materialization_client_owned_surface_forbidden",
+                section: "mortal_location_materialization",
+                expected: "client-owned field absent",
+                actual: "present",
+                repairHint: "Remove the identity-index field; the client creates and updates it after acceptance.",
+                category: IssueCategory.ClientOwnedSurface));
+        }
     }
 
     private async Task ValidateAcceptedTurnRawMortalLocationFileAsync(

@@ -1222,8 +1222,11 @@ internal static class AcceptedTurnCanonicalStateRefresh
         try
         {
             await normalizer.BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
-            var issues = await validator
-                .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(writeLease);
+            var issues = new List<ValidationIssue>();
+            issues.AddRange(await validator
+                .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
+            issues.AddRange(await validator
+                .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(writeLease));
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
             return issues;
