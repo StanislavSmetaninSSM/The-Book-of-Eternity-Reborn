@@ -758,6 +758,19 @@ Fixture correction evidence before the replacement clean-candidate PreMerge:
 | all repository fixture-integrity controls | PASS | 19/19 | 0 | false | complete | `TestResults/test-lanes/20260812-093651-907-13156-1cd703b2713045fea694dfc977deb773-focused` |
 | replacement clean-candidate PreMerge | FAIL, unscoped diagnostic call in one lifecycle test | 3964/3966 C#; 138/138 frontend | 0 | false | complete | `TestResults/test-lanes/20260812-093921-936-27684-686144eabeb744f18d8c8f600b1d582b-premerge` |
 | scoped lifecycle diagnostic and broad-validation source guards | PASS | 5/5 | 0 | false | complete | `TestResults/test-lanes/20260812-094921-831-8052-5525d141eeff46fbb566e6296c41b66a-focused` |
+| third clean-candidate PreMerge | FAIL, `/книги` Agent Console test had no accepted readable item | 4825/4826 C#; 138/138 frontend | 0 | false | complete | `TestResults/test-lanes/20260812-095107-615-7316-ec0e9bffc70b4d37a3f3b34f0c81ee21-premerge` |
+| accepted readable-document Agent Console regression | PASS | 1/1 | 0 | false | complete | `TestResults/test-lanes/20260812-101010-087-12944-7f357c46e99f4cefa401ffa1a8bce274-focused` |
+| complete process E2E control | PASS | 15/15 | 0 | false | complete | `TestResults/test-lanes/20260812-101155-577-28536-bb00062a58f74599a648b9a3e451e3ba-e2e` |
+
+The third clean-candidate run reached the final process test and exposed a
+stale test precondition rather than a product fallback requirement. The
+`/книги` Agent Console drilldown copied the active save, whose only accepted
+item is a sword; after orphan and receipt-less readable sidecars were correctly
+removed from player authority, the command returned an empty shelf instead of
+a selection menu. The isolated E2E sandbox now adds one complete readable
+document, its receipt, and its active identity-index entry before starting the
+client. The repository example save and production accepted-only reader remain
+unchanged.
 
 Manual console/browser inspection passed. The simple and mechanic-bearing
 fixtures retained their Russian in-world description, physical facts,
