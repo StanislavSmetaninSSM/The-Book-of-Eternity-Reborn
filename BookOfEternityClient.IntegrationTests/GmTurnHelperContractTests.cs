@@ -3375,15 +3375,16 @@ public sealed class GmTurnHelperContractTests
             var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
             Assert.Contains("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", markdown, StringComparison.Ordinal);
             Assert.Contains("world_map", markdown, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("duplicate coordinates", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Names, coordinates, aliases", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("full-turn resubmission", markdown, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("MORTAL_NPC_UPDATE_TEMPLATE.md", markdown, StringComparison.Ordinal);
 
             var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
             using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
             var lesson = document.RootElement.GetProperty("lessons")[0];
             Assert.Equal("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
-            Assert.Contains("register", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("current_location", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("current_scene_creation", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+            Assert.Contains("world_map_creation", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
         }
         finally
         {
@@ -3438,16 +3439,16 @@ public sealed class GmTurnHelperContractTests
 
             var markdown = File.ReadAllText(lessonsMarkdownPath, Encoding.UTF8);
             Assert.Contains("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", markdown, StringComparison.Ordinal);
-            Assert.Contains("unknown target", markdown, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("fully materialized", markdown, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("exact permanent locationId/linkId", markdown, StringComparison.Ordinal);
+            Assert.Contains("Names, coordinates, aliases", markdown, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("VALIDATION_REPAIR_TEMPLATE.md", markdown, StringComparison.Ordinal);
 
             var lessonsJsonPath = Path.Combine(control, "gm_context_pack", "Lessons", "GM_EXPERIENCE_LESSONS.json");
             using var document = JsonDocument.Parse(File.ReadAllText(lessonsJsonPath, Encoding.UTF8));
             var lesson = document.RootElement.GetProperty("lessons")[0];
             Assert.Equal("MORTAL_LOCATION_TRANSITION_TEMPLATE.md", lesson.GetProperty("preferredHarnessSurface").GetString());
-            Assert.Contains("unknown target", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("fully materialized", lesson.GetProperty("acceptedFix").GetString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("world_map_link_creation", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
+            Assert.Contains("knownExits and adjacencyMap are client-derived", lesson.GetProperty("acceptedFix").GetString(), StringComparison.Ordinal);
         }
         finally
         {
@@ -4038,16 +4039,19 @@ public sealed class GmTurnHelperContractTests
                 "gm_context_pack",
                 "Templates",
                 "MORTAL_LOCATION_TRANSITION_TEMPLATE.md");
-            Assert.True(WaitForFileContaining(templatePath, "Mortal location transition repair", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            Assert.True(WaitForFileContaining(templatePath, "Mortal Location Materialization v1", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
 
             var template = File.ReadAllText(templatePath, Encoding.UTF8);
-            Assert.Contains("game_state/world/world_map.json", template, StringComparison.Ordinal);
-            Assert.Contains("game_state/world/current_location.json", template, StringComparison.Ordinal);
-            Assert.Contains("known ids", template, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("duplicate coordinates", template, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("current_scene_creation", template, StringComparison.Ordinal);
+            Assert.Contains("world_map_creation", template, StringComparison.Ordinal);
+            Assert.Contains("world_map_link_creation", template, StringComparison.Ordinal);
+            Assert.Contains("exact permanent locationId", template, StringComparison.Ordinal);
+            Assert.Contains("exact permanent linkId", template, StringComparison.Ordinal);
+            Assert.Contains("knownExits and adjacencyMap are client-derived", template, StringComparison.Ordinal);
             Assert.Contains("narrative color", template, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("canonical `biome`", template, StringComparison.Ordinal);
-            Assert.Contains("TemperateForest", template, StringComparison.Ordinal);
+            Assert.Contains("storageUpdates", template, StringComparison.Ordinal);
+            Assert.Contains("threatsToAdd", template, StringComparison.Ordinal);
+            Assert.Contains("full-turn resubmission", template, StringComparison.Ordinal);
         }
         finally
         {
