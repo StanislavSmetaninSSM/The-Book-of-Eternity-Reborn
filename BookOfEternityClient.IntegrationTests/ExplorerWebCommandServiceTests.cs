@@ -2043,17 +2043,11 @@ public sealed class ExplorerWebCommandServiceTests :
             ["controlLevel"] = 62,
             ["controlType"] = "торговые патрули"
         });
-        location["activeThreats"] = new JsonArray(new JsonObject
-        {
-            ["threatId"] = "gate_pickpockets",
-            ["threatName"] = "Карманники у ворот",
-            ["intensity"] = 3,
-            ["longTermGoal"] = "выследить владельца рунической перчатки",
-            ["currentActivity"] = new JsonObject
-            {
-                ["activityName"] = "проверяют путников у лавок"
-            }
-        });
+        location["activeThreats"] = new JsonArray(CreateCanonicalBrowserThreat(
+            "gate_pickpockets",
+            "Карманники у ворот",
+            "выследить владельца рунической перчатки",
+            "проверяют путников у лавок"));
         location["lastEventsDescription"] = "После ночного письма стража проверяет печати на повозках.";
         location["materialization"]!["sections"]!["factionControl"] = new JsonObject
         {
@@ -2219,6 +2213,45 @@ public sealed class ExplorerWebCommandServiceTests :
             MortalLocationIdentityState.StatePath,
             index.ToJsonString());
     }
+
+    private static JsonObject CreateCanonicalBrowserThreat(
+        string threatId,
+        string name,
+        string longTermGoal,
+        string activityName) =>
+        new()
+        {
+            ["threatId"] = threatId,
+            ["name"] = name,
+            ["threatName"] = name,
+            ["description"] = "Постоянная угроза в тестовой локации.",
+            ["intensity"] = 3,
+            ["longTermGoal"] = longTermGoal,
+            ["currentActivity"] = new JsonObject
+            {
+                ["activityName"] = activityName,
+                ["description"] = "Угроза продолжает текущую деятельность.",
+                ["totalTimeCostMinutes"] = 120,
+                ["timeSpentMinutes"] = 15,
+                ["currentStepNumber"] = 1,
+                ["totalStepsInActivity"] = 3
+            },
+            ["threatArchetype"] = new JsonObject
+            {
+                ["motivation"] = "Domination",
+                ["method"] = "Covert",
+                ["customMotivation"] = null,
+                ["customMethod"] = null
+            },
+            ["impactProfile"] = new JsonObject
+            {
+                ["primaryTargetType"] = "Location",
+                ["primaryTargetId"] = null,
+                ["primaryTargetName"] = name,
+                ["primaryImpact"] = "Stability",
+                ["baseImpactValue"] = 2
+            }
+        };
 
     private static JsonObject CreatePrivateBrowserValidationRepairRequest() => new()
     {
@@ -8787,13 +8820,14 @@ public sealed class ExplorerWebCommandServiceTests :
             "visited",
             x: 4,
             y: 8);
-        gate["activeThreats"] = new JsonArray(new JsonObject
-        {
-            ["threatId"] = "gate_pickpockets",
-            ["threatName"] = "Карманники у ворот",
-            ["dangerLevel"] = "low",
-            ["description"] = "Несколько ловкачей пользуются давкой."
-        });
+        var gateThreat = CreateCanonicalBrowserThreat(
+            "gate_pickpockets",
+            "Карманники у ворот",
+            "Пользоваться давкой у северных ворот.",
+            "высматривают кошельки в толпе");
+        gateThreat["dangerLevel"] = "low";
+        gateThreat["description"] = "Несколько ловкачей пользуются давкой.";
+        gate["activeThreats"] = new JsonArray(gateThreat);
         gate["materialization"]!["sections"]!["activeThreats"] = new JsonObject
         {
             ["disposition"] = "populated",
@@ -10954,23 +10988,29 @@ public sealed class ExplorerWebCommandServiceTests :
                 ["equippedItems"] = new JsonObject(),
                 ["items"] = new JsonArray(sealedLetter, travelRation)
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        await _fs.WriteFileAtomicAsync(
-            "game_state/world/current_location.json",
+        var storageLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_valmont_room",
+            "Покои виконта де Вальмонта",
+            "visited");
+        storageLocation["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_valmont_private_desk",
+                "Приватный письменный стол",
+                hasFullAccess: true,
+                contents: new JsonArray(deskLetter)));
+        storageLocation["materialization"]!["sections"]!["storageMetadata"] =
             new JsonObject
             {
-                ["locationId"] = "loc_valmont_room",
-                ["name"] = "Покои виконта де Вальмонта",
-                ["locationStorages"] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["storageId"] = "storage_valmont_private_desk",
-                        ["name"] = "Приватный письменный стол",
-                        ["hasFullAccess"] = true,
-                        ["contents"] = new JsonArray(deskLetter)
-                    }
-                }
-            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        MortalLocationTestFixture.ResealCanonicalLocation(storageLocation);
+        var mapStorageLocation = storageLocation.DeepClone().AsObject();
+        mapStorageLocation["locationStorages"]![0]!.AsObject().Remove("contents");
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [mapStorageLocation],
+            MortalLocationTestFixture.CreateCurrentProjection(storageLocation),
+            [storageLocation]);
         await _fs.WriteFileAtomicAsync(
             "game_state/misc/vehicles.json",
             new JsonObject

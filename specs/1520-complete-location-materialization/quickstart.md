@@ -917,6 +917,8 @@ additional React field or component.
 | T098 final Fast GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260813-223114-013-52152-fc0c036057d84738bddf02114e792737-fast` | 3165 | 0 | 0 | 0 | Complete |
 | T098 final LifecycleIntegration GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration` | `TestResults/test-lanes/20260813-223506-365-54820-5dc3b9563bc041ffa3e2b909dc375b27-lifecycleintegration` | 243 | 0 | 0 | 0 | Complete |
 | T098 final FullValidation GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation` | `TestResults/test-lanes/20260813-224107-637-9272-4e1712699a9c4b1bb5175a24a6cade17-fullvalidation` | 1792 | 0 | 0 | 0 | Complete |
+| T100 rebased-candidate PreMerge fixture failure | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260813-225152-191-12900-6af39fa5cbb747de8173e898801c4e49-premerge` | 109 | 1 stale browser location fixture; two cancelled sibling shards logged the same fixture class | 0 | 0 | Complete |
+| T100 stale browser location fixtures GREEN | focused Integration filter for world-news detail, `/where_am_i`, and storage/vehicle prompt presentation | `TestResults/test-lanes/20260813-225659-989-55064-466ca17309db426a8ac098d408168a48-focused` | 4 | 0 | 0 | 0 | Complete |
 
 For T076, `ValidationService.MortalFactionMaterialization` owns the exact
 receipt-bearing canonical map plus validated same-turn location authority.
