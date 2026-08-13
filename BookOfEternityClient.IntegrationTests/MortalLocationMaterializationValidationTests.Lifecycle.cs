@@ -238,6 +238,74 @@ public sealed partial class MortalLocationMaterializationValidationTests
     }
 
     [Fact]
+    public async Task Lifecycle_StorageItems_ChangedLocationPublishesOnePhysicalOccurrenceAndPreservesIndexCarrier()
+    {
+        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        var arrangement = await ArrangeStorageMovementPublicationAsync(context);
+        var accepted = arrangement.Accepted;
+        var itemIndex = arrangement.ItemIndex;
+
+        var rawIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(rawIssues, issue => issue.Severity == IssueSeverity.Error);
+
+        await context.Normalizer.NormalizeMortalLocationsAsync(arrangement.Backups);
+
+        var canonicalIssues = await context.Validator
+            .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync();
+        Assert.DoesNotContain(canonicalIssues, issue => issue.Severity == IssueSeverity.Error);
+        var finalCurrent = (await context.ReadJsonAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath))!.AsObject();
+        Assert.Equal(
+            "itm_target_published",
+            Assert.Single(FindStorage(finalCurrent, "storage_target")["contents"]!
+                    .AsArray()
+                    .OfType<JsonObject>())
+                ["itemId"]!.GetValue<string>());
+        var finalOffscreen = (await context.ReadJsonAsync(
+            MortalLocationStorageContentsState.StatePath))!.AsObject();
+        var parked = Assert.Single(finalOffscreen["entries"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(accepted.SourceLocationId, parked["locationId"]!.GetValue<string>());
+        Assert.Equal(
+            "itm_source_published",
+            Assert.Single(parked["contents"]!.AsArray().OfType<JsonObject>())
+                ["itemId"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(
+            itemIndex,
+            await context.ReadJsonAsync(MortalItemIdentityState.StatePath)));
+    }
+
+    [Fact]
+    public async Task Lifecycle_StorageItems_OffscreenPublicationFailureRestoresEveryTrackedPathByteExact()
+    {
+        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        var arrangement = await ArrangeStorageMovementPublicationAsync(context);
+        var before = await context.CaptureBytesAsync(
+            CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        context.ArmInjectedWriteFailure(MortalLocationStorageContentsState.StatePath);
+
+        var failure = await Record.ExceptionAsync(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
+                context.FileSystem,
+                context.Normalizer,
+                context.Validator,
+                arrangement.Backups));
+
+        Assert.NotNull(failure);
+        Assert.Contains(
+            "Injected Mortal location write failure",
+            failure.ToString(),
+            StringComparison.Ordinal);
+        Assert.Equal(
+            MortalLocationStorageContentsState.StatePath,
+            context.InjectedPublishedPath);
+        MortalLocationMaterializationAssertions.AssertExactBytes(
+            before,
+            await context.CaptureBytesAsync(
+                CanonicalStateNormalizer.NormalizerRollbackTrackedFiles));
+    }
+
+    [Fact]
     public void Lifecycle_StorageItems_ExistingMovementPayloadCannotEchoClientOwnedContents()
     {
         var accepted = CreateAcceptedDirectedTopology();
@@ -267,6 +335,67 @@ public sealed partial class MortalLocationMaterializationValidationTests
             issue.FilePath.EndsWith(
                 "locationStorages[0].contents",
                 StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("unknown_location", "mortal_location_storage_contents_coordinate_unresolved")]
+    [InlineData("unknown_storage", "mortal_location_storage_contents_coordinate_unresolved")]
+    [InlineData("current_location", "mortal_location_storage_contents_current_duplicate")]
+    public async Task Lifecycle_StorageItems_CanonicalOffscreenCoordinateMustResolveOutsideCurrentLocation(
+        string scenario,
+        string expectedCode)
+    {
+        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        var accepted = CreateAcceptedDirectedTopology();
+        var source = FindLocation(accepted.FinalWorldMap, accepted.SourceLocationId);
+        var target = FindLocation(accepted.FinalWorldMap, accepted.TargetLocationId);
+        source["locationStorages"] = new JsonArray(
+            CreateStorage("storage_source", "Сундук у брода"));
+        target["locationStorages"] = new JsonArray(
+            CreateStorage("storage_target", "Сундук в башне"));
+        SetSectionPopulated(source, "storageMetadata");
+        SetSectionPopulated(target, "storageMetadata");
+        MortalLocationTestFixture.ResealCanonicalLocation(source);
+        MortalLocationTestFixture.ResealCanonicalLocation(target);
+
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            accepted.FinalWorldMap);
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(source));
+        await context.WriteJsonAsync(
+            MortalLocationIdentityState.StatePath,
+            accepted.FinalIdentityIndex);
+
+        var coordinate = scenario switch
+        {
+            "unknown_location" => new MortalLocationStorageKey(
+                "loc_unknown_offscreen",
+                "storage_target"),
+            "unknown_storage" => new MortalLocationStorageKey(
+                accepted.TargetLocationId,
+                "storage_unknown_offscreen"),
+            _ => new MortalLocationStorageKey(
+                accepted.SourceLocationId,
+                "storage_source")
+        };
+        await context.WriteJsonAsync(
+            MortalLocationStorageContentsState.StatePath,
+            MortalLocationStorageContentsState.BuildCanonicalRoot(
+                new Dictionary<MortalLocationStorageKey, JsonArray>
+                {
+                    [coordinate] = new JsonArray(
+                        MortalItemTestFixture.CreateCanonicalRoot(
+                            "itm_invalid_offscreen_coordinate"))
+                }));
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == expectedCode &&
+            issue.FilePath == MortalLocationStorageContentsState.StatePath);
     }
 
     [Fact]
@@ -539,6 +668,80 @@ public sealed partial class MortalLocationMaterializationValidationTests
             issue.Code == "mortal_location_link_transition_precondition_mismatch");
     }
 
+    private static async Task<StorageMovementPublicationArrangement>
+        ArrangeStorageMovementPublicationAsync(
+            MortalLocationMaterializationTestContext context)
+    {
+        var accepted = CreateAcceptedDirectedTopology();
+        var sourceLocation = FindLocation(accepted.FinalWorldMap, accepted.SourceLocationId);
+        var targetLocation = FindLocation(accepted.FinalWorldMap, accepted.TargetLocationId);
+        var sourceStorage = CreateStorage("storage_source", "Сундук у брода");
+        var targetStorage = CreateStorage("storage_target", "Сундук в башне");
+        sourceStorage.Remove("contents");
+        targetStorage.Remove("contents");
+        sourceLocation["locationStorages"] = new JsonArray(sourceStorage);
+        targetLocation["locationStorages"] = new JsonArray(targetStorage);
+        SetSectionPopulated(sourceLocation, "storageMetadata");
+        SetSectionPopulated(targetLocation, "storageMetadata");
+        MortalLocationTestFixture.ResealCanonicalLocation(sourceLocation);
+        MortalLocationTestFixture.ResealCanonicalLocation(targetLocation);
+
+        var sourceItem = MortalItemTestFixture.CreateCanonicalRoot("itm_source_published");
+        var targetItem = MortalItemTestFixture.CreateCanonicalRoot("itm_target_published");
+        var preTurnCurrent = MortalLocationTestFixture.CreateCurrentProjection(sourceLocation);
+        FindStorage(preTurnCurrent, "storage_source")["contents"] =
+            new JsonArray(sourceItem.DeepClone());
+        var preTurnOffscreen = MortalLocationStorageContentsState.BuildCanonicalRoot(
+            new Dictionary<MortalLocationStorageKey, JsonArray>
+            {
+                [new MortalLocationStorageKey(
+                    accepted.TargetLocationId,
+                    "storage_target")] = new JsonArray(targetItem.DeepClone())
+            });
+        var itemIndex = MortalItemTestFixture.CreateIndexForCarriers(
+            (sourceItem, "location_storage", accepted.SourceLocationId, "storage_source"),
+            (targetItem, "location_storage", accepted.TargetLocationId, "storage_target"));
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            accepted.FinalWorldMap);
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            preTurnCurrent);
+        await context.WriteJsonAsync(
+            MortalLocationIdentityState.StatePath,
+            accepted.FinalIdentityIndex);
+        await context.WriteJsonAsync(
+            MortalLocationStorageContentsState.StatePath,
+            preTurnOffscreen);
+        await context.WriteJsonAsync(MortalItemIdentityState.StatePath, itemIndex);
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        await context.WriteRawTurnStateAsync(
+            currentLocationData: new JsonObject
+            {
+                ["locationId"] = accepted.TargetLocationId,
+                ["lastEventsDescription"] = "Герой вошёл в башню после заката.",
+                ["currentWeather"] = new JsonObject { ["summary"] = "Сильный ветер" },
+                ["currentInteractions"] = new JsonArray()
+            },
+            worldMapUpdates: null);
+
+        var backups = new[]
+            {
+                MortalLocationMaterializationContract.WorldMapPath,
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                MortalLocationIdentityState.StatePath,
+                MortalLocationStorageContentsState.StatePath
+            }
+            .ToDictionary(
+                static path => path,
+                static path => $"game_state/control/pending_turn_snapshot/{path}",
+                StringComparer.Ordinal);
+        return new StorageMovementPublicationArrangement(
+            accepted,
+            itemIndex,
+            backups);
+    }
+
     private static AcceptedDirectedTopology CreateAcceptedDirectedTopology(
         string targetDiscovery = "discovered",
         string linkDiscovery = "discovered",
@@ -642,4 +845,9 @@ public sealed partial class MortalLocationMaterializationValidationTests
         string SourceLocationId,
         string TargetLocationId,
         string LinkId);
+
+    private sealed record StorageMovementPublicationArrangement(
+        AcceptedDirectedTopology Accepted,
+        JsonObject ItemIndex,
+        IReadOnlyDictionary<string, string> Backups);
 }

@@ -359,6 +359,15 @@ public sealed class MortalItemRepairPacketBuilderTests
         Assert.Equal(IssueCategory.ClientOwnedSurface, issue.Category);
     }
 
+    [Fact]
+    public void ProtectedOffscreenLocationStoragePath_IsNeverDelegatedToTheGm()
+    {
+        Assert.True(MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(
+            MortalLocationStorageContentsState.StatePath));
+        Assert.False(MortalItemRepairPacketBuilder.IsGmAuthorableTarget(
+            MortalLocationStorageContentsState.StatePath));
+    }
+
     private static MortalItemRepairContext CreateContext(string coordinate, string route) =>
         new(
             coordinate,

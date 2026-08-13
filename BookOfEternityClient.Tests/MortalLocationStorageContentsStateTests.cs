@@ -91,6 +91,19 @@ public sealed class MortalLocationStorageContentsStateTests
         Assert.Empty(parsed.Entries);
     }
 
+    [Theory]
+    [InlineData("{", "mortal_location_storage_contents_invalid_json")]
+    [InlineData("[]", "mortal_location_storage_contents_invalid_root")]
+    public void ParseJson_RejectsMalformedOrNonObjectState(
+        string json,
+        string expectedCode)
+    {
+        var parsed = MortalLocationStorageContentsState.ParseJson(json);
+
+        Assert.Contains(parsed.Issues, issue => issue.Code == expectedCode);
+        Assert.Empty(parsed.Entries);
+    }
+
     [Fact]
     public void BuildCanonicalRoot_SortsCoordinatesAndDeepClonesContents()
     {

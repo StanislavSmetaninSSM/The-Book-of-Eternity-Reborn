@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -34,6 +35,32 @@ internal static class MortalLocationStorageContentsState
         ["schemaVersion"] = 1,
         ["entries"] = new JsonArray()
     };
+
+    internal static MortalLocationStorageContentsParseResult ParseJson(string? json)
+    {
+        if (json == null)
+            return Parse((JsonObject?)null);
+
+        try
+        {
+            if (JsonNode.Parse(json) is JsonObject root)
+                return Parse(root);
+
+            return InvalidJsonResult(
+                "mortal_location_storage_contents_invalid_root",
+                "The offscreen location-storage item authority must be one JSON object.",
+                "JSON object",
+                "non-object root");
+        }
+        catch (JsonException exception)
+        {
+            return InvalidJsonResult(
+                "mortal_location_storage_contents_invalid_json",
+                "The offscreen location-storage item authority must be valid JSON.",
+                "valid JSON object",
+                exception.Message);
+        }
+    }
 
     internal static MortalLocationStorageContentsParseResult Parse(JsonObject? root)
     {
@@ -167,6 +194,67 @@ internal static class MortalLocationStorageContentsState
         };
     }
 
+    internal static IReadOnlyList<ValidationIssue> ValidateCoordinates(
+        IReadOnlyDictionary<MortalLocationStorageKey, JsonArray> entries,
+        JsonObject worldMap,
+        string? currentLocationId)
+    {
+        ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(worldMap);
+
+        var storageCoordinates = new HashSet<MortalLocationStorageKey>();
+        if (worldMap["locations"] is JsonArray locations)
+        {
+            foreach (var location in locations.OfType<JsonObject>())
+            {
+                if (!TryReadExactString(location["locationId"], out var locationId) ||
+                    location["locationStorages"] is not JsonArray storages)
+                {
+                    continue;
+                }
+
+                foreach (var storage in storages.OfType<JsonObject>())
+                {
+                    if (TryReadExactString(storage["storageId"], out var storageId))
+                    {
+                        storageCoordinates.Add(
+                            new MortalLocationStorageKey(locationId, storageId));
+                    }
+                }
+            }
+        }
+
+        var issues = new List<ValidationIssue>();
+        foreach (var key in entries.Keys)
+        {
+            if (!storageCoordinates.Contains(key))
+            {
+                issues.Add(Issue(
+                    StatePath,
+                    "mortal_location_storage_contents_coordinate_unresolved",
+                    "Every offscreen item array must bind one exact active location storage.",
+                    "exact active locationId/storageId metadata coordinate",
+                    $"{key.LocationId}/{key.StorageId}"));
+            }
+
+            if (currentLocationId != null &&
+                string.Equals(
+                    key.LocationId,
+                    currentLocationId,
+                    StringComparison.Ordinal))
+            {
+                issues.Add(Issue(
+                    StatePath,
+                    "mortal_location_storage_contents_current_duplicate",
+                    "The current location cannot also own an offscreen physical item array.",
+                    "current location contents only in current_location.json",
+                    $"{key.LocationId}/{key.StorageId}"));
+            }
+        }
+
+        return issues;
+    }
+
     private static IReadOnlyDictionary<MortalLocationStorageKey, JsonArray>
         ReadCanonicalEntries(JsonObject root)
     {
@@ -180,6 +268,16 @@ internal static class MortalLocationStorageContentsState
         }
         return result;
     }
+
+    private static MortalLocationStorageContentsParseResult InvalidJsonResult(
+        string code,
+        string message,
+        string expected,
+        string actual) =>
+        new(
+            CreateEmptyRoot(),
+            new Dictionary<MortalLocationStorageKey, JsonArray>(),
+            new[] { Issue(StatePath, code, message, expected, actual) });
 
     private static string BuildConfusableKey(MortalLocationStorageKey key) =>
         MortalLocationIdentityState.BuildConfusableKey(key.LocationId) +

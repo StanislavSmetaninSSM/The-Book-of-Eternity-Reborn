@@ -8,7 +8,8 @@ namespace BookOfEternityClient.Services;
 public partial class CanonicalStateNormalizer
 {
     private async Task NormalizeMortalItemsAsync(
-        IReadOnlyDictionary<string, string>? backups)
+        IReadOnlyDictionary<string, string>? backups,
+        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates = null)
     {
         await NormalizeMortalItemTransfersAsync(backups);
 
@@ -20,10 +21,13 @@ public partial class CanonicalStateNormalizer
             "game_state/npcs/npc_inventory.json");
         var locationRoot = await ReadMortalItemObjectRootAsync(
             StorageTransportMoveService.CurrentLocationPath);
+        var offscreenLocationStorageRoot = await ReadMortalItemObjectRootAsync(
+            MortalLocationStorageContentsState.StatePath);
         var vehiclesRoot = await ReadMortalItemVehiclesRootAsync();
         var routeCatalog = await MortalItemRouteAuthorityCatalog.BuildAsync(
             _fs,
-            _writeLease);
+            _writeLease,
+            acceptedStorageCoordinates);
         if (routeCatalog.Issues.Count > 0)
         {
             throw new InvalidDataException(
@@ -49,7 +53,8 @@ public partial class CanonicalStateNormalizer
                 npcCommandsRoot,
                 locationRoot,
                 vehiclesRoot,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+                offscreenLocationStorageRoot));
         var npcCommandIndex = MortalNpcCommandIndex.Build(npcRoot);
         foreach (var occurrence in currentCarrierCatalog.Occurrences)
         {
@@ -238,6 +243,9 @@ public partial class CanonicalStateNormalizer
         var previousLocation = await ReadBackupObjectAsync(
             StorageTransportMoveService.CurrentLocationPath,
             backups);
+        var previousOffscreenLocationStorage = await ReadBackupObjectAsync(
+            MortalLocationStorageContentsState.StatePath,
+            backups);
         var previousVehicles = WrapMortalItemVehicles(
             await ReadBackupNodeAsync(StorageTransportMoveService.VehiclesPath, backups));
         var previousCatalog = MortalItemCarrierCatalog.Build(
@@ -247,7 +255,8 @@ public partial class CanonicalStateNormalizer
                 null,
                 previousLocation,
                 previousVehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+                previousOffscreenLocationStorage));
 
         var currentPlayer = await ReadMortalItemObjectRootAsync(
             InventoryEquipmentService.ItemsPath);
@@ -255,6 +264,8 @@ public partial class CanonicalStateNormalizer
             NpcCoreChangesContract.NpcCorePath);
         var currentLocation = await ReadMortalItemObjectRootAsync(
             StorageTransportMoveService.CurrentLocationPath);
+        var currentOffscreenLocationStorage = await ReadMortalItemObjectRootAsync(
+            MortalLocationStorageContentsState.StatePath);
         var currentVehicles = await ReadMortalItemVehiclesRootAsync();
         var currentCatalog = MortalItemCarrierCatalog.Build(
             new MortalItemCarrierCatalogInput(
@@ -263,7 +274,8 @@ public partial class CanonicalStateNormalizer
                 null,
                 currentLocation,
                 currentVehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+                currentOffscreenLocationStorage));
         if (previousCatalog.Issues.Count > 0 || currentCatalog.Issues.Count > 0)
         {
             var issue = previousCatalog.Issues.FirstOrDefault() ?? currentCatalog.Issues[0];

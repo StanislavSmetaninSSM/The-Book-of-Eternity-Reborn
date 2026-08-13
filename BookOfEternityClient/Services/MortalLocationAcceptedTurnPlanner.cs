@@ -3130,7 +3130,18 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         if (parsed.Issues.Count != 0)
             return parsed.Root;
 
-        var storageMetadata = new Dictionary<MortalLocationStorageKey, JsonObject>();
+        var entries = parsed.Entries.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsArray());
+        var preTurnLocationId = ReadExactString(preTurnCurrent, "locationId");
+        issues.AddRange(MortalLocationStorageContentsState.ValidateCoordinates(
+            entries,
+            finalWorldMap,
+            preTurnLocationId));
+        if (issues.Count != 0)
+            return parsed.Root;
+
+        var storageMetadata = new HashSet<MortalLocationStorageKey>();
         foreach (var location in finalWorldMap["locations"]!
                      .AsArray()
                      .OfType<JsonObject>())
@@ -3143,41 +3154,11 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                 var storageId = ReadExactString(storage, "storageId");
                 if (storageId != null)
                 {
-                    storageMetadata.TryAdd(
-                        new MortalLocationStorageKey(locationId, storageId),
-                        storage);
+                    storageMetadata.Add(
+                        new MortalLocationStorageKey(locationId, storageId));
                 }
             }
         }
-
-        var entries = parsed.Entries.ToDictionary(
-            static pair => pair.Key,
-            static pair => pair.Value.DeepClone().AsArray());
-        var preTurnLocationId = ReadExactString(preTurnCurrent, "locationId");
-        foreach (var key in entries.Keys.ToArray())
-        {
-            if (!storageMetadata.ContainsKey(key))
-            {
-                issues.Add(Issue(
-                    MortalLocationStorageContentsState.StatePath,
-                    "mortal_location_storage_contents_coordinate_unresolved",
-                    "Every offscreen item array must bind one exact active location storage.",
-                    "exact active locationId/storageId metadata coordinate",
-                    $"{key.LocationId}/{key.StorageId}"));
-            }
-            if (preTurnLocationId != null &&
-                string.Equals(key.LocationId, preTurnLocationId, StringComparison.Ordinal))
-            {
-                issues.Add(Issue(
-                    MortalLocationStorageContentsState.StatePath,
-                    "mortal_location_storage_contents_current_duplicate",
-                    "The pre-turn current location cannot also own an offscreen physical item array.",
-                    "current location contents only in current_location.json",
-                    $"{key.LocationId}/{key.StorageId}"));
-            }
-        }
-        if (issues.Count != 0)
-            return parsed.Root;
 
         var selectionChanged = preTurnLocationId != null &&
                                selectedLocationId != null &&
@@ -3194,7 +3175,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                     continue;
 
                 var key = new MortalLocationStorageKey(preTurnLocationId!, storageId);
-                if (!storageMetadata.ContainsKey(key) || entries.ContainsKey(key))
+                if (!storageMetadata.Contains(key) || entries.ContainsKey(key))
                 {
                     issues.Add(Issue(
                         MortalLocationStorageContentsState.StatePath,

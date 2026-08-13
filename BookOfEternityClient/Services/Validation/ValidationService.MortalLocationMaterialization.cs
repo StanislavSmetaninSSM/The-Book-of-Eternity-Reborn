@@ -40,72 +40,47 @@ public partial class ValidationService
             MortalLocationMaterializationContract.WorldMapPath,
             validateCurrentLocation: false,
             issues);
-        await ValidateRawMortalBootstrapLocationReservationsAsync(issues);
+        _ = await ValidateRawMortalLocationAcceptedTurnPlanAsync(issues);
         return issues;
     }
 
-    private async Task ValidateRawMortalBootstrapLocationReservationsAsync(
+    private async Task<MortalLocationAcceptedTurnPlan?>
+        ValidateRawMortalLocationAcceptedTurnPlanAsync(
         List<ValidationIssue> issues)
     {
-        var scaffoldJson = await _fs.ReadFileAsync(MortalBootstrapLocationScaffold.StatePath);
-        if (string.IsNullOrWhiteSpace(scaffoldJson))
-            return;
-
-        JsonObject? scaffoldRoot;
-        JsonObject? request;
-        try
-        {
-            scaffoldRoot = JsonNode.Parse(scaffoldJson) as JsonObject;
-            request = scaffoldRoot?["locationMaterializationRequest"] as JsonObject;
-        }
-        catch (JsonException exception)
-        {
-            issues.Add(LocationIssue(
-                MortalBootstrapLocationScaffold.StatePath,
-                "mortal_bootstrap_location_scaffold_invalid",
-                "The client-owned Mortal bootstrap scaffold is not readable object JSON.",
-                "exact client scaffold",
-                exception.Message));
-            return;
-        }
-
-        if (request == null)
-            return;
-        if (!MortalBootstrapLocationScaffold.TryReadRequest(
-                request,
-                out var reservationSet,
-                out var scaffoldError))
-        {
-            issues.Add(LocationIssue(
-                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest",
-                "mortal_bootstrap_location_scaffold_invalid",
-                "The client-owned Mortal bootstrap location request is malformed.",
-                "exact current bootstrap location request",
-                scaffoldError));
-            return;
-        }
-
         var currentRoot = await ReadOptionalLocationObjectAsync(
             MortalLocationMaterializationContract.CurrentLocationPath);
         var mapRoot = await ReadOptionalLocationObjectAsync(
             MortalLocationMaterializationContract.WorldMapPath);
+        var rawNpcCore = await ReadOptionalLocationObjectAsync(
+            NpcCoreChangesContract.NpcCorePath);
+        var rawFactionCore = await ReadOptionalLocationObjectAsync(
+            FactionCoreChangesContract.FactionCorePath);
         var hasRawCommands = currentRoot?["currentLocationData"] is JsonObject ||
                              mapRoot?["worldMapUpdates"] is JsonObject;
+
+        var scaffoldJson = await _fs.ReadFileAsync(MortalBootstrapLocationScaffold.StatePath);
 
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
         {
-            if (hasRawCommands || reservationSet.State == "pending")
+            if (hasRawCommands || scaffoldJson != null)
             {
                 issues.Add(LocationIssue(
-                    MortalBootstrapLocationScaffold.StatePath,
-                    "mortal_bootstrap_location_snapshot_required",
-                    "Bootstrap location reservations require a validated pending-turn snapshot.",
-                    "tracked neutral map/current/index/scaffold baseline",
+                    scaffoldJson == null
+                        ? MortalLocationMaterializationContract.WorldMapPath
+                        : MortalBootstrapLocationScaffold.StatePath,
+                    scaffoldJson == null
+                        ? "mortal_location_materialization_snapshot_required"
+                        : "mortal_bootstrap_location_snapshot_required",
+                    "Mortal location planning requires a validated pending-turn snapshot.",
+                    scaffoldJson == null
+                        ? "tracked map/current/index baseline"
+                        : "tracked neutral map/current/index/scaffold baseline",
                     DescribeValidatedPendingTurnSnapshotStatus(lookup.Status)));
             }
-            return;
+            return null;
         }
 
         var preMap = ParseOptionalLocationObject(
@@ -120,32 +95,85 @@ public partial class ValidationService
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
                 MortalLocationIdentityState.StatePath));
-        var preScaffoldRoot = ParseOptionalLocationObject(
+        var preStorageContents = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalBootstrapLocationScaffold.StatePath));
-        if (preMap == null || preCurrent == null || preIndex == null || preScaffoldRoot == null)
-        {
-            issues.Add(LocationIssue(
-                MortalBootstrapLocationScaffold.StatePath,
-                "mortal_bootstrap_location_snapshot_required",
-                "Bootstrap location reservations require all four readable tracked baseline files.",
-                "world map, current location, location index, scaffold",
-                "one or more snapshot files missing"));
-            return;
-        }
-
-        if (hasRawCommands &&
-            reservationSet.State == "pending" &&
-            !JsonNode.DeepEquals(scaffoldRoot, preScaffoldRoot))
+                MortalLocationStorageContentsState.StatePath));
+        var companionAuthority = MortalLocationCompanionAuthority.FromCanonicalRoots(
+            ParseOptionalLocationObject(
+                await ReadValidatedPendingTurnSnapshotFileAsync(
+                    lookup.Manifest,
+                    MortalLocationCompanionAuthority.CodexPath)),
+            ParseOptionalLocationObject(
+                await ReadValidatedPendingTurnSnapshotFileAsync(
+                    lookup.Manifest,
+                    MortalLocationCompanionAuthority.RegularQuestsPath)),
+            ParseOptionalLocationObject(
+                await ReadValidatedPendingTurnSnapshotFileAsync(
+                    lookup.Manifest,
+                    MortalLocationCompanionAuthority.WorldEventsPath)));
+        var preScaffoldJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            lookup.Manifest,
+            MortalBootstrapLocationScaffold.StatePath);
+        var preScaffoldRoot = ParseOptionalLocationObject(preScaffoldJson);
+        var scaffoldRoot = ParseOptionalLocationObject(scaffoldJson);
+        var hasPreScaffold = preScaffoldJson != null;
+        var hasCurrentScaffold = scaffoldJson != null;
+        if (hasPreScaffold != hasCurrentScaffold ||
+            hasPreScaffold &&
+            (preScaffoldRoot == null ||
+             scaffoldRoot == null ||
+             !JsonNode.DeepEquals(scaffoldRoot, preScaffoldRoot)))
         {
             issues.Add(LocationIssue(
                 MortalBootstrapLocationScaffold.StatePath,
                 "mortal_bootstrap_location_scaffold_mutated",
-                "The GM cannot mutate the client-owned bootstrap reservation request.",
-                "byte-equivalent pre-turn scaffold semantics",
-                "current scaffold differs from validated snapshot"));
-            return;
+                "The GM cannot remove or mutate the client-owned bootstrap reservation request.",
+                "semantic-equivalent pre-turn scaffold",
+                hasCurrentScaffold
+                    ? "current scaffold differs from validated snapshot"
+                    : "current scaffold is missing"));
+            return null;
+        }
+
+        var request = preScaffoldRoot?["locationMaterializationRequest"] as JsonObject;
+        MortalBootstrapLocationReservationSet? bootstrapReservations = null;
+        if (request != null &&
+            !MortalBootstrapLocationScaffold.TryReadRequest(
+                request,
+                out bootstrapReservations,
+                out var scaffoldError))
+        {
+            issues.Add(LocationIssue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest",
+                "mortal_bootstrap_location_scaffold_invalid",
+                "The validated pre-turn bootstrap location request is malformed.",
+                "exact validated bootstrap location request",
+                scaffoldError));
+            return null;
+        }
+
+        if (!hasRawCommands && request == null)
+            return null;
+
+        if (preMap == null || preIndex == null ||
+            request != null && (preCurrent == null || preScaffoldRoot == null))
+        {
+            issues.Add(LocationIssue(
+                request == null
+                    ? MortalLocationMaterializationContract.WorldMapPath
+                    : MortalBootstrapLocationScaffold.StatePath,
+                request == null
+                    ? "mortal_location_materialization_snapshot_required"
+                    : "mortal_bootstrap_location_snapshot_required",
+                request == null
+                    ? "Mortal location planning requires readable map and identity-index baselines."
+                    : "Bootstrap location reservations require all four readable tracked baseline files.",
+                request == null
+                    ? "world map and location index"
+                    : "world map, current location, location index, scaffold",
+                "one or more snapshot files missing"));
+            return null;
         }
 
         var planningResult = MortalLocationAcceptedTurnPlanner.Build(
@@ -156,19 +184,219 @@ public partial class ValidationService
                 currentRoot?["currentLocationData"] is JsonObject ? currentRoot : null,
                 mapRoot?["worldMapUpdates"] is JsonObject ? mapRoot : null,
                 lookup.Manifest.TurnNumber,
-                request));
+                request,
+                companionAuthority,
+                rawNpcCore,
+                rawFactionCore,
+                preStorageContents));
         foreach (var issue in planningResult.Issues)
         {
-            if (issue.Code?.StartsWith("mortal_bootstrap_location_", StringComparison.Ordinal) == true ||
-                string.Equals(
-                    issue.Code,
-                    "mortal_location_materialization_duplicate_creation_route",
-                    StringComparison.Ordinal))
+            var contextual = AttachMortalLocationPlannerRepairContext(
+                issue,
+                currentRoot,
+                mapRoot,
+                lookup.Manifest.TurnNumber,
+                bootstrapReservations);
+            var existing = issues.FirstOrDefault(candidate =>
+                AreEquivalentRawMortalLocationIssues(candidate, issue));
+            if (existing != null)
             {
-                issues.Add(issue);
+                if (contextual.MortalLocationRepairContext is { } plannerContext)
+                {
+                    existing.MortalLocationRepairContext =
+                        existing.MortalLocationRepairContext is { } rawContext
+                            ? rawContext with
+                            {
+                                ExistingId = plannerContext.ExistingId ?? rawContext.ExistingId,
+                                ExpectedSourceTurn = plannerContext.ExpectedSourceTurn,
+                                ExpectedSourceAuthorityKind = plannerContext.ExpectedSourceAuthorityKind,
+                                ExpectedSourceAuthorityId = plannerContext.ExpectedSourceAuthorityId
+                            }
+                            : plannerContext;
+                }
+                continue;
+            }
+            issues.Add(contextual);
+        }
+        return planningResult.Success ? planningResult.Plan : null;
+    }
+
+    private static bool AreEquivalentRawMortalLocationIssues(
+        ValidationIssue existing,
+        ValidationIssue plannerIssue)
+    {
+        if (!string.Equals(existing.Code, plannerIssue.Code, StringComparison.Ordinal))
+            return false;
+        if (string.Equals(existing.FilePath, plannerIssue.FilePath, StringComparison.Ordinal))
+            return true;
+        return existing.FilePath.EndsWith(
+            "." + plannerIssue.FilePath,
+            StringComparison.Ordinal);
+    }
+
+    private static ValidationIssue AttachMortalLocationPlannerRepairContext(
+        ValidationIssue issue,
+        JsonObject? currentRoot,
+        JsonObject? mapRoot,
+        int acceptedTurn,
+        MortalBootstrapLocationReservationSet? bootstrapReservations)
+    {
+        if (!TryResolveMortalLocationPlannerCandidate(
+                issue.FilePath,
+                currentRoot,
+                mapRoot,
+                out var candidate,
+                out var carrierPath,
+                out var entityKind,
+                out var identityField,
+                out var targetFile))
+        {
+            return issue;
+        }
+
+        var initialId = ReadExactLocationNodeString(candidate, "initialId");
+        var materializationId = candidate["materialization"] is JsonObject envelope
+            ? ReadExactLocationNodeString(envelope, "materializationId")
+            : null;
+        var existingId = ReadExactLocationNodeString(candidate, identityField);
+        var actor = initialId != null
+            ? entityKind + ":new:" + initialId
+            : existingId != null
+                ? entityKind + ":existing:" + existingId
+                : entityKind + ":unknown";
+        var relativeField = issue.FilePath.Length == carrierPath.Length
+            ? string.Empty
+            : issue.FilePath.StartsWith(carrierPath + ".", StringComparison.Ordinal)
+                ? issue.FilePath[(carrierPath.Length + 1)..]
+                : issue.FilePath;
+        var repairableFields = IsRepairableMortalLocationField(issue, carrierPath) &&
+                               relativeField.Length > 0
+            ? new[] { relativeField }
+            : Array.Empty<string>();
+        int? expectedSourceTurn = initialId == null ? null : acceptedTurn;
+        var expectedSourceAuthorityKind = initialId == null ? null : "turn_outcome";
+        var expectedSourceAuthorityId = initialId == null ? null : "turn_" + acceptedTurn;
+        if (initialId != null && bootstrapReservations is { State: "pending" })
+        {
+            var usesReservedBootstrapOrigin = entityKind == "mortal_location_link"
+                ? string.Equals(
+                    initialId,
+                    bootstrapReservations.Link.InitialId,
+                    StringComparison.Ordinal)
+                : string.Equals(carrierPath, "currentLocationData", StringComparison.Ordinal)
+                    ? string.Equals(
+                        initialId,
+                        bootstrapReservations.Start.InitialId,
+                        StringComparison.Ordinal)
+                    : string.Equals(
+                        initialId,
+                        bootstrapReservations.Neighbor.InitialId,
+                        StringComparison.Ordinal);
+            if (usesReservedBootstrapOrigin)
+            {
+                expectedSourceAuthorityKind = bootstrapReservations.AuthorityKind;
+                expectedSourceAuthorityId = bootstrapReservations.AuthorityId;
             }
         }
+
+        var contextualPath = issue.FilePath.StartsWith(targetFile + ".", StringComparison.Ordinal) ||
+                             string.Equals(issue.FilePath, targetFile, StringComparison.Ordinal)
+            ? issue.FilePath
+            : targetFile + "." + issue.FilePath;
+        var contextual = new ValidationIssue(
+            contextualPath,
+            issue.Severity,
+            issue.Message,
+            code: issue.Code,
+            actor: actor,
+            section: "MortalLocationMaterialization",
+            expected: issue.Expected,
+            actual: issue.Actual,
+            repairHint: issue.RepairHint,
+            category: issue.Category,
+            repairTargetFiles: new[] { targetFile });
+        contextual.MortalLocationRepairContext = new MortalLocationRepairContext(
+            carrierPath,
+            entityKind,
+            initialId,
+            materializationId,
+            repairableFields,
+            existingId,
+            expectedSourceTurn,
+            expectedSourceAuthorityKind,
+            expectedSourceAuthorityId);
+        return contextual;
     }
+
+    private static bool TryResolveMortalLocationPlannerCandidate(
+        string issuePath,
+        JsonObject? currentRoot,
+        JsonObject? mapRoot,
+        out JsonObject candidate,
+        out string carrierPath,
+        out string entityKind,
+        out string identityField,
+        out string targetFile)
+    {
+        candidate = new JsonObject();
+        carrierPath = string.Empty;
+        entityKind = "mortal_location";
+        identityField = "locationId";
+        targetFile = string.Empty;
+
+        if (issuePath == "currentLocationData" ||
+            issuePath.StartsWith("currentLocationData.", StringComparison.Ordinal))
+        {
+            if (currentRoot?["currentLocationData"] is not JsonObject current)
+                return false;
+            candidate = current;
+            carrierPath = "currentLocationData";
+            targetFile = MortalLocationMaterializationContract.CurrentLocationPath;
+            return true;
+        }
+
+        var updates = mapRoot?["worldMapUpdates"] as JsonObject;
+        if (updates == null)
+            return false;
+
+        foreach (var descriptor in new[]
+                 {
+                     new PlannerCarrierDescriptor("newLocations", "mortal_location", "locationId"),
+                     new PlannerCarrierDescriptor("newLinks", "mortal_location_link", "linkId"),
+                     new PlannerCarrierDescriptor("locationUpdates", "mortal_location", "locationId"),
+                     new PlannerCarrierDescriptor("locationDiscoveryTransitions", "mortal_location", "locationId"),
+                     new PlannerCarrierDescriptor("linkUpdates", "mortal_location_link", "linkId"),
+                     new PlannerCarrierDescriptor("linkRemovals", "mortal_location_link", "linkId")
+                 })
+        {
+            var prefix = "worldMapUpdates." + descriptor.ArrayField + "[";
+            if (!issuePath.StartsWith(prefix, StringComparison.Ordinal))
+                continue;
+            var close = issuePath.IndexOf(']', prefix.Length);
+            if (close < 0 ||
+                !int.TryParse(issuePath[prefix.Length..close], out var index) ||
+                updates[descriptor.ArrayField] is not JsonArray values ||
+                index < 0 || index >= values.Count ||
+                values[index] is not JsonObject value)
+            {
+                return false;
+            }
+
+            candidate = value;
+            carrierPath = issuePath[..(close + 1)];
+            entityKind = descriptor.EntityKind;
+            identityField = descriptor.IdentityField;
+            targetFile = MortalLocationMaterializationContract.WorldMapPath;
+            return true;
+        }
+
+        return false;
+    }
+
+    private sealed record PlannerCarrierDescriptor(
+        string ArrayField,
+        string EntityKind,
+        string IdentityField);
 
     private async Task<JsonObject?> ReadOptionalLocationObjectAsync(string path) =>
         ParseOptionalLocationObject(await _fs.ReadFileAsync(path));
@@ -212,9 +440,33 @@ public partial class ValidationService
                 MortalLocationIdentityState.StatePath,
                 writeLease)
             : null;
+        var storageContentsJson = ShouldValidateStateFile(
+                MortalLocationStorageContentsState.StatePath)
+            ? await ReadMortalLocationValidationFileAsync(
+                MortalLocationStorageContentsState.StatePath,
+                writeLease)
+            : null;
         var scaffoldJson = await ReadMortalLocationValidationFileAsync(
             MortalBootstrapLocationScaffold.StatePath,
             writeLease);
+        var companionAuthority = MortalLocationCompanionAuthority.FromCanonicalRoots(
+            ParseOptionalLocationObject(await ReadMortalLocationValidationFileAsync(
+                MortalLocationCompanionAuthority.CodexPath,
+                writeLease)),
+            ParseOptionalLocationObject(await ReadMortalLocationValidationFileAsync(
+                MortalLocationCompanionAuthority.RegularQuestsPath,
+                writeLease)),
+            ParseOptionalLocationObject(await ReadMortalLocationValidationFileAsync(
+                MortalLocationCompanionAuthority.WorldEventsPath,
+                writeLease)));
+        var npcRoot = ParseOptionalLocationObject(
+            await ReadMortalLocationValidationFileAsync(
+                NpcCoreChangesContract.NpcCorePath,
+                writeLease));
+        var factionRoot = ParseOptionalLocationObject(
+            await ReadMortalLocationValidationFileAsync(
+                FactionCoreChangesContract.FactionCorePath,
+                writeLease));
 
         if (string.IsNullOrWhiteSpace(mapJson) &&
             string.IsNullOrWhiteSpace(currentJson) &&
@@ -229,6 +481,9 @@ public partial class ValidationService
             issues);
         var identityState = MortalLocationIdentityState.Parse(indexJson);
         issues.AddRange(identityState.Issues);
+        var storageContents = MortalLocationStorageContentsState.ParseJson(
+            storageContentsJson);
+        issues.AddRange(storageContents.Issues);
         if (map == null)
             return;
 
@@ -245,8 +500,26 @@ public partial class ValidationService
 
         ValidateCanonicalLocationArray(locations, links: false, issues);
         ValidateCanonicalLocationArray(links, links: true, issues);
+        for (var index = 0; index < locations.Count; index++)
+        {
+            if (locations[index] is JsonObject location)
+            {
+                issues.AddRange(companionAuthority.ValidateLoreBindings(
+                    location,
+                    $"{MortalLocationMaterializationContract.WorldMapPath}.locations[{index}]"));
+                issues.AddRange(MortalLocationAcceptedTurnPlanner.ValidateCanonicalActorBindings(
+                    location,
+                    $"{MortalLocationMaterializationContract.WorldMapPath}.locations[{index}]",
+                    npcRoot));
+                issues.AddRange(MortalLocationAcceptedTurnPlanner.ValidateCanonicalFactionControls(
+                    location,
+                    $"{MortalLocationMaterializationContract.WorldMapPath}.locations[{index}]",
+                    factionRoot));
+            }
+        }
         issues.AddRange(identityState.ValidateCanonicalState(map));
 
+        string? currentLocationId = null;
         if (!string.IsNullOrWhiteSpace(currentJson))
         {
             var current = ParseLocationStateObject(
@@ -272,10 +545,18 @@ public partial class ValidationService
                 }
                 else
                 {
+                    currentLocationId = ReadExactLocationNodeString(
+                        current,
+                        "locationId");
                     ValidateCurrentLocationProjection(current, locations, issues);
                 }
             }
         }
+
+        issues.AddRange(MortalLocationStorageContentsState.ValidateCoordinates(
+            storageContents.Entries,
+            map,
+            currentLocationId));
 
         ValidateCanonicalMortalBootstrapLocationSettlement(
             scaffoldJson,
@@ -643,6 +924,15 @@ public partial class ValidationService
             return true;
         }
 
+        if (currentIdentity.ValueKind == JsonValueKind.String &&
+            MortalItemIdentityRules.IsExactIdentity(currentIdentity.GetString()))
+        {
+            // A reducible resend of an existing canonical location has no raw
+            // root selector. Keeping initialId beside a permanent locationId is
+            // still a creation/identity conflict and must reach the contract.
+            return current.TryGetProperty("initialId", out _);
+        }
+
         return current.TryGetProperty("initialId", out _) ||
             current.TryGetProperty("materialization", out _);
     }
@@ -725,7 +1015,10 @@ public partial class ValidationService
             issue.Code.Contains("identity", StringComparison.Ordinal) ||
             issue.Code.Contains("receipt", StringComparison.Ordinal) ||
             issue.Code.Contains("seal", StringComparison.Ordinal) ||
+            issue.Code.Contains("source_authority", StringComparison.Ordinal) ||
+            issue.Code.Contains("source_turn", StringComparison.Ordinal) ||
             issue.Code.Contains("replay", StringComparison.Ordinal) ||
+            issue.Code.Contains("physical_shape_ambiguous", StringComparison.Ordinal) ||
             issue.Code.Contains("duplicate_creation_route", StringComparison.Ordinal) ||
             issue.Code.Contains("client_owned", StringComparison.Ordinal))
         {
@@ -736,8 +1029,11 @@ public partial class ValidationService
         return field is not "locationId" and
             not "linkId" and
             not "initialId" and
+            not "materialization" and
             not "materialization.materializationId" and
             not "materialization.route" and
+            not "materialization.sourceAuthority" and
+            not "materialization.sourceTurn" and
             not "materializationReceipt" &&
             !field.StartsWith("materializationReceipt.", StringComparison.Ordinal);
     }

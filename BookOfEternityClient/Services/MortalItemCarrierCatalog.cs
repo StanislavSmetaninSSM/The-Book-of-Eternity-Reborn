@@ -39,7 +39,8 @@ internal sealed record MortalItemCarrierCatalogInput(
     JsonObject? NpcInventoryCommands,
     JsonObject? CurrentLocation,
     JsonObject? Vehicles,
-    IReadOnlyDictionary<string, JsonObject> CompanionRoots);
+    IReadOnlyDictionary<string, JsonObject> CompanionRoots,
+    JsonObject? OffscreenLocationStorageContents = null);
 
 internal sealed record MortalItemCatalogScanMetrics(int Items, int Companions, int Routes)
 {
@@ -99,6 +100,7 @@ internal sealed class MortalItemCarrierCatalog
         builder.ScanNpcCore(input.NpcCore);
         builder.ScanNpcInventoryCommands(input.NpcInventoryCommands);
         builder.ScanCurrentLocation(input.CurrentLocation);
+        builder.ScanOffscreenLocationStorages(input.OffscreenLocationStorageContents);
         builder.ScanVehicles(input.Vehicles);
         builder.ScanCompanionRoots(input.CompanionRoots);
         return new MortalItemCarrierCatalog(builder);
@@ -402,7 +404,7 @@ internal sealed class MortalItemCarrierCatalog
                 {
                     locationId = ReadCarrierIdentity(
                         location,
-                        new[] { "locationId", "id" },
+                        new[] { "locationId", "initialId", "id" },
                         locationPath,
                         "location owner");
                     locationIdentityRead = true;
@@ -435,6 +437,49 @@ internal sealed class MortalItemCarrierCatalog
                     new MortalItemCarrierCoordinate(
                         "location_storage",
                         locationId ?? string.Empty,
+                        storageId,
+                        Array.Empty<string>()));
+            }
+        }
+
+        internal void ScanOffscreenLocationStorages(JsonObject? root)
+        {
+            if (root == null)
+                return;
+
+            RouteNodesVisited++;
+            var parsed = MortalLocationStorageContentsState.Parse(root);
+            foreach (var issue in parsed.Issues)
+            {
+                Issues.Add(new MortalItemCarrierCatalogIssue(
+                    issue.Code ?? "mortal_location_storage_contents_invalid",
+                    issue.FilePath,
+                    issue.Message,
+                    "locationStorageCoordinate",
+                    issue.Actual));
+            }
+            if (parsed.Issues.Count != 0)
+                return;
+
+            var entries = parsed.Root["entries"]!.AsArray();
+            for (var index = 0; index < entries.Count; index++)
+            {
+                if (entries[index] is not JsonObject entry ||
+                    entry["contents"] is not JsonArray contents)
+                {
+                    continue;
+                }
+
+                RouteNodesVisited++;
+                var locationId = ReadString(entry["locationId"]) ?? string.Empty;
+                var storageId = ReadString(entry["storageId"]);
+                ScanItemArray(
+                    contents,
+                    MortalLocationStorageContentsState.StatePath,
+                    $"{MortalLocationStorageContentsState.StatePath}.entries[{index}].contents",
+                    new MortalItemCarrierCoordinate(
+                        "location_storage",
+                        locationId,
                         storageId,
                         Array.Empty<string>()));
             }

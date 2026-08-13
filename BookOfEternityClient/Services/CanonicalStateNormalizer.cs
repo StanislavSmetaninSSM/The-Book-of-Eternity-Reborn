@@ -63,6 +63,7 @@ public partial class CanonicalStateNormalizer
         "game_state/world/rival_soul_arcs.json",
         MortalLocationMaterializationContract.WorldMapPath,
         MortalLocationMaterializationContract.CurrentLocationPath,
+        MortalLocationStorageContentsState.StatePath,
         MortalLocationIdentityState.StatePath,
         MortalBootstrapLocationScaffold.StatePath,
         StorageTransportMoveService.VehiclesPath,
@@ -180,8 +181,10 @@ public partial class CanonicalStateNormalizer
     {
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
-        await NormalizeMortalLocationsAsync(backups);
-        await NormalizeMortalItemsAsync(backups);
+        var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups);
+        await NormalizeMortalItemsAsync(
+            backups,
+            mortalLocationPlan?.AcceptedStorageCoordinates);
         await NormalizeGuardiansAsync(backups);
         await NormalizeGuardianAbodeResidentsAsync(backups);
         await NormalizeShiningAbodeStateAsync(backups);
