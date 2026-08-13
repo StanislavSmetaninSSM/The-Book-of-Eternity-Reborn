@@ -3,6 +3,11 @@ using System.Threading;
 
 namespace BookOfEternityClient.AgentConsole;
 
+internal sealed class AgentConsoleLiveInputSourceHooks
+{
+    internal Action<AgentConsoleInputKind>? ActiveReadRegistered { get; init; }
+}
+
 public sealed class AgentConsoleLiveInputException : InvalidOperationException
 {
     public AgentConsoleLiveInputException(AgentConsoleInputReadFailureReason reason, string message)
@@ -24,6 +29,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
     private readonly AgentConsoleStateStore _stateStore;
     private readonly TimeSpan _readTimeout;
     private readonly int _maxQueueLength;
+    private readonly AgentConsoleLiveInputSourceHooks? _hooks;
     private QueuedInputKind? _activeReadKind;
     private AgentConsoleInputKind? _activeReadInputKind;
     private AgentConsoleSnapshot? _inputBlockSnapshot;
@@ -37,6 +43,15 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         AgentConsoleStateStore stateStore,
         TimeSpan? readTimeout = null,
         int maxQueueLength = DefaultMaxQueueLength)
+        : this(stateStore, readTimeout, maxQueueLength, hooks: null)
+    {
+    }
+
+    internal AgentConsoleLiveInputSource(
+        AgentConsoleStateStore stateStore,
+        TimeSpan? readTimeout,
+        int maxQueueLength,
+        AgentConsoleLiveInputSourceHooks? hooks)
     {
         ArgumentNullException.ThrowIfNull(stateStore);
 
@@ -49,6 +64,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         _stateStore = stateStore;
         _readTimeout = effectiveReadTimeout;
         _maxQueueLength = maxQueueLength;
+        _hooks = hooks;
     }
 
     public bool IsScripted => false;
@@ -458,6 +474,7 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             _activeReadInputKind = expectedInputKind;
             try
             {
+                _hooks?.ActiveReadRegistered?.Invoke(expectedInputKind);
                 while (true)
                 {
                     if (_isShutdown)

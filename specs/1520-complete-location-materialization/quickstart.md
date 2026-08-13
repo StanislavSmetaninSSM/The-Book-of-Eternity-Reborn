@@ -939,6 +939,8 @@ additional React field or component.
 | T100 console E2E privacy/return contract GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ConsoleE2ESmokeTests"` | `TestResults/test-lanes/20260814-005626-131-41772-d0dc3a0bf6cb440393208e4ec181e0fd-focused` | 5 | 0 | 0 | 0 | Complete |
 | T100 E2E-aligned candidate PreMerge lock-ordering RED | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260814-005746-482-27752-e6990967419c4fbaa21772d1197c89f1-premerge` | 3867 | 1 deterministic #1529 Shining trade 500 ms wall-clock assertion | 0 | 0 | Complete |
 | #1529 condition-based lock-ordering GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~TradeRequestLockOrderingTests"` | `TestResults/test-lanes/20260814-011037-241-46392-8cf818f5115343ccbb7a349f8c8ce1e3-focused` | 2 | 0 | 0 | 0 | Complete |
+| T100 condition-based-lock candidate PreMerge Agent Console race | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260814-011128-889-38360-17c622c95e5e4e229c5c11e26f4ae686-premerge` | 2034 | 1 repeated #1530 fixed-delay pending-read race | 0 | 0 | Complete |
+| #1530 condition-based Agent Console input GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AgentConsoleLiveInputSourceTests"` | `TestResults/test-lanes/20260814-012044-244-16464-fcf3632e52474a24bc5cb7f7218094f4-focused` | 29 | 0 | 0 | 0 | Complete |
 
 For T076, `ValidationService.MortalFactionMaterialization` owns the exact
 receipt-bearing canonical map plus validated same-turn location authority.
