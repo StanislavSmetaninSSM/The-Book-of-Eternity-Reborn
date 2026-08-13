@@ -941,6 +941,7 @@ additional React field or component.
 | #1529 condition-based lock-ordering GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~TradeRequestLockOrderingTests"` | `TestResults/test-lanes/20260814-011037-241-46392-8cf818f5115343ccbb7a349f8c8ce1e3-focused` | 2 | 0 | 0 | 0 | Complete |
 | T100 condition-based-lock candidate PreMerge Agent Console race | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260814-011128-889-38360-17c622c95e5e4e229c5c11e26f4ae686-premerge` | 2034 | 1 repeated #1530 fixed-delay pending-read race | 0 | 0 | Complete |
 | #1530 condition-based Agent Console input GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AgentConsoleLiveInputSourceTests"` | `TestResults/test-lanes/20260814-012044-244-16464-fcf3632e52474a24bc5cb7f7218094f4-focused` | 29 | 0 | 0 | 0 | Complete |
+| T100 final PreMerge GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260814-012240-238-40236-0d2cfc1bc639400d94d62d774b4f26bb-premerge` | 5259 | 0 | 0 | 0 | Complete |
 
 For T076, `ValidationService.MortalFactionMaterialization` owns the exact
 receipt-bearing canonical map plus validated same-turn location authority.
@@ -1009,7 +1010,7 @@ or is explicitly marked as a retired/removed legacy fixture.
 | SC-009 | Console/browser/news semantic parity and recursive privacy tests in T060–T069 |
 | SC-010 | Deterministic doubled-population work bound in T017 |
 | SC-011 | Five worked Mortal flows plus receipt-less rejection and documentation/source/manifest validation in T083–T091/T102 and FullValidation |
-| SC-012 | Focused, Fast, FullValidation, and LifecycleIntegration are green; the single clean-candidate PreMerge remains exclusively owned by T100 |
+| SC-012 | Focused, Fast, FullValidation, LifecycleIntegration, and the final 5259-test PreMerge are green |
 
 The final requesting-code-review gate reported no Critical or Important
 findings and returned `Ready: Yes`. The last two review findings were closed
@@ -1020,8 +1021,8 @@ the current/map metadata comparison. A follow-up delta review confirmed that
 all other storage/location fields remain exact and that item references still
 pass through the separate item-authority catalog and reconciliation path.
 
-The task audit leaves only T100 (one final PreMerge) and T101
-(commit/PR/owner approval) open. Mortal GM prompts, rules, CLI guidance,
+The task audit leaves only T101 (final diff/status inspection, PR, and owner
+approval) open. Mortal GM prompts, rules, CLI guidance,
 daemon reminders, worked examples, manifest entries, and source guards are all
 present in the same candidate. The detailed T092 rationale above remains the
 authoritative afterlife disposition: #1513 changes no Chaos Sea or Shining
