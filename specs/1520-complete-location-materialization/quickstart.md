@@ -924,6 +924,8 @@ additional React field or component.
 | T100 complete browser command presentation GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExplorerWebCommandServiceTests"` | `TestResults/test-lanes/20260813-230408-769-14440-266b0d6727d2437ca6b4ffc6f19b480a-focused` | 475 | 0 | 0 | 0 | Complete |
 | T100 third rebased-candidate PreMerge external guard failure | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260813-230814-834-44144-78622b89dda64540b0aa7285293d4203-premerge` | 2034 | 1 #1525 LICENSE raw-byte hash mismatch under Windows `core.autocrlf=true` | 0 | 0 | Complete |
 | #1525 cross-platform publication guard GREEN | focused Fast `RepositoryPublicationDocumentationTests` | `TestResults/test-lanes/20260813-231559-336-33216-cfd68d230c054f05ac4a73fe29cfd17f-focused` | 7 | 0 | 0 | 0 | Complete |
+| T100 fourth rebased-candidate PreMerge fixture failure | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` | `TestResults/test-lanes/20260813-231642-056-4268-8a60e246f4624b5894fba7020091c0bf-premerge` | 4171 | 3 stale console storage fixtures | 0 | 0 | Complete |
+| T100 complete console command presentation GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExplorerModeCommandTests"` | `TestResults/test-lanes/20260813-233206-639-34692-d1e982a0ff144dfd818d55847246e866-focused` | 370 | 0 | 0 | 0 | Complete |
 
 For T076, `ValidationService.MortalFactionMaterialization` owns the exact
 receipt-bearing canonical map plus validated same-turn location authority.

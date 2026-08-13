@@ -842,12 +842,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             x: 7,
             y: 2);
         canonical["locationStorages"] = new JsonArray(
-            new JsonObject
-            {
-                ["storageId"] = "storage_location_detail",
-                ["name"] = "Ларь площади",
-                ["hasFullAccess"] = true
-            });
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_location_detail",
+                "Ларь площади",
+                hasFullAccess: true));
         canonical["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
         {
             ["disposition"] = "populated",
