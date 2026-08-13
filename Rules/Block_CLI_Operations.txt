@@ -184,9 +184,15 @@
                     - Previous-life item sidecars are rollback-only and are not the current GM baseline. Previous-life bytes may be retained internally only to undo a rejected bootstrap; never restore their entries, receipts, identity records, or item references into the new life. Author every new-life item through a supported Mortal item route and let the client assign identity and receipt fields.
 
                     **WORLD STATE:**
-                    - game_state/world/current_location.json ← currentLocationData
-                    - game_state/world/world_map.json ← worldMapUpdates
-                    - worldMapUpdates atomic commands include newLocations, locationUpdates, storageUpdates, storagesToRemove, newLinks, linkUpdates, linksToRemove, threatsToAdd, threatsToUpdate, threatsToRemove, completeThreatActivities
+                    - Mortal Location Materialization v1 separates GM raw commands from client-owned canonical state.
+                    - currentLocationData creates one complete selected scene only with `locationId = null` + `materialization.route = current_scene_creation`; otherwise it selects an accepted scene by exact permanent locationId and carries only current-only fields. A changed selection additionally requires one exact pre-turn directed current→destination link with open access, no requirements, and player-known non-hidden link/destination; reverse-only, hidden, conditional, and sealed routes do not authorize movement.
+                    - worldMapUpdates.newLocations[] creates complete remote scenes with `locationId = null` + route `world_map_creation`; worldMapUpdates.newLinks[] creates complete directed links with `linkId = null` + route `world_map_link_creation`.
+                    - Existing commands use exact permanent identity: locationUpdates, locationDiscoveryTransitions, storageUpdates, storagesToRemove, linkUpdates, linkRemovals, threatsToAdd, threatsToUpdate, threatsToRemove, completeThreatActivities.
+                    - locationUpdates uses only the closed semantic field catalog and never authors eventDescriptions or activeThreats. storageUpdates preserves contents; storagesToRemove requires an exact empty storage. New threats keep threatId null for client assignment; threat updates deep-merge, removals bind exact IDs, and completeThreatActivities archives the completed activity and clears it atomically.
+                    - The immutable materialization section dispositions describe creation evidence. Later accepted storage/threat lifecycle changes do not rewrite the envelope, receipt, or seal. Unknown worldMapUpdates commands fail closed.
+                    - game_state/world/world_map.json is the sole canonical semantic authority for locations[] and directed links[].
+                    - game_state/world/current_location.json is a client-composed projection of one accepted map location plus current-only weather/interactions/chronology and current storage contents.
+                    - game_state/world/location_identity_index.json, permanent IDs, materializationReceipt, seals, transitions, snapshots, rollback state, knownExits and adjacencyMap are client-owned/derived and never GM output or repair targets.
                     - game_state/world/world_events.json ← worldEventsLog
                     - game_state/world/rival_soul_arcs.json ← UpdateRivalSoulArcs
                     - game_state/world/world_flags.json ← worldStateFlags, removeWorldStateFlags
@@ -204,8 +210,9 @@
                       - direct weather fields at file root are valid
                       - nested weatherChange object is also valid
                       - client/runtime reads both forms for compatibility
-                    - currentLocationData is dual-shape: for a truly new location send the full Location Object; for a known location revisit the base shorthand is locationId + coordinates + lastEventsDescription
-                    - When the player's CURRENT location also needs a storage-access or difficulty-profile update this turn, currentLocationData may additionally carry locationStorages and/or internalDifficultyProfile/externalDifficultyProfile alongside that known-location shorthand
+                    - Every new location/link candidate has turn-unique initialId, exact source authority, state complete, and complete materialization.sections. Existing movement carries no coordinates, names, placement, difficulty, envelope, receipt, or derived exits.
+                    - Exact permanent locationId and exact permanent linkId are case-sensitive and Unicode-exact. Names, coordinates, ordinals, aliases, case folding, and Unicode normalization are never identity.
+                    - Fresh Mortal bootstrap reads client-owned mortal_bootstrap_scaffold.json unchanged and creates the exact reserved start plus neighbor/directed link, or a narrative-only unresolved exit with no canonical identity claim.
                     - eventDescriptions is a read-only location archive: read it from context if present, but do NOT emit it inside currentLocationData or worldMapUpdates; write only lastEventsDescription for current-turn history
                     - rival_soul_arcs.json stores life-scoped milestone arcs for OTHER souls, not player quests; keep at most 1 active major arc and 1 active minor arc
 
@@ -1397,6 +1404,38 @@
    Faction Materialization v1 is mandatory for every Mortal faction. Read the compact Mortal faction template first. Full factionDataChanges is limited to genuinely new creation and carries exact populated/empty_by_design dispositions. Every existing faction must already carry and preserve its accepted envelope; use factionCoreChanges for an ordinary semantic faction update. Receipt-less canonical faction state and a full resend of an existing identity are invalid. Keep dedicated rank, branch, resource, project, custom-state, reputation, membership, and chronicle commands on their existing surfaces.
    ]]>
   </content>
+ </rule>
+ <rule id="cli.mortal_location_materialization_v1">
+  <description>Mortal Location Materialization v1 routing and repair ownership</description>
+  <content><![CDATA[
+   Mortal Location Materialization v1 is mandatory for every durable Mortal
+   location and directed link. Read
+   `Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md` and Rule 20 before
+   authoring or repairing a map transition.
+
+   The only raw creation routes are `current_scene_creation` through
+   `currentLocationData`, `world_map_creation` through
+   `worldMapUpdates.newLocations[]`, and `world_map_link_creation` through
+   `worldMapUpdates.newLinks[]`. New roots use `locationId = null` or
+   `linkId = null`, exact turn-unique initialId, complete semantic shape, and
+   complete `materialization.sections`. The client alone assigns permanent IDs,
+   receipts, seals, identity-index entries, transitions, current projection,
+   knownExits, and adjacencyMap.
+
+   Existing movement and mutation bind exact permanent locationId; link update
+   and removal bind exact permanent linkId. Use
+   `locationDiscoveryTransitions[]` and `linkRemovals[]` for their closed
+   lifecycle operations. Never infer identity from a display name, coordinates,
+   direction, ordinal, alias, case folding, or Unicode normalization.
+
+   For `mortal_location_materialization_repair`, the client restores the
+   validated pre-turn baseline before dispatch. The GM must perform full-turn
+   resubmission of one complete coherent response, including all intended
+   location, actor, faction, item, narrative, interface, and other outputs.
+   Ready-only, named-leaf-only, formatting-only, stale-output, or in-place
+   canonical patches are invalid. Protected identity, receipt, source authority,
+   scaffold, index, snapshot, and rollback state never become GM repair targets.
+  ]]></content>
  </rule>
  <rule id="cli.mortal_item_materialization_v1">
   <description>Mortal Item Materialization v1 routing and repair ownership</description>

@@ -85,11 +85,26 @@ public partial class GameEngine
         public string Source { get; set; } = "";
         public string DetectedAtUtc { get; set; } = "";
         public int RevalidationAttempt { get; set; }
+        public bool FullTurnResubmissionRequired { get; set; }
         public string GmInstructions { get; set; } = "";
         public List<string> SummaryGroups { get; set; } = new();
         public List<ValidationRepairHarnessPacket> HarnessRepairPackets { get; set; } = new();
+        public List<ValidationRepairResubmissionObligation> ResubmissionObligations { get; set; } = new();
+        public List<string> RequiredResubmissionPaths { get; set; } = new();
         public List<ValidationRepairIssue> Errors { get; set; } = new();
     }
+
+    private sealed class ValidationRepairResubmissionObligation
+    {
+        public string Actor { get; set; } = "";
+        public string Route { get; set; } = "";
+        public string RawCarrier { get; set; } = "";
+    }
+
+    private sealed record MortalLocationRepairRetryObligation(
+        string Actor,
+        string Route,
+        string? MaterializationId);
 
     private sealed class ValidationRepairHarnessPacket
     {
@@ -103,7 +118,11 @@ public partial class GameEngine
         public string? Route { get; set; }
         public JsonElement? SourceCarrier { get; set; }
         public JsonElement? DestinationCarrier { get; set; }
+        public string? RawCarrier { get; set; }
+        public string? RawCoordinate { get; set; }
         public List<string>? MissingFields { get; set; }
+        public List<string>? InvalidFields { get; set; }
+        public List<string>? Conflicts { get; set; }
         public List<ValidationRepairExactFieldCorrection> ExactFieldCorrections { get; set; } = new();
         public List<string>? RequiredCompanionTargets { get; set; }
         public List<string>? ExpectedAuthority { get; set; }

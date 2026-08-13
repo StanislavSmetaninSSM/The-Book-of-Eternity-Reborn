@@ -224,6 +224,36 @@ public sealed class MortalLocationPlayerProjectionTests
     }
 
     [Fact]
+    public void Create_OpenLinkWithRequirementsIsVisibleButNotActionable()
+    {
+        var source = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_required_link_source",
+            "Площадь перед воротами",
+            "visited",
+            x: 31,
+            y: 4);
+        var target = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_required_link_target",
+            "Ворота дозора",
+            "discovered",
+            x: 32,
+            y: 4);
+        var link = MortalLocationTestFixture.CreateCanonicalLink(
+            "loc_required_link_source",
+            "loc_required_link_target");
+        link["access"]!["requirements"] = new JsonArray("Показать знак дозора");
+
+        var projection = MortalLocationPlayerProjection.Create(
+            CreateWorldMap([source, target], [link]),
+            MortalLocationTestFixture.CreateCurrentProjection(source),
+            CreateIdentityIndex([source, target], [link]));
+
+        var visibleLink = Assert.Single(projection.Links);
+        Assert.Equal("open", visibleLink.Data["access"]!["state"]!.GetValue<string>());
+        Assert.Null(visibleLink.TravelTargetSelector);
+    }
+
+    [Fact]
     public void Create_OmitsRumoredOrReceiptlessLinksAndNeverInventsReverseTopology()
     {
         var source = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
@@ -276,13 +306,11 @@ public sealed class MortalLocationPlayerProjectionTests
             "visited",
             x: 21,
             y: 6);
-        location["locationStorages"] = new JsonArray(new JsonObject
-        {
-            ["storageId"] = "storage_projection_chest",
-            ["name"] = "Путевой ларь",
-            ["description"] = "Ларь под навесом.",
-            ["hasFullAccess"] = true
-        });
+        location["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_projection_chest",
+                "Путевой ларь",
+                hasFullAccess: true));
         location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
         {
             ["disposition"] = "populated",

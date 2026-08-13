@@ -33,7 +33,9 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         "newName",
         "newDescription",
         "newCapacity",
-        "newOwner"
+        "newOwner",
+        "newAuthorizedUsers",
+        "newHasFullAccess"
     };
 
     private static readonly HashSet<string> StorageRemovalFields = new(StringComparer.Ordinal)
@@ -94,15 +96,22 @@ internal static partial class MortalLocationAcceptedTurnPlanner
     private static GovernedLocationCommands ReadGovernedLocationCommands(
         JsonObject? updates,
         JsonObject? preTurnCurrentLocation,
+        JsonObject? rawCurrentItemCarrier,
         IReadOnlyDictionary<MortalLocationStorageKey, JsonArray> preTurnOffscreenContents,
         IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
         IReadOnlyList<LocationCandidate> locationCandidates,
+        FactionControlAuthority factionAuthority,
         List<ValidationIssue> issues)
     {
-        var storageUpdates = ReadStorageUpdates(updates, preTurnLocationsById, issues);
+        var storageUpdates = ReadStorageUpdates(
+            updates,
+            preTurnLocationsById,
+            factionAuthority,
+            issues);
         var storageRemovals = ReadStorageRemovals(
             updates,
             preTurnCurrentLocation,
+            rawCurrentItemCarrier,
             preTurnOffscreenContents,
             preTurnLocationsById,
             issues);
@@ -134,6 +143,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
     private static List<StorageUpdateCommand> ReadStorageUpdates(
         JsonObject? updates,
         IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
+        FactionControlAuthority factionAuthority,
         List<ValidationIssue> issues)
     {
         var result = new List<StorageUpdateCommand>();
@@ -201,6 +211,30 @@ internal static partial class MortalLocationAcceptedTurnPlanner
 
             if (target == null || storageId == null || storage == null)
                 continue;
+            var mergedStorage = storage.DeepClone().AsObject();
+            ApplyStoragePatch(mergedStorage, patch);
+            using var mergedDocument = JsonDocument.Parse(mergedStorage.ToJsonString());
+            var mergedIssues = MortalLocationStorageMetadataContract.Validate(
+                mergedDocument.RootElement,
+                context + ".update.result");
+            if (mergedIssues.Count != 0)
+            {
+                issues.AddRange(mergedIssues);
+                continue;
+            }
+            var ownerIssues = ValidateCanonicalStorageOwners(
+                new JsonObject
+                {
+                    ["locationStorages"] = new JsonArray(mergedStorage.DeepClone())
+                },
+                context + ".update.result",
+                factionAuthority,
+                allowTemporaryFactionOwners: true);
+            if (ownerIssues.Count != 0)
+            {
+                issues.AddRange(ownerIssues);
+                continue;
+            }
             var key = ReadExactString(target, "locationId") + "\u001f" + storageId;
             if (!seen.Add(MortalLocationIdentityState.BuildConfusableKey(key)))
             {
@@ -253,11 +287,70 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                 "mortal_location_storage_update_invalid",
                 patch["newOwner"]));
         }
+
+        if (patch.ContainsKey("newAuthorizedUsers") &&
+            patch["newAuthorizedUsers"] is not (null or JsonArray))
+        {
+            issues.Add(InvalidLifecycleShape(
+                context + ".newAuthorizedUsers",
+                "mortal_location_storage_update_invalid",
+                patch["newAuthorizedUsers"]));
+        }
+
+        if (patch.ContainsKey("newHasFullAccess") &&
+            (patch["newHasFullAccess"] is not JsonValue accessValue ||
+             !accessValue.TryGetValue<bool>(out _)))
+        {
+            issues.Add(InvalidLifecycleShape(
+                context + ".newHasFullAccess",
+                "mortal_location_storage_update_invalid",
+                patch["newHasFullAccess"]));
+        }
+
+        if (patch.ContainsKey("newOwner") &&
+            (!patch.ContainsKey("newAuthorizedUsers") ||
+             !patch.ContainsKey("newHasFullAccess")))
+        {
+            issues.Add(Issue(
+                context + ".newOwner",
+                "mortal_location_storage_update_access_incomplete",
+                "A storage owner transition must carry one synchronized authorization and access snapshot.",
+                "newOwner + newAuthorizedUsers + newHasFullAccess",
+                patch.ToJsonString()));
+        }
+        else if (patch.ContainsKey("newAuthorizedUsers") &&
+                 !patch.ContainsKey("newHasFullAccess"))
+        {
+            issues.Add(Issue(
+                context + ".newAuthorizedUsers",
+                "mortal_location_storage_update_access_incomplete",
+                "A storage authorization-list transition must carry the synchronized access flag.",
+                "newAuthorizedUsers + newHasFullAccess",
+                patch.ToJsonString()));
+        }
+    }
+
+    private static void ApplyStoragePatch(JsonObject storage, JsonObject patch)
+    {
+        foreach (var (source, target) in new[]
+                 {
+                     ("newName", "name"),
+                     ("newDescription", "description"),
+                     ("newCapacity", "capacity"),
+                     ("newOwner", "owner"),
+                     ("newAuthorizedUsers", "authorizedUsers"),
+                     ("newHasFullAccess", "hasFullAccess")
+                 })
+        {
+            if (patch.ContainsKey(source))
+                storage[target] = patch[source]?.DeepClone();
+        }
     }
 
     private static List<StorageRemovalCommand> ReadStorageRemovals(
         JsonObject? updates,
         JsonObject? preTurnCurrentLocation,
+        JsonObject? rawCurrentItemCarrier,
         IReadOnlyDictionary<MortalLocationStorageKey, JsonArray> preTurnOffscreenContents,
         IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
         List<ValidationIssue> issues)
@@ -316,6 +409,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             }
             if (HasStorageContents(storage) ||
                 CurrentProjectionHasStorageContents(preTurnCurrentLocation, locationId, storageId!) ||
+                CurrentProjectionHasStorageContents(rawCurrentItemCarrier, locationId, storageId!) ||
                 preTurnOffscreenContents.ContainsKey(
                     new MortalLocationStorageKey(locationId, storageId!)))
             {
@@ -339,9 +433,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
     {
         if (current == null)
             return false;
-        var projection = current["currentLocationData"] as JsonObject ?? current;
-        return string.Equals(ReadExactString(projection, "locationId"), locationId, StringComparison.Ordinal) &&
-               FindExactObject(projection, "locationStorages", "storageId", storageId) is JsonObject storage &&
+        return string.Equals(ReadExactString(current, "locationId"), locationId, StringComparison.Ordinal) &&
+               FindExactObject(current, "locationStorages", "storageId", storageId) is JsonObject storage &&
                HasStorageContents(storage);
     }
 
@@ -793,17 +886,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             var location = FindExactObject(locations, "locationId", command.LocationId)!;
             var storage = FindExactObject(location, "locationStorages", "storageId", command.StorageId)!;
             var before = storage.DeepClone().AsObject();
-            foreach (var (source, target) in new[]
-                     {
-                         ("newName", "name"),
-                         ("newDescription", "description"),
-                         ("newCapacity", "capacity"),
-                         ("newOwner", "owner")
-                     })
-            {
-                if (command.Patch.ContainsKey(source))
-                    storage[target] = command.Patch[source]?.DeepClone();
-            }
+            ApplyStoragePatch(storage, command.Patch);
             AppendLocationChildTransition(
                 indexEntries,
                 command.LocationId,

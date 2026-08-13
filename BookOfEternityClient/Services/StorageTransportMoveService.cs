@@ -22,7 +22,7 @@ public static class StorageTransportMoveService
         if (!inventoryRead.Success)
             return StorageMoveContext.Failed(inventoryRead.Message);
 
-        var locationRead = await ReadObjectAsync(fs, CurrentLocationPath, "Текущая локация сейчас недоступна.");
+        var locationRead = await ReadAcceptedCurrentLocationAsync(fs, writeLease: null);
         if (!locationRead.Success)
             return StorageMoveContext.Failed(locationRead.Message);
 
@@ -58,6 +58,12 @@ public static class StorageTransportMoveService
                 allowEmptyIdentity: false,
                 requireCarriedByPlayer: true),
             storages);
+    }
+
+    internal static async Task<JsonObject?> ReadAcceptedCurrentLocationSnapshotAsync(FileSystemManager fs)
+    {
+        var read = await ReadAcceptedCurrentLocationAsync(fs, writeLease: null);
+        return read.Success ? read.Root!.DeepClone().AsObject() : null;
     }
 
     public static async Task<VehicleMoveContext> ReadVehicleMoveContextAsync(FileSystemManager fs)
@@ -198,11 +204,7 @@ public static class StorageTransportMoveService
             "Инвентарь сейчас недоступен.");
         if (!inventoryRead.Success)
             return StorageTransportMoveOutcome.Failed(inventoryRead.Message);
-        var locationRead = await ReadObjectAsync(
-            fs,
-            writeLease,
-            CurrentLocationPath,
-            "Текущая локация сейчас недоступна.");
+        var locationRead = await ReadAcceptedCurrentLocationAsync(fs, writeLease);
         if (!locationRead.Success)
             return StorageTransportMoveOutcome.Failed(locationRead.Message);
         if (locationRead.Root!["locationStorages"] is not JsonArray storagesArray)
@@ -492,6 +494,39 @@ public static class StorageTransportMoveService
     private static async Task<JsonObjectRead> ReadObjectAsync(FileSystemManager fs, string path, string unavailableMessage)
     {
         return await ReadObjectAsync(fs, writeLease: null, path, unavailableMessage);
+    }
+
+    private static async Task<JsonObjectRead> ReadAcceptedCurrentLocationAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        const string unavailableMessage = "Текущая локация сейчас недоступна.";
+        var currentRead = await ReadObjectAsync(
+            fs,
+            writeLease,
+            CurrentLocationPath,
+            unavailableMessage);
+        if (!currentRead.Success)
+            return currentRead;
+
+        var worldMapJson = writeLease == null
+            ? await fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath)
+            : await fs.ReadFileAsync(writeLease, MortalLocationMaterializationContract.WorldMapPath);
+        var identityIndexJson = writeLease == null
+            ? await fs.ReadFileAsync(MortalLocationIdentityState.StatePath)
+            : await fs.ReadFileAsync(writeLease, MortalLocationIdentityState.StatePath);
+        var catalog = MortalLocationPlayerProjection.Create(
+            worldMapJson,
+            currentRead.Root!.ToJsonString(),
+            identityIndexJson);
+        var currentLocationId = GetString(currentRead.Root!, "locationId");
+        if (string.IsNullOrEmpty(currentLocationId) ||
+            !string.Equals(catalog.CurrentLocationId, currentLocationId, StringComparison.Ordinal))
+        {
+            return JsonObjectRead.Failed(unavailableMessage);
+        }
+
+        return currentRead;
     }
 
     private static async Task<JsonObjectRead> ReadObjectAsync(

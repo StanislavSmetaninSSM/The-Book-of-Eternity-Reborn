@@ -259,12 +259,19 @@
                     "lastEventsDescription": "(string) Brief summary of events this turn. MUST start with the full timestamp as defined in Rule #18.A.0. Translate.",
                     "image_prompt": "(string) Prompt for location image. Only fill if new.",
                     "locationStorages": [ 
-                        /* NEW CURRENT SCENE ONLY: complete storage metadata and any full raw #1511
-                           item creations. Omit this entire field for existing movement. */
+                        /* NEW CURRENT SCENE ONLY. Each member requires exact storageId, name,
+                           description, English image_prompt, integer capacity, numeric volume,
+                           owner=null or {ownerType: Player|Faction|Shared, ownerId, ownerName},
+                           authorizedUsers:[{playerId,playerName}], hasFullAccess:boolean, and
+                           optional contents with full raw #1511 item creations. Omit this entire
+                           field for existing movement. */
                     ],
                     "activeThreats": [
-                        /* Array of Active Threat Objects. 
-                        The complete structure and all field definitions for these objects are specified in InstructionBlock 20, Rule 20.12. */
+                        /* NEW LOCATION CREATION: this array MUST be empty. Materialize any
+                           same-turn threat through worldMapUpdates.threatsToAdd with
+                           threatId=null and exact initialTargetLocationId. The client assigns
+                           permanent threat identity. Existing threats arrive only in accepted
+                           Context; do not resend them in currentLocationData. */
                     ],
                     "currentWeather": "object; current-scene operational state",
                     "currentInteractions": "array; current-scene operational state",
@@ -364,9 +371,12 @@
                             "targetLocationId": "exact permanent locationId",
                             "storageId": "exact permanent storageId",
                             "update": {
-                                // Non-empty subset of newName, newDescription, newCapacity, newOwner.
+                                // Non-empty subset of newName, newDescription, newCapacity, newOwner,
+                                // newAuthorizedUsers, newHasFullAccess. Owner changes require both access fields.
                                 "newCapacity": 12,
-                                "newOwner": { "ownerType": "faction", "ownerId": "exact factionId", "ownerName": "Readable name" }
+                                "newOwner": { "ownerType": "Faction", "ownerId": "exact factionId", "ownerName": "Readable name" },
+                                "newAuthorizedUsers": [],
+                                "newHasFullAccess": false
                             }
                         }
                     ],

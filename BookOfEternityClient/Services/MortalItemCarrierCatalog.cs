@@ -47,6 +47,32 @@ internal sealed record MortalItemCatalogScanMetrics(int Items, int Companions, i
     internal int TotalVisited => Items + Companions + Routes;
 }
 
+internal static class MortalItemCurrentLocationCarrier
+{
+    internal static JsonObject? Select(JsonObject? root)
+    {
+        if (root == null || root["currentLocationData"] is not JsonObject command)
+            return root;
+
+        // An existing-location command is a transient movement/refresh wrapper.
+        // Item-owned storage contents remain on the canonical sibling until the
+        // location plan parks or preserves them. A genuinely new current scene
+        // owns its storage contents inside the creation wrapper itself.
+        return ReadExactString(command["locationId"]) != null &&
+               ReadExactString(root["locationId"]) != null
+            ? root
+            : command;
+    }
+
+    private static string? ReadExactString(JsonNode? node) =>
+        node is JsonValue value &&
+        value.TryGetValue<string>(out var text) &&
+        !string.IsNullOrEmpty(text) &&
+        string.Equals(text, text.Trim(), StringComparison.Ordinal)
+            ? text
+            : null;
+}
+
 /// <summary>
 /// Builds exact, ordinal indexes for every durable Mortal item carrier in one
 /// deterministic pass. Companion files are walked separately and can only
@@ -376,7 +402,7 @@ internal sealed class MortalItemCarrierCatalog
                 return;
 
             RouteNodesVisited++;
-            var location = root["currentLocationData"] as JsonObject ?? root;
+            var location = MortalItemCurrentLocationCarrier.Select(root)!;
             var locationPath = ReferenceEquals(location, root)
                 ? CurrentLocationPath
                 : $"{CurrentLocationPath}.currentLocationData";

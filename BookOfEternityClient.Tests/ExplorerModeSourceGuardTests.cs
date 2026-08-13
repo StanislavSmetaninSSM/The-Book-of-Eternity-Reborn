@@ -90,29 +90,34 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
-    public void ExplorerMode_LocationsCommand_MustOwnCurrentAdjacentAndDiscoveredDetailsFlow()
+    public void ExplorerMode_LocationsCommand_MustUseSharedCanonicalDiscoveryProjection()
     {
         var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.MetaLoreAndTravel.cs"));
         var showLocations = ExtractMethodSource(source, "private async Task ShowLocations()");
 
-        Assert.Contains("game_state/world/current_location.json", showLocations, StringComparison.Ordinal);
-        Assert.Contains("game_state/world/world_map.json", showLocations, StringComparison.Ordinal);
-        Assert.Contains("adjacencyMap", showLocations, StringComparison.Ordinal);
-        Assert.Contains("EnumerateWorldMapLocations(mapDoc, \"newLocations\")", showLocations, StringComparison.Ordinal);
-        Assert.Contains("EnumerateWorldMapLocations(mapDoc, \"locationUpdates\")", showLocations, StringComparison.Ordinal);
-        Assert.Contains("worldMapUpdates", source, StringComparison.Ordinal);
+        Assert.Contains("ReadMortalLocationPlayerCatalogAsync()", showLocations, StringComparison.Ordinal);
+        Assert.Contains("catalog.CurrentLocationId", showLocations, StringComparison.Ordinal);
+        Assert.Contains("catalog.Links", showLocations, StringComparison.Ordinal);
+        Assert.Contains("StringComparison.Ordinal", showLocations, StringComparison.Ordinal);
+        Assert.DoesNotContain("adjacencyMap", showLocations, StringComparison.Ordinal);
+        Assert.DoesNotContain("newLocations", showLocations, StringComparison.Ordinal);
+        Assert.DoesNotContain("locationUpdates", showLocations, StringComparison.Ordinal);
+        Assert.DoesNotContain("worldMapUpdates", showLocations, StringComparison.Ordinal);
         Assert.Contains("new SelectionPrompt<string>()", showLocations, StringComparison.Ordinal);
         Assert.Contains("ShowLocationDetailPanel", showLocations, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void ExplorerMode_LocationDetailPanel_MustUseSharedLocationNameFallbacks()
+    public void ExplorerMode_LocationDetailPanel_MustUseProjectedLocationAndCatalog()
     {
         var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.WorldAndStatus.cs"));
-        var detailPanel = ExtractMethodSource(source, "private async Task ShowLocationDetailPanel(JsonElement loc, bool isCurrent)");
+        var detailPanel = ExtractMethodSource(source, "private async Task ShowLocationDetailPanel(");
 
-        Assert.Contains("GetLocationName(loc)", detailPanel, StringComparison.Ordinal);
-        Assert.DoesNotContain("GetStr(loc, \"name\", GetStr(loc, \"targetLocationId\", \"Неизвестно\"))", detailPanel, StringComparison.Ordinal);
+        Assert.Contains("MortalLocationPlayerLocation location", detailPanel, StringComparison.Ordinal);
+        Assert.Contains("MortalLocationPlayerCatalog catalog", detailPanel, StringComparison.Ordinal);
+        Assert.Contains("location.Label", detailPanel, StringComparison.Ordinal);
+        Assert.Contains("location.Data", detailPanel, StringComparison.Ordinal);
+        Assert.DoesNotContain("GetLocationName(loc)", detailPanel, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -323,8 +328,8 @@ public sealed class ExplorerModeSourceGuardTests
         Assert.Contains(".AddChoices(choices));", inventorySource, StringComparison.Ordinal);
         Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"⚔ {slotLabel}: {itemName}\"));", inventorySource, StringComparison.Ordinal);
         Assert.Contains("choices.Insert(infoPrefixCount, GameInterface.SafePromptChoice($\"💎 {rp.Name}: {rv}\"));", inventorySource, StringComparison.Ordinal);
-        Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 {sName} ({contCount} пр.) → управление\"));", inventorySource, StringComparison.Ordinal);
-        Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 🔒 {sName} ({contCount} пр.)\"));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 {storageName} ({contentsCount} пр.) → управление\"));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 🔒 {storageName} ({contentsCount} пр.)\"));", inventorySource, StringComparison.Ordinal);
         Assert.Contains("choices.AddRange(MakeUniqueChoiceLabels(inventoryChoiceEntries));", inventorySource, StringComparison.Ordinal);
     }
 

@@ -1221,7 +1221,7 @@ public partial class ValidationService
         return result;
     }
 
-    private async Task<MortalLocationAuthority> ReadMortalLocationAuthorityAsync()
+    internal async Task<MortalLocationAuthority> ReadMortalLocationAuthorityAsync()
     {
         var locationsById = new Dictionary<string, MortalLocationAuthorityEntry>(
             StringComparer.Ordinal);
@@ -1955,11 +1955,11 @@ public partial class ValidationService
         string FactionId,
         bool HasExplicitNullFactionId);
 
-    private sealed record MortalLocationAuthority(
+    internal sealed record MortalLocationAuthority(
         HashSet<string> LocationIds,
         IReadOnlyList<MortalLocationAuthorityEntry> Locations);
 
-    private sealed record MortalLocationAuthorityEntry(
+    internal sealed record MortalLocationAuthorityEntry(
         JsonElement Location,
         string RootPath);
 

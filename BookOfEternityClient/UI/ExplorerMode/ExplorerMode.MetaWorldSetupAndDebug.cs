@@ -335,15 +335,17 @@ public partial class ExplorerMode
 
     private async Task ShowCurrentLocation()
     {
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
-        if (doc == null)
+        var catalog = await ReadMortalLocationPlayerCatalogAsync();
+        if (catalog.CurrentLocationId == null ||
+            !catalog.TryGetLocation(catalog.CurrentLocationId, out var current) ||
+            current == null)
         {
             ShowEmptyPanel(_loc.T("where_am_i"), "Местоположение неизвестно");
             return;
         }
 
-        var root = GetCurrentLocationRoot(doc.RootElement);
-        var playerLevel = await GetPlayerLevelAsync();
+        using var currentDocument = JsonDocument.Parse(current.Data.ToJsonString());
+        var root = currentDocument.RootElement;
         var text = new List<string>
         {
             $"[bold green]📍 {Markup.Escape(GetStr(root, "name", "Неизвестно"))}[/]",
@@ -359,26 +361,35 @@ public partial class ExplorerMode
         if (typeInfo.Count > 0)
             text.Add($"  [dim]{Markup.Escape(string.Join(" • ", typeInfo))}[/]");
 
-        // Difficulty assessment (use external profile first, fall back to internal)
-        var profileProp = root.TryGetProperty("externalDifficultyProfile", out var extP) ? extP
-            : root.TryGetProperty("internalDifficultyProfile", out var intP) ? intP
-            : (JsonElement?)null;
-
-        if (profileProp.HasValue && profileProp.Value.ValueKind == JsonValueKind.Object)
+        void ShowDifficulty(string label, string propertyName)
         {
-            var (label, color) = GetProfileDifficultyLabel(profileProp.Value, playerLevel);
-            text.Add($"  ⚠ Опасность: [{color}]{label}[/]  [dim](ур. {playerLevel})[/]");
-        }
-        else
-        {
-            // Simple difficulty field fallback
-            var simpleDiff = GetInt(root, "difficulty", -1);
-            if (simpleDiff >= 0)
+            if (!root.TryGetProperty(propertyName, out var profile) ||
+                profile.ValueKind != JsonValueKind.Object)
             {
-                var (label, color) = GetDifficultyLabel(simpleDiff, playerLevel);
-                text.Add($"  ⚠ Опасность: [{color}]{label}[/]  [dim](ур. {playerLevel})[/]");
+                return;
             }
+
+            var danger = GetStr(profile, "danger", "");
+            var recommendedLevel = GetInt(profile, "recommendedLevel", 0);
+            var description = GetStr(profile, "description", "");
+            var (dangerLabel, color) = danger.Trim().ToLowerInvariant() switch
+            {
+                "low" => ("низкая", "green"),
+                "medium" or "moderate" => ("средняя", "yellow"),
+                "high" => ("высокая", "orange1"),
+                "critical" or "extreme" => ("критическая", "red"),
+                _ => (danger, "white")
+            };
+
+            text.Add($"  [bold]{label}:[/] [{color}]{Markup.Escape(dangerLabel)}[/]");
+            if (recommendedLevel > 0)
+                text.Add($"    Рекомендуемый уровень: [white]{recommendedLevel}[/]");
+            if (!string.IsNullOrWhiteSpace(description))
+                text.Add($"    [dim]{Markup.Escape(description)}[/]");
         }
+
+        ShowDifficulty("🔒 Сложность (для своих)", "internalDifficulty");
+        ShowDifficulty("⚠ Сложность (для чужих)", "externalDifficulty");
 
         text.Add("");
 
@@ -393,7 +404,8 @@ public partial class ExplorerMode
             text.Add("[bold]Особенности:[/]");
             foreach (var f in features.EnumerateArray())
             {
-                var fStr = f.ValueKind == JsonValueKind.String ? f.GetString() ?? "" : f.ToString();
+                var fStr = MortalItemPlayerProjection
+                    .FormatMortalMaterializationSemanticValue(f);
                 if (!string.IsNullOrEmpty(fStr))
                     text.Add($"  ✦ [cyan]{Markup.Escape(fStr)}[/]");
             }

@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -106,8 +107,11 @@ public sealed partial class MortalLocationMaterializationValidationTests
             issue.Code == "mortal_location_materialization_topology_disposition_mismatch");
     }
 
-    [Fact]
-    public void Topology_ConfusableTemporaryEndpointDoesNotResolve()
+    [Theory]
+    [InlineData("case")]
+    [InlineData("whitespace")]
+    [InlineData("unicode")]
+    public void Topology_ConfusableTemporaryEndpointDoesNotResolve(string aliasKind)
     {
         var source = CreateRawLocation(
             "locref_topology_case_source",
@@ -123,7 +127,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
         var link = CreateRawLink(
             "linkref_topology_case",
             "mlinkmat_topology_case",
-            source["initialId"]!.GetValue<string>().ToUpperInvariant(),
+            ConfusableAlias(source["initialId"]!.GetValue<string>(), aliasKind),
             target["initialId"]!.GetValue<string>());
         var updates = Updates(source, target);
         updates["newLinks"]!.AsArray().Add(link);
@@ -131,7 +135,185 @@ public sealed partial class MortalLocationMaterializationValidationTests
         var result = Build(rawWorldMapUpdates: updates);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Issues, issue => issue.Code == "mortal_location_link_endpoint_unresolved");
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_link_endpoint_confusable");
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(result.Issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(result.Issues));
+    }
+
+    [Theory]
+    [InlineData("case")]
+    [InlineData("whitespace")]
+    [InlineData("unicode")]
+    public void Topology_ConfusableSameTurnParentSelectorFailsClosedWithoutRepairPacket(string aliasKind)
+    {
+        var parent = CreateRawLocation(
+            "locref_topology_parent_exact",
+            "mlocmat_topology_parent_exact",
+            x: 27,
+            route: "world_map_creation");
+        var child = CreateRawLocation(
+            "locref_topology_child_exact",
+            "mlocmat_topology_child_exact",
+            x: 28,
+            route: "world_map_creation");
+        child["parentInitialId"] =
+            ConfusableAlias(parent["initialId"]!.GetValue<string>(), aliasKind);
+
+        var result = Build(rawWorldMapUpdates: Updates(parent, child));
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_materialization_parent_confusable");
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(result.Issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(result.Issues));
+    }
+
+    [Theory]
+    [InlineData("exact")]
+    [InlineData("case")]
+    [InlineData("whitespace")]
+    [InlineData("unicode")]
+    public void Topology_RetiredPermanentEndpointFailsClosedWithoutRepairPacket(string aliasKind)
+    {
+        var retired = MortalLocationTestFixture.CreateCanonicalLocation();
+        var retiredIndex = MortalLocationTestFixture.CreateIdentityIndex(retired);
+        retiredIndex["locationEntries"]![0]!["state"] = "retired";
+        var source = CreateRawLocation(
+            "locref_topology_retired_endpoint_source",
+            "mlocmat_topology_retired_endpoint_source",
+            x: 29,
+            route: "world_map_creation");
+        MarkTopologyPopulated(source);
+        var link = CreateRawLink(
+            "linkref_topology_retired_endpoint",
+            "mlinkmat_topology_retired_endpoint",
+            source["initialId"]!.GetValue<string>(),
+            "unused_target");
+        link["targetInitialId"] = null;
+        link["targetLocationId"] = ConfusableAlias(
+            retired["locationId"]!.GetValue<string>(),
+            aliasKind);
+        var updates = Updates(source);
+        updates["newLinks"]!.AsArray().Add(link);
+
+        var result = Build(
+            preTurnWorldMap: EmptyWorldMap(),
+            preTurnIdentityIndex: retiredIndex,
+            rawWorldMapUpdates: updates);
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_link_endpoint_historical_replay");
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(result.Issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(result.Issues));
+    }
+
+    [Theory]
+    [InlineData("case")]
+    [InlineData("whitespace")]
+    [InlineData("unicode")]
+    public void Topology_ConfusableActivePermanentEndpointFailsClosedWithoutRepairPacket(string aliasKind)
+    {
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocation();
+        var source = CreateRawLocation(
+            "locref_topology_active_endpoint_source",
+            "mlocmat_topology_active_endpoint_source",
+            x: 31,
+            route: "world_map_creation");
+        MarkTopologyPopulated(source);
+        var link = CreateRawLink(
+            "linkref_topology_active_endpoint",
+            "mlinkmat_topology_active_endpoint",
+            source["initialId"]!.GetValue<string>(),
+            "unused_target");
+        link["targetInitialId"] = null;
+        link["targetLocationId"] = ConfusableAlias(
+            canonical["locationId"]!.GetValue<string>(),
+            aliasKind);
+        var updates = Updates(source);
+        updates["newLinks"]!.AsArray().Add(link);
+
+        var result = Build(
+            preTurnWorldMap: MortalLocationTestFixture.CreateWorldMap(canonical),
+            preTurnCurrentLocation: MortalLocationTestFixture.CreateCurrentProjection(canonical),
+            preTurnIdentityIndex: MortalLocationTestFixture.CreateIdentityIndex(canonical),
+            rawWorldMapUpdates: updates);
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_link_endpoint_confusable");
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(result.Issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(result.Issues));
+    }
+
+    [Theory]
+    [InlineData("exact")]
+    [InlineData("case")]
+    [InlineData("whitespace")]
+    [InlineData("unicode")]
+    public void Topology_HistoricalTemporaryEndpointFailsClosedWithoutRepairPacket(string aliasKind)
+    {
+        var retired = MortalLocationTestFixture.CreateCanonicalLocation();
+        var retiredIndex = MortalLocationTestFixture.CreateIdentityIndex(retired);
+        retiredIndex["locationEntries"]![0]!["state"] = "retired";
+        var source = CreateRawLocation(
+            "locref_topology_historical_endpoint_source",
+            "mlocmat_topology_historical_endpoint_source",
+            x: 32,
+            route: "world_map_creation");
+        MarkTopologyPopulated(source);
+        var link = CreateRawLink(
+            "linkref_topology_historical_endpoint",
+            "mlinkmat_topology_historical_endpoint",
+            source["initialId"]!.GetValue<string>(),
+            ConfusableAlias(
+                retiredIndex["locationEntries"]![0]!["initialId"]!.GetValue<string>(),
+                aliasKind));
+        var updates = Updates(source);
+        updates["newLinks"]!.AsArray().Add(link);
+
+        var result = Build(
+            preTurnWorldMap: EmptyWorldMap(),
+            preTurnIdentityIndex: retiredIndex,
+            rawWorldMapUpdates: updates);
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_link_endpoint_historical_replay");
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(result.Issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(result.Issues));
+    }
+
+    [Theory]
+    [InlineData("exact")]
+    [InlineData("case")]
+    [InlineData("whitespace")]
+    [InlineData("unicode")]
+    public void Topology_RetiredParentOriginFailsClosedWithoutRepairPacket(string aliasKind)
+    {
+        var retired = MortalLocationTestFixture.CreateCanonicalLocation();
+        var retiredIndex = MortalLocationTestFixture.CreateIdentityIndex(retired);
+        retiredIndex["locationEntries"]![0]!["state"] = "retired";
+        var child = CreateRawLocation(
+            "locref_topology_retired_parent_child",
+            "mlocmat_topology_retired_parent_child",
+            x: 30,
+            route: "world_map_creation");
+        child["parentInitialId"] = ConfusableAlias(
+            retiredIndex["locationEntries"]![0]!["initialId"]!.GetValue<string>(),
+            aliasKind);
+
+        var result = Build(
+            preTurnWorldMap: EmptyWorldMap(),
+            preTurnIdentityIndex: retiredIndex,
+            rawWorldMapUpdates: Updates(child));
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_materialization_parent_historical_replay");
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(result.Issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(result.Issues));
     }
 
     [Fact]
@@ -178,6 +360,15 @@ public sealed partial class MortalLocationMaterializationValidationTests
             };
         }
     }
+
+    private static string ConfusableAlias(string exact, string aliasKind) => aliasKind switch
+    {
+        "exact" => exact,
+        "case" => exact.ToUpperInvariant(),
+        "whitespace" => " " + exact + " ",
+        "unicode" => exact.Replace("l", "ℓ", StringComparison.Ordinal),
+        _ => throw new ArgumentOutOfRangeException(nameof(aliasKind))
+    };
 
     private static JsonObject Discovery(string tier) => tier switch
     {

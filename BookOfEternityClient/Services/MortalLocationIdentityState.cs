@@ -24,6 +24,8 @@ internal sealed class MortalLocationIdentityFactory
 
     internal string CreateTransitionId() => "mltrn_" + Next();
 
+    internal string CreateThreatId() => "threat_" + Next();
+
     private string Next() => _guidFactory().ToString("N");
 }
 
@@ -78,6 +80,43 @@ internal sealed class MortalLocationIdentityState
     private static readonly HashSet<string> LinkEntryFields = new(LinkEntryFieldOrder, StringComparer.Ordinal);
     private static readonly HashSet<string> CoordinatesFields = new(StringComparer.Ordinal) { "x", "y", "z" };
     private static readonly HashSet<string> EntryStates = new(StringComparer.Ordinal) { "active", "retired" };
+    private static readonly HashSet<string> TransitionFields = new(StringComparer.Ordinal)
+    {
+        "transitionId",
+        "kind",
+        "turn",
+        "entityId",
+        "beforeState",
+        "afterState",
+        "sourceAuthorityKind",
+        "sourceAuthorityId",
+        "operationRef",
+        "sourceLocationId",
+        "targetLocationId"
+    };
+    private static readonly HashSet<string> ChildTransitionFields = new(
+        TransitionFields.Append("childId"),
+        StringComparer.Ordinal);
+    private static readonly HashSet<string> LocationTransitionKinds = new(StringComparer.Ordinal)
+    {
+        "location_update",
+        "location_discovery",
+        "current_selection"
+    };
+    private static readonly HashSet<string> LocationChildTransitionKinds = new(StringComparer.Ordinal)
+    {
+        "storage_update",
+        "storage_removal",
+        "threat_addition",
+        "threat_update",
+        "threat_removal",
+        "threat_activity_completion"
+    };
+    private static readonly HashSet<string> LinkTransitionKinds = new(StringComparer.Ordinal)
+    {
+        "link_update",
+        "link_retirement"
+    };
     private static readonly HashSet<string> LocationRoutes = new(StringComparer.Ordinal)
     {
         "current_scene_creation",
@@ -85,6 +124,7 @@ internal sealed class MortalLocationIdentityState
     };
 
     private readonly JsonObject _root;
+    private readonly HashSet<string> _retiredLocationIdKeys;
     private readonly HashSet<string> _locationOriginKeys;
     private readonly HashSet<string> _linkOriginKeys;
 
@@ -93,6 +133,7 @@ internal sealed class MortalLocationIdentityState
         IReadOnlyDictionary<string, JsonObject> locationEntriesById,
         IReadOnlyDictionary<string, JsonObject> linkEntriesById,
         IReadOnlyList<ValidationIssue> issues,
+        HashSet<string> retiredLocationIdKeys,
         HashSet<string> locationOriginKeys,
         HashSet<string> linkOriginKeys,
         int entriesScanned)
@@ -101,6 +142,7 @@ internal sealed class MortalLocationIdentityState
         LocationEntriesById = locationEntriesById;
         LinkEntriesById = linkEntriesById;
         Issues = issues;
+        _retiredLocationIdKeys = retiredLocationIdKeys;
         _locationOriginKeys = locationOriginKeys;
         _linkOriginKeys = linkOriginKeys;
         EntriesScanned = entriesScanned;
@@ -148,6 +190,9 @@ internal sealed class MortalLocationIdentityState
     internal bool ContainsHistoricalLocationOrigin(string? initialId, string? materializationId) =>
         MatchesHistoricalOrigin(_locationOriginKeys, initialId) ||
         MatchesHistoricalOrigin(_locationOriginKeys, materializationId);
+
+    internal bool ContainsRetiredLocationId(string? locationId) =>
+        MatchesHistoricalOrigin(_retiredLocationIdKeys, locationId);
 
     internal bool ContainsHistoricalLinkOrigin(string? initialId, string? materializationId) =>
         MatchesHistoricalOrigin(_linkOriginKeys, initialId) ||
@@ -293,6 +338,8 @@ internal sealed class MortalLocationIdentityState
         var linkOriginsExact = new HashSet<string>(StringComparer.Ordinal);
         var locationOriginKeys = new HashSet<string>(StringComparer.Ordinal);
         var linkOriginKeys = new HashSet<string>(StringComparer.Ordinal);
+        var transitionIds = new HashSet<string>(StringComparer.Ordinal);
+        var transitionIdKeys = new HashSet<string>(StringComparer.Ordinal);
         var scanned = 0;
 
         if (locationEntries != null)
@@ -313,6 +360,8 @@ internal sealed class MortalLocationIdentityState
                     receiptIds,
                     locationOriginsExact,
                     locationOriginKeys,
+                    transitionIds,
+                    transitionIdKeys,
                     issues);
                 if (TryGetExactIdentity(entry, "locationId", out var locationId) &&
                     !locationById.ContainsKey(locationId))
@@ -340,6 +389,8 @@ internal sealed class MortalLocationIdentityState
                     receiptIds,
                     linkOriginsExact,
                     linkOriginKeys,
+                    transitionIds,
+                    transitionIdKeys,
                     issues);
                 if (TryGetExactIdentity(entry, "linkId", out var linkId) &&
                     !linkById.ContainsKey(linkId))
@@ -364,12 +415,24 @@ internal sealed class MortalLocationIdentityState
                     .Select(static entry => (JsonNode?)NormalizeEntry(entry, isLink: true))
                     .ToArray())
         };
+        var retiredLocationIdKeys = locationById.Values
+            .Where(static entry =>
+                string.Equals(
+                    ReadExactString(entry, "state"),
+                    "retired",
+                    StringComparison.Ordinal))
+            .Select(static entry => ReadExactString(entry, "locationId"))
+            .Where(static value => value != null)
+            .Cast<string>()
+            .Select(BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
 
         return new MortalLocationIdentityState(
             normalizedRoot,
             locationById,
             linkById,
             issues,
+            retiredLocationIdKeys,
             locationOriginKeys,
             linkOriginKeys,
             scanned);
@@ -383,6 +446,8 @@ internal sealed class MortalLocationIdentityState
         HashSet<string> receiptIds,
         HashSet<string> originsExact,
         HashSet<string> originKeys,
+        HashSet<string> transitionIds,
+        HashSet<string> transitionIdKeys,
         List<ValidationIssue> issues)
     {
         ValidateExactFields(entry, isLink ? LinkEntryFields : LocationEntryFields, path, issues);
@@ -409,10 +474,11 @@ internal sealed class MortalLocationIdentityState
         }
 
         var route = ReadExactString(entry, "route");
+        var hasSourceTurn = TryGetInt(entry, "sourceTurn", out var sourceTurn);
         if (!string.Equals(ReadExactString(entry, "realm"), "mortal_world", StringComparison.Ordinal) ||
             route == null || isLink && route != "world_map_link_creation" ||
             !isLink && !LocationRoutes.Contains(route) ||
-            !TryGetInt(entry, "sourceTurn", out var sourceTurn) || sourceTurn < 1 ||
+            !hasSourceTurn || sourceTurn < 1 ||
             !EntryStates.Contains(ReadExactString(entry, "state") ?? string.Empty) ||
             entry["transitions"] is not JsonArray)
         {
@@ -465,6 +531,132 @@ internal sealed class MortalLocationIdentityState
                     "Origin identity evidence cannot be reused or represented by a confusable alias.",
                     "globally unique exact/confusable origin",
                     origin));
+            }
+        }
+
+        ValidateTransitions(
+            entry["transitions"]!.AsArray(),
+            path,
+            isLink,
+            identity,
+            sourceTurn,
+            isLink ? ReadExactString(entry, "sourceLocationId") : null,
+            isLink ? ReadExactString(entry, "targetLocationId") : null,
+            transitionIds,
+            transitionIdKeys,
+            issues);
+    }
+
+    private static void ValidateTransitions(
+        JsonArray transitions,
+        string entryPath,
+        bool isLink,
+        string entityId,
+        int sourceTurn,
+        string? sourceLocationId,
+        string? targetLocationId,
+        HashSet<string> transitionIds,
+        HashSet<string> transitionIdKeys,
+        List<ValidationIssue> issues)
+    {
+        for (var index = 0; index < transitions.Count; index++)
+        {
+            var path = $"{entryPath}.transitions[{index}]";
+            if (transitions[index] is not JsonObject transition)
+            {
+                issues.Add(InvalidEntry(path, "non-object lifecycle transition"));
+                continue;
+            }
+
+            var kind = ReadExactString(transition, "kind");
+            var isChildTransition = kind != null &&
+                                    LocationChildTransitionKinds.Contains(kind);
+            var expectedFields = isChildTransition
+                ? ChildTransitionFields
+                : TransitionFields;
+            var fieldsAreExact = transition
+                .Select(static pair => pair.Key)
+                .ToHashSet(StringComparer.Ordinal)
+                .SetEquals(expectedFields);
+
+            var transitionId = ReadExactString(transition, "transitionId");
+            if (transitionId != null)
+            {
+                var exactUnique = transitionIds.Add(transitionId);
+                var confusableUnique = transitionIdKeys.Add(BuildConfusableKey(transitionId));
+                if (!exactUnique || !confusableUnique)
+                {
+                    issues.Add(Issue(
+                        $"{path}.transitionId",
+                        "mortal_location_identity_duplicate_transition_id",
+                        "Lifecycle transition IDs must be globally unique across location and link history.",
+                        "globally unique exact/confusable transitionId",
+                        transitionId));
+                }
+            }
+
+            var hasTurn = TryGetInt(transition, "turn", out var turn);
+            var sourceAuthorityId = ReadExactString(transition, "sourceAuthorityId");
+            var valid = fieldsAreExact &&
+                        transitionId != null &&
+                        kind != null &&
+                        hasTurn &&
+                        turn >= sourceTurn &&
+                        string.Equals(
+                            ReadExactString(transition, "entityId"),
+                            entityId,
+                            StringComparison.Ordinal) &&
+                        transition["beforeState"] is JsonObject &&
+                        transition["afterState"] is JsonObject &&
+                        string.Equals(
+                            ReadExactString(transition, "sourceAuthorityKind"),
+                            "turn_outcome",
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            sourceAuthorityId,
+                            "turn_" + turn,
+                            StringComparison.Ordinal) &&
+                        ReadExactString(transition, "operationRef") != null;
+
+            if (isLink)
+            {
+                valid = valid &&
+                        LinkTransitionKinds.Contains(kind ?? string.Empty) &&
+                        string.Equals(
+                            ReadExactString(transition, "sourceLocationId"),
+                            sourceLocationId,
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            ReadExactString(transition, "targetLocationId"),
+                            targetLocationId,
+                            StringComparison.Ordinal);
+            }
+            else if (isChildTransition)
+            {
+                valid = valid &&
+                        TryGetExactIdentity(transition, "childId", out _) &&
+                        string.Equals(
+                            ReadExactString(transition, "sourceLocationId"),
+                            entityId,
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            ReadExactString(transition, "targetLocationId"),
+                            entityId,
+                            StringComparison.Ordinal);
+            }
+            else
+            {
+                valid = valid &&
+                        LocationTransitionKinds.Contains(kind ?? string.Empty) &&
+                        transition["sourceLocationId"] == null &&
+                        transition["targetLocationId"] == null;
+            }
+
+            if (!valid)
+            {
+                issues.Add(InvalidEntry(
+                    path,
+                    "incomplete, inconsistent, or non-exact lifecycle transition evidence"));
             }
         }
     }
@@ -610,6 +802,7 @@ internal sealed class MortalLocationIdentityState
             new Dictionary<string, JsonObject>(StringComparer.Ordinal),
             new Dictionary<string, JsonObject>(StringComparer.Ordinal),
             issues,
+            new HashSet<string>(StringComparer.Ordinal),
             new HashSet<string>(StringComparer.Ordinal),
             new HashSet<string>(StringComparer.Ordinal),
             0);

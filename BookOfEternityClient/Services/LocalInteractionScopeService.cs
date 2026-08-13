@@ -279,7 +279,7 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
             return false;
 
         using var currentDocument = JsonDocument.Parse(current.ToJsonString());
-        if (MortalLocationMaterializationContract.ValidateCanonicalLocation(
+        if (MortalLocationMaterializationContract.ValidateCanonicalCurrentLocation(
                 currentDocument.RootElement,
                 MortalLocationMaterializationContract.CurrentLocationPath).Count != 0 ||
             !string.Equals(
@@ -301,7 +301,10 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         foreach (var pair in matches[0])
         {
             if (!current.TryGetPropertyValue(pair.Key, out var currentValue) ||
-                !JsonNode.DeepEquals(pair.Value, currentValue))
+                !MortalLocationMaterializationContract.SharedCurrentProjectionValueEquals(
+                    pair.Key,
+                    pair.Value,
+                    currentValue))
             {
                 return false;
             }

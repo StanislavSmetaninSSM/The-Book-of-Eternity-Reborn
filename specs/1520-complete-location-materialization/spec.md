@@ -126,11 +126,11 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 
 **Why this priority**: A complete location is useful only if the other materialized world entities can safely bind to it.
 
-**Independent Test**: Materialize a location with same-turn actor, faction, lore, threat, and storage metadata references; verify exact resolution, realm consistency, and rejection of name-only, dangling, or contradictory references.
+**Independent Test**: Materialize a location with same-turn actor, faction, threat, and storage metadata references plus pre-existing canonical lore references; verify exact resolution, realm consistency, and rejection of name-only, dangling, or contradictory references.
 
 **Acceptance Scenarios**:
 
-1. **Given** valid same-turn temporary references in supported fields, **When** all referenced entities are accepted, **Then** each field is rewritten to the exact permanent identity from its own authority.
+1. **Given** valid same-turn temporary actor/faction/storage/threat references in their explicitly supported fields, **When** all referenced entities are accepted, **Then** each field is rewritten or bound to the exact permanent identity from its own authority. Lore bindings use only pre-existing canonical permanent IDs because #1513 does not rematerialize codex, quest, or world-event identity.
 2. **Given** an actor binding that contradicts the actor's canonical physical location, **When** validation runs, **Then** the composed turn is rejected.
 3. **Given** a location-storage declaration, **When** the location is current, **Then** storage identity, name, owner, and capacity agree between map semantics and current-scene projection while item contents remain under item transition authority.
 4. **Given** a name-only, dangling, cross-realm, case-variant, or Unicode-confusable reference, **When** validation runs, **Then** it is rejected without guessing the intended target.
@@ -138,7 +138,7 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 ### Edge Cases
 
 - Two new locations or links reuse an `initialId`, materialization identity, permanent identity, or confusable case/Unicode variant.
-- A same-turn parent, endpoint, actor, faction, lore, threat, or storage reference resolves to zero or multiple accepted entities.
+- A same-turn parent, endpoint, actor, faction, threat, or storage reference, or a pre-existing canonical lore reference, resolves to zero or multiple accepted entities.
 - A location names itself as parent, forms a longer parent cycle, or crosses realm boundaries through parentage.
 - Two distinct locations claim the same exact coordinate tuple, including a hidden location and a visible location.
 - A current scene is not `visited` and player-known, or a hidden location is selected as current without an authorized reveal transition.
@@ -197,7 +197,7 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 - **FR-026**: Every new location MUST include both complete difficulty profiles required by the current Mortal location contract and an initial last-events description.
 - **FR-027**: Every new location MUST declare exactly one closed discovery combination: hidden/GM-only, rumored/player-known, discovered/player-known, or visited/player-known; the selected current scene MUST be visited/player-known.
 - **FR-028**: Reachability MUST be derived from accepted canonical links and MUST NOT be trusted as a free-standing GM-authored Boolean.
-- **FR-029**: Every new location MUST physically include faction control, actor bindings, storage metadata, active threats, lore bindings, and custom states as populated or explicitly empty collections.
+- **FR-029**: Every new location MUST physically include faction control, actor bindings, storage metadata, active threats, lore bindings, and custom states as populated or explicitly empty collections. The raw creation carrier MUST keep `activeThreats` empty because permanent threat identity is client-owned; same-turn threats MUST be submitted separately through `threatsToAdd` against the exact new-location `initialId`.
 - **FR-030**: Actor bindings MUST use an explicit role such as resident, owner, staff, prisoner, or other and MUST agree with the actor's own canonical physical-location authority.
 - **FR-031**: Lore bindings MUST use exact canonical identifiers for supported codex, quest, and world-event authorities; file paths and names are not valid references.
 - **FR-032**: Location-storage metadata MUST include exact storage identity and the governed name, owner, and capacity semantics, while contained items remain governed by item identity and transition authority.

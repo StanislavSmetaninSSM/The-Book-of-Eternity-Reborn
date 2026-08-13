@@ -9,7 +9,9 @@ internal sealed partial class MortalItemMaterializationTestContext
     private const string ExistingNpcId = "npc_route_existing";
     private const string NewNpcInitialId = "npc_route_new";
     private const string RouteLocationId = "loc_route_existing";
+    private const string RouteTargetLocationId = "loc_route_target";
     private const string RouteStorageId = "storage_route_existing";
+    internal const string SameTurnRouteStorageId = "storage_route_same_turn";
     private const string CraftRequestId = "craft_request_route_42";
     private const string TradeRequestId = "trade_request_route_42";
     private const string QuestRewardId = "quest_reward_route_42";
@@ -68,6 +70,87 @@ internal sealed partial class MortalItemMaterializationTestContext
             item["creationRef"]!.GetValue<string>());
     }
 
+    internal async Task<MortalItemRouteArrangement>
+        ArrangeSameTurnCurrentLocationStorageRouteAsync(JsonObject rawItem)
+    {
+        ArgumentNullException.ThrowIfNull(rawItem);
+
+        await BuildMortalBootstrapAsync();
+        await CaptureValidatedPendingSnapshotAsync(RouteTurn);
+
+        var item = rawItem.DeepClone().AsObject();
+        var authorityId =
+            $"{MortalLocationTestFixture.LocationInitialId}:{SameTurnRouteStorageId}";
+        item["materialization"]!["route"] = "storage_placement";
+        item["materialization"]!["sourceTurn"] = RouteTurn;
+        item["materialization"]!["sourceAuthority"]!["kind"] = "location_storage";
+        item["materialization"]!["sourceAuthority"]!["authorityId"] = authorityId;
+
+        var location = MortalLocationTestFixture.CreateRawLocation(
+            "current_scene_creation");
+        location["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                SameTurnRouteStorageId,
+                "Сундук новой сцены",
+                hasFullAccess: true,
+                contents: CloneRouteArray(item)));
+        location["materialization"]!["sections"]!["storageMetadata"] =
+            new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        await WriteJsonAsync(
+            StorageTransportMoveService.CurrentLocationPath,
+            new JsonObject { ["currentLocationData"] = location });
+
+        return new MortalItemRouteArrangement(
+            "storage_placement",
+            "location_storage",
+            authorityId,
+            item["creationRef"]!.GetValue<string>());
+    }
+
+    internal async Task ArrangeRemoteLocationStorageItemAsync(JsonObject rawItem)
+    {
+        ArgumentNullException.ThrowIfNull(rawItem);
+
+        await BuildMortalBootstrapAsync();
+        await CaptureValidatedPendingSnapshotAsync(RouteTurn);
+
+        var item = rawItem.DeepClone().AsObject();
+        item["materialization"]!["route"] = "storage_placement";
+        item["materialization"]!["sourceTurn"] = RouteTurn;
+        item["materialization"]!["sourceAuthority"]!["kind"] = "location_storage";
+        item["materialization"]!["sourceAuthority"]!["authorityId"] =
+            $"{MortalLocationTestFixture.LocationInitialId}:{SameTurnRouteStorageId}";
+
+        var location = MortalLocationTestFixture.CreateRawLocation(
+            "world_map_creation");
+        location["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                SameTurnRouteStorageId,
+                "Удалённый сундук",
+                hasFullAccess: true,
+                contents: CloneRouteArray(item)));
+        location["materialization"]!["sections"]!["storageMetadata"] =
+            new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        await WriteJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            new JsonObject
+            {
+                ["worldMapUpdates"] = new JsonObject
+                {
+                    ["newLocations"] = new JsonArray(location),
+                    ["newLinks"] = new JsonArray()
+                }
+            });
+    }
+
     internal async Task<MortalItemRouteOutcome> ValidateNormalizeAndValidateAsync()
     {
         var rawIssues = await Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
@@ -89,9 +172,7 @@ internal sealed partial class MortalItemMaterializationTestContext
                      StorageTransportMoveService.CurrentLocationPath
                  })
         {
-            receiptCount += CountProperties(
-                await ReadJsonAsync(path),
-                MortalItemMaterializationContract.ReceiptProperty);
+            receiptCount += CountMortalItemReceipts(await ReadJsonAsync(path));
         }
 
         var index = await ReadJsonAsync(MortalItemIdentityState.StatePath) as JsonObject;
@@ -268,12 +349,11 @@ internal sealed partial class MortalItemMaterializationTestContext
             StorageTransportMoveService.CurrentLocationPath))!.AsObject();
         var location = locationRoot["currentLocationData"] as JsonObject ?? locationRoot;
         location["locationStorages"] = new JsonArray(
-            new JsonObject
-            {
-                ["storageId"] = "storage_same_turn_unmaterialized",
-                ["name"] = "Новое хранилище без pre-turn authority",
-                ["contents"] = new JsonArray(rawItem)
-            });
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_same_turn_unmaterialized",
+                "Новое хранилище без pre-turn authority",
+                hasFullAccess: true,
+                contents: new JsonArray(rawItem)));
         await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, locationRoot);
     }
 
@@ -298,6 +378,106 @@ internal sealed partial class MortalItemMaterializationTestContext
                 StringComparison.Ordinal));
         storage["contents"]!.AsArray().Add(rawItem);
         await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, locationRoot);
+    }
+
+    internal async Task AddSameLocationRefreshWrapperAsync()
+    {
+        var root = (await ReadJsonAsync(
+            StorageTransportMoveService.CurrentLocationPath))!.AsObject();
+        root["currentLocationData"] = new JsonObject
+        {
+            ["locationId"] = RouteLocationId,
+            ["lastEventsDescription"] = "Герой остаётся в маршрутной локации.",
+            ["currentWeather"] = new JsonObject { ["summary"] = "Тихий дождь" },
+            ["currentInteractions"] = new JsonArray()
+        };
+        await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, root);
+    }
+
+    internal async Task AddCurrentStorageRemovalCommandAsync()
+    {
+        var root = (await ReadJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
+        root["worldMapUpdates"] = new JsonObject
+        {
+            ["storagesToRemove"] = new JsonArray(new JsonObject
+            {
+                ["targetLocationId"] = RouteLocationId,
+                ["storageId"] = RouteStorageId
+            })
+        };
+        await WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, root);
+    }
+
+    internal async Task<MortalItemRouteArrangement>
+        ArrangeStoragePlacementWithAuthorizedMovementAsync(JsonObject rawItem)
+    {
+        ArgumentNullException.ThrowIfNull(rawItem);
+
+        await BuildMortalBootstrapAsync();
+        var source = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            RouteLocationId,
+            "Маршрутная локация",
+            discoveryTier: "visited");
+        source["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                RouteStorageId,
+                "Маршрутное хранилище",
+                hasFullAccess: true,
+                contents: new JsonArray()));
+        source["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(source);
+        var target = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            RouteTargetLocationId,
+            "Маршрутная цель",
+            discoveryTier: "discovered",
+            x: 1);
+        var link = MortalLocationTestFixture.CreateCanonicalLink(
+            RouteLocationId,
+            RouteTargetLocationId);
+        var mapSource = source.DeepClone().AsObject();
+        mapSource["locationStorages"]![0]!.AsObject().Remove("contents");
+        var map = MortalLocationTestFixture.CreateWorldMap(mapSource, target);
+        map["links"]!.AsArray().Add(link.DeepClone());
+        var index = MortalLocationTestFixture.CreateIdentityIndex(source, link);
+        index["locationEntries"]!.AsArray().Add(
+            MortalLocationTestFixture.CreateIdentityIndex(target)
+                ["locationEntries"]![0]!.DeepClone());
+
+        await WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
+        await WriteJsonAsync(
+            StorageTransportMoveService.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(source));
+        await WriteJsonAsync(MortalLocationIdentityState.StatePath, index);
+        await CaptureValidatedPendingSnapshotAsync(RouteTurn);
+
+        var item = rawItem.DeepClone().AsObject();
+        var authorityId = $"{RouteLocationId}:{RouteStorageId}";
+        item["materialization"]!["route"] = "storage_placement";
+        item["materialization"]!["sourceTurn"] = RouteTurn;
+        item["materialization"]!["sourceAuthority"]!["kind"] = "location_storage";
+        item["materialization"]!["sourceAuthority"]!["authorityId"] = authorityId;
+        var current = (await ReadJsonAsync(
+            StorageTransportMoveService.CurrentLocationPath))!.AsObject();
+        current["locationStorages"]![0]!["contents"] = new JsonArray(item);
+        current["currentLocationData"] = new JsonObject
+        {
+            ["locationId"] = RouteTargetLocationId,
+            ["lastEventsDescription"] = "Герой дошёл до маршрутной цели.",
+            ["currentWeather"] = new JsonObject { ["summary"] = "Тихий ветер" },
+            ["currentInteractions"] = new JsonArray()
+        };
+        await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, current);
+
+        return new MortalItemRouteArrangement(
+            "storage_placement",
+            "location_storage",
+            authorityId,
+            item["creationRef"]!.GetValue<string>());
     }
 
     private static JsonObject AssertSingleObject(JsonArray array)
@@ -599,18 +779,38 @@ internal sealed partial class MortalItemMaterializationTestContext
 
     private async Task WriteStorageBaselineAsync()
     {
-        var root = (await ReadJsonAsync(
-            StorageTransportMoveService.CurrentLocationPath))!.AsObject();
-        var location = root["currentLocationData"] as JsonObject ?? root;
-        location["locationId"] = RouteLocationId;
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            RouteLocationId,
+            "Маршрутная локация");
         location["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                RouteStorageId,
+                "Маршрутное хранилище",
+                hasFullAccess: true,
+                contents: new JsonArray()));
+        location["materialization"]!["sections"]!["storageMetadata"] =
             new JsonObject
             {
-                ["storageId"] = RouteStorageId,
-                ["name"] = "Маршрутное хранилище",
-                ["contents"] = new JsonArray()
-            });
-        await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, root);
+                ["disposition"] = "populated",
+                ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+        var mapLocation = location.DeepClone().AsObject();
+        foreach (var storage in mapLocation["locationStorages"]!
+                     .AsArray()
+                     .OfType<JsonObject>())
+        {
+            storage.Remove("contents");
+        }
+        await WriteJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(mapLocation));
+        await WriteJsonAsync(
+            StorageTransportMoveService.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location));
+        await WriteJsonAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location));
     }
 
     private static string ResolveRouteAuthorityId(string route, JsonObject item) =>
@@ -628,7 +828,7 @@ internal sealed partial class MortalItemMaterializationTestContext
             _ => throw new ArgumentOutOfRangeException(nameof(route), route, null)
         };
 
-    private static int CountProperties(JsonNode? node, string propertyName)
+    private static int CountMortalItemReceipts(JsonNode? node)
     {
         if (node == null)
             return 0;
@@ -636,9 +836,12 @@ internal sealed partial class MortalItemMaterializationTestContext
         return node switch
         {
             JsonObject obj =>
-                (obj.ContainsKey(propertyName) ? 1 : 0) +
-                obj.Sum(pair => CountProperties(pair.Value, propertyName)),
-            JsonArray array => array.Sum(item => CountProperties(item, propertyName)),
+                (obj["itemId"] is JsonValue &&
+                 obj[MortalItemMaterializationContract.ReceiptProperty] is JsonObject
+                    ? 1
+                    : 0) +
+                obj.Sum(pair => CountMortalItemReceipts(pair.Value)),
+            JsonArray array => array.Sum(CountMortalItemReceipts),
             _ => 0
         };
     }

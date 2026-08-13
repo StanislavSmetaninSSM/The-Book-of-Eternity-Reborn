@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Reflection;
 using BookOfEternityClient.Core;
@@ -1628,6 +1629,248 @@ public sealed class FactionMaterializationValidationTests : IDisposable
                 "faction_materialization_mortal_location_control_unknown_faction" &&
             candidate.Actor == "mortal_faction:faction_missing");
     }
+
+    [Fact]
+    public void MortalLocationControl_SameTurnFactionRewritesToExactEffectiveIdentity()
+    {
+        var factionRoot = new JsonObject
+        {
+            ["factionDataChanges"] = new JsonArray(
+                BuildCompleteMinimalMortalCreation())
+        };
+        var location = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        location["factionControl"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = null,
+            ["initialFactionId"] = "temp-faction-watch",
+            ["controlLevel"] = 35,
+            ["description"] = "Дозор принял ответственность за новый брод."
+        });
+        location["materialization"]!["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
+
+        var result = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["realm"] = "mortal_world",
+                    ["locations"] = new JsonArray(),
+                    ["links"] = new JsonArray()
+                },
+                PreTurnCurrentLocation: null,
+                MortalLocationIdentityState.CreateEmptyRoot(),
+                RawCurrentLocationData: null,
+                new JsonObject
+                {
+                    ["worldMapUpdates"] = new JsonObject
+                    {
+                        ["newLocations"] = new JsonArray(location)
+                    }
+                },
+                Turn: 42,
+                RawFactionCore: factionRoot));
+
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues));
+        var canonical = Assert.Single(
+            result.Plan!.FinalWorldMap["locations"]!.AsArray().OfType<JsonObject>());
+        var control = Assert.Single(
+            canonical["factionControl"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(
+            factionRoot["factionDataChanges"]![0]!["initialId"]!.GetValue<string>(),
+            control["factionId"]!.GetValue<string>());
+        Assert.False(control.ContainsKey("initialFactionId"));
+    }
+
+    [Fact]
+    public void MortalLocationControl_CaseVariantSameTurnFactionFailsClosed()
+    {
+        var factionRoot = new JsonObject
+        {
+            ["factionDataChanges"] = new JsonArray(
+                BuildCompleteMinimalMortalCreation())
+        };
+        var location = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        location["factionControl"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = null,
+            ["initialFactionId"] = "TEMP-FACTION-WATCH",
+            ["controlLevel"] = 35
+        });
+        location["materialization"]!["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
+
+        var result = BuildMortalLocationFactionPlan(location, factionRoot);
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_faction_control_target_confusable" &&
+            issue.FilePath.EndsWith(
+                ".factionControl[0].initialFactionId",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalLocationControl_DuplicateSameTurnFactionAuthorityFailsClosed()
+    {
+        var factionRoot = new JsonObject
+        {
+            ["factionDataChanges"] = new JsonArray(
+                BuildCompleteMinimalMortalCreation(),
+                BuildCompleteMinimalMortalCreation())
+        };
+        var location = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        location["factionControl"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = null,
+            ["initialFactionId"] = "temp-faction-watch",
+            ["controlLevel"] = 35
+        });
+        location["materialization"]!["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
+
+        var result = BuildMortalLocationFactionPlan(location, factionRoot);
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_faction_control_target_ambiguous");
+    }
+
+    [Fact]
+    public async Task MortalLocationControl_CanonicalDanglingFactionFailsPostValidation()
+    {
+        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        location["factionControl"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = "faction_missing_from_canonical_authority",
+            ["controlLevel"] = 35
+        });
+        location["materialization"]!["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+        await context.WritePreTurnCanonicalStateAsync(location);
+        await context.WriteJsonAsync(
+            FactionCoreChangesContract.FactionCorePath,
+            new JsonObject { ["factions"] = new JsonArray() });
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_faction_control_target_unknown" &&
+            issue.FilePath.EndsWith(
+                ".factionControl[0].factionId",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalLocationControl_NarrowUpdateRewritesSameTurnFactionIdentity()
+    {
+        const string previousFactionId = "faction_previous_ford_watch";
+        var factionRoot = new JsonObject
+        {
+            ["factions"] = new JsonArray(
+                MaterializedMortalFaction(
+                    previousFactionId,
+                    "fmat_previous_ford_watch")),
+            ["factionDataChanges"] = new JsonArray(
+                BuildCompleteMinimalMortalCreation())
+        };
+        var existing = MortalLocationTestFixture.CreateCanonicalLocation();
+        existing["factionControl"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = previousFactionId,
+            ["controlLevel"] = 20
+        });
+        existing["materialization"]!["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
+        MortalLocationTestFixture.ResealCanonicalLocation(existing);
+
+        var result = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                MortalLocationTestFixture.CreateWorldMap(existing),
+                MortalLocationTestFixture.CreateCurrentProjection(existing),
+                MortalLocationTestFixture.CreateIdentityIndex(existing),
+                RawCurrentLocationData: null,
+                new JsonObject
+                {
+                    ["worldMapUpdates"] = new JsonObject
+                    {
+                        ["locationUpdates"] = new JsonArray(new JsonObject
+                        {
+                            ["locationId"] = MortalLocationTestFixture.LocationId,
+                            ["factionControl"] = new JsonArray(new JsonObject
+                            {
+                                ["factionId"] = null,
+                                ["initialFactionId"] = "temp-faction-watch",
+                                ["controlLevel"] = 35,
+                                ["description"] = "Новый дозор принял контроль над бродом."
+                            })
+                        })
+                    }
+                },
+                Turn: 42,
+                RawFactionCore: factionRoot));
+
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues));
+        var canonical = Assert.Single(
+            result.Plan!.FinalWorldMap["locations"]!.AsArray().OfType<JsonObject>());
+        var control = Assert.Single(
+            canonical["factionControl"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("temp-faction-watch", control["factionId"]!.GetValue<string>());
+        Assert.False(control.ContainsKey("initialFactionId"));
+    }
+
+    [Fact]
+    public void MortalLocationControl_DualFactionSelectorFailsClosed()
+    {
+        var location = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        location["factionControl"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = "faction_watch",
+            ["initialFactionId"] = "faction_watch_same_turn",
+            ["role"] = "controller",
+            ["description"] = "Один control-entry не может выбирать две разные authority."
+        });
+        location["materialization"]!["sections"]!["factionControl"] =
+            PopulatedLocationDisposition();
+        using var document = JsonDocument.Parse(location.ToJsonString());
+
+        var issues = MortalLocationMaterializationContract.ValidateRawLocation(
+            document.RootElement,
+            "worldMapUpdates.newLocations[0]",
+            "world_map_creation");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_faction_control_selector_invalid" &&
+            issue.FilePath.EndsWith(".factionControl[0]", StringComparison.Ordinal));
+    }
+
+    private static MortalLocationAcceptedTurnPlanningResult BuildMortalLocationFactionPlan(
+        JsonObject location,
+        JsonObject factionRoot) =>
+        MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["realm"] = "mortal_world",
+                    ["locations"] = new JsonArray(),
+                    ["links"] = new JsonArray()
+                },
+                PreTurnCurrentLocation: null,
+                MortalLocationIdentityState.CreateEmptyRoot(),
+                RawCurrentLocationData: null,
+                new JsonObject
+                {
+                    ["worldMapUpdates"] = new JsonObject
+                    {
+                        ["newLocations"] = new JsonArray(location)
+                    }
+                },
+                Turn: 42,
+                RawFactionCore: factionRoot));
 
     [Fact]
     public async Task NewMortalFaction_InitialIdCollidesWithPreTurnFaction_FailsRaw()

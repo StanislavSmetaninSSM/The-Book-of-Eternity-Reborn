@@ -80,25 +80,42 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_MapRussian_InMortalRealm_OpensVisualMapViewerInsteadOfLocationList()
     {
         await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            locationId = "loc_market_square",
-            name = "Рыночная площадь",
-            description = "Открытая смертная локация для проверки карты.",
-            lastEventsDescription = "#[9] - Дозор проверил площадь после полуночи.",
-            coordinates = new { x = 1, y = 2, z = 0 },
-            adjacencyMap = new[]
-            {
-                new
-                {
-                    targetLocationId = "loc_east_gate",
-                    name = "Восточные ворота",
-                    direction = "восток",
-                    distance = "10 минут",
-                    linkState = "safe"
-                }
-            }
-        });
+        var current = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_market_square",
+            "Рыночная площадь",
+            "visited",
+            x: 1,
+            y: 2);
+        current["description"] = "Открытая смертная локация для проверки карты.";
+        current["lastEventsDescription"] = "#[9] - Дозор проверил площадь после полуночи.";
+        var gate = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_east_gate",
+            "Восточные ворота",
+            "discovered",
+            x: 2,
+            y: 2);
+        var hidden = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_hidden_map_console",
+            "PRIVATE_CONSOLE_HIDDEN_MAP_LOCATION",
+            "hidden",
+            x: 3,
+            y: 2);
+        var rejected = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_rejected_map_console",
+            "PRIVATE_CONSOLE_REJECTED_MAP_LOCATION",
+            "visited",
+            x: 4,
+            y: 2);
+        rejected.Remove("materializationReceipt");
+        var link = MortalLocationTestFixture.CreateCanonicalLink(
+            "loc_market_square",
+            "loc_east_gate");
+        link["directionLabel"] = "восток";
+        await WriteCanonicalMortalLocationStateAsync(
+            [current, gate, hidden, rejected],
+            MortalLocationTestFixture.CreateCurrentProjection(current),
+            [current, gate, hidden],
+            [link]);
         await _stateManager.RefreshGameStateAsync();
 
         var result = await _explorer.TryProcessCommand("/карта");
@@ -115,9 +132,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Рыночная площадь", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Текущая созданная локация", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Восточные ворота", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Намеченный выход", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Дозор проверил площадь после полуночи.", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("#[9]", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Созданная локация", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PRIVATE_CONSOLE_HIDDEN_MAP_LOCATION", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_CONSOLE_REJECTED_MAP_LOCATION", renderedText, StringComparison.Ordinal);
+        var viewerHtml = await File.ReadAllTextAsync(_fs.ResolvePath("output/map_viewer.html"));
+        Assert.Contains("Дозор проверил площадь после полуночи.", viewerHtml, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("#[9]", viewerHtml, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PRIVATE_CONSOLE_HIDDEN_MAP_LOCATION", viewerHtml, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_CONSOLE_REJECTED_MAP_LOCATION", viewerHtml, StringComparison.Ordinal);
         Assert.DoesNotContain(_console.MarkupLines,
             line => line.Contains("output/map_viewer.html", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(_console.SelectionTitles,
@@ -684,26 +706,111 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Locations_UsesAcceptedDiscoveryProjectionOnly()
+    {
+        await SeedMortalStateAsync();
+        var current = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_console_current",
+            "Текущий канонический двор",
+            "visited",
+            x: 1,
+            y: 1);
+        var discovered = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_console_discovered",
+            "Открытая дозорная башня",
+            "discovered",
+            x: 2,
+            y: 1);
+        var rumored = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_console_rumored",
+            "Переправа из слухов",
+            "rumored",
+            x: 3,
+            y: 1);
+        var hidden = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_console_hidden",
+            "НЕ ПОКАЗЫВАТЬ СКРЫТЫЙ СКЛЕП",
+            "hidden",
+            x: 4,
+            y: 1);
+        var rejected = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_console_rejected",
+            "НЕ ПОКАЗЫВАТЬ ОТКЛОНЁННЫЕ РУИНЫ",
+            "visited",
+            x: 5,
+            y: 1);
+        rejected.Remove("materializationReceipt");
+        await WriteCanonicalMortalLocationStateAsync(
+            [current, discovered, rumored, hidden, rejected],
+            current,
+            [current, discovered, rumored, hidden]);
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/локации"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("locations_accepted_discovery_projection");
+        var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
+        Assert.Contains("Текущий канонический двор", choices, StringComparison.Ordinal);
+        Assert.Contains("Открытая дозорная башня", choices, StringComparison.Ordinal);
+        Assert.Contains("Переправа из слухов", choices, StringComparison.Ordinal);
+        Assert.Contains("слух", choices, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("НЕ ПОКАЗЫВАТЬ", choices, StringComparison.Ordinal);
+        Assert.DoesNotContain("loc_console_", choices, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_CurrentLocation_FailsClosedWhenCurrentProjectionDiffersFromMap()
+    {
+        await SeedMortalStateAsync();
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_console_exact_current",
+            "Точный внутренний двор",
+            "visited",
+            x: 9,
+            y: 4);
+        var mismatchedCurrent = MortalLocationTestFixture.CreateCurrentProjection(canonical);
+        mismatchedCurrent["name"] = "НЕ ПОКАЗЫВАТЬ ПОДМЕНЁННОЕ МЕСТО";
+        await WriteCanonicalMortalLocationStateAsync(
+            [canonical],
+            mismatchedCurrent,
+            [canonical]);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
+
+        Assert.Null(ex);
+        var output = ExtractRenderedText();
+        Assert.Contains("Местоположение неизвестно", output, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("НЕ ПОКАЗЫВАТЬ", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("loc_console_exact_current", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Locations_HidesUnknownAdjacentLinkState()
     {
         await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/current_location.json", new
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_valmont_corridor",
+            "Коридор поместья Вальмонт",
+            "visited",
+            x: 3,
+            y: 4);
+        canonical["description"] = "Длинный коридор с потухшими бра.";
+        var current = MortalLocationTestFixture.CreateCurrentProjection(canonical);
+        current["adjacencyMap"] = new JsonArray
         {
-            locationId = "loc_valmont_corridor",
-            name = "Коридор поместья Вальмонт",
-            description = "Длинный коридор с потухшими бра.",
-            adjacencyMap = new[]
+            new JsonObject
             {
-                new
-                {
-                    targetLocationId = "loc_east_service_stairs",
-                    targetLocationName = "Восточная служебная лестница",
-                    direction = "восток",
-                    distance = "пара минут",
-                    linkState = "Unknown"
-                }
+                ["targetLocationId"] = "loc_east_service_stairs",
+                ["targetLocationName"] = "Восточная служебная лестница",
+                ["direction"] = "восток",
+                ["distance"] = "пара минут",
+                ["linkState"] = "Unknown"
             }
-        });
+        };
+        await WriteCanonicalMortalLocationStateAsync([canonical], current, [canonical]);
         _console.QueueAnySelection("← Назад");
         await _stateManager.RefreshGameStateAsync();
 
@@ -712,7 +819,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("locations_unknown_link_state");
         var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
-        Assert.Contains("Восточная служебная лестница", choices, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Восточная служебная лестница", choices, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Unknown", choices, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -728,21 +835,28 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             materializationId: "mat_item_location_storage_rejected");
         rejected["name"] = "НЕПРИНЯТЫЙ ПРЕДМЕТ ЛОКАЦИИ";
         rejected["quantity"] = 9;
-        await _fs.WriteFileAtomicAsync(
-            "game_state/world/current_location.json",
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_accepted_storage_detail",
+            "Площадь точного хранилища",
+            "visited",
+            x: 7,
+            y: 2);
+        canonical["locationStorages"] = new JsonArray(
             new JsonObject
             {
-                ["locationId"] = "loc_accepted_storage_detail",
-                ["name"] = "Площадь точного хранилища",
-                ["locationStorages"] = new JsonArray(
-                    new JsonObject
-                    {
-                        ["storageId"] = "storage_location_detail",
-                        ["name"] = "Ларь площади",
-                        ["hasFullAccess"] = true,
-                        ["contents"] = new JsonArray(accepted, rejected)
-                    })
-            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                ["storageId"] = "storage_location_detail",
+                ["name"] = "Ларь площади",
+                ["hasFullAccess"] = true
+            });
+        canonical["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(canonical);
+        var current = MortalLocationTestFixture.CreateCurrentProjection(canonical);
+        current["locationStorages"]![0]!["contents"] = new JsonArray(accepted, rejected);
+        await WriteCanonicalMortalLocationStateAsync([canonical], current, [canonical]);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/локации"));
@@ -760,22 +874,27 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_Locations_LocalizesLocationTypeInChooser()
     {
         await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/world_map.json", new
-        {
-            worldMapUpdates = new
-            {
-                newLocations = new[]
-                {
-                    new
-                    {
-                        locationId = "loc_archive_corridor",
-                        name = "Коридор закрытого архива",
-                        locationType = "indoor",
-                        shortDescription = "Узкий коридор с опечатанными дверями."
-                    }
-                }
-            }
-        });
+        var current = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_archive_courtyard",
+            "Двор закрытого архива",
+            "visited",
+            x: 6,
+            y: 1);
+        var corridor = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_archive_corridor",
+            "Коридор закрытого архива",
+            "discovered",
+            x: 7,
+            y: 1);
+        corridor["locationType"] = "indoor";
+        corridor["biome"] = null;
+        corridor["biomeDescription"] = null;
+        corridor["indoorType"] = "Building";
+        corridor["description"] = "Узкий коридор с опечатанными дверями.";
+        await WriteCanonicalMortalLocationStateAsync(
+            [current, corridor],
+            MortalLocationTestFixture.CreateCurrentProjection(current),
+            [current, corridor]);
         _console.QueueAnySelection("← Назад");
         await _stateManager.RefreshGameStateAsync();
 
@@ -1163,13 +1282,21 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_CurrentLocation_LocalizesLocationType()
     {
         await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            name = "Покои виконта де Вальмонта",
-            locationType = "indoor",
-            indoorType = "Building",
-            description = "Роскошные покои в поместье Вальмонт."
-        });
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_valmont_chambers",
+            "Покои виконта де Вальмонта",
+            "visited",
+            x: 12,
+            y: 8);
+        canonical["locationType"] = "indoor";
+        canonical["biome"] = null;
+        canonical["biomeDescription"] = null;
+        canonical["indoorType"] = "Building";
+        canonical["description"] = "Роскошные покои в поместье Вальмонт.";
+        await WriteCanonicalMortalLocationStateAsync(
+            [canonical],
+            MortalLocationTestFixture.CreateCurrentProjection(canonical),
+            [canonical]);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
@@ -1181,16 +1308,184 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_CurrentLocation_RendersCurrentSchemaDifficultyProfiles()
+    {
+        await SeedMortalStateAsync();
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_current_difficulty",
+            "Переправа испытаний",
+            "visited",
+            x: 18,
+            y: 3);
+        await WriteCanonicalMortalLocationStateAsync(
+            [canonical],
+            MortalLocationTestFixture.CreateCurrentProjection(canonical),
+            [canonical]);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
+
+        Assert.Null(ex);
+        var output = ExtractRenderedText();
+        Assert.Contains("Сложность (для своих)", output, StringComparison.Ordinal);
+        Assert.Contains("низкая", output, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рекомендуемый уровень: 1", output, StringComparison.Ordinal);
+        Assert.Contains("На переправе нет постоянной внутренней угрозы", output, StringComparison.Ordinal);
+        Assert.Contains("Сложность (для чужих)", output, StringComparison.Ordinal);
+        Assert.Contains("средняя", output, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рекомендуемый уровень: 2", output, StringComparison.Ordinal);
+        Assert.Contains("За бродом тракт становится опаснее", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("moderate", output, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_CurrentLocationSuppressesNestedLocationRepairPackets()
+    {
+        await SeedMortalStateAsync();
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        location["features"] = new JsonArray
+        {
+            "Старинный колодец",
+            new JsonObject
+            {
+                ["name"] = "Каменная арка",
+                ["details"] = CreatePrivateLocationRepairPacket("PRIVATE_CONSOLE_NESTED_LOCATION_REPAIR")
+            },
+            CreatePrivateLocationRepairPacket("PRIVATE_CONSOLE_DIRECT_LOCATION_REPAIR"),
+            CreatePrivateValidationRepairRequest("PRIVATE_CONSOLE_LOCATION_REPAIR_REQUEST"),
+            CreatePrivateValidationDiagnosticReport("PRIVATE_CONSOLE_LOCATION_DIAGNOSTIC_REPORT")
+        };
+        await WriteCanonicalMortalLocationStateAsync(
+            [location],
+            MortalLocationTestFixture.CreateCurrentProjection(location),
+            [location]);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
+
+        Assert.Null(ex);
+        var output = ExtractRenderedText();
+        Assert.Contains("Старинный колодец", output, StringComparison.Ordinal);
+        Assert.Contains("Каменная арка", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_CONSOLE", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("rawCoordinate", output, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("gmInstructions", output, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("fullTurnResubmissionRequired", output, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rollbackAvailable", output, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject CreatePrivateLocationRepairPacket(string marker) => new()
+    {
+        ["kind"] = "mortal_location_materialization_repair",
+        ["title"] = marker,
+        ["rawCoordinate"] = "worldMapUpdates.newLocations[0]",
+        ["targetFiles"] = new JsonArray(MortalLocationMaterializationContract.WorldMapPath),
+        ["canonicalActorNames"] = new JsonArray("mortal_location:new:private")
+    };
+
+    private static JsonObject CreatePrivateValidationRepairRequest(string marker) => new()
+    {
+        ["sessionId"] = "session_private",
+        ["requestId"] = "request_private",
+        ["turnNumber"] = 42,
+        ["metadataDiagnosticOnly"] = false,
+        ["source"] = "private source",
+        ["detectedAtUtc"] = "2026-08-12T00:00:00Z",
+        ["revalidationAttempt"] = 2,
+        ["fullTurnResubmissionRequired"] = true,
+        ["gmInstructions"] = marker,
+        ["summaryGroups"] = new JsonArray("PRIVATE_CONSOLE_SUMMARY"),
+        ["harnessRepairPackets"] = new JsonArray(CreatePrivateLocationRepairPacket(marker)),
+        ["errors"] = new JsonArray(new JsonObject
+        {
+            ["code"] = "mortal_location_materialization_governed_field_missing",
+            ["message"] = marker
+        })
+    };
+
+    private static JsonObject CreatePrivateValidationDiagnosticReport(string marker) => new()
+    {
+        ["source"] = "private source",
+        ["detectedAtUtc"] = "2026-08-12T00:00:00Z",
+        ["reason"] = marker,
+        ["rollbackAvailable"] = true,
+        ["summaryGroups"] = new JsonArray("PRIVATE_CONSOLE_DIAGNOSTIC_SUMMARY"),
+        ["errors"] = new JsonArray(new JsonObject
+        {
+            ["code"] = "accepted_turn_invalid_snapshot_baseline",
+            ["message"] = marker
+        })
+    };
+
+    private async Task WriteCanonicalMortalLocationStateAsync(
+        IReadOnlyCollection<JsonObject> mapLocations,
+        JsonObject current,
+        IReadOnlyCollection<JsonObject> indexedLocations,
+        IReadOnlyCollection<JsonObject>? links = null)
+    {
+        var canonicalLinks = links ?? Array.Empty<JsonObject>();
+        var map = MortalLocationTestFixture.CreateWorldMap(mapLocations.ToArray());
+        map["links"] = new JsonArray(
+            canonicalLinks.Select(static link => (JsonNode?)link.DeepClone()).ToArray());
+        var index = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["realm"] = "mortal_world",
+            ["locationEntries"] = new JsonArray(),
+            ["linkEntries"] = new JsonArray()
+        };
+        foreach (var location in indexedLocations)
+        {
+            var single = MortalLocationTestFixture.CreateIdentityIndex(location);
+            index["locationEntries"]!.AsArray().Add(
+                single["locationEntries"]![0]!.DeepClone());
+        }
+        foreach (var link in canonicalLinks)
+        {
+            var sourceId = link["sourceLocationId"]!.GetValue<string>();
+            var source = indexedLocations.Single(location =>
+                string.Equals(
+                    location["locationId"]!.GetValue<string>(),
+                    sourceId,
+                    StringComparison.Ordinal));
+            var single = MortalLocationTestFixture.CreateIdentityIndex(source, link);
+            index["linkEntries"]!.AsArray().Add(
+                single["linkEntries"]![0]!.DeepClone());
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            map.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            current.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            index.ToJsonString());
+    }
+
+    [Fact]
     public async Task TryProcessCommand_CurrentLocation_HidesCanonicalTurnAnchorInLastEvents()
     {
         await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            name = "Кабинет наставника",
-            description = "Комната с мокрыми реестрами и сломанной печатью.",
-            locationType = "indoor",
-            lastEventsDescription = "#[9]. Марена нашла след воска у замка и отметила знак разомкнутой звезды."
-        });
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_mentor_study",
+            "Кабинет наставника",
+            "visited",
+            x: 15,
+            y: 6);
+        canonical["locationType"] = "indoor";
+        canonical["biome"] = null;
+        canonical["biomeDescription"] = null;
+        canonical["indoorType"] = "Building";
+        canonical["description"] = "Комната с мокрыми реестрами и сломанной печатью.";
+        canonical["lastEventsDescription"] =
+            "#[9]. Марена нашла след воска у замка и отметила знак разомкнутой звезды.";
+        await WriteCanonicalMortalLocationStateAsync(
+            [canonical],
+            MortalLocationTestFixture.CreateCurrentProjection(canonical),
+            [canonical]);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
@@ -2322,6 +2617,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 {
                   "summary": "Найден след старого клейма.",
                   "creationRef": "PRIVATE_QUEST_LOG_CREATION_REF",
+                  "repairShadow": {
+                    "kind": "mortal_location_materialization_repair",
+                    "title": "PRIVATE_QUEST_LOCATION_REPAIR_TITLE",
+                    "rawCoordinate": "PRIVATE_QUEST_LOCATION_RAW_COORDINATE"
+                  },
+                  "publicTrail": {
+                    "title": "След ведёт к северной мастерской."
+                  },
                   "NPCInventoryRemovals": [
                     { "itemName": "PRIVATE_QUEST_LOG_REMOVAL" }
                   ]
@@ -2341,7 +2644,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Жетон северной мастерской", renderedText, StringComparison.Ordinal);
         Assert.Contains("Мастера узнают этот знак", renderedText, StringComparison.Ordinal);
         Assert.Contains("Найден след старого клейма", renderedText, StringComparison.Ordinal);
+        Assert.Contains("След ведёт к северной мастерской", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("PRIVATE_QUEST_", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", renderedText, StringComparison.Ordinal);
         Assert.DoesNotContain("materializationReceipt", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Update Inventory", renderedText, StringComparison.OrdinalIgnoreCase);
     }

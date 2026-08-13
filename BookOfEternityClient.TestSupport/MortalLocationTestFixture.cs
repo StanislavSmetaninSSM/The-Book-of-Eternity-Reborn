@@ -276,6 +276,42 @@ public static class MortalLocationTestFixture
         return projection;
     }
 
+    public static JsonObject CreateStorageMetadata(
+        string storageId,
+        string name,
+        bool hasFullAccess,
+        JsonArray? contents = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(storageId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        var storage = new JsonObject
+        {
+            ["storageId"] = storageId,
+            ["name"] = name,
+            ["description"] = $"Надёжное хранилище: {name}.",
+            ["image_prompt"] = "A grounded dark fantasy storage container, no text",
+            ["capacity"] = 10,
+            ["volume"] = 1.0,
+            ["owner"] = null,
+            ["authorizedUsers"] = new JsonArray(),
+            ["hasFullAccess"] = hasFullAccess
+        };
+        if (contents != null)
+            storage["contents"] = contents.DeepClone();
+        return storage;
+    }
+
+    public static void ResealCanonicalLocation(JsonObject location)
+    {
+        ArgumentNullException.ThrowIfNull(location);
+        var envelope = location["materialization"]?.AsObject()
+            ?? throw new InvalidOperationException("Canonical location fixture requires an envelope.");
+        var receipt = location["materializationReceipt"]?.AsObject()
+            ?? throw new InvalidOperationException("Canonical location fixture requires a receipt.");
+        receipt.Remove("seal");
+        receipt["seal"] = ComputeSeal(envelope, receipt);
+    }
+
     public static JsonObject CreateReceiptlessNegative()
     {
         var invalid = CreateCanonicalLocation();

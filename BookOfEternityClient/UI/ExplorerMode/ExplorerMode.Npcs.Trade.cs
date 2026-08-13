@@ -13,52 +13,38 @@ public partial class ExplorerMode
 {
     private async Task ShowNpcTradeCommand()
     {
+        if (_npcTradeService == null)
+        {
+            ShowEmptyPanel("Торговля с НПС", "Сервис торговли сейчас недоступен");
+            return;
+        }
+
+        var tradeTargets = await _npcTradeService.GetCurrentLocationTradeTargetsAsync();
         var npcId = _currentCommandRemainder.Trim();
         if (!string.IsNullOrWhiteSpace(npcId))
         {
-            await ShowNpcTradePanel(await ResolveNpcTradeCommandTargetIdAsync(npcId) ?? npcId);
+            var resolved = ResolveNpcTradeCommandTargetId(tradeTargets, npcId);
+            if (resolved == null)
+            {
+                ShowEmptyPanel("Торговля с НПС", "В текущей сцене нет такого торговца");
+                return;
+            }
+            await ShowNpcTradePanel(resolved);
             return;
         }
 
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_core.json");
-        if (doc == null)
+        var merchantChoices = tradeTargets.Select(target =>
         {
-            ShowEmptyPanel("Торговля с НПС", "Торговцы не обнаружены");
-            return;
-        }
-
-        var npcs = CollectNpcListEntries(doc);
-        if (npcs.Count == 0)
-        {
-            ShowEmptyPanel("Торговля с НПС", "Торговцы не обнаружены");
-            return;
-        }
-
-        var renameMap = BuildNpcRenameMap(doc);
-        var (currentLocationId, currentLocationName) = await ReadCurrentLocationIdentityAsync();
-        var merchantChoices = new List<(string Label, string NpcId)>();
-
-        foreach (var npc in npcs)
-        {
-            var trade = NpcTradeService.EvaluateTradeAvailability(npc, currentLocationId, currentLocationName);
-            if (!trade.IsMerchant)
-                continue;
-
-            var id = GetPrimaryNpcId(npc);
-            if (string.IsNullOrWhiteSpace(id))
-                continue;
-
-            var name = ResolveNpcDisplayName(npc, renameMap);
-            var status = trade.TradeAvailable
+            var status = target.TradeAvailable
                 ? "доступна"
-                : trade.BlockReason ?? "сейчас недоступна";
-            merchantChoices.Add((
-                ConsoleLayout.PlainChoiceLabel(
-                    $"🛒 {name}",
-                    trade.MerchantProfileDisplay,
+                : target.BlockReason ?? "сейчас недоступна";
+            return (
+                Label: ConsoleLayout.PlainChoiceLabel(
+                    $"🛒 {target.NpcName}",
+                    target.MerchantProfileDisplay,
                     status),
-                id));
-        }
+                NpcId: target.NpcId);
+        }).ToList();
 
         if (merchantChoices.Count == 0)
         {
@@ -91,68 +77,30 @@ public partial class ExplorerMode
         }
     }
 
-    private async Task<string?> ResolveNpcTradeCommandTargetIdAsync(string query)
+    private static string? ResolveNpcTradeCommandTargetId(
+        IReadOnlyList<NpcTradeService.NpcTradeTarget> targets,
+        string query)
     {
         var normalizedQuery = NormalizeNpcTradeLookupToken(query);
         if (string.IsNullOrWhiteSpace(normalizedQuery))
             return null;
 
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_core.json");
-        if (doc == null)
+        var exactIdMatches = targets
+            .Where(target => string.Equals(target.NpcId, normalizedQuery, StringComparison.Ordinal))
+            .Take(2)
+            .ToArray();
+        if (exactIdMatches.Length == 1)
+            return exactIdMatches[0].NpcId;
+        if (exactIdMatches.Length > 1)
             return null;
 
-        var npcs = CollectNpcListEntries(doc);
-        if (npcs.Count == 0)
+        var nameMatches = targets
+            .Where(target => NpcTradeLookupEquals(target.NpcName, normalizedQuery))
+            .Take(2)
+            .ToArray();
+        if (nameMatches.Length != 1)
             return null;
-
-        var renameMap = BuildNpcRenameMap(doc);
-        var (currentLocationId, currentLocationName) = await ReadCurrentLocationIdentityAsync();
-        string? firstNameMatch = null;
-        string? firstMerchantNameMatch = null;
-        string? firstAvailableMerchantNameMatch = null;
-
-        foreach (var npc in npcs)
-        {
-            var id = GetPrimaryNpcId(npc);
-            if (string.IsNullOrWhiteSpace(id))
-                continue;
-
-            if (NpcTradeLookupEquals(id, normalizedQuery))
-                return id;
-
-            if (!NpcTradeNameMatches(npc, renameMap, normalizedQuery))
-                continue;
-
-            firstNameMatch ??= id;
-            var trade = NpcTradeService.EvaluateTradeAvailability(npc, currentLocationId, currentLocationName);
-            if (trade.IsMerchant)
-            {
-                firstMerchantNameMatch ??= id;
-                if (trade.TradeAvailable)
-                    firstAvailableMerchantNameMatch ??= id;
-            }
-        }
-
-        return firstAvailableMerchantNameMatch ?? firstMerchantNameMatch ?? firstNameMatch;
-    }
-
-    private static bool NpcTradeNameMatches(JsonElement npc, IReadOnlyDictionary<string, string> renameMap, string normalizedQuery)
-    {
-        foreach (var candidate in EnumerateNpcTradeLookupNames(npc, renameMap))
-        {
-            if (NpcTradeLookupEquals(candidate, normalizedQuery))
-                return true;
-        }
-
-        return false;
-    }
-
-    private static IEnumerable<string> EnumerateNpcTradeLookupNames(JsonElement npc, IReadOnlyDictionary<string, string> renameMap)
-    {
-        yield return ResolveNpcDisplayName(npc, renameMap);
-        yield return GetStr(npc, "NPCName", "");
-        yield return GetStr(npc, "npcName", "");
-        yield return GetStr(npc, "name", "");
+        return nameMatches[0].NpcId;
     }
 
     private static bool NpcTradeLookupEquals(string candidate, string normalizedQuery) =>
@@ -160,6 +108,19 @@ public partial class ExplorerMode
 
     private static string NormalizeNpcTradeLookupToken(string value) =>
         value.Trim().Trim('"', '\'', '«', '»');
+
+    private async Task<(string locationId, string locationName)> ReadCurrentLocationIdentityAsync()
+    {
+        var catalog = await ReadMortalLocationPlayerCatalogAsync();
+        if (catalog.CurrentLocationId == null ||
+            !catalog.TryGetLocation(catalog.CurrentLocationId, out var current) ||
+            current == null)
+        {
+            return (string.Empty, string.Empty);
+        }
+
+        return (current.Identity, current.Label);
+    }
 
     private async Task ShowNpcTradePanel(string npcId)
     {
@@ -689,20 +650,6 @@ public partial class ExplorerMode
         }
 
         return node.ToJsonString();
-    }
-
-
-    private async Task<(string locationId, string locationName)> ReadCurrentLocationIdentityAsync()
-    {
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
-        if (doc == null)
-            return ("", "");
-
-        var root = doc.RootElement;
-        if (root.TryGetProperty("currentLocationData", out var wrapped) && wrapped.ValueKind == JsonValueKind.Object)
-            root = wrapped;
-
-        return (GetStr(root, "locationId", ""), GetStr(root, "name", ""));
     }
 
 

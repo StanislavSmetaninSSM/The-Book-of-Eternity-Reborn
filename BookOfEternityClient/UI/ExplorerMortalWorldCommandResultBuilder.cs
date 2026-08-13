@@ -2903,10 +2903,20 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static async Task<ExplorerCommandResult> BuildCurrentLocation(string command, FileSystemManager fs)
     {
-        var locationRead = await ReadJson(fs, "game_state/world/current_location.json");
+        var locationRead = await ReadJson(fs, MortalLocationMaterializationContract.CurrentLocationPath);
+        var mapRead = await ReadJson(fs, MortalLocationMaterializationContract.WorldMapPath);
+        var indexRead = await ReadJson(fs, MortalLocationIdentityState.StatePath);
         var timeRead = await ReadJson(fs, "game_state/world/world_time.json");
         var weatherRead = await ReadJson(fs, "game_state/world/weather.json");
-        var location = UnwrapCurrentLocationNode(locationRead.Node);
+        var catalog = MortalLocationPlayerProjection.Create(
+            mapRead.Node,
+            locationRead.Node,
+            indexRead.Node);
+        var location = catalog.CurrentLocationId != null &&
+                       catalog.TryGetLocation(catalog.CurrentLocationId, out var current) &&
+                       current != null
+            ? BuildLocationViewData(current, catalog)
+            : null;
         var weather = UnwrapWeatherNode(weatherRead.Node);
         var blocks = new List<UiBlock>();
         var sections = new List<UiEntityDossierSection>();
@@ -2957,6 +2967,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 "Особенности, контроль, угрозы и недавние события в локации.",
                 "map",
                 locationBlocks);
+
+            AddDossierSectionIfAny(
+                sections,
+                "exits",
+                "Выходы",
+                "Доступные направленные переходы из текущего места.",
+                "map",
+                BuildLocationExitCards(location["visibleExits"] as JsonArray));
         }
 
         var timeBlocks = new List<UiBlock>();
@@ -2994,6 +3012,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         AddReadWarning(blocks, "Где я", locationRead);
+        AddReadWarning(blocks, "Где я", mapRead);
+        AddReadWarning(blocks, "Где я", indexRead);
         AddReadWarning(blocks, "Где я", timeRead);
         AddReadWarning(blocks, "Где я", weatherRead);
 
@@ -3005,7 +3025,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var timeRead = await ReadJson(fs, "game_state/world/world_time.json");
         var weatherRead = await ReadJson(fs, "game_state/world/weather.json");
         var locationRead = await ReadJson(fs, "game_state/world/current_location.json");
-        var location = UnwrapCurrentLocationNode(locationRead.Node);
+        var mapRead = await ReadJson(fs, MortalLocationMaterializationContract.WorldMapPath);
+        var indexRead = await ReadJson(fs, MortalLocationIdentityState.StatePath);
+        var catalog = MortalLocationPlayerProjection.Create(
+            mapRead.Node,
+            locationRead.Node,
+            indexRead.Node);
+        var location = catalog.CurrentLocationId != null &&
+                       catalog.TryGetLocation(catalog.CurrentLocationId, out var current) &&
+                       current != null
+            ? current.Data
+            : null;
         var weather = UnwrapWeatherNode(weatherRead.Node);
         var blocks = new List<UiBlock>();
         var sections = new List<UiEntityDossierSection>();
@@ -3051,6 +3081,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReadWarning(blocks, "Время и погода", timeRead);
         AddReadWarning(blocks, "Время и погода", weatherRead);
         AddReadWarning(blocks, "Время и погода", locationRead);
+        AddReadWarning(blocks, "Время и погода", mapRead);
+        AddReadWarning(blocks, "Время и погода", indexRead);
 
         return Completed(command, blocks);
     }
@@ -3323,10 +3355,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string FormatLocationTextEntry(JsonNode? node)
     {
-        if (TryGetScalarString(node, out var scalar))
+        var projected = MortalItemPlayerProjection.CloneMortalMaterializationSemanticValue(node);
+        if (TryGetScalarString(projected, out var scalar))
             return scalar;
 
-        if (node is JsonObject obj)
+        if (projected is JsonObject obj)
             return FirstNonEmpty(
                 GetLocationNodeString(obj, "name", "title"),
                 GetLocationNodeString(obj, "description", "summary"));
@@ -3342,6 +3375,33 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static void AddLocationDifficultyFacts(List<UiKeyValueItem> items, JsonObject location)
     {
+        var currentSchemaProfiles = new[]
+        {
+            (Field: "internalDifficulty", Label: "для своих"),
+            (Field: "externalDifficulty", Label: "для чужих")
+        };
+        var foundCurrentSchema = false;
+        foreach (var (field, label) in currentSchemaProfiles)
+        {
+            if (location[field] is not JsonObject currentProfile)
+                continue;
+            foundCurrentSchema = true;
+            AddLocationFact(
+                items,
+                $"Сложность ({label})",
+                DescribeThreatDanger(GetLocationNodeString(currentProfile, "danger")));
+            AddLocationFact(
+                items,
+                $"Рекомендуемый уровень ({label})",
+                GetLocationNodeString(currentProfile, "recommendedLevel"));
+            AddLocationFact(
+                items,
+                $"Описание сложности ({label})",
+                GetLocationNodeString(currentProfile, "description"));
+        }
+        if (foundCurrentSchema)
+            return;
+
         var simple = GetLocationNodeString(location, "difficulty", "danger", "dangerLevel");
         if (!string.IsNullOrWhiteSpace(simple))
         {
@@ -3366,6 +3426,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string DescribeLocationDifficulty(JsonObject location)
     {
+        var currentSchema = location["externalDifficulty"] as JsonObject ??
+                            location["internalDifficulty"] as JsonObject;
+        if (currentSchema != null)
+        {
+            return JoinLocationDetails(
+                DescribeThreatDanger(GetLocationNodeString(currentSchema, "danger")),
+                GetLocationNodeString(currentSchema, "recommendedLevel") is { Length: > 0 } level
+                    ? $"рекомендуемый уровень {level}"
+                    : string.Empty,
+                GetLocationNodeString(currentSchema, "description"));
+        }
+
         var simple = GetLocationNodeString(location, "difficulty", "danger", "dangerLevel");
         if (!string.IsNullOrWhiteSpace(simple))
             return DescribeThreatDanger(simple);
@@ -3626,9 +3698,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IEnumerable<JsonReadResult> reads,
         IReadOnlyList<ReferenceEntrySnapshot> entries,
         ReferenceDetailRequest request,
-        QuestRewardPlayerProjection? questRewardProjection)
+        QuestRewardPlayerProjection? questRewardProjection,
+        bool exactSelector = false)
     {
         var blocks = new List<UiBlock>();
+        ReferenceEntrySnapshot? Resolve(string selector) => exactSelector
+            ? FindExactLocationEntry(entries, selector)
+            : FindReferenceEntry(entries, selector);
         if (request.Kind == ReferenceDetailKind.Unknown)
         {
             blocks.Add(Message(
@@ -3638,7 +3714,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
         else
         {
-            var entry = FindReferenceEntry(entries, request.Selector);
+            var entry = Resolve(request.Selector);
             blocks.Add(entry == null
                 ? Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage)
                 : BuildReferenceDetailPanel(commandToken, definition, entry, entries, questRewardProjection));
@@ -3659,7 +3735,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         if (request.Kind == ReferenceDetailKind.Detail &&
             string.Equals(definition.DetailTitlePrefix, "Локация", StringComparison.OrdinalIgnoreCase) &&
-            FindReferenceEntry(entries, request.Selector) is { } locationEntry &&
+            Resolve(request.Selector) is { } locationEntry &&
             HasLocationStorages(locationEntry.Node))
         {
             actions.Insert(0, BuildLocationStoragesAction(commandToken, locationEntry));
@@ -3775,7 +3851,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static JsonNode? BuildQuestVisibleRewardNode(JsonNode? rewardNode)
     {
-        var projected = MortalItemPlayerProjection.CloneSemanticValue(rewardNode);
+        var projected = MortalItemPlayerProjection.CloneMortalMaterializationSemanticValue(rewardNode);
         if (projected is not JsonObject reward)
             return projected;
 
@@ -3933,7 +4009,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             "map",
             descriptionBlocks);
 
-        var exits = BuildLocationExitCards(location["adjacencyMap"] as JsonArray);
+        var exits = BuildLocationExitCards(location["visibleExits"] as JsonArray);
         if (exits.Count > 0)
         {
             sections.Add(new UiEntityDossierSection
@@ -4956,6 +5032,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
             string.Equals(NormalizeReferenceSelector(entry.Title), NormalizeReferenceSelector(normalized), StringComparison.OrdinalIgnoreCase));
     }
 
+    private static ReferenceEntrySnapshot? FindExactLocationEntry(
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        string selector)
+    {
+        var normalized = NormalizeCombatSelector(selector);
+        return entries.FirstOrDefault(entry =>
+            string.Equals(entry.Selector, normalized, StringComparison.Ordinal));
+    }
+
     private static ReferenceDetailRequest ParseReferenceDetailRequest(
         string remainder,
         ReferenceCommandDefinition definition)
@@ -5536,82 +5621,77 @@ public static class ExplorerMortalWorldCommandResultBuilder
             NotFoundMessage: "Такая локация не отмечена в текущих записях.",
             Specs: []);
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
-        var currentRead = await ReadJson(fs, "game_state/world/current_location.json");
-        var mapRead = await ReadJson(fs, "game_state/world/world_map.json");
-        var rows = new List<UiTableRow>();
+        var currentRead = await ReadJson(fs, MortalLocationMaterializationContract.CurrentLocationPath);
+        var mapRead = await ReadJson(fs, MortalLocationMaterializationContract.WorldMapPath);
+        var indexRead = await ReadJson(fs, MortalLocationIdentityState.StatePath);
+        var catalog = MortalLocationPlayerProjection.Create(
+            mapRead.Node,
+            currentRead.Node,
+            indexRead.Node);
         var entries = new List<ReferenceEntrySnapshot>();
-        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        if (UnwrapCurrentLocationNode(currentRead.Node) is { } current)
+        foreach (var location in catalog.Locations
+                     .OrderByDescending(static location => location.IsCurrent))
         {
-            AddLocationRow(rows, entries, seen, commandToken, definition, "Текущая", current, DescribeCurrentLocation(current));
-
-            if (current["adjacencyMap"] is JsonArray adjacency)
-            {
-                foreach (var entry in adjacency.OfType<JsonObject>())
-                {
-                    var name = FirstNonEmpty(
-                        GetLocationNodeString(entry, "name", "targetLocationName"),
-                        GetLocationNodeString(entry, "targetLocationId"),
-                        "Неизвестная локация");
-                    var details = JoinLocationDetails(
-                        GetLocationNodeString(entry, "direction"),
-                        GetLocationNodeString(entry, "distance"),
-                        DescribeLinkState(GetLocationNodeString(entry, "linkState")));
-                    var key = FirstNonEmpty(GetLocationNodeString(entry, "targetLocationId"), name);
-                    if (seen.Add($"adjacent:{key}"))
-                    {
-                        var selector = NormalizeCombatSelector(FirstNonEmpty(GetLocationNodeString(entry, "targetLocationId"), NormalizeReferenceSelector(name)));
-                        rows.Add(new UiTableRow
-                        {
-                            Cells =
-                            [
-                                "Рядом",
-                                name,
-                                EmptyFallback(details),
-                                BuildReferenceDetailCommand(commandToken, definition, selector)
-                            ]
-                        });
-                        entries.Add(new ReferenceEntrySnapshot(
-                            entries.Count + 1,
-                            selector,
-                            name,
-                            "Рядом",
-                            details,
-                            entry));
-                    }
-                }
-            }
+            var viewData = BuildLocationViewData(location, catalog);
+            var section = location.IsCurrent
+                ? "Текущая"
+                : location.DiscoveryTier == "rumored"
+                    ? "Слух"
+                    : "Открыта";
+            var summary = location.DiscoveryTier == "rumored"
+                ? location.RumorSummary ?? "Об этом месте ходят смутные слухи."
+                : location.IsCurrent
+                    ? DescribeCurrentLocation(viewData)
+                    : DescribeWorldMapLocation(viewData);
+            entries.Add(new ReferenceEntrySnapshot(
+                entries.Count + 1,
+                location.Identity,
+                location.Label,
+                section,
+                summary,
+                viewData));
         }
 
-        foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "newLocations"))
-            AddLocationRow(rows, entries, seen, commandToken, definition, "Открыта", location, DescribeWorldMapLocation(location));
-
-        foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "locationUpdates"))
-            AddLocationRow(rows, entries, seen, commandToken, definition, "Обновлена", location, DescribeWorldMapLocation(location));
+        var actionableEntries = entries
+            .Where(entry => !string.Equals(entry.Section, "Слух", StringComparison.Ordinal))
+            .ToArray();
 
         var remainder = ExtractCommandRemainder(command);
         if (TryParseLocationStoragesRequest(remainder, out var storageSelector))
-            return BuildLocationStoragesDetail(command, commandToken, definition, [currentRead, mapRead], entries, storageSelector);
+            return BuildLocationStoragesDetail(
+                command,
+                commandToken,
+                definition,
+                [currentRead, mapRead, indexRead],
+                actionableEntries,
+                storageSelector);
 
         var request = ParseReferenceDetailRequest(remainder, definition);
         if (request.Kind != ReferenceDetailKind.Overview)
-            return BuildReferenceDetail(command, commandToken, definition, [currentRead, mapRead], entries, request, null);
+            return BuildReferenceDetail(
+                command,
+                commandToken,
+                definition,
+                [currentRead, mapRead, indexRead],
+                actionableEntries,
+                request,
+                null,
+                exactSelector: true);
 
         var blocks = new List<UiBlock>();
-        if (rows.Count > 0)
+        if (entries.Count > 0)
         {
             blocks.Add(new UiEntityDossierBlock
             {
                 EntityType = "locations",
                 Title = title,
                 Subtitle = "Обзор мест",
-                Summary = DescribeInventoryCount(rows.Count, "локация", "локации", "локаций"),
+                Summary = DescribeInventoryCount(entries.Count, "локация", "локации", "локаций"),
                 Badges =
                 [
                     new UiEntityBadge
                     {
-                        Label = DescribeInventoryCount(rows.Count, "локация", "локации", "локаций"),
+                        Label = DescribeInventoryCount(entries.Count, "локация", "локации", "локаций"),
                         Tone = UiTone.Accent,
                         Icon = "map"
                     }
@@ -5636,8 +5716,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Локации пока не обнаружены."));
         }
 
-        AddReferenceReadWarnings(blocks, title, [currentRead, mapRead]);
-        return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
+        AddReferenceReadWarnings(blocks, title, [currentRead, mapRead, indexRead]);
+        return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, actionableEntries));
     }
 
     private static UiEntityDossierBlock BuildLocationOverviewCard(ReferenceEntrySnapshot entry)
@@ -5648,6 +5728,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var description = FirstNonEmpty(
             GetLocationNodeString(location, "description", "shortDescription"),
             IsAdjacentLocationSection(section) ? GetLocationNodeString(location, "shortDescription") : string.Empty,
+            entry.Summary,
             "Сведения о месте пока не уточнены.");
         var facts = new List<UiKeyValueItem>
         {
@@ -5691,6 +5772,28 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
+    private static JsonObject BuildLocationViewData(
+        MortalLocationPlayerLocation location,
+        MortalLocationPlayerCatalog catalog)
+    {
+        var data = location.Data.DeepClone().AsObject();
+        var exits = new JsonArray();
+        foreach (var link in catalog.Links.Where(link =>
+                     string.Equals(link.SourceIdentity, location.Identity, StringComparison.Ordinal)))
+        {
+            if (!catalog.TryGetLocation(link.TargetIdentity, out var target) || target == null)
+                continue;
+
+            var exit = link.Data.DeepClone().AsObject();
+            exit["targetLocationName"] = target.Label;
+            exits.Add(exit);
+        }
+
+        if (exits.Count > 0)
+            data["visibleExits"] = exits;
+        return data;
+    }
+
     private static bool IsAdjacentLocationSection(string section) =>
         section.Contains("рядом", StringComparison.OrdinalIgnoreCase);
 
@@ -5703,7 +5806,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string selector)
     {
         var blocks = new List<UiBlock>();
-        var entry = FindReferenceEntry(entries, selector);
+        var entry = FindExactLocationEntry(entries, selector);
         if (entry == null)
         {
             blocks.Add(Message(UiNotificationSeverity.Warning, definition.NotFoundTitle, definition.NotFoundMessage));
@@ -5815,24 +5918,29 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var exit in exits.OfType<JsonObject>())
         {
             var name = FirstNonEmpty(
-                GetLocationNodeString(exit, "name", "targetLocationName"),
-                GetLocationNodeString(exit, "targetLocationId"),
+                GetLocationNodeString(exit, "targetLocationName"),
+                GetLocationNodeString(exit, "name"),
                 "Выход");
+            var access = exit["access"] as JsonObject;
+            var accessState = GetLocationNodeString(access, "state");
             var facts = new List<UiKeyValueItem>();
-            AddLocationFact(facts, "Описание", GetLocationNodeString(exit, "shortDescription", "description"));
-            AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(exit, "direction")));
+            AddLocationFact(facts, "Описание", GetLocationNodeString(exit, "description", "shortDescription"));
+            AddLocationFact(facts, "Направление", TranslateLocationDirection(GetLocationNodeString(exit, "directionLabel", "direction")));
             AddLocationFact(facts, "Тип перехода", TranslateLocationLinkType(GetLocationNodeString(exit, "linkType", "type")));
             AddLocationFact(facts, "Состояние", FirstNonEmpty(
-                DescribeLinkState(GetLocationNodeString(exit, "linkState")),
+                DescribeLinkState(accessState),
                 "открыт"));
-            AddLocationFact(facts, "Куда ведёт", GetLocationNodeString(exit, "targetLocationName", "targetLocationId"));
+            AddLocationFact(facts, "Куда ведёт", GetLocationNodeString(exit, "targetLocationName"));
+            AddLocationFact(facts, "Причина ограничения", GetLocationNodeString(access, "reason"));
 
             blocks.Add(new UiEntityDossierBlock
             {
                 EntityType = "location-exit",
                 Title = name,
                 Subtitle = "Выход",
-                Summary = FirstNonEmpty(GetLocationNodeString(exit, "shortDescription", "description"), DescribeLinkState(GetLocationNodeString(exit, "linkState"))),
+                Summary = FirstNonEmpty(
+                    GetLocationNodeString(exit, "description", "shortDescription"),
+                    DescribeLinkState(accessState)),
                 Badges =
                 [
                     new UiEntityBadge
@@ -5914,7 +6022,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .SelectMany(static storage => storage["contents"] is JsonArray contents
                 ? contents.OfType<JsonObject>()
                 : [])
-            .Where(static item => MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
             .Select(static item => FirstNonEmpty(
                 GetLocationNodeString(item, "name", "itemName", "displayName"),
                 "Предмет"))
@@ -5988,9 +6095,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var blocks = new List<UiBlock>();
         foreach (var item in contents.OfType<JsonObject>())
         {
-            if (!MortalItemMaterializationContract.TryReadAcceptedIdentity(item, out _))
-                continue;
-
             var name = FirstNonEmpty(GetLocationNodeString(item, "name", "itemName", "displayName"), "Предмет");
             var facts = new List<UiKeyValueItem>();
             AddLocationFact(facts, "Тип", GetLocationNodeString(item, "type"));

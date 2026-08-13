@@ -54,9 +54,12 @@ The GM does not edit the scaffold. It submits the complete visited start through
         "storageId": "storage_inn_guest_chest",
         "name": "Гостевой сундук",
         "description": "Запираемый сундук у комнаты героя.",
-        "ownerActorId": null,
-        "capacity": { "slots": 12 },
-        "access": { "state": "open", "reason": "Сундук выделен герою." },
+        "image_prompt": "A sturdy dark fantasy guest chest beside an inn room, no text",
+        "capacity": 12,
+        "volume": 3.5,
+        "owner": null,
+        "authorizedUsers": [],
+        "hasFullAccess": true,
         "contents": []
       }
     ],
@@ -390,7 +393,14 @@ all six commands against distinct child identities:
         "update": {
           "newName": "Укреплённый дорожный сундук",
           "newDescription": "Сундук обит железом после ночного налёта.",
-          "newCapacity": 12
+          "newCapacity": 12,
+          "newOwner": {
+            "ownerType": "Faction",
+            "ownerId": "faction_road_wardens",
+            "ownerName": "Дорожная стража"
+          },
+          "newAuthorizedUsers": [],
+          "newHasFullAccess": false
         }
       }
     ],

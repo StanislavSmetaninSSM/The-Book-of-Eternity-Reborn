@@ -420,14 +420,21 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
 
     private async Task SeedMortalLocationAsync()
     {
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "currentLocationData": {
-            "locationId": "loc_training_yard",
-            "name": "Тренировочный двор"
-          }
-        }
-        """);
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_training_yard",
+            "Тренировочный двор",
+            "visited",
+            x: 4,
+            y: 2);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
     }
 
     private static string CollectText(ExplorerCommandResult result)

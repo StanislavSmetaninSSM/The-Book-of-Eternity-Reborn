@@ -553,9 +553,14 @@ game_session/
   `access.state=open` with no requirements. Reverse-only, hidden, conditional,
   and sealed links do not authorize movement.
 - `locationUpdates[]` cannot author `eventDescriptions` or `activeThreats`.
+  Every raw new-location object also keeps `activeThreats` empty; a same-turn
+  threat is a separate `threatsToAdd[]` command with null `threatId` and the
+  exact new-location `initialTargetLocationId`, so the client assigns identity.
   Storage metadata changes use only exact `storageUpdates[]`/
   `storagesToRemove[]`; non-empty storage removal fails until item lifecycle
-  authority clears its contents. Threat additions receive client-owned
+  authority clears its contents. Owner changes include `newOwner`, the complete
+  `newAuthorizedUsers`, and synchronized `newHasFullAccess`; authorization-list
+  changes also include the synchronized access flag. Threat additions receive client-owned
   permanent IDs, partial updates deep-merge, removals bind exact IDs, and
   `completeThreatActivities[]` archives the activity and clears it atomically.
 - Materialization section dispositions describe creation-time evidence. Later

@@ -462,6 +462,42 @@ public sealed partial class MortalLocationMaterializationValidationTests
         Assert.NotEmpty(FindLocationIndexEntry(plan.FinalIdentityIndex, accepted.TargetLocationId)["transitions"]!.AsArray());
     }
 
+    [Fact]
+    public void Lifecycle_NarrowLocationUpdateRejectsNestedClientOwnedCustomStateFields()
+    {
+        var accepted = CreateAcceptedDirectedTopology();
+        var updates = new JsonObject
+        {
+            ["locationUpdates"] = new JsonArray(new JsonObject
+            {
+                ["locationId"] = accepted.TargetLocationId,
+                ["customStates"] = new JsonArray(new JsonObject
+                {
+                    ["kind"] = "ritual_trace",
+                    ["details"] = new JsonObject
+                    {
+                        ["requestId"] = "request_forged_nested_custom_state"
+                    }
+                })
+            })
+        };
+
+        var result = Build(
+            accepted.FinalWorldMap,
+            accepted.FinalCurrentLocation,
+            accepted.FinalIdentityIndex,
+            rawWorldMapUpdates: updates,
+            turn: 43);
+
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_custom_state_authority_forbidden" &&
+            issue.FilePath.EndsWith(
+                ".customStates[0].details.requestId",
+                StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("coordinates")]
     [InlineData("parentLocationId")]

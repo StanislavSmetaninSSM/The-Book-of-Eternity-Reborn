@@ -2,6 +2,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -222,6 +223,38 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
             title.Contains("Торговля с НПС", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData("/торговля")]
+    [InlineData("/торговля_нпс Марек")]
+    [Trait("Category", "ConsoleNpcTrade")]
+    public async Task TryProcessCommand_ReceiptlessCurrentLocationDoesNotExposeOrSelectMerchant(string command)
+    {
+        await SeedNpcTradeStateAsync();
+        var current = JsonNode.Parse((await _fs.ReadFileAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath))!)!.AsObject();
+        current.Remove("materializationReceipt");
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            current.ToJsonString());
+        await _stateManager.RefreshGameStateAsync();
+        var console = new TestExplorerConsole();
+        var explorer = new ExplorerMode(
+            _stateManager,
+            _fs,
+            new LocalizationManager(),
+            npcTradeService: new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance),
+            console: console);
+
+        var result = await explorer.TryProcessCommand(command);
+
+        Assert.Equal(string.Empty, result);
+        Assert.DoesNotContain(console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Марек", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(console.SelectionChoicesHistory, entry =>
+            entry.Choices.Any(choice => choice.Contains("Купить товары", StringComparison.OrdinalIgnoreCase)));
+        Assert.False(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
+    }
+
     public void Dispose()
     {
         try
@@ -264,17 +297,12 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market_square",
-          "name": "Рыночная площадь"
-        }
-        """);
+        await SeedCanonicalMarketLocationAsync();
 
         await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
         {
           "items": [],
-          "equipment": {}
+          "equippedItems": {}
         }
         """);
 
@@ -490,17 +518,12 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market_square",
-          "name": "Рыночная площадь"
-        }
-        """);
+        await SeedCanonicalMarketLocationAsync();
 
         await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
         {
           "items": [],
-          "equipment": {}
+          "equippedItems": {}
         }
         """);
 
@@ -523,5 +546,21 @@ public sealed class ConsoleNpcTradeCommandTests : IDisposable
           ]
         }
         """);
+    }
+
+    private async Task SeedCanonicalMarketLocationAsync()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_market_square",
+            "Рыночная площадь");
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
     }
 }

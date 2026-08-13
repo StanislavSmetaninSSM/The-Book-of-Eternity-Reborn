@@ -10,6 +10,93 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalLocationMaterializationValidationTests
 {
+    [Fact]
+    public void StorageUpdate_FactionOwnerWithoutExactAuthorityFailsClosed()
+    {
+        var baseline = CreateGovernedCommandBaseline();
+
+        var result = Build(
+            baseline.WorldMap,
+            baseline.CurrentLocation,
+            baseline.IdentityIndex,
+            rawWorldMapUpdates: CreateGovernedCommand("storage_update", baseline.LocationId),
+            turn: 43);
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_storage_owner_target_unknown");
+    }
+
+    [Fact]
+    public void NewLocation_EmbeddedThreatWithClaimedPermanentIdentityFailsClosed()
+    {
+        var raw = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        raw["activeThreats"] = new JsonArray(
+            CreateThreat("threat_forged_embedded", "Встроенная угроза", active: true));
+        SetSectionPopulated(raw, "activeThreats");
+
+        var result = Build(rawWorldMapUpdates: new JsonObject
+        {
+            ["newLocations"] = new JsonArray(raw),
+            ["newLinks"] = new JsonArray()
+        });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_embedded_threat_authority_forbidden");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void FactionOwnedStorage_ExactSameTurnFactionAuthorityIsAccepted(bool viaStorageUpdate)
+    {
+        var factionRoot = CreateSameTurnFactionAuthorityRoot();
+        if (viaStorageUpdate)
+        {
+            var baseline = CreateGovernedCommandBaseline();
+            var updates = CreateGovernedCommand("storage_update", baseline.LocationId);
+            updates["storageUpdates"]![0]!["update"]!["newOwner"] = new JsonObject
+            {
+                ["ownerType"] = "Faction",
+                ["ownerId"] = "faction_same_turn_wardens",
+                ["ownerName"] = "Стража этого хода"
+            };
+
+            var updateResult = Build(
+                baseline.WorldMap,
+                baseline.CurrentLocation,
+                baseline.IdentityIndex,
+                rawWorldMapUpdates: updates,
+                rawFactionCore: factionRoot,
+                turn: 43);
+
+            Assert.True(updateResult.Success, string.Join(Environment.NewLine, updateResult.Issues));
+            return;
+        }
+
+        var raw = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        raw["locationStorages"] = new JsonArray(
+            CreateStorage("storage_same_turn_owner", "Сундук новой фракции"));
+        raw["locationStorages"]![0]!["owner"] = new JsonObject
+        {
+            ["ownerType"] = "Faction",
+            ["ownerId"] = "faction_same_turn_wardens",
+            ["ownerName"] = "Стража этого хода"
+        };
+        SetSectionPopulated(raw, "storageMetadata");
+
+        var creationResult = Build(
+            rawWorldMapUpdates: new JsonObject
+            {
+                ["newLocations"] = new JsonArray(raw),
+                ["newLinks"] = new JsonArray()
+            },
+            rawFactionCore: factionRoot);
+
+        Assert.True(creationResult.Success, string.Join(Environment.NewLine, creationResult.Issues));
+    }
+
     [Theory]
     [InlineData("storage_update")]
     [InlineData("storage_remove")]
@@ -25,6 +112,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
             baseline.CurrentLocation,
             baseline.IdentityIndex,
             rawWorldMapUpdates: CreateGovernedCommand(command, baseline.LocationId),
+            rawFactionCore: CreateFactionAuthorityRoot(),
             turn: 43);
 
         Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues.Select(issue => issue.Message)));
@@ -43,10 +131,14 @@ public sealed partial class MortalLocationMaterializationValidationTests
                 Assert.Equal(12, updatedStorage["capacity"]!.GetValue<int>());
                 Assert.Equal("Faction", updatedStorage["owner"]!["ownerType"]!.GetValue<string>());
                 Assert.Equal("faction_road_wardens", updatedStorage["owner"]!["ownerId"]!.GetValue<string>());
+                Assert.Empty(updatedStorage["authorizedUsers"]!.AsArray());
+                Assert.False(updatedStorage["hasFullAccess"]!.GetValue<bool>());
                 var currentStorage = FindStorage(current, "storage_update");
                 Assert.Equal("Обновлённый сундук", currentStorage["name"]!.GetValue<string>());
                 Assert.Equal(12, currentStorage["capacity"]!.GetValue<int>());
                 Assert.Equal("faction_road_wardens", currentStorage["owner"]!["ownerId"]!.GetValue<string>());
+                Assert.Empty(currentStorage["authorizedUsers"]!.AsArray());
+                Assert.False(currentStorage["hasFullAccess"]!.GetValue<bool>());
                 Assert.Equal("ITEM_CONTENT_MARKER", currentStorage["contents"]![0]!["marker"]!.GetValue<string>());
                 break;
             case "storage_remove":
@@ -114,6 +206,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
             baseline.CurrentLocation,
             baseline.IdentityIndex,
             rawWorldMapUpdates: updates,
+            rawFactionCore: CreateFactionAuthorityRoot(),
             turn: 43);
 
         Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues.Select(issue => issue.Message)));
@@ -218,6 +311,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
             baseline.CurrentLocation,
             baseline.IdentityIndex,
             rawWorldMapUpdates: updates,
+            rawFactionCore: CreateFactionAuthorityRoot(),
             turn: 43);
 
         Assert.False(result.Success);
@@ -225,6 +319,50 @@ public sealed partial class MortalLocationMaterializationValidationTests
             issue.FilePath.StartsWith(
                 "worldMapUpdates.threatsToUpdate[0].threatUpdate.result",
                 StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void GovernedCommands_OwnerChangeWithoutSynchronizedAccessSnapshotFailsClosed()
+    {
+        var baseline = CreateGovernedCommandBaseline();
+        var updates = CreateGovernedCommand("storage_update", baseline.LocationId);
+        var patch = updates["storageUpdates"]![0]!["update"]!.AsObject();
+        patch.Remove("newAuthorizedUsers");
+        patch.Remove("newHasFullAccess");
+
+        var result = Build(
+            baseline.WorldMap,
+            baseline.CurrentLocation,
+            baseline.IdentityIndex,
+            rawWorldMapUpdates: updates,
+            turn: 43);
+
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_storage_update_access_incomplete");
+    }
+
+    [Fact]
+    public void GovernedCommands_AuthorizedUsersChangeWithoutSynchronizedAccessFlagFailsClosed()
+    {
+        var baseline = CreateGovernedCommandBaseline();
+        var updates = CreateGovernedCommand("storage_update", baseline.LocationId);
+        var patch = updates["storageUpdates"]![0]!["update"]!.AsObject();
+        patch.Remove("newOwner");
+        patch.Remove("newHasFullAccess");
+
+        var result = Build(
+            baseline.WorldMap,
+            baseline.CurrentLocation,
+            baseline.IdentityIndex,
+            rawWorldMapUpdates: updates,
+            turn: 43);
+
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_storage_update_access_incomplete");
     }
 
     [Theory]
@@ -289,6 +427,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
             baseline.CurrentLocation,
             baseline.IdentityIndex,
             rawWorldMapUpdates: updates,
+            rawFactionCore: CreateFactionAuthorityRoot(),
             turn: 43);
 
         Assert.False(result.Success);
@@ -410,6 +549,9 @@ public sealed partial class MortalLocationMaterializationValidationTests
                 ["turnNumber"] = 43,
                 ["playerAction"] = "Применить атомарные команды локации."
             });
+        await context.WriteJsonAsync(
+            FactionCoreChangesContract.FactionCorePath,
+            CreateFactionAuthorityRoot());
 
         var updates = new JsonObject
         {
@@ -516,7 +658,9 @@ public sealed partial class MortalLocationMaterializationValidationTests
                         ["ownerType"] = "Faction",
                         ["ownerId"] = "faction_road_wardens",
                         ["ownerName"] = "Дорожная стража"
-                    }
+                    },
+                    ["newAuthorizedUsers"] = new JsonArray(),
+                    ["newHasFullAccess"] = false
                 }
             })
         },
@@ -580,9 +724,46 @@ public sealed partial class MortalLocationMaterializationValidationTests
             ["storageId"] = storageId,
             ["name"] = name,
             ["description"] = "Тестовое хранилище.",
+            ["image_prompt"] = "A sturdy dark fantasy location storage, no text",
             ["capacity"] = 8,
+            ["volume"] = 40.0,
             ["owner"] = null,
-            ["contents"] = new JsonArray()
+            ["authorizedUsers"] = new JsonArray(),
+            ["hasFullAccess"] = true
+        };
+
+    private static JsonObject CreateFactionAuthorityRoot() =>
+        new()
+        {
+            ["factions"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_road_wardens",
+                ["name"] = "Дорожная стража",
+                [FactionMaterializationContract.PropertyName] = new JsonObject
+                {
+                    ["factionType"] = "mortal_faction",
+                    ["factionId"] = "faction_road_wardens",
+                    ["state"] = "complete"
+                }
+            })
+        };
+
+    private static JsonObject CreateSameTurnFactionAuthorityRoot() =>
+        new()
+        {
+            ["factionDataChanges"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = null,
+                ["initialId"] = "faction_same_turn_wardens",
+                ["isNewFaction"] = true,
+                ["name"] = "Стража этого хода",
+                [FactionMaterializationContract.PropertyName] = new JsonObject
+                {
+                    ["factionType"] = "mortal_faction",
+                    ["factionId"] = "faction_same_turn_wardens",
+                    ["state"] = "complete"
+                }
+            })
         };
 
     private static JsonObject CreateThreat(string? threatId, string name, bool active) =>

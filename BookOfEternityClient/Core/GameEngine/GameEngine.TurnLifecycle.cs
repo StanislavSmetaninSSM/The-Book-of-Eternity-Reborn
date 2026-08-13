@@ -92,7 +92,7 @@ public partial class GameEngine
                 ClearTransientOutputFiles();
                 await RollbackRejectedAcceptedTurnAsync(
                     rollbackSnapshot,
-                    "[yellow]↩ Ответ GM отклонён проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                    "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                 await CleanupPendingTurnSnapshotAsync();
                 return false;
             }
@@ -112,7 +112,7 @@ public partial class GameEngine
                 _fs.DeleteFile("ready/turn_error.json");
                 await RollbackRejectedAcceptedTurnAsync(
                     rollbackSnapshot,
-                    "[yellow]↩ Материализованное состояние после хода отклонено проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                    "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                 await CleanupPendingTurnSnapshotAsync();
                 return false;
             }
@@ -808,7 +808,7 @@ public partial class GameEngine
                         _fs.DeleteFile("ready/turn_complete.json");
                         await RollbackRejectedAcceptedTurnAsync(
                             rollbackSnapshot,
-                            "[yellow]↩ Поздний ответ GM отклонён после материализации. Состояние откатилось к последней стабильной версии.[/]");
+                            "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                         await CleanupPendingTurnSnapshotAsync();
                         return true;
                     }
@@ -875,7 +875,7 @@ public partial class GameEngine
                     _fs.DeleteFile("ready/turn_complete.json");
                     await RollbackRejectedAcceptedTurnAsync(
                         rollbackSnapshot,
-                        "[yellow]↩ Поздний ответ GM отклонён проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                        "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                     await CleanupPendingTurnSnapshotAsync();
                 }
             }
@@ -1076,8 +1076,8 @@ public partial class GameEngine
             catch (Exception ex)
             {
                 LogError(ex);
-                AnsiConsole.MarkupLine($"\n[red]❌ Ошибка в игровом цикле: {GameInterface.EscapeMarkup(ex.Message)}[/]");
-                AnsiConsole.MarkupLine("[dim]Ошибка сохранена в game_session/error_log.txt. Данные не потеряны.[/]");
+                AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
+                AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
                 RecordGameLoopErrorObservation(ex);
                 _inputSource.ReadKey(intercept: true);
@@ -1300,7 +1300,7 @@ public partial class GameEngine
             _fs.DeleteFile("input/turn_request.json");
             await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
-                "[yellow]↩ Ответ GM отклонён проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
             await CleanupPendingTurnSnapshotAsync();
             return;
         }
@@ -1323,7 +1323,7 @@ public partial class GameEngine
             _fs.DeleteFile("input/turn_request.json");
             await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
-                "[yellow]↩ Материализованное состояние после хода отклонено проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
             await CleanupPendingTurnSnapshotAsync();
             return;
         }
@@ -2131,7 +2131,7 @@ public partial class GameEngine
                     _fs.DeleteFile("ready/turn_complete.json");
                     await RollbackRejectedAcceptedTurnAsync(
                         BuildValidatedRollbackSnapshot(snapshotContext),
-                        "[yellow]↩ Оценка жизни отклонена проверкой контракта. Состояние откатилось к последней стабильной версии.[/]");
+                        "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
                     await CleanupPendingTurnSnapshotAsync();
                     return true;
                 }

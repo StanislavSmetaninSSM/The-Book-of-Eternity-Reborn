@@ -800,18 +800,18 @@ public sealed class LocalWebUiHostTests : IDisposable
             string.IsNullOrWhiteSpace(
                 root["qte"]!["error"]!.GetValue<string>()));
         Assert.Equal(
-            "qte-error",
+            "blocked",
             root["turnState"]!["state"]!.GetValue<string>());
         Assert.False(
             root["turnState"]!["canStartBrowserWrite"]!.GetValue<bool>());
         Assert.Equal(
-            "validation-failed",
+            "blocked",
             root["turnState"]!["phase"]!.GetValue<string>());
         Assert.Equal(
             "error",
             root["turnState"]!["severity"]!.GetValue<string>());
         Assert.Equal(
-            "qte-error",
+            "blocked",
             root["actionComposer"]!["mode"]!.GetValue<string>());
         Assert.False(
             root["actionComposer"]!["canSubmit"]!.GetValue<bool>());
@@ -877,8 +877,8 @@ public sealed class LocalWebUiHostTests : IDisposable
         { "error": "GM timeout" }
         """);
         var errorRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
-        Assert.Equal("gm-turn-error", errorRoot["turnState"]!["state"]!.GetValue<string>());
-        Assert.Contains("ошиб", errorRoot["turnState"]!["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("blocked", errorRoot["turnState"]!["state"]!.GetValue<string>());
+        Assert.Equal("blocked", errorRoot["turnState"]!["phase"]!.GetValue<string>());
         Assert.False(errorRoot["actionComposer"]!["canSubmit"]!.GetValue<bool>());
     }
 
@@ -894,10 +894,12 @@ public sealed class LocalWebUiHostTests : IDisposable
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
 
-        Assert.Equal("validation-errors", root["turnState"]!["state"]!.GetValue<string>());
-        Assert.True(root["turnState"]!["validationLabel"]!.GetValue<string>().Contains("ошиб", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("blocked", root["turnState"]!["state"]!.GetValue<string>());
+        Assert.Equal("blocked", root["turnState"]!["phase"]!.GetValue<string>());
+        Assert.False(root["turnState"]!.AsObject().ContainsKey("validationState"));
+        Assert.False(root["turnState"]!.AsObject().ContainsKey("validationLabel"));
         Assert.False(root["actionComposer"]!["canSubmit"]!.GetValue<bool>());
-        Assert.Equal("repair-required", root["actionComposer"]!["mode"]!.GetValue<string>());
+        Assert.Equal("blocked", root["actionComposer"]!["mode"]!.GetValue<string>());
     }
 
     [Fact]
@@ -918,7 +920,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Equal("waiting-gm", waitingRoot["turnState"]!["phase"]!.GetValue<string>());
         Assert.Equal("Ожидаем ответ ГМа", waitingRoot["turnState"]!["phaseLabel"]!.GetValue<string>());
         Assert.Equal("warning", waitingRoot["turnState"]!["severity"]!.GetValue<string>());
-        Assert.Contains("ГМ", waitingRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("дождитесь", waitingRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Contains(
             waitingRoot["turnState"]!["recommendedActions"]!.AsArray(),
             action => action!["id"]!.GetValue<string>() == "wait-for-gm" && action!["surface"]!.GetValue<string>() == "player-default");
@@ -931,20 +933,28 @@ public sealed class LocalWebUiHostTests : IDisposable
         var readyRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
         Assert.Equal("ready", readyRoot["turnState"]!["phase"]!.GetValue<string>());
         Assert.Equal("success", readyRoot["turnState"]!["severity"]!.GetValue<string>());
-        Assert.Contains("примите", readyRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("дождитесь", readyRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
 
         File.Delete(Path.Combine(_rootPath, "game_session", "ready", "turn_complete.json"));
         WriteSessionFile("ready/turn_error.json", "{ \"error\": \"GM timeout\" }");
         var errorRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
-        Assert.Equal("error-restored", errorRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("blocked", errorRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("blocked", errorRoot["turnState"]!["state"]!.GetValue<string>());
         Assert.Equal("error", errorRoot["turnState"]!["severity"]!.GetValue<string>());
-        Assert.Contains("починку", errorRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
 
         WriteSessionFile("game_state/control/pending_turn_snapshot.json", "{}");
         var repairRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
-        Assert.Equal("repair-required", repairRoot["turnState"]!["phase"]!.GetValue<string>());
-        Assert.Equal("pending-turn-repair", repairRoot["turnState"]!["state"]!.GetValue<string>());
-        Assert.Contains("починку", repairRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("blocked", repairRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("blocked", repairRoot["turnState"]!["state"]!.GetValue<string>());
+        var playerTurnPayload = new JsonObject
+        {
+            ["turnState"] = repairRoot["turnState"]!.DeepClone(),
+            ["actionComposer"] = repairRoot["actionComposer"]!.DeepClone()
+        }.ToJsonString();
+        foreach (var forbidden in new[] { "validation", "repair", "rollback", "snapshot", "почин", "проверк", "откат" })
+        {
+            Assert.DoesNotContain(forbidden, playerTurnPayload, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     [Fact]
@@ -958,7 +968,7 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var validationRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
-        Assert.Equal("validation-failed", validationRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("blocked", validationRoot["turnState"]!["phase"]!.GetValue<string>());
         Assert.Equal("error", validationRoot["turnState"]!["severity"]!.GetValue<string>());
         Assert.DoesNotContain("game_state/meta/soul_state.json", validationRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
 

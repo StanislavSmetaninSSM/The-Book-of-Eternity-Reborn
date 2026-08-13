@@ -52,6 +52,8 @@ public partial class ValidationService
             MortalLocationMaterializationContract.CurrentLocationPath);
         var mapRoot = await ReadOptionalLocationObjectAsync(
             MortalLocationMaterializationContract.WorldMapPath);
+        var indexRoot = await ReadOptionalLocationObjectAsync(
+            MortalLocationIdentityState.StatePath);
         var rawNpcCore = await ReadOptionalLocationObjectAsync(
             NpcCoreChangesContract.NpcCorePath);
         var rawFactionCore = await ReadOptionalLocationObjectAsync(
@@ -115,6 +117,39 @@ public partial class ValidationService
         var preScaffoldJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
             MortalBootstrapLocationScaffold.StatePath);
+        ValidateRawMortalLocationCanonicalAuthority(
+            MortalLocationMaterializationContract.WorldMapPath,
+            preMap,
+            mapRoot,
+            lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.WorldMapPath),
+            _fs.FileExists(MortalLocationMaterializationContract.WorldMapPath),
+            "worldMapUpdates",
+            "mortal_location:map",
+            "mortal_location_canonical_state_client_owned_mutation",
+            allowItemOwnedStorageContents: false,
+            issues);
+        ValidateRawMortalLocationCanonicalAuthority(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            preCurrent,
+            currentRoot,
+            lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.CurrentLocationPath),
+            _fs.FileExists(MortalLocationMaterializationContract.CurrentLocationPath),
+            "currentLocationData",
+            "mortal_location:current",
+            "mortal_location_canonical_state_client_owned_mutation",
+            allowItemOwnedStorageContents: true,
+            issues);
+        ValidateRawMortalLocationCanonicalAuthority(
+            MortalLocationIdentityState.StatePath,
+            preIndex,
+            indexRoot,
+            lookup.Manifest.Files.ContainsKey(MortalLocationIdentityState.StatePath),
+            _fs.FileExists(MortalLocationIdentityState.StatePath),
+            rawWrapper: null,
+            "mortal_location:index",
+            "mortal_location_identity_index_client_owned_mutation",
+            allowItemOwnedStorageContents: false,
+            issues);
         var preScaffoldRoot = ParseOptionalLocationObject(preScaffoldJson);
         var scaffoldRoot = ParseOptionalLocationObject(scaffoldJson);
         var hasPreScaffold = preScaffoldJson != null;
@@ -176,7 +211,8 @@ public partial class ValidationService
             return null;
         }
 
-        var planningResult = MortalLocationAcceptedTurnPlanner.Build(
+        var planningResult = MortalLocationAcceptedTurnPlanAuthority.GetOrBuild(
+            _fs,
             new MortalLocationAcceptedTurnInput(
                 preMap,
                 preCurrent,
@@ -188,7 +224,8 @@ public partial class ValidationService
                 companionAuthority,
                 rawNpcCore,
                 rawFactionCore,
-                preStorageContents));
+                preStorageContents,
+                MortalItemCurrentLocationCarrier.Select(currentRoot)));
         foreach (var issue in planningResult.Issues)
         {
             var contextual = AttachMortalLocationPlannerRepairContext(
@@ -219,6 +256,83 @@ public partial class ValidationService
             issues.Add(contextual);
         }
         return planningResult.Success ? planningResult.Plan : null;
+    }
+
+    private static void ValidateRawMortalLocationCanonicalAuthority(
+        string path,
+        JsonObject? preTurnRoot,
+        JsonObject? currentRoot,
+        bool preTurnExists,
+        bool currentExists,
+        string? rawWrapper,
+        string actor,
+        string code,
+        bool allowItemOwnedStorageContents,
+        List<ValidationIssue> issues)
+    {
+        JsonObject? currentAuthority = currentRoot?.DeepClone().AsObject();
+        var hasRawWrapper = rawWrapper != null &&
+                            currentAuthority?.Remove(rawWrapper) == true;
+
+        // Tests and repair workers may replace one canonical file with a
+        // wrapper-only command carrier. That carrier contains no canonical
+        // assertion; the planner rebuilds its complete result from the
+        // validated snapshot. Any canonical sibling data must still match the
+        // snapshot exactly.
+        if (hasRawWrapper && currentAuthority!.Count == 0)
+            return;
+
+        var matches = preTurnExists == currentExists &&
+                      (!preTurnExists ||
+                       preTurnRoot != null &&
+                       currentAuthority != null &&
+                       RawMortalLocationCanonicalAuthorityEquals(
+                           preTurnRoot,
+                           currentAuthority,
+                           allowItemOwnedStorageContents));
+        if (matches)
+            return;
+
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "The GM-authored raw package changed client-owned canonical Mortal location authority outside the accepted command routes.",
+            code: code,
+            actor: actor,
+            section: "MortalLocationMaterialization",
+            expected: preTurnExists
+                ? "canonical state exactly equal to the validated pre-turn snapshot, plus an optional raw command wrapper"
+                : "canonical state absent as in the validated pre-turn snapshot, or a wrapper-only raw command carrier",
+            actual: currentExists
+                ? "canonical state differs from the validated pre-turn snapshot"
+                : "canonical state file was removed",
+            repairHint: "Restore canonical Mortal location authority from the validated snapshot and express the intended change only through currentLocationData/worldMapUpdates commands.",
+            category: IssueCategory.ClientOwnedSurface,
+            repairTargetFiles: new[] { path }));
+    }
+
+    private static bool RawMortalLocationCanonicalAuthorityEquals(
+        JsonObject preTurnRoot,
+        JsonObject currentRoot,
+        bool allowItemOwnedStorageContents)
+    {
+        if (!allowItemOwnedStorageContents)
+            return JsonNode.DeepEquals(preTurnRoot, currentRoot);
+
+        var preTurnAuthority = preTurnRoot.DeepClone().AsObject();
+        var currentAuthority = currentRoot.DeepClone().AsObject();
+        RemoveItemOwnedCurrentStorageContents(preTurnAuthority);
+        RemoveItemOwnedCurrentStorageContents(currentAuthority);
+        return JsonNode.DeepEquals(preTurnAuthority, currentAuthority);
+    }
+
+    private static void RemoveItemOwnedCurrentStorageContents(JsonObject root)
+    {
+        if (root["locationStorages"] is not JsonArray storages)
+            return;
+
+        foreach (var storage in storages.OfType<JsonObject>())
+            storage.Remove("contents");
     }
 
     private static bool AreEquivalentRawMortalLocationIssues(
@@ -512,6 +626,10 @@ public partial class ValidationService
                     $"{MortalLocationMaterializationContract.WorldMapPath}.locations[{index}]",
                     npcRoot));
                 issues.AddRange(MortalLocationAcceptedTurnPlanner.ValidateCanonicalFactionControls(
+                    location,
+                    $"{MortalLocationMaterializationContract.WorldMapPath}.locations[{index}]",
+                    factionRoot));
+                issues.AddRange(MortalLocationAcceptedTurnPlanner.ValidateCanonicalStorageOwners(
                     location,
                     $"{MortalLocationMaterializationContract.WorldMapPath}.locations[{index}]",
                     factionRoot));
@@ -1139,7 +1257,7 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         using var document = JsonDocument.Parse(current.ToJsonString());
-        issues.AddRange(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+        issues.AddRange(MortalLocationMaterializationContract.ValidateCanonicalCurrentLocation(
             document.RootElement,
             MortalLocationMaterializationContract.CurrentLocationPath));
         if (!TryReadExactString(current, "locationId", out var currentId))
@@ -1162,7 +1280,10 @@ public partial class ValidationService
 
         foreach (var field in CurrentProjectionSharedFields)
         {
-            if (JsonNode.DeepEquals(current[field], matches[0][field]))
+            if (MortalLocationMaterializationContract.SharedCurrentProjectionValueEquals(
+                    field,
+                    matches[0][field],
+                    current[field]))
                 continue;
             issues.Add(LocationIssue(
                 $"{MortalLocationMaterializationContract.CurrentLocationPath}.{field}",
@@ -1197,6 +1318,7 @@ public partial class ValidationService
         "eventDescriptions",
         "factionControl",
         "actorBindings",
+        "locationStorages",
         "activeThreats",
         "loreBindings",
         "customStates",

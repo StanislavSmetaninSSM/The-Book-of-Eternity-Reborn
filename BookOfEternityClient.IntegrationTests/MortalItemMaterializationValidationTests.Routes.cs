@@ -455,5 +455,264 @@ public sealed partial class MortalItemMaterializationValidationTests
                 issue.Code == "mortal_item_materialization_route_authority_missing" &&
                 issue.Actor == $"mortal_item:new:{arrangement.CreationRef}");
         }
+
+        [Fact]
+        public async Task StoragePlacement_SameTurnCurrentLocationSealsIntoPermanentCarrier()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            var arrangement = await context.ArrangeSameTurnCurrentLocationStorageRouteAsync(
+                MortalItemTestFixture.CreateRawRoot(
+                    "storage_placement",
+                    "location_storage"));
+
+            var locationIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+            Assert.DoesNotContain(locationIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+
+            var itemIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+            Assert.DoesNotContain(itemIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+
+            await context.NormalizeAcceptedTurnAsync();
+
+            var current = (await context.ReadJsonAsync(
+                StorageTransportMoveService.CurrentLocationPath))!.AsObject();
+            var locationId = current["locationId"]!.GetValue<string>();
+            Assert.StartsWith("loc_", locationId, StringComparison.Ordinal);
+            Assert.NotEqual(MortalLocationTestFixture.LocationInitialId, locationId);
+            var item = Assert.Single(
+                current["locationStorages"]![0]!["contents"]!
+                    .AsArray()
+                    .OfType<JsonObject>());
+            Assert.NotNull(item["itemId"]);
+            Assert.NotNull(item[MortalItemMaterializationContract.ReceiptProperty]);
+
+            var index = (await context.ReadJsonAsync(
+                MortalItemIdentityState.StatePath))!.AsObject();
+            var entry = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal(
+                locationId,
+                entry["currentCarrier"]!["ownerId"]!.GetValue<string>());
+            Assert.Equal(
+                MortalItemMaterializationTestContext.SameTurnRouteStorageId,
+                entry["currentCarrier"]!["containerId"]!.GetValue<string>());
+            Assert.Equal(
+                arrangement.AuthorityId,
+                entry["transitions"]![0]!["authorityId"]!.GetValue<string>());
+        }
+
+        [Fact]
+        public async Task StoragePlacement_ConcurrentLocationUpdatePreservesRawItemUntilItemSealing()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            await context.ArrangeRouteAsync(
+                "storage_placement",
+                "location_storage",
+                MortalItemTestFixture.CreateRawRoot(
+                    "storage_placement",
+                    "location_storage"));
+            var map = (await context.ReadJsonAsync(
+                MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
+            map["worldMapUpdates"] = new JsonObject
+            {
+                ["locationUpdates"] = new JsonArray(new JsonObject
+                {
+                    ["locationId"] = "loc_route_existing",
+                    ["purpose"] = "Обновлённое назначение локации."
+                })
+            };
+            await context.WriteJsonAsync(
+                MortalLocationMaterializationContract.WorldMapPath,
+                map);
+
+            var locationIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+            Assert.DoesNotContain(locationIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+            var itemIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+            Assert.DoesNotContain(itemIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+
+            await context.NormalizeAcceptedTurnAsync();
+
+            var current = (await context.ReadJsonAsync(
+                StorageTransportMoveService.CurrentLocationPath))!.AsObject();
+            var item = Assert.Single(
+                current["locationStorages"]![0]!["contents"]!
+                    .AsArray()
+                    .OfType<JsonObject>());
+            Assert.NotNull(item["itemId"]);
+            Assert.NotNull(item[MortalItemMaterializationContract.ReceiptProperty]);
+        }
+
+        [Fact]
+        public async Task StoragePlacement_SameLocationRefreshUsesCanonicalSiblingItemCarrier()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            await context.ArrangeRouteAsync(
+                "storage_placement",
+                "location_storage",
+                MortalItemTestFixture.CreateRawRoot(
+                    "storage_placement",
+                    "location_storage"));
+            await context.AddSameLocationRefreshWrapperAsync();
+
+            var locationIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+            Assert.DoesNotContain(locationIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+            var itemIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+            Assert.DoesNotContain(itemIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+
+            await context.NormalizeAcceptedTurnAsync();
+
+            var current = (await context.ReadJsonAsync(
+                StorageTransportMoveService.CurrentLocationPath))!.AsObject();
+            Assert.False(current.ContainsKey("currentLocationData"));
+            var item = Assert.Single(
+                current["locationStorages"]![0]!["contents"]!
+                    .AsArray()
+                    .OfType<JsonObject>());
+            Assert.NotNull(item["itemId"]);
+            Assert.NotNull(item[MortalItemMaterializationContract.ReceiptProperty]);
+        }
+
+        [Fact]
+        public async Task StoragePlacement_ConcurrentStorageRemovalFailsClosed()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            await context.ArrangeRouteAsync(
+                "storage_placement",
+                "location_storage",
+                MortalItemTestFixture.CreateRawRoot(
+                    "storage_placement",
+                    "location_storage"));
+            await context.AddSameLocationRefreshWrapperAsync();
+            await context.AddCurrentStorageRemovalCommandAsync();
+
+            var locationIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+
+            Assert.Contains(locationIssues, issue =>
+                issue.Code == "mortal_location_storage_removal_not_empty");
+        }
+
+        [Fact]
+        public async Task StoragePlacement_AuthorizedMovementSealsRawSourceItemInOffscreenCarrier()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            await context.ArrangeStoragePlacementWithAuthorizedMovementAsync(
+                MortalItemTestFixture.CreateRawRoot(
+                    "storage_placement",
+                    "location_storage"));
+
+            var locationIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+            Assert.DoesNotContain(locationIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+            var itemIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+            Assert.DoesNotContain(itemIssues, issue =>
+                issue.Severity == IssueSeverity.Error);
+
+            await context.NormalizeAcceptedTurnAsync();
+
+            var offscreen = (await context.ReadJsonAsync(
+                MortalLocationStorageContentsState.StatePath))!.AsObject();
+            var entry = Assert.Single(offscreen["entries"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal("loc_route_existing", entry["locationId"]!.GetValue<string>());
+            Assert.Equal("storage_route_existing", entry["storageId"]!.GetValue<string>());
+            var item = Assert.Single(entry["contents"]!.AsArray().OfType<JsonObject>());
+            var itemId = item["itemId"]!.GetValue<string>();
+            Assert.NotNull(item[MortalItemMaterializationContract.ReceiptProperty]);
+
+            var index = (await context.ReadJsonAsync(
+                MortalItemIdentityState.StatePath))!.AsObject();
+            var itemEntry = Assert.Single(index["entries"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal(itemId, itemEntry["itemId"]!.GetValue<string>());
+            Assert.Equal(
+                "loc_route_existing",
+                itemEntry["currentCarrier"]!["ownerId"]!.GetValue<string>());
+            Assert.Equal(
+                "storage_route_existing",
+                itemEntry["currentCarrier"]!["containerId"]!.GetValue<string>());
+        }
+
+        [Fact]
+        public async Task StoragePlacement_MalformedItemKeepsRepairOwnershipWithItemContract()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            var item = MortalItemTestFixture.CreateRawRoot(
+                "storage_placement",
+                "location_storage");
+            item.Remove("description");
+            var arrangement = await context.ArrangeSameTurnCurrentLocationStorageRouteAsync(item);
+
+            var locationIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+            Assert.DoesNotContain(locationIssues, issue =>
+                issue.Severity == IssueSeverity.Error ||
+                issue.MortalLocationRepairContext != null);
+
+            var itemIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+            var issue = Assert.Single(itemIssues, candidate =>
+                candidate.Code == "mortal_item_materialization_complete_field_missing" &&
+                candidate.FilePath.EndsWith(".description", StringComparison.Ordinal));
+            var repair = Assert.IsType<MortalItemRepairContext>(
+                issue.MortalItemRepairContext);
+            Assert.Equal(
+                $"mortal_item:new:{arrangement.CreationRef}",
+                repair.Coordinate);
+            Assert.Equal("storage_placement", repair.Route);
+            Assert.Null(issue.MortalLocationRepairContext);
+        }
+
+        [Fact]
+        public async Task StoragePlacement_SameTurnAuthorityIsOrdinalExact()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            var arrangement = await context.ArrangeSameTurnCurrentLocationStorageRouteAsync(
+                MortalItemTestFixture.CreateRawRoot(
+                    "storage_placement",
+                    "location_storage"));
+            await context.ForgeRawRouteAuthorityIdAsync(
+                arrangement.CreationRef,
+                arrangement.AuthorityId.ToUpperInvariant());
+
+            var issues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+            Assert.Contains(issues, issue =>
+                issue.Code == "mortal_item_materialization_route_authority_mismatch" &&
+                issue.Actor == $"mortal_item:new:{arrangement.CreationRef}" &&
+                issue.Expected == arrangement.AuthorityId);
+        }
+
+        [Fact]
+        public async Task StoragePlacement_RemoteMapContentsAreRejectedByLocationOnly()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            await context.ArrangeRemoteLocationStorageItemAsync(
+                MortalItemTestFixture.CreateRawRoot(
+                    "storage_placement",
+                    "location_storage"));
+
+            var locationIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+            Assert.Contains(locationIssues, issue =>
+                issue.Code == "mortal_location_remote_storage_contents_forbidden" &&
+                issue.MortalLocationRepairContext != null);
+
+            var itemIssues = await context.Validator
+                .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+            Assert.DoesNotContain(itemIssues, issue =>
+                issue.MortalItemRepairContext != null);
+        }
     }
 }

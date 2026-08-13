@@ -1010,10 +1010,12 @@ public partial class ExplorerMode
 
             text.Add("[bold cyan]🌤️ Погода:[/]");
             // Show biome context for weather interpretation (Block 27)
-            var locDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
-            if (locDoc != null)
+            var locationCatalog = await ReadMortalLocationPlayerCatalogAsync();
+            if (locationCatalog.CurrentLocationId != null &&
+                locationCatalog.TryGetLocation(locationCatalog.CurrentLocationId, out var currentLocation) &&
+                currentLocation != null)
             {
-                var biome = GetStr(locDoc.RootElement, "biome", "");
+                var biome = ReadPlayerNodeString(currentLocation.Data, "biome");
                 if (!string.IsNullOrEmpty(biome))
                     text.Add($"  🌍 Биом: [white]{Markup.Escape(biome)}[/]");
             }

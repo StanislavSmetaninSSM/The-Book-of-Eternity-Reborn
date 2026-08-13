@@ -707,6 +707,14 @@ public partial class GameEngine
             return null;
         }
 
+        if (!await TryAddOptionalCanonicalBaselineSnapshotAsync(
+                payload,
+                snapshot,
+                MortalBootstrapLocationScaffold.StatePath))
+        {
+            return null;
+        }
+
         return snapshot.Count >= baselineCanonicalFiles.Count ? snapshot : null;
     }
 
@@ -1642,6 +1650,7 @@ public partial class GameEngine
             {
                 if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, ValidationRepairRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(relative, ValidationDiagnosticFailureReportPath, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
@@ -1789,6 +1798,133 @@ public partial class GameEngine
         }
 
         await RefreshRuntimeStateAsync();
+    }
+
+    private async Task RestorePreTurnBaselineForRepairSessionAsync(
+        RollbackSnapshot snapshot,
+        string expectedSessionGeneration)
+    {
+        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            await RestorePreTurnBackupAsync(writeLease, snapshot);
+        }
+
+        await RefreshRuntimeStateAsync();
+    }
+
+    private async Task<IReadOnlyList<string>> CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+        RollbackSnapshot snapshot,
+        string expectedSessionGeneration)
+    {
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+        var currentPaths = EnumerateRollbackTrackedFiles(writeLease)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var candidates = currentPaths
+            .Concat(snapshot.BaselineFiles)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase);
+        var changed = new List<string>();
+        foreach (var path in candidates)
+        {
+            var comparison = await CompareRollbackTrackedPathToBaselineAsync(
+                writeLease,
+                snapshot,
+                currentPaths,
+                path);
+            if (comparison != RollbackTrackedPathComparison.Unchanged)
+                changed.Add(path);
+        }
+
+        return changed;
+    }
+
+    private async Task<bool> AreRollbackTrackedPathsResubmittedForRepairSessionAsync(
+        RollbackSnapshot snapshot,
+        IReadOnlyList<string> requiredPaths,
+        string expectedSessionGeneration)
+    {
+        if (requiredPaths.Count == 0)
+            return false;
+
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+        var currentPaths = EnumerateRollbackTrackedFiles(writeLease)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var requiredPath in requiredPaths)
+        {
+            if (await CompareRollbackTrackedPathToBaselineAsync(
+                    writeLease,
+                    snapshot,
+                    currentPaths,
+                    requiredPath) != RollbackTrackedPathComparison.Changed)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private enum RollbackTrackedPathComparison
+    {
+        Unchanged,
+        Changed,
+        Unobservable
+    }
+
+    private async Task<RollbackTrackedPathComparison> CompareRollbackTrackedPathToBaselineAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        RollbackSnapshot snapshot,
+        IReadOnlySet<string> currentPaths,
+        string path)
+    {
+        var currentlyExists = currentPaths.Contains(path) && _fs.FileExists(writeLease, path);
+        var existedAtBaseline = snapshot.BaselineFiles.Contains(path);
+        if (currentlyExists != existedAtBaseline)
+            return RollbackTrackedPathComparison.Changed;
+        if (!currentlyExists)
+            return RollbackTrackedPathComparison.Unchanged;
+
+        var currentContent = await _fs.ReadFileBytesAsync(writeLease, path);
+        if (currentContent == null ||
+            !snapshot.BackupFiles.TryGetValue(path, out var backupPath))
+        {
+            return RollbackTrackedPathComparison.Unobservable;
+        }
+
+        var storedBaselineContent = await _fs.ReadFileBytesAsync(writeLease, backupPath);
+        if (storedBaselineContent == null)
+            return RollbackTrackedPathComparison.Unobservable;
+        var baselineContent = snapshot.BackupHashesAreExactBytes
+            ? storedBaselineContent
+            : Encoding.UTF8.GetBytes(DecodeLegacyRollbackText(storedBaselineContent));
+
+        if (currentContent.AsSpan().SequenceEqual(baselineContent))
+            return RollbackTrackedPathComparison.Unchanged;
+        if (TryParseSemanticJson(currentContent, out var currentJson) &&
+            TryParseSemanticJson(baselineContent, out var baselineJson) &&
+            JsonNode.DeepEquals(currentJson, baselineJson))
+        {
+            return RollbackTrackedPathComparison.Unchanged;
+        }
+
+        return RollbackTrackedPathComparison.Changed;
+    }
+
+    private static bool TryParseSemanticJson(byte[] content, out JsonNode? node)
+    {
+        try
+        {
+            node = JsonNode.Parse(DecodeLegacyRollbackText(content));
+            return true;
+        }
+        catch (JsonException)
+        {
+            node = null;
+            return false;
+        }
     }
 
     private async Task RestorePreTurnBackupAsync(

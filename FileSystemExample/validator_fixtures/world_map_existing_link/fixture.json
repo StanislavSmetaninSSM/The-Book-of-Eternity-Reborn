@@ -1,16 +1,26 @@
 {
   "id": "world_map_existing_link",
-  "runner": "StateOnly",
-  "description": "worldMap linkUpdates must target an adjacency link that already exists for the source location in pre-turn world_map state.",
+  "runner": "AcceptedTurn",
+  "description": "worldMap linkUpdates must bind one exact accepted permanent linkId from pre-turn canonical state.",
   "shared": [
     {
-      "source": "shared/pending_turn_snapshot.json",
+      "source": "../_shared/mortal_location/pending_turn_snapshot.json",
       "target": "game_state/control/pending_turn_snapshot.json",
       "mode": "Replace"
     },
     {
-      "source": "shared/world_map_backup.json",
+      "source": "../_shared/mortal_location/current_location_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "../_shared/mortal_location/world_map_backup.json",
       "target": "game_state/control/pending_turn_snapshot/game_state/world/world_map.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "../_shared/mortal_location/location_identity_index_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/world/location_identity_index.json",
       "mode": "Replace"
     }
   ],
@@ -29,7 +39,7 @@
     }
   ],
   "expectedBrokenCodes": [
-    "world_map_link_update_unknown_existing_link"
+    "mortal_location_link_update_target_unresolved"
   ],
   "forbiddenBrokenCodes": [],
   "forbiddenFixedCodes": [],

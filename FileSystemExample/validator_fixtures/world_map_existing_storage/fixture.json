@@ -4,13 +4,23 @@
   "description": "worldMap storageUpdates must target a storageId that already exists in the canonical pre-turn locationStorages of that location.",
   "shared": [
     {
-      "source": "shared/pending_turn_snapshot.json",
+      "source": "../_shared/mortal_location/pending_turn_snapshot.json",
       "target": "game_state/control/pending_turn_snapshot.json",
       "mode": "Replace"
     },
     {
-      "source": "shared/world_map_backup.json",
+      "source": "../_shared/mortal_location/current_location_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/world/current_location.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "../_shared/mortal_location/world_map_backup.json",
       "target": "game_state/control/pending_turn_snapshot/game_state/world/world_map.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "../_shared/mortal_location/location_identity_index_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/world/location_identity_index.json",
       "mode": "Replace"
     }
   ],

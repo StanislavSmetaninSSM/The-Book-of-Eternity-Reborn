@@ -197,6 +197,12 @@ historical evidence rather than live collection counters: later accepted
 storage/threat lifecycle operations may change `locationStorages[]` or
 `activeThreats[]` without rewriting the envelope, receipt, or seal.
 
+Raw location creation always carries `activeThreats: []`. A threat cannot
+arrive with a GM-selected permanent ID inside the creation object. To add a
+threat in the same accepted turn, use `threatsToAdd[]` with null `threatId`,
+null `targetLocationId`, and the exact new-location `initialTargetLocationId`;
+the client assigns the permanent threat identity during composition.
+
 ## 6. Discovery model
 
 Allowed pairs:
@@ -232,8 +238,13 @@ description/lore rather than this collection.
 
 ### 7.3 Storage metadata
 
-Each member has exact `storageId`, name, description, owner reference or null,
-capacity metadata, access state, and optional structured custom semantics.
+Each member has exact `storageId`, non-empty `name`, `description`, and English
+`image_prompt`, non-negative integer `capacity`, non-negative finite numeric
+`volume`, `owner`, `authorizedUsers`, and Boolean `hasFullAccess`. `owner` is
+null or the closed object `{ownerType, ownerId, ownerName}` with exact
+case-sensitive `Player|Faction|Shared`; each authorized-user member is the
+closed `{playerId, playerName}` object. Faction owners resolve against one exact
+accepted permanent or same-turn faction and preserve its exact canonical name.
 Storage IDs are unique within the location and reconcile exactly between the
 map object and current projection. Only current projection members may add a
 `contents` array, whose elements remain governed by item receipts/transitions.
@@ -275,7 +286,8 @@ plus location-specific role/status. Name-only threats are invalid.
 
 Each member has a closed `kind` (`codex`, `quest`, or `world_event`) and exactly
 one matching permanent `codexEntryId`, `questId`, or `worldEventId`. Names and
-file paths are not authority.
+file paths are not authority. The identity must already exist in the validated
+pre-turn canonical lore authority; #1513 does not create or remap lore identity.
 
 ### 7.6 Custom states
 
@@ -390,8 +402,11 @@ update.
 
 ### Governed storage/threat lifecycle
 
-- `storageUpdates[]` binds exact location/storage IDs, changes only closed
-  metadata fields, and preserves current item contents.
+- `storageUpdates[]` binds exact location/storage IDs, changes only
+  `newName`, `newDescription`, `newCapacity`, `newOwner`,
+  `newAuthorizedUsers`, and `newHasFullAccess`, and preserves current item
+  contents. Owner changes carry both access fields atomically; authorization
+  changes carry the synchronized access flag.
 - `storagesToRemove[]` removes only an exact empty storage; accepted item
   contents must first move or be destroyed through item authority.
 - `threatsToAdd[]` accepts one complete null-ID threat for an exact existing or

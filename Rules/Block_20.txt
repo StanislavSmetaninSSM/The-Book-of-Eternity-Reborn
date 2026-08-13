@@ -324,9 +324,17 @@ Location storages and threats remain semantic children of one exact accepted
 location. Their IDs are case-sensitive and Unicode-exact; display names are not
 authority.
 
+Every raw new-location object MUST contain `activeThreats: []`. To materialize
+a threat in that same turn, use a separate `worldMapUpdates.threatsToAdd[]`
+command with `threatId: null`, `targetLocationId: null`, and the exact
+`initialTargetLocationId`. Never embed a GM-selected permanent threat ID in a
+new location; the client assigns it.
+
 - `worldMapUpdates.storageUpdates[]` binds exact targetLocationId + storageId
   and contains a non-empty `update` object with only `newName`,
-  `newDescription`, `newCapacity`, and/or `newOwner`. The client applies this
+  `newDescription`, `newCapacity`, `newOwner`, `newAuthorizedUsers`, and/or
+  `newHasFullAccess`. `newOwner` requires both access fields in the same patch;
+  `newAuthorizedUsers` requires `newHasFullAccess`. The client applies this
   partial patch while preserving exact storage identity and item contents.
 - `worldMapUpdates.storagesToRemove[]` binds exact targetLocationId + storageId.
   Removal is accepted only after that storage has no item contents; item

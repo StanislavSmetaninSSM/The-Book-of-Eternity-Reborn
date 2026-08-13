@@ -44,41 +44,51 @@ public static class LocalMapViewService
         var currentJson = await fs.ReadFileAsync("game_state/world/current_location.json");
         var worldMapJson = await fs.ReadFileAsync("game_state/world/world_map.json");
         var identityJson = await fs.ReadFileAsync(MortalLocationIdentityState.StatePath);
-        var factionJson = await fs.ReadFileAsync("game_state/factions/faction_core.json");
-        using var factionDoc = TryParse(factionJson);
 
-        var authority = ReadMortalMapAuthorityCatalog(currentJson, worldMapJson, identityJson);
+        var authority = MortalLocationPlayerProjection.Create(
+            worldMapJson,
+            currentJson,
+            identityJson);
         var nodes = new Dictionary<string, NodeDraft>(StringComparer.Ordinal);
         var links = new Dictionary<string, MapLinkDto>(StringComparer.Ordinal);
-        var currentNodeId = authority.CurrentLocationId;
+        var currentNodeId = authority.CurrentLocationId ?? string.Empty;
+        var rumorOrdinal = 0;
 
         foreach (var location in authority.Locations)
         {
-            var locationId = ReadExactNodeString(location, "locationId")!;
-            using var locationDocument = JsonDocument.Parse(location.ToJsonString());
+            if (location.DiscoveryTier == "rumored")
+            {
+                AddRumoredLocationNode(nodes, location, ++rumorOrdinal);
+                continue;
+            }
+
+            using var locationDocument = JsonDocument.Parse(location.Data.ToJsonString());
             AddLocationNode(
                 nodes,
                 locationDocument.RootElement,
-                locationId,
-                isCurrent: string.Equals(locationId, currentNodeId, StringComparison.Ordinal));
+                location.Identity,
+                location.IsCurrent,
+                applyFactionControl: false);
+            ApplyFactionControl(nodes[location.Identity], location.FactionControls);
         }
 
         foreach (var link in authority.Links)
         {
-            var linkId = ReadExactNodeString(link, "linkId")!;
-            links[linkId] = new MapLinkDto
+            using var linkDocument = JsonDocument.Parse(link.Data.ToJsonString());
+            var linkRoot = linkDocument.RootElement;
+            links[link.Identity] = new MapLinkDto
             {
-                Id = linkId,
-                SourceNodeId = ReadExactNodeString(link, "sourceLocationId")!,
-                TargetNodeId = ReadExactNodeString(link, "targetLocationId")!,
-                Label = ReadExactNodeString(link, "directionLabel") ?? string.Empty,
-                State = ReadExactNodeString(link["access"] as JsonObject, "state") ?? string.Empty,
+                Id = link.Identity,
+                SourceNodeId = link.SourceIdentity,
+                TargetNodeId = link.TargetIdentity,
+                Label = GetString(linkRoot, "directionLabel"),
+                State = linkRoot.TryGetProperty("access", out var access) &&
+                        access.ValueKind == JsonValueKind.Object
+                    ? GetString(access, "state")
+                    : string.Empty,
                 Layer = WorldLayerId
             };
         }
-
-        if (factionDoc != null && factionDoc.RootElement.ValueKind == JsonValueKind.Object)
-            ApplyFactionTerritoryClaims(nodes, factionDoc.RootElement);
 
         AttachLocationImages(fs, nodes.Values);
         var nodeDtos = nodes.Values
@@ -971,248 +981,6 @@ public static class LocalMapViewService
         }
     }
 
-    private static MortalMapAuthorityCatalog ReadMortalMapAuthorityCatalog(
-        string? currentJson,
-        string? worldMapJson,
-        string? identityJson)
-    {
-        var empty = new MortalMapAuthorityCatalog([], [], string.Empty);
-        JsonObject? map;
-        JsonObject? current;
-        try
-        {
-            map = string.IsNullOrWhiteSpace(worldMapJson)
-                ? null
-                : JsonNode.Parse(worldMapJson) as JsonObject;
-            current = string.IsNullOrWhiteSpace(currentJson)
-                ? null
-                : JsonNode.Parse(currentJson) as JsonObject;
-        }
-        catch (JsonException)
-        {
-            return empty;
-        }
-
-        if (map == null || map.Count != 4 ||
-            !TryGetNodeInt(map, "schemaVersion", out var schemaVersion) || schemaVersion != 1 ||
-            !string.Equals(ReadExactNodeString(map, "realm"), "mortal_world", StringComparison.Ordinal) ||
-            map["locations"] is not JsonArray locationArray ||
-            map["links"] is not JsonArray linkArray)
-        {
-            return empty;
-        }
-
-        var identityState = MortalLocationIdentityState.Parse(identityJson);
-        if (identityState.Issues.Count != 0)
-            return empty;
-
-        var candidates = locationArray.OfType<JsonObject>()
-            .Where(location => IsAcceptedMortalMapLocation(location, identityState))
-            .ToArray();
-        var ambiguousLocationIds = candidates
-            .Select(location => (Location: location, Id: ReadExactNodeString(location, "locationId")!))
-            .GroupBy(pair => MortalLocationIdentityState.BuildConfusableKey(pair.Id), StringComparer.Ordinal)
-            .Where(static group => group.Count() != 1)
-            .Select(static group => group.Key)
-            .ToHashSet(StringComparer.Ordinal);
-        var ambiguousCoordinates = candidates
-            .Select(location => (Location: location, Key: ReadCoordinateKey(location)))
-            .Where(static pair => pair.Key != null)
-            .GroupBy(static pair => pair.Key!, StringComparer.Ordinal)
-            .Where(static group => group.Count() != 1)
-            .Select(static group => group.Key)
-            .ToHashSet(StringComparer.Ordinal);
-
-        var acceptedLocations = candidates
-            .Where(location =>
-                !ambiguousLocationIds.Contains(MortalLocationIdentityState.BuildConfusableKey(
-                    ReadExactNodeString(location, "locationId")!)) &&
-                ReadCoordinateKey(location) is { } coordinate && !ambiguousCoordinates.Contains(coordinate))
-            .ToList();
-        RemoveInvalidParentGraphs(acceptedLocations);
-        var locationsById = acceptedLocations.ToDictionary(
-            static location => ReadExactNodeString(location, "locationId")!,
-            StringComparer.Ordinal);
-
-        var linkCandidates = linkArray.OfType<JsonObject>()
-            .Where(link => IsAcceptedMortalMapLink(link, identityState))
-            .ToArray();
-        var ambiguousLinkIds = linkCandidates
-            .Select(link => ReadExactNodeString(link, "linkId")!)
-            .GroupBy(MortalLocationIdentityState.BuildConfusableKey, StringComparer.Ordinal)
-            .Where(static group => group.Count() != 1)
-            .Select(static group => group.Key)
-            .ToHashSet(StringComparer.Ordinal);
-        var acceptedLinks = linkCandidates
-            .Where(link =>
-            {
-                var linkId = ReadExactNodeString(link, "linkId")!;
-                var source = ReadExactNodeString(link, "sourceLocationId");
-                var target = ReadExactNodeString(link, "targetLocationId");
-                return !ambiguousLinkIds.Contains(MortalLocationIdentityState.BuildConfusableKey(linkId)) &&
-                       source != null && target != null &&
-                       !string.Equals(source, target, StringComparison.Ordinal) &&
-                       locationsById.ContainsKey(source) && locationsById.ContainsKey(target);
-            })
-            .ToList();
-
-        var currentLocationId = ResolveAcceptedMortalCurrentLocationId(current, locationsById, identityState);
-        var visibleLocations = acceptedLocations
-            .Where(IsPlayerVisibleMortalLocation)
-            .ToList();
-        var visibleIds = visibleLocations
-            .Select(static location => ReadExactNodeString(location, "locationId")!)
-            .ToHashSet(StringComparer.Ordinal);
-        if (!visibleIds.Contains(currentLocationId))
-            currentLocationId = string.Empty;
-        var visibleLinks = acceptedLinks
-            .Where(link => IsPlayerVisibleMortalLink(link) &&
-                           visibleIds.Contains(ReadExactNodeString(link, "sourceLocationId")!) &&
-                           visibleIds.Contains(ReadExactNodeString(link, "targetLocationId")!))
-            .ToList();
-
-        return new MortalMapAuthorityCatalog(visibleLocations, visibleLinks, currentLocationId);
-    }
-
-    private static bool IsAcceptedMortalMapLocation(
-        JsonObject location,
-        MortalLocationIdentityState identityState)
-    {
-        if (location.ContainsKey("knownExits") || location.ContainsKey("adjacencyMap") ||
-            !identityState.IsAcceptedCanonicalLocation(location))
-        {
-            return false;
-        }
-
-        using var document = JsonDocument.Parse(location.ToJsonString());
-        return MortalLocationMaterializationContract.ValidateCanonicalLocation(
-            document.RootElement,
-            MortalLocationMaterializationContract.WorldMapPath + ".locations[]").Count == 0;
-    }
-
-    private static bool IsAcceptedMortalMapLink(
-        JsonObject link,
-        MortalLocationIdentityState identityState)
-    {
-        if (!identityState.IsAcceptedCanonicalLink(link))
-            return false;
-        using var document = JsonDocument.Parse(link.ToJsonString());
-        return MortalLocationMaterializationContract.ValidateCanonicalLink(
-            document.RootElement,
-            MortalLocationMaterializationContract.WorldMapPath + ".links[]").Count == 0;
-    }
-
-    private static string ResolveAcceptedMortalCurrentLocationId(
-        JsonObject? current,
-        IReadOnlyDictionary<string, JsonObject> locationsById,
-        MortalLocationIdentityState identityState)
-    {
-        var currentId = ReadExactNodeString(current, "locationId");
-        if (current == null || currentId == null ||
-            !locationsById.TryGetValue(currentId, out var canonical) ||
-            !identityState.IsAcceptedCanonicalLocation(current) ||
-            !string.Equals(
-                ReadExactNodeString(current["discovery"] as JsonObject, "tier"),
-                "visited",
-                StringComparison.Ordinal))
-        {
-            return string.Empty;
-        }
-
-        using var document = JsonDocument.Parse(current.ToJsonString());
-        if (MortalLocationMaterializationContract.ValidateCanonicalLocation(
-                document.RootElement,
-                MortalLocationMaterializationContract.CurrentLocationPath).Count != 0)
-        {
-            return string.Empty;
-        }
-
-        foreach (var pair in canonical)
-        {
-            if (!current.TryGetPropertyValue(pair.Key, out var currentValue) ||
-                !JsonNode.DeepEquals(pair.Value, currentValue))
-            {
-                return string.Empty;
-            }
-        }
-        return currentId;
-    }
-
-    private static void RemoveInvalidParentGraphs(List<JsonObject> locations)
-    {
-        var changed = true;
-        while (changed)
-        {
-            changed = false;
-            var ids = locations
-                .Select(static location => ReadExactNodeString(location, "locationId")!)
-                .ToHashSet(StringComparer.Ordinal);
-            changed = locations.RemoveAll(location =>
-            {
-                var parent = ReadExactNodeString(location, "parentLocationId");
-                return parent != null && !ids.Contains(parent);
-            }) > 0;
-        }
-
-        var byId = locations.ToDictionary(
-            static location => ReadExactNodeString(location, "locationId")!,
-            StringComparer.Ordinal);
-        var cyclic = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var start in byId.Keys)
-        {
-            var path = new HashSet<string>(StringComparer.Ordinal);
-            var cursor = start;
-            while (byId.TryGetValue(cursor, out var location) &&
-                   ReadExactNodeString(location, "parentLocationId") is { } parent)
-            {
-                if (!path.Add(cursor) || string.Equals(parent, start, StringComparison.Ordinal))
-                {
-                    foreach (var member in path)
-                        cyclic.Add(member);
-                    break;
-                }
-                cursor = parent;
-            }
-        }
-        locations.RemoveAll(location => cyclic.Contains(ReadExactNodeString(location, "locationId")!));
-    }
-
-    private static bool IsPlayerVisibleMortalLocation(JsonObject location) =>
-        ReadExactNodeString(location["discovery"] as JsonObject, "tier") is
-            "rumored" or "discovered" or "visited";
-
-    private static bool IsPlayerVisibleMortalLink(JsonObject link) =>
-        ReadExactNodeString(link["discovery"] as JsonObject, "tier") is
-            "rumored" or "discovered" or "visited";
-
-    private static string? ReadCoordinateKey(JsonObject location)
-    {
-        if (location["coordinates"] is not JsonObject coordinates ||
-            !TryGetNodeInt(coordinates, "x", out var x) ||
-            !TryGetNodeInt(coordinates, "y", out var y) ||
-            !TryGetNodeInt(coordinates, "z", out var z))
-        {
-            return null;
-        }
-        return $"{x}\u001f{y}\u001f{z}";
-    }
-
-    private static string? ReadExactNodeString(JsonObject? root, string field)
-    {
-        if (root?[field] is not JsonValue value || !value.TryGetValue<string>(out var text) ||
-            string.IsNullOrEmpty(text) || !string.Equals(text, text.Trim(), StringComparison.Ordinal))
-        {
-            return null;
-        }
-        return text;
-    }
-
-    private static bool TryGetNodeInt(JsonObject root, string field, out int result)
-    {
-        result = default;
-        return root[field] is JsonValue value && value.TryGetValue<int>(out result);
-    }
-
     private static JsonElement UnwrapWorldMapRoot(JsonElement root) =>
         root.TryGetProperty("worldMapUpdates", out var wrapped) && wrapped.ValueKind == JsonValueKind.Object
             ? wrapped
@@ -1283,7 +1051,13 @@ public static class LocalMapViewService
         }
     }
 
-    private static void AddLocationNode(Dictionary<string, NodeDraft> nodes, JsonElement location, string id, bool isCurrent, bool isPlaceholder = false)
+    private static void AddLocationNode(
+        Dictionary<string, NodeDraft> nodes,
+        JsonElement location,
+        string id,
+        bool isCurrent,
+        bool isPlaceholder = false,
+        bool applyFactionControl = true)
     {
         if (string.IsNullOrWhiteSpace(id))
             return;
@@ -1328,7 +1102,27 @@ public static class LocalMapViewService
         if (draft.HasCoordinates)
             AddDetail(draft, "Координаты", $"{draft.X:0.#}, {draft.Y:0.#}, z={draft.Z}");
 
-        ApplyFactionControl(draft, location);
+        if (applyFactionControl)
+            ApplyFactionControl(draft, location);
+    }
+
+    private static void AddRumoredLocationNode(
+        IDictionary<string, NodeDraft> nodes,
+        MortalLocationPlayerLocation location,
+        int ordinal)
+    {
+        var viewLocalId = $"rumor_view_{ordinal:D4}";
+        var draft = new NodeDraft
+        {
+            Id = viewLocalId,
+            Label = location.Label,
+            Type = "rumor",
+            Layer = WorldLayerId,
+            IsRumored = true
+        };
+        AddDetail(draft, "Известность", "слух");
+        AddDetail(draft, "Слух", location.RumorSummary ?? string.Empty);
+        nodes[viewLocalId] = draft;
     }
 
     private static void ApplyFactionControl(NodeDraft draft, JsonElement location)
@@ -1371,60 +1165,35 @@ public static class LocalMapViewService
         AddPoliticalDetails(draft);
     }
 
-    private static void ApplyFactionTerritoryClaims(Dictionary<string, NodeDraft> nodes, JsonElement factionRoot)
+    private static void ApplyFactionControl(
+        NodeDraft draft,
+        IReadOnlyCollection<MortalLocationPlayerFactionControl> controls)
     {
-        if (!factionRoot.TryGetProperty("factions", out var factions) || factions.ValueKind != JsonValueKind.Array)
-            return;
-
-        foreach (var faction in factions.EnumerateArray())
+        var bestControl = int.MinValue;
+        foreach (var control in controls)
         {
-            if (faction.ValueKind != JsonValueKind.Object ||
-                !faction.TryGetProperty("controlledTerritories", out var territories) ||
-                territories.ValueKind != JsonValueKind.Array)
+            var key = string.IsNullOrWhiteSpace(control.Identity)
+                ? control.Label
+                : control.Identity;
+            if (!string.IsNullOrWhiteSpace(key))
+                draft.Influence[key] = control.ControlLevel;
+            draft.FactionControls.Add(new FactionControlDraft
             {
-                continue;
-            }
+                FactionId = control.Identity,
+                FactionName = control.Label,
+                ControlType = control.ControlType,
+                ControlLevel = control.ControlLevel
+            });
 
-            var factionId = GetString(faction, "factionId", "id");
-            var factionName = GetString(faction, "factionName", "name");
-            if (string.IsNullOrWhiteSpace(factionId) && string.IsNullOrWhiteSpace(factionName))
-                continue;
-
-            foreach (var territory in territories.EnumerateArray())
+            if (control.ControlLevel > bestControl)
             {
-                if (territory.ValueKind != JsonValueKind.Object)
-                    continue;
-
-                var locationId = GetString(territory, "locationId", "id");
-                if (string.IsNullOrWhiteSpace(locationId) || !nodes.TryGetValue(locationId, out var node))
-                    continue;
-
-                if (string.IsNullOrWhiteSpace(node.OwnerFactionId) && string.IsNullOrWhiteSpace(node.OwnerFactionName))
-                {
-                    node.OwnerFactionId = factionId;
-                    node.OwnerFactionName = factionName;
-                }
-
-                var key = string.IsNullOrWhiteSpace(factionId) ? factionName : factionId;
-                if (!string.IsNullOrWhiteSpace(key) && !node.Influence.ContainsKey(key))
-                    node.Influence[key] = 100;
-
-                if (node.FactionControls.All(existing =>
-                    !string.Equals(existing.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(existing.FactionName, factionName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    node.FactionControls.Add(new FactionControlDraft
-                    {
-                        FactionId = factionId,
-                        FactionName = factionName,
-                        ControlType = "Territory",
-                        ControlLevel = 100
-                    });
-                }
-
-                AddPoliticalDetails(node);
+                bestControl = control.ControlLevel;
+                draft.OwnerFactionId = control.Identity;
+                draft.OwnerFactionName = control.Label;
             }
         }
+
+        AddPoliticalDetails(draft);
     }
 
     private static List<MapRegionDto> BuildPoliticalRegions(IEnumerable<NodeDraft> nodes) =>
@@ -1564,7 +1333,7 @@ public static class LocalMapViewService
         if (candidates.Count == 0)
             return;
 
-        foreach (var node in nodes.Where(static node => !node.IsPlaceholder))
+        foreach (var node in nodes.Where(static node => !node.IsPlaceholder && !node.IsRumored))
         {
             var imagePath = FindLatestImageCandidate(candidates, node.Id, node.Label);
             if (string.IsNullOrWhiteSpace(imagePath))
@@ -1898,11 +1667,6 @@ public static class LocalMapViewService
         _ => "земля"
     };
 
-    private sealed record MortalMapAuthorityCatalog(
-        IReadOnlyList<JsonObject> Locations,
-        IReadOnlyList<JsonObject> Links,
-        string CurrentLocationId);
-
     private sealed class NodeDraft
     {
         public string Id { get; init; } = string.Empty;
@@ -1920,6 +1684,7 @@ public static class LocalMapViewService
         public string OwnerFactionId { get; set; } = string.Empty;
         public string OwnerFactionName { get; set; } = string.Empty;
         public bool IsPlaceholder { get; set; }
+        public bool IsRumored { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
         public string ImageAltText { get; set; } = string.Empty;
         public Dictionary<string, int> Influence { get; } = new(StringComparer.OrdinalIgnoreCase);

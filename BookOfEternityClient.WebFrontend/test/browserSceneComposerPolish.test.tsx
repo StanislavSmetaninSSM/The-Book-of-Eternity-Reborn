@@ -94,8 +94,6 @@ function createGameScreen(): BrowserGameScreenDto {
       title: '',
       message: '',
       canStartBrowserWrite: true,
-      validationState: 'ok',
-      validationLabel: '',
       phase: 'ready',
       phaseLabel: '',
       severity: 'Info',

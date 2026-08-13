@@ -13,7 +13,8 @@ internal sealed record MortalLocationAcceptedTurnInput(
     MortalLocationCompanionAuthority? CompanionAuthority = null,
     JsonObject? RawNpcCore = null,
     JsonObject? RawFactionCore = null,
-    JsonObject? PreTurnStorageContents = null);
+    JsonObject? PreTurnStorageContents = null,
+    JsonObject? RawCurrentItemCarrier = null);
 
 internal sealed record MortalLocationStorageCoordinate(
     string LocationId,

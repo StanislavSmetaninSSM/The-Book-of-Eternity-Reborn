@@ -53,6 +53,47 @@ public sealed class LocalInteractionScopeServiceTests : IDisposable
         Assert.Equal(LocalInteractionRealmKind.Mortal, scope.RealmKind);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ResolveAsync_MortalCurrentStorageContentsRemainAcceptedProjection(
+        bool includeAcceptedItem)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        location["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_local_scope",
+                "Ларь у брода",
+                hasFullAccess: true));
+        location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+
+        var contents = new JsonArray();
+        if (includeAcceptedItem)
+            contents.Add(MortalItemTestFixture.CreateCanonicalRoot("itm_local_scope"));
+
+        var current = MortalLocationTestFixture.CreateCurrentProjection(location);
+        current["locationStorages"]![0]!["contents"] = contents;
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            current.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
+
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync("Mortal World");
+
+        Assert.True(scope.IsResolved);
+        Assert.Equal(MortalLocationTestFixture.LocationId, scope.LocationId);
+    }
+
     [Fact]
     public void IsMortalActorLocal_UsesOnlyExactCanonicalCurrentLocationId()
     {

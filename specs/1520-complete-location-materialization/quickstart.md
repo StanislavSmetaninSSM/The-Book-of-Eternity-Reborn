@@ -127,9 +127,12 @@ The GM sends one complete start through `currentLocationData`:
         "storageId": "storage_inn_guest_chest",
         "name": "Гостевой сундук",
         "description": "Запираемый сундук у комнаты героя.",
-        "ownerActorId": null,
-        "capacity": { "slots": 12 },
-        "access": { "state": "open", "reason": "Сундук выделен герою." },
+        "image_prompt": "A sturdy dark fantasy guest chest beside an inn room, no text",
+        "capacity": 12,
+        "volume": 3.5,
+        "owner": null,
+        "authorizedUsers": [],
+        "hasFullAccess": true,
         "contents": []
       }
     ],
@@ -553,9 +556,14 @@ current projection.
 
 Use exact IDs from accepted Context and only these command families:
 
+Keep `activeThreats: []` in every raw new-location object. To create a threat
+in that same turn, send it separately through `threatsToAdd[]` with
+`threatId: null` and the exact new-location `initialTargetLocationId`; the
+client assigns its permanent ID.
+
 | Command | Accepted effect |
 | --- | --- |
-| `storageUpdates[]` | Patch closed storage metadata while preserving item contents |
+| `storageUpdates[]` | Patch `newName/newDescription/newCapacity/newOwner/newAuthorizedUsers/newHasFullAccess` while preserving item contents; owner and authorization changes carry synchronized access fields |
 | `storagesToRemove[]` | Remove one exact empty storage; non-empty removal fails closed |
 | `threatsToAdd[]` | Add one complete null-ID threat and let the client assign `threat_...` |
 | `threatsToUpdate[]` | Deep-merge one exact non-terminal threat/activity patch |
@@ -571,7 +579,7 @@ It never rewrites the location envelope or receipt: their section dispositions
 describe the creation payload, not later live child counts. See the executable
 `mortal_location_governed_storage_threat_lifecycle_v1` example.
 
-## 7. Same-turn actor, faction, lore, and storage references
+## 7. Same-turn actor, faction, threat, and storage references; canonical lore
 
 Use only the explicitly supported temporary reference field for a same-turn new
 entity. Example actor binding before normalization:
@@ -589,6 +597,12 @@ The actor's own accepted authority must place it at this exact location. The
 location planner rewrites the field only after both raw packages validate. A
 name such as `"Смотритель"` never binds the actor.
 
+Lore is deliberately different: `loreBindings[]` may use only an exact
+permanent `entryId`, `questId`, or `eventId` already present in the validated
+pre-turn codex, quest, or world-event authority. This feature does not assign or
+rewrite lore identities in the same turn; create that lore first and bind it in
+a later accepted turn.
+
 Map storage is semantic metadata. Current storage may include complete raw item
 creation objects, each governed independently by #1511. The location-owned
 portion of such a storage remains:
@@ -598,9 +612,12 @@ portion of such a storage remains:
   "storageId": "storage_inn_guest_chest",
   "name": "Гостевой сундук",
   "description": "Запираемый сундук у комнаты героя.",
-  "ownerActorId": null,
-  "capacity": { "slots": 12 },
-  "access": { "state": "open", "reason": "Сундук выделен герою." },
+  "image_prompt": "A sturdy dark fantasy guest chest beside an inn room, no text",
+  "capacity": 12,
+  "volume": 3.5,
+  "owner": null,
+  "authorizedUsers": [],
+  "hasFullAccess": true,
   "contents": []
 }
 ```
@@ -868,7 +885,12 @@ additional React field or component.
 | T094 bounded group 5e GREEN | diagnostic/write-failure and caller-owned rollback branches | `TestResults/test-lanes/20260813-133539-554-17020-d83460edb52942ff9dc2b5e98e4a43e4-focused` | 5 | 0 | 0 | 0 | Complete |
 | T094 bounded group 5f GREEN | legacy packet retirement, session replacement, accepted trajectory, and bootstrap-stall control | `TestResults/test-lanes/20260813-133617-540-22812-5323d46f5bdb4e8a8e20d83e0a6418fb-focused` | 8 | 0 | 0 | 0 | Complete |
 | T094 bounded group 6 GREEN | active fixture integrity and executable example/manifest validation | `TestResults/test-lanes/20260813-131835-881-32496-bb20fec433c84278a76733f8e5121fe7-focused` | 41 | 0 | 0 | 0 | Complete |
-| T095 Fast GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260813-135513-551-50548-b35e03f7f1384648b9116f9a36cad4c1-fast` | 3114 | 0 | 0 | 0 | Complete |
+| T095 authority/full-feature fixture RED | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalLocationMaterializationValidationTests"` | `TestResults/test-lanes/20260813-191206-739-24288-9630d67b230440c98065b4315a4d5b4c-focused` | 160 | 3 stale incomplete-threat authority fixtures | 0 | 0 | Complete |
+| T095 authority fixture focused GREEN | focused Integration filter for the three exact/case-sensitive authority tests | `TestResults/test-lanes/20260813-191544-868-21840-89bf7f125b04438fbf0ba6c7ecf6c05d-focused` | 3 | 0 | 0 | 0 | Complete |
+| T095 full Mortal-location integration GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalLocationMaterializationValidationTests"` | `TestResults/test-lanes/20260813-191629-475-20060-5c3eddb8787a4424abedfcd55fd277ff-focused` | 163 | 0 | 0 | 0 | Complete |
+| T095 Fast stale-fixture RED | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260813-191947-808-48372-f2ee519e2c234780ae08f3fba2761b3e-fast` | 3132 | 1 stale news threat fixture | 0 | 0 | Complete |
+| T095 news fixture focused GREEN | focused Fast filter for `BuildAsync_ThreatSummaryCountsOnlyAcceptedDiscoverySafeLocationsOnce` | `TestResults/test-lanes/20260813-192341-962-55484-6b205c3b467d4ddf9fc70bf132a3f506-focused` | 1 | 0 | 0 | 0 | Complete |
+| T095 Fast GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260813-192419-159-40020-50b8700b32054e258dc54d02e26bd557-fast` | 3133 | 0 | 0 | 0 | Complete |
 | T096 FullValidation GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation` | `TestResults/test-lanes/20260813-185403-344-50544-7fe3817a060f4923854219638d47cc75-fullvalidation` | 1787 | 0 | 0 | 0 | Complete |
 | T097 LifecycleIntegration GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration` | `TestResults/test-lanes/20260813-190246-192-55860-8215c872ab4649aaafb7f021b3a0e4d7-lifecycleintegration` | 243 | 0 | 0 | 0 | Complete |
 | Review movement authorization RED | focused Integration filter for `Lifecycle_MovementRequiresOneVisibleOpenOutgoingLink` | `TestResults/test-lanes/20260813-144615-260-33060-48e7e6c864904bee88c5b4701155517e-focused` | 0 | 6 expected assertion failures | 0 | 0 | Complete |
@@ -887,6 +909,14 @@ additional React field or component.
 | Review LifecycleIntegration GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration` | `TestResults/test-lanes/20260813-160234-322-29364-0e1262cd4b56445a934e845b41683dc5-lifecycleintegration` | 243 | 0 | 0 | 0 | Complete |
 | Review Fast external timing failure | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260813-161005-084-48264-bf60a0e9698c4b329a86600bd8bb256a-fast` | 2340 | 1 unrelated `AgentConsoleLiveInputSourceTests` race | 0 | 0 | Complete |
 | External timing failure isolated GREEN | focused exact `AgentConsoleLiveInputSourceTests.EnqueueLine_WhenReadKeyIsPending_RejectsWithoutPoisoningQueue` | `TestResults/test-lanes/20260813-154632-289-49216-4a74cbb62239401eb813dcd1867b76bf-focused` | 1 | 0 | 0 | 0 | Complete |
+| Review source-storage movement item RED | focused Integration `StoragePlacement_AuthorizedMovementSealsRawSourceItemInOffscreenCarrier` | `TestResults/test-lanes/20260813-221557-222-20688-4b4320d0358c46a5ac1fdec6eb75dfe7-focused` | 0 | 1 expected post-seal identity conflict | 0 | 0 | Complete |
+| Review source-storage movement item GREEN | same focused Integration test | `TestResults/test-lanes/20260813-221709-125-44960-be3fc71962184bfab1c22e268b4a08f5-focused` | 1 | 0 | 0 | 0 | Complete |
+| Review item-owned `itemIds` projection RED | full focused `MortalItemMaterializationValidationTests` | `TestResults/test-lanes/20260813-222059-060-43820-bce53a75036c4d3982d8a8160d204c22-focused` | 94 | 1 current/map projection mismatch | 0 | 0 | Complete |
+| Review item-owned `itemIds` projection GREEN | focused `SameTurnReference_ResolvesOnlyToPermanentItemId` | `TestResults/test-lanes/20260813-222622-642-56460-1a7e3cbfe0414b76a520c4021bfdbcfd-focused` | 7 | 0 | 0 | 0 | Complete |
+| T098 final Mortal-item integration GREEN | full focused `MortalItemMaterializationValidationTests` | `TestResults/test-lanes/20260813-222741-090-55020-fa8ce78f5110422b912a802b7425db3f-focused` | 95 | 0 | 0 | 0 | Complete |
+| T098 final Fast GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` | `TestResults/test-lanes/20260813-223114-013-52152-fc0c036057d84738bddf02114e792737-fast` | 3165 | 0 | 0 | 0 | Complete |
+| T098 final LifecycleIntegration GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration` | `TestResults/test-lanes/20260813-223506-365-54820-5dc3b9563bc041ffa3e2b909dc375b27-lifecycleintegration` | 243 | 0 | 0 | 0 | Complete |
+| T098 final FullValidation GREEN | `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation` | `TestResults/test-lanes/20260813-224107-637-9272-4e1712699a9c4b1bb5175a24a6cade17-fullvalidation` | 1792 | 0 | 0 | 0 | Complete |
 
 For T076, `ValidationService.MortalFactionMaterialization` owns the exact
 receipt-bearing canonical map plus validated same-turn location authority.
@@ -920,7 +950,7 @@ control are appended here as the corresponding tasks complete.
 
 The T093 artifact audit completed before final review. `git diff --check`
 returned exit code 0 with no whitespace errors or unresolved merge entries.
-All 18 untracked paths were inspected and are intentional #1513 source files,
+All 14 untracked paths were inspected and are intentional #1513 source files,
 tests, canonical world-state examples, or the shared Mortal-location fixture
 baseline. No feature-owned temporary, backup, reject, or patch file remained.
 Ignored `bin`, `obj`, `TestResults`, and dependency directories were preserved;
@@ -929,7 +959,7 @@ they are local build/test evidence rather than publication inputs.
 ## 13. Final requirement reconciliation
 
 The T099 reconciliation counted exactly 60 functional requirements, 12 success
-criteria, 102 tasks, and 55 path rows in the fixture inventory. There are no
+criteria, 108 tasks, and 55 path rows in the fixture inventory. There are no
 unresolved placeholders. Every inventory path either exists in its final role
 or is explicitly marked as a retired/removed legacy fixture.
 
@@ -954,11 +984,20 @@ or is explicitly marked as a retired/removed legacy fixture.
 | SC-008 | Bounded packet, protected target, ambiguity, history, and diagnostic-only tests in T053–T059 |
 | SC-009 | Console/browser/news semantic parity and recursive privacy tests in T060–T069 |
 | SC-010 | Deterministic doubled-population work bound in T017 |
-| SC-011 | Four worked Mortal flows plus receipt-less rejection and documentation/source/manifest validation in T083–T091/T102 and FullValidation |
+| SC-011 | Five worked Mortal flows plus receipt-less rejection and documentation/source/manifest validation in T083–T091/T102 and FullValidation |
 | SC-012 | Focused, Fast, FullValidation, and LifecycleIntegration are green; the single clean-candidate PreMerge remains exclusively owned by T100 |
 
-The task audit leaves only T098 (final review), T100 (one final PreMerge), and
-T101 (commit/PR/owner approval) open. Mortal GM prompts, rules, CLI guidance,
+The final requesting-code-review gate reported no Critical or Important
+findings and returned `Ready: Yes`. The last two review findings were closed
+with explicit RED-to-GREEN evidence: raw source-storage creations survive an
+authorized location move and are sealed in client-owned offscreen state, while
+exact `locationStorages[].itemIds` remains item-owned and is excluded only from
+the current/map metadata comparison. A follow-up delta review confirmed that
+all other storage/location fields remain exact and that item references still
+pass through the separate item-authority catalog and reconciliation path.
+
+The task audit leaves only T100 (one final PreMerge) and T101
+(commit/PR/owner approval) open. Mortal GM prompts, rules, CLI guidance,
 daemon reminders, worked examples, manifest entries, and source guards are all
 present in the same candidate. The detailed T092 rationale above remains the
 authoritative afterlife disposition: #1513 changes no Chaos Sea or Shining

@@ -535,13 +535,13 @@ public partial class ValidationService
 
     private sealed class WorldLocationStateIndex
     {
-        public Dictionary<string, HashSet<string>> CoordinateKeysByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> LinkTargetCoordinateKeysBySourceLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> StorageIdsByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> ThreatIdsByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, HashSet<string>> ThreatIdsWithCurrentActivityByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, string> LocationTypesByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
-        public Dictionary<string, string> BiomesByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, HashSet<string>> CoordinateKeysByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> LinkTargetCoordinateKeysBySourceLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> StorageIdsByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> ThreatIdsByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, HashSet<string>> ThreatIdsWithCurrentActivityByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> LocationTypesByLocationId { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, string> BiomesByLocationId { get; } = new(StringComparer.Ordinal);
     }
 
     private sealed class FactionSubEntityStateIndex

@@ -717,7 +717,7 @@ function New-GmExperienceLesson {
         "Open game_state/control/mortal_bootstrap_scaffold.json. playerAuthoredStart is narrative context only and grants no mechanics. The client initializes structuredGmAuthority arrays empty, leaves experience.json empty, keeps faction and quest collections empty, and assigns no location type/traversal/difficulty, XP threshold, carrying capacity, faction resources, influence/control, or universal powerProfile. Every playerProgression, carryingRules, or factionMechanics authority record must name the exact canonicalPath and contain a non-empty values object that exactly repeats the authorized canonical values; faction records also identify factionId. Empty objects, reasons, unrelated paths, and prose do not grant authority. Preserve explicit GM declarations and worldEventRequirements. Merchant capability also requires an explicit valid tradeState.merchantProfile; never derive it or any other mechanic through role, occupation, class, name, description, genre, or keyword matching."
     }
     elseif ($hasMortalLocationIssue) {
-        "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids. Register durable destination locations in world_map first, then update current_location and NPC currentLocationId/currentLocationName only to known ids. Every world_map adjacency/link/storage/threat target must point to an existing locationId or a same-turn newLocations.initialId that is fully materialized in the same response; do not leave unknown target/source ids. Resolve duplicate coordinates in same-turn map updates. If the place is narrative color inside the current room, keep current_location unchanged and describe it as part of the existing location."
+        "Use MORTAL_LOCATION_TRANSITION_TEMPLATE.md and Mortal Location Materialization v1 before authoring the retry. Create durable scenes only through complete current_scene_creation/world_map_creation raw candidates and directed routes only through world_map_link_creation. Existing movement and lifecycle commands bind exact permanent locationId/linkId; a changed selection also needs one exact open directed pre-turn current-to-destination link with no requirements and player-known non-hidden visibility. Use storageUpdates/storagesToRemove and threatsToAdd/threatsToUpdate/threatsToRemove/completeThreatActivities for governed children. Names, coordinates, aliases, case folding, and Unicode normalization are never identity. knownExits and adjacencyMap are client-derived. For mortal_location_materialization_repair, the validated pre-turn baseline is already restored: perform full-turn resubmission of every required location, actor, faction, item, narrative, interface, and other output instead of patching canonical map/current/index files in place."
     }
     elseif ($hasMortalFactionIssue) {
         "Use MORTAL_FACTION_UPDATE_TEMPLATE.md before editing game_state/factions/*. For unknown faction ids, choose one explicit path: reference an existing canonical factionId from faction_core.json, create the missing faction through the complete factionDataChanges creation carrier when the story truly introduced it, or remove/retarget sidecar entries that point to a faction that should not exist. Preserve ranks, branches, chronicles, relations, projects, resources, and reputation details; do not silence validation by deleting unrelated faction data."
@@ -1356,7 +1356,12 @@ Use this before opening large examples for ordinary live turns.
 - Do not skip NPC Scope during incarnation bootstrap, even if the scene looks like a simple transition; write relevant actors or explicitly state that no actor is relevant.
 - Copy exact sessionId/requestId/turnNumber and include every processed-count field even when value is 0 when `progressionControl` requires a progression report.
 - If afterlife memory mentions a mortal destination, use localized player-facing realm terms in visible prose; do not write internal labels such as `MortalWorld`, `Mortal World`, `ChaosSea`, or `ShiningAbode`.
-- For fresh Mortal bootstrap, copy canonical coordinates from game_state/control/mortal_bootstrap_scaffold.json `canonicalCoordinateAuthority`. This prevents `current_location_coordinates_mismatch`: the same locationId must have the same coordinates in `current_location`, `world_map.newLocations`, `adjacencyMap`, and `newLinks`.
+- For fresh Mortal bootstrap, read immutable
+  `game_state/control/mortal_bootstrap_scaffold.json` and author the exact
+  reserved complete `current_scene_creation` start plus either the complete
+  reserved `world_map_creation` neighbor/`world_map_link_creation` directed
+  link or a narrative-only unresolved exit. Do not author permanent IDs,
+  receipts, the location identity index, or derived navigation.
 
 ## Output file skeletons
 
@@ -2180,102 +2185,86 @@ rewrites. For complete worked JSON, open
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_LOCATION_TRANSITION_TEMPLATE.md" -Role "compact_mortal_location_transition_template" -Content @'
 # Compact Mortal Location Transition Template
 
-Use this before repairing Mortal World movement, new location creation, `world_map`, `current_location`, or NPC location ids.
+## Mortal Location Materialization v1
 
-## Mortal location transition repair
+Use this before any Mortal World scene creation, durable map/link change,
+current-location selection, NPC location binding, bootstrap, or location repair.
+Rule 20 and `Examples/E_Block_20.txt` contain the complete shapes.
 
-When validation reports `current_location_unknown_location_id`, `npc_unknown_current_location_id`, or `world_map_new_location_coordinates_duplicate_same_turn`, fix the map chain in this order:
+## Authority and creation routes
 
-1. Decide whether the destination is a durable location.
-   - Durable: a room/street/site the player can return to, map, search, or reference later.
-   - Narrative color: a corner, shelf, alcove, or moment inside the current location.
+- The GM authors raw accepted-turn commands. `world_map.json` is the canonical
+  semantic owner of locations and directed links; `current_location.json` is a
+  client projection of one accepted map location plus current-only state.
+- `currentLocationData` + route `current_scene_creation` creates one complete
+  new selected scene.
+- `worldMapUpdates.newLocations[]` + route `world_map_creation` creates each
+  complete remote scene.
+- `worldMapUpdates.newLinks[]` + route `world_map_link_creation` creates each
+  complete directed link.
+- A new location uses `locationId = null`; a new link uses `linkId = null`.
+  Every candidate has one turn-unique initialId, independent materializationId,
+  exact source turn/authority, state complete, and complete
+  `materialization.sections`.
+- Never author a permanent ID, materializationReceipt, receipt, seal,
+  transition, snapshot, rollback state, or `location_identity_index.json`.
+  knownExits and adjacencyMap are client-derived.
 
-2. If durable, register the destination in `game_state/world/world_map.json` first.
-   - Use one stable `locationId`.
-   - Add visible name, region, description, exits/adjacency, required arrays, difficulty profiles, and unique coordinates.
-   - If `type`/`locationType` is `outdoor`, add a canonical `biome`: `TemperateForest`, `ColdForest`, `Swamp`, `Urban`, `Plains`, `Mountains`, `Desert`, `Coast`, or `Unique`. For `Unique`, also add `biomeDescription`.
-   - Avoid duplicate coordinates with existing locations and same-turn new locations.
+## Complete semantics and exact binding
 
-3. Only after registration, update `game_state/world/current_location.json`.
-   - `locationId` must be a known id from `world_map`.
-   - Keep name/description consistent with the map entry.
+- A new location includes presentation, purpose/description/image prompt,
+  physical indoor/outdoor shape, x/y/z placement, discovery, internal and
+  external difficulty, chronicle fields, and every governed collection. A
+  physically empty section uses `empty_by_design` with a concrete in-world
+  reason; do not omit it or invent defaults.
+- A new directed link includes exactly one source selector and one target
+  selector, presentation, traversal, access, discovery, custom states, and all
+  link sections. A reverse direction is a separate link.
+- Permanent selectors bind exact case-sensitive, Unicode-exact IDs. Same-turn
+  selectors bind exact accepted initialIds. Names, descriptions, coordinates,
+  directions, ordinals, paths, aliases, case folding, and Unicode normalization
+  never establish identity.
+- Narrative color inside the current scene and a narrative-only unresolved exit
+  assert no location/link identity or endpoint.
 
-4. Move NPCs only to known ids.
-   - `currentLocationId` must point to a known world-map location.
-   - Keep `currentLocationName` aligned with that location.
+## Existing lifecycle
 
-5. If the destination is narrative color, keep `current_location` unchanged.
-   - Describe the action as happening inside the existing location.
-   - Do not create a new canonical id just because the narration named a corner or object.
+- Select an accepted scene with exact permanent locationId plus current-only
+  lastEventsDescription/weather/interactions/chronology/storage state. Do not
+  resend coordinates, placement, difficulty, envelope, receipt, or topology.
+  A changed selection also needs one exact open directed link from the exact
+  pre-turn current location to the destination, with empty requirements and a
+  player-known non-hidden link/destination. Reverse-only, hidden, conditional,
+  and sealed links do not authorize movement.
+- Use `locationUpdates[]` for the closed mutable semantic catalog and
+  `locationDiscoveryTransitions[]` for an exact forward discovery edge.
+- Use `linkUpdates[]` with exact permanent linkId for allowed presentation,
+  access, and discovery fields. Use `linkRemovals[]` with exact permanent
+  linkId/sourceLocationId/targetLocationId to retire one directed link.
+- Use `storageUpdates[]` and `storagesToRemove[]` for exact storage metadata;
+  preserve contents and remove only an empty storage. Use `threatsToAdd[]`,
+  `threatsToUpdate[]`, `threatsToRemove[]`, and
+  `completeThreatActivities[]` for exact threat lifecycle. A new threat keeps
+  threatId null for client assignment; completion archive is system-owned.
+- The immutable materialization section dispositions remain creation evidence;
+  later storage/threat counts do not rewrite the envelope or receipt.
+- Item, NPC, faction, and lore identity remain governed by their own exact
+  contracts; location creation does not invent them.
 
-## Minimal durable location entry
+## Bootstrap and repair
 
-```json
-{
-  "locationId": "loc_<stable_slug>",
-  "name": "<visible Russian name>",
-  "displayName": "<visible Russian name>",
-  "region": "<region or settlement>",
-  "type": "indoor",
-  "biome": null,
-  "description": "<what the player can see and use here>",
-  "coordinates": { "x": 0, "y": 0, "z": 0 },
-  "exits": [
-    {
-      "targetLocationId": "<known adjacent location id>",
-      "direction": "<visible direction>",
-      "isKnown": true
-    }
-  ],
-  "knownExits": [],
-  "adjacencyMap": [],
-  "factionControl": [],
-  "locationStorages": [],
-  "activeThreats": [],
-  "internalDifficultyProfile": {
-    "combat": 1,
-    "environment": 1,
-    "social": 1,
-    "exploration": 1
-  },
-  "externalDifficultyProfile": {
-    "combat": 1,
-    "environment": 1,
-    "social": 1,
-    "exploration": 1
-  },
-  "lastEventsDescription": "<what just happened here>"
-}
-```
+Fresh Mortal bootstrap reads `mortal_bootstrap_scaffold.json` as immutable
+client authority. Emit the exact reserved complete start plus either the exact
+reserved complete neighbor/directed link or a narrative-only unresolved exit.
+Do not create, delete, settle, or edit the scaffold.
 
-For an outdoor location, set both `type` and `locationType` to `outdoor`, replace `biome: null` with a canonical biome value, and add `biomeDescription` only when the biome is `Unique`.
-
-## Minimal world-map link preview
-
-Every new map link preview must include the target name, target coordinates, and both estimated difficulty profiles.
-
-```json
-{
-  "sourceLocationId": "<known source location id>",
-  "targetLocationId": "<known target location id or same-turn newLocations.initialId>",
-  "targetName": "<visible Russian target name>",
-  "targetCoordinates": { "x": 1, "y": 0, "z": 0 },
-  "estimatedInternalDifficultyProfile": {
-    "combat": 1,
-    "environment": 1,
-    "social": 1,
-    "exploration": 1
-  },
-  "estimatedExternalDifficultyProfile": {
-    "combat": 1,
-    "environment": 1,
-    "social": 1,
-    "exploration": 1
-  }
-}
-```
-
-Do not fix unknown locations by deleting NPCs, quests, faction links, storage links, or exits that should still point to the destination. Repair the map identity instead.
+For `mortal_location_materialization_repair`, the client restores the validated
+pre-turn baseline before dispatch. Perform full-turn resubmission: regenerate
+one complete coherent raw response containing every intended location, actor,
+faction, item, narrative, interface, and other changed output required by the
+request. Do not patch canonical map/current/index files in place, submit only
+the named leaf, reuse stale output, make a formatting-only rewrite, or send only
+the ready marker. Protected or ambiguous authority stops before GM dispatch.
 '@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_SKILL_PROGRESSION_TEMPLATE.md" -Role "compact_mortal_skill_progression_template" -Content @'
 # Compact Mortal Skill Progression Template
@@ -5848,6 +5837,7 @@ function Process-RepairRequest {
         }
 
         $hasAcceptedTurnOutputArtifactRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "accepted_turn_output_artifact_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
+        $hasMortalLocationMaterializationRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "mortal_location_materialization_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
         $hasGuardianPendingCreationRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "guardian_pending_creation_materialization_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
         $hasGuardianTradeInventoryRepair = @($repairPacketKinds | Where-Object { [string]::Equals($_, "guardian_trade_inventory_resolution_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
         $hasStalePlayerFacingOutputRepair = @($issueCodes | Where-Object { [string]::Equals($_, "accepted_turn_stale_player_facing_output_after_canonical_repair", [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
@@ -5867,6 +5857,11 @@ function Process-RepairRequest {
         } else {
             ""
         }
+        $mortalLocationRepairDirective = if ($hasMortalLocationMaterializationRepair) {
+            " For mortal_location_materialization_repair, you MUST read '$($script:CompactMortalLocationTemplatePath)' and the current packet before editing anything. The client restored the validated pre-turn baseline before dispatch. Perform full-turn resubmission for this same request: regenerate one complete coherent raw response containing every intended location, actor, faction, item, narrative, interface, and other changed output named by requiredResubmissionPaths/resubmissionObligations. Do not patch canonical world_map/current_location/location_identity_index files in place, submit only the named leaf, reuse stale output, make a formatting-only rewrite, or send only validation_repair_ready.json."
+        } else {
+            ""
+        }
         $guardianPendingCreationRepairDirective = if ($hasGuardianPendingCreationRepair -or $hasGuardianPendingCreationIssue) {
             " For startup Guardian creation repairs, use validation_repair_request.json.harnessRepairPackets[] kind guardian_pending_creation_materialization_repair before broad Guardian examples. Read game_state/meta/guardians.json.pendingGuardianCreation as startup authority; for a New Game freeform startup request, write UpdateGuardians.create as the UpdateGuardians[] JSON array with command=create and data=<full canonical Guardian> as the authority. Start from harnessRepairPackets[].canonicalCreateSkeleton and allowedEnums, then mirror that result into guardians[] + activeGuardian + chaosSeaNavigation and remove pendingGuardianCreation. Do not repair only materialized mirrors, keep pendingGuardianCreation as a pending-only fallback, delete it alone, or leave the Guardian only in prose."
         } else {
@@ -5878,8 +5873,13 @@ function Process-RepairRequest {
             ""
         }
 
+        $repairExecutionDirective = if ($hasMortalLocationMaterializationRepair) {
+            " Regenerate the complete required response package from the restored baseline; this is not an in-place canonical patch."
+        } else {
+            " Fix only the listed validation errors in the already written files IN PLACE."
+        }
         $readyPath = "$GameSessionPath\game_state\control\validation_repair_ready.json"
-        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples.$outputArtifactRepairDirective$guardianPendingCreationRepairDirective$guardianTradeInventoryRepairDirective Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; use '$($script:CompactMortalSkillTemplatePath)' for any repair touching activeSkillChanges, passiveSkillChanges, skillMasteryChanges, or player skill files; use '$($script:CompactMortalExperienceTemplatePath)' for any repair touching game_state/player/experience.json, experienceGained, level-up, or stat-point level progression; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective) Fix only the listed validation errors in the already written files IN PLACE. Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
+        $message = "REPAIR MODE for rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt).$($script:GmContextPackDirective)$($script:GmDocPathDirective)$($script:GmSafeProbeDirective)$($script:GmSourceFallbackDirective)$($script:GmCompactTemplateDirective)$($script:GmExperienceLessonsDirective)$($script:GmLiveTestRubricDirective)$($script:GmTurnHelperDirective) You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json and '$($script:CompactValidationRepairTemplatePath)' before opening large copied examples.$outputArtifactRepairDirective$mortalLocationRepairDirective$guardianPendingCreationRepairDirective$guardianTradeInventoryRepairDirective Also use '$($script:CompactActorReasoningTemplatePath)' for actor coverage repairs; use '$($script:CompactMortalNpcTemplatePath)' for any repair touching game_state/npcs/npc_core.json or NPC validation errors; use '$($script:CompactMortalFactionTemplatePath)' for any repair touching game_state/factions/* or faction validation errors; use '$($script:CompactMortalLocationTemplatePath)' for any repair touching game_state/world/current_location.json, game_state/world/world_map.json, or unknown location ids; use '$($script:CompactMortalSkillTemplatePath)' for any repair touching activeSkillChanges, passiveSkillChanges, skillMasteryChanges, or player skill files; use '$($script:CompactMortalExperienceTemplatePath)' for any repair touching game_state/player/experience.json, experienceGained, level-up, or stat-point level progression; and prefer validation_repair_request.json.harnessRepairPackets over source-code archaeology. Read '$($script:TaskGuideMainPath)' for repair phase rules; use '$($script:ExampleMainPath)' only when compact templates do not cover a route-specific shape.$($script:AfterlifeRealmGateDirective)$($script:AfterlifeExamplesDirective)$($script:AfterlifeCombatConditionsDirective)$($script:AfterlifeSpecialArtCombatEffectDirective)$repairExecutionDirective Do NOT create a new turn. Do NOT run unrelated git or repository tasks. Do NOT wait for another prompt after files are fixed; finish the repair protocol immediately. never write ready/turn_complete.json for repair."
         if ($hasDiagnosticOnlyMetadata) {
             $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $readyPath. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
         }

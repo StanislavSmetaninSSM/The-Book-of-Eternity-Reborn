@@ -31,6 +31,161 @@ public sealed class MortalLocationMaterializationContractTests
             "world_map.locations[0]"));
     }
 
+    [Fact]
+    public void ValidateCanonicalLocation_CreationDispositionDoesNotFreezeMutableChildCounts()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        location["locationStorages"]!.AsArray().Add(
+            CreateCompleteStorage("storage_added_after_creation"));
+        location["activeThreats"]!.AsArray().Add(new JsonObject
+        {
+            ["threatId"] = "threat_added_after_creation",
+            ["name"] = "Поздняя угроза",
+            ["description"] = "Полная canonical угроза, добавленная после первой материализации.",
+            ["intensity"] = 2,
+            ["longTermGoal"] = "Нарушить спокойствие у сторожевой башни.",
+            ["currentActivity"] = null,
+            ["threatArchetype"] = new JsonObject
+            {
+                ["motivation"] = "Corruption",
+                ["method"] = "Covert",
+                ["customMotivation"] = null,
+                ["customMethod"] = null
+            },
+            ["impactProfile"] = new JsonObject
+            {
+                ["primaryTargetType"] = "Location",
+                ["primaryTargetId"] = null,
+                ["primaryTargetName"] = "Сторожевая башня",
+                ["primaryImpact"] = "Stability",
+                ["baseImpactValue"] = 1
+            }
+        });
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            document.RootElement,
+            "world_map.locations[0]");
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "mortal_location_materialization_section_disposition_mismatch");
+        Assert.Empty(issues);
+    }
+
+    [Theory]
+    [InlineData("skeletal")]
+    [InlineData("empty_owner")]
+    [InlineData("invalid_capacity")]
+    [InlineData("missing_access")]
+    [InlineData("ambiguous_owner_alias")]
+    [InlineData("whitespace_owner_id")]
+    public void ValidateCanonicalLocation_RejectsIncompleteStorageMetadata(string scenario)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var storage = CreateCompleteStorage("storage_invalid_semantics");
+        switch (scenario)
+        {
+            case "skeletal":
+                storage = new JsonObject { ["storageId"] = "storage_invalid_semantics" };
+                break;
+            case "empty_owner":
+                storage["owner"] = new JsonObject();
+                break;
+            case "invalid_capacity":
+                storage["capacity"] = "many";
+                break;
+            case "missing_access":
+                storage.Remove("hasFullAccess");
+                break;
+            case "ambiguous_owner_alias":
+                storage["ownerActorId"] = "npc_conflicting_owner";
+                break;
+            case "whitespace_owner_id":
+                storage["owner"] = new JsonObject
+                {
+                    ["ownerType"] = "Faction",
+                    ["ownerId"] = " faction_road_wardens ",
+                    ["ownerName"] = "Дорожная стража"
+                };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(scenario));
+        }
+        location["locationStorages"] = new JsonArray(storage);
+        location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            document.RootElement,
+            "world_map.locations[0]");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_storage_semantic_invalid");
+    }
+
+    [Fact]
+    public void ValidateCanonicalLocation_RejectsStorageContentsInWorldMapMember()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var storage = CreateCompleteStorage("storage_map_contents_forbidden");
+        storage["contents"] = new JsonArray();
+        location["locationStorages"] = new JsonArray(storage);
+        location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            document.RootElement,
+            "game_state/world/world_map.json.locations[0]");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_map_storage_contents_forbidden" &&
+            issue.FilePath.EndsWith(
+                ".locationStorages[0].contents",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ValidateRawLocation_RejectsNestedClientOwnedCustomStateFields()
+    {
+        var location = MortalLocationTestFixture.CreateRawLocation();
+        location["customStates"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "weather_memory",
+            ["description"] = "Камни долго сохраняют тепло после грозы.",
+            ["details"] = new JsonObject
+            {
+                ["receiptId"] = "mlocrec_forged_nested_custom_state"
+            }
+        });
+        location["materialization"]!["sections"]!["customStates"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateRawLocation(
+            document.RootElement,
+            Context,
+            "world_map_creation");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_custom_state_authority_forbidden" &&
+            issue.FilePath.EndsWith(
+                ".customStates[0].details.receiptId",
+                StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("schemaVersion", "mortal_location_materialization_invalid_envelope")]
     [InlineData("entityKind", "mortal_location_materialization_invalid_envelope")]
@@ -303,6 +458,42 @@ public sealed class MortalLocationMaterializationContractTests
     }
 
     [Fact]
+    public void ValidateRawLink_RejectsNestedClientOwnedCustomStateFields()
+    {
+        var link = MortalLocationTestFixture.CreateRawLink(
+            MortalLocationTestFixture.LocationId,
+            TargetLocationId);
+        link["customStates"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "trail_omen",
+            ["details"] = new JsonObject
+            {
+                ["repairPacket"] = new JsonObject
+                {
+                    ["kind"] = "mortal_location_materialization_repair"
+                }
+            }
+        });
+        link["materialization"]!["sections"]!["customStates"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+
+        using var document = Parse(link);
+        var issues = MortalLocationMaterializationContract.ValidateRawLink(
+            document.RootElement,
+            "worldMapUpdates.newLinks[0]",
+            "world_map_link_creation");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_custom_state_authority_forbidden" &&
+            issue.FilePath.EndsWith(
+                ".customStates[0].details.repairPacket",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void ValidateCanonicalLink_CompleteObject_ReturnsNoIssues()
     {
         using var document = Parse(MortalLocationTestFixture.CreateCanonicalLink(
@@ -344,6 +535,43 @@ public sealed class MortalLocationMaterializationContractTests
     }
 
     [Fact]
+    public void ValidateRawLink_RejectsMalformedSecondEndpointSelector()
+    {
+        var link = MortalLocationTestFixture.CreateRawLink(
+            MortalLocationTestFixture.LocationId,
+            TargetLocationId);
+        link["sourceInitialId"] = " locref_alias ";
+
+        using var document = Parse(link);
+        var issues = MortalLocationMaterializationContract.ValidateRawLink(
+            document.RootElement,
+            "worldMapUpdates.newLinks[0]",
+            "world_map_link_creation");
+        var issue = Assert.Single(
+            issues,
+            issue => issue.Code == "mortal_location_link_endpoint_selector_invalid");
+        Assert.Equal("worldMapUpdates.newLinks[0].sourceInitialId", issue.FilePath);
+    }
+
+    [Fact]
+    public void ValidateRawLocation_RejectsMalformedSecondParentSelector()
+    {
+        var location = MortalLocationTestFixture.CreateRawLocation();
+        location["parentLocationId"] = "loc_parent_exact";
+        location["parentInitialId"] = " locref_alias ";
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateRawLocation(
+            document.RootElement,
+            Context,
+            "world_map_creation");
+        var issue = Assert.Single(
+            issues,
+            issue => issue.Code == "mortal_location_materialization_identity_conflict");
+        Assert.Equal(Context + ".parentInitialId", issue.FilePath);
+    }
+
+    [Fact]
     public void ValidateCanonicalLink_RejectsTemporaryEndpointAndReceiptMismatch()
     {
         var link = MortalLocationTestFixture.CreateCanonicalLink(
@@ -363,4 +591,18 @@ public sealed class MortalLocationMaterializationContractTests
 
     private static JsonDocument Parse(JsonObject value) =>
         JsonDocument.Parse(value.ToJsonString());
+
+    private static JsonObject CreateCompleteStorage(string storageId) =>
+        new()
+        {
+            ["storageId"] = storageId,
+            ["name"] = "Дорожный сундук",
+            ["description"] = "Прочный сундук под навесом.",
+            ["image_prompt"] = "A sturdy travel chest beneath a wooden awning, dark fantasy, no text",
+            ["capacity"] = 8,
+            ["volume"] = 40.0,
+            ["owner"] = null,
+            ["authorizedUsers"] = new JsonArray(),
+            ["hasFullAccess"] = true
+        };
 }

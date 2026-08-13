@@ -125,6 +125,10 @@ public partial class CanonicalStateNormalizer
         var locationChanged = CollectLocationMortalItemCreations(
             locationRoot,
             AddPending);
+        var offscreenLocationStorageChanged =
+            CollectOffscreenLocationStorageMortalItemCreations(
+                offscreenLocationStorageRoot,
+                AddPending);
         if (pending.Count == 0)
             return;
         if (acceptedTurn < 1)
@@ -180,6 +184,9 @@ public partial class CanonicalStateNormalizer
         npcCoreChanged |= equipmentChanges.NpcCoreChanged;
         npcCommandsChanged |= equipmentChanges.CommandsChanged;
         locationChanged |= RewriteMortalItemCreationReferences(locationRoot, creationMap);
+        offscreenLocationStorageChanged |= RewriteMortalItemCreationReferences(
+            offscreenLocationStorageRoot,
+            creationMap);
 
         var companionRoots = await ReadMortalItemCompanionRootsAsync();
         var changedCompanions = new List<KeyValuePair<string, JsonObject>>();
@@ -219,6 +226,12 @@ public partial class CanonicalStateNormalizer
             await WriteCanonicalFileAtomicAsync(
                 StorageTransportMoveService.CurrentLocationPath,
                 locationRoot.ToJsonString(JsonOpts));
+        }
+        if (offscreenLocationStorageChanged && offscreenLocationStorageRoot != null)
+        {
+            await WriteCanonicalFileAtomicAsync(
+                MortalLocationStorageContentsState.StatePath,
+                offscreenLocationStorageRoot.ToJsonString(JsonOpts));
         }
         foreach (var pair in changedCompanions)
         {
@@ -663,7 +676,7 @@ public partial class CanonicalStateNormalizer
         if (root == null)
             return false;
 
-        var location = root["currentLocationData"] as JsonObject ?? root;
+        var location = MortalItemCurrentLocationCarrier.Select(root)!;
         var locationPath = ReferenceEquals(location, root)
             ? StorageTransportMoveService.CurrentLocationPath
             : $"{StorageTransportMoveService.CurrentLocationPath}.currentLocationData";
@@ -690,6 +703,44 @@ public partial class CanonicalStateNormalizer
                 var capturedIndex = itemIndex;
                 var itemPath =
                     $"{locationPath}.locationStorages[{storageIndex}].contents[{itemIndex}]";
+                addPending(
+                    item,
+                    itemPath,
+                    canonical => contents[capturedIndex] = canonical);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    private static bool CollectOffscreenLocationStorageMortalItemCreations(
+        JsonObject? root,
+        Action<JsonObject, string, Action<JsonObject>> addPending)
+    {
+        if (root?["entries"] is not JsonArray entries)
+            return false;
+
+        var changed = false;
+        for (var entryIndex = 0; entryIndex < entries.Count; entryIndex++)
+        {
+            if (entries[entryIndex] is not JsonObject entry ||
+                entry["contents"] is not JsonArray contents)
+            {
+                continue;
+            }
+
+            for (var itemIndex = 0; itemIndex < contents.Count; itemIndex++)
+            {
+                if (contents[itemIndex] is not JsonObject item ||
+                    !IsRawMortalItemCreation(item))
+                {
+                    continue;
+                }
+
+                var capturedIndex = itemIndex;
+                var itemPath =
+                    $"{MortalLocationStorageContentsState.StatePath}.entries[{entryIndex}].contents[{itemIndex}]";
                 addPending(
                     item,
                     itemPath,

@@ -2,7 +2,7 @@
   "worldMapUpdates": {
     "storageUpdates": [
       {
-        "targetLocationId": "loc_market_square",
+        "targetLocationId": "loc_valmont_private_chambers",
         "storageId": "storage_unknown",
         "update": {}
       }

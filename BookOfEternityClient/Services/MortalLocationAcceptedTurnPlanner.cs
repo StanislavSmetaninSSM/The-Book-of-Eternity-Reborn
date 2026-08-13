@@ -238,6 +238,13 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             issues);
         var actorBindingAuthority = BuildActorBindingAuthority(input.RawNpcCore);
         var factionControlAuthority = BuildFactionControlAuthority(input.RawFactionCore);
+        foreach (var location in preTurnLocations.OfType<JsonObject>())
+        {
+            issues.AddRange(ValidateCanonicalStorageOwners(
+                location,
+                MortalLocationMaterializationContract.WorldMapPath + ".locations[]",
+                factionControlAuthority));
+        }
         ValidateLocationCompanionReferences(
             locationCandidates,
             companionAuthority,
@@ -278,9 +285,11 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         var governedCommands = ReadGovernedLocationCommands(
             updates,
             input.PreTurnCurrentLocation,
+            input.RawCurrentItemCarrier,
             preTurnStorageContents.Entries,
             preTurnLocationsById,
             locationCandidates,
+            factionControlAuthority,
             issues);
 
         BootstrapPlanningContext? bootstrap = null;
@@ -449,12 +458,17 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         var finalStorageContents = ReconcileLocationStorageContents(
             finalWorldMap,
             input.PreTurnCurrentLocation,
+            input.RawCurrentItemCarrier,
             input.PreTurnStorageContents,
             ReadExactString(finalCurrent, "locationId"),
             finalCurrent,
             issues);
         if (issues.Count != 0)
             return Failed(issues);
+
+        PreserveRawCurrentItemContents(
+            input.RawCurrentItemCarrier,
+            finalCurrent);
 
         ValidateComposedState(finalWorldMap, finalIdentityIndex, finalCurrent, issues);
         if (issues.Count != 0)
@@ -481,7 +495,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         }
         if (input.RawCurrentLocationData != null ||
             finalCurrent != null && (locationUpdates.Count > 0 || discoveryTransitions.Count > 0 ||
-                                     linkUpdates.Count > 0 || linkRemovals.Count > 0 ||
+                                     linkCandidates.Count > 0 || linkUpdates.Count > 0 ||
+                                     linkRemovals.Count > 0 ||
                                      governedCommands.HasCommands))
             touchedPaths.Add(MortalLocationMaterializationContract.CurrentLocationPath);
         if (!JsonNode.DeepEquals(preTurnStorageContents.Root, finalStorageContents))
@@ -619,6 +634,73 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         return issues;
     }
 
+    internal static IReadOnlyList<ValidationIssue> ValidateCanonicalStorageOwners(
+        JsonObject location,
+        string context,
+        JsonObject? factionRoot) =>
+        ValidateCanonicalStorageOwners(
+            location,
+            context,
+            BuildFactionControlAuthority(factionRoot));
+
+    private static IReadOnlyList<ValidationIssue> ValidateCanonicalStorageOwners(
+        JsonObject location,
+        string context,
+        FactionControlAuthority factionAuthority,
+        bool allowTemporaryFactionOwners = false)
+    {
+        var issues = new List<ValidationIssue>();
+        if (location["locationStorages"] is not JsonArray storages)
+            return issues;
+
+        for (var index = 0; index < storages.Count; index++)
+        {
+            if (storages[index] is not JsonObject storage ||
+                storage["owner"] is not JsonObject owner ||
+                !string.Equals(ReadExactString(owner, "ownerType"), "Faction", StringComparison.Ordinal) ||
+                ReadExactString(owner, "ownerId") is not { } ownerId ||
+                ReadExactString(owner, "ownerName") is not { } ownerName)
+            {
+                continue;
+            }
+
+            var resolution = factionAuthority.ResolveOwner(
+                ownerId,
+                allowTemporaryFactionOwners,
+                out var canonicalName);
+            if (resolution != MortalLocationReferenceResolution.Exact)
+            {
+                var code = resolution switch
+                {
+                    MortalLocationReferenceResolution.Confusable =>
+                        "mortal_location_storage_owner_target_confusable",
+                    MortalLocationReferenceResolution.Ambiguous =>
+                        "mortal_location_storage_owner_target_ambiguous",
+                    _ => "mortal_location_storage_owner_target_unknown"
+                };
+                issues.Add(Issue(
+                    $"{context}.locationStorages[{index}].owner.ownerId",
+                    code,
+                    "Faction-owned storage must resolve to one exact accepted permanent Mortal faction.",
+                    "one exact permanent factionId",
+                    ownerId));
+                continue;
+            }
+
+            if (!string.Equals(ownerName, canonicalName, StringComparison.Ordinal))
+            {
+                issues.Add(Issue(
+                    $"{context}.locationStorages[{index}].owner.ownerName",
+                    "mortal_location_storage_owner_name_mismatch",
+                    "Faction-owned storage must preserve the exact canonical faction name.",
+                    canonicalName ?? "one exact canonical faction name",
+                    ownerName));
+            }
+        }
+
+        return issues;
+    }
+
     private static IReadOnlyList<MortalLocationGovernedRewrite> BuildNpcLocationRewrites(
         JsonObject? npcRoot,
         IReadOnlyDictionary<string, string> locationIdsByInitialId,
@@ -715,6 +797,11 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             issues.AddRange(authority.ValidateLoreBindings(candidate.Raw, candidate.Context));
             ValidateAndRewriteActorBindings(candidate, actorAuthority, issues);
             ValidateAndRewriteFactionControls(candidate, factionAuthority, issues);
+            issues.AddRange(ValidateCanonicalStorageOwners(
+                candidate.Raw,
+                candidate.Context,
+                factionAuthority,
+                allowTemporaryFactionOwners: true));
         }
     }
 
@@ -1085,7 +1172,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                     !faction.ContainsKey("initialId") &&
                     HasExactMortalFactionEnvelope(faction, factionId))
                 {
-                    authority.AddPermanent(factionId);
+                    authority.AddPermanent(factionId, ReadExactString(faction, "name"));
                 }
             }
         }
@@ -1102,7 +1189,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                     isNewFaction &&
                     HasExactMortalFactionEnvelope(faction, initialId))
                 {
-                    authority.AddTemporary(initialId);
+                    authority.AddTemporary(initialId, ReadExactString(faction, "name"));
                 }
             }
         }
@@ -2128,6 +2215,19 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                 continue;
             }
 
+            if (update["customStates"] is JsonNode customStatesNode)
+            {
+                using var customStatesDocument = JsonDocument.Parse(customStatesNode.ToJsonString());
+                var customStateIssues = MortalLocationCustomStateContract.Validate(
+                    customStatesDocument.RootElement,
+                    context + ".customStates");
+                if (customStateIssues.Count != 0)
+                {
+                    issues.AddRange(customStateIssues);
+                    continue;
+                }
+            }
+
             result.Add(new LocationUpdate(update.DeepClone().AsObject(), context, locationId));
         }
         return result;
@@ -3119,6 +3219,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
     private static JsonObject ReconcileLocationStorageContents(
         JsonObject finalWorldMap,
         JsonObject? preTurnCurrent,
+        JsonObject? rawCurrentItemCarrier,
         JsonObject? preTurnOffscreen,
         string? selectedLocationId,
         JsonObject? finalCurrent,
@@ -3165,7 +3266,13 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                                    preTurnLocationId,
                                    selectedLocationId,
                                    StringComparison.Ordinal);
-        if (selectionChanged && preTurnCurrent?["locationStorages"] is JsonArray sourceStorages)
+        var sourceItemCarrier = string.Equals(
+                ReadExactString(rawCurrentItemCarrier, "locationId"),
+                preTurnLocationId,
+                StringComparison.Ordinal)
+            ? rawCurrentItemCarrier
+            : preTurnCurrent;
+        if (selectionChanged && sourceItemCarrier?["locationStorages"] is JsonArray sourceStorages)
         {
             foreach (var storage in sourceStorages.OfType<JsonObject>())
             {
@@ -3215,6 +3322,41 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             return;
         foreach (var storage in storages.OfType<JsonObject>())
             storage.Remove("contents");
+    }
+
+    private static void PreserveRawCurrentItemContents(
+        JsonObject? rawCurrentItemCarrier,
+        JsonObject? finalCurrent)
+    {
+        var rawLocationId = ReadExactString(rawCurrentItemCarrier, "locationId");
+        if (rawLocationId == null ||
+            finalCurrent == null ||
+            !string.Equals(
+                rawLocationId,
+                ReadExactString(finalCurrent, "locationId"),
+                StringComparison.Ordinal) ||
+            rawCurrentItemCarrier!["locationStorages"] is not JsonArray rawStorages ||
+            finalCurrent["locationStorages"] is not JsonArray finalStorages)
+        {
+            return;
+        }
+
+        foreach (var finalStorage in finalStorages.OfType<JsonObject>())
+        {
+            var storageId = ReadExactString(finalStorage, "storageId");
+            if (storageId == null)
+                continue;
+            var matches = rawStorages
+                .OfType<JsonObject>()
+                .Where(storage => string.Equals(
+                    ReadExactString(storage, "storageId"),
+                    storageId,
+                    StringComparison.Ordinal))
+                .Take(2)
+                .ToArray();
+            if (matches.Length == 1 && matches[0]["contents"] is JsonArray contents)
+                finalStorage["contents"] = contents.DeepClone();
+        }
     }
 
     private static IReadOnlyList<MortalLocationStorageCoordinate> BuildAcceptedStorageCoordinates(
@@ -3532,10 +3674,62 @@ internal static partial class MortalLocationAcceptedTurnPlanner
     {
         private readonly ExactIdentityIndex _permanent = new();
         private readonly ExactIdentityIndex _temporary = new();
+        private readonly Dictionary<string, HashSet<string>> _permanentNames =
+            new(StringComparer.Ordinal);
+        private readonly Dictionary<string, HashSet<string>> _temporaryNames =
+            new(StringComparer.Ordinal);
 
-        internal void AddPermanent(string identity) => _permanent.Add(identity);
+        internal void AddPermanent(string identity, string? name)
+        {
+            _permanent.Add(identity);
+            if (name == null)
+                return;
+            AddName(_permanentNames, identity, name);
+        }
 
-        internal void AddTemporary(string identity) => _temporary.Add(identity);
+        internal void AddTemporary(string identity, string? name)
+        {
+            _temporary.Add(identity);
+            if (name != null)
+                AddName(_temporaryNames, identity, name);
+        }
+
+        internal MortalLocationReferenceResolution ResolveOwner(
+            string identity,
+            bool allowTemporary,
+            out string? canonicalName)
+        {
+            canonicalName = null;
+            var permanentResolution = _permanent.Resolve(identity);
+            var temporaryResolution = allowTemporary
+                ? _temporary.Resolve(identity)
+                : MortalLocationReferenceResolution.Missing;
+            var resolution = allowTemporary
+                ? ResolveEffective(identity)
+                : permanentResolution;
+            if (resolution != MortalLocationReferenceResolution.Exact)
+                return resolution;
+            var names = permanentResolution == MortalLocationReferenceResolution.Exact
+                ? _permanentNames.GetValueOrDefault(identity)
+                : _temporaryNames.GetValueOrDefault(identity);
+            if (names == null || names.Count != 1)
+                return MortalLocationReferenceResolution.Ambiguous;
+            canonicalName = names.Single();
+            return MortalLocationReferenceResolution.Exact;
+        }
+
+        private static void AddName(
+            Dictionary<string, HashSet<string>> namesByIdentity,
+            string identity,
+            string name)
+        {
+            if (!namesByIdentity.TryGetValue(identity, out var names))
+            {
+                names = new HashSet<string>(StringComparer.Ordinal);
+                namesByIdentity.Add(identity, names);
+            }
+            names.Add(name);
+        }
 
         internal MortalLocationReferenceResolution Resolve(
             string identity,

@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.UI;
 
@@ -13,6 +14,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
     private const string ProgressionPath = "game_state/world/progression.json";
     private const string CurrentLocationPath = "game_state/world/current_location.json";
     private const string WorldMapPath = "game_state/world/world_map.json";
+    private const string LocationIdentityIndexPath = MortalLocationIdentityState.StatePath;
     private const string NpcActivitiesPath = "game_state/npcs/npc_activities.json";
     private const string FactionProjectsPath = "game_state/factions/faction_projects.json";
     private static readonly HashSet<string> EmptyConsumedDetailFields = new(StringComparer.OrdinalIgnoreCase);
@@ -27,13 +29,18 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             await ReadJson(fs, ProgressionPath),
             await ReadJson(fs, CurrentLocationPath),
             await ReadJson(fs, WorldMapPath),
+            await ReadJson(fs, LocationIdentityIndexPath),
             await ReadJson(fs, NpcActivitiesPath),
             await ReadJson(fs, FactionProjectsPath));
 
-        var events = EnumerateWorldEvents(state.Events.Node).ToList();
+        var locations = MortalLocationPlayerProjection.Create(
+            state.WorldMap.Node,
+            state.CurrentLocation.Node,
+            state.LocationIdentityIndex.Node);
+        var events = EnumerateWorldEvents(state.Events.Node, locations).ToList();
         var flags = EnumerateWorldFlags(state.Flags.Node).ToList();
         var progression = EnumerateProgressionEntries(state.Progression.Node).ToList();
-        var threats = EnumerateLocationThreats(state.CurrentLocation.Node, state.WorldMap.Node).ToList();
+        var threats = EnumerateLocationThreats(locations).ToList();
         var npcActivities = EnumerateNpcActivities(state.NpcActivities.Node).ToList();
         var factionProjects = EnumerateFactionProjects(state.FactionProjects.Node).ToList();
         var request = ParseWorldNewsDetailRequest(ExtractCommandRemainder(normalizedCommand));
@@ -587,10 +594,18 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         string.Join(" ", value
             .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
 
-    private static IEnumerable<WorldEventSnapshot> EnumerateWorldEvents(JsonNode? node)
+    private static IEnumerable<WorldEventSnapshot> EnumerateWorldEvents(
+        JsonNode? node,
+        MortalLocationPlayerCatalog locations)
     {
         var index = 0;
-        foreach (var item in EnumerateWorldNewsObjects(node, "worldEventsLog", "events", "worldEvents", "entries", "eventLog"))
+        foreach (var item in EnumerateWorldNewsSourceObjects(
+                     node,
+                     "worldEventsLog",
+                     "events",
+                     "worldEvents",
+                     "entries",
+                     "eventLog"))
         {
             index++;
             var title = FirstNonEmpty(
@@ -600,7 +615,11 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             var selector = NormalizeWorldNewsSelector(FirstNonEmpty(
                 FirstWorldNewsNodeString(item, "eventId", "worldEventId", "id", "key"),
                 index.ToString()));
-            yield return new WorldEventSnapshot(index, selector, title, item);
+            yield return new WorldEventSnapshot(
+                index,
+                selector,
+                title,
+                ProjectWorldEventLocations(item, locations));
         }
     }
 
@@ -644,29 +663,27 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         }
     }
 
-    private static IEnumerable<LocationThreatSnapshot> EnumerateLocationThreats(JsonNode? currentLocation, JsonNode? worldMap)
+    private static IEnumerable<LocationThreatSnapshot> EnumerateLocationThreats(
+        MortalLocationPlayerCatalog locations)
     {
-        foreach (var threat in EnumerateThreatsForLocation(currentLocation))
-            yield return threat;
-
-        if (worldMap is not JsonObject root)
-            yield break;
-
-        var mapRoot = root["worldMapUpdates"] as JsonObject ?? root;
-        foreach (var location in EnumerateWorldNewsObjects(mapRoot, "newLocations", "locationUpdates", "locations"))
+        foreach (var location in locations.Locations.Where(static location =>
+                     location.DiscoveryTier is "discovered" or "visited"))
         {
-            foreach (var threat in EnumerateThreatsForLocation(location))
+            foreach (var threat in EnumerateThreatsForLocation(location.Data, location.Label))
                 yield return threat;
         }
     }
 
-    private static IEnumerable<LocationThreatSnapshot> EnumerateThreatsForLocation(JsonNode? node)
+    private static IEnumerable<LocationThreatSnapshot> EnumerateThreatsForLocation(
+        JsonNode? node,
+        string? acceptedLocationLabel = null)
     {
         var location = ResolveLocationRoot(node);
         if (location == null)
             yield break;
 
         var locationName = FirstNonEmpty(
+            acceptedLocationLabel,
             FirstWorldNewsNodeString(location, "name", "locationName", "title"),
             "Неизвестная локация");
         foreach (var threat in EnumerateWorldNewsObjects(location["activeThreats"], "activeThreats", "threats", "entries"))
@@ -726,7 +743,10 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         if (node is JsonArray array)
         {
             foreach (var item in array.OfType<JsonObject>())
-                yield return item;
+            {
+                if (ProjectWorldNewsObject(item) is { } projected)
+                    yield return projected;
+            }
             yield break;
         }
 
@@ -741,6 +761,90 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             if (value is JsonArray nestedArray)
             {
                 foreach (var item in nestedArray.OfType<JsonObject>())
+                {
+                    if (ProjectWorldNewsObject(item) is { } projected)
+                        yield return projected;
+                }
+            }
+            else if (value is JsonObject nestedObject)
+            {
+                if (ProjectWorldNewsObject(nestedObject) is { } projected)
+                    yield return projected;
+            }
+        }
+    }
+
+    private static JsonObject ProjectWorldEventLocations(
+        JsonObject source,
+        MortalLocationPlayerCatalog locations)
+    {
+        var projected = ProjectWorldNewsObject(source) ?? new JsonObject();
+        projected.Remove("location");
+        projected.Remove("eventLocation");
+        projected.Remove("locationName");
+        projected.Remove("region");
+
+        var directLocationId = ReadExactString(source, "locationId");
+        projected.Remove("locationId");
+        if (directLocationId != null &&
+            locations.TryGetLocation(directLocationId, out var directLocation) &&
+            directLocation?.DiscoveryTier is "discovered" or "visited")
+        {
+            projected["location"] = directLocation.Label;
+        }
+
+        if (source["affectedLocations"] is not JsonArray affectedLocations)
+            return projected;
+
+        var accepted = new JsonArray();
+        foreach (var candidate in affectedLocations.OfType<JsonObject>())
+        {
+            var locationId = ReadExactString(candidate, "locationId");
+            if (locationId == null ||
+                !locations.TryGetLocation(locationId, out var location) ||
+                location?.DiscoveryTier is not ("discovered" or "visited"))
+            {
+                continue;
+            }
+
+            var safe = new JsonObject { ["locationName"] = location.Label };
+            var semantic = MortalItemPlayerProjection.CloneMortalMaterializationSemanticValue(candidate);
+            if (semantic is JsonObject semanticObject)
+            {
+                foreach (var property in semanticObject)
+                {
+                    if (property.Key is "locationId" or "locationName" or "name")
+                        continue;
+                    safe[property.Key] = property.Value?.DeepClone();
+                }
+            }
+            accepted.Add(safe);
+        }
+        projected["affectedLocations"] = accepted;
+        return projected;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateWorldNewsSourceObjects(
+        JsonNode? node,
+        params string[] propertyNames)
+    {
+        if (node is JsonArray array)
+        {
+            foreach (var item in array.OfType<JsonObject>())
+                yield return item;
+            yield break;
+        }
+
+        if (node is not JsonObject root)
+            yield break;
+
+        foreach (var propertyName in propertyNames)
+        {
+            if (!root.TryGetPropertyValue(propertyName, out var value) || value == null)
+                continue;
+            if (value is JsonArray nestedArray)
+            {
+                foreach (var item in nestedArray.OfType<JsonObject>())
                     yield return item;
             }
             else if (value is JsonObject nestedObject)
@@ -749,6 +853,21 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
             }
         }
     }
+
+    private static string? ReadExactString(JsonObject root, string fieldName)
+    {
+        if (root[fieldName] is not JsonValue value ||
+            !value.TryGetValue<string>(out var text) ||
+            string.IsNullOrEmpty(text) ||
+            !string.Equals(text, text.Trim(), StringComparison.Ordinal))
+        {
+            return null;
+        }
+        return text;
+    }
+
+    private static JsonObject? ProjectWorldNewsObject(JsonObject source) =>
+        MortalItemPlayerProjection.CloneMortalMaterializationSemanticValue(source) as JsonObject;
 
     private static IEnumerable<(string Scope, JsonObject Item)> EnumerateProgressionObjects(JsonNode? node)
     {
@@ -1450,6 +1569,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         AddWorldNewsReadWarning(blocks, state.Progression, "прогресса мира");
         AddWorldNewsReadWarning(blocks, state.CurrentLocation, "текущей локации");
         AddWorldNewsReadWarning(blocks, state.WorldMap, "карты мира");
+        AddWorldNewsReadWarning(blocks, state.LocationIdentityIndex, "индекса локаций");
         AddWorldNewsReadWarning(blocks, state.NpcActivities, "активностей НПС");
         AddWorldNewsReadWarning(blocks, state.FactionProjects, "проектов фракций");
     }
@@ -1514,6 +1634,7 @@ internal static class ExplorerMortalWorldNewsCommandResultBuilder
         JsonReadResult Progression,
         JsonReadResult CurrentLocation,
         JsonReadResult WorldMap,
+        JsonReadResult LocationIdentityIndex,
         JsonReadResult NpcActivities,
         JsonReadResult FactionProjects);
 

@@ -51,20 +51,11 @@ public sealed partial class CanonicalStateNormalizerTests
                 ["marker"] = "RAW_STORAGE_CONTENT"
             });
         raw["locationStorages"] = new JsonArray(
-            new JsonObject
-            {
-                ["storageId"] = "storage_black_ford_chest",
-                ["name"] = "Сундук у брода",
-                ["description"] = "Закрытый дорожный сундук.",
-                ["ownerActorId"] = null,
-                ["capacity"] = new JsonObject { ["slots"] = 8 },
-                ["access"] = new JsonObject
-                {
-                    ["state"] = "open",
-                    ["reason"] = null
-                },
-                ["contents"] = rawContents.DeepClone()
-            });
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_black_ford_chest",
+                "Сундук у брода",
+                hasFullAccess: true,
+                contents: rawContents));
         raw["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
         {
             ["disposition"] = "populated",
@@ -184,6 +175,59 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal(canonicalLink["sourceLocationId"]!.GetValue<string>(), linkEntry["sourceLocationId"]!.GetValue<string>());
         Assert.Equal(canonicalLink["targetLocationId"]!.GetValue<string>(), linkEntry["targetLocationId"]!.GetValue<string>());
         Assert.Null(await context.ReadJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath));
+    }
+
+    [Fact]
+    public async Task MortalLocations_NewLinkRefreshesDerivedCurrentTopology()
+    {
+        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        var source = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_topology_source",
+            "Площадь у ворот");
+        var target = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_topology_target",
+            "Старая башня",
+            discoveryTier: "discovered",
+            x: 1);
+        var map = MortalLocationTestFixture.CreateWorldMap(source, target);
+        var current = MortalLocationTestFixture.CreateCurrentProjection(source);
+        var index = MortalLocationTestFixture.CreateIdentityIndex(source);
+        index["locationEntries"]!.AsArray().Add(
+            MortalLocationTestFixture.CreateIdentityIndex(target)
+                ["locationEntries"]![0]!.DeepClone());
+        var backups = await WriteMortalLocationBaselineAsync(
+            context,
+            map,
+            current,
+            index);
+        await WriteAcceptedTurnAsync(context);
+        await context.WriteJsonAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            current);
+        await context.WriteJsonAsync(MortalLocationIdentityState.StatePath, index);
+        var link = MortalLocationTestFixture.CreateRawLink(
+            "loc_topology_source",
+            "loc_topology_target");
+        map["worldMapUpdates"] = new JsonObject
+        {
+            ["newLinks"] = new JsonArray(link)
+        };
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
+
+        await context.Normalizer.NormalizeMortalLocationsAsync(backups);
+
+        var acceptedCurrent = (await context.ReadJsonAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath))!.AsObject();
+        var exits = Assert.IsType<JsonArray>(acceptedCurrent["knownExits"]);
+        Assert.Contains(
+            "на северо-восток",
+            exits.Select(static value => value!.GetValue<string>()));
+        var adjacency = Assert.Single(
+            Assert.IsType<JsonArray>(acceptedCurrent["adjacencyMap"])
+                .OfType<JsonObject>());
+        Assert.Equal(
+            "loc_topology_target",
+            adjacency["targetLocationId"]!.GetValue<string>());
     }
 
     [Fact]

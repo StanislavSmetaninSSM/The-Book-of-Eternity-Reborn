@@ -914,11 +914,41 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
           ]
         }
         """);
-        await WriteJsonAsync("game_state/world/current_location.json", new
+        var marketLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_market_square",
+            "Рыночная площадь",
+            x: 0,
+            y: 0,
+            z: 0);
+        var currentLocation = locationMatches
+            ? marketLocation
+            : MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+                "loc_other_square",
+                "Другая площадь",
+                x: 1,
+                y: 0,
+                z: 0);
+        var locations = locationMatches
+            ? new[] { marketLocation }
+            : new[] { marketLocation, currentLocation };
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(currentLocation)
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(locations)
+                .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var locationIndex = MortalLocationTestFixture.CreateIdentityIndex(marketLocation);
+        if (!locationMatches)
         {
-            locationId = locationMatches ? "loc_market_square" : "loc_other_square",
-            name = locationMatches ? "Рыночная площадь" : "Другая площадь"
-        });
+            var otherEntry = MortalLocationTestFixture.CreateIdentityIndex(currentLocation)
+                ["locationEntries"]![0]!.DeepClone();
+            locationIndex["locationEntries"]!.AsArray().Add(otherEntry);
+        }
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            locationIndex.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteJsonAsync("game_state/core/player_status.json", new
         {
             money = 500,
@@ -941,12 +971,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         type = "tool"
                     }
                 },
-                equipment = new { }
+                equippedItems = new { }
             }
             : new
             {
                 items = Array.Empty<object>(),
-                equipment = new { }
+                equippedItems = new { }
             });
 
         var soldItem = includeSellableInventoryItem
@@ -1000,7 +1030,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 ["items"] = soldItem == null
                     ? new JsonArray()
                     : new JsonArray(soldItem.DeepClone()),
-                ["equipment"] = new JsonObject()
+                ["equippedItems"] = new JsonObject()
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
         var indexedCarriers = new List<(JsonObject Item, string Kind, string OwnerId, string? ContainerId)>();

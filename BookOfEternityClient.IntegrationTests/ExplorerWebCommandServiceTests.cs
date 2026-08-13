@@ -631,6 +631,7 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.Contains("проверить печать на письме", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ставки", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("рынок может вспыхнуть", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Свидетели всё ещё помнят серебряную печать", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Свидетель", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Старый писарь", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("видел курьера у северных ворот", text, StringComparison.OrdinalIgnoreCase);
@@ -654,6 +655,9 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.DoesNotContain("statePath", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("sourceFile", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("sourceUrl", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("PRIVATE_BROWSER_WORLD_NEWS_LOCATION_REPAIR", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("rawCoordinate", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -954,6 +958,216 @@ public sealed class ExplorerWebCommandServiceTests :
         AssertNoFlattenedStructuredDetails(result);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Locations_UsesAcceptedDiscoveryProjectionAndExactSelectors()
+    {
+        var current = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_current",
+            "Текущий двор картографа",
+            "visited",
+            x: 1,
+            y: 1);
+        var discovered = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_discovered",
+            "Открытая башня картографа",
+            "discovered",
+            x: 2,
+            y: 1);
+        var rumored = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_rumored",
+            "Переправа из осторожных слухов",
+            "rumored",
+            x: 3,
+            y: 1);
+        var hidden = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_hidden",
+            "НЕ ПОКАЗЫВАТЬ СКРЫТУЮ БАШНЮ",
+            "hidden",
+            x: 4,
+            y: 1);
+        var rejected = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_rejected",
+            "НЕ ПОКАЗЫВАТЬ ОТКЛОНЁННЫЙ ДВОР",
+            "visited",
+            x: 5,
+            y: 1);
+        rejected.Remove("materializationReceipt");
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [current, discovered, rumored, hidden, rejected],
+            MortalLocationTestFixture.CreateCurrentProjection(current),
+            [current, discovered, rumored, hidden]);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/локации"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Текущий двор картографа", text, StringComparison.Ordinal);
+        Assert.Contains("Открытая башня картографа", text, StringComparison.Ordinal);
+        Assert.Contains("Переправа из осторожных слухов", text, StringComparison.Ordinal);
+        Assert.Contains("слух", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("НЕ ПОКАЗЫВАТЬ", payload, StringComparison.Ordinal);
+        Assert.Contains(result.Actions, action =>
+            string.Equals(action.Command, "/локации локация loc_browser_discovered", StringComparison.Ordinal));
+        Assert.DoesNotContain(result.Actions, action =>
+            action.Command.Contains("loc_browser_rumored", StringComparison.Ordinal));
+
+        var wrongCase = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/локации локация LOC_BROWSER_DISCOVERED"));
+        Assert.DoesNotContain(
+            "Открытая башня картографа",
+            CollectBlockText(wrongCase.Blocks),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhereAmI_UsesCanonicalCurrentSchemaDifficultyProjection()
+    {
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_current_difficulty",
+            "Точный брод браузера",
+            "visited",
+            x: 8,
+            y: 3);
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [canonical],
+            MortalLocationTestFixture.CreateCurrentProjection(canonical),
+            [canonical]);
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/where_am_i", AdvancedEnabled: false));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Точный брод браузера", text, StringComparison.Ordinal);
+        Assert.Contains("Сложность (для своих)", text, StringComparison.Ordinal);
+        Assert.Contains("низкая", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рекомендуемый уровень", text, StringComparison.Ordinal);
+        Assert.Contains("1", text, StringComparison.Ordinal);
+        Assert.Contains("На переправе нет постоянной внутренней угрозы", text, StringComparison.Ordinal);
+        Assert.Contains("Сложность (для чужих)", text, StringComparison.Ordinal);
+        Assert.Contains("средняя", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("За бродом тракт становится опаснее", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("moderate", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("materializationReceipt", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("location_identity_index", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhereAmI_FailsClosedWhenCurrentProjectionDiffersFromMap()
+    {
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_current_mismatch",
+            "Канонический двор браузера",
+            "visited",
+            x: 11,
+            y: 4);
+        var current = MortalLocationTestFixture.CreateCurrentProjection(canonical);
+        current["name"] = "НЕ ПОКАЗЫВАТЬ ПОДМЕНЁННЫЙ ДВОР";
+        await WriteCanonicalBrowserMortalLocationStateAsync([canonical], current, [canonical]);
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/where_am_i", AdvancedEnabled: false));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Местоположение неизвестно", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("НЕ ПОКАЗЫВАТЬ", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Канонический двор браузера", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_LocationStorages_ProjectsAcceptedItemsAndRequiresExactLocationSelector()
+    {
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_storage",
+            "Двор браузерного ларя",
+            "visited",
+            x: 14,
+            y: 5);
+        canonical["locationStorages"] = new JsonArray(new JsonObject
+        {
+            ["storageId"] = "storage_browser_chest",
+            ["name"] = "Ларь под навесом",
+            ["hasFullAccess"] = true
+        });
+        canonical["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(canonical);
+        var accepted = MortalItemTestFixture.CreateCanonicalRoot("itm_browser_location_storage");
+        accepted["name"] = "Принятый журнал из ларя";
+        MortalItemTestFixture.ResealCanonical(accepted);
+        var rejected = MortalItemTestFixture.CreateRawRoot(
+            creationRef: "new_item_browser_location_storage",
+            materializationId: "mat_item_browser_location_storage");
+        rejected["name"] = "PRIVATE_RAW_BROWSER_LOCATION_SCROLL";
+        var current = MortalLocationTestFixture.CreateCurrentProjection(canonical);
+        current["locationStorages"]![0]!["contents"] = new JsonArray(accepted, rejected);
+        await WriteCanonicalBrowserMortalLocationStateAsync([canonical], current, [canonical]);
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/локации хранилища loc_browser_storage"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Contains("Принятый журнал из ларя", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_RAW_BROWSER_LOCATION_SCROLL", payload, StringComparison.Ordinal);
+
+        var wrongCase = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/локации хранилища LOC_BROWSER_STORAGE"));
+        Assert.DoesNotContain(
+            "Принятый журнал из ларя",
+            CollectBlockText(wrongCase.Blocks),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_LocationDetail_DerivesOneWayExitFromAcceptedCanonicalLink()
+    {
+        var source = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_link_source",
+            "Площадь у башни",
+            "visited",
+            x: 20,
+            y: 7);
+        var target = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_browser_link_target",
+            "Северная башня",
+            "discovered",
+            x: 21,
+            y: 7);
+        var link = MortalLocationTestFixture.CreateCanonicalLink(
+            "loc_browser_link_source",
+            "loc_browser_link_target");
+        link["directionLabel"] = "на север";
+        link["description"] = "Тропа поднимается вдоль старой стены.";
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [source, target],
+            MortalLocationTestFixture.CreateCurrentProjection(source),
+            [source, target],
+            [link]);
+
+        var sourceResult = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/локации локация loc_browser_link_source"));
+        var sourceText = CollectBlockText(sourceResult.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, sourceResult.State);
+        Assert.Contains("Выходы", sourceText, StringComparison.Ordinal);
+        Assert.Contains("Северная башня", sourceText, StringComparison.Ordinal);
+        Assert.Contains("на север", sourceText, StringComparison.Ordinal);
+        Assert.Contains("Тропа поднимается вдоль старой стены", sourceText, StringComparison.Ordinal);
+
+        var targetResult = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/локации локация loc_browser_link_target"));
+        var targetText = CollectBlockText(targetResult.Blocks);
+        Assert.DoesNotContain("Площадь у башни", targetText, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("/квесты квест quest_winged_seal", "Квест: Печать с крыльями", "вернуть письмо")]
     [InlineData("/навыки навык skill_arcane_sense", "Навык: Чувство магических потоков", "Видит слабые печати")]
@@ -1035,7 +1249,16 @@ public sealed class ExplorerWebCommandServiceTests :
                       { "itemName": "PRIVATE_BROWSER_QUEST_REMOVAL" }
                     ]
                   }
-                ]
+                ],
+                "futureBlessing": {
+                  "visibleMeaning": "Архивный мастер вспомнит о герое.",
+                  "operatorPacket": {
+                    "kind": "mortal_location_materialization_repair",
+                    "title": "Скрытая операторская починка локации",
+                    "rawCoordinate": "worldMapUpdates.newLocations[0]",
+                    "targetFiles": [ "game_state/world/world_map.json" ]
+                  }
+                }
               },
               "detailsLog": [
                 {
@@ -1056,7 +1279,10 @@ public sealed class ExplorerWebCommandServiceTests :
         var command = "/квесты квест quest_archive_escape";
         var directResult = await BuildDirectMigratedResultAsync(command);
         var directText = CollectBlockText(directResult.Blocks);
+        var directPayload = SerializeResult(directResult);
         Assert.DoesNotContain("Скрытый маршрут выдачи награды", directText, StringComparison.Ordinal);
+        Assert.DoesNotContain("Скрытая операторская починка локации", directPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", directPayload, StringComparison.Ordinal);
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -1078,6 +1304,7 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.Contains("Возможные действия", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ключ архивного мастера", text, StringComparison.Ordinal);
         Assert.Contains("На ключе виден герб старого архива", text, StringComparison.Ordinal);
+        Assert.Contains("Архивный мастер вспомнит о герое", text, StringComparison.Ordinal);
         Assert.Contains("Мира нашла след архивной печати", text, StringComparison.Ordinal);
         Assert.DoesNotContain("деталь", text, StringComparison.OrdinalIgnoreCase);
         AssertNoFlattenedStructuredDetails(result);
@@ -1085,6 +1312,9 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.DoesNotContain("Скрытая развязка", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Скрытый маршрут выдачи награды", text, StringComparison.Ordinal);
         Assert.DoesNotContain("PRIVATE_BROWSER_QUEST_", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("Скрытая операторская починка локации", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("rawCoordinate", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/quests", payload, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -1792,36 +2022,54 @@ public sealed class ExplorerWebCommandServiceTests :
     public async Task ExecuteAsync_WhereAmI_RendersLocationContextWithoutRawJson()
     {
         await SeedUniversalMetaFilesAsync();
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_north_gate",
+            "Северные ворота",
+            "visited",
+            x: 4,
+            y: 8);
+        location["region"] = "Купеческий квартал";
+        location["locationType"] = "outdoor";
+        location["biome"] = "stone_city";
+        location["biomeDescription"] = "Каменная городская стена и мощёная дорога под аркой.";
+        location["description"] = "Под аркой пахнет мокрым камнем и конской сбруей.";
+        location["features"] = new JsonArray(
+            "Тайные ходы под караульней",
+            "Смотровая площадка над рынком");
+        location["factionControl"] = new JsonArray(new JsonObject
         {
-          "currentLocationData": {
-            "locationId": "loc_north_gate",
-            "name": "Северные ворота",
-            "region": "Купеческий квартал",
-            "locationType": "городские ворота",
-            "biome": "каменный город",
-            "description": "Под аркой пахнет мокрым камнем и конской сбруей.",
-            "features": [ "Тайные ходы под караульней", "Смотровая площадка над рынком" ],
-            "factionControl": [
-              {
-                "factionName": "Купеческая гильдия",
-                "controlLevel": 62,
-                "controlType": "торговые патрули"
-              }
-            ],
-            "activeThreats": [
-              {
-                "threatId": "gate_pickpockets",
-                "threatName": "Карманники у ворот",
-                "intensity": 3,
-                "longTermGoal": "выследить владельца рунической перчатки",
-                "currentActivity": { "activityName": "проверяют путников у лавок" }
-              }
-            ],
-            "lastEventsDescription": "После ночного письма стража проверяет печати на повозках."
-          }
-        }
-        """);
+            ["factionId"] = "fac_merchants_guild",
+            ["factionName"] = "Купеческая гильдия",
+            ["controlLevel"] = 62,
+            ["controlType"] = "торговые патрули"
+        });
+        location["activeThreats"] = new JsonArray(new JsonObject
+        {
+            ["threatId"] = "gate_pickpockets",
+            ["threatName"] = "Карманники у ворот",
+            ["intensity"] = 3,
+            ["longTermGoal"] = "выследить владельца рунической перчатки",
+            ["currentActivity"] = new JsonObject
+            {
+                ["activityName"] = "проверяют путников у лавок"
+            }
+        });
+        location["lastEventsDescription"] = "После ночного письма стража проверяет печати на повозках.";
+        location["materialization"]!["sections"]!["factionControl"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        location["materialization"]!["sections"]!["activeThreats"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [location],
+            MortalLocationTestFixture.CreateCurrentProjection(location),
+            [location]);
         await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
         {
           "year": 124,
@@ -1864,15 +2112,167 @@ public sealed class ExplorerWebCommandServiceTests :
     }
 
     [Fact]
+    public async Task ExecuteAsync_WhereAmI_SuppressesNestedLocationRepairPackets()
+    {
+        await SeedUniversalMetaFilesAsync();
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        location["features"] = new JsonArray
+        {
+            "Старинный колодец",
+            new JsonObject
+            {
+                ["name"] = "Каменная арка",
+                ["details"] = new JsonObject
+                {
+                    ["kind"] = "mortal_location_materialization_repair",
+                    ["title"] = "PRIVATE_BROWSER_NESTED_LOCATION_REPAIR",
+                    ["rawCoordinate"] = "worldMapUpdates.newLocations[0]",
+                    ["targetFiles"] = new JsonArray(MortalLocationMaterializationContract.WorldMapPath)
+                }
+            },
+            new JsonObject
+            {
+                ["kind"] = "mortal_location_materialization_repair",
+                ["title"] = "PRIVATE_BROWSER_DIRECT_LOCATION_REPAIR",
+                ["rawCoordinate"] = "worldMapUpdates.newLocations[0]",
+                ["targetFiles"] = new JsonArray(MortalLocationMaterializationContract.WorldMapPath)
+            },
+            CreatePrivateBrowserValidationRepairRequest(),
+            CreatePrivateBrowserValidationDiagnosticReport()
+        };
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
+
+        var result = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/where_am_i", AdvancedEnabled: false));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Старинный колодец", text, StringComparison.Ordinal);
+        Assert.Contains("Каменная арка", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_BROWSER", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", payload, StringComparison.Ordinal);
+        Assert.DoesNotContain("rawCoordinate", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("gmInstructions", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("fullTurnResubmissionRequired", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rollbackAvailable", payload, StringComparison.OrdinalIgnoreCase);
+
+        var mapResult = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/map", AdvancedEnabled: false));
+        var mapPayload = SerializeResult(mapResult);
+        Assert.Equal(CommandExecutionState.Completed, mapResult.State);
+        Assert.DoesNotContain("PRIVATE_BROWSER", mapPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("mortal_location_materialization_repair", mapPayload, StringComparison.Ordinal);
+        Assert.DoesNotContain("rawCoordinate", mapPayload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("gmInstructions", mapPayload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rollbackAvailable", mapPayload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task WriteCanonicalBrowserMortalLocationStateAsync(
+        IReadOnlyCollection<JsonObject> mapLocations,
+        JsonObject current,
+        IReadOnlyCollection<JsonObject> indexedLocations,
+        IReadOnlyCollection<JsonObject>? links = null)
+    {
+        var canonicalLinks = links ?? Array.Empty<JsonObject>();
+        var map = MortalLocationTestFixture.CreateWorldMap(mapLocations.ToArray());
+        map["links"] = new JsonArray(
+            canonicalLinks.Select(static link => (JsonNode?)link.DeepClone()).ToArray());
+        var index = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["realm"] = "mortal_world",
+            ["locationEntries"] = new JsonArray(),
+            ["linkEntries"] = new JsonArray()
+        };
+        foreach (var location in indexedLocations)
+        {
+            var single = MortalLocationTestFixture.CreateIdentityIndex(location);
+            index["locationEntries"]!.AsArray().Add(
+                single["locationEntries"]![0]!.DeepClone());
+        }
+        foreach (var link in canonicalLinks)
+        {
+            var sourceId = link["sourceLocationId"]!.GetValue<string>();
+            var source = indexedLocations.Single(location =>
+                string.Equals(location["locationId"]!.GetValue<string>(), sourceId, StringComparison.Ordinal));
+            var single = MortalLocationTestFixture.CreateIdentityIndex(source, link);
+            index["linkEntries"]!.AsArray().Add(
+                single["linkEntries"]![0]!.DeepClone());
+        }
+
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            map.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            current.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            index.ToJsonString());
+    }
+
+    private static JsonObject CreatePrivateBrowserValidationRepairRequest() => new()
+    {
+        ["sessionId"] = "session_private",
+        ["requestId"] = "request_private",
+        ["turnNumber"] = 42,
+        ["metadataDiagnosticOnly"] = false,
+        ["source"] = "private source",
+        ["detectedAtUtc"] = "2026-08-12T00:00:00Z",
+        ["revalidationAttempt"] = 2,
+        ["fullTurnResubmissionRequired"] = true,
+        ["gmInstructions"] = "PRIVATE_BROWSER_LOCATION_REPAIR_REQUEST",
+        ["summaryGroups"] = new JsonArray("PRIVATE_BROWSER_SUMMARY"),
+        ["harnessRepairPackets"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "mortal_location_materialization_repair",
+            ["title"] = "PRIVATE_BROWSER_WRAPPED_PACKET",
+            ["targetFiles"] = new JsonArray(MortalLocationMaterializationContract.WorldMapPath)
+        }),
+        ["errors"] = new JsonArray(new JsonObject
+        {
+            ["code"] = "mortal_location_materialization_governed_field_missing",
+            ["message"] = "PRIVATE_BROWSER_VALIDATION_MESSAGE"
+        })
+    };
+
+    private static JsonObject CreatePrivateBrowserValidationDiagnosticReport() => new()
+    {
+        ["source"] = "private source",
+        ["detectedAtUtc"] = "2026-08-12T00:00:00Z",
+        ["reason"] = "PRIVATE_BROWSER_LOCATION_DIAGNOSTIC_REPORT",
+        ["rollbackAvailable"] = true,
+        ["summaryGroups"] = new JsonArray("PRIVATE_BROWSER_DIAGNOSTIC_SUMMARY"),
+        ["errors"] = new JsonArray(new JsonObject
+        {
+            ["code"] = "accepted_turn_invalid_snapshot_baseline",
+            ["message"] = "PRIVATE_BROWSER_DIAGNOSTIC_MESSAGE"
+        })
+    };
+
+    [Fact]
     public async Task ExecuteAsync_Weather_RendersDetailedTimeAndWeatherWithoutRawJson()
     {
         await SeedUniversalMetaFilesAsync();
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "name": "Северные ворота",
-          "biome": "каменный город"
-        }
-        """);
+        var weatherLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_weather_gate",
+            "Северные ворота",
+            discoveryTier: "visited");
+        weatherLocation["biome"] = "каменный город";
+        MortalLocationTestFixture.ResealCanonicalLocation(weatherLocation);
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [weatherLocation],
+            MortalLocationTestFixture.CreateCurrentProjection(weatherLocation),
+            [weatherLocation]);
         await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
         {
           "setWorldTime": {
@@ -1922,6 +2322,40 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
         Assert.DoesNotContain("UiRawJsonBlock", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Weather_ReceiptlessCurrentLocationDoesNotExposeRawBiomeOrName()
+    {
+        var canonical = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_weather_private",
+            "Каноническое место",
+            discoveryTier: "visited");
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [canonical],
+            MortalLocationTestFixture.CreateCurrentProjection(canonical),
+            [canonical]);
+        var rejected = MortalLocationTestFixture.CreateCurrentProjection(canonical);
+        rejected.Remove("materializationReceipt");
+        rejected["name"] = "PRIVATE RAW WEATHER LOCATION";
+        rejected["biome"] = "PRIVATE RAW WEATHER BIOME";
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            rejected.ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", """
+        {
+          "weatherChange": {
+            "currentState": "туман",
+            "description": "Погода остаётся видимой."
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/weather"));
+        var payload = SerializeResult(result);
+
+        Assert.DoesNotContain("PRIVATE RAW WEATHER", payload, StringComparison.Ordinal);
+        Assert.Contains("Погода остаётся видимой", payload, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -6019,36 +6453,27 @@ public sealed class ExplorerWebCommandServiceTests :
     public async Task ExecuteAsync_Map_ReturnsInteractiveMapBlock()
     {
         await SeedMortalFilesAsync();
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_square",
-          "name": "Старая площадь",
-          "region": "Северный край",
-          "description": "Площадь под серым небом.",
-          "coordinates": { "x": 4, "y": 7, "z": 0 },
-          "adjacencyMap": [
-            {
-              "targetLocationId": "loc_gate",
-              "name": "Северные ворота",
-              "direction": "север",
-              "linkState": "safe",
-              "targetCoordinates": { "x": 4, "y": 8, "z": 0 }
-            }
-          ]
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "newLocations": [
-            {
-              "locationId": "loc_gate",
-              "locationName": "Северные ворота",
-              "locationType": "gate",
-              "coordinates": { "x": 4, "y": 8, "z": 0 }
-            }
-          ]
-        }
-        """);
+        var square = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_square",
+            "Старая площадь",
+            "visited",
+            x: 4,
+            y: 7);
+        square["region"] = "Северный край";
+        square["description"] = "Площадь под серым небом.";
+        var gate = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_gate",
+            "Северные ворота",
+            "discovered",
+            x: 4,
+            y: 8);
+        var link = MortalLocationTestFixture.CreateCanonicalLink("loc_square", "loc_gate");
+        link["directionLabel"] = "север";
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [square, gate],
+            MortalLocationTestFixture.CreateCurrentProjection(square),
+            [square, gate],
+            [link]);
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/map"));
 
@@ -6107,47 +6532,43 @@ public sealed class ExplorerWebCommandServiceTests :
     [Theory]
     [InlineData("/локации")]
     [InlineData("/locations")]
-    public async Task ExecuteAsync_Locations_IncludesCurrentAdjacentAndWrappedWorldMapUpdates(string command)
+    public async Task ExecuteAsync_Locations_IncludesCurrentLinkedAndAcceptedCanonicalLocations(string command)
     {
         await SeedMortalFilesAsync();
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_square",
-          "name": "Старая площадь",
-          "description": "Площадь с тёмным фонтаном.",
-          "adjacencyMap": [
-            {
-              "targetLocationId": "loc_gate",
-              "targetLocationName": "Северные ворота",
-              "direction": "север",
-              "distance": "10 минут",
-              "linkState": "safe"
-            }
-          ]
-        }
-        """);
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "worldMapUpdates": {
-            "newLocations": [
-              {
-                "locationId": "loc_tower",
-                "name": "Пепельная башня",
-                "locationType": "watchtower",
-                "description": "Башня над дорогой."
-              }
-            ],
-            "locationUpdates": [
-              {
-                "locationId": "loc_bridge",
-                "name": "Сломанный мост",
-                "locationType": "bridge",
-                "lastEventsDescription": "Мост осел после ночного дождя."
-              }
-            ]
-          }
-        }
-        """);
+        var square = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_square",
+            "Старая площадь",
+            "visited",
+            x: 4,
+            y: 7);
+        square["description"] = "Площадь с тёмным фонтаном.";
+        var gate = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_gate",
+            "Северные ворота",
+            "discovered",
+            x: 4,
+            y: 8);
+        var tower = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_tower",
+            "Пепельная башня",
+            "discovered",
+            x: 5,
+            y: 8);
+        tower["description"] = "Башня над дорогой.";
+        var bridge = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_bridge",
+            "Сломанный мост",
+            "discovered",
+            x: 3,
+            y: 8);
+        bridge["lastEventsDescription"] = "Мост осел после ночного дождя.";
+        var link = MortalLocationTestFixture.CreateCanonicalLink("loc_square", "loc_gate");
+        link["directionLabel"] = "север";
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [square, gate, tower, bridge],
+            MortalLocationTestFixture.CreateCurrentProjection(square),
+            [square, gate, tower, bridge],
+            [link]);
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -6163,58 +6584,49 @@ public sealed class ExplorerWebCommandServiceTests :
     }
 
     [Fact]
-    public async Task ExecuteAsync_Locations_PreservesRootLevelUpdatesAndDeduplicatesWrappedMatches()
+    public async Task ExecuteAsync_Locations_FailsClosedOnLegacyWorldMapWrappers()
     {
         await SeedMortalFilesAsync();
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        var current = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_canonical_only",
+            "Канонический двор",
+            "visited",
+            x: 2,
+            y: 2);
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [current],
+            MortalLocationTestFixture.CreateCurrentProjection(current),
+            [current]);
+        var map = MortalLocationTestFixture.CreateWorldMap(current);
+        map["newLocations"] = new JsonArray(new JsonObject
         {
-          "newLocations": [
+            ["locationId"] = "loc_legacy_gate",
+            ["name"] = "НЕ ПОКАЗЫВАТЬ LEGACY ВОРОТА"
+        });
+        map["worldMapUpdates"] = new JsonObject
+        {
+            ["newLocations"] = new JsonArray(new JsonObject
             {
-              "locationId": "loc_gate",
-              "name": "Северные ворота",
-              "locationType": "gate"
-            }
-          ],
-          "locationUpdates": [
+                ["locationId"] = "loc_legacy_garden",
+                ["name"] = "НЕ ПОКАЗЫВАТЬ LEGACY САД"
+            }),
+            ["locationUpdates"] = new JsonArray(new JsonObject
             {
-              "locationId": "loc_market",
-              "name": "Старый рынок",
-              "locationType": "market"
-            }
-          ],
-          "worldMapUpdates": {
-            "newLocations": [
-              {
-                "locationId": "loc_gate",
-                "name": "Северные ворота",
-                "locationType": "gate"
-              },
-              {
-                "locationId": "loc_garden",
-                "name": "Сад у стены",
-                "locationType": "garden"
-              }
-            ],
-            "locationUpdates": [
-              {
-                "locationId": "loc_market",
-                "name": "Старый рынок",
-                "locationType": "market"
-              }
-            ]
-          }
-        }
-        """);
+                ["locationId"] = "loc_legacy_market",
+                ["name"] = "НЕ ПОКАЗЫВАТЬ LEGACY РЫНОК"
+            })
+        };
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            map.ToJsonString());
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/locations"));
 
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains("Северные ворота", text, StringComparison.Ordinal);
-        Assert.Contains("Сад у стены", text, StringComparison.Ordinal);
-        Assert.Contains("Старый рынок", text, StringComparison.Ordinal);
-        Assert.Equal(1, CountOccurrences(text, "Северные ворота"));
-        Assert.Equal(1, CountOccurrences(text, "Старый рынок"));
+        Assert.Contains("Локации пока не обнаружены", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Канонический двор", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("НЕ ПОКАЗЫВАТЬ LEGACY", text, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -8322,7 +8734,7 @@ public sealed class ExplorerWebCommandServiceTests :
               "eventId": "riots_at_gate",
               "title": "Беспорядки у Северных ворот",
               "timestamp": "день 42, утро",
-              "location": "Северные ворота",
+              "locationId": "loc_north_gate",
               "visibility": "public",
               "status": "active",
               "category": "городские слухи",
@@ -8330,7 +8742,13 @@ public sealed class ExplorerWebCommandServiceTests :
               "summary": "Стража закрыла торговую площадь.",
               "involvedNPCs": [ "Мира Ключница" ],
               "affectedFactions": [ "Городская стража" ],
-              "affectedLocations": [ "Северные ворота" ],
+              "affectedLocations": [
+                {
+                  "locationId": "loc_north_gate",
+                  "locationName": "Северные ворота",
+                  "impactDescription": "У ворот усилили дозор."
+                }
+              ],
               "consequences": [ "торговая площадь закрыта до следующего утра" ],
               "followUp": "Капитан ждёт свидетелей.",
               "publicMood": "горожане боятся новых писем",
@@ -8340,7 +8758,14 @@ public sealed class ExplorerWebCommandServiceTests :
               ],
               "stakes": {
                 "danger": "рынок может вспыхнуть",
-                "deadline": "до полуночи"
+                "deadline": "до полуночи",
+                "visibleWitnessMemory": "Свидетели всё ещё помнят серебряную печать",
+                "operatorPacket": {
+                  "kind": "mortal_location_materialization_repair",
+                  "title": "PRIVATE_BROWSER_WORLD_NEWS_LOCATION_REPAIR",
+                  "rawCoordinate": "worldMapUpdates.newLocations[0]",
+                  "targetFiles": [ "game_state/world/world_map.json" ]
+                }
               },
               "witnessProfile": {
                 "name": "Старый писарь",
@@ -8356,19 +8781,29 @@ public sealed class ExplorerWebCommandServiceTests :
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        var gate = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_north_gate",
+            "Северные ворота",
+            "visited",
+            x: 4,
+            y: 8);
+        gate["activeThreats"] = new JsonArray(new JsonObject
         {
-          "name": "Северные ворота",
-          "activeThreats": [
-            {
-              "threatId": "gate_pickpockets",
-              "threatName": "Карманники у ворот",
-              "dangerLevel": "low",
-              "description": "Несколько ловкачей пользуются давкой."
-            }
-          ]
-        }
-        """);
+            ["threatId"] = "gate_pickpockets",
+            ["threatName"] = "Карманники у ворот",
+            ["dangerLevel"] = "low",
+            ["description"] = "Несколько ловкачей пользуются давкой."
+        });
+        gate["materialization"]!["sections"]!["activeThreats"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(gate);
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [gate],
+            MortalLocationTestFixture.CreateCurrentProjection(gate),
+            [gate]);
 
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_activities.json", """
         {
@@ -8595,36 +9030,25 @@ public sealed class ExplorerWebCommandServiceTests :
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_square",
-          "name": "Старая площадь",
-          "region": "Северный квартал",
-          "locationType": "площадь",
-          "description": "Площадь с тёмным фонтаном и следами ночного письма.",
-          "adjacencyMap": [
-            {
-              "targetLocationId": "loc_gate",
-              "targetLocationName": "Северные ворота",
-              "direction": "север",
-              "distance": "10 минут"
-            }
-          ]
-        }
-        """);
-
-        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
-        {
-          "newLocations": [
-            {
-              "locationId": "loc_archive",
-              "name": "Архив Вальмонтов",
-              "locationType": "архив",
-              "description": "Запертый зал под старой ратушей."
-            }
-          ]
-        }
-        """);
+        var square = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_square",
+            "Старая площадь",
+            "visited",
+            x: 4,
+            y: 7);
+        square["region"] = "Северный квартал";
+        square["description"] = "Площадь с тёмным фонтаном и следами ночного письма.";
+        var archive = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_archive",
+            "Архив Вальмонтов",
+            "discovered",
+            x: 5,
+            y: 7);
+        archive["description"] = "Запертый зал под старой ратушей.";
+        await WriteCanonicalBrowserMortalLocationStateAsync(
+            [square, archive],
+            MortalLocationTestFixture.CreateCurrentProjection(square),
+            [square, archive]);
 
         await _fs.WriteFileAtomicAsync("game_state/world/rival_soul_arcs.json", """
         {

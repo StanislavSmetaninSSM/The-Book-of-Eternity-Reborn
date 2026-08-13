@@ -79,11 +79,13 @@
                     4.  Report the Command: 
                         If all checks pass, generate the appropriate command ('shareStorageAccess' or 'revokeStorageAccess') and add it to the JSON response.
 
-                    5.  Update Storage State (Crucial): 
-                        Simultaneously, you MUST report an update to the location data itself. 
-                        For a known current location, keep the normal shorthand anchor (`locationId`, `coordinates`, `lastEventsDescription`) and additionally include the updated `locationStorages` payload.
-                        In 'currentLocationData.locationStorages', find the specific storage object and update its 'authorizedUsers' array by adding or removing the target player's info. 
-                        If this is the first time access is being shared for this storage, you MUST also change its 'owner.ownerType' to 'Shared'.
+                    5.  Update Storage State (Crucial):
+                        Simultaneously, add one exact `worldMapUpdates.storageUpdates[]` command. Never resend `currentLocationData.locationStorages`.
+                        Bind the accepted `targetLocationId` and exact `storageId`, then put the complete access transition in `update`.
+                        To share for the first time, send `newOwner` with `ownerType: "Shared"`, the complete `newAuthorizedUsers` array, and synchronized `newHasFullAccess`.
+                        To add/remove a user without changing ownership, send the complete `newAuthorizedUsers` array plus synchronized `newHasFullAccess`.
+                        To return the storage to personal ownership, send `newOwner` with `ownerType: "Player"`, the complete remaining `newAuthorizedUsers`, and synchronized `newHasFullAccess`.
+                        The client preserves all unlisted storage metadata and item contents atomically.
 
                     6.  Log and Narrate: 
                         Log the entire process in 'gm_thoughts_markdown' and narrate the successful (or failed) action in the 'response'.

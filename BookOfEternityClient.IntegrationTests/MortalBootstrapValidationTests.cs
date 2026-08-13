@@ -210,6 +210,7 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             1);
         var start = CreateBootstrapLocation(scaffold, "startReservation", "mlocmat_bootstrap_start");
         var neighbor = CreateBootstrapLocation(scaffold, "neighborReservation", "mlocmat_bootstrap_neighbor");
+        MarkBootstrapTopologyPopulated(start, neighbor);
         neighbor["discovery"] = new JsonObject
         {
             ["tier"] = "discovered",
@@ -381,6 +382,13 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             await _validator.ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync();
         Assert.DoesNotContain(canonicalIssues, issue => issue.Severity == IssueSeverity.Error);
 
+        var settledBaseline = new List<(string Path, string Json)>();
+        foreach (var path in baselineFiles)
+        {
+            settledBaseline.Add((path, (await _fs.ReadFileAsync(path))!));
+        }
+        await WriteValidatedSnapshotManifestAsync(settledBaseline.ToArray());
+
         await _fs.WriteFileAtomicAsync(
             MortalLocationMaterializationContract.CurrentLocationPath,
             new JsonObject { ["currentLocationData"] = start.DeepClone() }.ToJsonString());
@@ -414,6 +422,98 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             "pending",
             currentScaffold["locationMaterializationRequest"]!["state"]!.GetValue<string>());
         Assert.Null(currentScaffold["locationMaterializationRequest"]!["settlement"]);
+    }
+
+    [Theory]
+    [InlineData("deleted")]
+    [InlineData("forged-settled")]
+    public async Task MortalBootstrapLocationValidation_CurrentScaffoldMustMatchValidatedPreTurnAuthority(
+        string mutation)
+    {
+        var (scaffoldRoot, request, _) =
+            await WriteBootstrapLocationBaselineAndSnapshotAsync(incarnationNumber: 13);
+        var start = CreateBootstrapLocation(
+            request,
+            "startReservation",
+            "mlocmat_bootstrap_protected_scaffold");
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            new JsonObject { ["currentLocationData"] = start }.ToJsonString());
+
+        if (mutation == "deleted")
+        {
+            _fs.DeleteFile(MortalBootstrapLocationScaffold.StatePath);
+        }
+        else
+        {
+            var forged = scaffoldRoot.DeepClone().AsObject();
+            var forgedRequest = forged["locationMaterializationRequest"]!.AsObject();
+            forgedRequest["state"] = "settled";
+            forgedRequest["settlement"] = new JsonObject
+            {
+                ["requestId"] = request["requestId"]!.DeepClone(),
+                ["acceptedTurn"] = request["turnNumber"]!.DeepClone(),
+                ["branch"] = MortalBootstrapLocationScaffold.NarrativeOnlyBranch,
+                ["startLocationId"] = "loc_life_013_start",
+                ["neighborLocationId"] = null,
+                ["linkId"] = null
+            };
+            await _fs.WriteFileAtomicAsync(
+                MortalBootstrapLocationScaffold.StatePath,
+                forged.ToJsonString());
+        }
+
+        var issues = await _validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+
+        var issue = Assert.Single(issues, candidate =>
+            candidate.Code == "mortal_bootstrap_location_scaffold_mutated");
+        Assert.Equal(MortalBootstrapLocationScaffold.StatePath, issue.FilePath);
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(issues));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task MortalBootstrapLocationValidation_NewEmptyScaffoldIsProtectedMutation(
+        string forgedContent)
+    {
+        var map = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["realm"] = "mortal_world",
+            ["locations"] = new JsonArray(),
+            ["links"] = new JsonArray()
+        };
+        var index = MortalLocationIdentityState.CreateEmptyRoot();
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            map.ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            index.ToJsonString());
+        await WriteValidatedSnapshotManifestAsync(
+            sourceLabel: "ordinary Mortal turn",
+            includeSnapshotFilesAsRollbackBaseline: true,
+            (MortalLocationMaterializationContract.WorldMapPath, map.ToJsonString()),
+            (MortalLocationIdentityState.StatePath, index.ToJsonString()));
+        await _fs.WriteFileAtomicAsync(
+            MortalBootstrapLocationScaffold.StatePath,
+            forgedContent);
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            new JsonObject
+            {
+                ["currentLocationData"] = MortalLocationTestFixture.CreateRawLocation(
+                    "current_scene_creation")
+            }.ToJsonString());
+
+        var issues = await _validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_bootstrap_location_scaffold_mutated");
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(issues));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(issues));
     }
 
     [Fact]
@@ -584,6 +684,18 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         link["materialization"]!["sourceTurn"] = scaffold["turnNumber"]!.DeepClone();
         link["materialization"]!["sourceAuthority"] = scaffold["sourceAuthority"]!.DeepClone();
         return link;
+    }
+
+    private static void MarkBootstrapTopologyPopulated(params JsonObject[] locations)
+    {
+        foreach (var location in locations)
+        {
+            location["materialization"]!["sections"]!["topology"] = new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        }
     }
 
     [Fact]
@@ -1252,7 +1364,7 @@ public sealed class MortalBootstrapValidationTests : IDisposable
                 StringComparison.Ordinal));
         Assert.Equal("mortal_location_materialization", biomeIssue.Section);
         Assert.Equal(
-            "game_state/world/current_location.json.currentLocationData.locationType",
+            "game_state/world/current_location.json.currentLocationData.biome",
             biomeIssue.FilePath);
         Assert.NotNull(biomeIssue.MortalLocationRepairContext);
     }

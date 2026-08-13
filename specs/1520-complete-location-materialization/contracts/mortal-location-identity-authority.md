@@ -160,6 +160,24 @@ Each settled transition appends an immutable client record with:
 - source authority and operation request evidence;
 - endpoint IDs for link transitions.
 
+The record is a closed object. Every transition contains exactly
+`transitionId`, `kind`, `turn`, `entityId`, `beforeState`, `afterState`,
+`sourceAuthorityKind`, `sourceAuthorityId`, `operationRef`,
+`sourceLocationId`, and `targetLocationId`. Storage/threat child transitions
+add the required exact `childId` and no other field. `beforeState` and
+`afterState` are objects; `turn` is not earlier than the entry's creation turn;
+the authority is exactly `turn_outcome:turn_<turn>`; and `operationRef` is an
+exact non-empty command coordinate.
+
+Location transition kinds are `location_update`, `location_discovery`, and
+`current_selection`; their endpoint fields are null. Child kinds are
+`storage_update`, `storage_removal`, `threat_addition`, `threat_update`,
+`threat_removal`, and `threat_activity_completion`; both endpoint fields equal
+the owning location ID. Link kinds are `link_update` and `link_retirement`;
+their endpoints equal the immutable link-entry endpoints. Transition IDs are
+globally unique across location and link history under both exact and
+confusable matching.
+
 Retrying already-settled transition evidence is rejected or returns an
 idempotent no-op only when the exact current client request protocol already
 guarantees that behavior; it never generates a second receipt or transition.

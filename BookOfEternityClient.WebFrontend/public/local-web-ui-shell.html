@@ -686,7 +686,7 @@
     function renderTurnState(turnState) {
       const node = renderMessage({ severity: turnState?.canStartBrowserWrite ? 'Success' : 'Warning', title: turnState?.title ?? 'Состояние хода', message: turnState?.message ?? '' });
       node.classList.add('turn-state');
-      node.append(el('div', 'qte-meta', `Валидация: ${turnState?.validationLabel ?? 'нет данных'}`));
+      node.append(el('div', 'qte-meta', `Этап: ${turnState?.phaseLabel ?? 'нет данных'}`));
       return node;
     }
 

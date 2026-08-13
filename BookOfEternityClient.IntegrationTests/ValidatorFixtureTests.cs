@@ -6,7 +6,29 @@ namespace BookOfEternityClient.Tests;
 [Trait("Category", "FullValidation")]
 public sealed class ValidatorFixtureTests
 {
+    private static readonly HashSet<string> MortalLocationFixtureIds = new(StringComparer.Ordinal)
+    {
+        "current_location_known_partial",
+        "world_map_existing_link",
+        "world_map_existing_storage",
+        "world_map_threat_completion_active"
+    };
+
     public static IEnumerable<object[]> FixtureDefinitions()
+    {
+        return ReadFixtureDefinitions()
+            .Where(definition => !MortalLocationFixtureIds.Contains(definition.Id))
+            .Select(static definition => new object[] { definition });
+    }
+
+    public static IEnumerable<object[]> MortalLocationFixtureDefinitions()
+    {
+        return ReadFixtureDefinitions()
+            .Where(definition => MortalLocationFixtureIds.Contains(definition.Id))
+            .Select(static definition => new object[] { definition });
+    }
+
+    private static IEnumerable<ValidatorFixtureDefinition> ReadFixtureDefinitions()
     {
         foreach (var fixtureJson in Directory.EnumerateFiles(TestRepoPaths.ValidatorFixturesRoot, "fixture.json", SearchOption.AllDirectories))
         {
@@ -20,7 +42,7 @@ public sealed class ValidatorFixtureTests
             if (string.IsNullOrWhiteSpace(definition.Id))
                 definition.Id = Path.GetFileName(fixtureDir);
 
-            yield return new object[] { definition };
+            yield return definition;
         }
     }
 
@@ -57,5 +79,25 @@ public sealed class ValidatorFixtureTests
 
         foreach (var forbiddenCode in definition.ForbiddenFixedCodes)
             Assert.DoesNotContain(forbiddenCode, result.ErrorCodes, StringComparer.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [MemberData(nameof(MortalLocationFixtureDefinitions))]
+    public async Task MortalLocationMigratedFixture_BrokenAndFixedVariantsRespectCurrentContract(
+        ValidatorFixtureDefinition definition)
+    {
+        using var brokenHarness = new ValidatorFixtureHarness(definition);
+        var broken = await brokenHarness.RunBrokenAsync();
+        foreach (var expectedCode in definition.ExpectedBrokenCodes)
+            Assert.Contains(expectedCode, broken.ErrorCodes, StringComparer.OrdinalIgnoreCase);
+        foreach (var forbiddenCode in definition.ForbiddenBrokenCodes)
+            Assert.DoesNotContain(forbiddenCode, broken.ErrorCodes, StringComparer.OrdinalIgnoreCase);
+
+        using var fixedHarness = new ValidatorFixtureHarness(definition);
+        var fixedResult = await fixedHarness.RunFixedAsync();
+        foreach (var expectedBrokenCode in definition.ExpectedBrokenCodes)
+            Assert.DoesNotContain(expectedBrokenCode, fixedResult.ErrorCodes, StringComparer.OrdinalIgnoreCase);
+        foreach (var forbiddenCode in definition.ForbiddenFixedCodes)
+            Assert.DoesNotContain(forbiddenCode, fixedResult.ErrorCodes, StringComparer.OrdinalIgnoreCase);
     }
 }

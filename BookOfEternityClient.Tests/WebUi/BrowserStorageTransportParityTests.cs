@@ -250,6 +250,37 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         Assert.DoesNotContain("ID", forgedIndexForPermanentTarget.Message, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    public async Task StorageMove_ReceiptlessCurrentLocationIsNotActionableAndCannotMutateState()
+    {
+        await SeedStorageTransportStateAsync();
+        var receiptlessCurrent = await ReadLocationAsync();
+        receiptlessCurrent.Remove("materializationReceipt");
+        await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, receiptlessCurrent);
+        var beforeInventory = await _fs.ReadFileAsync(StorageTransportMoveService.InventoryPath);
+        var beforeLocation = await _fs.ReadFileAsync(StorageTransportMoveService.CurrentLocationPath);
+
+        var context = await StorageTransportMoveService.ReadStorageMoveContextAsync(_fs);
+        var validation = await StorageTransportMoveService.ValidateStorageMoveAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "id:storage_1",
+            "id:blade_1");
+        var write = await StorageTransportMoveService.MoveStorageItemAsync(
+            _fs,
+            StorageTransportMoveService.DirectionDeposit,
+            "id:storage_1",
+            "id:blade_1");
+
+        Assert.False(context.Success);
+        Assert.Empty(context.Storages);
+        Assert.False(validation.Success);
+        Assert.False(write.Success);
+        Assert.Equal(beforeInventory, await _fs.ReadFileAsync(StorageTransportMoveService.InventoryPath));
+        Assert.Equal(beforeLocation, await _fs.ReadFileAsync(StorageTransportMoveService.CurrentLocationPath));
+    }
+
     [Theory]
     [Trait("Category", "BrowserStorageTransportParity")]
     [InlineData("/storage_move")]
@@ -774,31 +805,11 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
                     : Items(blade, herb, coinOne, coinTwo),
                 ["equippedItems"] = new JsonObject()
             });
-        await WriteJsonAsync(
-            StorageTransportMoveService.CurrentLocationPath,
-            new JsonObject
-            {
-                ["locationId"] = "loc_1",
-                ["name"] = "Двор караван-сарая",
-                ["locationStorages"] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["storageId"] = "storage_1",
-                        ["name"] = "Кедровый сундук",
-                        ["hasFullAccess"] = true,
-                        ["capacity"] = 10,
-                        ["contents"] = Items(map)
-                    },
-                    new JsonObject
-                    {
-                        ["storageId"] = "storage_locked",
-                        ["name"] = "Запертый шкаф",
-                        ["hasFullAccess"] = false,
-                        ["contents"] = Items(locked)
-                    }
-                }
-            });
+        await WriteAcceptedLocationStateAsync(
+            "loc_1",
+            "Двор караван-сарая",
+            (MortalLocationTestFixture.CreateStorageMetadata("storage_1", "Кедровый сундук", true), Items(map)),
+            (MortalLocationTestFixture.CreateStorageMetadata("storage_locked", "Запертый шкаф", false), Items(locked)));
         await WriteJsonAsync(
             StorageTransportMoveService.VehiclesPath,
             new JsonObject
@@ -841,30 +852,11 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         await SeedStorageTransportStateAsync();
         var locked = CreateCanonicalItem("locked_name_1", "Чужая шкатулка");
         var mirror = CreateCanonicalItem("mirror_1", "Зеркальце");
-        await WriteJsonAsync(
-            StorageTransportMoveService.CurrentLocationPath,
-            new JsonObject
-            {
-                ["locationId"] = "loc_name_only",
-                ["name"] = "Двор караван-сарая",
-                ["locationStorages"] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["storageId"] = "storage_locked_name",
-                        ["name"] = "Запертый шкаф",
-                        ["hasFullAccess"] = false,
-                        ["contents"] = Items(locked)
-                    },
-                    new JsonObject
-                    {
-                        ["storageId"] = "storage_woven",
-                        ["name"] = "Плетёная кладовая",
-                        ["hasFullAccess"] = true,
-                        ["contents"] = Items(mirror)
-                    }
-                }
-            });
+        await WriteAcceptedLocationStateAsync(
+            "loc_name_only",
+            "Двор караван-сарая",
+            (MortalLocationTestFixture.CreateStorageMetadata("storage_locked_name", "Запертый шкаф", false), Items(locked)),
+            (MortalLocationTestFixture.CreateStorageMetadata("storage_woven", "Плетёная кладовая", true), Items(mirror)));
 
         var inventoryItems = (await ReadInventoryAsync())["items"]!.AsArray()
             .OfType<JsonObject>()
@@ -885,6 +877,38 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
             await _fs.ReadFileAsync(MortalItemIdentityState.StatePath));
         Assert.Empty(parsed.Issues);
         return parsed.EntriesByItemId[itemId];
+    }
+
+    private async Task WriteAcceptedLocationStateAsync(
+        string locationId,
+        string displayName,
+        params (JsonObject Metadata, JsonArray Contents)[] storages)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            locationId,
+            displayName,
+            discoveryTier: "visited");
+        location["locationStorages"] = new JsonArray(
+            storages.Select(static storage => (JsonNode?)storage.Metadata.DeepClone()).ToArray());
+        location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+
+        var current = MortalLocationTestFixture.CreateCurrentProjection(location);
+        var currentStorages = current["locationStorages"]!.AsArray();
+        for (var index = 0; index < storages.Length; index++)
+            currentStorages[index]!["contents"] = storages[index].Contents.DeepClone();
+
+        await WriteJsonAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location));
+        await WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, current);
+        await WriteJsonAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location));
     }
 
     private async Task WriteJsonAsync(string path, JsonObject root) =>

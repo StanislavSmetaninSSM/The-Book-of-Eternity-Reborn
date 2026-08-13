@@ -989,9 +989,12 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("ValidateAcceptedTurnOutcomeWithRepairLoopAsync(", turnSource, StringComparison.Ordinal);
         Assert.Contains("activeSnapshotContext,", turnSource, StringComparison.Ordinal);
         Assert.Contains("ValidatedPendingTurnSnapshotContext? activeSnapshotContext,", validationSource, StringComparison.Ordinal);
-        Assert.Contains("var canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("AcceptedTurnCanonicalRefreshResult canonicalRefresh;", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("expectedTurn,", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.Contains("activeSnapshotContext);", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("catch (SessionReplacedException)", acceptedTurnValidation, StringComparison.Ordinal);
+        Assert.Contains("FailClosedAcceptedTurnCanonicalRefreshAsync(", acceptedTurnValidation, StringComparison.Ordinal);
         Assert.DoesNotContain("var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);", validationSource, StringComparison.Ordinal);
     }
 
@@ -1218,7 +1221,9 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("ResolveActivePendingTurnSnapshotContextAsync()", source, StringComparison.Ordinal);
         Assert.Contains("IsMatchingRepairReady(ready, pendingSnapshot.Context)", source, StringComparison.Ordinal);
         Assert.Contains("BuildProtocolRequestMetadata(pendingSnapshot)", source, StringComparison.Ordinal);
-        Assert.Contains("BuildValidationRepairRequestInstructions(pendingSnapshot)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildValidationRepairRequestInstructions(", source, StringComparison.Ordinal);
+        Assert.Contains("pendingSnapshot,", source, StringComparison.Ordinal);
+        Assert.Contains("fullTurnResubmissionRequired);", source, StringComparison.Ordinal);
         Assert.Contains("BuildProtocolRequestMetadataWarning(pendingSnapshot)", source, StringComparison.Ordinal);
         Assert.Contains("BuildInvalidRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
         Assert.Contains("BuildMismatchedRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
@@ -1312,18 +1317,33 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void DiagnosticOnlyValidationRepair_MustPreserveFailureReportAfterRollback()
+    public void DiagnosticOnlyValidationRepair_MustLeaveRollbackToAcceptedTurnCaller()
     {
         var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
         var method = ExtractMethodSource(source, "private async Task<bool> FailClosedDiagnosticOnlyValidationRepairAsync(");
 
-        var rollbackIndex = method.IndexOf("await RestorePreTurnBackupForSessionAsync(", StringComparison.Ordinal);
-        var reportWriteIndex = method.IndexOf("await WriteValidationRepairFileForSessionAsync(", StringComparison.Ordinal);
-        var cleanupIndex = method.IndexOf("await DeleteValidationRepairFilesForSessionAsync(", StringComparison.Ordinal);
+        var reportWriteIndex = method.IndexOf("() => WriteValidationRepairFileForSessionAsync(", StringComparison.Ordinal);
+        var cleanupIndex = method.IndexOf("() => DeleteValidationRepairFilesForSessionAsync(", StringComparison.Ordinal);
 
-        Assert.True(rollbackIndex >= 0, "Diagnostic-only fail-closed path should use rollback when available.");
-        Assert.True(reportWriteIndex > rollbackIndex, "Diagnostic failure report must be written after rollback so the backup restore cannot erase it.");
+        Assert.DoesNotContain("RestorePreTurnBackupForSessionAsync", method, StringComparison.Ordinal);
+        Assert.Contains("RunBestEffortFailClosedBookkeepingAsync(", method, StringComparison.Ordinal);
+        Assert.Contains("return false;", method, StringComparison.Ordinal);
+        Assert.True(reportWriteIndex >= 0, "Diagnostic-only fail-closed path must preserve an operator report.");
         Assert.True(cleanupIndex > reportWriteIndex, "Repair cleanup must not run before the preserved diagnostic failure report is written.");
+    }
+
+    [Fact]
+    public void GameLoopFailureScreen_MustLogButNeverEchoExceptionTextToPlayer()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var method = ExtractMethodSource(source, "private async Task EnterGameLoop()");
+
+        Assert.Contains("LogError(ex);", method, StringComparison.Ordinal);
+        Assert.DoesNotContain("EscapeMarkup(ex.Message)", method, StringComparison.Ordinal);
+        Assert.Contains(
+            "Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.",
+            method,
+            StringComparison.Ordinal);
     }
 
     [Fact]

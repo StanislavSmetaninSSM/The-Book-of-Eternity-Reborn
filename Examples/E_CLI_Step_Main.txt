@@ -44,6 +44,101 @@ items. Split/merge/destroyed lineage is client-owned. A bounded
 repair never delegates protected identity state. Receipt-less current state is
 rejected because игра ещё не вышла and no compatibility promotion exists.
 
+## Mortal Location Materialization v1 — main-step workflow
+
+Before authoring any durable Mortal scene or route, open Rule 20,
+`Examples/E_Block_20.txt`, and
+`Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md`.
+
+Creation routes are closed:
+
+- `currentLocationData` + `current_scene_creation` creates one complete new
+  selected scene with `locationId = null`;
+- `worldMapUpdates.newLocations[]` + `world_map_creation` creates complete
+  remote scenes with `locationId = null`;
+- `worldMapUpdates.newLinks[]` + `world_map_link_creation` creates complete
+  directed links with `linkId = null`.
+
+Every candidate carries its complete semantic shape and
+`materialization.sections`. The client assigns permanent IDs, receipts, seals,
+identity-index entries, transitions, current projection, knownExits and
+adjacencyMap. `location_identity_index.json` is never a GM target. Names,
+coordinates, ordinals, case folding, and Unicode normalization never supply
+identity.
+
+Worked existing-location selection:
+
+```json
+{
+  "currentLocationData": {
+    "locationId": "loc_exact_destination",
+    "lastEventsDescription": "Герой вернулся под своды знакомой башни.",
+    "currentWeather": {},
+    "currentInteractions": [],
+    "currentChronology": []
+  },
+  "worldMapUpdates": {
+    "locationDiscoveryTransitions": [
+      {
+        "locationId": "loc_exact_hidden_archive",
+        "fromTier": "rumored",
+        "toTier": "discovered",
+        "toAudience": "player_known",
+        "rumorSummary": null,
+        "reason": "Герой нашёл точный вход по меткам картографа."
+      }
+    ],
+    "linkRemovals": [
+      {
+        "linkId": "lnk_exact_collapsed_bridge",
+        "sourceLocationId": "loc_exact_destination",
+        "targetLocationId": "loc_exact_hidden_archive",
+        "reason": "Мост окончательно обрушился."
+      }
+    ]
+  }
+}
+```
+
+All IDs above are exact permanent locationId/exact permanent linkId values from
+accepted canonical context. A changed selection additionally requires one
+accepted pre-turn directed link from the exact current location to the exact
+destination, with `access.state = open`, no requirements, and player-known
+non-hidden link and destination. A reverse-only, hidden, conditional, or sealed
+link never grants traversal: exact identity is not permission to teleport. The
+selection never repeats coordinates,
+difficulty, placement, envelope, receipt, or derived topology. Fresh Mortal
+bootstrap instead reads `mortal_bootstrap_scaffold.json` unchanged and emits
+the reserved complete start plus neighbor/link, or a narrative-only unresolved
+exit.
+
+For accepted storage/threat children, use only `storageUpdates[]`,
+`storagesToRemove[]`, `threatsToAdd[]`, `threatsToUpdate[]`,
+`threatsToRemove[]`, and `completeThreatActivities[]` with exact IDs from
+Context. Storage update preserves contents; removal requires an empty storage.
+Leave a new threat's `threatId` null for the client, and never write the
+completion archive directly. See
+`mortal_location_governed_storage_threat_lifecycle_v1` in `E_Block_20.txt`.
+The sealed materialization section dispositions are immutable creation evidence,
+not counters to rewrite after later child lifecycle changes.
+
+Worked location repair flow:
+
+```text
+validation_repair_request.json:
+  harnessRepairPackets[].kind = mortal_location_materialization_repair
+  fullTurnResubmissionRequired = true
+  requiredResubmissionPaths = [all paths changed by the rejected response]
+
+The client has restored the validated pre-turn baseline before dispatch.
+Correct: regenerate one complete coherent raw response for the same request,
+including every intended location, actor, faction, item, narrative, interface,
+and other output; then finish the repair handshake.
+Wrong: write only validation_repair_ready.json, patch world_map/current_location
+in place, submit only the named leaf, or rewrite stale output with formatting
+changes. Full-turn resubmission requires fresh semantic content.
+```
+
 Faction Materialization worked-example coverage:
 mortal_faction_materialization_populated_creation_v1
 mortal_faction_materialization_seven_empty_creation_v1
@@ -752,7 +847,7 @@ Example:
   "source": "обработки хода",
   "detectedAtUtc": "2026-03-09T12:00:00Z",
   "revalidationAttempt": 1,
-  "gmInstructions": "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
+  "gmInstructions": "Текущий ответ/состояние отклонены клиентом. Для обычного bounded-пакета исправь только перечисленные GM-owned targets in place. Для harnessRepairPackets[].kind=mortal_location_materialization_repair используй уже восстановленный validated pre-turn baseline и повторно отправь один полный согласованный пакет всего хода; не исправляй canonical world_map/current_location/location_identity_index in place и не отправляй только named leaf или ready marker. Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
   "errors": [
     {
       "code": "missing_npc_scope",
@@ -900,9 +995,9 @@ Mortal bootstrap materialization repair packet:
     "readable_document_missing_detail_authority: every readable document item must have a readable detail authority that the player can open.",
     "item durability: starting inventory items must write durability as a percentage string such as 100%, never a bare number such as 100.",
     "item journalEntries: journalEntries[] entries must be non-empty strings, not objects.",
-    "current_location_coordinates_mismatch: if currentLocationData uses a known locationId from the bootstrap scaffold, copy that locationId coordinates exactly from canonicalCoordinateAuthority.",
-    "location shape: the neutral bootstrap current_location and world_map retain identity, coordinates, knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats; location type, traversal, safety, and difficulty are setting-owned and must not be invented by the client.",
-    "world_map_new_link_missing_required_fields: every neutral map link preview must include targetLocationId, targetName, and targetCoordinates; setting-owned link type, travel mode, and difficulty are optional until explicitly materialized by the GM.",
+    "mortal_location_materialization_bootstrap_authority_mismatch: the complete current_scene_creation start, world_map_creation neighbor, and world_map_link_creation directed link must copy the exact open scaffold initialIds, coordinates, sourceTurn, and sourceAuthority.",
+    "mortal_location_materialization_missing_required_fields: each starting location is a complete current-schema candidate with full presentation, physical shape, placement, discovery, difficulty, collections, and materialization.sections.",
+    "mortal_location_link_materialization_missing_required_fields: each starting directed link is a complete current-schema candidate with exact permanent-or-same-turn endpoints, traversal, access, discovery, custom states, and materialization.sections.",
     "mortal_bootstrap_placeholder_player_visible_name: accepted Mortal bootstrap must replace client scaffold labels in identity/title fields such as Стартовая сцена, Путь из стартовой сцены, or Ближайший выход из стартовой сцены with concrete in-world names; ordinary description/history prose may quote those phrases.",
     "mortal_bootstrap_requested_teacher_missing: every structuredGmAuthority.actorCapabilities declaration with capability=canTeach and required=true needs a usable NPC teacherProfile with canTeach=true and non-empty skills[].",
     "mortal_bootstrap_requested_trade_missing: every structuredGmAuthority.actorCapabilities declaration with capability=canTrade and required=true needs a usable NPC tradeState with canTrade=true and an explicit valid merchantProfile; NPC prose never resolves it.",
@@ -913,9 +1008,9 @@ Mortal bootstrap materialization repair packet:
   "steps": [
     "Read game_state/control/mortal_bootstrap_scaffold.json first and use it as the client-authored checklist for this first Mortal World materialization.",
     "Treat identity/title scaffold labels as temporary internal anchors only: before Complete-BoeTurn, rename the visible current location, map locations, and exits/links to concrete world-specific names chosen through setting-aware GM judgment. Do not leave Стартовая сцена, Путь из стартовой сцены, or Ближайший выход из стартовой сцены in accepted identity fields; the same phrase inside ordinary narrative prose is allowed.",
-    "When editing current_location.json or world_map.json, use mortal_bootstrap_scaffold.json canonicalCoordinateAuthority: the same locationId must have identical coordinates in current_location, world_map newLocations, adjacencyMap targetCoordinates, and newLinks targetCoordinates.",
-    "Preserve current_location.json and durable world_map identity, arrays, coordinates, and navigation links. Do not add type, traversal, safety, biome, or difficulty merely to complete the bootstrap.",
-    "Patch every neutral map link preview with targetLocationId, targetName, and targetCoordinates. Add setting-owned traversal or difficulty only when the GM explicitly materializes it for the current world.",
+    "Read the immutable mortal_bootstrap_scaffold.json and regenerate one coherent raw package: complete currentLocationData current_scene_creation plus the reserved complete world_map_creation neighbor and world_map_link_creation link, or the allowed narrative-only unresolved exit.",
+    "Copy exact scaffold reservations and choose every setting-owned physical, traversal, access, discovery, difficulty, collection, and materialization.sections value explicitly; never patch canonical current_location/world_map/index files in place.",
+    "Do not author permanent locationId/linkId, materializationReceipt, knownExits, adjacencyMap, location_identity_index.json, seals, transitions, snapshots, or rollback evidence.",
     "Patch only current-world bootstrap files named in targetFiles. Keep empty faction and quest collections empty unless the GM explicitly creates complete world-specific entities.",
     "Do not reuse previous-life lore/current_world files; every current-world codex or lore entry must describe the life being created now.",
     "Do not derive a teacher from words in playerAuthoredStart. If the GM makes a setting-aware decision that a teacher is present, record a required canTeach entry in structuredGmAuthority.actorCapabilities and materialize the NPC as a complete first-materialization NPCsInScene or UpdateNPCs object with teacherProfile.canTeach=true, relationshipLevel, summary, and skills[].",
@@ -1067,7 +1162,7 @@ VALIDATION CONTRACT SUMMARY:
 - client checks `progressionControl` and required progression reports
 - client checks `gm_thoughts_markdown` scope + reasoning blocks
 - client checks that declared relevant actors cover structured actor updates when actor identity is known well enough
-- if rejected, GM must fix files IN PLACE and create a fresh `validation_repair_ready.json`
+- if rejected, an ordinary bounded packet is repaired only in its listed GM-owned files; `mortal_location_materialization_repair` instead starts from the restored validated pre-turn baseline and requires one complete coherent full-turn resubmission before a fresh `validation_repair_ready.json`
 
 ==================================================
 7. SCENE-LOCAL TURN WITH EMPTY ACTOR SCOPE

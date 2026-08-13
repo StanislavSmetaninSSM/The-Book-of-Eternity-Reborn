@@ -2,6 +2,7 @@ using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Xunit;
 
@@ -120,25 +121,47 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildMortalWorldMapAsync_ProjectsRumorWithoutCoordinatesDetailsOrTopology()
+    {
+        var accepted = await SeedMortalMapAsync();
+        var mapState = accepted.Plan.FinalWorldMap.DeepClone().AsObject();
+        var target = mapState["locations"]!.AsArray().OfType<JsonObject>()
+            .Single(location => location["locationId"]!.GetValue<string>() == accepted.TargetLocationId);
+        target["discovery"] = new JsonObject
+        {
+            ["tier"] = "rumored",
+            ["audience"] = "player_known",
+            ["rumorSummary"] = "Поговаривают о лестнице под старой площадью."
+        };
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            mapState.ToJsonString());
+
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var rumor = Assert.Single(map.Nodes, node => node.Label == "Катакомбы");
+        Assert.NotEqual(accepted.TargetLocationId, rumor.Id);
+        Assert.StartsWith("rumor_view_", rumor.Id, StringComparison.Ordinal);
+        Assert.Equal("Катакомбы", rumor.Label);
+        Assert.Equal(0, rumor.X);
+        Assert.Equal(0, rumor.Y);
+        Assert.Equal(0, rumor.Z);
+        Assert.Contains(rumor.Details, static detail =>
+            detail.Key == "Слух" &&
+            detail.Value == "Поговаривают о лестнице под старой площадью.");
+        Assert.DoesNotContain(rumor.Details, static detail =>
+            detail.Key is "Координаты" or "Описание" or "Регион" or "Биом" or "Угрозы" or "Хранилища");
+        Assert.Empty(map.Links);
+        Assert.DoesNotContain(
+            accepted.TargetLocationId,
+            JsonSerializer.Serialize(map, LocalMapViewService.JsonOptions),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task BuildMortalWorldMapAsync_ProjectsPoliticalControlRegionsAndContestedLocations()
     {
         var accepted = await SeedMortalMapAsync(withFactionControl: true);
-        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", """
-        {
-          "factions": [
-            {
-              "id": "f_crown",
-              "name": "Серая Корона",
-              "controlledTerritories": [
-                { "locationId": "LOCATION_SOURCE", "locationName": "Старая площадь" },
-                { "locationId": "LOCATION_TARGET", "locationName": "Катакомбы" }
-              ]
-            }
-          ]
-        }
-        """
-            .Replace("LOCATION_SOURCE", accepted.SourceLocationId, StringComparison.Ordinal)
-            .Replace("LOCATION_TARGET", accepted.TargetLocationId, StringComparison.Ordinal));
 
         var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
 
@@ -156,6 +179,34 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.Contains(market.Details, static item => item.Key == "Статус контроля" && item.Value.Contains("спорная", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(48, market.Influence["f_crown"]);
         Assert.Equal(45, market.Influence["f_syndicate"]);
+    }
+
+    [Fact]
+    public async Task BuildMortalWorldMapAsync_IgnoresReceiptlessFactionTerritoryClaims()
+    {
+        var accepted = await SeedMortalMapAsync();
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", $$"""
+        {
+          "factions": [
+            {
+              "id": "f_receiptless_claim",
+              "name": "Ложная фракция",
+              "controlledTerritories": [
+                { "locationId": "{{accepted.SourceLocationId}}", "locationName": "Старая площадь" }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var source = Assert.Single(map.Nodes, node => node.Id == accepted.SourceLocationId);
+        Assert.True(string.IsNullOrEmpty(source.OwnerFactionId));
+        Assert.True(string.IsNullOrEmpty(source.OwnerFactionName));
+        Assert.DoesNotContain("f_receiptless_claim", source.Influence.Keys, StringComparer.Ordinal);
+        Assert.DoesNotContain(map.Regions, region =>
+            string.Equals(region.OwnerFactionId, "f_receiptless_claim", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -512,7 +563,8 @@ public sealed class LocalMapViewerServiceTests : IDisposable
                 ["newLocations"] = new JsonArray(target),
                 ["newLinks"] = new JsonArray(link)
             },
-            Turn: 42);
+            Turn: 42,
+            RawFactionCore: withFactionControl ? CreateMortalFactionAuthorityRoot() : null);
         var next = 1;
         var planning = MortalLocationAcceptedTurnPlanner.Build(
             input,
@@ -535,6 +587,27 @@ public sealed class LocalMapViewerServiceTests : IDisposable
             plan.LocationIdsByInitialId["locref_map_catacombs"],
             plan.LinkIdsByInitialId["linkref_map_square_to_catacombs"]);
     }
+
+    private static JsonObject CreateMortalFactionAuthorityRoot() =>
+        new()
+        {
+            ["factions"] = new JsonArray(
+                CreateMortalFactionAuthority("f_crown", "Серая Корона"),
+                CreateMortalFactionAuthority("f_syndicate", "Синдикат Тени"))
+        };
+
+    private static JsonObject CreateMortalFactionAuthority(string factionId, string name) =>
+        new()
+        {
+            ["factionId"] = factionId,
+            ["name"] = name,
+            ["materialization"] = new JsonObject
+            {
+                ["factionType"] = "mortal_faction",
+                ["factionId"] = factionId,
+                ["state"] = "complete"
+            }
+        };
 
     private static JsonObject CreateRawMortalLocation(
         string initialId,

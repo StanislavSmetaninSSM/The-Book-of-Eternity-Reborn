@@ -1441,9 +1441,7 @@
                                 -   Location's Resistance Roll: 
                                 Take the next available value from the 'preGeneratedDices1d20' array and add 'floor(Location's_Relevant_Difficulty / 10)'. 
 
-                                (The "Relevant_Difficulty" is the value from the location's 'externalDifficultyProfile' that logically opposes the influence. 
-                                A faction exerting influence is an "Outsider", so the location's external difficulty is what resists them. 
-                                For example, 'Military' influence is resisted by 'externalDifficultyProfile.combat', 'Social' influence by 'externalDifficultyProfile.social', etc.).
+                                (The "Relevant_Difficulty" is derived from the accepted location's current-schema `externalDifficulty` object. Its declared danger, recommendedLevel, and concrete description determine one difficulty value through the ordinary difficulty resolver; retired per-axis location profiles are not authority.)
                            
                             3.  Outcome: 
                                 If the Faction's Roll is higher, they gain a small amount of 'controlLevel' in that 'controlType'.
@@ -2379,19 +2377,11 @@
       <![CDATA[
 
                             A. Anchoring Location Difficulty:
-                            When you generate a location controlled by a faction, its 'internalDifficultyProfile' and 'externalDifficultyProfile' values MUST be logically derived from and consistent with the faction's 'powerProfile'.
+                            When you generate a location controlled by a faction, its current-schema `internalDifficulty` and `externalDifficulty` objects MUST be logically derived from and consistent with the faction's `powerProfile`.
 
-                            -   'externalDifficultyProfile' (For Outsiders): The difficulty for outsiders is a direct reflection of the faction's projected power.
-                                -   'externalDifficultyProfile.combat' is anchored by 'powerProfile.military'.
-                                -   'externalDifficultyProfile.social' is anchored by 'powerProfile.social'.
-                                -   'externalDifficultyProfile.exploration' (for infiltration/secrets) is anchored by 'powerProfile.covert'.
-                                -   'externalDifficultyProfile.environment' is anchored by 'powerProfile.logistics' or 'powerProfile.arcane_tech' (representing traps, fortifications, magical wards).
-
-                            -   'internalDifficultyProfile' (For Insiders): The difficulty for the faction's own members and allies is generally low, reflecting their belonging.
-                                -   'internalDifficultyProfile.combat' should be very low (e.g., 0-10), representing a safe area free from internal conflict.
-                                -   'internalDifficultyProfile.social' should be low (e.g., 5-15), representing easy interactions with fellow members.
-                                -   'internalDifficultyProfile.environment' should be very low (e.g., 0-5), as insiders know how to avoid any friendly traps or hazards.
-                                -   'internalDifficultyProfile.exploration' can still be high if the faction has internal secrets, but generally lower than the external value.
+                            - `externalDifficulty` describes the overall outsider danger, recommended level, and concrete reason. Military/social/covert/logistics/arcane faction power informs that judgment, but no retired per-axis location profile is authored.
+                            - `internalDifficulty` describes the overall insider danger, recommended level, and concrete reason. It is usually lower for members/allies, except when internal secrets, rivalries, hazards, or faction instability make that false.
+                            - Both objects remain explicit setting-aware GM semantics inside the complete Mortal Location Materialization v1 candidate; the client does not derive them from faction numbers.
 
                             B. Anchoring NPC Generation:
                             When you generate an NPC member of a faction, their 'level', skills, and 'inventory' MUST be consistent with the faction's power.

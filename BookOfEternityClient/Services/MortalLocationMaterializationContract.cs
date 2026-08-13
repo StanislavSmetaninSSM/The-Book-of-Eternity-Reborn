@@ -150,6 +150,15 @@ internal static class MortalLocationMaterializationContract
         "other"
     };
 
+    private static readonly HashSet<string> ActorBindingRoles = new(StringComparer.Ordinal)
+    {
+        "resident",
+        "owner",
+        "staff",
+        "prisoner",
+        "other"
+    };
+
     private static readonly string[] ClientOwnedRootFields =
     {
         ReceiptProperty,
@@ -186,6 +195,8 @@ internal static class MortalLocationMaterializationContract
         ValidateDuplicateProperties(value, context, issues);
         ValidateRawRootIdentity(value, context, "locationId", issues);
         ValidateLocationFields(value, context, raw: true, issues);
+        ValidateRawEmbeddedThreatAuthority(value, context, issues);
+        ValidateRawLocationStorageContents(value, context, expectedRoute, issues);
         ValidateEnvelope(
             value,
             context,
@@ -194,13 +205,47 @@ internal static class MortalLocationMaterializationContract
             LocationRoutes,
             LocationSectionNames,
             issues);
-        ValidateLocationSectionEvidence(value, context, issues);
+        ValidateLocationSectionEvidence(value, context, requireCurrentArrayAgreement: true, issues);
         return issues;
+    }
+
+    private static void ValidateRawEmbeddedThreatAuthority(
+        JsonElement location,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("activeThreats", out var threats) ||
+            threats.ValueKind != JsonValueKind.Array ||
+            threats.GetArrayLength() == 0)
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            context + ".activeThreats",
+            IssueSeverity.Error,
+            "New Mortal locations cannot claim permanent threat identity inside the location payload.",
+            code: "mortal_location_embedded_threat_authority_forbidden",
+            section: "mortal_location_materialization",
+            expected: "empty activeThreats plus same-turn threatsToAdd with client-assigned threatId",
+            actual: $"{threats.GetArrayLength()} embedded threat(s)",
+            repairHint: "Keep activeThreats empty on creation and author each threat through worldMapUpdates.threatsToAdd."));
     }
 
     internal static IReadOnlyList<ValidationIssue> ValidateCanonicalLocation(
         JsonElement value,
-        string context)
+        string context) =>
+        ValidateCanonicalLocation(value, context, allowStorageContents: false);
+
+    internal static IReadOnlyList<ValidationIssue> ValidateCanonicalCurrentLocation(
+        JsonElement value,
+        string context) =>
+        ValidateCanonicalLocation(value, context, allowStorageContents: true);
+
+    private static IReadOnlyList<ValidationIssue> ValidateCanonicalLocation(
+        JsonElement value,
+        string context,
+        bool allowStorageContents)
     {
         var issues = new List<ValidationIssue>();
         if (!RequireObject(value, context, issues))
@@ -209,6 +254,8 @@ internal static class MortalLocationMaterializationContract
         ValidateDuplicateProperties(value, context, issues);
         ValidateCanonicalRootIdentity(value, context, "locationId", new[] { "initialId", "parentInitialId" }, issues);
         ValidateLocationFields(value, context, raw: false, issues);
+        if (!allowStorageContents)
+            ValidateCanonicalMapStorageContents(value, context, issues);
         ValidateEnvelope(
             value,
             context,
@@ -217,9 +264,69 @@ internal static class MortalLocationMaterializationContract
             LocationRoutes,
             LocationSectionNames,
             issues);
-        ValidateLocationSectionEvidence(value, context, issues);
+        ValidateLocationSectionEvidence(value, context, requireCurrentArrayAgreement: false, issues);
         ValidateReceipt(value, context, isLink: false, issues);
         return issues;
+    }
+
+    private static void ValidateCanonicalMapStorageContents(
+        JsonElement location,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("locationStorages", out var storages) ||
+            storages.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var storage in storages.EnumerateArray())
+        {
+            if (storage.ValueKind == JsonValueKind.Object &&
+                storage.TryGetProperty("contents", out var contents))
+            {
+                issues.Add(Issue(
+                    $"{context}.locationStorages[{index}].contents",
+                    "mortal_location_map_storage_contents_forbidden",
+                    "Canonical world-map storage members carry metadata only; item contents live in current/offscreen item authority.",
+                    "field absent from world-map storage metadata",
+                    contents.GetRawText()));
+            }
+            index++;
+        }
+    }
+
+    internal static bool SharedCurrentProjectionValueEquals(
+        string fieldName,
+        JsonNode? canonical,
+        JsonNode? current)
+    {
+        if (!string.Equals(fieldName, "locationStorages", StringComparison.Ordinal))
+            return JsonNode.DeepEquals(canonical, current);
+        if (canonical is not JsonArray canonicalStorages ||
+            current is not JsonArray currentStorages ||
+            canonicalStorages.Count != currentStorages.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < canonicalStorages.Count; index++)
+        {
+            if (canonicalStorages[index] is not JsonObject canonicalStorage ||
+                currentStorages[index] is not JsonObject currentStorage)
+            {
+                return false;
+            }
+
+            var currentMetadata = currentStorage.DeepClone().AsObject();
+            currentMetadata.Remove("contents");
+            currentMetadata.Remove("itemIds");
+            if (!JsonNode.DeepEquals(canonicalStorage, currentMetadata))
+                return false;
+        }
+
+        return true;
     }
 
     internal static IReadOnlyList<ValidationIssue> ValidateRawLink(
@@ -420,6 +527,19 @@ internal static class MortalLocationMaterializationContract
             RequireArray(value, field, context, issues);
         }
 
+        ValidateLocationFactionControlSelectors(value, context, raw, issues);
+        ValidateLocationActorBindingSelectors(value, context, raw, issues);
+        ValidateLocationStorageIdentities(value, context, issues);
+        ValidateLocationThreatIdentities(value, context, issues);
+        ValidateLocationThreatSemantics(value, context, issues);
+        ValidateLocationLoreBindings(value, context, issues);
+        if (value.TryGetProperty("customStates", out var customStates))
+        {
+            issues.AddRange(MortalLocationCustomStateContract.Validate(
+                customStates,
+                context + ".customStates"));
+        }
+
         if (raw)
         {
             RequireProperty(value, "parentLocationId", context, issues);
@@ -438,6 +558,361 @@ internal static class MortalLocationMaterializationContract
         ValidateDifficulty(value, "externalDifficulty", context, issues);
     }
 
+    private static void ValidateLocationThreatIdentities(
+        JsonElement location,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("activeThreats", out var threats) ||
+            threats.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var exactThreatIds = new HashSet<string>(StringComparer.Ordinal);
+        var confusableThreatIds = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var threat in threats.EnumerateArray())
+        {
+            var threatContext = $"{context}.activeThreats[{index++}]";
+            var threatId = threat.ValueKind == JsonValueKind.Object
+                ? ReadExactNonEmptyString(threat, "threatId")
+                : null;
+            if (threatId == null)
+            {
+                issues.Add(Issue(
+                    threatContext,
+                    "mortal_location_threat_identity_invalid",
+                    "Materialized active threat requires one exact permanent identity.",
+                    "object with exact non-empty threatId",
+                    threat.ValueKind == JsonValueKind.Object
+                        ? Describe(threat, "threatId")
+                        : threat.GetRawText()));
+                continue;
+            }
+
+            if (!exactThreatIds.Add(threatId))
+            {
+                issues.Add(Issue(
+                    threatContext + ".threatId",
+                    "mortal_location_threat_identity_duplicate",
+                    "A location cannot contain the same exact active threat identity more than once.",
+                    "unique exact threatId within the location",
+                    threatId));
+                continue;
+            }
+
+            if (!confusableThreatIds.Add(
+                    MortalLocationIdentityState.BuildConfusableKey(threatId)))
+            {
+                issues.Add(Issue(
+                    threatContext + ".threatId",
+                    "mortal_location_threat_identity_confusable",
+                    "Active threat identities must remain unique under case and Unicode-confusable normalization.",
+                    "unique non-confusable threatId within the location",
+                    threatId));
+            }
+        }
+    }
+
+    private static void ValidateLocationThreatSemantics(
+        JsonElement location,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("activeThreats", out var threats) ||
+            threats.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var threat in threats.EnumerateArray())
+        {
+            issues.AddRange(MortalLocationActiveThreatContract.Validate(
+                threat,
+                $"{context}.activeThreats[{index++}]"));
+        }
+    }
+
+    private static void ValidateLocationLoreBindings(
+        JsonElement location,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("loreBindings", out var bindings) ||
+            bindings.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var identityFields = new[] { "codexEntryId", "questId", "worldEventId" };
+        var index = 0;
+        foreach (var binding in bindings.EnumerateArray())
+        {
+            var bindingContext = $"{context}.loreBindings[{index++}]";
+            if (binding.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(Issue(
+                    bindingContext,
+                    "mortal_location_lore_binding_selector_invalid",
+                    "Lore binding must be an object with one closed kind and matching identity.",
+                    "codex/codexEntryId, quest/questId, or world_event/worldEventId",
+                    binding.GetRawText()));
+                continue;
+            }
+
+            var kind = ReadExactNonEmptyString(binding, "kind");
+            var expectedIdentityField = kind switch
+            {
+                "codex" => "codexEntryId",
+                "quest" => "questId",
+                "world_event" => "worldEventId",
+                _ => null
+            };
+            var presentIdentityFields = identityFields
+                .Where(field => binding.TryGetProperty(field, out _))
+                .ToArray();
+            if (expectedIdentityField != null &&
+                presentIdentityFields.Length == 1 &&
+                string.Equals(
+                    presentIdentityFields[0],
+                    expectedIdentityField,
+                    StringComparison.Ordinal) &&
+                ReadExactNonEmptyString(binding, expectedIdentityField) != null)
+            {
+                continue;
+            }
+
+            issues.Add(Issue(
+                bindingContext,
+                "mortal_location_lore_binding_selector_invalid",
+                "Lore binding kind must select exactly one matching permanent identity field.",
+                "codex/codexEntryId, quest/questId, or world_event/worldEventId",
+                $"kind={kind ?? "missing"}; identities={string.Join(',', presentIdentityFields)}"));
+        }
+    }
+
+    private static void ValidateLocationActorBindingSelectors(
+        JsonElement location,
+        string context,
+        bool raw,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("actorBindings", out var bindings) ||
+            bindings.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var binding in bindings.EnumerateArray())
+        {
+            var bindingContext = $"{context}.actorBindings[{index++}]";
+            if (binding.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(Issue(
+                    bindingContext,
+                    "mortal_location_actor_binding_selector_invalid",
+                    "Actor binding must be an object with one exact actor selector.",
+                    raw
+                        ? "exactly one exact actorId or initialActorId"
+                        : "one exact actorId and no initialActorId",
+                    binding.GetRawText()));
+                continue;
+            }
+
+            var hasActorId = binding.TryGetProperty("actorId", out var actorIdNode);
+            var hasInitialActorId = binding.TryGetProperty("initialActorId", out var initialActorIdNode);
+            var actorId = ReadExactNonEmptyString(binding, "actorId");
+            var initialActorId = ReadExactNonEmptyString(binding, "initialActorId");
+            var actorIdMalformed = hasActorId &&
+                                   actorIdNode.ValueKind is not (JsonValueKind.Null or JsonValueKind.String) ||
+                                   hasActorId && actorIdNode.ValueKind == JsonValueKind.String && actorId == null;
+            var initialActorIdMalformed = hasInitialActorId &&
+                                          initialActorIdNode.ValueKind is not (JsonValueKind.Null or JsonValueKind.String) ||
+                                          hasInitialActorId && initialActorIdNode.ValueKind == JsonValueKind.String && initialActorId == null;
+            var valid = raw
+                ? !actorIdMalformed && !initialActorIdMalformed &&
+                  (actorId != null) != (initialActorId != null)
+                : hasActorId && !hasInitialActorId && actorId != null;
+            if (!valid)
+            {
+                issues.Add(Issue(
+                    bindingContext,
+                    "mortal_location_actor_binding_selector_invalid",
+                    "Actor binding must resolve through one exact authority selector.",
+                    raw
+                        ? "exactly one exact actorId or initialActorId"
+                        : "one exact actorId and no initialActorId",
+                    $"actorId={Describe(binding, "actorId")}; initialActorId={Describe(binding, "initialActorId")}"));
+            }
+
+            var role = ReadExactNonEmptyString(binding, "role");
+            if (role == null || !ActorBindingRoles.Contains(role))
+            {
+                issues.Add(Issue(
+                    bindingContext + ".role",
+                    "mortal_location_actor_binding_role_invalid",
+                    "Actor binding role must be one closed physical relationship.",
+                    string.Join(" | ", ActorBindingRoles.OrderBy(static value => value, StringComparer.Ordinal)),
+                    Describe(binding, "role")));
+            }
+        }
+    }
+
+    private static void ValidateLocationFactionControlSelectors(
+        JsonElement location,
+        string context,
+        bool raw,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("factionControl", out var controls) ||
+            controls.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var control in controls.EnumerateArray())
+        {
+            var controlContext = $"{context}.factionControl[{index++}]";
+            if (control.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(Issue(
+                    controlContext,
+                    "mortal_location_faction_control_selector_invalid",
+                    "Faction control must be an object with one exact faction selector.",
+                    raw
+                        ? "exactly one exact factionId or initialFactionId"
+                        : "one exact factionId and no initialFactionId",
+                    control.GetRawText()));
+                continue;
+            }
+
+            var hasFactionId = control.TryGetProperty("factionId", out var factionIdNode);
+            var hasInitialFactionId = control.TryGetProperty("initialFactionId", out var initialFactionIdNode);
+            var factionId = ReadExactNonEmptyString(control, "factionId");
+            var initialFactionId = ReadExactNonEmptyString(control, "initialFactionId");
+            var factionIdMalformed = hasFactionId &&
+                                     factionIdNode.ValueKind is not (JsonValueKind.Null or JsonValueKind.String) ||
+                                     hasFactionId && factionIdNode.ValueKind == JsonValueKind.String && factionId == null;
+            var initialFactionIdMalformed = hasInitialFactionId &&
+                                            initialFactionIdNode.ValueKind is not (JsonValueKind.Null or JsonValueKind.String) ||
+                                            hasInitialFactionId && initialFactionIdNode.ValueKind == JsonValueKind.String && initialFactionId == null;
+            var valid = raw
+                ? !factionIdMalformed && !initialFactionIdMalformed &&
+                  (factionId != null) != (initialFactionId != null)
+                : hasFactionId && !hasInitialFactionId && factionId != null;
+            if (valid)
+                continue;
+
+            issues.Add(Issue(
+                controlContext,
+                "mortal_location_faction_control_selector_invalid",
+                "Faction control must resolve through one exact authority selector.",
+                raw
+                    ? "exactly one exact factionId or initialFactionId"
+                    : "one exact factionId and no initialFactionId",
+                $"factionId={Describe(control, "factionId")}; initialFactionId={Describe(control, "initialFactionId")}"));
+        }
+    }
+
+    private static void ValidateLocationStorageIdentities(
+        JsonElement location,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!location.TryGetProperty("locationStorages", out var storages) ||
+            storages.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var storageIds = new HashSet<string>(StringComparer.Ordinal);
+        var storageAliasKeys = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var storage in storages.EnumerateArray())
+        {
+            var storageContext = $"{context}.locationStorages[{index++}]";
+            if (storage.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(Issue(
+                    storageContext,
+                    "mortal_location_storage_identity_invalid",
+                    "Location storage must be an object with one exact storage identity.",
+                    "object with exact non-empty storageId",
+                    storage.GetRawText()));
+                continue;
+            }
+
+            issues.AddRange(MortalLocationStorageMetadataContract.Validate(
+                storage,
+                storageContext));
+
+            var storageId = ReadExactNonEmptyString(storage, "storageId");
+            if (storageId == null)
+            {
+                issues.Add(Issue(
+                    $"{storageContext}.storageId",
+                    "mortal_location_storage_identity_invalid",
+                    "Location storage requires one exact non-empty storageId.",
+                    "exact non-empty storageId",
+                    Describe(storage, "storageId")));
+                continue;
+            }
+
+            var exactUnique = storageIds.Add(storageId);
+            var aliasUnique = storageAliasKeys.Add(
+                MortalLocationIdentityState.BuildConfusableKey(storageId));
+            if (exactUnique && aliasUnique)
+                continue;
+
+            issues.Add(Issue(
+                storageContext + ".storageId",
+                exactUnique
+                    ? "mortal_location_storage_identity_confusable"
+                    : "mortal_location_storage_identity_duplicate",
+                exactUnique
+                    ? "Location storage identities cannot use case or Unicode-confusable aliases."
+                    : "Location storage identities must be unique inside one location.",
+                "one unique exact/confusable storageId per location",
+                storageId));
+        }
+    }
+
+    private static void ValidateRawLocationStorageContents(
+        JsonElement location,
+        string context,
+        string expectedRoute,
+        List<ValidationIssue> issues)
+    {
+        if (!string.Equals(expectedRoute, "world_map_creation", StringComparison.Ordinal) ||
+            !location.TryGetProperty("locationStorages", out var storages) ||
+            storages.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var storage in storages.EnumerateArray())
+        {
+            var storageIndex = index++;
+            if (storage.ValueKind != JsonValueKind.Object ||
+                !storage.TryGetProperty("contents", out _))
+            {
+                continue;
+            }
+
+            issues.Add(Issue(
+                $"{context}.locationStorages[{storageIndex}].contents",
+                "mortal_location_remote_storage_contents_forbidden",
+                "Remote location creation may declare storage metadata but cannot carry item contents.",
+                "contents absent; item carriers are allowed only in the current-scene projection",
+                "present"));
+        }
+    }
+
     private static void ValidatePhysicalShape(
         JsonElement value,
         string context,
@@ -447,21 +922,109 @@ internal static class MortalLocationMaterializationContract
         var biome = ReadExactNonEmptyString(value, "biome");
         var biomeDescription = ReadExactNonEmptyString(value, "biomeDescription");
         var indoorType = ReadExactNonEmptyString(value, "indoorType");
-        var valid = locationType switch
+
+        if (string.Equals(locationType, "outdoor", StringComparison.Ordinal))
         {
-            "outdoor" => biome != null && biomeDescription != null && IsNull(value, "indoorType"),
-            "indoor" => indoorType != null && IsNull(value, "biome") && IsNull(value, "biomeDescription"),
-            _ => false
-        };
-        if (valid)
+            if (biome == null)
+            {
+                AddPhysicalShapeIssue(
+                    value,
+                    context,
+                    "biome",
+                    "exact non-empty outdoor biome",
+                    issues);
+            }
+            if (biomeDescription == null)
+            {
+                AddPhysicalShapeIssue(
+                    value,
+                    context,
+                    "biomeDescription",
+                    "exact non-empty outdoor biome description",
+                    issues);
+            }
+            if (!IsNull(value, "indoorType"))
+            {
+                AddPhysicalShapeIssue(
+                    value,
+                    context,
+                    "indoorType",
+                    "null for an outdoor location",
+                    issues);
+            }
             return;
+        }
+
+        if (string.Equals(locationType, "indoor", StringComparison.Ordinal))
+        {
+            if (indoorType == null)
+            {
+                AddPhysicalShapeIssue(
+                    value,
+                    context,
+                    "indoorType",
+                    "exact non-empty indoor type",
+                    issues);
+            }
+            if (!IsNull(value, "biome"))
+            {
+                AddPhysicalShapeIssue(
+                    value,
+                    context,
+                    "biome",
+                    "null for an indoor location",
+                    issues);
+            }
+            if (!IsNull(value, "biomeDescription"))
+            {
+                AddPhysicalShapeIssue(
+                    value,
+                    context,
+                    "biomeDescription",
+                    "null for an indoor location",
+                    issues);
+            }
+            return;
+        }
+
+        var coherentOutdoorShape = biome != null &&
+            biomeDescription != null &&
+            IsNull(value, "indoorType");
+        var coherentIndoorShape = indoorType != null &&
+            IsNull(value, "biome") &&
+            IsNull(value, "biomeDescription");
+        if (coherentOutdoorShape || coherentIndoorShape)
+        {
+            issues.Add(Issue(
+                $"{context}.locationType",
+                "mortal_location_materialization_physical_shape_invalid",
+                "The location type must exactly match its complete physical fields.",
+                coherentOutdoorShape ? "outdoor" : "indoor",
+                Describe(value, "locationType")));
+            return;
+        }
 
         issues.Add(Issue(
             $"{context}.locationType",
+            "mortal_location_materialization_physical_shape_ambiguous",
+            "The intended indoor or outdoor shape is ambiguous and cannot be repaired by one bounded field set.",
+            "one coherent indoor or outdoor shape",
+            Describe(value, "locationType")));
+    }
+
+    private static void AddPhysicalShapeIssue(
+        JsonElement value,
+        string context,
+        string field,
+        string expected,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(Issue(
+            $"{context}.{field}",
             "mortal_location_materialization_physical_shape_invalid",
             "Indoor and outdoor location fields must be mutually exclusive and complete.",
-            "complete indoor or outdoor shape",
-            locationType ?? "missing"));
+            expected,
+            Describe(value, field)));
     }
 
     private static void ValidateCoordinates(
@@ -575,6 +1138,7 @@ internal static class MortalLocationMaterializationContract
     private static void ValidateLocationSectionEvidence(
         JsonElement value,
         string context,
+        bool requireCurrentArrayAgreement,
         List<ValidationIssue> issues)
     {
         if (!TryGetSections(value, out var sections))
@@ -591,6 +1155,9 @@ internal static class MortalLocationMaterializationContract
                 "populated",
                 ReadDisposition(sections, section) ?? "missing"));
         }
+
+        if (!requireCurrentArrayAgreement)
+            return;
 
         foreach (var pair in LocationArraySections)
         {
@@ -656,6 +1223,12 @@ internal static class MortalLocationMaterializationContract
         ValidateLinkAccess(value, context, issues);
         ValidateDiscovery(value, context, issues);
         RequireArray(value, "customStates", context, issues);
+        if (value.TryGetProperty("customStates", out var customStates))
+        {
+            issues.AddRange(MortalLocationCustomStateContract.Validate(
+                customStates,
+                context + ".customStates"));
+        }
     }
 
     private static void ValidateLinkAccess(
@@ -1029,17 +1602,20 @@ internal static class MortalLocationMaterializationContract
         string context,
         List<ValidationIssue> issues)
     {
-        var permanent = ReadExactNonEmptyString(root, permanentField);
-        var temporary = ReadExactNonEmptyString(root, temporaryField);
-        if ((permanent != null) ^ (temporary != null))
+        var permanentValid = TryReadNullableExactSelector(root, permanentField, out var permanentSelected);
+        var temporaryValid = TryReadNullableExactSelector(root, temporaryField, out var temporarySelected);
+        if (permanentValid && temporaryValid && permanentSelected ^ temporarySelected)
             return;
 
+        var issueField = permanentValid && !temporaryValid
+            ? temporaryField
+            : permanentField;
         issues.Add(Issue(
-            $"{context}.{permanentField}",
+            $"{context}.{issueField}",
             "mortal_location_link_endpoint_selector_invalid",
-            "Each raw link endpoint requires exactly one permanent or temporary selector.",
-            $"{permanentField} xor {temporaryField}",
-            $"{permanentField}={permanent ?? "missing"}; {temporaryField}={temporary ?? "missing"}"));
+            "Each raw link endpoint requires exactly one nullable exact permanent or temporary selector.",
+            $"{permanentField}=exact string and {temporaryField}=null, or the inverse",
+            $"{permanentField}={Describe(root, permanentField)}; {temporaryField}={Describe(root, temporaryField)}"));
     }
 
     private static void ValidateSelectorXorOrNeither(
@@ -1049,17 +1625,37 @@ internal static class MortalLocationMaterializationContract
         string context,
         List<ValidationIssue> issues)
     {
-        var permanent = ReadExactNonEmptyString(root, permanentField);
-        var temporary = ReadExactNonEmptyString(root, temporaryField);
-        if (permanent == null || temporary == null)
+        var permanentValid = TryReadNullableExactSelector(root, permanentField, out var permanentSelected);
+        var temporaryValid = TryReadNullableExactSelector(root, temporaryField, out var temporarySelected);
+        if (permanentValid && temporaryValid && !(permanentSelected && temporarySelected))
             return;
 
+        var issueField = permanentValid && !temporaryValid
+            ? temporaryField
+            : permanentField;
         issues.Add(Issue(
-            $"{context}.{permanentField}",
+            $"{context}.{issueField}",
             "mortal_location_materialization_identity_conflict",
-            "A parent location may use at most one exact selector.",
-            $"{permanentField} xor {temporaryField} or neither",
-            "both present"));
+            "A parent location requires two nullable exact selector fields and may select at most one.",
+            $"{permanentField}=exact string/null; {temporaryField}=exact string/null; at most one string",
+            $"{permanentField}={Describe(root, permanentField)}; {temporaryField}={Describe(root, temporaryField)}"));
+    }
+
+    private static bool TryReadNullableExactSelector(
+        JsonElement root,
+        string field,
+        out bool selected)
+    {
+        selected = false;
+        if (!root.TryGetProperty(field, out var value))
+            return false;
+        if (value.ValueKind == JsonValueKind.Null)
+            return true;
+        if (ReadExactNonEmptyString(root, field) == null)
+            return false;
+
+        selected = true;
+        return true;
     }
 
     private static void ValidateClosedObject(

@@ -55,15 +55,12 @@
           "storageId": "storage_square_crate",
           "name": "Рыночный сундук",
           "description": "Прочный сундук для временного хранения товаров.",
-          "ownerActorId": null,
-          "capacity": {
-            "slots": 8
-          },
-          "access": {
-            "state": "open",
-            "reason": null
-          },
-          "contents": []
+          "image_prompt": "A sturdy dark fantasy market chest, no text",
+          "capacity": 8,
+          "volume": 4.0,
+          "owner": null,
+          "authorizedUsers": [],
+          "hasFullAccess": true
         }
       ],
       "activeThreats": [

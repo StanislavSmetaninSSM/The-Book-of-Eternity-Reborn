@@ -348,9 +348,10 @@ public partial class ValidationService
             context = contextPrefix;
         }
 
-        // Mortal location creation, movement, semantic updates, discovery, and link
-        // lifecycle are owned exclusively by the exact materialization planner.
-        // This legacy validator retains only independent storage/threat commands.
+        // The exact materialization planner owns creation, movement, topology,
+        // and canonical application of every location lifecycle command. This
+        // schema validator still supplies the detailed field-level diagnostics
+        // for governed storage/threat command payloads before planning.
         if (updates.TryGetProperty("storageUpdates", out var storageUpdates))
             ValidateLocationStorageUpdates(storageUpdates, $"{context}.storageUpdates", issues);
         if (updates.TryGetProperty("storagesToRemove", out var storagesToRemove))

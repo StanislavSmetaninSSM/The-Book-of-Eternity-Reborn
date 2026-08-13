@@ -134,7 +134,12 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("currentLocationId", example + mortalGuide, StringComparison.Ordinal);
         Assert.Contains("currentAbodeId", example + matrix + launcher, StringComparison.Ordinal);
         Assert.Contains("currentHallId", example + matrix + launcher + shiningContract, StringComparison.Ordinal);
-        Assert.Contains("contradictory location aliases fail closed", example + mortalGuide + launcher, StringComparison.OrdinalIgnoreCase);
+        var normalizedLocalityGuidance = string.Join(
+            " ",
+            (example + mortalGuide + launcher).Split(
+                (char[]?)null,
+                StringSplitOptions.RemoveEmptyEntries));
+        Assert.Contains("contradictory location aliases fail closed", normalizedLocalityGuidance, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("direct trade actions require the actual currentRealm", matrix + launcher, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("recheck locality immediately before commit", example + mortalGuide + matrix + launcher, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("explicit hall evidence overrides indirect association", example + matrix, StringComparison.OrdinalIgnoreCase);

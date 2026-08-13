@@ -149,6 +149,7 @@ internal sealed class ExampleValidationManifest
     public List<ActorMaterializationExampleCoverage> AfterlifeEntityProfileCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> FactionMaterializationCoverage { get; set; } = new();
     public List<ActorMaterializationExampleCoverage> MortalItemMaterializationCoverage { get; set; } = new();
+    public List<ActorMaterializationExampleCoverage> MortalLocationMaterializationCoverage { get; set; } = new();
     public List<ExampleContractCoverage> TrainingShowcaseCoverage { get; set; } = new();
     public List<ExampleContractCoverage> GmWorkerBridgeCoverage { get; set; } = new();
 
@@ -197,6 +198,7 @@ internal sealed class ActorMaterializationExampleCoverage
     public string FocusedFragmentReason { get; set; } = "";
     public string CoverageLimit { get; set; } = "";
     public string[] RequiredText { get; set; } = [];
+    public string[] ExpectedDiagnostics { get; set; } = [];
 }
 
 internal sealed class InkFeatherReceiptCoverage

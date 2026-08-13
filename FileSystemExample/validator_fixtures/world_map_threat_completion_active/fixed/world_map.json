@@ -2,7 +2,7 @@
   "worldMapUpdates": {
     "completeThreatActivities": [
       {
-        "targetLocationId": "loc_market_square",
+        "targetLocationId": "loc_valmont_private_chambers",
         "threatId": "threat_active_smugglers",
         "threatName": "Active Smugglers",
         "finalState": "Completed",

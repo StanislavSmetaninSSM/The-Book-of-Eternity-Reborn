@@ -35,6 +35,45 @@ public sealed class MortalLocationTestFixtureTests
         Assert.True(planning.Success, string.Join(Environment.NewLine, planning.Issues.Select(issue => issue.Message)));
     }
 
+    [Fact]
+    public void AcceptedTurnPlanner_DefaultIdentityAllocationIsStableForOneAcceptedInput()
+    {
+        var raw = MortalLocationTestFixture.CreateRawLocation("current_scene_creation");
+        var input = new MortalLocationAcceptedTurnInput(
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["realm"] = "mortal_world",
+                ["locations"] = new JsonArray(),
+                ["links"] = new JsonArray()
+            },
+            PreTurnCurrentLocation: null,
+            PreTurnIdentityIndex: MortalLocationIdentityState.CreateEmptyRoot(),
+            RawCurrentLocationData: raw,
+            RawWorldMapUpdates: null,
+            Turn: 42);
+
+        var cache = new MortalLocationAcceptedTurnPlanCache();
+        var validationPlan = cache.GetOrBuild(input);
+        var itemCompositionPlan = cache.GetOrBuild(input);
+        var commitPlan = cache.GetOrBuild(input);
+
+        Assert.True(validationPlan.Success);
+        Assert.True(itemCompositionPlan.Success);
+        Assert.True(commitPlan.Success);
+        Assert.True(JsonNode.DeepEquals(
+            validationPlan.Plan!.FinalWorldMap,
+            itemCompositionPlan.Plan!.FinalWorldMap));
+        Assert.True(JsonNode.DeepEquals(
+            validationPlan.Plan.FinalWorldMap,
+            commitPlan.Plan!.FinalWorldMap));
+        Assert.True(JsonNode.DeepEquals(
+            validationPlan.Plan.FinalIdentityIndex,
+            commitPlan.Plan.FinalIdentityIndex));
+        Assert.Same(validationPlan.Plan, itemCompositionPlan.Plan);
+        Assert.Same(validationPlan.Plan, commitPlan.Plan);
+    }
+
     private static readonly string[] LocationSections =
     {
         "presentation",

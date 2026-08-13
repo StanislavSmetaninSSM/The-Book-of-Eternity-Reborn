@@ -1145,6 +1145,7 @@ public sealed class PromptDocumentationCoverageTests
                      "threatsToUpdate",
                      "threatsToRemove",
                      "completeThreatActivities",
+                     "Every raw new-location object MUST contain `activeThreats: []`",
                      "open directed link",
                      "Existing movement carries only exact selection and operational fields",
                      "never include locationStorages or contents",
@@ -1210,6 +1211,7 @@ public sealed class PromptDocumentationCoverageTests
                      "initialTargetLocationId",
                      "newCapacity",
                      "newOwner",
+                     "same-turn threat through worldMapUpdates.threatsToAdd",
                      "Never include locationStorages or contents in an existing-movement payload",
                      "currentChronology"
                  })
@@ -1374,6 +1376,13 @@ public sealed class PromptDocumentationCoverageTests
         Assert.DoesNotContain("externalDifficultyProfile", factionRules, StringComparison.OrdinalIgnoreCase);
 
         var storageExamples = ReadRepoFile("Examples", "E_Block_11.B.txt");
+        Assert.Contains("\"storageUpdates\"", storageExamples, StringComparison.Ordinal);
+        Assert.Contains("\"newAuthorizedUsers\"", storageExamples, StringComparison.Ordinal);
+        Assert.Contains("\"newHasFullAccess\"", storageExamples, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "Подготовка обновления для 'currentLocationData'",
+            storageExamples,
+            StringComparison.Ordinal);
         Assert.DoesNotContain(
             "\"locationId\": \"loc-squad-hq-01\",\n                            \"coordinates\"",
             storageExamples,

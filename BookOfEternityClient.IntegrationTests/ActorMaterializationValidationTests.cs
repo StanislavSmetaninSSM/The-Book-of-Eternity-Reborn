@@ -4158,14 +4158,10 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             initialId,
             "mat_genuinely_new_same_turn_actor_turn_8");
         const string worldMapPath = "game_state/world/world_map.json";
-        var worldMapJson = new JsonObject
-        {
-            ["locations"] = new JsonArray(
-                new JsonObject
-                {
-                    ["locationId"] = MortalActorTestFixtures.DefaultLocationId
-                })
-        }.ToJsonString();
+        var canonicalLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            MortalActorTestFixtures.DefaultLocationId,
+            "Validated actor fixture location");
+        var worldMapJson = MortalLocationTestFixture.CreateWorldMap(canonicalLocation).ToJsonString();
         await _fs.WriteFileAtomicAsync(path, currentRoot.ToJsonString());
         await _fs.WriteFileAtomicAsync(
             $"game_state/control/pending_turn_snapshot/{path}",
@@ -4310,7 +4306,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
     public void ValidateResponse_NewUpdateNpcWithExactSameTurnInitialLocationIsAccepted()
     {
         const string initialId = "new_update_npc_valid_initial_location";
-        const string locationInitialId = "new_location_for_valid_npc";
+        const string locationInitialId = MortalLocationTestFixture.LocationInitialId;
         var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
             initialId,
             sectionName: "UpdateNPCs",
@@ -4324,7 +4320,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
         actor["currentLocationId"] = null;
         actor["initialLocationId"] = locationInitialId;
         currentRoot["newLocations"] = new JsonArray(
-            new JsonObject { ["initialId"] = locationInitialId });
+            MortalLocationTestFixture.CreateRawLocation("world_map_creation"));
         using var document = JsonDocument.Parse(currentRoot.ToJsonString());
 
         var issues = _validator.ValidateResponse(document.RootElement);
@@ -4333,6 +4329,331 @@ public sealed class ActorMaterializationValidationTests : IDisposable
             issue.Code is
                 "npc_new_update_location_authority_not_exactly_one" or
                 "npc_initial_location_same_turn_target_unknown");
+    }
+
+    [Fact]
+    public void ValidateResponse_NewUpdateNpcWithIncompleteSameTurnLocationIsRejected()
+    {
+        const string initialId = "new_update_npc_incomplete_location";
+        const string locationInitialId = "new_location_without_materialization";
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            initialId,
+            sectionName: "UpdateNPCs",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        var actor = currentRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            initialId,
+            "mat_new_update_npc_incomplete_location_turn_9");
+        actor["currentLocationId"] = null;
+        actor["initialLocationId"] = locationInitialId;
+        currentRoot["newLocations"] = new JsonArray(
+            new JsonObject { ["initialId"] = locationInitialId });
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_initial_location_same_turn_target_unknown" &&
+            issue.FilePath.EndsWith(".initialLocationId", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalLocationActorBinding_DualActorSelectorFailsClosed()
+    {
+        var location = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        location["actorBindings"] = new JsonArray(new JsonObject
+        {
+            ["actorId"] = "npc_watch_captain",
+            ["initialActorId"] = "npc_watch_captain_same_turn",
+            ["role"] = "resident",
+            ["description"] = "Один binding не может выбирать две actor authority."
+        });
+        location["materialization"]!["sections"]!["actorBindings"] =
+            new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        using var document = JsonDocument.Parse(location.ToJsonString());
+
+        var issues = MortalLocationMaterializationContract.ValidateRawLocation(
+            document.RootElement,
+            "worldMapUpdates.newLocations[0]",
+            "world_map_creation");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_actor_binding_selector_invalid" &&
+            issue.FilePath.EndsWith(".actorBindings[0]", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalLocationActorBinding_UnknownPhysicalRoleFailsClosed()
+    {
+        var location = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        location["actorBindings"] = new JsonArray(new JsonObject
+        {
+            ["actorId"] = "npc_watch_captain",
+            ["role"] = "mentioned_in_rumor",
+            ["description"] = "Нарративное упоминание не является физической привязкой."
+        });
+        location["materialization"]!["sections"]!["actorBindings"] =
+            new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        using var document = JsonDocument.Parse(location.ToJsonString());
+
+        var issues = MortalLocationMaterializationContract.ValidateRawLocation(
+            document.RootElement,
+            "worldMapUpdates.newLocations[0]",
+            "world_map_creation");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_actor_binding_role_invalid" &&
+            issue.FilePath.EndsWith(".actorBindings[0].role", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalLocationActorBinding_SameTurnActorRewritesToExactEffectiveIdentity()
+    {
+        const string actorInitialId = "npcref_same_turn_bridge_keeper";
+        var npcRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorInitialId,
+            sectionName: "UpdateNPCs",
+            canTeach: false,
+            includeEnvelope: true))!.AsObject();
+        var actor = npcRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            actorInitialId,
+            "mat_same_turn_bridge_keeper");
+        actor["currentLocationId"] = null;
+        actor["initialLocationId"] = MortalLocationTestFixture.LocationInitialId;
+
+        var location = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        location["actorBindings"] = new JsonArray(new JsonObject
+        {
+            ["actorId"] = null,
+            ["initialActorId"] = actorInitialId,
+            ["role"] = "resident",
+            ["description"] = "Смотритель физически находится у нового брода."
+        });
+        location["materialization"]!["sections"]!["actorBindings"] =
+            new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+
+        var result = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["realm"] = "mortal_world",
+                    ["locations"] = new JsonArray(),
+                    ["links"] = new JsonArray()
+                },
+                PreTurnCurrentLocation: null,
+                MortalLocationIdentityState.CreateEmptyRoot(),
+                RawCurrentLocationData: null,
+                new JsonObject
+                {
+                    ["worldMapUpdates"] = new JsonObject
+                    {
+                        ["newLocations"] = new JsonArray(location)
+                    }
+                },
+                Turn: 42,
+                RawNpcCore: npcRoot));
+
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues));
+        var canonical = Assert.Single(
+            result.Plan!.FinalWorldMap["locations"]!.AsArray().OfType<JsonObject>());
+        var binding = Assert.Single(
+            canonical["actorBindings"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(actorInitialId, binding["actorId"]!.GetValue<string>());
+        Assert.False(binding.ContainsKey("initialActorId"));
+        var actorLocationRewrite = Assert.Single(
+            result.Plan.GovernedRewrites,
+            rewrite => string.Equals(
+                rewrite.EntryPath,
+                "UpdateNPCs[0]",
+                StringComparison.Ordinal));
+        Assert.Equal("initialLocationId", actorLocationRewrite.TemporaryFieldPath);
+        Assert.Equal("currentLocationId", actorLocationRewrite.PermanentFieldPath);
+        Assert.Equal(
+            canonical["locationId"]!.GetValue<string>(),
+            actorLocationRewrite.PermanentId);
+    }
+
+    [Fact]
+    public async Task MortalLocationActorBinding_CanonicalDanglingActorFailsPostValidation()
+    {
+        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        location["actorBindings"] = new JsonArray(new JsonObject
+        {
+            ["actorId"] = "npc_missing_from_canonical_authority",
+            ["role"] = "resident",
+            ["description"] = "Эта ссылка не имеет физической actor authority."
+        });
+        location["materialization"]!["sections"]!["actorBindings"] =
+            new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+        await context.WritePreTurnCanonicalStateAsync(location);
+        await context.WriteJsonAsync(
+            NpcCoreChangesContract.NpcCorePath,
+            new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(),
+                ["NPCsInScene"] = new JsonArray()
+            });
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_actor_binding_target_unknown" &&
+            issue.FilePath.EndsWith(
+                ".actorBindings[0].actorId",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void MortalLocationActorBinding_NarrowUpdateRewritesSameTurnActorIdentity()
+    {
+        const string actorInitialId = "npcref_same_turn_gate_staff";
+        var npcRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            actorInitialId,
+            sectionName: "UpdateNPCs",
+            canTeach: false,
+            includeEnvelope: true))!.AsObject();
+        var actor = npcRoot["UpdateNPCs"]![0]!.AsObject();
+        ConfigureSameTurnMortalActor(
+            actor,
+            actorInitialId,
+            "mat_same_turn_gate_staff");
+        actor["currentLocationId"] = MortalLocationTestFixture.LocationId;
+        actor["initialLocationId"] = null;
+
+        var existing = MortalLocationTestFixture.CreateCanonicalLocation();
+        const string previousActorId = "npc_previous_ford_staff";
+        var previousActorRoot = MortalActorTestFixtures.CreateNpcCoreRoot(
+            previousActorId,
+            MortalLocationTestFixture.LocationId,
+            "Чёрный брод");
+        npcRoot["NPCsInScene"] = new JsonArray(
+            previousActorRoot["NPCsInScene"]![0]!.DeepClone());
+        existing["actorBindings"] = new JsonArray(new JsonObject
+        {
+            ["actorId"] = previousActorId,
+            ["role"] = "staff",
+            ["description"] = "Предыдущий смотритель брода."
+        });
+        existing["materialization"]!["sections"]!["actorBindings"] =
+            new JsonObject
+            {
+                ["disposition"] = "populated",
+                ["reason"] = null
+            };
+        MortalLocationTestFixture.ResealCanonicalLocation(existing);
+        var result = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                MortalLocationTestFixture.CreateWorldMap(existing),
+                MortalLocationTestFixture.CreateCurrentProjection(existing),
+                MortalLocationTestFixture.CreateIdentityIndex(existing),
+                RawCurrentLocationData: null,
+                new JsonObject
+                {
+                    ["worldMapUpdates"] = new JsonObject
+                    {
+                        ["locationUpdates"] = new JsonArray(new JsonObject
+                        {
+                            ["locationId"] = MortalLocationTestFixture.LocationId,
+                            ["actorBindings"] = new JsonArray(new JsonObject
+                            {
+                                ["actorId"] = null,
+                                ["initialActorId"] = actorInitialId,
+                                ["role"] = "staff",
+                                ["description"] = "Новый смотритель назначен к существующему броду."
+                            })
+                        })
+                    }
+                },
+                Turn: 42,
+                RawNpcCore: npcRoot));
+
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues));
+        var canonical = Assert.Single(
+            result.Plan!.FinalWorldMap["locations"]!.AsArray().OfType<JsonObject>());
+        var binding = Assert.Single(
+            canonical["actorBindings"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(actorInitialId, binding["actorId"]!.GetValue<string>());
+        Assert.False(binding.ContainsKey("initialActorId"));
+    }
+
+    [Fact]
+    public async Task ValidateResponse_NpcSceneCaseVariantCurrentLocationFailsClosed()
+    {
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            new JsonObject
+            {
+                ["locationId"] = MortalActorTestFixtures.DefaultLocationId
+            }.ToJsonString());
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "npc_case_variant_location",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["NPCsInScene"]![0]!["currentLocationId"] =
+            MortalActorTestFixtures.DefaultLocationId.ToUpperInvariant();
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_scene_location_mismatch" &&
+            issue.FilePath.EndsWith(".currentLocationId", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ValidateResponse_NpcSceneCaseVariantInitialLocationFailsClosed()
+    {
+        const string locationInitialId = "locref_exact_current_scene";
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            new JsonObject
+            {
+                ["currentLocationData"] = new JsonObject
+                {
+                    ["locationId"] = null,
+                    ["initialId"] = locationInitialId
+                }
+            }.ToJsonString());
+        var currentRoot = JsonNode.Parse(BuildMortalActorStateJson(
+            "npc_case_variant_initial_location",
+            sectionName: "NPCsInScene",
+            canTeach: true,
+            includeEnvelope: true))!.AsObject();
+        currentRoot["NPCsInScene"]![0]!["currentLocationId"] = null;
+        currentRoot["NPCsInScene"]![0]!["initialLocationId"] =
+            locationInitialId.ToUpperInvariant();
+        using var document = JsonDocument.Parse(currentRoot.ToJsonString());
+
+        var issues = _validator.ValidateResponse(document.RootElement);
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_scene_initial_location_mismatch" &&
+            issue.FilePath.EndsWith(".initialLocationId", StringComparison.Ordinal));
     }
 
     [Fact]

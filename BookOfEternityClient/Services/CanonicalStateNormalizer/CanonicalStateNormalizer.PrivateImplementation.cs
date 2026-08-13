@@ -163,10 +163,32 @@ public partial class CanonicalStateNormalizer
             ? _fs.ReadFileAsync(path)
             : _fs.ReadFileAsync(_writeLease, path);
 
-    private Task WriteCanonicalFileAtomicAsync(string path, string content) =>
-        _writeLease == null
-            ? _fs.WriteFileAtomicAsync(path, content)
-            : _fs.WriteFileAtomicAsync(_writeLease, path, content);
+    private async Task WriteCanonicalFileAtomicAsync(string path, string content)
+    {
+        try
+        {
+            if (_writeLease == null)
+                await _fs.WriteFileAtomicAsync(path, content);
+            else
+                await _fs.WriteFileAtomicAsync(_writeLease, path, content);
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (CanonicalStateWriteException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            throw new CanonicalStateWriteException(path, exception);
+        }
+    }
 
     private bool CanonicalFileExists(string path) =>
         _writeLease == null
@@ -356,5 +378,15 @@ public partial class CanonicalStateNormalizer
 
         return text;
     }
+}
+
+internal sealed class CanonicalStateWriteException(
+    string relativePath,
+    Exception innerException)
+    : IOException(
+        $"Accepted-turn canonical state could not be written at '{relativePath}'.",
+        innerException)
+{
+    internal string RelativePath { get; } = relativePath;
 }
 

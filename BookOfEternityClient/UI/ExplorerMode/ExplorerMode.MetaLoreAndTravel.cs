@@ -510,64 +510,54 @@ public partial class ExplorerMode
 
     private async Task ShowLocations()
     {
-        var locDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
-        var mapDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/world_map.json");
-
-        var currentRoot = locDoc != null ? UnwrapCurrentLocationRoot(locDoc.RootElement) : (JsonElement?)null;
-        var curName = currentRoot.HasValue
-            ? GetLocationName(currentRoot.Value, "Неизвестно")
-            : string.Empty;
+        var catalog = await ReadMortalLocationPlayerCatalogAsync();
 
         while (true)
         {
-            var menuItems = new List<(string Label, string Action, JsonElement? Data)>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            if (currentRoot.HasValue)
+            var menuItems = new List<(string Label, MortalLocationPlayerLocation Location)>();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            if (catalog.CurrentLocationId != null &&
+                catalog.TryGetLocation(catalog.CurrentLocationId, out var current) &&
+                current != null)
             {
-                seen.Add(StableLocationKey(currentRoot.Value));
-                menuItems.Add(($"[bold green]📍 {Markup.Escape(curName)}[/] [dim](текущая)[/]", "current", currentRoot.Value));
-
-                if (currentRoot.Value.TryGetProperty("adjacencyMap", out var adj) && adj.ValueKind == JsonValueKind.Array)
+                seen.Add(current.Identity);
+                menuItems.Add(($"[bold green]📍 {Markup.Escape(current.Label)}[/] [dim](текущая)[/]", current));
+                foreach (var link in catalog.Links.Where(link =>
+                             string.Equals(link.SourceIdentity, current.Identity, StringComparison.Ordinal)))
                 {
-                    foreach (var entry in adj.EnumerateArray())
-                    {
-                        var aName = GetStr(entry, "name", GetStr(entry, "targetLocationName", GetStr(entry, "targetLocationId", "?")));
-                        var direction = GetStr(entry, "direction", "");
-                        var distance = GetStr(entry, "distance", "");
-                        var linkState = GetStr(entry, "linkState", "");
-                        var linkStateLabel = ExplorerPlayerFacingLabels.LocationLinkState(linkState);
-                        var stateColor = ExplorerPlayerFacingLabels.LocationLinkStateColor(linkState);
-                        var dirStr = !string.IsNullOrEmpty(direction) ? $" ({Markup.Escape(direction)})" : "";
-                        var distStr = !string.IsNullOrEmpty(distance) ? $" [dim]{Markup.Escape(distance)}[/]" : "";
-                        var stateStr = !string.IsNullOrEmpty(linkStateLabel)
-                            ? $" [{stateColor}][[{Markup.Escape(linkStateLabel)}]][/]"
-                            : "";
-                        menuItems.Add(($"  🧭 [{stateColor}]{Markup.Escape(aName)}[/]{dirStr}{distStr}{stateStr}", "adjacent", entry));
-                    }
+                    if (!catalog.TryGetLocation(link.TargetIdentity, out var target) || target == null ||
+                        !seen.Add(target.Identity))
+                        continue;
+                    var direction = ReadPlayerNodeString(link.Data, "directionLabel");
+                    var access = link.Data["access"] as JsonObject;
+                    var accessState = ReadPlayerNodeString(access, "state");
+                    var stateLabel = ExplorerPlayerFacingLabels.LocationLinkState(accessState);
+                    var stateColor = ExplorerPlayerFacingLabels.LocationLinkStateColor(accessState);
+                    var directionLabel = string.IsNullOrEmpty(direction)
+                        ? string.Empty
+                        : $" ({Markup.Escape(direction)})";
+                    var accessLabel = string.IsNullOrEmpty(stateLabel)
+                        ? string.Empty
+                        : $" [{stateColor}][[{Markup.Escape(stateLabel)}]][/]";
+                    menuItems.Add(($"  🧭 [{stateColor}]{Markup.Escape(target.Label)}[/]{directionLabel}{accessLabel}", target));
                 }
             }
 
-            foreach (var loc in EnumerateWorldMapLocations(mapDoc, "newLocations"))
+            foreach (var location in catalog.Locations)
             {
-                var n = GetLocationName(loc, "?");
-                if (string.Equals(n, curName, StringComparison.OrdinalIgnoreCase) || !seen.Add(StableLocationKey(loc)))
+                if (!seen.Add(location.Identity))
                     continue;
-
-                var lt = FormatLocationTypeForPlayer(GetStr(loc, "locationType", ""));
-                menuItems.Add(($"  🗺 [dim]{Markup.Escape(n)}[/]" +
-                    (!string.IsNullOrEmpty(lt) ? $" [dim]({Markup.Escape(lt)})[/]" : ""), "discovered", loc));
-            }
-
-            foreach (var loc in EnumerateWorldMapLocations(mapDoc, "locationUpdates"))
-            {
-                var n = GetLocationName(loc, "?");
-                if (string.Equals(n, curName, StringComparison.OrdinalIgnoreCase) || !seen.Add(StableLocationKey(loc)))
+                if (location.DiscoveryTier == "rumored")
+                {
+                    menuItems.Add(($"  ❔ [dim]{Markup.Escape(location.Label)} (слух)[/]", location));
                     continue;
-
-                var lt = FormatLocationTypeForPlayer(GetStr(loc, "locationType", ""));
-                menuItems.Add(($"  🗺 [dim]{Markup.Escape(n)}[/] [dim](обновлено)[/]" +
-                    (!string.IsNullOrEmpty(lt) ? $" [dim]({Markup.Escape(lt)})[/]" : ""), "discovered", loc));
+                }
+                var locationType = FormatLocationTypeForPlayer(
+                    ReadPlayerNodeString(location.Data, "locationType"));
+                var typeLabel = string.IsNullOrEmpty(locationType)
+                    ? string.Empty
+                    : $" [dim]({Markup.Escape(locationType)})[/]";
+                menuItems.Add(($"  🗺 [dim]{Markup.Escape(location.Label)}[/]{typeLabel}", location));
             }
 
             if (menuItems.Count == 0)
@@ -592,74 +582,26 @@ public partial class ExplorerMode
             if (selIdx < 0 || selIdx >= menuItems.Count)
                 break;
 
-            var (_, action, data) = menuItems[selIdx];
-            if (action == "current" && currentRoot.HasValue)
-                await ShowLocationDetailPanel(currentRoot.Value, true);
-            else if (data.HasValue)
-                await ShowLocationDetailPanel(data.Value, false);
+            await ShowLocationDetailPanel(menuItems[selIdx].Location, catalog);
         }
     }
 
-    private static JsonElement UnwrapCurrentLocationRoot(JsonElement root) =>
-        root.ValueKind == JsonValueKind.Object &&
-        root.TryGetProperty("currentLocationData", out var wrappedRoot) &&
-        wrappedRoot.ValueKind == JsonValueKind.Object
-            ? wrappedRoot
-            : root;
-
-    private static IEnumerable<JsonElement> EnumerateWorldMapLocations(JsonDocument? doc, string propertyName)
+    private async Task<MortalLocationPlayerCatalog> ReadMortalLocationPlayerCatalogAsync()
     {
-        if (doc == null || doc.RootElement.ValueKind != JsonValueKind.Object)
-            yield break;
-
-        if (doc.RootElement.TryGetProperty(propertyName, out var rootItems) &&
-            rootItems.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var item in rootItems.EnumerateArray())
-            {
-                if (item.ValueKind == JsonValueKind.Object)
-                    yield return item;
-            }
-        }
-
-        if (!doc.RootElement.TryGetProperty("worldMapUpdates", out var wrappedRoot) ||
-            wrappedRoot.ValueKind != JsonValueKind.Object ||
-            !wrappedRoot.TryGetProperty(propertyName, out var wrappedItems) ||
-            wrappedItems.ValueKind != JsonValueKind.Array)
-        {
-            yield break;
-        }
-
-        foreach (var item in wrappedItems.EnumerateArray())
-        {
-            if (item.ValueKind == JsonValueKind.Object)
-                yield return item;
-        }
+        var worldMapTask = _fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath);
+        var currentTask = _fs.ReadFileAsync(MortalLocationMaterializationContract.CurrentLocationPath);
+        var identityTask = _fs.ReadFileAsync(MortalLocationIdentityState.StatePath);
+        await Task.WhenAll(worldMapTask, currentTask, identityTask);
+        return MortalLocationPlayerProjection.Create(
+            await worldMapTask,
+            await currentTask,
+            await identityTask);
     }
 
-    private static string GetLocationName(JsonElement location, string fallback) =>
-        GetStr(
-            location,
-            "name",
-            GetStr(
-                location,
-                "locationName",
-                GetStr(
-                    location,
-                "displayName",
-                GetStr(location, "targetLocationName", GetStr(location, "targetLocationId", fallback)))));
-
-    private static string GetLocationName(JsonElement location) =>
-        GetLocationName(location, "Неизвестно");
-
-    private static string StableLocationKey(JsonElement location)
-    {
-        var id = GetStr(location, "locationId", GetStr(location, "id", GetStr(location, "targetLocationId", "")));
-        if (!string.IsNullOrWhiteSpace(id))
-            return id.Trim();
-
-        return GetLocationName(location, "?").Trim();
-    }
+    private static string ReadPlayerNodeString(JsonObject? root, string propertyName) =>
+        root?[propertyName] is JsonValue value && value.TryGetValue<string>(out var text)
+            ? text
+            : string.Empty;
 
     private async Task ShowTransport()
     {

@@ -25,7 +25,7 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
         Directory.CreateDirectory(RootPath);
         var hooks = new FileSystemManagerHooks
         {
-            BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync
+            AfterPhysicalFilePublishedAsync = AfterPhysicalFilePublishedAsync
         };
         FileSystem = new FileSystemManager(
             RootPath,
@@ -48,6 +48,8 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
     internal CanonicalStateNormalizer Normalizer { get; }
 
     internal string RootPath { get; }
+
+    internal string? InjectedPublishedPath { get; private set; }
 
     internal static Task<MortalLocationMaterializationTestContext> CreateAsync()
     {
@@ -122,6 +124,7 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
 
         _armedWriteFailurePath = relativePath;
         _remainingWriteFailureMatches = matchingWrite;
+        InjectedPublishedPath = null;
     }
 
     internal async Task CaptureValidatedPendingSnapshotAsync(int turn = 42)
@@ -226,10 +229,13 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
         return ValueTask.CompletedTask;
     }
 
-    private Task BeforeCanonicalMutationAsync(string relativePath)
+    private Task AfterPhysicalFilePublishedAsync(string absolutePath)
     {
         if (_armedWriteFailurePath == null ||
-            !string.Equals(relativePath, _armedWriteFailurePath, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(
+                Path.GetFullPath(absolutePath),
+                Path.GetFullPath(FileSystem.ResolvePath(_armedWriteFailurePath)),
+                StringComparison.OrdinalIgnoreCase))
         {
             return Task.CompletedTask;
         }
@@ -238,8 +244,9 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
         if (_remainingWriteFailureMatches > 0)
             return Task.CompletedTask;
 
+        InjectedPublishedPath = _armedWriteFailurePath;
         _armedWriteFailurePath = null;
         return Task.FromException(
-            new IOException($"Injected Mortal location write failure for '{relativePath}'."));
+            new IOException($"Injected Mortal location write failure for '{absolutePath}'."));
     }
 }

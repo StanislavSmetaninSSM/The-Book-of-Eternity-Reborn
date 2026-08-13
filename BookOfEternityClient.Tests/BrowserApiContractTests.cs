@@ -245,16 +245,64 @@ public sealed class BrowserApiContractTests
                     action.MutationMode == "local-turn")
             .ToArray();
 
-        Assert.Equal("qte-error", turnState.State);
+        Assert.Equal("blocked", turnState.State);
         Assert.False(turnState.CanStartBrowserWrite);
-        Assert.Equal("validation-failed", turnState.Phase);
+        Assert.Equal("blocked", turnState.Phase);
         Assert.Equal("error", turnState.Severity);
-        Assert.Equal("qte-error", composer.Mode);
+        Assert.Equal("blocked", composer.Mode);
         Assert.False(composer.CanSubmit);
         Assert.NotEmpty(localTurnActions);
         Assert.All(
             localTurnActions,
             static action => Assert.False(action.Enabled));
+    }
+
+    [Fact]
+    public void OrdinaryGameScreenFailureState_HidesValidationRepairAndRollbackVocabularyRecursively()
+    {
+        var lifecycle = BuildLifecycleDashboard() with
+        {
+            PendingTurn = new BrowserPendingTurnStatus(
+                HasActiveGmTurn: true,
+                Artifacts:
+                [
+                    new BrowserPendingTurnArtifactStatus(
+                        "PRIVATE repair snapshot",
+                        BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,
+                        Exists: true,
+                        Kind: "file")
+                ],
+                Message: "PRIVATE validation repair rollback snapshot path"),
+            CanStartBrowserWrite = false,
+            Validation = new BrowserValidationSummaryDto(
+                State: "errors",
+                StatusLabel: "PRIVATE validation failed; repair and rollback required",
+                IssueCount: 1,
+                ErrorCount: 1,
+                WarningCount: 0,
+                InfoCount: 0,
+                DisplayedIssueCount: 1,
+                Groups: [],
+                Issues: [])
+        };
+
+        var turnState = BrowserGameScreenTurnStateDto.From(lifecycle, BuildQteState());
+        var composer = BrowserGameScreenActionComposerDto.From(lifecycle, BuildQteState());
+        var payload = JsonSerializer.Serialize(new { turnState, composer }, WebJsonOptions);
+
+        Assert.False(turnState.CanStartBrowserWrite);
+        Assert.False(composer.CanSubmit);
+        Assert.Equal("blocked", turnState.Phase);
+        Assert.Equal("blocked", composer.Mode);
+        Assert.All(turnState.KnownPhases, phase => Assert.Equal("player-default", phase.Surface));
+        foreach (var forbidden in new[]
+                 {
+                     "validation", "repair", "rollback", "snapshot", "почин", "проверк", "откат",
+                     "game_state/", "advanced-only", "PRIVATE"
+                 })
+        {
+            Assert.DoesNotContain(forbidden, payload, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     [Fact]
@@ -951,8 +999,6 @@ public sealed class BrowserApiContractTests
                 Title: "Можно продолжать",
                 Message: "Опишите следующее действие персонажа в прозе. После подтверждения ход будет подготовлен для ГМ.",
                 CanStartBrowserWrite: true,
-                ValidationState: "clean",
-                ValidationLabel: "Состояние валидно",
                 Phase: "idle",
                 PhaseLabel: "Можно готовить ход",
                 Severity: "success",

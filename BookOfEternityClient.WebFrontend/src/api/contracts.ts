@@ -397,8 +397,6 @@ export interface BrowserGameScreenTurnStateDto {
   title: string;
   message: string;
   canStartBrowserWrite: boolean;
-  validationState: string;
-  validationLabel: string;
   phase: string;
   phaseLabel: string;
   severity: string;

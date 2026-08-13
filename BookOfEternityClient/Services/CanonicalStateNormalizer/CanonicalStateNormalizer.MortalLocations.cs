@@ -73,7 +73,8 @@ public partial class CanonicalStateNormalizer
         var rawFactionCore = await ReadMortalLocationObjectRootAsync(
             FactionCoreChangesContract.FactionCorePath);
 
-        var result = MortalLocationAcceptedTurnPlanner.Build(
+        var result = MortalLocationAcceptedTurnPlanAuthority.GetOrBuild(
+            _fs,
             new MortalLocationAcceptedTurnInput(
                 preTurnMap,
                 preTurnCurrent,
@@ -85,7 +86,8 @@ public partial class CanonicalStateNormalizer
                 companionAuthority,
                 rawNpcCore,
                 rawFactionCore,
-                preTurnStorageContents));
+                preTurnStorageContents,
+                MortalItemCurrentLocationCarrier.Select(currentProjection)));
         if (!result.Success || result.Plan == null)
         {
             var issue = result.Issues.FirstOrDefault();

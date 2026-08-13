@@ -42,6 +42,147 @@ public sealed class MortalLocationIdentityStateTests
         Assert.Contains(state.Issues, issue => issue.Code == "mortal_location_identity_duplicate_property");
     }
 
+    [Fact]
+    public void Parse_RejectsIncompleteLifecycleTransitionEvidence()
+    {
+        var root = MortalLocationTestFixture.CreateIdentityIndex(
+            MortalLocationTestFixture.CreateCanonicalLocation());
+        root["locationEntries"]![0]!["transitions"]!.AsArray().Add(new JsonObject
+        {
+            ["transitionId"] = "mltrn_incomplete",
+            ["kind"] = "location_update",
+            ["turn"] = 2
+        });
+
+        var state = MortalLocationIdentityState.Parse(root);
+
+        Assert.Contains(state.Issues, issue =>
+            issue.Code == "mortal_location_identity_invalid_entry" &&
+            issue.FilePath.EndsWith(".transitions[0]", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("mltrn_duplicate")]
+    [InlineData("MLTRN_DUPLICATE")]
+    public void Parse_RejectsDuplicateLifecycleTransitionIdentityAcrossEntries(
+        string secondTransitionId)
+    {
+        var first = MortalLocationTestFixture.CreateCanonicalLocation();
+        var second = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_transition_second",
+            "Вторая локация",
+            x: 2);
+        var root = MortalLocationTestFixture.CreateIdentityIndex(first);
+        var secondEntry = MortalLocationTestFixture.CreateIdentityIndex(second)
+            ["locationEntries"]![0]!.DeepClone().AsObject();
+        root["locationEntries"]!.AsArray().Add(secondEntry);
+        root["locationEntries"]![0]!["transitions"]!.AsArray().Add(
+            CreateLocationUpdateTransition(
+                "mltrn_duplicate",
+                MortalLocationTestFixture.LocationId));
+        secondEntry["transitions"]!.AsArray().Add(
+            CreateLocationUpdateTransition(
+                secondTransitionId,
+                "loc_transition_second"));
+
+        var state = MortalLocationIdentityState.Parse(root);
+
+        Assert.Contains(state.Issues, issue =>
+            issue.Code == "mortal_location_identity_duplicate_transition_id");
+    }
+
+    [Theory]
+    [InlineData("unknown-field")]
+    [InlineData("unknown-kind")]
+    [InlineData("non-positive-turn")]
+    [InlineData("predates-entry")]
+    [InlineData("wrong-entity")]
+    [InlineData("non-object-before")]
+    [InlineData("wrong-authority-kind")]
+    [InlineData("wrong-authority-id")]
+    [InlineData("non-exact-operation")]
+    [InlineData("ordinary-location-endpoint")]
+    [InlineData("child-without-child-id")]
+    public void Parse_RejectsMalformedLifecycleTransitionEvidence(string mutation)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var root = MortalLocationTestFixture.CreateIdentityIndex(location);
+        var transition = CreateLocationUpdateTransition(
+            "mltrn_malformed",
+            MortalLocationTestFixture.LocationId);
+        switch (mutation)
+        {
+            case "unknown-field":
+                transition["debug"] = true;
+                break;
+            case "unknown-kind":
+                transition["kind"] = "semantic_update";
+                break;
+            case "non-positive-turn":
+                transition["turn"] = 0;
+                transition["sourceAuthorityId"] = "turn_0";
+                break;
+            case "predates-entry":
+                transition["turn"] = 1;
+                transition["sourceAuthorityId"] = "turn_1";
+                break;
+            case "wrong-entity":
+                transition["entityId"] = "loc_other";
+                break;
+            case "non-object-before":
+                transition["beforeState"] = "invalid";
+                break;
+            case "wrong-authority-kind":
+                transition["sourceAuthorityKind"] = "repair_packet";
+                break;
+            case "wrong-authority-id":
+                transition["sourceAuthorityId"] = "turn_999";
+                break;
+            case "non-exact-operation":
+                transition["operationRef"] = " worldMapUpdates.locationUpdates[0] ";
+                break;
+            case "ordinary-location-endpoint":
+                transition["sourceLocationId"] = MortalLocationTestFixture.LocationId;
+                break;
+            case "child-without-child-id":
+                transition["kind"] = "storage_update";
+                transition["sourceLocationId"] = MortalLocationTestFixture.LocationId;
+                transition["targetLocationId"] = MortalLocationTestFixture.LocationId;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation));
+        }
+        root["locationEntries"]![0]!["transitions"]!.AsArray().Add(transition);
+
+        var state = MortalLocationIdentityState.Parse(root);
+
+        Assert.Contains(state.Issues, issue =>
+            issue.Code == "mortal_location_identity_invalid_entry" &&
+            issue.FilePath.EndsWith(".transitions[0]", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("source")]
+    [InlineData("target")]
+    public void Parse_RejectsLifecycleTransitionEndpointMismatch(string endpoint)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var link = MortalLocationTestFixture.CreateCanonicalLink(
+            MortalLocationTestFixture.LocationId,
+            "loc_test_watchtower");
+        var root = MortalLocationTestFixture.CreateIdentityIndex(location, link);
+        var transition = CreateLinkUpdateTransition();
+        transition[endpoint == "source" ? "sourceLocationId" : "targetLocationId"] =
+            "loc_other";
+        root["linkEntries"]![0]!["transitions"]!.AsArray().Add(transition);
+
+        var state = MortalLocationIdentityState.Parse(root);
+
+        Assert.Contains(state.Issues, issue =>
+            issue.Code == "mortal_location_identity_invalid_entry" &&
+            issue.FilePath.EndsWith(".transitions[0]", StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("locationId", "mortal_location_identity_duplicate_location_id")]
     [InlineData("initialId", "mortal_location_identity_duplicate_origin")]
@@ -199,4 +340,38 @@ public sealed class MortalLocationIdentityStateTests
             ["linkEntries"] = new JsonArray()
         };
     }
+
+    private static JsonObject CreateLocationUpdateTransition(
+        string transitionId,
+        string locationId) =>
+        new()
+        {
+            ["transitionId"] = transitionId,
+            ["kind"] = "location_update",
+            ["turn"] = 2,
+            ["entityId"] = locationId,
+            ["beforeState"] = new JsonObject { ["purpose"] = "До" },
+            ["afterState"] = new JsonObject { ["purpose"] = "После" },
+            ["sourceAuthorityKind"] = "turn_outcome",
+            ["sourceAuthorityId"] = "turn_2",
+            ["operationRef"] = "worldMapUpdates.locationUpdates[0]",
+            ["sourceLocationId"] = null,
+            ["targetLocationId"] = null
+        };
+
+    private static JsonObject CreateLinkUpdateTransition() =>
+        new()
+        {
+            ["transitionId"] = "mltrn_link_update",
+            ["kind"] = "link_update",
+            ["turn"] = 2,
+            ["entityId"] = MortalLocationTestFixture.LinkId,
+            ["beforeState"] = new JsonObject { ["name"] = "До" },
+            ["afterState"] = new JsonObject { ["name"] = "После" },
+            ["sourceAuthorityKind"] = "turn_outcome",
+            ["sourceAuthorityId"] = "turn_2",
+            ["operationRef"] = "worldMapUpdates.linkUpdates[0]",
+            ["sourceLocationId"] = MortalLocationTestFixture.LocationId,
+            ["targetLocationId"] = "loc_test_watchtower"
+        };
 }

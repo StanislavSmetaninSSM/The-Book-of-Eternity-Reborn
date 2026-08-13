@@ -130,8 +130,10 @@ public sealed partial class CanonicalStateNormalizerTests
             CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
         context.InjectWriteFailureBefore(MortalItemIdentityState.StatePath);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<CanonicalStateWriteException>(
             () => context.NormalizeAcceptedTurnAsync());
+        Assert.Equal(MortalItemIdentityState.StatePath, exception.RelativePath);
+        Assert.IsType<InvalidOperationException>(exception.InnerException);
 
         await context.AssertExactBytesAsync(before);
     }

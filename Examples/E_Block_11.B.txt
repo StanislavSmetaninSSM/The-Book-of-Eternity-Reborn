@@ -28,7 +28,7 @@
                     2.  Проверка целевого игрока: Игрок "Аня" существует в 'Context.players'. Проверка пройдена.
                     3.  Подготовка команд:
                         -   Генерация команды 'shareStorageAccess'.
-                        -   Подготовка обновления для 'currentLocationData':
+                        -   Подготовка точного 'worldMapUpdates.storageUpdates[]':
                             -   Изменение 'owner.ownerType' хранилища на 'Shared'.
                             -   Добавление Ани в массив 'authorizedUsers'.
 
@@ -58,33 +58,34 @@
 
                         ]]>
    </sharestorageaccess>
-   <currentlocationdata>
+   <worldmapupdates>
     <![CDATA[
 
                         {
-                            "locationId": "loc-squad-hq-01",
-                            "coordinates": { "x": 0, "y": 0, "z": 0 },
-                            "lastEventsDescription": "#[42] - 17 Frostfall 1453 г., 09:30: Ронан открыл Ане доступ к общему сундуку отряда.",
-                            "locationStorages": [
+                            "storageUpdates": [
                                 {
+                                    "targetLocationId": "loc-squad-hq-01",
                                     "storageId": "storage-ronan-chest-01",
-                                    "owner": {
-                                        "ownerType": "Shared",
-                                        "ownerId": "player-ronan-guid",
-                                        "ownerName": "Ронан"
-                                    },
-                                    "authorizedUsers": [
-                                        {
-                                            "playerId": "player-anya-guid",
-                                            "playerName": "Аня"
-                                        }
-                                    ]
+                                    "update": {
+                                        "newOwner": {
+                                            "ownerType": "Shared",
+                                            "ownerId": "player-ronan-guid",
+                                            "ownerName": "Ронан"
+                                        },
+                                        "newAuthorizedUsers": [
+                                            {
+                                                "playerId": "player-anya-guid",
+                                                "playerName": "Аня"
+                                            }
+                                        ],
+                                        "newHasFullAccess": true
+                                    }
                                 }
                             ]
                         }
 
                         ]]>
-   </currentlocationdata>
+   </worldmapupdates>
   </jsonresponse>
  </example>
  <example contenttype="log_and_json_snippet" id="SharedStorage_Example_2" type="good">
@@ -181,7 +182,7 @@
                     1.  Проверка владения: ID Ронана совпадает с 'ownerId'. Проверка пройдена.
                     2.  Подготовка команд:
                         -   Генерация команды 'revokeStorageAccess'.
-                        -   Подготовка обновления для 'currentLocationData':
+                        -   Подготовка точного 'worldMapUpdates.storageUpdates[]':
                             -   Удаление Ани из массива 'authorizedUsers'.
                             -   Поскольку других авторизованных пользователей не осталось, тип владения хранилищем возвращается к 'Player'.
                     - Итог: Действие успешно.
@@ -211,28 +212,29 @@
 
                         ]]>
    </revokestorageaccess>
-   <currentlocationdata>
+   <worldmapupdates>
     <![CDATA[
 
                         {
-                            "locationId": "loc-squad-hq-01",
-                            "coordinates": { "x": 0, "y": 0, "z": 0 },
-                            "lastEventsDescription": "#[43] - 17 Frostfall 1453 г., 09:40: Ронан снова сделал сундук личным и отозвал доступ Ани.",
-                            "locationStorages": [
+                            "storageUpdates": [
                                 {
+                                    "targetLocationId": "loc-squad-hq-01",
                                     "storageId": "storage-ronan-chest-01",
-                                    "owner": {
-                                        "ownerType": "Player",
-                                        "ownerId": "player-ronan-guid",
-                                        "ownerName": "Ронан"
-                                    },
-                                    "authorizedUsers": []
+                                    "update": {
+                                        "newOwner": {
+                                            "ownerType": "Player",
+                                            "ownerId": "player-ronan-guid",
+                                            "ownerName": "Ронан"
+                                        },
+                                        "newAuthorizedUsers": [],
+                                        "newHasFullAccess": true
+                                    }
                                 }
                             ]
                         }
 
                         ]]>
-   </currentlocationdata>
+   </worldmapupdates>
   </jsonresponse>
  </example>
  <example contenttype="log_and_json_snippet" id="SharedStorage_Example_4" type="bad">

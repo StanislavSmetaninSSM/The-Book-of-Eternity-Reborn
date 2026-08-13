@@ -2164,11 +2164,11 @@ public sealed class GmTurnHelperContractTests
             turnTemplate,
             StringComparison.Ordinal);
         Assert.Contains(
-            "For fresh Mortal bootstrap, copy canonical coordinates from game_state/control/mortal_bootstrap_scaffold.json",
+            "For fresh Mortal bootstrap, read immutable",
             turnTemplate,
             StringComparison.Ordinal);
         Assert.Contains(
-            "current_location_coordinates_mismatch",
+            "current_scene_creation",
             turnTemplate,
             StringComparison.Ordinal);
         Assert.Contains("\"chaosSeaCyclesProcessed\": 0", progressionTemplate, StringComparison.Ordinal);
@@ -2178,15 +2178,30 @@ public sealed class GmTurnHelperContractTests
             "Use Russian in-world terms: посмертие, Море Хаоса, Сияющая Обитель, смертный мир",
             afterlifeChronicleTemplate,
             StringComparison.Ordinal);
-        Assert.Contains("activeThreats", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("canonical `biome`", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("TemperateForest", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("adjacencyMap", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("locationStorages", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("internalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("externalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("estimatedInternalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
-        Assert.Contains("estimatedExternalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("Mortal Location Materialization v1", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("current_scene_creation", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("world_map_creation", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("world_map_link_creation", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("materialization.sections", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("locationId = null", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("linkId = null", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("exact permanent locationId", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("exact permanent linkId", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("locationDiscoveryTransitions", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("linkRemovals", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("storageUpdates", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("storagesToRemove", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("threatsToAdd", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("threatsToUpdate", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("threatsToRemove", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("completeThreatActivities", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("open directed", locationTemplate, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("creation evidence", locationTemplate, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("knownExits and adjacencyMap are client-derived", locationTemplate, StringComparison.Ordinal);
+        Assert.Contains("full-turn resubmission", locationTemplate, StringComparison.Ordinal);
+        Assert.DoesNotContain("targetCoordinates", locationTemplate, StringComparison.Ordinal);
+        Assert.DoesNotContain("internalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
+        Assert.DoesNotContain("externalDifficultyProfile", locationTemplate, StringComparison.Ordinal);
     }
 
     [Fact]

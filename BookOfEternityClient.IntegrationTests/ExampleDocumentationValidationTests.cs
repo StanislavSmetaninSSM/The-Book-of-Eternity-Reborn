@@ -448,7 +448,7 @@ public sealed class ExampleDocumentationValidationTests
                 movementIndex,
                 movementRoot.DeepClone().AsObject(),
                 RawWorldMapUpdates: null,
-                Turn: 2));
+                Turn: 43));
 
         Assert.True(movementResult.Success, FormatLocationIssues(movementResult.Issues));
         var movementPlan = Assert.IsType<MortalLocationAcceptedTurnPlan>(
@@ -553,7 +553,8 @@ public sealed class ExampleDocumentationValidationTests
                 MortalLocationTestFixture.CreateIdentityIndex(governedLocation),
                 null,
                 governedResponse.DeepClone().AsObject(),
-                Turn: 43));
+                Turn: 43,
+                RawFactionCore: CreateDocumentedFactionAuthorityRoot()));
         Assert.True(governedResult.Success, FormatLocationIssues(governedResult.Issues));
         var governedPlan = Assert.IsType<MortalLocationAcceptedTurnPlan>(governedResult.Plan);
         var finalGovernedLocation = Assert.Single(
@@ -3202,9 +3203,28 @@ public sealed class ExampleDocumentationValidationTests
             ["storageId"] = storageId,
             ["name"] = name,
             ["description"] = "Хранилище из документированного примера.",
+            ["image_prompt"] = "A sturdy dark fantasy documented storage, no text",
             ["capacity"] = 8,
+            ["volume"] = 4.0,
             ["owner"] = null,
-            ["contents"] = new JsonArray()
+            ["authorizedUsers"] = new JsonArray(),
+            ["hasFullAccess"] = true
+        };
+
+    private static JsonObject CreateDocumentedFactionAuthorityRoot() =>
+        new()
+        {
+            ["factions"] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_road_wardens",
+                ["name"] = "Дорожная стража",
+                [FactionMaterializationContract.PropertyName] = new JsonObject
+                {
+                    ["factionType"] = "mortal_faction",
+                    ["factionId"] = "faction_road_wardens",
+                    ["state"] = "complete"
+                }
+            })
         };
 
     private static JsonObject CreateDocumentedThreat(

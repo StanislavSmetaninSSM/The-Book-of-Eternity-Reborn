@@ -873,12 +873,18 @@ public sealed class BrowserTradeParityTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-        {
-          "locationId": "loc_market_square",
-          "name": "Рыночная площадь"
-        }
-        """);
+        var currentLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_market_square",
+            "Рыночная площадь");
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(currentLocation).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(currentLocation).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(currentLocation).ToJsonString());
 
         await _fs.WriteFileAtomicAsync(
             "game_state/inventory/items.json",

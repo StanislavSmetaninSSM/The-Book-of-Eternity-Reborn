@@ -1317,9 +1317,9 @@
 
                             WHEN an NPC (either a new NPC or an existing one) is being placed in a location that is ALSO being newly created in this turn:
 
-                            1.  Generate a Location Tag:
-                                In the new location's object (within 'currentLocationData' or 'worldMapUpdates'), you MUST set 'locationId: null' and create a temporary tag in the 'initialId' field.
-                                -   The tag MUST follow the format 'temp-loc-[description]' (e.g., "temp-loc-dwarven-forge").
+                            1.  Use the exact Location Tag from Mortal Location Materialization v1:
+                                In the complete new-location object (within `currentLocationData` for route `current_scene_creation` or `worldMapUpdates.newLocations[]` for route `world_map_creation`), set `locationId: null` and one turn-unique exact `initialId` that matches `materialization.initialId`.
+                                - The tag is an opaque case-sensitive, Unicode-exact same-turn reference such as `locref_turn_42_dwarven_forge`; it is not a slug/name authority and is never reused.
 
                             2.  Link the NPC:
                                 - For a genuinely new NPC, set 'currentLocationId: null' and set 'initialLocationId' to the exact temporary location tag in the complete first 'UpdateNPCs'/'NPCsInScene' object.

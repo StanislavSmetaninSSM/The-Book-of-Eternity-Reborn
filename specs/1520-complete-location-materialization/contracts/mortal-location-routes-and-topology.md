@@ -207,9 +207,15 @@ target. A hidden link contributes no count, label, endpoint, or action.
 
 Storage and threat lifecycle commands are materialized by the same pure plan:
 
+- every raw new-location object carries an empty `activeThreats` array; a
+  same-turn threat is a separate `threatsToAdd[]` command keyed by the exact
+  new-location `initialTargetLocationId`, never an embedded GM-selected ID;
+
 - `storageUpdates[]` binds exact location/storage identity and maps only
-  `newName`, `newDescription`, `newCapacity`, and `newOwner`, preserving item
-  contents;
+  `newName`, `newDescription`, `newCapacity`, `newOwner`,
+  `newAuthorizedUsers`, and `newHasFullAccess`, preserving item contents.
+  Owner changes carry both access fields atomically, and authorization-list
+  changes carry the synchronized access flag;
 - `storagesToRemove[]` removes only an exact empty storage and fails closed when
   accepted item contents remain in either current or offscreen client authority;
 - `threatsToAdd[]` accepts a complete null-ID threat for one exact existing or

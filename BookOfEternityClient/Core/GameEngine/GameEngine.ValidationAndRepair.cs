@@ -223,12 +223,35 @@ public partial class GameEngine
         DateTime? lastCriticalRepairBoundaryUtc = null;
         DateTime? lastCriticalRepairStartedAtUtc = null;
         string? lastCriticalRepairSessionGeneration = null;
+        IReadOnlyList<MortalLocationRepairRetryObligation>? mortalLocationRetryObligations = null;
+        List<ValidationIssue>? mortalLocationRetryErrors = null;
+        IReadOnlyList<string>? mortalLocationRequiredResubmissionPaths = null;
         using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
         {
             await EnsureClientOwnedSystemFilesHealthyAsync();
             var rawIssues = await CollectAcceptedTurnRawStateIssuesAsync();
+            if (mortalLocationRetryObligations is { Count: > 0 } &&
+                (!await HasExactMortalLocationRepairResubmissionAsync(mortalLocationRetryObligations) ||
+                 rollbackSnapshot == null ||
+                 mortalLocationRequiredResubmissionPaths == null ||
+                 !await AreRollbackTrackedPathsResubmittedForRepairSessionAsync(
+                     rollbackSnapshot,
+                     mortalLocationRequiredResubmissionPaths,
+                     lastCriticalRepairSessionGeneration!)))
+            {
+                foreach (var retryError in mortalLocationRetryErrors!)
+                {
+                    if (!rawIssues.Any(issue =>
+                            string.Equals(issue.Code, retryError.Code, StringComparison.Ordinal) &&
+                            string.Equals(issue.FilePath, retryError.FilePath, StringComparison.Ordinal) &&
+                            string.Equals(issue.Actor, retryError.Actor, StringComparison.Ordinal)))
+                    {
+                        rawIssues.Add(retryError);
+                    }
+                }
+            }
             var rawErrors = PrioritizeValidationErrors(rawIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
             if (rawErrors.Count > 0)
             {
@@ -242,12 +265,33 @@ public partial class GameEngine
                 lastCriticalRepairAttempt = criticalRepairAttempt;
                 lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
                 var rawRepairStartedAtUtc = DateTime.UtcNow;
+                var actionableLocationPackets = MortalLocationRepairPacketBuilder.Build(rawErrors);
+                if (actionableLocationPackets.Count > 0 && mortalLocationRetryObligations == null)
+                {
+                    mortalLocationRetryObligations = actionableLocationPackets
+                        .Select(packet => new MortalLocationRepairRetryObligation(
+                            packet.CanonicalActorNames.Single(),
+                            packet.Route,
+                            packet.ExpectedMaterializationId))
+                        .Distinct()
+                        .ToArray();
+                    mortalLocationRetryErrors = rawErrors.ToList();
+                    if (HasRollbackCapability(rollbackSnapshot))
+                    {
+                        mortalLocationRequiredResubmissionPaths =
+                            await CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+                                rollbackSnapshot!,
+                                lastCriticalRepairSessionGeneration);
+                    }
+                }
                 if (!await WaitForContractRepairAsync(
                         source,
                         rawErrors,
                         criticalRepairAttempt,
                         rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration))
+                        lastCriticalRepairSessionGeneration,
+                        mortalLocationRetryObligations,
+                        mortalLocationRequiredResubmissionPaths))
                     return false;
                 lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
@@ -257,9 +301,29 @@ public partial class GameEngine
                 continue;
             }
 
-            var canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(
-                expectedTurn,
-                activeSnapshotContext);
+            AcceptedTurnCanonicalRefreshResult canonicalRefresh;
+            try
+            {
+                canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(
+                    expectedTurn,
+                    activeSnapshotContext);
+            }
+            catch (SessionReplacedException)
+            {
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                await FailClosedAcceptedTurnCanonicalRefreshAsync(
+                    source,
+                    exception,
+                    rollbackSnapshot);
+                return false;
+            }
             if (!canonicalRefresh.BaselineUsable)
             {
                 criticalRepairAttempt++;
@@ -409,6 +473,148 @@ public partial class GameEngine
         return issues;
     }
 
+    private async Task<bool> HasExactMortalLocationRepairResubmissionAsync(
+        IReadOnlyList<MortalLocationRepairRetryObligation> obligations)
+    {
+        var currentRoot = await ReadMortalLocationRepairRootAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath);
+        var mapRoot = await ReadMortalLocationRepairRootAsync(
+            MortalLocationMaterializationContract.WorldMapPath);
+
+        foreach (var obligation in obligations)
+        {
+            if (!TryParseMortalLocationRepairActor(
+                    obligation.Actor,
+                    out var entityKind,
+                    out var isCreation,
+                    out var identity))
+            {
+                return false;
+            }
+
+            var candidates = EnumerateMortalLocationRepairRouteCandidates(
+                obligation.Route,
+                currentRoot,
+                mapRoot);
+            var identityField = isCreation
+                ? "initialId"
+                : string.Equals(entityKind, "mortal_location", StringComparison.Ordinal)
+                    ? "locationId"
+                    : "linkId";
+            var exactMatches = candidates.Count(candidate =>
+            {
+                if (!string.Equals(
+                        ReadExactMortalLocationRepairString(candidate, identityField),
+                        identity,
+                        StringComparison.Ordinal))
+                {
+                    return false;
+                }
+
+                if (!isCreation)
+                    return true;
+
+                return candidate["materialization"] is JsonObject materialization &&
+                       string.Equals(
+                           ReadExactMortalLocationRepairString(materialization, "materializationId"),
+                           obligation.MaterializationId,
+                           StringComparison.Ordinal);
+            });
+            if (exactMatches != 1)
+                return false;
+        }
+
+        return true;
+    }
+
+    private async Task<JsonObject?> ReadMortalLocationRepairRootAsync(string path)
+    {
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateMortalLocationRepairRouteCandidates(
+        string route,
+        JsonObject? currentRoot,
+        JsonObject? mapRoot)
+    {
+        if (route is "current_scene_creation" or "current_selection")
+        {
+            if (currentRoot?["currentLocationData"] is JsonObject current)
+                yield return current;
+            yield break;
+        }
+
+        var collection = route switch
+        {
+            "world_map_creation" => "newLocations",
+            "world_map_link_creation" => "newLinks",
+            "narrow_location_update" => "locationUpdates",
+            "location_discovery_transition" => "locationDiscoveryTransitions",
+            "link_update" => "linkUpdates",
+            "link_removal" => "linkRemovals",
+            _ => null
+        };
+        if (collection == null ||
+            mapRoot?["worldMapUpdates"] is not JsonObject updates ||
+            updates[collection] is not JsonArray values)
+        {
+            yield break;
+        }
+
+        foreach (var candidate in values.OfType<JsonObject>())
+            yield return candidate;
+    }
+
+    private static bool TryParseMortalLocationRepairActor(
+        string actor,
+        out string entityKind,
+        out bool isCreation,
+        out string identity)
+    {
+        foreach (var descriptor in new[]
+                 {
+                     (Prefix: "mortal_location:new:", EntityKind: "mortal_location", IsCreation: true),
+                     (Prefix: "mortal_location:existing:", EntityKind: "mortal_location", IsCreation: false),
+                     (Prefix: "mortal_location_link:new:", EntityKind: "mortal_location_link", IsCreation: true),
+                     (Prefix: "mortal_location_link:existing:", EntityKind: "mortal_location_link", IsCreation: false)
+                 })
+        {
+            if (!actor.StartsWith(descriptor.Prefix, StringComparison.Ordinal))
+                continue;
+
+            identity = actor[descriptor.Prefix.Length..];
+            entityKind = descriptor.EntityKind;
+            isCreation = descriptor.IsCreation;
+            return MortalItemIdentityRules.IsExactIdentity(identity);
+        }
+
+        entityKind = string.Empty;
+        isCreation = false;
+        identity = string.Empty;
+        return false;
+    }
+
+    private static string? ReadExactMortalLocationRepairString(
+        JsonObject source,
+        string property)
+    {
+        return source[property] is JsonValue value &&
+               value.TryGetValue<string>(out var text) &&
+               MortalItemIdentityRules.IsExactIdentity(text)
+            ? text
+            : null;
+    }
+
     private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
         RollbackSnapshot? rollbackSnapshot)
     {
@@ -440,6 +646,96 @@ public partial class GameEngine
     private sealed record AcceptedTurnCanonicalRefreshResult(
         bool BaselineUsable,
         IReadOnlyList<ValidationIssue> PostSealIssues);
+
+    private async Task FailClosedAcceptedTurnCanonicalRefreshAsync(
+        string source,
+        Exception exception,
+        RollbackSnapshot? rollbackSnapshot)
+    {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        var writeFailure = FindCanonicalStateWriteException(exception);
+        var filePath = writeFailure?.RelativePath ?? "accepted_turn_canonical_state";
+        _logger.LogError(
+            exception,
+            "Accepted-turn canonical refresh failed after {Source} at {FilePath}; leaving full rollback to the caller.",
+            source,
+            filePath);
+
+        var report = new
+        {
+            source,
+            detectedAtUtc = DateTime.UtcNow.ToString("o"),
+            reason = "Accepted-turn canonical refresh failed during an atomic state write.",
+            rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
+            errors = new[]
+            {
+                new
+                {
+                    code = "accepted_turn_canonical_refresh_failed",
+                    filePath,
+                    exceptionType = exception.GetType().FullName,
+                    message = exception.Message,
+                    details = exception.ToString()
+                }
+            }
+        };
+
+        await RunBestEffortFailClosedBookkeepingAsync(
+            "write the accepted-turn canonical refresh diagnostic report",
+            () => WriteValidationRepairFileForSessionAsync(
+                ValidationDiagnosticFailureReportPath,
+                JsonSerializer.Serialize(report, JsonOpts),
+                sessionGeneration));
+        await RunBestEffortFailClosedBookkeepingAsync(
+            "clean validation-repair control files after canonical refresh failure",
+            () => DeleteValidationRepairFilesForSessionAsync(sessionGeneration));
+        AnsiConsole.MarkupLine(
+            HasRollbackCapability(rollbackSnapshot)
+                ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
+                : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
+    }
+
+    private async Task RunBestEffortFailClosedBookkeepingAsync(
+        string operation,
+        Func<Task> operationAsync)
+    {
+        try
+        {
+            await operationAsync();
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Failed to {Operation}; caller-owned rollback remains mandatory.",
+                operation);
+        }
+    }
+
+    private static CanonicalStateWriteException? FindCanonicalStateWriteException(
+        Exception exception)
+    {
+        if (exception is CanonicalStateWriteException writeFailure)
+            return writeFailure;
+
+        if (exception is AggregateException aggregate)
+        {
+            foreach (var inner in aggregate.InnerExceptions)
+            {
+                var match = FindCanonicalStateWriteException(inner);
+                if (match != null)
+                    return match;
+            }
+        }
+
+        return exception.InnerException == null
+            ? null
+            : FindCanonicalStateWriteException(exception.InnerException);
+    }
 
     private async Task CleanupAcceptedTurnCommandSurfacesAsync(string? expectedSessionGeneration = null)
     {
@@ -1005,34 +1301,70 @@ public partial class GameEngine
     }
 
     private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
-        int attempt, RollbackSnapshot? rollbackSnapshot, string repairSessionGeneration)
+        int attempt, RollbackSnapshot? rollbackSnapshot, string repairSessionGeneration,
+        IReadOnlyList<MortalLocationRepairRetryObligation>? mortalLocationRetryObligations = null,
+        IReadOnlyList<string>? mortalLocationRequiredResubmissionPaths = null)
     {
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
-        if (MortalItemRepairPacketBuilder.RequiresFailClosedRollback(errors))
+        var requiresMortalItemFailClosed =
+            MortalItemRepairPacketBuilder.RequiresFailClosedRollback(errors);
+        var mortalLocationRepairPackets = MortalLocationRepairPacketBuilder.Build(errors);
+        var hasActionableMortalLocationRepair = mortalLocationRepairPackets.Count > 0;
+        var requiresMortalLocationFailClosed =
+            MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(errors) ||
+            (hasActionableMortalLocationRepair && !HasRollbackCapability(rollbackSnapshot));
+        if (requiresMortalItemFailClosed || requiresMortalLocationFailClosed)
         {
             _logger.LogError(
-                "Mortal item repair after {Source} has protected or unresolved authority; rejecting the accepted state for caller-owned rollback instead of dispatching a broad GM repair.",
+                "Mortal materialization repair after {Source} has protected or unresolved authority; rejecting the accepted state for caller-owned rollback instead of dispatching a broad GM repair.",
                 source);
-            if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
-                    repairSessionGeneration))
-            {
-                throw new GmWorkerSessionReplacedException(
-                    "The protected Mortal item rejection belongs to a game session that is no longer current.");
-            }
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "delete the transient report after protected Mortal materialization rejection",
+                async () =>
+                {
+                    if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
+                            repairSessionGeneration))
+                    {
+                        throw new GmWorkerSessionReplacedException(
+                            "The protected Mortal materialization rejection belongs to a game session that is no longer current.");
+                    }
+                });
 
-            await DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration);
+            if (requiresMortalLocationFailClosed)
+            {
+                await RunBestEffortFailClosedBookkeepingAsync(
+                    "write the protected Mortal location diagnostic report",
+                    () => WriteProtectedMortalLocationDiagnosticFailureReportAsync(
+                        source,
+                        errors,
+                        attempt,
+                        rollbackSnapshot,
+                        repairSessionGeneration));
+            }
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "clean validation-repair control files after protected Mortal materialization rejection",
+                () => DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration));
             AnsiConsole.MarkupLine(
                 HasRollbackCapability(rollbackSnapshot)
-                    ? "[yellow]↩ Клиент отклонил неразрешимую или защищённую item authority; accepted turn будет восстановлен из pre-turn rollback.[/]"
-                    : "[yellow]⚠ Клиент отклонил неразрешимую или защищённую item authority; широкий GM repair запрещён.[/]");
+                    ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
+                    : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
             return false;
+        }
+
+        if (hasActionableMortalLocationRepair)
+        {
+            await RestorePreTurnBaselineForRepairSessionAsync(
+                rollbackSnapshot!,
+                repairSessionGeneration);
         }
 
         var dispatch = await WriteValidationRepairRequestForSessionAsync(
             source,
             errors,
             attempt,
-            repairSessionGeneration);
+            repairSessionGeneration,
+            mortalLocationRetryObligations,
+            mortalLocationRequiredResubmissionPaths);
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
         if (dispatch.MetadataDiagnosticOnly)
             return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -1087,15 +1419,15 @@ public partial class GameEngine
                 .Spinner(Spinner.Known.Dots12)
                 .SpinnerStyle(Style.Parse("yellow"))
                 .StartAsync(rollbackAvailable
-                    ? "[yellow]⛏ GM исправляет невалидное состояние... (Escape = откатить изменения)[/]"
-                    : "[yellow]⛏ GM исправляет невалидное состояние... (Escape = выйти из ожидания)[/]", async ctx =>
+                    ? "[yellow]⏳ Мир ещё не готов продолжить ход... (Escape = вернуться к состоянию до хода)[/]"
+                    : "[yellow]⏳ Мир ещё не готов продолжить ход... (Escape = прекратить ожидание)[/]", async ctx =>
                 {
                     while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
                     {
                         var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
                         ctx.Status(rollbackAvailable
-                            ? $"[yellow]⛏ Ожидание исправления GM... попытка проверки #{attempt} ({elapsed}с) (Escape = откатить)[/]"
-                            : $"[yellow]⛏ Ожидание исправления GM... попытка проверки #{attempt} ({elapsed}с) (Escape = выйти)[/]");
+                            ? $"[yellow]⏳ Мир ещё не готов продолжить ход... ({elapsed}с) (Escape = вернуться)[/]"
+                            : $"[yellow]⏳ Мир ещё не готов продолжить ход... ({elapsed}с) (Escape = выйти)[/]");
 
                         if (_inputSource.KeyAvailable)
                         {
@@ -1115,29 +1447,33 @@ public partial class GameEngine
             {
                 if (rollbackAvailable)
                 {
-                    await RestorePreTurnBackupForSessionAsync(
-                        rollbackSnapshot!,
-                        repairSessionGeneration);
-                    AnsiConsole.MarkupLine("[yellow]⏹ Ремонтный цикл прерван. Состояние откатилось к последней стабильной версии.[/]");
+                    AnsiConsole.MarkupLine("[yellow]⏹ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]");
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[yellow]⏹ Ремонтный цикл прерван. Автоматический откат для этого режима недоступен; текущее состояние оставлено как есть.[/]");
+                    AnsiConsole.MarkupLine("[yellow]⏹ Продолжение хода остановлено; дальнейшие изменения не принимаются.[/]");
                 }
 
-                if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
-                        repairSessionGeneration))
-                {
-                    throw new GmWorkerSessionReplacedException(
-                        "The validation-repair cycle belongs to a game session that is no longer current.");
-                }
-                await DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration);
+                await RunBestEffortFailClosedBookkeepingAsync(
+                    "delete the transient report after validation-repair cancellation",
+                    async () =>
+                    {
+                        if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
+                                repairSessionGeneration))
+                        {
+                            throw new GmWorkerSessionReplacedException(
+                                "The validation-repair cycle belongs to a game session that is no longer current.");
+                        }
+                    });
+                await RunBestEffortFailClosedBookkeepingAsync(
+                    "clean validation-repair control files after cancellation",
+                    () => DeleteValidationRepairFilesForSessionAsync(repairSessionGeneration));
                 return false;
             }
 
             if (harnessTerminalErrorPublished)
             {
-                AnsiConsole.MarkupLine("[yellow]⏹ Ремонтный цикл остановлен harness: GM bridge завис во время исправления, создан terminal error для восстановления.[/]");
+                AnsiConsole.MarkupLine("[yellow]⏹ Мир не смог завершить этот ход; продолжение остановлено.[/]");
                 return false;
             }
 
@@ -1187,7 +1523,7 @@ public partial class GameEngine
                 }
 
                 await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
-                AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
+                AnsiConsole.MarkupLine("[yellow]⚠ Мир ещё не готов продолжить ход. Ожидание продолжается.[/]");
                 await Task.Delay(500);
                 continue;
             }
@@ -1238,7 +1574,7 @@ public partial class GameEngine
                 }
 
                 await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
-                AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
+                AnsiConsole.MarkupLine("[yellow]⚠ Мир ещё не готов продолжить ход. Ожидание продолжается.[/]");
                 await Task.Delay(500);
                 continue;
             }
@@ -1665,14 +2001,19 @@ public partial class GameEngine
         string source,
         List<ValidationIssue> errors,
         int attempt,
-        string expectedSessionGeneration)
+        string expectedSessionGeneration,
+        IReadOnlyList<MortalLocationRepairRetryObligation>? mortalLocationRetryObligations = null,
+        IReadOnlyList<string>? mortalLocationRequiredResubmissionPaths = null)
     {
         await DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration);
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
         var requestMetadata = BuildProtocolRequestMetadata(pendingSnapshot);
         var metadataDiagnosticOnly = BuildProtocolRequestMetadataDiagnosticOnly(pendingSnapshot);
-        var gmInstructions = BuildValidationRepairRequestInstructions(pendingSnapshot);
+        var fullTurnResubmissionRequired = mortalLocationRetryObligations is { Count: > 0 };
+        var gmInstructions = BuildValidationRepairRequestInstructions(
+            pendingSnapshot,
+            fullTurnResubmissionRequired);
 
         var request = new ValidationRepairRequest
         {
@@ -1683,11 +2024,25 @@ public partial class GameEngine
             Source = source,
             DetectedAtUtc = DateTime.UtcNow.ToString("o"),
             RevalidationAttempt = attempt,
+            FullTurnResubmissionRequired = fullTurnResubmissionRequired,
             GmInstructions = gmInstructions,
             SummaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
             HarnessRepairPackets = BuildValidationRepairHarnessPackets(
                 prioritizedErrors,
                 await ReadCurrentGuardianRepairActorNameHintsAsync()),
+            ResubmissionObligations = mortalLocationRetryObligations?
+                .Select(obligation => new ValidationRepairResubmissionObligation
+                {
+                    Actor = obligation.Actor,
+                    Route = obligation.Route,
+                    RawCarrier = obligation.Route is "current_scene_creation" or "current_selection"
+                        ? "currentLocationData"
+                        : "worldMapUpdates"
+                })
+                .ToList() ?? new List<ValidationRepairResubmissionObligation>(),
+            RequiredResubmissionPaths = mortalLocationRequiredResubmissionPaths?
+                .OrderBy(path => path, StringComparer.Ordinal)
+                .ToList() ?? new List<string>(),
             Errors = prioritizedErrors.Select(e => new ValidationRepairIssue
             {
                 Code = e.Code ?? "validation_error",
@@ -1705,7 +2060,7 @@ public partial class GameEngine
 
         PublishAgentConsoleValidationRepairSnapshot(request);
         GmWorkerValidationRepairDispatchResult? workerResult = null;
-        if (!metadataDiagnosticOnly)
+        if (!metadataDiagnosticOnly && !fullTurnResubmissionRequired)
         {
             workerResult = await RunWorkerValidationRepairIfAvailableAsync(
                 prioritizedErrors,
@@ -1778,30 +2133,71 @@ public partial class GameEngine
             }).ToList()
         };
 
-        if (HasRollbackCapability(rollbackSnapshot))
+        // Keep rollback caller-owned: accepted-turn callers perform it once. Consuming backup
+        // evidence here would make their mandatory rollback run a second time.
+        AnsiConsole.MarkupLine(
+            HasRollbackCapability(rollbackSnapshot)
+                ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
+                : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
+
+        await RunBestEffortFailClosedBookkeepingAsync(
+            "write the diagnostic-only validation failure report",
+            () => WriteValidationRepairFileForSessionAsync(
+                ValidationDiagnosticFailureReportPath,
+                JsonSerializer.Serialize(report, JsonOpts),
+                expectedSessionGeneration));
+        await RunBestEffortFailClosedBookkeepingAsync(
+            "delete the transient report after diagnostic-only validation failure",
+            async () =>
+            {
+                if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
+                        expectedSessionGeneration))
+                {
+                    throw new GmWorkerSessionReplacedException(
+                        "The validation-repair cycle belongs to a game session that is no longer current.");
+                }
+            });
+        await RunBestEffortFailClosedBookkeepingAsync(
+            "clean validation-repair control files after diagnostic-only validation failure",
+            () => DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration));
+        return false;
+    }
+
+    private async Task WriteProtectedMortalLocationDiagnosticFailureReportAsync(
+        string source,
+        IReadOnlyList<ValidationIssue> errors,
+        int attempt,
+        RollbackSnapshot? rollbackSnapshot,
+        string expectedSessionGeneration)
+    {
+        var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
+        var report = new
         {
-            await RestorePreTurnBackupForSessionAsync(
-                rollbackSnapshot!,
-                expectedSessionGeneration);
-            AnsiConsole.MarkupLine("[yellow]↩ Клиент остановил неремонтопригодный diagnostic-only repair и восстановил состояние из rollback backup.[/]");
-        }
-        else
-        {
-            AnsiConsole.MarkupLine("[yellow]⚠ Клиент остановил неремонтопригодный diagnostic-only repair. Автоматический rollback для этого режима недоступен.[/]");
-        }
+            source,
+            detectedAtUtc = DateTime.UtcNow.ToString("o"),
+            attempt,
+            reason = "Protected or unresolved Mortal location authority requires fail-closed rollback before GM repair dispatch.",
+            rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
+            summaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
+            errors = prioritizedErrors.Select(e => new
+            {
+                code = e.Code ?? "validation_error",
+                filePath = e.FilePath,
+                severity = e.Severity.ToString(),
+                category = e.Category.ToString(),
+                message = e.Message,
+                actor = e.Actor,
+                section = e.Section,
+                expected = e.Expected,
+                actual = e.Actual,
+                repairHint = e.RepairHint
+            }).ToList()
+        };
 
         await WriteValidationRepairFileForSessionAsync(
             ValidationDiagnosticFailureReportPath,
             JsonSerializer.Serialize(report, JsonOpts),
             expectedSessionGeneration);
-        if (!await _progressionSchedule.DeleteTransientReportIfCurrentSessionAsync(
-                expectedSessionGeneration))
-        {
-            throw new GmWorkerSessionReplacedException(
-                "The validation-repair cycle belongs to a game session that is no longer current.");
-        }
-        await DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration);
-        return false;
     }
 
     private static List<ValidationRepairHarnessPacket> BuildValidationRepairHarnessPackets(
@@ -1839,8 +2235,6 @@ public partial class GameEngine
             .Where(IsMortalFactionResourceRepairIssue)
             .ToList();
         var mortalBootstrapMaterializationErrors = errors.Where(IsMortalBootstrapMaterializationRepairIssue).ToList();
-        var mortalWorldMapAdjacencyErrors = errors.Where(IsMortalWorldMapAdjacencyRepairIssue).ToList();
-        var mortalLocationTransitionErrors = errors.Where(IsMortalLocationTransitionRepairIssue).ToList();
         var mortalNpcScopeErrors = errors.Where(IsMortalNpcScopeRepairIssue).ToList();
         var mortalNpcLocationErrors = errors.Where(IsMortalNpcLocationRepairIssue).ToList();
         var mortalNpcInventoryUpdateErrors = errors.Where(IsMortalNpcInventoryUpdateRepairIssue).ToList();
@@ -1859,6 +2253,7 @@ public partial class GameEngine
         var npcScopeDeclarationErrors = errors.Where(IsNpcScopeDeclarationRepairIssue).ToList();
         var acceptedTurnOutputArtifactErrors = errors.Where(IsAcceptedTurnOutputArtifactRepairIssue).ToList();
         var mortalItemRepairPackets = MortalItemRepairPacketBuilder.Build(errors);
+        var mortalLocationRepairPackets = MortalLocationRepairPacketBuilder.Build(errors);
 
         if (guardianPendingCreationMaterializationErrors.Count > 0)
             packets.Add(BuildGuardianPendingCreationMaterializationRepairPacket(guardianPendingCreationMaterializationErrors));
@@ -1886,6 +2281,7 @@ public partial class GameEngine
             packets.Add(BuildActorMaterializationRepairPacket(actorMaterializationErrors));
 
         packets.AddRange(mortalItemRepairPackets.Select(BuildMortalItemRepairHarnessPacket));
+        packets.AddRange(mortalLocationRepairPackets.Select(BuildMortalLocationRepairHarnessPacket));
 
         foreach (var factionMaterializationGroup in factionMaterializationGroups)
         {
@@ -1902,12 +2298,6 @@ public partial class GameEngine
 
         if (mortalBootstrapMaterializationErrors.Count > 0)
             packets.Add(BuildMortalBootstrapMaterializationRepairPacket(mortalBootstrapMaterializationErrors));
-
-        if (mortalWorldMapAdjacencyErrors.Count > 0)
-            packets.Add(BuildMortalWorldMapAdjacencyRepairPacket(mortalWorldMapAdjacencyErrors));
-
-        if (mortalLocationTransitionErrors.Count > 0)
-            packets.Add(BuildMortalLocationTransitionRepairPacket(mortalLocationTransitionErrors));
 
         if (mortalNpcScopeErrors.Count > 0)
             packets.Add(BuildMortalNpcScopeRepairPacket(mortalNpcScopeErrors));
@@ -1973,6 +2363,45 @@ public partial class GameEngine
             SourceCarrier = CreateMortalItemRepairCarrierElement(source.SourceCarrier),
             DestinationCarrier = CreateMortalItemRepairCarrierElement(source.DestinationCarrier),
             MissingFields = source.MissingFields.ToList(),
+            ExactFieldCorrections = source.ExactFieldCorrections
+                .Select(correction => new ValidationRepairExactFieldCorrection
+                {
+                    Path = correction.Path,
+                    Expected = correction.Expected,
+                    Actual = correction.Actual,
+                    Code = correction.Code,
+                    RepairHint = correction.RepairHint
+                })
+                .ToList(),
+            RequiredCompanionTargets = source.RequiredCompanionTargets.ToList(),
+            ExpectedAuthority = source.ExpectedAuthority.ToList(),
+            ActualEvidence = source.ActualEvidence.ToList(),
+            ExpectedShape = source.ExpectedShape.ToList(),
+            SafeCorrectionRules = source.SafeCorrectionRules.ToList(),
+            Steps = source.Steps.ToList(),
+            DebugLogTemplate = string.Empty,
+            DoNotDo = source.DoNotDo.ToList()
+        };
+    }
+
+    private static ValidationRepairHarnessPacket BuildMortalLocationRepairHarnessPacket(
+        MortalLocationRepairPacket source)
+    {
+        return new ValidationRepairHarnessPacket
+        {
+            Kind = source.Kind,
+            Priority = source.Priority,
+            Title = source.Title,
+            TargetFiles = source.TargetFiles.ToList(),
+            TemplateRefs = source.TemplateRefs.ToList(),
+            CanonicalActorNames = source.CanonicalActorNames.ToList(),
+            TransitionClass = source.TransitionClass,
+            Route = source.Route,
+            RawCarrier = source.RawCarrier,
+            RawCoordinate = source.RawCoordinate,
+            MissingFields = source.MissingFields.ToList(),
+            InvalidFields = source.InvalidFields.ToList(),
+            Conflicts = source.Conflicts.ToList(),
             ExactFieldCorrections = source.ExactFieldCorrections
                 .Select(correction => new ValidationRepairExactFieldCorrection
                 {
@@ -2177,40 +2606,6 @@ public partial class GameEngine
                string.Equals(issue.Code, "faction_full_object_missing_strategic_goods", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool IsMortalLocationTransitionRepairIssue(ValidationIssue issue)
-    {
-        return string.Equals(issue.Code, "current_location_unknown_location_id", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "npc_unknown_current_location_id", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "location_missing_active_threat_array", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "location_missing_adjacency_array", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "location_missing_difficulty_profile", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "location_outdoor_biome_missing", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "location_missing_storage_array", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "world_map_new_link_missing_required_fields", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "world_map_new_location_coordinates_duplicate_same_turn", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "world_map_new_location_coordinates_conflict_existing", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "world_map_new_location_requires_null_location_id", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(issue.Code, "world_map_new_location_missing_description", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsMortalWorldMapAdjacencyRepairIssue(ValidationIssue issue)
-    {
-        return (issue.Code ?? string.Empty).ToLowerInvariant() switch
-        {
-            "world_map_adjacency_unknown_target" => true,
-            "world_map_link_update_unknown_source" => true,
-            "world_map_link_remove_unknown_source" => true,
-            "world_map_storage_update_unknown_target" => true,
-            "world_map_storage_remove_unknown_target" => true,
-            "world_map_threat_add_unknown_target" => true,
-            "world_map_threat_add_unknown_same_turn_initial_id" => true,
-            "world_map_threat_update_unknown_target" => true,
-            "world_map_threat_remove_unknown_target" => true,
-            "world_map_threat_complete_unknown_target" => true,
-            _ => false
-        };
-    }
-
     private static bool IsMortalNpcFullObjectRepairIssue(ValidationIssue issue)
     {
         if (!IsMortalNpcRepairPath(issue.FilePath))
@@ -2278,7 +2673,6 @@ public partial class GameEngine
             "item_invalid_quality" => true,
             "item_missing_accessory_for_slot" => true,
             "item_missing_equipment_slot" => true,
-            "current_location_coordinates_mismatch" => true,
             "location_faction_control_invalid_type" => true,
             "world_map_active_threat_missing_archetype" => true,
             "codex_related_entry_unknown_target" => true,
@@ -3461,144 +3855,6 @@ public partial class GameEngine
                 "Do not delete the whole faction to silence a resource-entry validation error.",
                 "Do not leave resource entries as identity-only stubs or partial deltas.",
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer resource rules; use this packet, the validation request, GM docs, and session files."
-            }
-        };
-    }
-
-    private static ValidationRepairHarnessPacket BuildMortalLocationTransitionRepairPacket(
-        IReadOnlyList<ValidationIssue> locationTransitionErrors)
-    {
-        var issueCodes = locationTransitionErrors
-            .Select(issue => issue.Code ?? "validation_error")
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-        var actorNames = CollectRepairActorNames(locationTransitionErrors)
-            .OrderBy(actor => actor, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-        var targetFiles = locationTransitionErrors
-            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
-            .Where(path => !string.IsNullOrWhiteSpace(path))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        if (!targetFiles.Contains("game_state/world/current_location.json", StringComparer.OrdinalIgnoreCase))
-            targetFiles.Add("game_state/world/current_location.json");
-        if (!targetFiles.Contains("game_state/world/world_map.json", StringComparer.OrdinalIgnoreCase))
-            targetFiles.Add("game_state/world/world_map.json");
-        if (locationTransitionErrors.Any(issue =>
-                string.Equals(issue.Code, "npc_unknown_current_location_id", StringComparison.OrdinalIgnoreCase)) &&
-            !targetFiles.Contains("game_state/npcs/npc_core.json", StringComparer.OrdinalIgnoreCase))
-            targetFiles.Add("game_state/npcs/npc_core.json");
-
-        return new ValidationRepairHarnessPacket
-        {
-            Kind = "mortal_location_transition_repair",
-            Priority = "high",
-            Title = "Mortal location transition repair",
-            TargetFiles = targetFiles,
-            TemplateRefs = new List<string> { "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md" },
-            CanonicalActorNames = actorNames,
-            ExpectedShape = new List<string>
-            {
-                $"Observed location/map issue codes: {string.Join(", ", issueCodes)}.",
-                "Register any durable new location in game_state/world/world_map.json before current_location.json or NPC currentLocationId references it.",
-                "game_state/world/current_location.json must reference a known world_map location id, name, region, description, exits, and last-events summary.",
-                "Durable location objects must carry required arrays/collections: knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats. Use [] for empty locationStorages/activeThreats/adjacencyMap when no entries exist.",
-                "Durable location objects must carry both internalDifficultyProfile and externalDifficultyProfile with combat/environment/social/exploration facets.",
-                "Every outdoor durable/current location must carry a canonical biome value: TemperateForest, ColdForest, Swamp, Urban, Plains, Mountains, Desert, Coast, or Unique. Use biomeDescription when biome is Unique.",
-                "World-map link previews must include targetName, targetCoordinates, estimatedInternalDifficultyProfile, and estimatedExternalDifficultyProfile.",
-                "NPC currentLocationId values must point only to known ids from world_map; same-turn scene color should not invent canonical ids.",
-                "Same-turn world_map new location coordinates must be unique and must not conflict with existing map coordinates."
-            },
-            SafeCorrectionRules = new List<string>
-            {
-                "Register the destination in world_map first, then update current_location.json and NPC currentLocationId/currentLocationName to that known id.",
-                "Use one stable location id for the destination across world_map, current_location, NPCs, exits, and debug reasoning; do not alternate ids for the same room.",
-                "Fix duplicate coordinates by moving one same-turn new location to unique adjacent coordinates or by merging duplicate entries that describe the same place.",
-                "If the new place is narrative color inside the current room rather than a durable location, keep current_location unchanged and phrase the action as happening within the existing location.",
-                "Do not repair an unknown location by deleting NPCs, quests, faction links, exits, or map history that should still reference the canonical destination."
-            },
-            Steps = new List<string>
-            {
-                "Open Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md before editing game_state/world/current_location.json, game_state/world/world_map.json, or NPC location ids.",
-                "Decide whether the destination is a durable location or only narrative color inside the current location.",
-                "For a durable destination, create or repair the world_map entry first, including stable id, visible name, description, region, exits, and unique coordinates.",
-                "Patch required arrays on every durable/current location object: knownExits, adjacencyMap, factionControl, locationStorages, and activeThreats.",
-                "Patch difficulty profile objects on every durable/current location object before completing repair.",
-                "Patch biome on every outdoor durable/current location before completing repair; choose the canonical biome that matches the scene, and add biomeDescription for Unique.",
-                "Patch each world-map link preview with targetName, targetCoordinates, and both estimated difficulty profiles.",
-                "After the map entry exists, update current_location.json and any moved NPC currentLocationId/currentLocationName to the known id/name.",
-                "For duplicate same-turn coordinates, assign unique coordinates before completing repair.",
-                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
-            },
-            DoNotDo = new List<string>
-            {
-                "Do not point current_location.json to a location id that is absent from world_map.",
-                "Do not point NPC currentLocationId to an unknown location.",
-                "Do not create two same-turn locations with identical coordinates unless they are merged into one canonical location.",
-                "Do not turn a purely descriptive corner of the current room into a new canonical location just to satisfy a narrative sentence."
-            }
-        };
-    }
-
-    private static ValidationRepairHarnessPacket BuildMortalWorldMapAdjacencyRepairPacket(
-        IReadOnlyList<ValidationIssue> worldMapAdjacencyErrors)
-    {
-        var issueCodes = worldMapAdjacencyErrors
-            .Select(issue => issue.Code ?? "validation_error")
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(code => code, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-        var targetFiles = worldMapAdjacencyErrors
-            .Select(issue => NormalizeRepairTargetPath(issue.FilePath))
-            .Where(path => !string.IsNullOrWhiteSpace(path))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        if (!targetFiles.Contains("game_state/world/world_map.json", StringComparer.OrdinalIgnoreCase))
-            targetFiles.Add("game_state/world/world_map.json");
-        if (!targetFiles.Contains("game_state/world/current_location.json", StringComparer.OrdinalIgnoreCase))
-            targetFiles.Add("game_state/world/current_location.json");
-
-        return new ValidationRepairHarnessPacket
-        {
-            Kind = "mortal_world_map_adjacency_repair",
-            Priority = "high",
-            Title = "Mortal world-map adjacency/link repair",
-            TargetFiles = targetFiles,
-            TemplateRefs = new List<string> { "Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md" },
-            ExpectedShape = new List<string>
-            {
-                $"Observed world-map reference codes: {string.Join(", ", issueCodes)}.",
-                "world_map adjacency/link/storage/threat references must point to an existing locationId in world_map or to a same-turn newLocations.initialId that is fully materialized in the same repair.",
-                "If the target is a durable place the player or NPC can later reach, materialize it as a full world_map location with stable id, visible name, description, region, exits, and coordinates before linking to it.",
-                "If the target is only a clue, direction, route hint, or descriptive corner inside the current location, do not create an adjacency/link; keep it in current_location summary/knownExits/point text until it becomes reachable."
-            },
-            SafeCorrectionRules = new List<string>
-            {
-                "Materialize the missing location only when the accepted narrative made it a real reachable place or a moved actor's durable destination.",
-                "Remove or downgrade a speculative link when the prose only mentioned a route clue, hidden panel, service passage, storage hint, or offscreen direction.",
-                "Preserve existing valid locations, coordinates, exits, storages, threats, and current_location text while fixing only the unknown target/source references.",
-                "When creating a new location for a link, keep one stable id across world_map, current_location exits, NPC locations, debug reasoning, quests, and map history."
-            },
-            Steps = new List<string>
-            {
-                "Open Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md and game_state/world/world_map.json before repairing unknown target/source world-map links.",
-                "For each validation error, inspect the exact path and actual unknown target/source id from validation_repair_request.json.",
-                "Decide whether the unknown target is a durable reachable location or only a narrative hint inside the current scene.",
-                "For a durable location, add/repair the full world_map location first, then add or correct the adjacency/link/storage/threat reference to that known id.",
-                "For a narrative hint, remove the invalid adjacency/link/storage/threat command and preserve the clue in current_location narrative fields or quest log instead.",
-                "After repairs are complete, call Complete-BoeValidationRepair as the last action, or create validation_repair_ready.json with exact metadata from the current validation_repair_request.json."
-            },
-            DoNotDo = new List<string>
-            {
-                "Do not leave adjacency, linkUpdates, storageUpdates, or threat updates pointing to unknown target/source ids.",
-                "Do not create a bare id-only location just to satisfy a link; a durable location must be a full location object.",
-                "Do not delete unrelated map history or valid exits to silence one unknown target.",
-                "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer map rules; use this packet, the template, validation request, and session state."
             }
         };
     }
@@ -5419,11 +5675,17 @@ public partial class GameEngine
         await _fs.WriteFileAtomicAsync(TerminalProtocolFailureRequestPath, JsonSerializer.Serialize(request, JsonOpts));
     }
 
-    private static string BuildValidationRepairRequestInstructions(PendingTurnSnapshotResolution pendingSnapshot)
+    private static string BuildValidationRepairRequestInstructions(
+        PendingTurnSnapshotResolution pendingSnapshot,
+        bool fullTurnResubmissionRequired = false)
     {
-        const string commonPrefix =
-            "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. " +
-            "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. ";
+        var commonPrefix = fullTurnResubmissionRequired
+            ? "Отклонённая попытка полностью удалена и восстановлено состояние до хода. Не исправляй baseline-файлы in place. " +
+              "Заново обработай исходный input/turn_request.json как один полный ответ на тот же ход: пересоздай все изменённые в отклонённой попытке command/output surfaces, обязательно повтори каждую exact actor+route из resubmissionObligations и исправь перечисленные поля. " +
+              "RequiredResubmissionPaths перечисляет поверхности отклонённой попытки, которые должны быть заново записаны до сигнала готовности. " +
+              "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. "
+            : "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. " +
+              "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. ";
         const string commonSuffix =
             "Если ошибка касается canonical accumulated state (guardians/quests/factions/rival_soul_arcs и т.п.), правь итоговое canonical состояние явно: нужное удаление или замена должны остаться и после повторной нормализации. " +
             "Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.";

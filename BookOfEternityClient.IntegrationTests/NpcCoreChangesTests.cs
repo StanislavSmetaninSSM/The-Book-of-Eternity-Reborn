@@ -374,6 +374,84 @@ public sealed class NpcCoreChangesTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_NestedLocationIdentityIsNotPermanentAuthority()
+    {
+        const string nestedLocationId = "loc_nested_semantic_spoof";
+        var fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            root["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["reason"] = "Персонаж пытается перейти по вложенной сюжетной ссылке.",
+                ["location"] = new JsonObject
+                {
+                    ["currentLocationId"] = nestedLocationId,
+                    ["initialLocationId"] = null
+                }
+            });
+        });
+        var canonicalLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            fixture.LocationId,
+            "Contract test location");
+        canonicalLocation["customStates"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "narrative_reference",
+            ["locationId"] = nestedLocationId,
+            ["description"] = "Это семантическая ссылка, а не физическая authority места."
+        });
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(canonicalLocation).ToJsonString());
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(canonicalLocation).ToJsonString());
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_core_changes_location_invalid" &&
+            issue.FilePath.EndsWith(".location.currentLocationId", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ValidatePreNormalizationNpcCoreChanges_DuplicateSameTurnLocationIdentityIsNotAuthority()
+    {
+        await WriteFixtureAsync((root, actor, _) =>
+        {
+            root["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.GetValue<string>(),
+                ["reason"] = "Персонаж пытается перейти в неоднозначно созданное место.",
+                ["location"] = new JsonObject
+                {
+                    ["currentLocationId"] = null,
+                    ["initialLocationId"] = MortalLocationTestFixture.LocationInitialId
+                }
+            });
+        });
+        var first = MortalLocationTestFixture.CreateRawLocation("world_map_creation");
+        var second = first.DeepClone().AsObject();
+        second["name"] = "Конкурирующий Чёрный брод";
+        second["displayName"] = "Конкурирующий Чёрный брод";
+        await _fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            new JsonObject
+            {
+                ["worldMapUpdates"] = new JsonObject
+                {
+                    ["newLocations"] = new JsonArray(first, second),
+                    ["newLinks"] = new JsonArray()
+                }
+            }.ToJsonString());
+
+        var issues = await InvokePreNormalizationValidationAsync();
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "npc_core_changes_location_invalid" &&
+            issue.FilePath.EndsWith(".location.initialLocationId", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task ValidatePreNormalizationNpcCoreChanges_RejectsUnknownFactionIdentity()
     {
         await WriteFixtureAsync((root, actor, _) =>
@@ -1400,67 +1478,20 @@ public sealed class NpcCoreChangesTests : IDisposable
         const string locationName = "Contract test location";
         const string factionId = "faction_npc_contract_fixture";
         const string factionName = "Contract test faction";
-        JsonObject Coordinates(int x, int y, int z) => new()
-        {
-            ["x"] = x,
-            ["y"] = y,
-            ["z"] = z
-        };
-        JsonObject DifficultyProfile() => new()
-        {
-            ["combat"] = 1,
-            ["environment"] = 1,
-            ["social"] = 1,
-            ["exploration"] = 1,
-            ["summary"] = "Explicit test-only difficulty authority."
-        };
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            locationId,
+            locationName);
+        location["region"] = "Contract test region";
+        location["description"] = "An explicit world fixture for NPC core contract tests.";
 
         return new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
         {
-            ["game_state/world/current_location.json"] = new JsonObject
-            {
-                ["locationId"] = locationId,
-                ["name"] = locationName,
-                ["displayName"] = locationName,
-                ["region"] = "Contract test region",
-                ["type"] = "test_location",
-                ["locationType"] = "test_location",
-                ["description"] = "An explicit world fixture for NPC core contract tests.",
-                ["coordinates"] = Coordinates(0, 0, 0),
-                ["knownExits"] = new JsonArray(),
-                ["adjacencyMap"] = new JsonArray(),
-                ["factionControl"] = new JsonArray(),
-                ["locationStorages"] = new JsonArray(),
-                ["activeThreats"] = new JsonArray(),
-                ["internalDifficultyProfile"] = DifficultyProfile(),
-                ["externalDifficultyProfile"] = DifficultyProfile(),
-                ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
-            },
-            ["game_state/world/world_map.json"] = new JsonObject
-            {
-                ["newLocations"] = new JsonArray
-                {
-                    new JsonObject
-                    {
-                        ["locationId"] = locationId,
-                        ["name"] = locationName,
-                        ["displayName"] = locationName,
-                        ["region"] = "Contract test region",
-                        ["type"] = "test_location",
-                        ["locationType"] = "test_location",
-                        ["description"] = "An explicit world-map fixture for NPC core contract tests.",
-                        ["coordinates"] = Coordinates(0, 0, 0),
-                        ["exits"] = new JsonArray(),
-                        ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
-                    }
-                },
-                ["newLinks"] = new JsonArray(),
-                ["worldMapUpdates"] = new JsonObject
-                {
-                    ["currentLocationId"] = locationId,
-                    ["lastEventsDescription"] = "#[8]. NPC contract fixture initialized."
-                }
-            },
+            [MortalLocationMaterializationContract.CurrentLocationPath] =
+                MortalLocationTestFixture.CreateCurrentProjection(location),
+            [MortalLocationMaterializationContract.WorldMapPath] =
+                MortalLocationTestFixture.CreateWorldMap(location),
+            [MortalLocationIdentityState.StatePath] =
+                MortalLocationTestFixture.CreateIdentityIndex(location),
             ["game_state/factions/faction_core.json"] = new JsonObject
             {
                 ["factions"] = new JsonArray
@@ -1498,6 +1529,7 @@ public sealed class NpcCoreChangesTests : IDisposable
             [NpcCorePath] = fixture.PreTurnRoot.ToJsonString(),
             ["game_state/world/current_location.json"] = fixture.Files["game_state/world/current_location.json"].ToJsonString(),
             ["game_state/world/world_map.json"] = fixture.Files["game_state/world/world_map.json"].ToJsonString(),
+            [MortalLocationIdentityState.StatePath] = fixture.Files[MortalLocationIdentityState.StatePath].ToJsonString(),
             ["game_state/factions/faction_core.json"] = fixture.Files["game_state/factions/faction_core.json"].ToJsonString(),
             ["game_state/misc/characteristics.json"] = (await _fs.ReadFileAsync("game_state/misc/characteristics.json"))!
         };

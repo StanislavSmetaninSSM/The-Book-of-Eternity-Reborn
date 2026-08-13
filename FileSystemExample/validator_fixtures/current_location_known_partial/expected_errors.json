@@ -1,8 +1,8 @@
 {
   "expectedCodes": [
-    "current_location_known_location_resends_full_object"
+    "mortal_location_materialization_existing_full_resend"
   ],
   "expectedMessages": [
-    "known currentLocationData forbids full object resend"
+    "existing current selection forbids persistent semantic resend"
   ]
 }
