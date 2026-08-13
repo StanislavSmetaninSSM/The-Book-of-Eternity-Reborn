@@ -165,6 +165,57 @@ It may additionally own operational scene fields such as:
 
 Storage identity, name, owner, and capacity must reconcile with map metadata. Contents remain under the item transition authority from #1511, so location repair does not silently repair, create, or move items.
 
+### 5A. Offscreen location-storage item authority
+
+`game_state/world/location_storage_contents.json` is a client-owned carrier for
+accepted items that belong to a storage in a location which is not currently
+selected. Its closed root contains `schemaVersion: 1` and a flat `entries[]`
+collection. Every entry contains one exact `locationId`, one exact `storageId`,
+and a non-empty `contents[]` array. Exact and Unicode/case-confusable duplicate
+coordinates are invalid. Each coordinate must resolve to one accepted storage
+metadata entry in the canonical map, and it must not belong to the selected
+current location. Entries are written in ordinal `locationId`, then `storageId`
+order; item order inside each storage is preserved.
+
+The same logical item carrier is used in both physical representations:
+`location_storage(locationId, storageId)`. Moving between the current projection
+and the offscreen carrier therefore does not create an item transition and does
+not rewrite the item identity index. It only relocates the single physical copy
+of the item between two client-governed documents.
+
+For a same-location operational refresh, current storage contents are copied
+from the validated pre-turn current projection and the offscreen carrier is
+unchanged. For an accepted move to another location, the planner performs one
+atomic swap:
+
+1. copy every non-empty source-current storage into the matching offscreen
+   coordinate;
+2. remove every target-location coordinate from the offscreen carrier and place
+   its contents into the rebuilt target current projection;
+3. leave the canonical world map with storage metadata only;
+4. validate the combined current plus offscreen item catalog against the
+   client-owned item identity index before publishing any write.
+
+The GM never authors, echoes, repairs, or receives this file as an editable
+target. Raw validation requires its authority state to remain equal to the
+validated pre-turn snapshot and synthesizes location-storage continuity from
+that snapshot while an accepted movement wrapper is pending. Concretely, file
+existence and parsed canonical content must match; formatting alone is not an
+authority change. Existing movement payloads cannot provide `contents`. A
+malformed, missing-after-creation, or GM-modified offscreen carrier fails closed.
+
+Storage lifecycle commands remain metadata commands. Removing a storage with
+accepted contents in either the current projection or the offscreen carrier is
+rejected; metadata updates preserve the contents. A missing offscreen file is a
+valid empty legacy baseline. The first accepted departure with stored items
+creates it under the same coordinated rollback boundary as the map, current
+projection, location index, and item index.
+
+Player-facing map, location, quest, and news projections never read the
+offscreen carrier. Local storage actions resolve only the selected current
+projection. The full carrier catalog and post-seal validators read both sources
+to prove exactly one accepted physical occurrence for every active item.
+
 ## Creation Routes
 
 ### Current-scene creation
