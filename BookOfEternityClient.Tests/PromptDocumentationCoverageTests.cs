@@ -1119,6 +1119,295 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void MortalLocationMaterializationGuidance_CoversExactRoutesTopologyBootstrapAndRepair()
+    {
+        var responseTemplate = ReadRepoFile("Rules", "Block_2.txt");
+        var rules = ReadRepoFile("Rules", "Block_20.txt");
+        var examples = ReadRepoFile("Examples", "E_Block_20.txt");
+        var corpus = rules + '\n' + examples;
+
+        foreach (var requiredText in new[]
+                 {
+                     "Mortal Location Materialization v1",
+                     "current_scene_creation",
+                     "world_map_creation",
+                     "world_map_link_creation",
+                     "materialization.sections",
+                     "locationId = null",
+                     "linkId = null",
+                     "exact permanent locationId",
+                     "exact permanent linkId",
+                     "locationDiscoveryTransitions",
+                     "linkRemovals",
+                     "storageUpdates",
+                     "storagesToRemove",
+                     "threatsToAdd",
+                     "threatsToUpdate",
+                     "threatsToRemove",
+                     "completeThreatActivities",
+                     "open directed link",
+                     "Existing movement carries only exact selection and operational fields",
+                     "never include locationStorages or contents",
+                     "client preserves storage item contents",
+                     "immutable creation evidence",
+                     "knownExits and adjacencyMap are client-derived",
+                     "location_identity_index.json",
+                     "mortal_bootstrap_scaffold.json",
+                     "narrative-only unresolved exit",
+                     "mortal_location_materialization_repair",
+                     "full-turn resubmission",
+                     "never author materializationReceipt",
+                     "never infer identity from a display name",
+                     "case-sensitive and Unicode-exact"
+                 })
+        {
+            Assert.Contains(requiredText, corpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var contractId in new[]
+                 {
+                     "mortal_location_bootstrap_start_neighbor_link_v1",
+                     "mortal_location_existing_movement_storage_continuity_v1",
+                     "mortal_location_hidden_remote_reveal_v1",
+                     "mortal_location_governed_storage_threat_lifecycle_v1",
+                     "mortal_location_bounded_repair_v1"
+                 })
+        {
+            Assert.Contains(contractId, examples, StringComparison.Ordinal);
+        }
+
+        const string movementExampleId =
+            "## mortal_location_existing_movement_storage_continuity_v1";
+        var movementStart = examples.IndexOf(movementExampleId, StringComparison.Ordinal);
+        Assert.True(movementStart >= 0, "Existing-movement worked example is missing.");
+        var movementEnd = examples.IndexOf("\n## ", movementStart + movementExampleId.Length,
+            StringComparison.Ordinal);
+        var movementExample = movementEnd < 0
+            ? examples[movementStart..]
+            : examples[movementStart..movementEnd];
+        Assert.DoesNotContain("\"locationStorages\"", movementExample, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"contents\"", movementExample, StringComparison.Ordinal);
+        Assert.DoesNotContain("location_storage_contents", corpus, StringComparison.OrdinalIgnoreCase);
+
+        foreach (var retiredText in new[]
+                 {
+                     "linksToRemove",
+                     "targetCoordinates",
+                     "internalDifficultyProfile",
+                     "externalDifficultyProfile",
+                     "system_assigned_guid",
+                     "Backward Compatibility for Legacy Coordinates"
+                 })
+        {
+            Assert.DoesNotContain(retiredText, rules, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var requiredTemplateText in new[]
+                 {
+                     "locationDiscoveryTransitions",
+                     "linkRemovals",
+                     "exact permanent linkId",
+                     "initialTargetLocationId",
+                     "newCapacity",
+                     "newOwner",
+                     "Never include locationStorages or contents in an existing-movement payload",
+                     "currentChronology"
+                 })
+        {
+            Assert.Contains(requiredTemplateText, responseTemplate, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var retiredTemplateText in new[]
+                 {
+                     "linksToRemove",
+                     "targetCoordinates",
+                     "newInternalDifficultyProfile",
+                     "newExternalDifficultyProfile",
+                     "newLastEventsDescription",
+                     "internalDifficultyProfile",
+                     "externalDifficultyProfile",
+                     "adjacencyMap"
+                 })
+        {
+            Assert.DoesNotContain(retiredTemplateText, responseTemplate, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void MortalLocationCliAndDaemonGuidance_UsesCurrentSchemaAndFullTurnRepair()
+    {
+        var api = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpecification = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var workedExample = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var cliOperations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        foreach (var document in new[]
+                 {
+                     api,
+                     daemonSpecification,
+                     taskGuide,
+                     workedExample,
+                     cliOperations
+                 })
+        {
+            Assert.Contains(
+                "Mortal Location Materialization v1",
+                document,
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        var documentationCorpus = string.Join(
+            '\n',
+            api,
+            daemonSpecification,
+            taskGuide,
+            workedExample,
+            cliOperations);
+        foreach (var requiredText in new[]
+                 {
+                     "current_scene_creation",
+                     "world_map_creation",
+                     "world_map_link_creation",
+                     "locationDiscoveryTransitions",
+                     "linkRemovals",
+                     "storageUpdates",
+                     "storagesToRemove",
+                     "threatsToAdd",
+                     "threatsToUpdate",
+                     "threatsToRemove",
+                     "completeThreatActivities",
+                     "open directed",
+                     "creation evidence",
+                     "exact permanent locationId",
+                     "exact permanent linkId",
+                     "location_identity_index.json",
+                     "knownExits and adjacencyMap are client-derived",
+                     "mortal_bootstrap_scaffold.json",
+                     "mortal_location_materialization_repair",
+                     "full-turn resubmission",
+                     "validated pre-turn baseline"
+                 })
+        {
+            Assert.Contains(requiredText, documentationCorpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain(
+            "known-location shorthand with locationId + coordinates",
+            api,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("linksToRemove", api, StringComparison.OrdinalIgnoreCase);
+
+        const string templateMarker =
+            "-RelativePath \"Templates\\MORTAL_LOCATION_TRANSITION_TEMPLATE.md\"";
+        var markerIndex = daemon.IndexOf(templateMarker, StringComparison.Ordinal);
+        Assert.True(markerIndex >= 0, "Compact Mortal location template marker is missing.");
+        var contentStart = daemon.IndexOf("-Content @'", markerIndex, StringComparison.Ordinal);
+        Assert.True(contentStart >= 0, "Compact Mortal location template content is missing.");
+        contentStart += "-Content @'".Length;
+        var contentEnd = daemon.IndexOf("\n'@", contentStart, StringComparison.Ordinal);
+        Assert.True(contentEnd > contentStart, "Compact Mortal location template terminator is missing.");
+        var template = daemon[contentStart..contentEnd];
+
+        foreach (var requiredText in new[]
+                 {
+                     "Mortal Location Materialization v1",
+                     "current_scene_creation",
+                     "world_map_creation",
+                     "world_map_link_creation",
+                     "materialization.sections",
+                     "locationId = null",
+                     "linkId = null",
+                     "exact permanent locationId",
+                     "exact permanent linkId",
+                     "locationDiscoveryTransitions",
+                     "linkRemovals",
+                     "storageUpdates",
+                     "storagesToRemove",
+                     "threatsToAdd",
+                     "threatsToUpdate",
+                     "threatsToRemove",
+                     "completeThreatActivities",
+                     "open directed",
+                     "creation evidence",
+                     "knownExits and adjacencyMap are client-derived",
+                     "mortal_bootstrap_scaffold.json",
+                     "full-turn resubmission"
+                 })
+        {
+            Assert.Contains(requiredText, template, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var retiredText in new[]
+                 {
+                     "targetCoordinates",
+                     "internalDifficultyProfile",
+                     "externalDifficultyProfile",
+                     "estimatedInternalDifficultyProfile",
+                     "estimatedExternalDifficultyProfile"
+                 })
+        {
+            Assert.DoesNotContain(retiredText, template, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("$hasMortalLocationMaterializationRepair", daemon, StringComparison.Ordinal);
+        Assert.Contains("$mortalLocationRepairDirective", daemon, StringComparison.Ordinal);
+        Assert.Contains("validated pre-turn baseline", daemon, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full-turn resubmission", daemon, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("storageUpdates", daemon, StringComparison.Ordinal);
+        Assert.Contains("completeThreatActivities", daemon, StringComparison.Ordinal);
+        Assert.Contains("open directed", daemon, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "Never echo `locationStorages` or `contents` during",
+            api,
+            StringComparison.OrdinalIgnoreCase);
+
+        var npcRules = ReadRepoFile("Rules", "Block_19.txt");
+        Assert.Contains("locref_turn_42_dwarven_forge", npcRules, StringComparison.Ordinal);
+        Assert.DoesNotContain("temp-loc-[description]", npcRules, StringComparison.OrdinalIgnoreCase);
+
+        var factionRules = ReadRepoFile("Rules", "Block_21.txt");
+        Assert.Contains("current-schema `internalDifficulty`", factionRules, StringComparison.Ordinal);
+        Assert.Contains("`externalDifficulty` object", factionRules, StringComparison.Ordinal);
+        Assert.DoesNotContain("internalDifficultyProfile", factionRules, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("externalDifficultyProfile", factionRules, StringComparison.OrdinalIgnoreCase);
+
+        var storageExamples = ReadRepoFile("Examples", "E_Block_11.B.txt");
+        Assert.DoesNotContain(
+            "\"locationId\": \"loc-squad-hq-01\",\n                            \"coordinates\"",
+            storageExamples,
+            StringComparison.Ordinal);
+
+        var launcher = ReadRepoFile(
+            "BookOfEternityClient",
+            "Launcher",
+            "CLI_Launch_Script.md");
+        var launchGenerator = ReadRepoFile(
+            "BookOfEternityClient",
+            "Launcher",
+            "Generate_CLI_Launch_Script.ps1");
+        var translation = ReadRepoFile("Examples", "CLI_Translation_Guide.md");
+        foreach (var surface in new[] { launcher, launchGenerator, translation })
+        {
+            Assert.Contains("Mortal Location Materialization v1", surface, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("full-turn resubmission", surface, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("storageUpdates", surface, StringComparison.Ordinal);
+            Assert.Contains("completeThreatActivities", surface, StringComparison.Ordinal);
+            Assert.Contains("open directed", surface, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain(
+            "by currentLocationId/initialLocationId or canonical name",
+            launcher,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "by currentLocationId/initialLocationId or canonical name",
+            launchGenerator,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void CompactMortalItemTemplate_CoversCompleteCreationAndProtectedLifecycle()
     {
         var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");

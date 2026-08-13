@@ -10,10 +10,11 @@
 | `game_state/world/world_map.json.locations[]` | Shared contract, client-normalized | Sole durable Mortal location semantics | Only through raw creation/update routes |
 | `game_state/world/world_map.json.links[]` | Shared contract, client-normalized | Sole durable directed topology | Only through raw link lifecycle routes |
 | `game_state/world/current_location.json` | Client projection plus scene operations | Selected canonical location mirror, weather/interactions/current chronology/storage contents | Only allowlisted raw current route fields |
+| `game_state/world/location_storage_contents.json` | Client | Non-empty item arrays for exact non-current location/storage coordinates | Never |
 | `game_state/world/location_identity_index.json` | Client | Permanent identity, receipt, origin history, lifecycle | Never |
 | `game_state/control/mortal_bootstrap_scaffold.json` | Client | Reserved initial refs, IDs, coordinates, request evidence | Never |
 | Raw `currentLocationData` | GM | One new selected location or exact existing movement | Yes, transient |
-| Raw `worldMapUpdates` | GM | Remote creations, narrow updates, discovery and link lifecycle | Yes, transient |
+| Raw `worldMapUpdates` | GM | Remote creations, narrow updates, discovery/link lifecycle, and governed storage/threat lifecycle commands | Yes, transient |
 
 The map is semantic authority. The current projection and identity index are not
 alternative stores from which missing GM semantics may be invented.
@@ -191,6 +192,11 @@ canonical surface to contain meaningful structured evidence.
 empty/null value. Presentation, physical, placement, discovery, difficulty, and
 chronicle cannot be empty by design.
 
+The sealed dispositions attest to the creation payload. They are immutable
+historical evidence rather than live collection counters: later accepted
+storage/threat lifecycle operations may change `locationStorages[]` or
+`activeThreats[]` without rewriting the envelope, receipt, or seal.
+
 ## 6. Discovery model
 
 Allowed pairs:
@@ -231,6 +237,33 @@ capacity metadata, access state, and optional structured custom semantics.
 Storage IDs are unique within the location and reconcile exactly between the
 map object and current projection. Only current projection members may add a
 `contents` array, whose elements remain governed by item receipts/transitions.
+
+### 7.3A Offscreen storage contents
+
+```json
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "locationId": "loc_exact_non_current",
+      "storageId": "storage_exact",
+      "contents": [{ "itemId": "itm_receipt_bearing" }]
+    }
+  ]
+}
+```
+
+This root is closed and client-owned. Entries are sorted by ordinal
+`locationId/storageId`, contain only non-empty item arrays, resolve to one exact
+active map storage, and never point at the selected current location. Duplicate,
+case/whitespace/Unicode-confusable, unresolved, empty, malformed, or GM-mutated
+coordinates fail closed. Missing state means the legacy empty baseline.
+
+Current and offscreen physical arrays share the same logical item carrier:
+`location_storage(locationId, storageId)`. Travel therefore does not rewrite
+the item identity index or create an item transition. A changed selection parks
+the previous current contents, hydrates the destination, publishes map/current/
+offscreen/index under one lease, and restores all tracked bytes on failure.
 
 ### 7.4 Active threats
 
@@ -291,7 +324,9 @@ The current root contains:
 - `currentWeather` / normalized weather state supported by the existing scene contract;
 - current interactions/opportunities supported by the existing scene contract;
 - current chronology extension while the map stores the durable accepted chronicle;
-- storage metadata identical to the map plus active `contents` under item authority;
+- storage metadata identical to the map plus only the selected location's active
+  `contents` under item authority; non-current contents live solely in the
+  closed client-owned offscreen state;
 - client-derived `knownExits` and `adjacencyMap` only if retained for existing UI/service compatibility.
 
 Derived exit fields are never accepted from the GM and are rebuilt from exact
@@ -337,15 +372,39 @@ repair target or player DTO.
 Raw current data for an existing destination contains exact `locationId` and
 allowlisted current chronology/operational fields only. It cannot contain full
 location semantics, coordinates, envelope, receipt, or name identity. The
-client rebuilds the shared projection from the map.
+client rebuilds the shared projection from the map. Re-selecting the exact
+pre-turn current ID is allowed. A changed destination requires one exact
+pre-turn directed link whose source is the current ID, target is the requested
+ID, access is `open`, requirements are empty, and link/destination discovery is
+player-known and non-hidden. Reverse-only, hidden, conditional, sealed, and
+unmet routes do not authorize movement.
 
 ### Narrow location update
 
-An update has exact `locationId` plus only mutable fields: presentation text and
-image guidance, chronicle, difficulty, discovery transition, faction/actor/lore/
-threat/custom semantics through their governed shapes. Identity, realm,
-original envelope/receipt, coordinates, parent, storage identity, and topology
-cannot be smuggled through a location update.
+An update has exact `locationId` plus only mutable presentation, image,
+difficulty, current chronicle summary, faction/actor/lore, and custom-state
+fields. Discovery uses its dedicated transition. `eventDescriptions`,
+`activeThreats`, identity, realm, original envelope/receipt, coordinates,
+parent, storage identity, and topology cannot be smuggled through a location
+update.
+
+### Governed storage/threat lifecycle
+
+- `storageUpdates[]` binds exact location/storage IDs, changes only closed
+  metadata fields, and preserves current item contents.
+- `storagesToRemove[]` removes only an exact empty storage; accepted item
+  contents must first move or be destroyed through item authority.
+- `threatsToAdd[]` accepts one complete null-ID threat for an exact existing or
+  exact same-turn location, then receives a client-generated `threat_...` ID.
+- `threatsToUpdate[]` deep-merges one non-terminal partial update;
+  `threatsToRemove[]` deletes one exact threat.
+- `completeThreatActivities[]` requires one exact active activity, appends the
+  system-owned completion archive entry, and clears `currentActivity`.
+
+Conflicting operations, aliases, wrong-case/confusable IDs, unknown targets,
+unknown command names, and non-empty storage removal fail closed. Accepted
+operations update map, selected current projection when applicable, and index
+transition evidence in the same transaction.
 
 ### Link lifecycle
 
@@ -362,7 +421,8 @@ rebuilds current derived exits; it does not retire endpoint locations.
 - exact `initialId -> permanent ID` maps for new locations and links;
 - planned receipts/index transitions;
 - final canonical `world_map` and `current_location` objects;
-- a field-aware set of governed companion rewrites;
+- final closed `location_storage_contents` state;
+- a field-aware set of governed companion rewrites and storage/threat lifecycle mutations;
 - accepted same-turn current-storage coordinates for item route authority;
 - touched paths and composed-state validation inputs;
 - repair contexts for rejected raw candidates.

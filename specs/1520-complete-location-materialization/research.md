@@ -117,6 +117,27 @@ coordinates or names.
 - Source ID plus target coordinates: coordinates are placement, not identity.
 - Automatic symmetry: changes authored access and can reveal hidden routes.
 
+## Decision 6A: Existing movement requires topology authorization
+
+**Decision**: Exact permanent destination identity selects an entity but does
+not grant reachability. A changed current selection requires one exact
+pre-turn directed link from the exact current location to the destination. The
+link must be open, have no requirements, and both link and destination must be
+player-known/non-hidden. Same-location refresh remains valid; reverse-only,
+hidden, conditional, sealed, and unmet routes fail closed.
+
+**Rationale**: Without a topology precondition, an exact hidden or remote ID
+becomes a teleport capability and bypasses the explicit direction/access model.
+Using pre-turn topology prevents the same response from fabricating its own
+movement permission.
+
+**Alternatives rejected**:
+
+- Exact destination ID alone: proves identity, not traversal authority.
+- Any incident link: invents reverse reachability for one-way routes.
+- Same-turn link authorization: allows the rejected response to manufacture
+  the permission it relies on.
+
 ## Decision 7: Bootstrap uses ordinary materialization
 
 **Decision**: Fresh bootstrap writes neutral canonical roots, an empty location
@@ -163,21 +184,62 @@ Field-aware rewriting avoids corrupting arbitrary narrative strings.
 ## Decision 9: Same-turn storage and item ownership
 
 **Decision**: Map locations store only storage semantics (identity, name, owner,
-capacity, access, description). Only the selected current projection may carry
-`locationStorages[].contents`. The location normalizer preserves contents
-verbatim until #1511 item materialization runs. `MortalItemRouteAuthorityCatalog`
-accepts a new location-storage route only when it binds the exact storage of an
-accepted same-turn current-location creation. Location repair never creates,
-moves, seals, or repairs an item.
+capacity, access, description). The selected current projection may carry that
+location's `locationStorages[].contents`; every non-empty non-current item array
+is stored in the closed client-owned
+`game_state/world/location_storage_contents.json` root. A changed selection
+atomically parks source-current contents and hydrates destination contents. Both
+physical representations map to the same exact logical
+`location_storage(locationId, storageId)` carrier, so the item identity index
+does not record a transfer merely because the player travels. A same-location
+refresh copies contents from validated pre-turn authority. The GM never echoes,
+edits, repairs, or receives the offscreen carrier. Location repair never
+creates, moves, seals, or repairs an item.
 
-**Rationale**: This enables a complete new scene to contain inspectable items
-without making location semantics a competing item authority.
+The offscreen root is closed: `schemaVersion=1` plus sorted `entries[]`, each
+with exact `locationId`, exact `storageId`, and non-empty `contents[]`. Missing
+state is accepted only as the legacy empty baseline; malformed, duplicate,
+confusable, current-location, unresolved, or GM-mutated coordinates fail
+closed. Storage removal requires both current and offscreen contents to be
+empty. Snapshot, before-image, composed validation, publication, and rollback
+track the file together with map/current/index.
+
+**Rationale**: This enables complete current scenes and persistent inventories
+at any accepted location without duplicating items in the global map, losing
+items during travel, or making location semantics a competing item authority.
 
 **Alternatives rejected**:
 
 - Store item contents in the global map: duplicates active carriers and exposes hidden inventories.
+- Drop non-current contents: makes ordinary movement destructive.
+- Encode travel as an item transfer: invents lifecycle transitions even though
+  the logical location-storage coordinate is unchanged.
 - Reject every same-turn new-location item: prevents ordinary complete scene creation.
 - Let location repair edit item identity: crosses the #1511 authority boundary.
+
+## Decision 9A: Governed storage and threat lifecycle is planned atomically
+
+**Decision**: The accepted-turn planner consumes all six documented child
+commands: `storageUpdates`, `storagesToRemove`, `threatsToAdd`,
+`threatsToUpdate`, `threatsToRemove`, and `completeThreatActivities`. Every
+selector is exact, storage contents remain item-owned, new threat IDs are
+client-assigned, nested threat updates deep-merge, and completion archives a
+system-owned event before clearing the activity. Map, current projection, and
+location-index transition evidence are one plan/transaction. Materialization
+section dispositions remain immutable creation evidence.
+
+**Rationale**: Shape validation without planned application made standalone
+commands unusable and silently discarded them in mixed packages. Atomic
+planning gives the advertised GM surface one authoritative effect while
+preserving item and receipt ownership.
+
+**Alternatives rejected**:
+
+- Keep validator-only command support: accepts authoring vocabulary that has no
+  canonical effect.
+- Patch raw wrappers after normalization: retains a second mutable authority.
+- Let `locationUpdates[]` replace storage/threat arrays: bypasses exact child
+  identity, contents ownership, completion history, and conflict checks.
 
 ## Decision 10: Atomicity and post-validation
 
@@ -243,9 +305,10 @@ through detail, locality, action, news, or nested DTO paths.
 **Decision**: Update Rule 20, Example 20, CLI API, main task guide/example, CLI
 operations, daemon reminder, validation manifest, active bootstrap state,
 positive fixtures, generated helpers, and documentation/source guards. Worked
-examples cover start plus neighbor/link, hidden remote plus reveal, and invalid
-package plus bounded repair. Audit other Mortal docs and edit only those that
-actually repeat the changed contract.
+examples cover start plus neighbor/link, hidden remote plus reveal, all six
+governed storage/threat commands, invalid package plus bounded repair, and
+receipt-less canonical rejection. Audit other Mortal docs and edit only those
+that actually repeat the changed contract.
 
 **Rationale**: The GM cannot inspect client code during play. The executable
 contract and authoring guidance must change together.

@@ -11,8 +11,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         "lastEventsDescription",
         "currentWeather",
         "currentInteractions",
-        "currentChronology",
-        "locationStorages"
+        "currentChronology"
     };
 
     private static readonly HashSet<string> ExistingProtectedResendFields = new(StringComparer.Ordinal)

@@ -169,20 +169,20 @@ ambiguous identity.
 
 ### Tests for User Story 4
 
-- [ ] T049 [US4] Add red packet grouping, deterministic correction lists, raw target allowlist, cross-contract ownership, and protected-file exclusion tests in `BookOfEternityClient.Tests/MortalLocationRepairPacketBuilderTests.cs`
-- [ ] T050 [US4] Add red fail-closed unknown/duplicate/replay/confusable/client-field/index/seal tests proving no GM request dispatch in `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs`
-- [ ] T051 [US4] Add red before-image rollback tests for map/current/index/NPC/faction/item-storage/link writes and injected post-normalization failure in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.cs`
-- [ ] T052 [US4] Add red repair-retry idempotence and stale player-output suppression tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.Output.cs`
-- [ ] T053 [P] [US4] Add red validation-repair request serialization tests for exact location/link context and zero client-owned targets in `BookOfEternityClient.Tests/ValidationRepairRequestTests.cs`
+- [x] T049 [US4] Add red packet grouping, deterministic correction lists, raw target allowlist, cross-contract ownership, and protected-file exclusion tests in `BookOfEternityClient.Tests/MortalLocationRepairPacketBuilderTests.cs`
+- [x] T050 [US4] Add red fail-closed unknown/duplicate/replay/confusable/client-field/index/seal tests proving no GM request dispatch in `BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs`
+- [x] T051 [US4] Add red before-image rollback tests for map/current/index/NPC/faction/item-storage/link writes and injected post-normalization failure in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.cs`
+- [x] T052 [US4] Add red repair-retry idempotence and stale player-output suppression tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.Output.cs`
+- [x] T053 [P] [US4] Add red validation-repair request serialization tests for exact location/link context and zero client-owned targets in `BookOfEternityClient.Tests/ValidationRepairRequestTests.cs`
 
 ### Implementation for User Story 4
 
-- [ ] T054 [US4] Implement exact actor grouping, raw coordinates, missing/invalid/conflict lists, safe rules, companion ownership, and fail-closed classification in `BookOfEternityClient/Services/MortalLocationRepairPacketBuilder.cs`
-- [ ] T055 [US4] Route location issue codes through the dedicated packet builder, remove legacy adjacency/name/coordinate packets, and stop protected/ambiguous cases before GM dispatch in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
-- [ ] T056 [US4] Extend `AcceptedTurnCanonicalStateRefresh` to share one lease/before-image contour and combined Mortal item/location post-check, restoring every tracked path byte-for-byte on any failure in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
-- [ ] T057 [US4] Ensure transient location/link commands and bootstrap reservations settle only after post-validation and survive correctly across retry/rollback in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
-- [ ] T058 [US4] Map console/browser lifecycle failures to player-safe Russian text while retaining operator diagnostics in `BookOfEternityClient/UI/` and `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
-- [ ] T059 [US4] Run packet/lifecycle/rollback Focused filters, including injected failures and repeated repair, and record exact result directories in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T054 [US4] Implement exact actor grouping, raw coordinates, missing/invalid/conflict lists, safe rules, companion ownership, and fail-closed classification in `BookOfEternityClient/Services/MortalLocationRepairPacketBuilder.cs`
+- [x] T055 [US4] Route location issue codes through the dedicated packet builder, remove legacy adjacency/name/coordinate packets, and stop protected/ambiguous cases before GM dispatch in `BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs`
+- [x] T056 [US4] Extend `AcceptedTurnCanonicalStateRefresh` to share one lease/before-image contour and combined Mortal item/location post-check, restoring every tracked path byte-for-byte on any failure in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs`
+- [x] T057 [US4] Ensure transient location/link commands and bootstrap reservations settle only after post-validation and survive correctly across retry/rollback in `BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
+- [x] T058 [US4] Map console/browser lifecycle failures to player-safe Russian text while retaining operator diagnostics in `BookOfEternityClient/UI/` and `BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs`
+- [x] T059 [US4] Run packet/lifecycle/rollback Focused filters, including injected failures and repeated repair, and record exact result directories in `specs/1520-complete-location-materialization/quickstart.md`
 
 **Checkpoint**: No malformed or failed retry can leave a partial map, link,
 current projection, identity entry, companion binding, or player confirmation.
@@ -201,19 +201,19 @@ list, detail, current, news, locality, and actions across both clients.
 
 ### Tests for User Story 5
 
-- [ ] T060 [US5] Add red canonical acceptance, discovery-tier, recursive DTO-shape sanitization, exact action binding, and semantic preservation tests in `BookOfEternityClient.Tests/MortalLocationPlayerProjectionTests.cs`
-- [ ] T061 [US5] Add red console map/list/detail/current/ASCII/storage privacy and semantic parity tests in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs`
-- [ ] T062 [P] [US5] Add red browser map/list/detail/current/storage DTO and action privacy tests in `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
-- [ ] T063 [P] [US5] Add red Mortal news/threat hidden/rejected/exact-location projection tests in `BookOfEternityClient.Tests/ExplorerMortalWorldNewsCommandResultBuilderTests.cs`
+- [x] T060 [US5] Add red canonical acceptance, discovery-tier, recursive DTO-shape sanitization, exact action binding, and semantic preservation tests in `BookOfEternityClient.Tests/MortalLocationPlayerProjectionTests.cs`
+- [x] T061 [US5] Add red console map/list/detail/current/ASCII/storage privacy and semantic parity tests in `BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs`
+- [x] T062 [P] [US5] Add red browser map/list/detail/current/storage DTO and action privacy tests in `BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs`
+- [x] T063 [P] [US5] Add red Mortal news/threat hidden/rejected/exact-location projection tests in `BookOfEternityClient.Tests/ExplorerMortalWorldNewsCommandResultBuilderTests.cs`
 
 ### Implementation for User Story 5
 
-- [ ] T064 [US5] Implement canonical-only acceptance, discovery projection, recursive item/location authority filtering, full internal DTO suppression, and player-safe action records in `BookOfEternityClient/Services/MortalLocationPlayerProjection.cs`
-- [ ] T065 [US5] Rebuild console locations, current detail, ASCII map, visible exits, and storage counts from the shared projection in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaLoreAndTravel.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs`
-- [ ] T066 [US5] Rebuild browser current/location/map/detail/storage results from the shared projection and exact non-rendered selectors in `BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs`
-- [ ] T067 [US5] Make Mortal news/threat location joins canonical, exact, and discovery-safe in `BookOfEternityClient/UI/ExplorerMortalWorldNewsCommandResultBuilder.cs`
-- [ ] T068 [US5] If C# DTO tests prove the React client needs a new field or guard, update and test the applicable files under `BookOfEternityClient.WebFrontend/src/`; otherwise record the no-frontend-source-change rationale in `specs/1520-complete-location-materialization/quickstart.md`
-- [ ] T069 [US5] Run all player projection/console/browser/news Focused filters and inspect one hidden, rumored, and visited payload; record evidence in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T064 [US5] Implement canonical-only acceptance, discovery projection, recursive item/location authority filtering, full internal DTO suppression, and player-safe action records in `BookOfEternityClient/Services/MortalLocationPlayerProjection.cs`
+- [x] T065 [US5] Rebuild console locations, current detail, ASCII map, visible exits, and storage counts from the shared projection in `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaLoreAndTravel.cs` and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs`
+- [x] T066 [US5] Rebuild browser current/location/map/detail/storage results from the shared projection and exact non-rendered selectors in `BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs`
+- [x] T067 [US5] Make Mortal news/threat location joins canonical, exact, and discovery-safe in `BookOfEternityClient/UI/ExplorerMortalWorldNewsCommandResultBuilder.cs`
+- [x] T068 [US5] If C# DTO tests prove the React client needs a new field or guard, update and test the applicable files under `BookOfEternityClient.WebFrontend/src/`; otherwise record the no-frontend-source-change rationale in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T069 [US5] Run all player projection/console/browser/news Focused filters and inspect one hidden, rumored, and visited payload; record evidence in `specs/1520-complete-location-materialization/quickstart.md`
 
 **Checkpoint**: Rejected/hidden locations have zero player footprint; rumors are
 safe; discovered/visited/current semantics and actions agree across clients.
@@ -233,20 +233,20 @@ dangling, cross-realm, duplicate, and physical-placement conflicts.
 
 ### Tests for User Story 6
 
-- [ ] T070 [US6] Add red actor binding/current physical location and same-turn temporary-reference tests in `BookOfEternityClient.IntegrationTests/ActorMaterializationValidationTests.cs` and `BookOfEternityClient.IntegrationTests/NpcCoreChangesTests.cs`
-- [ ] T071 [P] [US6] Add red faction control, effective same-turn faction identity, and contradictory location-control tests in `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
-- [ ] T072 [P] [US6] Add red exact codex/quest/world-event/threat/storage reference and cross-realm tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Companions.cs`
-- [ ] T073 [US6] Add red same-turn current-location storage item route, remote-map-content rejection, and independent item-repair ownership tests in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Routes.cs`
-- [ ] T074 [P] [US6] Add red exact canonical authority tests for NPC/faction readers and current-location scope in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Authority.cs`
+- [x] T070 [US6] Add red actor binding/current physical location and same-turn temporary-reference tests in `BookOfEternityClient.IntegrationTests/ActorMaterializationValidationTests.cs` and `BookOfEternityClient.IntegrationTests/NpcCoreChangesTests.cs`
+- [x] T071 [P] [US6] Add red faction control, effective same-turn faction identity, and contradictory location-control tests in `BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs`
+- [x] T072 [P] [US6] Add red exact codex/quest/world-event/threat/storage reference and cross-realm tests in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Companions.cs`
+- [x] T073 [US6] Add red same-turn current-location storage item route, remote-map-content rejection, and independent item-repair ownership tests in `BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.Routes.cs`
+- [x] T074 [P] [US6] Add red exact canonical authority tests for NPC/faction readers and current-location scope in `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Authority.cs`
 
 ### Implementation for User Story 6
 
-- [ ] T075 [US6] Replace recursive current/map actor location authority with exact canonical map plus accepted same-turn plan in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs` and `BookOfEternityClient/Services/NpcCoreChangesContract.cs`
-- [ ] T076 [US6] Replace recursive/case-insensitive faction location authority with exact canonical map plus accepted same-turn plan in `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Factions.cs`
-- [ ] T077 [US6] Implement field-aware parent/actor/faction/lore/threat/storage/current-selection rewrites and composed physical-authority checks in `BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs`
-- [ ] T078 [US6] Preserve current storage contents during location projection, expose exact accepted same-turn storage authority, and keep item identity/repair ownership in `BookOfEternityClient/Services/MortalItemRouteAuthorityCatalog.cs`, `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`, and `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
-- [ ] T079 [US6] Replace broad location enumeration/case-insensitive dictionaries in cross-reference validation with receipt-bearing canonical exact indexes in `BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs` and `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`
-- [ ] T080 [US6] Run actor/faction/lore/threat/storage/item authority Focused filters and record evidence in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T075 [US6] Replace recursive current/map actor location authority with exact canonical map plus accepted same-turn plan in `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs` and `BookOfEternityClient/Services/NpcCoreChangesContract.cs`
+- [x] T076 [US6] Replace recursive/case-insensitive faction location authority with exact canonical map plus accepted same-turn plan in `BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs` and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Factions.cs`
+- [x] T077 [US6] Implement field-aware parent/actor/faction/lore/threat/storage/current-selection rewrites and composed physical-authority checks in `BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs`
+- [x] T078 [US6] Preserve current storage contents during location projection, expose exact accepted same-turn storage authority, and keep item identity/repair ownership in `BookOfEternityClient/Services/MortalItemRouteAuthorityCatalog.cs`, `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`, and `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
+- [x] T079 [US6] Replace broad location enumeration/case-insensitive dictionaries in cross-reference validation with receipt-bearing canonical exact indexes in `BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs` and `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`
+- [x] T080 [US6] Run actor/faction/lore/threat/storage/item authority Focused filters and record evidence in `specs/1520-complete-location-materialization/quickstart.md`
 
 **Checkpoint**: Every governed companion points to one coherent accepted Mortal
 location, and same-turn current storage composes with #1511 without sharing
@@ -259,18 +259,18 @@ identity or repair ownership.
 **Purpose**: Migrate repository-owned state and teach the GM the enforceable
 Mortal location workflow. This phase crosses all six stories and is mandatory.
 
-- [ ] T081 Migrate active `FileSystemExample/game_session/game_state/world/current_location.json`, add canonical `world_map.json` and `location_identity_index.json`, and update integrity assertions in `BookOfEternityClient.IntegrationTests/FileSystemExampleFixtureIntegrityTests.cs`
-- [ ] T082 Migrate every positive validator fixture and generated test helper from T004, isolate receipt-less objects as explicitly named negative inputs, and record each disposition in `specs/1520-complete-location-materialization/fixture-migration-inventory.md`
-- [ ] T083 Update complete location/link envelopes, exact routes, derived topology, existing movement/update rules, bootstrap, no-legacy policy, and repair boundaries in `Rules/Block_20.txt`
-- [ ] T084 Add the three complete worked GM examples—bootstrap start/neighbor/link, hidden remote/reveal, and invalid bounded repair—to `Examples/E_Block_20.txt`
-- [ ] T085 [P] Update canonical map/current/index ownership, raw file mapping, exact existing movement, and client-field restrictions in `CLI_API_Specification.md` and `CLI_Agent_Daemon_Specification.md`
-- [ ] T086 [P] Update main GM authoring/repair workflow in `TaskGuides/CLI_Step_Main.txt`, `Examples/E_CLI_Step_Main.txt`, and `Rules/Block_CLI_Operations.txt`
-- [ ] T087 Update the daemon/launcher reminder so the GM reads and follows the current location contract in `BookOfEternityClient/game_master_daemon.ps1`
-- [ ] T088 Audit `Rules/Block_18.A.txt`, `Rules/Block_19.txt`, `Rules/Block_21.txt`, `Examples/E_Block_11.B.txt`, launcher guidance, and translation guidance; edit only genuine Mortal location contract duplicates and record untouched rationale in `specs/1520-complete-location-materialization/quickstart.md`
-- [ ] T089 Register all changed/new valid and invalid examples with exact expected diagnostics in `Examples/example_validation_manifest.json`
-- [ ] T090 Add red-then-green contract/source-guard assertions for routes, required fields, derived links, client ownership, no name/legacy fallback, bootstrap, and worked examples in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs`
-- [ ] T091 Add red-then-green executable example/manifest validation for both creation routes, bootstrap, topology, discovery, repair, and receipt-less rejection in `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
-- [ ] T092 Check `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Afterlife_Turns.txt`, afterlife manifests/guards, and runtime callers; record the no-update rationale in `specs/1520-complete-location-materialization/quickstart.md` unless implementation actually changed an afterlife contract owned by #1514
+- [x] T081 Migrate active `FileSystemExample/game_session/game_state/world/current_location.json`, add canonical `world_map.json` and `location_identity_index.json`, and update integrity assertions in `BookOfEternityClient.IntegrationTests/FileSystemExampleFixtureIntegrityTests.cs`
+- [x] T082 Migrate every positive validator fixture and generated test helper from T004, isolate receipt-less objects as explicitly named negative inputs, and record each disposition in `specs/1520-complete-location-materialization/fixture-migration-inventory.md`
+- [x] T083 Update complete location/link envelopes, exact routes, derived topology, existing movement/update rules, bootstrap, no-legacy policy, and repair boundaries in `Rules/Block_20.txt`
+- [x] T084 Add six complete worked GM examples—bootstrap start/neighbor/link, existing movement with client-owned storage continuity, hidden remote/reveal, all-six governed storage/threat lifecycle, invalid bounded repair, and receipt-less canonical rejection—to `Examples/E_Block_20.txt`
+- [x] T085 [P] Update canonical map/current/index ownership, raw file mapping, exact existing movement, and client-field restrictions in `CLI_API_Specification.md` and `CLI_Agent_Daemon_Specification.md`
+- [x] T086 [P] Update main GM authoring/repair workflow in `TaskGuides/CLI_Step_Main.txt`, `Examples/E_CLI_Step_Main.txt`, and `Rules/Block_CLI_Operations.txt`
+- [x] T087 Update the daemon/launcher reminder so the GM reads and follows the current location contract in `BookOfEternityClient/game_master_daemon.ps1`
+- [x] T088 Audit `Rules/Block_18.A.txt`, `Rules/Block_19.txt`, `Rules/Block_21.txt`, `Examples/E_Block_11.B.txt`, launcher guidance, and translation guidance; edit only genuine Mortal location contract duplicates and record untouched rationale in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T089 Register all changed/new valid and invalid examples with exact expected diagnostics in `Examples/example_validation_manifest.json`
+- [x] T090 Add red-then-green contract/source-guard assertions for routes, authorized movement, governed storage/threat commands, required fields, derived links, client ownership, no name/legacy fallback, bootstrap, and worked examples in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs`
+- [x] T091 Add red-then-green executable example/manifest validation for both creation routes, bootstrap, topology, discovery, all six governed storage/threat commands, repair, and receipt-less rejection in `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
+- [x] T092 Check `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Afterlife_Turns.txt`, afterlife manifests/guards, and runtime callers; record the no-update rationale in `specs/1520-complete-location-materialization/quickstart.md` unless implementation actually changed an afterlife contract owned by #1514
 
 ---
 
@@ -279,15 +279,22 @@ Mortal location workflow. This phase crosses all six stories and is mandatory.
 **Purpose**: Prove the complete candidate and reconcile durable task state before
 requesting review or merge.
 
-- [ ] T093 Run `git diff --check`, audit tracked/untracked artifacts, and remove only feature-owned generated outputs while preserving unrelated `bin/obj` directories
-- [ ] T094 Run every bounded Focused command group from `specs/1520-complete-location-materialization/plan.md`, diagnose with the smallest related filter, and record exact result directories in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T093 Run `git diff --check`, audit tracked/untracked artifacts, and remove only feature-owned generated outputs while preserving unrelated `bin/obj` directories
+- [x] T094 Run every bounded Focused command group from `specs/1520-complete-location-materialization/plan.md`, diagnose with the smallest related filter, and record exact result directories in `specs/1520-complete-location-materialization/quickstart.md`
 - [ ] T095 Run one `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast` checkpoint after runtime/projection integration and record the result directory in `specs/1520-complete-location-materialization/quickstart.md`
-- [ ] T096 Run `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation` for the changed rules/examples/manifest and record the result directory in `specs/1520-complete-location-materialization/quickstart.md`
-- [ ] T097 Run `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration` for bootstrap/normalization/repair/rollback and record the result directory in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T096 Run `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation` for the changed rules/examples/manifest and record the result directory in `specs/1520-complete-location-materialization/quickstart.md`
+- [x] T097 Run `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane LifecycleIntegration` for bootstrap/normalization/repair/rollback and record the result directory in `specs/1520-complete-location-materialization/quickstart.md`
 - [ ] T098 Apply the `requesting-code-review` checklist to the complete diff, resolve every Critical/Important finding with red-green evidence, and record disposition in `specs/1520-complete-location-materialization/quickstart.md`
 - [ ] T099 Reconcile all 60 FRs, 12 SCs, task checkboxes, fixture migration rows, GM docs/examples, prompt/source guards, and the explicit afterlife no-update rationale in `specs/1520-complete-location-materialization/tasks.md`
 - [ ] T100 Run exactly one final `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge` on the candidate commit, without a duplicate Fast immediately before it, and record the result directory in `specs/1520-complete-location-materialization/quickstart.md`
 - [ ] T101 Inspect the final diff and status, commit only #1513-owned files, create the PR with issue/spec/test evidence, merge only the tested commit after approval, and close #1513 only after merge
+- [x] T102 Resolve review Important findings by requiring authorized pre-turn topology for changed selection and implementing all six governed storage/threat commands with exact identity, immutable creation evidence, current projection reconciliation, executable GM documentation, and focused/lifecycle rollback coverage
+- [x] T103 Add the closed client-owned `location_storage_contents.json` contract with exact sorted non-empty coordinates, legacy-missing baseline, malformed/duplicate/confusable rejection, and focused unit coverage
+- [x] T104 Atomically park source-current contents and hydrate destination contents during exact authorized movement while preserving the same logical `location_storage(locationId, storageId)` carrier and forbidding the entire GM-authored `locationStorages` array on existing movement
+- [x] T105 Include offscreen contents in item carrier catalogs, raw/canonical composed validation, item transition validation, canonical snapshots, accepted-turn publication, and protected repair targets
+- [x] T106 Add changed-location publication and injected offscreen-write rollback tests proving one physical item occurrence, unchanged item-index carrier, and byte/existence-exact restoration of every tracked file
+- [x] T107 Recursively suppress the complete offscreen authority DTO from console/browser/news semantic projection while preserving adjacent legitimate in-world storage semantics
+- [x] T108 Synchronize Rule 20, CLI guidance, the existing-movement worked example, Spec Kit contracts, source guards, and focused evidence without exposing the internal offscreen path to the GM
 
 ---
 

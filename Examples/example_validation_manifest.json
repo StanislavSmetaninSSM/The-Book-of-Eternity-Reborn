@@ -62,6 +62,86 @@
       "requiredText": ["mortal_item_receiptless_rejection_v1", "mortal_item_materialization_receiptless_current_item", "receipt-less", "runtime promotion"]
     }
   ],
+  "mortalLocationMaterializationCoverage": [
+    {
+      "contractId": "mortal_location_bootstrap_start_neighbor_link_v1",
+      "file": "E_Block_20.txt",
+      "statePath": "game_state/world/world_map.json",
+      "responseSurface": "currentLocationData + worldMapUpdates.newLocations[] + worldMapUpdates.newLinks[]",
+      "realms": ["Mortal World"],
+      "description": "One coherent bootstrap package consumes the exact client scaffold reservations and creates a complete selected start, complete neighbor, and complete directed link.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalLocationMaterializationWorkedExamples_ExecuteCurrentContractAndPlanner -> MortalLocationMaterializationContract.ValidateRawLocation/ValidateRawLink + MortalLocationAcceptedTurnPlanner.Build",
+      "coverageLimit": "Executes both complete location creation routes, link topology, exact scaffold reservation consumption, permanent client identity assignment, and scaffold settlement; byte-level lifecycle rollback remains covered by MortalBootstrapValidationTests and MortalLocationMaterializationLifecycleTests.",
+      "requiredText": ["mortal_location_bootstrap_start_neighbor_link_v1", "\"route\": \"current_scene_creation\"", "\"route\": \"world_map_creation\"", "\"route\": \"world_map_link_creation\""],
+      "expectedDiagnostics": []
+    },
+    {
+      "contractId": "mortal_location_existing_movement_storage_continuity_v1",
+      "file": "E_Block_20.txt",
+      "statePath": "game_state/world/current_location.json",
+      "responseSurface": "currentLocationData exact existing movement without storage payload",
+      "realms": ["Mortal World"],
+      "description": "An exact authorized existing move carries only current operational fields while the client preserves current/offscreen storage contents.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalLocationMaterializationWorkedExamples_ExecuteCurrentContractAndPlanner -> MortalLocationAcceptedTurnPlanner.Build",
+      "coverageLimit": "Executes the documented minimal movement against an accepted open directed link and proves destination selection; storage park/hydrate, logical carrier continuity, and rollback are covered by MortalLocationMaterializationValidationTests.Lifecycle.",
+      "requiredText": ["mortal_location_existing_movement_storage_continuity_v1", "\"locationId\": \"loc_exact_old_oak_crossroads\"", "Never include locationStorages or contents", "client preserves storage item contents"],
+      "expectedDiagnostics": []
+    },
+    {
+      "contractId": "mortal_location_hidden_remote_reveal_v1",
+      "file": "E_Block_20.txt",
+      "statePath": "game_state/world/world_map.json",
+      "responseSurface": "worldMapUpdates.newLocations[] + newLinks[] + exact discovery transitions",
+      "realms": ["Mortal World"],
+      "description": "A complete hidden remote location and one-way link are materialized, then revealed only through exact permanent identity and forward discovery transitions.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalLocationMaterializationWorkedExamples_ExecuteCurrentContractAndPlanner -> MortalLocationMaterializationContract.ValidateRawLocation/ValidateRawLink + MortalLocationAcceptedTurnPlanner.Build",
+      "coverageLimit": "Executes creation, topology, hidden discovery, client-assigned permanent identity substitution, and a later exact hidden-to-rumored transition; player projection privacy is covered separately.",
+      "requiredText": ["mortal_location_hidden_remote_reveal_v1", "\"tier\": \"hidden\"", "locationDiscoveryTransitions", "\"fromTier\": \"hidden\""],
+      "expectedDiagnostics": []
+    },
+    {
+      "contractId": "mortal_location_governed_storage_threat_lifecycle_v1",
+      "file": "E_Block_20.txt",
+      "statePath": "game_state/world/world_map.json",
+      "responseSurface": "worldMapUpdates.storageUpdates[] + storagesToRemove[] + threatsToAdd[] + threatsToUpdate[] + threatsToRemove[] + completeThreatActivities[]",
+      "realms": ["Mortal World"],
+      "description": "All six governed storage/threat commands bind exact accepted child identity and materialize atomically into canonical map/current/index state.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalLocationMaterializationWorkedExamples_ExecuteCurrentContractAndPlanner -> MortalLocationAcceptedTurnPlanner.Build",
+      "coverageLimit": "Executes storage metadata update with contents preservation, empty storage removal, client-assigned threat identity, nested threat update, exact threat removal, and activity completion archive against one sealed accepted location.",
+      "requiredText": ["mortal_location_governed_storage_threat_lifecycle_v1", "storageUpdates", "storagesToRemove", "threatsToAdd", "threatsToUpdate", "threatsToRemove", "completeThreatActivities", "materialization section dispositions remain creation evidence"],
+      "expectedDiagnostics": []
+    },
+    {
+      "contractId": "mortal_location_bounded_repair_v1",
+      "file": "E_Block_20.txt",
+      "statePath": "game_state/world/world_map.json",
+      "responseSurface": "invalid worldMapUpdates.newLocations[] candidate + bounded repair packet",
+      "realms": ["Mortal World"],
+      "description": "An exact but incomplete remote candidate is rejected with current-schema field/physical/section diagnostics and documents a bounded full-turn repair packet with no protected target.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalLocationMaterializationWorkedExamples_ExecuteCurrentContractAndPlanner -> MortalLocationMaterializationContract.ValidateRawLocation + documented MortalLocationRepairPacket boundary assertions",
+      "coverageLimit": "Executes the invalid raw candidate through the production contract and verifies the documented packet target/obligation; exhaustive protected/ambiguous packet classification remains covered by MortalLocationRepairPacketBuilderTests.",
+      "requiredText": ["mortal_location_bounded_repair_v1", "mortal_location_materialization_repair", "fullTurnResubmissionRequired", "Regenerate the complete current-schema object"],
+      "expectedDiagnostics": ["mortal_location_materialization_governed_field_missing", "mortal_location_materialization_physical_shape_invalid", "mortal_location_materialization_section_disposition_mismatch"]
+    },
+    {
+      "contractId": "mortal_location_receiptless_rejection_v1",
+      "file": "E_Block_20.txt",
+      "statePath": "game_state/world/world_map.json",
+      "responseSurface": "invalid receipt-less canonical locations[] entry derived from the complete remote example",
+      "realms": ["Mortal World"],
+      "description": "A complete raw remote location cannot become canonical merely by receiving a permanent locationId; absence of the client-sealed materializationReceipt remains an exact rejection.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalLocationMaterializationWorkedExamples_ExecuteCurrentContractAndPlanner -> MortalLocationMaterializationContract.ValidateCanonicalLocation",
+      "coverageLimit": "Derives the documented receipt-less canonical negative from the complete bootstrap neighbor and executes canonical post-seal validation for the exact receipt-required diagnostic.",
+      "requiredText": ["mortal_location_receiptless_rejection_v1", "mortal_location_materialization_receipt_required", "receipt-less canonical location"],
+      "expectedDiagnostics": ["mortal_location_materialization_receipt_required"]
+    }
+  ],
   "factionMaterializationCoverage": [
     {
       "contractId": "mortal_faction_materialization_populated_creation_v1",
@@ -525,16 +605,6 @@
       "file": "E_Block_2.txt",
       "line": 17,
       "reason": "Legacy invalid quoting example intentionally demonstrates broken JSON string escaping."
-    },
-    {
-      "file": "E_Block_20.txt",
-      "line": 369,
-      "reason": "Legacy educational block uses comments and placeholder fragments."
-    },
-    {
-      "file": "E_Block_20.txt",
-      "line": 395,
-      "reason": "Legacy educational block uses comments and placeholder fragments."
     },
     {
       "file": "E_Block_5.txt",

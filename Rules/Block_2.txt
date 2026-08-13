@@ -228,25 +228,28 @@
                 If not overloaded, 'additionalEnergyExpenditure' is null.",
                 
                 "currentLocationData": { 
-                    // This object follows the Law of Partial Updates (Rule #2.5.3).
-                    // When MOVING to a KNOWN location, you MUST provide its 'locationId' and ONLY update 'lastEventsDescription'.
-                    // When CREATING a NEW location, you must provide all relevant fields ('locationId' will be null).
-                    // IT'S FORBIDDEN TO CREATE A NEW LOCATION WITH ONLY 'locationId' and 'lastEventsDescription' - it's a CRITICAL ERROR.
+                    // Mortal Location Materialization v1; exact shapes are in InstructionBlock 20.
+                    // EXISTING MOVEMENT: provide exact permanent locationId plus only
+                    // lastEventsDescription/currentWeather/currentInteractions/currentChronology.
+                    // Never include locationStorages or contents in an existing-movement payload.
+                    // NEW CURRENT SCENE: locationId = null, one exact initialId, every governed
+                    // semantic field, and a complete materialization envelope.
                     // MORTAL WORLD ONLY. In Chaos Sea, use Abode navigation / Guardian systems instead.
 
-                    "locationId": "(string, GUID) The unique ID of the current location.",
+                    "locationId": "exact permanent ID for existing movement; null for creation",
+                    "initialId": "null for existing movement; exact unique temporary reference for creation",
                     "name": "(string) Name of the current location. Translate.",
                     "coordinates": { "x": "integer", "y": "integer", "z": "integer" },
                     "locationType": "'indoor' | 'outdoor'",
                     "biome": "(string, optional) MANDATORY if locationType is 'outdoor'. The biome type from Rule 20.5.",
                     "indoorType": "'Building' | 'CaveSystem' | 'Dungeon' | 'Vehicle' | 'UniqueIndoor', optional. Provides specific context for indoor locations.",
-                    "internalDifficultyProfile": { 
+                    "internalDifficulty": {
                         "combat": "integer", 
                         "environment": "integer", 
                         "social": "integer", 
                         "exploration": "integer" 
                     }, // (object) The difficulty profile for the location's owner and their allies, as per Rule #20.0.
-                    "externalDifficultyProfile": { 
+                    "externalDifficulty": {
                         "combat": "integer", 
                         "environment": "integer", 
                         "social": "integer", 
@@ -255,16 +258,18 @@
                     "description": "(string) Detailed artistic description of the current location. Only fill if new.",
                     "lastEventsDescription": "(string) Brief summary of events this turn. MUST start with the full timestamp as defined in Rule #18.A.0. Translate.",
                     "image_prompt": "(string) Prompt for location image. Only fill if new.",
-                    "adjacencyMap": [ 
-                        /* (array of adjacency_map_entry_objects or null) Generated ONLY when a new location is first created. Structure defined in Block 20.3. */ 
-                    ],
                     "locationStorages": [ 
-                        /* (array of Storage Objects or null) Хранилища, доступные в этой локации */ 
+                        /* NEW CURRENT SCENE ONLY: complete storage metadata and any full raw #1511
+                           item creations. Omit this entire field for existing movement. */
                     ],
                     "activeThreats": [
                         /* Array of Active Threat Objects. 
                         The complete structure and all field definitions for these objects are specified in InstructionBlock 20, Rule 20.12. */
-                    ]
+                    ],
+                    "currentWeather": "object; current-scene operational state",
+                    "currentInteractions": "array; current-scene operational state",
+                    "currentChronology": "array; current-scene operational state",
+                    "materialization": "complete Mortal Location Materialization v1 envelope for creation only"
                 },
                 
                 "playerStatus": { 
@@ -306,76 +311,101 @@
                 This is the atomic command for removing a flag when a global condition is resolved (e.g., a plague is cured, a war ends).
                 If no flags were removed this turn, this is null or an empty array.",
 
-                "worldMapUpdates": { 
-                    // (object or null) Reports additions or changes to the world map.
-                    // Use 'newLinks' to add new links for the specific location.
-                    // Use 'locationUpdates' to apply changes to EXISTING, OFF-SCREEN locations data.
-                    // This is the mandatory method for updating locations the player is not currently in.
-                    
-                    "newLocations": [ /* (array of NEW full location objects) */ ],
-                    "newLinks": [ 
-                        { "sourceLocationId": "string", "link": "adjacency_map_entry_object" } 
+                "worldMapUpdates": {
+                    // (object or null) Current-schema Mortal Location Materialization v1 commands.
+                    // Exact complete shapes and authority rules are defined in InstructionBlock 20.
+                    // Permanent IDs are case-sensitive and Unicode-exact; names and coordinates are never selectors.
+
+                    "newLocations": [
+                        /* NEW complete location objects. Keep locationId = null, provide one unique initialId,
+                           the complete materialization envelope, and all required semantic sections. */
+                    ],
+                    "newLinks": [
+                        /* NEW complete directed link objects. Keep linkId = null, provide one unique initialId,
+                           exactly one source selector and one target selector, and the complete envelope. */
                     ],
                     "locationUpdates": [
                         {
-                            "locationId": "guid_of_existing_off-screen_location",
-                            // This object follows the Law of Partial Updates.
-                            // Include ONLY the fields of the location that have changed.
-                            "newInternalDifficultyProfile": { "combat": 10, "environment": 60, "social": 0, "exploration": 10 },
-                            "newExternalDifficultyProfile": { "combat": 50, "environment": 60, "social": 10, "exploration": 40 },
-                            "newLastEventsDescription": "#[Turn Number] - [DayOfMonth] [MonthName] [Year], [HH:MM]: The magical blight has corrupted this area, making it far more dangerous.",
-                            "newName": "The Corrupted Forest" // Optional, if the location's name itself has changed.
+                            "locationId": "exact permanent locationId",
+                            // Include ONLY current-schema mutable fields that changed:
+                            "name": "The Corrupted Forest",
+                            "internalDifficulty": { "combat": 10, "environment": 60, "social": 0, "exploration": 10 },
+                            "externalDifficulty": { "combat": 50, "environment": 60, "social": 10, "exploration": 40 },
+                            "lastEventsDescription": "#[Turn Number] - [DayOfMonth] [MonthName] [Year], [HH:MM]: The magical blight has corrupted this area, making it far more dangerous."
                         }
                     ],
-                    "linkUpdates": [ 
-                        { 
-                            "sourceLocationId": "string", 
-                            "targetCoordinates": {"x": int, "y": int}, 
-                            "updatedLink": { /* partial update fields for link */ } 
-                        } 
+                    "locationDiscoveryTransitions": [
+                        {
+                            "locationId": "exact permanent locationId",
+                            "fromTier": "hidden",
+                            "toTier": "rumored",
+                            "toAudience": "player_known",
+                            "rumorSummary": "A precise in-world rumor.",
+                            "reason": "Why the player learned it."
+                        }
                     ],
-                    "linksToRemove": [
-                        { 
-                            "sourceLocationId": "string", 
-                            "targetCoordinates": {"x": int, "y": int} 
-                        } 
+                    "linkUpdates": [
+                        {
+                            "linkId": "exact permanent linkId",
+                            // Include ONLY changed fields: name, description, directionLabel, access, discovery.
+                            "access": { "state": "open", "reason": null, "requirements": [] }
+                        }
                     ],
-                    "threatsToAdd": [
-                        /* Array of Threat Add objects. Structure and usage are defined in InstructionBlock 20, Rule 20.13. */
+                    "linkRemovals": [
+                        {
+                            "linkId": "exact permanent linkId",
+                            "sourceLocationId": "exact permanent source locationId",
+                            "targetLocationId": "exact permanent target locationId",
+                            "reason": "Why this directed link ceased to exist."
+                        }
                     ],
-                    "threatsToUpdate": [
-                        /* Array of Threat Update objects. Structure and usage are defined in InstructionBlock 20, Rule 20.13. */
-                    ],
-                    "threatsToRemove": [
-                        /* Array of Threat Remove objects. Structure and usage are defined in InstructionBlock 20, Rule 20.13. */
-                    ],
-                    "completeThreatActivities": [ 
-                        /* (defined in Rule 20.13) The atomic command to flag one or more threat activities as finished. */ 
-                    ]
-
                     "storageUpdates": [
                         {
-                            "targetLocationId": "guid_of_the_location_containing_the_storage",
-                            "storageId": "guid_of_the_storage_to_update",
-                            "update": { /* partial update object with only changed fields */ }
+                            "targetLocationId": "exact permanent locationId",
+                            "storageId": "exact permanent storageId",
+                            "update": {
+                                // Non-empty subset of newName, newDescription, newCapacity, newOwner.
+                                "newCapacity": 12,
+                                "newOwner": { "ownerType": "faction", "ownerId": "exact factionId", "ownerName": "Readable name" }
+                            }
                         }
                     ],
                     "storagesToRemove": [
                         {
-                            "targetLocationId": "guid_of_the_location_containing_the_storage",
-                            "storageId": "guid_of_the_storage_to_remove"
+                            "targetLocationId": "exact permanent locationId",
+                            "storageId": "exact permanent empty storageId"
+                        }
+                    ],
+                    "threatsToAdd": [
+                        {
+                            // Existing location: exact targetLocationId and no initialTargetLocationId.
+                            // Same-turn new location: targetLocationId = null plus exact initialTargetLocationId.
+                            "targetLocationId": "exact permanent locationId or null",
+                            "initialTargetLocationId": null,
+                            "threat": { "threatId": null /* complete new threat object */ }
+                        }
+                    ],
+                    "threatsToUpdate": [
+                        {
+                            "targetLocationId": "exact permanent locationId",
+                            "threatUpdate": { "threatId": "exact permanent threatId" /* plus changed non-terminal fields */ }
+                        }
+                    ],
+                    "threatsToRemove": [
+                        {
+                            "targetLocationId": "exact permanent locationId",
+                            "threatId": "exact permanent threatId"
+                        }
+                    ],
+                    "completeThreatActivities": [
+                        {
+                            "targetLocationId": "exact permanent locationId",
+                            "threatId": "exact permanent threatId",
+                            "threatName": "Readable threat name",
+                            "finalState": "Completed or Abandoned",
+                            "narrativeSummary": "What happened when the activity ended."
                         }
                     ]
-
-                    /* Example for "newLinks" generation : 
-                    { 
-                        "newLinks": [ 
-                            { 
-                                "sourceLocationId": "loc-guid-01", 
-                                "link": { "name": "Secret Tunnel", ... } 
-                            } 
-                        ] 
-                    } */
                 },
 
                 "dialogueOptions": "(array of dialogue_option_objects or null) 

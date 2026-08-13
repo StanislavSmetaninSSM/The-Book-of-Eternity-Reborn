@@ -206,7 +206,7 @@ It parses the offscreen state, rejects unknown storage coordinates, rejects a pr
 
 - [ ] **Step 4: Forbid item contents in existing movement payloads**
 
-Add a bounded protected issue such as `mortal_location_movement_item_contents_forbidden` whenever an existing selection contains `locationStorages[].contents`. Keep metadata-only `locationStorages` compatible where separately governed, but never accept raw item arrays.
+Add a bounded protected issue such as `mortal_location_movement_item_contents_forbidden` whenever an existing selection contains `locationStorages[].contents`. Reject the entire GM-authored `locationStorages` array on existing movement, including metadata-only echoes: storage metadata already comes from the validated canonical destination, and all physical item contents are restored from client-owned current/offscreen authority.
 
 - [ ] **Step 5: Extend storage-removal protection to offscreen contents**
 

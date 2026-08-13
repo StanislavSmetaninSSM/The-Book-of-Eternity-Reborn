@@ -116,6 +116,15 @@ Rules:
 - topology may be empty only with an explicit isolated/sealed/non-topological
   reason and no fabricated link identity.
 - a narrative-only possible exit is prose, not populated topology.
+- section dispositions attest to the complete accepted creation payload. They
+  are immutable historical evidence, not live counters. Later accepted atomic
+  storage/threat lifecycle commands may change `locationStorages[]` or
+  `activeThreats[]` without rewriting the envelope, receipt, or seal.
+- storage `contents[]` are never map semantics. The selected current projection
+  and closed client-owned offscreen state physically carry them under the item
+  contract; existing movement never resubmits them.
+- raw creation still must agree with every declared disposition at the moment
+  of creation; only already-sealed canonical state uses the historical rule.
 
 ## Link envelope
 

@@ -70,6 +70,8 @@ existing player map requires them and the discovery contract permits them.
 Expose all accepted player-facing semantics, current/revisit state, and valid
 actions. Operational current weather, interactions, chronology, and accepted
 current storage contents come only from the validated current projection.
+Offscreen storage contents never create a location row, count, detail, or
+action and are not an alternate player projection source.
 
 ## Semantic projection
 
@@ -100,6 +102,8 @@ fields and complete internal DTO shapes, including:
 - identity-index entries, lifecycle transitions, carrier coordinates, pending
   snapshot data, repair packets, validation issues, file paths, raw command
   wrapper names, and protocol collections;
+- the complete closed offscreen location-storage contents DTO, including its
+  schema, coordinates, raw item arrays, receipts, and any annotated copy;
 - internal image-generation prompts (the player may receive an in-world visual
   description, not raw `image_prompt`);
 - exact hidden endpoint or permanent selector data not needed by the rendered UI.
@@ -185,4 +189,6 @@ mapped at every console/browser write boundary.
 - one-way/hidden/sealed links produce exact directed and visibility behavior;
 - current projection mismatch fails closed;
 - storage contents include only accepted item projections;
+- a nested full offscreen storage authority disappears recursively from
+  console/browser/news output while adjacent legitimate storage semantics remain;
 - locality/training/trade/news cannot resolve a location by name or case variant.

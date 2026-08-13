@@ -79,7 +79,9 @@ As a player, travel exits and map relationships lead to the exact intended place
 2. **Given** a one-way or hidden link, **When** it is accepted, **Then** no reverse link or player-visible exit is invented.
 3. **Given** an existing location, **When** the GM sends a narrow authorized semantic update, **Then** only the permitted fields change while original identity, materialization envelope, receipt, and unrelated topology remain immutable.
 4. **Given** an existing location is resent as a full creation object or identified only by name, **When** validation runs, **Then** the turn is rejected.
-5. **Given** the player moves to an existing location by exact identity, **When** the move is accepted, **Then** the current-scene projection is rebuilt from the canonical map rather than accepting a second full semantic copy from the GM.
+5. **Given** the player moves to an existing location by exact identity, **When** one exact pre-turn directed current-to-destination link is open, requirement-free, and player-known/non-hidden, **Then** the current-scene projection is rebuilt from the canonical map rather than accepting a second full semantic copy from the GM.
+6. **Given** an exact destination with no authorized outgoing link, a reverse-only link, or a hidden, conditional, sealed, or unmet route, **When** movement is requested, **Then** the turn fails closed without changing selection or revealing the destination.
+7. **Given** accepted storage and threat children, **When** the GM uses the six governed storage/threat lifecycle commands, **Then** exact metadata, removal, creation, update, deletion, and activity completion are applied atomically without rewriting creation evidence or item contents.
 
 ---
 
@@ -165,7 +167,7 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 - **FR-002**: The system MUST use one canonical world-map link collection as the sole durable authority for Mortal topology.
 - **FR-003**: The current-location state MUST be a validated projection of one selected canonical map location plus current-scene operational data; it MUST NOT act as an independent durable semantic authority.
 - **FR-004**: Fields shared by the selected map location and current-location projection MUST agree exactly, including identity, realm, presentation, type, placement, coordinates, discovery, difficulty, faction/actor bindings, storage metadata, topology, and materialization status.
-- **FR-005**: Current-scene weather, local interactions, scene chronology, and location-storage contents MAY remain operational current-location data when they do not replace canonical location or item authority.
+- **FR-005**: Current-scene weather, local interactions, scene chronology, and selected-location storage contents MAY remain operational current-location data when they do not replace canonical location or item authority. Non-current storage contents MUST reside only in the closed client-owned offscreen carrier and MUST never be GM-authored.
 - **FR-006**: The system MUST maintain a client-owned location identity authority that records exact permanent identity, accepted temporary reference, materialization receipt, realm, source turn, source authority, and lifecycle status.
 - **FR-007**: The GM and player-facing clients MUST NOT author, patch, or derive permanent location/link identities, sealed receipts, or identity-authority entries.
 - **FR-008**: Identity comparison MUST be exact and case-sensitive, and validation MUST reject surrounding-whitespace, case-only, Unicode-normalization, and other confusable variants rather than normalizing them into equality.
@@ -206,9 +208,9 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 - **FR-034**: Every new canonical link MUST receive a permanent link identity and MUST bind exact existing location identities or authorized same-turn temporary location references as endpoints.
 - **FR-035**: Every link MUST declare direction, access, and visibility semantics explicitly; one-way, portal, hidden, sealed, and other setting-compatible link types MUST NOT cause an inferred reverse link.
 - **FR-036**: Canonical links MUST be the source for derived current-scene exits and adjacency; GM-authored `knownExits`, adjacency maps, or equivalent summaries MUST NOT override link authority.
-- **FR-037**: Existing-location movement MUST identify the destination by exact permanent identity and MAY carry current-scene operational chronology, but MUST NOT resend the full durable semantic location.
-- **FR-038**: Ordinary semantic changes to an existing location MUST use narrow authorized updates; topology changes MUST use link-specific lifecycle commands.
-- **FR-039**: Existing-location updates MUST preserve permanent identity, original materialization envelope, sealed receipt, and unrelated semantics and topology.
+- **FR-037**: Existing-location movement MUST identify the destination by exact permanent identity, MUST be authorized by one exact pre-turn directed current-to-destination link with open access, no requirements, and player-known/non-hidden link and destination, MAY carry current-scene operational chronology, and MUST NOT resend the full durable semantic location. Same-location refresh MAY remain allowed without traversal.
+- **FR-038**: Ordinary semantic changes to an existing location MUST use narrow authorized updates; topology changes MUST use link-specific lifecycle commands; storage and threat children MUST change only through `storageUpdates`, `storagesToRemove`, `threatsToAdd`, `threatsToUpdate`, `threatsToRemove`, and `completeThreatActivities`.
+- **FR-039**: Existing-location updates and movement MUST preserve permanent identity, original materialization envelope, sealed receipt, unrelated semantics and topology, and item-owned storage contents. A changed selection MUST atomically park non-empty source contents in the client-owned offscreen carrier, hydrate the destination, retain the same logical `location_storage(locationId, storageId)` item carrier, and roll back every involved file byte-for-byte on failure. Section dispositions remain immutable creation evidence after later governed child-count changes; threat completion archive entries are client-owned.
 - **FR-040**: A full resend of an existing location, attempted receipt/materialization mutation, name-based update, or client-owned identity edit MUST be rejected.
 - **FR-041**: The system MUST reject dangling endpoints, duplicate active identities, coordinate conflicts, parent cycles, impossible discovery combinations, topology contradictions, and Mortal/afterlife realm leakage.
 
@@ -241,7 +243,8 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 
 - **Mortal Location**: The durable semantic representation of one place in the Mortal World, including identity, presentation, physical type, placement, discovery, difficulty, chronology, governed bindings, and materialization evidence.
 - **Location Link**: A separately identified directed topology relation between exact locations, with explicit access, visibility, and link-type semantics.
-- **Current Scene Projection**: The selected canonical location's reconciled shared semantics plus operational scene data such as weather, local interactions, scene chronology, and storage contents.
+- **Current Scene Projection**: The selected canonical location's reconciled shared semantics plus operational scene data such as weather, local interactions, scene chronology, and only the selected location's storage contents.
+- **Offscreen Location Storage Contents**: Closed client-owned state that physically holds non-empty item arrays for non-current exact `locationId/storageId` coordinates while preserving the same logical item carrier used by the selected projection.
 - **Location Materialization Envelope**: Versioned GM-authored evidence declaring creation route, source, realm, temporary identity, independent materialization identity, and the populated/intentional-empty disposition of every governed section.
 - **Location Materialization Receipt**: Immutable client-sealed evidence binding the accepted envelope to a permanent location identity and accepted turn.
 - **Location Identity Authority**: Client-owned record of permanent location and link identities, accepted temporary references, receipts, realm, sources, and lifecycle status.
@@ -256,13 +259,13 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 - **SC-002**: A fresh Mortal bootstrap reaches its first playable scene with one visited canonical starting location and either one valid reachable neighbor/link or an explicitly non-canonical narrative-only route; no playable receipt-less placeholder remains.
 - **SC-003**: One hundred percent of active repository bootstrap state, positive fixtures, examples, and helper-generated Mortal locations and links carry valid current-schema materialization evidence; receipt-less samples remain only as labelled negative cases.
 - **SC-004**: Every tested directed, one-way, portal, hidden, sealed, or isolated topology case preserves its explicit direction/access/visibility without inferred reverse links or dangling endpoints.
-- **SC-005**: Every tested existing-location move or narrow update preserves exact permanent identity and original receipt, and no full resend or name-based identity route is accepted.
+- **SC-005**: Every tested existing-location move or narrow update preserves exact permanent identity and original receipt; no full resend, name-based identity, no-link, reverse-only, hidden, conditional, or sealed movement route is accepted.
 - **SC-006**: Every tested parent, actor, faction, lore, threat, storage, and topology reference resolves exactly and fails closed for missing, duplicate, case-variant, confusable, cross-realm, or contradictory authority.
 - **SC-007**: Every injected pre-commit or post-normalization failure restores all touched canonical surfaces byte-for-byte and leaves no location/link receipt, identity reservation, reference rewrite, or player-facing success claim.
 - **SC-008**: Every repairable malformed case produces one bounded packet naming all and only the required location/link targets; ambiguous or historical identity conflicts dispatch no unsafe GM repair request.
 - **SC-009**: Console and browser expose equivalent permitted semantics for visited, discovered, and rumored locations while exposing zero hidden-location data or raw materialization, receipt, identity, path, repair, validation, or agent fields.
 - **SC-010**: Doubling a representative location/link population does not cause more than 2.5 times the validation work in the repository performance control, preventing quadratic topology and identity scans.
-- **SC-011**: Mortal GM documentation contains the three required worked flows—starting connected world, hidden one-way/reveal flow, and bounded repair—and all referenced examples pass documentation validation.
+- **SC-011**: Mortal GM documentation contains the five required worked flows—starting connected world, existing movement with storage continuity, hidden one-way/reveal flow, governed storage/threat lifecycle, and bounded repair—plus receipt-less rejection, and all referenced examples pass documentation validation.
 - **SC-012**: Focused contract/integration tests, one Fast checkpoint, related documentation and lifecycle lanes, and one clean-checkout PreMerge complete with zero failures, zero duplicate tests, no timeout, and successful owned-process cleanup.
 
 ## Verification Plan *(mandatory)*
@@ -278,7 +281,7 @@ As a player, NPCs, factions, lore, threats, and storage presented at a location 
 - The existing current-location and world-map GM command families remain the route entry points, but their transient wrappers are consumed into the new canonical authority rather than retained as parallel state.
 - Existing map/list/detail and movement experiences remain recognizable; the feature hardens their data authority and may adjust projections without redesigning their visual presentation.
 - The current canonical NPC, faction, item, quest, codex, threat, and storage semantics remain their own authorities; location materialization validates and binds exact references but does not rematerialize those entities.
-- Storage contents remain governed by the Mortal item transition contract established by #1511. Location materialization owns storage metadata and cross-state coherence only.
+- Storage contents remain governed by the Mortal item transition contract established by #1511. Location materialization owns storage metadata and the atomic current/offscreen physical swap only; the logical item carrier and item identity index do not change merely because a location becomes current or non-current.
 - Weather and local interactions remain scene-operational state and may change independently under their existing contracts after the selected location is materialized.
 - #1514 will define Shining hall and Chaos Sea Guardian-plane materialization, including its own afterlife documentation and contract matrix updates.
 - #1515 may later strengthen transport and storage entity identity without changing the location identity, topology, and projection guarantees established here.

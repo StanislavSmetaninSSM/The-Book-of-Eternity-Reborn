@@ -23,7 +23,7 @@ has not been released.
 
 **Primary Dependencies**: Existing `ValidationService`, `CanonicalStateNormalizer`, `FileSystemManager`, `PendingTurnSnapshotAuthority`, `AcceptedTurnCanonicalStateRefresh`, `StateDistributor`, `LocalMapViewService`, `LocalInteractionScopeService`, `MortalItemRouteAuthorityCatalog`, xUnit 2.9.2, Microsoft.NET.Test.Sdk 17.11.1, and `System.Text.Json` / `JsonNode`.
 
-**Storage**: File-backed JSON. `world_map.json.locations[]` owns durable location semantics, `world_map.json.links[]` owns topology, `current_location.json` is a validated projection plus scene-local operational state, and `game_state/world/location_identity_index.json` is client-owned identity and lineage authority.
+**Storage**: File-backed JSON. `world_map.json.locations[]` owns durable location semantics, `world_map.json.links[]` owns topology, `current_location.json` is a validated projection plus scene-local operational state and the selected storage contents, `game_state/world/location_storage_contents.json` is the closed client-owned physical carrier for non-current storage contents, and `game_state/world/location_identity_index.json` is client-owned identity and lineage authority.
 
 **Testing**: Test-first xUnit contract/unit/integration coverage through `scripts/test-csharp.ps1`; documentation/source guards; one Fast checkpoint; FullValidation and LifecycleIntegration for the affected documentation and accepted-turn boundaries; one final PreMerge.
 
@@ -35,7 +35,7 @@ has not been released.
 
 **Constraints**: No public-save compatibility; no receipt-less promotion; exact case-sensitive identity; no name identity or inferred reverse links; no semantic invention by the normalizer; one durable semantic map authority; one accepted-turn write lease and byte-exact rollback; no afterlife location implementation; no transport/storage entity materialization; no network multiplayer.
 
-**Scale/Scope**: Two first-creation routes plus bootstrap reservation, location/link lifecycle operations, current projection, map/movement/locality readers, actor/faction/lore/threat/storage references, same-turn current-location item storage, active repository fixtures/examples, and GM-facing Mortal location documentation.
+**Scale/Scope**: Two first-creation routes plus bootstrap reservation, location/link lifecycle operations, current/offscreen projection swap, map/movement/locality readers, actor/faction/lore/threat/storage references, same-turn and persistent location-storage item authority, active repository fixtures/examples, and GM-facing Mortal location documentation.
 
 **Source Issue(s)**: [#1513](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1513)
 
@@ -105,6 +105,7 @@ BookOfEternityClient/
 ├── Services/
 │   ├── MortalLocationMaterializationContract.cs
 │   ├── MortalLocationIdentityState.cs
+│   ├── MortalLocationStorageContentsState.cs
 │   ├── MortalLocationAcceptedTurnPlan.cs
 │   ├── MortalLocationPlayerProjection.cs
 │   ├── LocalMapViewService.cs
@@ -163,7 +164,7 @@ Research decisions and rejected alternatives are recorded in
 2. `StateDistributor` stores `currentLocationData` and `worldMapUpdates` as transient wrappers. The location normalizer must consume them into exact `locations[]` and `links[]`, then remove all command wrappers from durable state.
 3. Existing validators and readers recursively accept location aliases, names, coordinate-based endpoints, `knownExits`, `adjacencyMap`, and case-insensitive IDs. Those paths must be replaced rather than retained as compatibility fallbacks.
 4. Accepted actors and factions currently use their accepted effective identity without a client-side remap. The location plan resolves their same-turn references exactly but does not redesign actor/faction identity in #1513.
-5. Items already receive client-owned permanent IDs. The location normalizer therefore runs before item materialization, preserves raw current-storage contents, and makes accepted same-turn current-location storage authority available to the item route catalog.
+5. Items already receive client-owned permanent IDs. The location normalizer therefore runs before item materialization, preserves same-turn current-storage creations, and atomically swaps persistent accepted contents between `current_location.json` and the client-owned offscreen carrier without changing their logical `location_storage` coordinate or item index carrier.
 6. `AcceptedTurnCanonicalStateRefresh` already owns a lease, before-images, normalization, post-check, and rollback. Adding world map/current/index and combined location/item post-validation extends that transaction instead of creating a second writer.
 7. Existing map, location, news, locality, training, trade, storage, actor, and faction consumers derive authority from wrappers or names. They require exact canonical adapters and regression coverage.
 
@@ -182,12 +183,12 @@ Research decisions and rejected alternatives are recorded in
 1. Add contract-only red tests for complete sections, exact identities, discovery pairs, link endpoints, receipts, and client-owned protection.
 2. Add the exact location/link identity state and one-pass pre-turn/raw indexes, including case, whitespace, Unicode, coordinate, parent-cycle, and historical replay rejection.
 3. Add raw route classification and a pure `MortalLocationAcceptedTurnPlan` that plans IDs, receipts, canonical map/current objects, exact supported reference rewrites, and link transitions without mutating files.
-4. Run location planning/normalization before Mortal item normalization. Preserve current-storage item carriers, expose only accepted same-turn storage route authority to #1511, then normalize items and remaining accumulated state.
-5. Extend the existing accepted-turn lease, before-image list, post-validation phase, and rollback to world map, current projection, identity index, and governed cross-reference files.
-6. Add movement, narrow location update, discovery transition, and exact link lifecycle operations; remove trusted GM `knownExits`/`adjacencyMap` and derive them from links.
+4. Run location planning/normalization before Mortal item normalization. Preserve current-storage item carriers, atomically park/hydrate accepted contents through the closed offscreen state, expose only accepted same-turn storage route authority to #1511, then normalize items and remaining accumulated state.
+5. Extend the existing accepted-turn lease, before-image list, post-validation phase, and rollback to world map, current projection, offscreen storage contents, identity index, and governed cross-reference files.
+6. Add authorized movement, narrow location update, discovery transition, exact link lifecycle, and all six governed storage/threat operations; require a changed selection to use one exact open, requirement-free, player-known/non-hidden pre-turn directed link, preserve item-owned contents, and derive navigation from links.
 7. Replace map/current/locality/training/trade/news/NPC/faction readers with exact canonical authority and one shared discovery-aware player projection.
 8. Add bounded repair packets and prove replay, ambiguity, client-owned target, and post-seal failure all stop before GM dispatch or roll back byte-for-byte.
-9. Migrate bootstrap, active fixtures, helper-generated locations, prompts, docs, three worked examples, manifest, and source guards; remove receipt-less compatibility expectations.
+9. Migrate bootstrap, active fixtures, helper-generated locations, prompts, docs, six worked examples, manifest, and source guards; include exact existing movement without GM-authored contents, an executable all-six storage/threat lifecycle package, and no receipt-less compatibility expectations.
 10. Run bounded focused controls, one Fast checkpoint, conditional broad controls, and one clean-candidate PreMerge before integration.
 
 ## Complexity Tracking
@@ -196,3 +197,6 @@ No constitution exception is required. `location_identity_index.json` is a
 client-owned uniqueness and lineage authority, not a second semantic location
 store. The accepted-turn plan is a pure transaction plan shared by validation
 and normalization boundaries, not a new persistence layer.
+`location_storage_contents.json` is likewise not a semantic location registry:
+it is a closed physical item carrier for non-current storage coordinates and is
+never a GM command, repair target, or player-facing DTO.

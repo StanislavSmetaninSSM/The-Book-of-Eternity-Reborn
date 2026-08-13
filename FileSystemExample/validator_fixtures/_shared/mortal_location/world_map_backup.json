@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "realm": "mortal_world",
+  "locations": [
+    {
+      "locationId": "loc_valmont_private_chambers",
+      "realm": "mortal_world",
+      "name": "Покои виконта де Вальмонта",
+      "displayName": "Покои виконта де Вальмонта",
+      "purpose": "Личные покои героя в поместье Вальмонт",
+      "description": "Роскошные покои в поместье Вальмонт в столице Этернии. Сквозь высокие окна пробивается утренний свет, смешанный с лёгким туманом, окутывающим город.",
+      "image_prompt": "luxurious nobleman bedroom, morning light, silk sheets, foggy window, classical furniture, cinematic dark fantasy, no text",
+      "locationType": "indoor",
+      "biome": null,
+      "biomeDescription": null,
+      "indoorType": "noble_bedchamber",
+      "features": [
+        "высокие окна",
+        "классическая мебель",
+        "шёлковая постель"
+      ],
+      "region": "Столица Этернии",
+      "parentLocationId": null,
+      "coordinates": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "discovery": {
+        "tier": "visited",
+        "audience": "player_known",
+        "rumorSummary": null
+      },
+      "internalDifficulty": {
+        "danger": "low",
+        "recommendedLevel": 1,
+        "description": "Личные покои защищены стенами поместья и домашней стражей."
+      },
+      "externalDifficulty": {
+        "danger": "moderate",
+        "recommendedLevel": 3,
+        "description": "За пределами покоев интриги столицы и чужое внимание создают умеренный риск."
+      },
+      "lastEventsDescription": "#[0] - 1 Month of Beginnings 124 г., 07:40: Асуран де Вальмонт пробуждается после тяжёлого сна в своих покоях.",
+      "eventDescriptions": [
+        {
+          "title": "Пробуждение виконта",
+          "description": "Асуран де Вальмонт пробуждается после тяжёлого сна в своих покоях."
+        }
+      ],
+      "factionControl": [],
+      "actorBindings": [],
+      "locationStorages": [
+        {
+          "storageId": "storage_square_crate",
+          "name": "Рыночный сундук",
+          "description": "Прочный сундук для временного хранения товаров.",
+          "ownerActorId": null,
+          "capacity": {
+            "slots": 8
+          },
+          "access": {
+            "state": "open",
+            "reason": null
+          },
+          "contents": []
+        }
+      ],
+      "activeThreats": [
+        {
+          "threatId": "threat_idle_smugglers",
+          "name": "Затаившиеся контрабандисты",
+          "description": "Контрабандисты скрываются в старых служебных проходах, но пока не ведут активную операцию.",
+          "intensity": 2,
+          "longTermGoal": "Сохранить тайный путь через поместье.",
+          "currentActivity": null,
+          "threatArchetype": {
+            "motivation": "Preservation",
+            "method": "Covert",
+            "customMotivation": null,
+            "customMethod": null
+          },
+          "impactProfile": {
+            "primaryTargetType": "Location",
+            "primaryTargetId": null,
+            "primaryTargetName": "Покои виконта де Вальмонта",
+            "primaryImpact": "Stability",
+            "baseImpactValue": 1
+          }
+        },
+        {
+          "threatId": "threat_active_smugglers",
+          "name": "Действующие контрабандисты",
+          "description": "Контрабандисты проводят очередную тайную доставку через поместье.",
+          "intensity": 4,
+          "longTermGoal": "Закрепить постоянный канал тайных поставок.",
+          "currentActivity": {
+            "activityName": "Тайная доставка",
+            "description": "Группа переносит груз через служебные коридоры.",
+            "totalTimeCostMinutes": 90,
+            "timeSpentMinutes": 30,
+            "currentStepNumber": 1,
+            "totalStepsInActivity": 3
+          },
+          "threatArchetype": {
+            "motivation": "Accumulation",
+            "method": "Covert",
+            "customMotivation": null,
+            "customMethod": null
+          },
+          "impactProfile": {
+            "primaryTargetType": "Location",
+            "primaryTargetId": null,
+            "primaryTargetName": "Покои виконта де Вальмонта",
+            "primaryImpact": "Economic",
+            "baseImpactValue": 3
+          }
+        }
+      ],
+      "loreBindings": [],
+      "customStates": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mlocmat_fixture_5828d42f921320f5",
+        "entityKind": "mortal_location",
+        "realm": "mortal_world",
+        "route": "world_map_creation",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "turn_outcome",
+          "authorityId": "turn_42"
+        },
+        "initialId": "locref_fixture_5828d42f921320f5",
+        "state": "complete",
+        "sections": {
+          "presentation": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "physical": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "placement": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "discovery": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "difficulty": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "chronicle": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "factionControl": {
+            "disposition": "empty_by_design",
+            "reason": "Ни одна фракция не удерживает это место."
+          },
+          "actorBindings": {
+            "disposition": "empty_by_design",
+            "reason": "Постоянных обитателей здесь нет."
+          },
+          "storageMetadata": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "activeThreats": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "loreBindings": {
+            "disposition": "empty_by_design",
+            "reason": "Сюжетные и справочные привязки пока не требуются."
+          },
+          "customStates": {
+            "disposition": "empty_by_design",
+            "reason": "Особые состояния места не требуются."
+          },
+          "topology": {
+            "disposition": "populated",
+            "reason": null
+          }
+        }
+      },
+      "materializationReceipt": {
+        "schemaVersion": 1,
+        "receiptId": "mlocrec_fixture_5828d42f921320f5",
+        "locationId": "loc_valmont_private_chambers",
+        "initialId": "locref_fixture_5828d42f921320f5",
+        "materializationId": "mlocmat_fixture_5828d42f921320f5",
+        "realm": "mortal_world",
+        "route": "world_map_creation",
+        "sourceTurn": 42,
+        "sourceAuthorityKind": "turn_outcome",
+        "sourceAuthorityId": "turn_42",
+        "seal": "sha256:6a94f9a4f8cc4d74e5ea7b1a3b2d2954973285d869c352a6100222a2cfc383f1"
+      }
+    },
+    {
+      "locationId": "loc_fixture_market_annex",
+      "realm": "mortal_world",
+      "name": "Рыночный двор",
+      "displayName": "Рыночный двор",
+      "purpose": "Безопасная детерминированная проверка материала локации",
+      "description": "Холодная река пересекает старый тракт между двумя каменистыми берегами.",
+      "image_prompt": "A grounded dark fantasy river ford at dusk, black stones, cold water, no text",
+      "locationType": "outdoor",
+      "biome": "riverlands",
+      "biomeDescription": "Каменистые берега и холодная проточная вода.",
+      "indoorType": null,
+      "features": [
+        "чёрные камни",
+        "разбитый тракт"
+      ],
+      "region": "Северная марка",
+      "parentLocationId": null,
+      "coordinates": {
+        "x": 11,
+        "y": 21,
+        "z": 0
+      },
+      "discovery": {
+        "tier": "visited",
+        "audience": "player_known",
+        "rumorSummary": null
+      },
+      "internalDifficulty": {
+        "danger": "low",
+        "recommendedLevel": 1,
+        "description": "На переправе нет постоянной внутренней угрозы."
+      },
+      "externalDifficulty": {
+        "danger": "moderate",
+        "recommendedLevel": 2,
+        "description": "За бродом тракт становится опаснее."
+      },
+      "lastEventsDescription": "Первое полное тестовое состояние Чёрного брода.",
+      "eventDescriptions": [],
+      "factionControl": [],
+      "actorBindings": [],
+      "locationStorages": [],
+      "activeThreats": [],
+      "loreBindings": [],
+      "customStates": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mlocmat_fixture_8211b791197b0a5e",
+        "entityKind": "mortal_location",
+        "realm": "mortal_world",
+        "route": "world_map_creation",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "turn_outcome",
+          "authorityId": "turn_42"
+        },
+        "initialId": "locref_fixture_8211b791197b0a5e",
+        "state": "complete",
+        "sections": {
+          "presentation": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "physical": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "placement": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "discovery": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "difficulty": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "chronicle": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "factionControl": {
+            "disposition": "empty_by_design",
+            "reason": "Ни одна фракция не удерживает это место."
+          },
+          "actorBindings": {
+            "disposition": "empty_by_design",
+            "reason": "Постоянных обитателей здесь нет."
+          },
+          "storageMetadata": {
+            "disposition": "empty_by_design",
+            "reason": "Оборудованных хранилищ здесь нет."
+          },
+          "activeThreats": {
+            "disposition": "empty_by_design",
+            "reason": "Постоянной активной угрозы здесь нет."
+          },
+          "loreBindings": {
+            "disposition": "empty_by_design",
+            "reason": "Сюжетные и справочные привязки пока не требуются."
+          },
+          "customStates": {
+            "disposition": "empty_by_design",
+            "reason": "Особые состояния места не требуются."
+          },
+          "topology": {
+            "disposition": "populated",
+            "reason": null
+          }
+        }
+      },
+      "materializationReceipt": {
+        "schemaVersion": 1,
+        "receiptId": "mlocrec_fixture_8211b791197b0a5e",
+        "locationId": "loc_fixture_market_annex",
+        "initialId": "locref_fixture_8211b791197b0a5e",
+        "materializationId": "mlocmat_fixture_8211b791197b0a5e",
+        "realm": "mortal_world",
+        "route": "world_map_creation",
+        "sourceTurn": 42,
+        "sourceAuthorityKind": "turn_outcome",
+        "sourceAuthorityId": "turn_42",
+        "seal": "sha256:05c4a66305b1006e437c313e5efcbb32213c36733bf8be8901a2bcb27513bc62"
+      }
+    }
+  ],
+  "links": [
+    {
+      "linkId": "lnk_test_ford_to_tower",
+      "sourceLocationId": "loc_valmont_private_chambers",
+      "targetLocationId": "loc_fixture_market_annex",
+      "name": "Тропа к башне",
+      "description": "Узкая тропа проходит под каменистым обрывом.",
+      "directionLabel": "на северо-восток",
+      "linkType": "path",
+      "travelMode": "foot",
+      "access": {
+        "state": "open",
+        "reason": null,
+        "requirements": []
+      },
+      "discovery": {
+        "tier": "discovered",
+        "audience": "player_known",
+        "rumorSummary": null
+      },
+      "customStates": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mlinkmat_test_ford_to_tower",
+        "entityKind": "mortal_location_link",
+        "realm": "mortal_world",
+        "route": "world_map_link_creation",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "turn_outcome",
+          "authorityId": "turn_42"
+        },
+        "initialId": "linkref_test_ford_to_tower",
+        "state": "complete",
+        "sections": {
+          "endpoints": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "presentation": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "traversal": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "access": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "discovery": {
+            "disposition": "populated",
+            "reason": null
+          },
+          "customStates": {
+            "disposition": "empty_by_design",
+            "reason": "Особые состояния пути не требуются."
+          }
+        }
+      },
+      "materializationReceipt": {
+        "schemaVersion": 1,
+        "receiptId": "mlinkrec_test_ford_to_tower",
+        "linkId": "lnk_test_ford_to_tower",
+        "initialId": "linkref_test_ford_to_tower",
+        "materializationId": "mlinkmat_test_ford_to_tower",
+        "realm": "mortal_world",
+        "route": "world_map_link_creation",
+        "sourceTurn": 42,
+        "sourceAuthorityKind": "turn_outcome",
+        "sourceAuthorityId": "turn_42",
+        "sourceLocationId": "loc_valmont_private_chambers",
+        "targetLocationId": "loc_fixture_market_annex",
+        "seal": "sha256:6c783abe250f26c43ac4072bd6f383c06ae624f79fe2c3d98a8500b408c4b7d3"
+      }
+    }
+  ]
+}

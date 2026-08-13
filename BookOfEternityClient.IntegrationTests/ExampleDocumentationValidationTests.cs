@@ -273,6 +273,379 @@ public sealed class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void MortalLocationMaterializationManifest_CoversBootstrapTopologyDiscoveryRepairAndRejection()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var entries = manifest.MortalLocationMaterializationCoverage;
+        var requiredEntries = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["mortal_location_bootstrap_start_neighbor_link_v1"] = "E_Block_20.txt",
+            ["mortal_location_existing_movement_storage_continuity_v1"] = "E_Block_20.txt",
+            ["mortal_location_hidden_remote_reveal_v1"] = "E_Block_20.txt",
+            ["mortal_location_governed_storage_threat_lifecycle_v1"] = "E_Block_20.txt",
+            ["mortal_location_bounded_repair_v1"] = "E_Block_20.txt",
+            ["mortal_location_receiptless_rejection_v1"] = "E_Block_20.txt"
+        };
+
+        Assert.Equal(requiredEntries.Count, entries.Count);
+        var entriesById = entries.ToDictionary(entry => entry.ContractId, StringComparer.Ordinal);
+        foreach (var (contractId, expectedFile) in requiredEntries)
+        {
+            Assert.True(entriesById.TryGetValue(contractId, out var entry),
+                $"Missing manifest coverage for {contractId}.");
+            Assert.Equal(expectedFile, entry.File);
+            Assert.Equal("Mortal World", Assert.Single(entry.Realms));
+            Assert.False(string.IsNullOrWhiteSpace(entry.StatePath));
+            Assert.False(string.IsNullOrWhiteSpace(entry.ResponseSurface));
+            Assert.Equal("production-validator", entry.ValidationKind);
+            Assert.False(string.IsNullOrWhiteSpace(entry.ValidationRoute));
+            Assert.False(string.IsNullOrWhiteSpace(entry.CoverageLimit));
+            Assert.NotEmpty(entry.RequiredText);
+
+            var example = File.ReadAllText(Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "Examples",
+                expectedFile));
+            Assert.All(entry.RequiredText, token =>
+                Assert.Contains(token, example, StringComparison.Ordinal));
+        }
+
+        Assert.Empty(entriesById["mortal_location_bootstrap_start_neighbor_link_v1"]
+            .ExpectedDiagnostics);
+        Assert.Empty(entriesById["mortal_location_existing_movement_storage_continuity_v1"]
+            .ExpectedDiagnostics);
+        Assert.Empty(entriesById["mortal_location_hidden_remote_reveal_v1"]
+            .ExpectedDiagnostics);
+        Assert.Empty(entriesById["mortal_location_governed_storage_threat_lifecycle_v1"]
+            .ExpectedDiagnostics);
+        Assert.Equal(
+            new[]
+            {
+                "mortal_location_materialization_governed_field_missing",
+                "mortal_location_materialization_physical_shape_invalid",
+                "mortal_location_materialization_section_disposition_mismatch"
+            },
+            entriesById["mortal_location_bounded_repair_v1"].ExpectedDiagnostics);
+        Assert.Equal(
+            new[] { "mortal_location_materialization_receipt_required" },
+            entriesById["mortal_location_receiptless_rejection_v1"].ExpectedDiagnostics);
+    }
+
+    [Fact]
+    public void MortalLocationMaterializationWorkedExamples_ExecuteCurrentContractAndPlanner()
+    {
+        var bootstrapFences = ParseNamedJsonFences(
+            "E_Block_20.txt",
+            "mortal_location_bootstrap_start_neighbor_link_v1");
+        Assert.Equal(2, bootstrapFences.Count);
+        var bootstrapStart = Assert.IsType<JsonObject>(
+            bootstrapFences[0]["currentLocationData"]);
+        var bootstrapUpdates = Assert.IsType<JsonObject>(
+            bootstrapFences[1]["worldMapUpdates"]);
+        var bootstrapNeighbor = Assert.Single(
+            Assert.IsType<JsonArray>(bootstrapUpdates["newLocations"])
+                .OfType<JsonObject>());
+        var bootstrapLink = Assert.Single(
+            Assert.IsType<JsonArray>(bootstrapUpdates["newLinks"])
+                .OfType<JsonObject>());
+
+        Assert.Empty(ValidateRawLocationExample(
+            bootstrapStart,
+            "currentLocationData",
+            "current_scene_creation"));
+        Assert.Empty(ValidateRawLocationExample(
+            bootstrapNeighbor,
+            "worldMapUpdates.newLocations[0]",
+            "world_map_creation"));
+        Assert.Empty(ValidateRawLinkExample(
+            bootstrapLink,
+            "worldMapUpdates.newLinks[0]"));
+
+        var scaffold = MortalBootstrapLocationScaffold.CreatePendingRequest(
+            7,
+            "session_documented_bootstrap",
+            "mortal_bootstrap_turn_1",
+            1);
+        var startReservation = scaffold["startReservation"]!.AsObject();
+        startReservation["initialId"] = bootstrapStart["initialId"]!.DeepClone();
+        startReservation["reservedLocationId"] = "loc_documented_bootstrap_start";
+        startReservation["coordinates"] = bootstrapStart["coordinates"]!.DeepClone();
+        var neighborReservation = scaffold["neighborReservation"]!.AsObject();
+        neighborReservation["initialId"] = bootstrapNeighbor["initialId"]!.DeepClone();
+        neighborReservation["reservedLocationId"] = "loc_documented_bootstrap_neighbor";
+        neighborReservation["coordinates"] = bootstrapNeighbor["coordinates"]!.DeepClone();
+        var linkReservation = scaffold["linkReservation"]!.AsObject();
+        linkReservation["initialId"] = bootstrapLink["initialId"]!.DeepClone();
+        linkReservation["reservedLinkId"] = "lnk_documented_bootstrap_start_neighbor";
+        linkReservation["sourceInitialId"] = bootstrapLink["sourceInitialId"]!.DeepClone();
+        linkReservation["targetInitialId"] = bootstrapLink["targetInitialId"]!.DeepClone();
+
+        var bootstrapResult = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                EmptyMortalWorldMap(),
+                PendingCurrentLocation(),
+                MortalLocationIdentityState.CreateEmptyRoot(),
+                bootstrapFences[0].DeepClone().AsObject(),
+                bootstrapFences[1].DeepClone().AsObject(),
+                Turn: 1,
+                BootstrapScaffold: scaffold));
+        Assert.True(
+            bootstrapResult.Success,
+            FormatLocationIssues(bootstrapResult.Issues));
+        var bootstrapPlan = Assert.IsType<MortalLocationAcceptedTurnPlan>(bootstrapResult.Plan);
+        Assert.Equal(
+            "loc_documented_bootstrap_start",
+            bootstrapPlan.LocationIdsByInitialId[
+                bootstrapStart["initialId"]!.GetValue<string>()]);
+        Assert.Equal(
+            "loc_documented_bootstrap_neighbor",
+            bootstrapPlan.LocationIdsByInitialId[
+                bootstrapNeighbor["initialId"]!.GetValue<string>()]);
+        Assert.Equal(
+            "lnk_documented_bootstrap_start_neighbor",
+            bootstrapPlan.LinkIdsByInitialId[
+                bootstrapLink["initialId"]!.GetValue<string>()]);
+        Assert.Single(bootstrapPlan.FinalWorldMap["links"]!.AsArray());
+        Assert.Equal(
+            "settled",
+            bootstrapPlan.FinalBootstrapScaffold!["state"]!.GetValue<string>());
+
+        var movementFences = ParseNamedJsonFences(
+            "E_Block_20.txt",
+            "mortal_location_existing_movement_storage_continuity_v1");
+        var movementRoot = Assert.Single(movementFences);
+        var movement = Assert.IsType<JsonObject>(movementRoot["currentLocationData"]);
+        var movementSource = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_exact_inn_courtyard",
+            "Двор старого постоялого дома",
+            discoveryTier: "visited",
+            x: 0,
+            y: 0);
+        var movementTarget = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_exact_old_oak_crossroads",
+            "Развилка у старого дуба",
+            discoveryTier: "discovered",
+            x: 1,
+            y: 0);
+        var movementLink = MortalLocationTestFixture.CreateCanonicalLink(
+            "loc_exact_inn_courtyard",
+            "loc_exact_old_oak_crossroads");
+        var movementMap = MortalLocationTestFixture.CreateWorldMap(
+            movementSource,
+            movementTarget);
+        movementMap["links"]!.AsArray().Add(movementLink.DeepClone());
+        var movementIndex = MortalLocationTestFixture.CreateIdentityIndex(
+            movementSource,
+            movementLink);
+        movementIndex["locationEntries"]!.AsArray().Add(
+            MortalLocationTestFixture.CreateIdentityIndex(movementTarget)
+                ["locationEntries"]![0]!.DeepClone());
+
+        var movementResult = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                movementMap,
+                MortalLocationTestFixture.CreateCurrentProjection(movementSource),
+                movementIndex,
+                movementRoot.DeepClone().AsObject(),
+                RawWorldMapUpdates: null,
+                Turn: 2));
+
+        Assert.True(movementResult.Success, FormatLocationIssues(movementResult.Issues));
+        var movementPlan = Assert.IsType<MortalLocationAcceptedTurnPlan>(
+            movementResult.Plan);
+        Assert.Equal(
+            "loc_exact_old_oak_crossroads",
+            movementPlan.FinalCurrentLocation!["locationId"]!.GetValue<string>());
+        Assert.Empty(movementPlan.FinalStorageContents["entries"]!.AsArray());
+        Assert.DoesNotContain(
+            movement.Select(static property => property.Key),
+            field => field is "locationStorages" or "contents");
+
+        var discoveryFences = ParseNamedJsonFences(
+            "E_Block_20.txt",
+            "mortal_location_hidden_remote_reveal_v1");
+        Assert.Equal(2, discoveryFences.Count);
+        var creationUpdates = Assert.IsType<JsonObject>(
+            discoveryFences[0]["worldMapUpdates"]);
+        var hiddenLocation = Assert.Single(
+            Assert.IsType<JsonArray>(creationUpdates["newLocations"])
+                .OfType<JsonObject>());
+        var hiddenLink = Assert.Single(
+            Assert.IsType<JsonArray>(creationUpdates["newLinks"])
+                .OfType<JsonObject>());
+        Assert.Empty(ValidateRawLocationExample(
+            hiddenLocation,
+            "worldMapUpdates.newLocations[0]",
+            "world_map_creation"));
+        Assert.Empty(ValidateRawLinkExample(
+            hiddenLink,
+            "worldMapUpdates.newLinks[0]"));
+
+        var sourceLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_existing_ruined_mill",
+            "Старая мельница",
+            x: 21,
+            y: 9,
+            z: 0);
+        var sourceMap = MortalLocationTestFixture.CreateWorldMap(sourceLocation);
+        var sourceIndex = MortalLocationTestFixture.CreateIdentityIndex(sourceLocation);
+        var creationResult = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                sourceMap,
+                MortalLocationTestFixture.CreateCurrentProjection(sourceLocation),
+                sourceIndex,
+                null,
+                discoveryFences[0].DeepClone().AsObject(),
+                Turn: 8));
+        Assert.True(creationResult.Success, FormatLocationIssues(creationResult.Issues));
+        var creationPlan = Assert.IsType<MortalLocationAcceptedTurnPlan>(creationResult.Plan);
+        var hiddenLocationId = creationPlan.LocationIdsByInitialId[
+            hiddenLocation["initialId"]!.GetValue<string>()];
+        var hiddenLinkId = creationPlan.LinkIdsByInitialId[
+            hiddenLink["initialId"]!.GetValue<string>()];
+        Assert.Single(creationPlan.FinalWorldMap["links"]!.AsArray());
+
+        var reveal = discoveryFences[1].DeepClone().AsObject();
+        var revealUpdates = reveal["worldMapUpdates"]!.AsObject();
+        revealUpdates["locationDiscoveryTransitions"]![0]!["locationId"] =
+            hiddenLocationId;
+        revealUpdates["linkUpdates"]![0]!["linkId"] = hiddenLinkId;
+        var revealResult = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                creationPlan.FinalWorldMap,
+                creationPlan.FinalCurrentLocation,
+                creationPlan.FinalIdentityIndex,
+                null,
+                reveal,
+                Turn: 9));
+        Assert.True(revealResult.Success, FormatLocationIssues(revealResult.Issues));
+        var revealPlan = Assert.IsType<MortalLocationAcceptedTurnPlan>(revealResult.Plan);
+        var revealedLocation = Assert.Single(
+            revealPlan.FinalWorldMap["locations"]!.AsArray()
+                .OfType<JsonObject>(),
+            location =>
+                location["locationId"]?.GetValue<string>() == hiddenLocationId);
+        var revealedLink = Assert.Single(
+            revealPlan.FinalWorldMap["links"]!.AsArray()
+                .OfType<JsonObject>(),
+            link => link["linkId"]?.GetValue<string>() == hiddenLinkId);
+        Assert.Equal("rumored", revealedLocation["discovery"]!["tier"]!.GetValue<string>());
+        Assert.Equal("rumored", revealedLink["discovery"]!["tier"]!.GetValue<string>());
+
+        var governedFences = ParseNamedJsonFences(
+            "E_Block_20.txt",
+            "mortal_location_governed_storage_threat_lifecycle_v1");
+        var governedResponse = Assert.Single(governedFences);
+        var governedLocation = CreateDocumentedGovernedLocation();
+        var governedCurrent = MortalLocationTestFixture.CreateCurrentProjection(governedLocation);
+        var storedItem = MortalItemTestFixture.CreateCanonicalRoot(
+            "itm_documented_storage_content");
+        storedItem["marker"] = "DOCUMENTED_STORAGE_CONTENT";
+        FindDocumentedStorage(governedCurrent, "storage_documented_update")["contents"] =
+            new JsonArray(storedItem);
+        FindDocumentedStorage(governedCurrent, "storage_documented_remove")["contents"] =
+            new JsonArray();
+
+        var governedResult = MortalLocationAcceptedTurnPlanner.Build(
+            new MortalLocationAcceptedTurnInput(
+                MortalLocationTestFixture.CreateWorldMap(governedLocation),
+                governedCurrent,
+                MortalLocationTestFixture.CreateIdentityIndex(governedLocation),
+                null,
+                governedResponse.DeepClone().AsObject(),
+                Turn: 43));
+        Assert.True(governedResult.Success, FormatLocationIssues(governedResult.Issues));
+        var governedPlan = Assert.IsType<MortalLocationAcceptedTurnPlan>(governedResult.Plan);
+        var finalGovernedLocation = Assert.Single(
+            governedPlan.FinalWorldMap["locations"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(
+            "Укреплённый дорожный сундук",
+            FindDocumentedStorage(finalGovernedLocation, "storage_documented_update")["name"]!
+                .GetValue<string>());
+        Assert.DoesNotContain(
+            finalGovernedLocation["locationStorages"]!.AsArray().OfType<JsonObject>(),
+            storage =>
+                storage["storageId"]?.GetValue<string>() == "storage_documented_remove");
+        Assert.Contains(
+            finalGovernedLocation["activeThreats"]!.AsArray().OfType<JsonObject>(),
+            threat =>
+                threat["name"]?.GetValue<string>() == "Дозор болотных огней" &&
+                threat["threatId"]?.GetValue<string>() is { } threatId &&
+                threatId.StartsWith("threat_", StringComparison.Ordinal));
+        Assert.Equal(
+            7,
+            FindDocumentedThreat(finalGovernedLocation, "threat_documented_update")["intensity"]!
+                .GetValue<int>());
+        Assert.DoesNotContain(
+            finalGovernedLocation["activeThreats"]!.AsArray().OfType<JsonObject>(),
+            threat =>
+                threat["threatId"]?.GetValue<string>() == "threat_documented_remove");
+        Assert.Null(
+            FindDocumentedThreat(finalGovernedLocation, "threat_documented_complete")["currentActivity"]);
+        Assert.Contains(
+            finalGovernedLocation["eventDescriptions"]!.AsArray().OfType<JsonObject>(),
+            entry =>
+                entry["eventType"]?.GetValue<string>() == "threat_activity_completion" &&
+                entry["finalState"]?.GetValue<string>() == "Completed");
+        Assert.Equal(
+            "DOCUMENTED_STORAGE_CONTENT",
+            FindDocumentedStorage(
+                governedPlan.FinalCurrentLocation!,
+                "storage_documented_update")["contents"]![0]!["marker"]!.GetValue<string>());
+
+        var repairFences = ParseNamedJsonFences(
+            "E_Block_20.txt",
+            "mortal_location_bounded_repair_v1");
+        Assert.Equal(2, repairFences.Count);
+        var incompleteLocation = Assert.Single(
+            repairFences[0]["worldMapUpdates"]!["newLocations"]!.AsArray()
+                .OfType<JsonObject>());
+        var repairIssues = ValidateRawLocationExample(
+            incompleteLocation,
+            "worldMapUpdates.newLocations[0]",
+            "world_map_creation");
+        var repairCodes = repairIssues
+            .Select(issue => issue.Code)
+            .Where(code => code != null)
+            .Cast<string>()
+            .ToHashSet(StringComparer.Ordinal);
+        foreach (var expectedCode in new[]
+                 {
+                     "mortal_location_materialization_governed_field_missing",
+                     "mortal_location_materialization_physical_shape_invalid",
+                     "mortal_location_materialization_section_disposition_mismatch"
+                 })
+        {
+            Assert.Contains(expectedCode, repairCodes);
+        }
+
+        var documentedPacket = repairFences[1];
+        Assert.Equal(
+            "mortal_location_materialization_repair",
+            documentedPacket["kind"]!.GetValue<string>());
+        Assert.True(documentedPacket["fullTurnResubmissionRequired"]!.GetValue<bool>());
+        Assert.Equal(
+            new[] { MortalLocationMaterializationContract.WorldMapPath },
+            documentedPacket["targetFiles"]!.AsArray()
+                .Select(path => path!.GetValue<string>())
+                .ToArray());
+        Assert.DoesNotContain(
+            MortalLocationIdentityState.StatePath,
+            documentedPacket["targetFiles"]!.AsArray()
+                .Select(path => path!.GetValue<string>()));
+
+        var receiptless = bootstrapNeighbor.DeepClone().AsObject();
+        receiptless["locationId"] = "loc_documented_receiptless";
+        receiptless.Remove("initialId");
+        receiptless.Remove("parentInitialId");
+        var receiptlessIssues = ValidateCanonicalLocationExample(
+            receiptless,
+            "world_map.locations[0]");
+        Assert.Contains(receiptlessIssues, issue =>
+            issue.Code == "mortal_location_materialization_receipt_required");
+    }
+
+    [Fact]
     public void MortalItemMaterializationWorkedExamples_UseCurrentSchemaAndExactRejection()
     {
         var mundaneResponse = ParseNamedJsonFence(
@@ -1333,34 +1706,21 @@ public sealed class ExampleDocumentationValidationTests
             "game_state/inventory/item_identity_index.json",
             """{ "schemaVersion": 1, "entries": [] }""");
 
-        await fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
-{
-  "locationId": null,
-  "name": "Production-equivalent afterlife validation baseline",
-  "coordinates": { "x": 0, "y": 0, "z": 0 },
-  "locationType": "indoor",
-  "internalDifficultyProfile": {
-    "combat": 0,
-    "environment": 0,
-    "social": 0,
-    "exploration": 0
-  },
-  "externalDifficultyProfile": {
-    "combat": 0,
-    "environment": 0,
-    "social": 0,
-    "exploration": 0
-  },
-  "tendency": "NO_CHANGE",
-  "description": "Neutral baseline location retained only so unrelated FileSystemExample mortal-world data cannot fail afterlife documentation validation.",
-  "lastEventsDescription": "#[1] - 24 апреля 2026 г., 09:10: baseline afterlife documentation validation state.",
-  "image_prompt": "neutral afterlife validation baseline",
-  "factionControl": [],
-  "adjacencyMap": [],
-  "locationStorages": [],
-  "activeThreats": []
-}
-""");
+        var neutralLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_afterlife_documentation_baseline",
+            "Нейтральная точка проверки документации");
+        neutralLocation["purpose"] =
+            "Изолировать afterlife-примеры от несвязанных данных смертного мира.";
+        MortalLocationTestFixture.ResealCanonicalLocation(neutralLocation);
+        await fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(neutralLocation).ToJsonString());
+        await fs.WriteFileAtomicAsync(
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(neutralLocation).ToJsonString());
+        await fs.WriteFileAtomicAsync(
+            MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(neutralLocation).ToJsonString());
 
         await fs.WriteFileAtomicAsync("game_state/meta/abode_power_journal.json", """
 {
@@ -2708,14 +3068,20 @@ public sealed class ExampleDocumentationValidationTests
             file);
         var source = File.ReadAllText(path);
         var heading = $"### {contractId}";
-        var headingIndex =
-            source.IndexOf(heading, StringComparison.Ordinal);
+        var alternateHeading = $"## {contractId}";
+        var headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
+        if (headingIndex < 0)
+        {
+            heading = alternateHeading;
+            headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
+        }
         Assert.True(
             headingIndex >= 0,
             $"Named example heading '{heading}' was not found in Examples/{file}.");
-        var sectionEnd =
-            source.IndexOf("\n### ", headingIndex + heading.Length,
-                StringComparison.Ordinal);
+        var sectionEnd = source.IndexOf(
+            heading.StartsWith("## ", StringComparison.Ordinal) ? "\n## " : "\n### ",
+            headingIndex + heading.Length,
+            StringComparison.Ordinal);
         if (sectionEnd < 0)
             sectionEnd = source.Length;
 
@@ -2750,6 +3116,149 @@ public sealed class ExampleDocumentationValidationTests
         Assert.NotEmpty(fences);
         return fences;
     }
+
+    private static IReadOnlyList<ValidationIssue> ValidateRawLocationExample(
+        JsonObject location,
+        string context,
+        string route)
+    {
+        using var document = JsonDocument.Parse(location.ToJsonString());
+        return MortalLocationMaterializationContract.ValidateRawLocation(
+            document.RootElement,
+            context,
+            route).ToArray();
+    }
+
+    private static IReadOnlyList<ValidationIssue> ValidateRawLinkExample(
+        JsonObject link,
+        string context)
+    {
+        using var document = JsonDocument.Parse(link.ToJsonString());
+        return MortalLocationMaterializationContract.ValidateRawLink(
+            document.RootElement,
+            context,
+            "world_map_link_creation").ToArray();
+    }
+
+    private static IReadOnlyList<ValidationIssue> ValidateCanonicalLocationExample(
+        JsonObject location,
+        string context)
+    {
+        using var document = JsonDocument.Parse(location.ToJsonString());
+        return MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            document.RootElement,
+            context).ToArray();
+    }
+
+    private static JsonObject EmptyMortalWorldMap() =>
+        new()
+        {
+            ["schemaVersion"] = 1,
+            ["realm"] = "mortal_world",
+            ["locations"] = new JsonArray(),
+            ["links"] = new JsonArray()
+        };
+
+    private static JsonObject PendingCurrentLocation() =>
+        new()
+        {
+            ["schemaVersion"] = 1,
+            ["realm"] = "mortal_world",
+            ["locationId"] = null,
+            ["state"] = "pending_materialization"
+        };
+
+    private static JsonObject CreateDocumentedGovernedLocation()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "loc_governed_example",
+            "Перекрёсток у болот",
+            discoveryTier: "visited",
+            x: 43);
+        location["locationStorages"] = new JsonArray(
+            CreateDocumentedStorage("storage_documented_update", "Дорожный сундук"),
+            CreateDocumentedStorage("storage_documented_remove", "Пустая плетёная корзина"));
+        location["activeThreats"] = new JsonArray(
+            CreateDocumentedThreat("threat_documented_update", "Стая у переправы", active: true),
+            CreateDocumentedThreat("threat_documented_remove", "Рассеянный туман", active: false),
+            CreateDocumentedThreat("threat_documented_complete", "Налётчики у заставы", active: true));
+        location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        location["materialization"]!["sections"]!["activeThreats"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+        return location;
+    }
+
+    private static JsonObject CreateDocumentedStorage(string storageId, string name) =>
+        new()
+        {
+            ["storageId"] = storageId,
+            ["name"] = name,
+            ["description"] = "Хранилище из документированного примера.",
+            ["capacity"] = 8,
+            ["owner"] = null,
+            ["contents"] = new JsonArray()
+        };
+
+    private static JsonObject CreateDocumentedThreat(
+        string threatId,
+        string name,
+        bool active) =>
+        new()
+        {
+            ["threatId"] = threatId,
+            ["name"] = name,
+            ["description"] = "Угроза из документированного примера.",
+            ["intensity"] = 3,
+            ["longTermGoal"] = "Нарушить движение по дороге.",
+            ["currentActivity"] = active
+                ? new JsonObject
+                {
+                    ["activityName"] = "Подготовка налёта",
+                    ["description"] = "Угроза собирает силы.",
+                    ["totalTimeCostMinutes"] = 120,
+                    ["timeSpentMinutes"] = 15,
+                    ["currentStepNumber"] = 1,
+                    ["totalStepsInActivity"] = 3
+                }
+                : null,
+            ["threatArchetype"] = new JsonObject
+            {
+                ["motivation"] = "Domination",
+                ["method"] = "Overt",
+                ["customMotivation"] = null,
+                ["customMethod"] = null
+            },
+            ["impactProfile"] = new JsonObject
+            {
+                ["primaryTargetType"] = "Location",
+                ["primaryTargetId"] = null,
+                ["primaryTargetName"] = "Перекрёсток у болот",
+                ["primaryImpact"] = "Stability",
+                ["baseImpactValue"] = 2
+            }
+        };
+
+    private static JsonObject FindDocumentedStorage(JsonObject location, string storageId) =>
+        location["locationStorages"]!.AsArray().OfType<JsonObject>().Single(storage =>
+            storage["storageId"]!.GetValue<string>() == storageId);
+
+    private static JsonObject FindDocumentedThreat(JsonObject location, string threatId) =>
+        location["activeThreats"]!.AsArray().OfType<JsonObject>().Single(threat =>
+            threat["threatId"]!.GetValue<string>() == threatId);
+
+    private static string FormatLocationIssues(IEnumerable<ValidationIssue> issues) =>
+        string.Join(
+            Environment.NewLine,
+            issues.Select(issue =>
+                $"{issue.Code} [{issue.FilePath}]: {issue.Message}"));
 
     private static JsonObject ParseNamedJsonFence(
         string file,

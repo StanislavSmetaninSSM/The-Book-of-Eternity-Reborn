@@ -1,7 +1,7 @@
 # Fixture Migration Inventory: Complete Mortal Location Materialization
 
-**Feature**: [spec.md](spec.md)  
-**Source issue**: [#1513](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1513)  
+**Feature**: [spec.md](spec.md)
+**Source issue**: [#1513](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1513)
 **Inventory date**: 2026-08-12
 
 ## Policy
@@ -27,20 +27,24 @@ and disposition; later migrations update this table if a fixture changes role.
 
 | Path | Category | Existing role | Required disposition |
 |---|---|---|---|
-| `FileSystemExample/game_session/game_state/world/current_location.json` | Active positive | Playable example current scene, currently receipt-less. | Migrate to a projection of one receipt-bearing map location; add coherent `world_map.json` and `location_identity_index.json`. |
-| `FileSystemExample/validator_fixtures/current_location_known_partial/broken/current_location_data.json` | Negative canonical | Current location with an intentionally partial known object. | Rebuild from a complete sealed projection and preserve only the named partial/coherence defect. |
-| `FileSystemExample/validator_fixtures/current_location_known_partial/fixed/current_location_data.json` | Positive canonical | Fixed counterpart. | Migrate to complete sealed projection plus canonical map/index companions. |
-| `FileSystemExample/validator_fixtures/current_location_missing_coordinates/broken/current_location_data.json` | Negative canonical | Current location missing coordinates. | Start from complete sealed projection and remove only coordinates. |
-| `FileSystemExample/validator_fixtures/current_location_missing_coordinates/fixed/current_location_data.json` | Positive canonical | Fixed coordinates counterpart. | Migrate to complete sealed projection plus map/index companions. |
-| `FileSystemExample/validator_fixtures/world_map_existing_link/broken/world_map.json` | Negative canonical | Invalid existing-link update. | Migrate location/link identities and receipts; retain only the intended link lifecycle defect. |
-| `FileSystemExample/validator_fixtures/world_map_existing_link/fixed/world_map.json` | Positive canonical | Correct existing-link state. | Migrate all locations/links to sealed canonical objects and exact IDs. |
-| `FileSystemExample/validator_fixtures/world_map_existing_link/shared/world_map_backup.json` | Backup positive | Pre-turn authority for the existing-link test. | Migrate to sealed canonical map plus matching identity index. |
-| `FileSystemExample/validator_fixtures/world_map_existing_storage/broken/world_map.json` | Negative canonical | Invalid storage update in an existing location. | Migrate enclosing location receipt/index; retain only the named storage defect. |
-| `FileSystemExample/validator_fixtures/world_map_existing_storage/fixed/world_map.json` | Positive canonical | Correct existing storage state. | Migrate to sealed canonical location/storage state. |
-| `FileSystemExample/validator_fixtures/world_map_existing_storage/shared/world_map_backup.json` | Backup positive | Pre-turn storage authority. | Migrate to sealed canonical map plus matching index. |
-| `FileSystemExample/validator_fixtures/world_map_threat_completion_active/broken/world_map.json` | Negative canonical | Active threat with incomplete completion. | Migrate enclosing locations/links; preserve only the threat completion defect. |
-| `FileSystemExample/validator_fixtures/world_map_threat_completion_active/fixed/world_map.json` | Positive canonical | Correct threat completion. | Migrate to sealed canonical locations/links. |
-| `FileSystemExample/validator_fixtures/world_map_threat_completion_active/shared/world_map_backup.json` | Backup positive | Pre-turn threat/map authority. | Migrate to sealed canonical map plus matching index. |
+| `FileSystemExample/game_session/game_state/world/current_location.json` | Active positive | Playable current projection. | **Migrated** to the exact receipt-bearing `loc_valmont_private_chambers` projection; sibling `world_map.json` and `location_identity_index.json` are canonical and coherent. |
+| `FileSystemExample/validator_fixtures/current_location_known_partial/broken/current_location_data.json` | Raw pre-seal negative | Existing selection resends one persistent semantic field. | **Migrated** to exact `locationId` plus current operational fields and one named `mortal_location_materialization_existing_full_resend` defect. It is never read as canonical state. |
+| `FileSystemExample/validator_fixtures/current_location_known_partial/fixed/current_location_data.json` | Raw pre-seal positive | Exact existing current selection. | **Migrated** to exact `locationId` plus current-only fields and validated against the shared sealed pre-turn map/current/index snapshot. |
+| `FileSystemExample/validator_fixtures/current_location_missing_coordinates/broken/current_location_data.json` | Retired legacy raw negative | Required coordinates on legacy known-location shorthand. | **Removed**: the current exact-selection route does not accept coordinate authority, and the obsolete validator scenario contradicted the closed `ExistingCurrentFields` contract. |
+| `FileSystemExample/validator_fixtures/current_location_missing_coordinates/fixed/current_location_data.json` | Retired legacy raw positive | Legacy known-location shorthand with coordinates. | **Removed** with its obsolete counterpart; exact selection/full-resend coverage replaces it. |
+| `FileSystemExample/validator_fixtures/world_map_existing_link/broken/world_map.json` | Raw pre-seal negative | Link update with unresolved permanent identity. | **Migrated** from source+coordinate authority to one unknown exact `linkId`; expected code is `mortal_location_link_update_target_unresolved`. |
+| `FileSystemExample/validator_fixtures/world_map_existing_link/fixed/world_map.json` | Raw pre-seal positive | Exact existing-link update. | **Migrated** to the accepted permanent `lnk_test_ford_to_tower`; canonical pre-turn authority comes from the shared sealed snapshot. |
+| `FileSystemExample/validator_fixtures/world_map_existing_link/shared/world_map_backup.json` | Retired duplicate backup | Legacy adjacency/coordinate authority. | **Removed and consolidated** into `_shared/mortal_location/world_map_backup.json` plus the exact identity index. |
+| `FileSystemExample/validator_fixtures/world_map_existing_storage/broken/world_map.json` | Raw pre-seal negative | Unknown exact storage within an accepted location. | **Migrated** to exact `loc_valmont_private_chambers`; only `storage_unknown` remains defective. |
+| `FileSystemExample/validator_fixtures/world_map_existing_storage/fixed/world_map.json` | Raw pre-seal positive | Existing exact storage update. | **Migrated** to accepted location/storage IDs backed by the shared sealed snapshot. |
+| `FileSystemExample/validator_fixtures/world_map_existing_storage/shared/world_map_backup.json` | Retired duplicate backup | Legacy partial storage authority. | **Removed and consolidated** into the shared complete canonical map/current/index snapshot. |
+| `FileSystemExample/validator_fixtures/world_map_threat_completion_active/broken/world_map.json` | Raw pre-seal negative | Completion against an idle exact threat. | **Migrated** to accepted location/threat IDs; only the named missing-active-activity precondition remains defective. |
+| `FileSystemExample/validator_fixtures/world_map_threat_completion_active/fixed/world_map.json` | Raw pre-seal positive | Completion against an active exact threat. | **Migrated** to the accepted active threat in the shared sealed snapshot. |
+| `FileSystemExample/validator_fixtures/world_map_threat_completion_active/shared/world_map_backup.json` | Retired duplicate backup | Legacy partial threat authority. | **Removed and consolidated** into the shared complete canonical map/current/index snapshot. |
+| `FileSystemExample/validator_fixtures/_shared/mortal_location/world_map_backup.json` | Shared backup positive | Exact pre-turn authority for link/storage/threat fixture routes. | **Added** as two complete sealed locations plus one sealed directed link; storage/threat/topology dispositions match their payloads. |
+| `FileSystemExample/validator_fixtures/_shared/mortal_location/current_location_backup.json` | Shared backup positive | Exact selected-current pre-turn projection. | **Added** as the canonical map location plus current-only weather/interactions/chronology. |
+| `FileSystemExample/validator_fixtures/_shared/mortal_location/location_identity_index_backup.json` | Shared client-owned positive | Exact pre-turn identity authority. | **Added** with two active location entries and one active link entry matching all receipts and creation coordinates. |
+| `FileSystemExample/validator_fixtures/_shared/mortal_location/pending_turn_snapshot.json` | Shared control positive | Validated pre-turn binding for raw fixture commands. | **Added** so raw commands are tested against a coherent map/current/index baseline rather than treated as canonical state. |
 
 ## C# fixture and test sources
 
@@ -76,6 +80,55 @@ and disposition; later migrations update this table if a fixture changes role.
 | `BookOfEternityClient.Tests/TrainingWebCommandServiceTests.cs` | Browser action | Training browser locality. | Use canonical current projection and exact location IDs. |
 | `BookOfEternityClient.Tests/WebUi/BrowserStorageTransportParityTests.cs` | Companion action/projection | Location storage movement. | Use accepted canonical storages and assert rejected location/items do not appear. |
 | `BookOfEternityClient.Tests/WebUi/BrowserTradeParityTests.cs` | Companion action/projection | Trade locality and item flow. | Use exact accepted location IDs and canonical current projection. |
+
+### T082 generated-fixture reconciliation (2026-08-13)
+
+- `BookOfEternityClient.TestSupport/MortalLocationTestFixture.cs` is the only
+  generator of accepted Mortal location/link test state. Its raw builders are
+  explicitly pre-seal, its canonical builders emit complete envelope,
+  receipt/seal, map/current/index shapes, and
+  `CreateReceiptlessNegative()` is visibly labelled
+  `[INVALID FIXTURE: receiptless]`. Its seven fixture self-tests are green.
+- Direct canonical/generated migrations are complete in
+  `ActorMaterializationValidationTests.cs`,
+  `ExplorerModeCommandTests.GeneralPanels.cs`,
+  `ExplorerWebCommandServiceTests.cs`,
+  `FactionMaterializationValidationTests.cs`,
+  `GameEngineTurnLifecycleTests.cs`,
+  `MortalBootstrapValidationTests.cs`,
+  `MortalItemMaterializationTestContext.Companions.cs`,
+  `MortalItemMaterializationTestContext.Routes.cs`,
+  `NpcCoreChangesTests.cs`, `ExplorerModeSourceGuardTests.cs`, and
+  `LocalMapViewerServiceTests.cs`. Positive state comes from the shared
+  receipt-bearing fixture or a file-backed canonical context; negatives mutate
+  one named field/reference.
+- `BrowserCommandPresentationAuditTests.cs` consumes the active
+  `FileSystemExample`, so T081 migrated its positive map/current/index input
+  without another copied literal. The four file-backed location validator
+  definitions now run through the dedicated focused
+  `MortalLocationMigratedFixture_BrokenAndFixedVariantsRespectCurrentContract`
+  boundary; `ValidatorFixtureHarness` invokes the raw Mortal-location phase for
+  `AcceptedTurn` fixtures.
+- `ActorMaterializationContractTests.cs`, `ActorMemoryServiceTests.cs`,
+  `ConsoleNpcTradeCommandTests.cs`, `ConsoleTrainingCommandTests.cs`,
+  `MortalItemCarrierCatalogTests.cs`,
+  `MortalItemIdentityTransitionTests.cs`, `MortalItemTestFixtureTests.cs`,
+  `NpcTradeServiceRequestFlowTests.cs`, `RivalSoulArcServiceTests.cs`,
+  `TrainingServiceTests.cs`, `TrainingWebCommandServiceTests.cs`,
+  `WebUi/BrowserStorageTransportParityTests.cs`, and
+  `WebUi/BrowserTradeParityTests.cs` do not own a second accepted canonical
+  location builder. They now consume exact accepted IDs/projections or retain
+  explicitly raw item/actor/action fragments; names and case-folded aliases are
+  display-only negatives.
+- `GmTurnHelperContractTests.cs` and `LiveTurnPreparationServiceTests.cs`
+  intentionally retain raw pre-seal carriers. They are not canonical positive
+  state and will receive their final authoring vocabulary with T083–T091.
+  `ExampleDocumentationValidationTests.cs` remains the executable runner for
+  those examples and is likewise finalized in T091.
+- `AfterlifeEntityProfileValidationTests.cs` and
+  `AfterlifeDocumentationCoverageTests.cs` remain unchanged realm-isolation and
+  afterlife-document fragments. They contain no accepted Mortal canonical
+  location and stay owned by #1514 where applicable.
 
 ## GM examples and documentation fixtures
 

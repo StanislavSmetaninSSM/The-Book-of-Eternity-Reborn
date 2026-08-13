@@ -1,0 +1,208 @@
+{
+  "locationId": "loc_valmont_private_chambers",
+  "realm": "mortal_world",
+  "name": "Покои виконта де Вальмонта",
+  "displayName": "Покои виконта де Вальмонта",
+  "purpose": "Личные покои героя в поместье Вальмонт",
+  "description": "Роскошные покои в поместье Вальмонт в столице Этернии. Сквозь высокие окна пробивается утренний свет, смешанный с лёгким туманом, окутывающим город.",
+  "image_prompt": "luxurious nobleman bedroom, morning light, silk sheets, foggy window, classical furniture, cinematic dark fantasy, no text",
+  "locationType": "indoor",
+  "biome": null,
+  "biomeDescription": null,
+  "indoorType": "noble_bedchamber",
+  "features": [
+    "высокие окна",
+    "классическая мебель",
+    "шёлковая постель"
+  ],
+  "region": "Столица Этернии",
+  "parentLocationId": null,
+  "coordinates": {
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "discovery": {
+    "tier": "visited",
+    "audience": "player_known",
+    "rumorSummary": null
+  },
+  "internalDifficulty": {
+    "danger": "low",
+    "recommendedLevel": 1,
+    "description": "Личные покои защищены стенами поместья и домашней стражей."
+  },
+  "externalDifficulty": {
+    "danger": "moderate",
+    "recommendedLevel": 3,
+    "description": "За пределами покоев интриги столицы и чужое внимание создают умеренный риск."
+  },
+  "lastEventsDescription": "#[0] - 1 Month of Beginnings 124 г., 07:40: Асуран де Вальмонт пробуждается после тяжёлого сна в своих покоях.",
+  "eventDescriptions": [
+    {
+      "title": "Пробуждение виконта",
+      "description": "Асуран де Вальмонт пробуждается после тяжёлого сна в своих покоях."
+    }
+  ],
+  "factionControl": [],
+  "actorBindings": [],
+  "locationStorages": [
+    {
+      "storageId": "storage_square_crate",
+      "name": "Рыночный сундук",
+      "description": "Прочный сундук для временного хранения товаров.",
+      "ownerActorId": null,
+      "capacity": {
+        "slots": 8
+      },
+      "access": {
+        "state": "open",
+        "reason": null
+      },
+      "contents": []
+    }
+  ],
+  "activeThreats": [
+    {
+      "threatId": "threat_idle_smugglers",
+      "name": "Затаившиеся контрабандисты",
+      "description": "Контрабандисты скрываются в старых служебных проходах, но пока не ведут активную операцию.",
+      "intensity": 2,
+      "longTermGoal": "Сохранить тайный путь через поместье.",
+      "currentActivity": null,
+      "threatArchetype": {
+        "motivation": "Preservation",
+        "method": "Covert",
+        "customMotivation": null,
+        "customMethod": null
+      },
+      "impactProfile": {
+        "primaryTargetType": "Location",
+        "primaryTargetId": null,
+        "primaryTargetName": "Покои виконта де Вальмонта",
+        "primaryImpact": "Stability",
+        "baseImpactValue": 1
+      }
+    },
+    {
+      "threatId": "threat_active_smugglers",
+      "name": "Действующие контрабандисты",
+      "description": "Контрабандисты проводят очередную тайную доставку через поместье.",
+      "intensity": 4,
+      "longTermGoal": "Закрепить постоянный канал тайных поставок.",
+      "currentActivity": {
+        "activityName": "Тайная доставка",
+        "description": "Группа переносит груз через служебные коридоры.",
+        "totalTimeCostMinutes": 90,
+        "timeSpentMinutes": 30,
+        "currentStepNumber": 1,
+        "totalStepsInActivity": 3
+      },
+      "threatArchetype": {
+        "motivation": "Accumulation",
+        "method": "Covert",
+        "customMotivation": null,
+        "customMethod": null
+      },
+      "impactProfile": {
+        "primaryTargetType": "Location",
+        "primaryTargetId": null,
+        "primaryTargetName": "Покои виконта де Вальмонта",
+        "primaryImpact": "Economic",
+        "baseImpactValue": 3
+      }
+    }
+  ],
+  "loreBindings": [],
+  "customStates": [],
+  "materialization": {
+    "schemaVersion": 1,
+    "materializationId": "mlocmat_fixture_5828d42f921320f5",
+    "entityKind": "mortal_location",
+    "realm": "mortal_world",
+    "route": "world_map_creation",
+    "sourceTurn": 42,
+    "sourceAuthority": {
+      "kind": "turn_outcome",
+      "authorityId": "turn_42"
+    },
+    "initialId": "locref_fixture_5828d42f921320f5",
+    "state": "complete",
+    "sections": {
+      "presentation": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "physical": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "placement": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "discovery": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "difficulty": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "chronicle": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "factionControl": {
+        "disposition": "empty_by_design",
+        "reason": "Ни одна фракция не удерживает это место."
+      },
+      "actorBindings": {
+        "disposition": "empty_by_design",
+        "reason": "Постоянных обитателей здесь нет."
+      },
+      "storageMetadata": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "activeThreats": {
+        "disposition": "populated",
+        "reason": null
+      },
+      "loreBindings": {
+        "disposition": "empty_by_design",
+        "reason": "Сюжетные и справочные привязки пока не требуются."
+      },
+      "customStates": {
+        "disposition": "empty_by_design",
+        "reason": "Особые состояния места не требуются."
+      },
+      "topology": {
+        "disposition": "populated",
+        "reason": null
+      }
+    }
+  },
+  "materializationReceipt": {
+    "schemaVersion": 1,
+    "receiptId": "mlocrec_fixture_5828d42f921320f5",
+    "locationId": "loc_valmont_private_chambers",
+    "initialId": "locref_fixture_5828d42f921320f5",
+    "materializationId": "mlocmat_fixture_5828d42f921320f5",
+    "realm": "mortal_world",
+    "route": "world_map_creation",
+    "sourceTurn": 42,
+    "sourceAuthorityKind": "turn_outcome",
+    "sourceAuthorityId": "turn_42",
+    "seal": "sha256:6a94f9a4f8cc4d74e5ea7b1a3b2d2954973285d869c352a6100222a2cfc383f1"
+  },
+  "currentWeather": {
+    "description": "За окнами держится холодный утренний туман.",
+    "tendency": "NO_CHANGE",
+    "visibility": "reduced"
+  },
+  "currentInteractions": [],
+  "currentChronology": [
+    "#[42] - 1 Month of Beginnings 124 г., 07:45: Асуран остаётся в своих покоях."
+  ]
+}

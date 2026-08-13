@@ -337,6 +337,35 @@ public sealed partial class MortalLocationMaterializationValidationTests
                 StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void Lifecycle_StorageItems_ExistingMovementPayloadCannotEchoStorageMetadata()
+    {
+        var accepted = CreateAcceptedDirectedTopology();
+
+        var result = Build(
+            accepted.FinalWorldMap,
+            accepted.FinalCurrentLocation,
+            accepted.FinalIdentityIndex,
+            rawCurrentLocationData: new JsonObject
+            {
+                ["locationId"] = accepted.TargetLocationId,
+                ["lastEventsDescription"] = "GM повторяет metadata вместо минимального перехода.",
+                ["currentWeather"] = new JsonObject(),
+                ["currentInteractions"] = new JsonArray(),
+                ["locationStorages"] = new JsonArray(new JsonObject
+                {
+                    ["storageId"] = "storage_echo_forbidden",
+                    ["name"] = "Ложный повтор хранилища"
+                })
+            },
+            turn: 43);
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_location_materialization_existing_full_resend" &&
+            issue.Actual?.Contains("locationStorages", StringComparison.Ordinal) == true);
+    }
+
     [Theory]
     [InlineData("unknown_location", "mortal_location_storage_contents_coordinate_unresolved")]
     [InlineData("unknown_storage", "mortal_location_storage_contents_coordinate_unresolved")]

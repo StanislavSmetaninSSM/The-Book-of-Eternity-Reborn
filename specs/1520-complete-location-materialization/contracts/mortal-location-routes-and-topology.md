@@ -77,9 +77,20 @@ An existing move carries:
 Only the exact permanent ID and explicitly allowlisted operational/current
 chronology fields are accepted. A name, ordinal, coordinates, `initialId`, full
 description, placement, difficulty, envelope, receipt, or embedded exits makes
-the operation invalid. The destination must be reachable through the separate
-movement contract or otherwise explicitly authorized by the current turn; this
-route does not grant reachability itself.
+the operation invalid. Re-selecting the exact pre-turn current location is
+allowed. A changed destination requires one accepted pre-turn link with exact
+directed source=current and target=destination, `access.state=open`, empty
+requirements, and non-hidden `player_known` discovery for both link and
+destination. A reverse-only, hidden, conditional, or sealed link is not
+traversal authority. This route never grants reachability itself.
+
+Existing movement contains no `locationStorages` or `contents`. The client
+copies same-location contents from validated pre-turn state. For a changed
+selection it atomically parks non-empty source contents in the closed
+client-owned offscreen state and hydrates destination contents into the new
+current projection. Both physical representations bind the same exact
+`location_storage(locationId, storageId)` carrier; movement does not create an
+item transition or rewrite the item identity index.
 
 ## Narrow location update
 
@@ -88,15 +99,17 @@ from the closed mutable catalog:
 
 - `name`, `displayName`, `purpose`, `description`, `image_prompt`;
 - `internalDifficulty`, `externalDifficulty`;
-- `lastEventsDescription`, append-only/normalized chronicle inputs;
-- `factionControl`, `actorBindings`, `activeThreats`, `loreBindings`,
-  `customStates` through their governed schemas;
+- `lastEventsDescription`;
+- `factionControl`, `actorBindings`, `loreBindings`, `customStates` through
+  their governed schemas;
 - discovery only through the dedicated discovery transition form.
 
 The update cannot contain permanent-ID aliases, `initialId`, realm, coordinates,
 parent fields, storage identity/capacity, envelope, receipt, derived exits, or
-link operations. If later requirements need coordinate/parent/storage metadata
-mutation, they require a separate tracked contract rather than a wider patch.
+link operations. `eventDescriptions` is client-managed history, while
+`activeThreats` changes only through atomic threat commands. If later
+requirements need coordinate/parent mutation, they require a separate tracked
+contract rather than a wider patch.
 
 ## Discovery transition
 
@@ -190,7 +203,30 @@ target. A hidden link contributes no count, label, endpoint, or action.
 - Coordinates and parent are placement, not identity.
 - Ordinary updates cannot move/reparent a location.
 
-## Governed companion rewrites
+## Governed storage and threat lifecycle
+
+Storage and threat lifecycle commands are materialized by the same pure plan:
+
+- `storageUpdates[]` binds exact location/storage identity and maps only
+  `newName`, `newDescription`, `newCapacity`, and `newOwner`, preserving item
+  contents;
+- `storagesToRemove[]` removes only an exact empty storage and fails closed when
+  accepted item contents remain in either current or offscreen client authority;
+- `threatsToAdd[]` accepts a complete null-ID threat for one exact existing or
+  same-turn location, then assigns a client-owned permanent `threat_...` ID;
+- `threatsToUpdate[]` deep-merges one exact non-terminal partial update;
+- `threatsToRemove[]` removes one exact threat;
+- `completeThreatActivities[]` requires exact name/ID plus a non-null pre-turn
+  activity, appends one system-owned history entry, and clears the activity.
+
+Conflicting commands on the same storage/threat, wrong-case or confusable IDs,
+unknown targets, unknown command names, and removal of a non-empty storage fail
+closed. Every accepted command updates canonical map, current projection when
+present, and location-index transition evidence in one transaction. Immutable
+materialization section dispositions remain creation evidence; later accepted
+storage/threat count changes do not rewrite the envelope or receipt seal.
+
+## Governed reference rewrites
 
 The accepted-turn planner rewrites only an explicit catalog, including:
 
@@ -212,12 +248,23 @@ A raw item in a new current location's storage is accepted only when:
 - the current location creation itself is raw-valid and uniquely owned;
 - the storage metadata is exact, complete, unique in that location, and declared
   populated;
-- the item route binds the exact location temporary reference and storage ID;
+- the item route authority ID is the exact
+  `<initialLocationId>:<storageId>` coordinate and binds that accepted temporary
+  reference to the same storage;
 - item creation passes the independent #1511 envelope/route contract.
 
-After location normalization the route binds the permanent location ID. The
-item normalizer owns item ID, receipt, seal, index, and contents mutation.
+After location normalization the transition destination binds the permanent
+location ID while retaining the accepted same-turn source coordinate as route
+evidence. The item normalizer owns item ID, receipt, seal, index, and contents
+mutation.
 Remote map locations cannot contain item contents.
+
+Persistent accepted contents for a non-current location live only in the
+closed client-owned offscreen state. Every entry resolves one exact active map
+storage, is non-empty, and cannot use the selected current location coordinate.
+The GM never authors or repairs that state. Raw validation compares it with the
+validated pre-turn snapshot; canonical validation combines it with the current
+projection and item index, requiring exactly one physical occurrence per item.
 
 ## Removal of obsolete behavior
 
