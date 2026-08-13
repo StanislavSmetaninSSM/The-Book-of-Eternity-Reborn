@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal static class MortalLocationAcceptedTurnPlanner
+internal static partial class MortalLocationAcceptedTurnPlanner
 {
     private static readonly HashSet<string> ExistingCurrentFields = new(StringComparer.Ordinal)
     {
@@ -13,6 +13,24 @@ internal static class MortalLocationAcceptedTurnPlanner
         "currentInteractions",
         "currentChronology",
         "locationStorages"
+    };
+
+    private static readonly HashSet<string> ExistingProtectedResendFields = new(StringComparer.Ordinal)
+    {
+        "initialId",
+        "parentInitialId",
+        "materialization",
+        "materializationId",
+        "materializationReceipt",
+        "receiptId",
+        "seal",
+        "locationIdentityIndex",
+        "linkIdentityIndex",
+        "requestId",
+        "sessionId",
+        "reservationId",
+        "transitionId",
+        "transitions"
     };
 
     private static readonly string[] CurrentOperationalFields =
@@ -32,10 +50,8 @@ internal static class MortalLocationAcceptedTurnPlanner
         "internalDifficulty",
         "externalDifficulty",
         "lastEventsDescription",
-        "eventDescriptions",
         "factionControl",
         "actorBindings",
-        "activeThreats",
         "loreBindings",
         "customStates"
     };
@@ -103,10 +119,29 @@ internal static class MortalLocationAcceptedTurnPlanner
     {
         ArgumentNullException.ThrowIfNull(input);
         identityFactory ??= new MortalLocationIdentityFactory();
+        var companionAuthority =
+            input.CompanionAuthority ?? MortalLocationCompanionAuthority.Empty;
         var issues = new List<ValidationIssue>();
         var preTurnWorldMap = input.PreTurnWorldMap.DeepClone().AsObject();
         var preTurnIndex = MortalLocationIdentityState.Parse(input.PreTurnIdentityIndex);
         issues.AddRange(preTurnIndex.Issues);
+        var preTurnStorageContents = MortalLocationStorageContentsState.Parse(
+            input.PreTurnStorageContents);
+        issues.AddRange(preTurnStorageContents.Issues);
+        MortalBootstrapLocationReservationSet? bootstrapReservations = null;
+        if (input.BootstrapScaffold != null &&
+            !MortalBootstrapLocationScaffold.TryReadRequest(
+                input.BootstrapScaffold,
+                out bootstrapReservations,
+                out var scaffoldError))
+        {
+            issues.Add(Issue(
+                MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest",
+                "mortal_bootstrap_location_scaffold_invalid",
+                "The client-owned Mortal bootstrap location request is malformed.",
+                "exact current bootstrap location request",
+                scaffoldError));
+        }
 
         if (!TryReadCanonicalMap(preTurnWorldMap, out var preTurnLocations, out var preTurnLinks))
         {
@@ -138,7 +173,13 @@ internal static class MortalLocationAcceptedTurnPlanner
             }
             else if (TryGetExactIdentity(current, "locationId", out var existingId))
             {
-                existingSelection = ValidateExistingSelection(current, existingId, preTurnLocationsById, issues);
+                existingSelection = ValidateExistingSelection(
+                    current,
+                    existingId,
+                    input.PreTurnCurrentLocation,
+                    preTurnLocationsById,
+                    preTurnLinks,
+                    issues);
             }
             else
             {
@@ -154,6 +195,7 @@ internal static class MortalLocationAcceptedTurnPlanner
         var updates = input.RawWorldMapUpdates == null
             ? null
             : Unwrap(input.RawWorldMapUpdates, "worldMapUpdates");
+        ValidateWorldMapCommandCatalog(updates, issues);
         if (updates != null)
         {
             if (updates["newLocations"] is JsonArray newLocations)
@@ -188,45 +230,80 @@ internal static class MortalLocationAcceptedTurnPlanner
             }
         }
 
-        ValidateLocationCandidates(locationCandidates, preTurnLocations, preTurnIndex, input.Turn, issues);
-        ValidateParentGraph(locationCandidates, issues);
+        ValidateLocationCandidates(
+            locationCandidates,
+            preTurnLocations,
+            preTurnIndex,
+            input.Turn,
+            bootstrapReservations,
+            issues);
+        var actorBindingAuthority = BuildActorBindingAuthority(input.RawNpcCore);
+        var factionControlAuthority = BuildFactionControlAuthority(input.RawFactionCore);
+        ValidateLocationCompanionReferences(
+            locationCandidates,
+            companionAuthority,
+            actorBindingAuthority,
+            factionControlAuthority,
+            issues);
+        ValidateParentGraph(
+            locationCandidates,
+            preTurnLocationsById,
+            preTurnIndex,
+            issues);
 
-        var linkCandidates = ReadLinkCandidates(updates, preTurnIndex, input.Turn, issues);
-        ValidateRawLinkEndpoints(linkCandidates, preTurnLocationsById, locationCandidates, issues);
+        var linkCandidates = ReadLinkCandidates(
+            updates,
+            preTurnIndex,
+            input.Turn,
+            bootstrapReservations,
+            issues);
+        ValidateRawLinkEndpoints(
+            linkCandidates,
+            preTurnLocationsById,
+            locationCandidates,
+            preTurnIndex,
+            issues);
         ValidateCreationTopologyDisposition(locationCandidates, linkCandidates, issues);
 
         var locationUpdates = ReadLocationUpdates(updates, preTurnLocationsById, issues);
+        ValidateLocationUpdateCompanionReferences(
+            locationUpdates,
+            companionAuthority,
+            actorBindingAuthority,
+            factionControlAuthority,
+            issues);
         var discoveryTransitions = ReadLocationDiscoveryTransitions(updates, preTurnLocationsById, issues);
         var linkUpdates = ReadLinkUpdates(updates, preTurnLinksById, issues);
         var linkRemovals = ReadLinkRemovals(updates, preTurnLinksById, issues);
         ValidateLifecycleOperationConflicts(linkUpdates, linkRemovals, issues);
+        var governedCommands = ReadGovernedLocationCommands(
+            updates,
+            input.PreTurnCurrentLocation,
+            preTurnStorageContents.Entries,
+            preTurnLocationsById,
+            locationCandidates,
+            issues);
 
         BootstrapPlanningContext? bootstrap = null;
-        if (input.BootstrapScaffold != null)
+        if (bootstrapReservations != null)
         {
-            if (!MortalBootstrapLocationScaffold.TryReadRequest(
-                    input.BootstrapScaffold,
-                    out var reservations,
-                    out var scaffoldError))
-            {
-                issues.Add(Issue(
-                    MortalBootstrapLocationScaffold.StatePath + ".locationMaterializationRequest",
-                    "mortal_bootstrap_location_scaffold_invalid",
-                    "The client-owned Mortal bootstrap location request is malformed.",
-                    "exact current bootstrap location request",
-                    scaffoldError));
-            }
-            else
-            {
-                bootstrap = ValidateBootstrapReservations(
-                    reservations,
-                    locationCandidates,
-                    linkCandidates,
-                    input.Turn,
-                    issues);
-            }
+            bootstrap = ValidateBootstrapReservations(
+                bootstrapReservations,
+                locationCandidates,
+                linkCandidates,
+                input.Turn,
+                issues);
         }
 
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        AssignThreatIds(
+            governedCommands.ThreatAdds,
+            preTurnLocations,
+            locationCandidates,
+            identityFactory,
+            issues);
         if (issues.Count != 0)
             return Failed(issues);
 
@@ -281,7 +358,13 @@ internal static class MortalLocationAcceptedTurnPlanner
         }
 
         if (existingSelection != null)
-            finalCurrent = CreateCurrentProjection(existingSelection.CanonicalLocation, existingSelection.RawSelection);
+        {
+            finalCurrent = CreateCurrentProjection(
+                existingSelection.CanonicalLocation,
+                CreateExistingProjectionSource(
+                    input.PreTurnCurrentLocation,
+                    existingSelection));
+        }
 
         var linkIdsByInitialId = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var candidate in linkCandidates)
@@ -325,6 +408,13 @@ internal static class MortalLocationAcceptedTurnPlanner
             linkRemovals,
             input.Turn,
             identityFactory);
+        ApplyGovernedLocationCommands(
+            finalLocations,
+            finalLocationEntries,
+            governedCommands,
+            locationIdsByInitialId,
+            input.Turn,
+            identityFactory);
 
         JsonObject? currentProjectionSource = finalCurrent?.DeepClone().AsObject();
         if (existingSelection != null)
@@ -335,7 +425,9 @@ internal static class MortalLocationAcceptedTurnPlanner
                 existingSelection,
                 input.Turn,
                 identityFactory);
-            currentProjectionSource = existingSelection.RawSelection.DeepClone().AsObject();
+            currentProjectionSource = CreateExistingProjectionSource(
+                input.PreTurnCurrentLocation,
+                existingSelection);
         }
 
         if (finalCurrent != null || existingSelection != null)
@@ -355,14 +447,33 @@ internal static class MortalLocationAcceptedTurnPlanner
             }
         }
 
+        var finalStorageContents = ReconcileLocationStorageContents(
+            finalWorldMap,
+            input.PreTurnCurrentLocation,
+            input.PreTurnStorageContents,
+            ReadExactString(finalCurrent, "locationId"),
+            finalCurrent,
+            issues);
+        if (issues.Count != 0)
+            return Failed(issues);
+
         ValidateComposedState(finalWorldMap, finalIdentityIndex, finalCurrent, issues);
         if (issues.Count != 0)
             return Failed(issues);
 
-        var storageCoordinates = BuildAcceptedStorageCoordinates(finalCurrent);
+        var storageCoordinates = BuildAcceptedStorageCoordinates(
+            finalCurrent,
+            locationIdsByInitialId);
+        var governedRewrites = BuildNpcLocationRewrites(
+            input.RawNpcCore,
+            locationIdsByInitialId,
+            issues);
+        if (issues.Count != 0)
+            return Failed(issues);
         var touchedPaths = new List<string>();
         var hasLifecycleMutation = locationUpdates.Count > 0 || discoveryTransitions.Count > 0 ||
                                    linkUpdates.Count > 0 || linkRemovals.Count > 0 ||
+                                   governedCommands.HasCommands ||
                                    existingSelection != null;
         if (locationCandidates.Count > 0 || linkCandidates.Count > 0 || hasLifecycleMutation)
         {
@@ -371,8 +482,12 @@ internal static class MortalLocationAcceptedTurnPlanner
         }
         if (input.RawCurrentLocationData != null ||
             finalCurrent != null && (locationUpdates.Count > 0 || discoveryTransitions.Count > 0 ||
-                                     linkUpdates.Count > 0 || linkRemovals.Count > 0))
+                                     linkUpdates.Count > 0 || linkRemovals.Count > 0 ||
+                                     governedCommands.HasCommands))
             touchedPaths.Add(MortalLocationMaterializationContract.CurrentLocationPath);
+        if (!JsonNode.DeepEquals(preTurnStorageContents.Root, finalStorageContents))
+            touchedPaths.Add(MortalLocationStorageContentsState.StatePath);
+        touchedPaths.AddRange(governedRewrites.Select(static rewrite => rewrite.CarrierPath));
 
         JsonObject? finalBootstrapScaffold = null;
         if (bootstrap != null)
@@ -395,14 +510,673 @@ internal static class MortalLocationAcceptedTurnPlanner
             finalWorldMap,
             finalCurrent,
             finalIdentityIndex,
+            finalStorageContents,
             locationIdsByInitialId,
             linkIdsByInitialId,
             storageCoordinates,
-            Array.Empty<MortalLocationGovernedRewrite>(),
+            governedRewrites,
             touchedPaths.Distinct(StringComparer.Ordinal).ToArray(),
             Array.Empty<MortalLocationRepairContext>(),
             finalBootstrapScaffold);
         return new MortalLocationAcceptedTurnPlanningResult(plan, Array.Empty<ValidationIssue>());
+    }
+
+    internal static IReadOnlyList<ValidationIssue> ValidateCanonicalActorBindings(
+        JsonObject location,
+        string context,
+        JsonObject? npcRoot)
+    {
+        var issues = new List<ValidationIssue>();
+        if (location["actorBindings"] is not JsonArray bindings)
+            return issues;
+
+        var locationId = ReadExactString(location, "locationId");
+        var authority = BuildActorBindingAuthority(npcRoot);
+        for (var index = 0; index < bindings.Count; index++)
+        {
+            if (bindings[index] is not JsonObject binding ||
+                !TryGetExactIdentity(binding, "actorId", out var actorId))
+            {
+                continue;
+            }
+
+            var resolution = authority.ResolveEffective(actorId, out var placement);
+            if (resolution != MortalLocationReferenceResolution.Exact || placement == null)
+            {
+                var code = resolution switch
+                {
+                    MortalLocationReferenceResolution.Confusable =>
+                        "mortal_location_actor_binding_target_confusable",
+                    MortalLocationReferenceResolution.Ambiguous =>
+                        "mortal_location_actor_binding_target_ambiguous",
+                    _ => "mortal_location_actor_binding_target_unknown"
+                };
+                issues.Add(Issue(
+                    $"{context}.actorBindings[{index}].actorId",
+                    code,
+                    "Canonical actor binding must resolve to one exact accepted Mortal actor.",
+                    "one exact effective actor identity",
+                    actorId));
+                continue;
+            }
+
+            if (locationId == null ||
+                !string.Equals(
+                    placement.PermanentLocationId,
+                    locationId,
+                    StringComparison.Ordinal) ||
+                placement.InitialLocationId != null)
+            {
+                issues.Add(Issue(
+                    $"{context}.actorBindings[{index}]",
+                    "mortal_location_actor_binding_physical_conflict",
+                    "Canonical actor binding must agree with the actor's exact permanent location.",
+                    "currentLocationId=" + (locationId ?? "missing"),
+                    placement.Describe()));
+            }
+        }
+
+        return issues;
+    }
+
+    internal static IReadOnlyList<ValidationIssue> ValidateCanonicalFactionControls(
+        JsonObject location,
+        string context,
+        JsonObject? factionRoot)
+    {
+        var issues = new List<ValidationIssue>();
+        if (location["factionControl"] is not JsonArray controls)
+            return issues;
+
+        var authority = BuildFactionControlAuthority(factionRoot);
+        for (var index = 0; index < controls.Count; index++)
+        {
+            if (controls[index] is not JsonObject control ||
+                !TryGetExactIdentity(control, "factionId", out var factionId))
+            {
+                continue;
+            }
+
+            var resolution = authority.ResolveEffective(factionId);
+            if (resolution == MortalLocationReferenceResolution.Exact)
+                continue;
+
+            var code = resolution switch
+            {
+                MortalLocationReferenceResolution.Confusable =>
+                    "mortal_location_faction_control_target_confusable",
+                MortalLocationReferenceResolution.Ambiguous =>
+                    "mortal_location_faction_control_target_ambiguous",
+                _ => "mortal_location_faction_control_target_unknown"
+            };
+            issues.Add(Issue(
+                $"{context}.factionControl[{index}].factionId",
+                code,
+                "Canonical faction control must resolve to one exact accepted Mortal faction.",
+                "one exact effective faction identity",
+                factionId));
+        }
+
+        return issues;
+    }
+
+    private static IReadOnlyList<MortalLocationGovernedRewrite> BuildNpcLocationRewrites(
+        JsonObject? npcRoot,
+        IReadOnlyDictionary<string, string> locationIdsByInitialId,
+        List<ValidationIssue> issues)
+    {
+        if (npcRoot == null || locationIdsByInitialId.Count == 0)
+        {
+            return Array.Empty<MortalLocationGovernedRewrite>();
+        }
+
+        var rewrites = new List<MortalLocationGovernedRewrite>();
+        if (npcRoot[NpcCoreChangesContract.PropertyName] is JsonArray commands)
+        {
+            for (var index = 0; index < commands.Count; index++)
+            {
+                if (commands[index] is not JsonObject command ||
+                    command["location"] is not JsonObject location ||
+                    location["currentLocationId"] != null)
+                {
+                    continue;
+                }
+
+                var initialId = ReadExactString(location, "initialLocationId");
+                if (initialId == null ||
+                    !locationIdsByInitialId.TryGetValue(initialId, out var permanentId))
+                {
+                    continue;
+                }
+
+                var npcId = ReadExactString(command, "NPCId");
+                if (npcId == null)
+                {
+                    issues.Add(Issue(
+                        $"{NpcCoreChangesContract.PropertyName}[{index}].NPCId",
+                        "mortal_location_companion_rewrite_identity_invalid",
+                        "A governed NPC location rewrite requires one exact permanent NPCId.",
+                        "non-empty exact NPCId",
+                        command["NPCId"]?.ToJsonString() ?? "missing"));
+                    continue;
+                }
+
+                rewrites.Add(new MortalLocationGovernedRewrite(
+                    NpcCoreChangesContract.NpcCorePath,
+                    $"{NpcCoreChangesContract.PropertyName}[{index}]",
+                    "NPCId",
+                    npcId,
+                    "location.initialLocationId",
+                    "location.currentLocationId",
+                    initialId,
+                    permanentId));
+            }
+        }
+
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (npcRoot[section] is not JsonArray actors)
+                continue;
+            for (var index = 0; index < actors.Count; index++)
+            {
+                if (actors[index] is not JsonObject actor ||
+                    TryReadExactPermanentActorIdentity(actor, out _) ||
+                    ReadExactString(actor, "initialId") is not { } actorInitialId ||
+                    actor["currentLocationId"] != null ||
+                    ReadExactString(actor, "initialLocationId") is not { } locationInitialId ||
+                    !locationIdsByInitialId.TryGetValue(locationInitialId, out var permanentId))
+                {
+                    continue;
+                }
+
+                rewrites.Add(new MortalLocationGovernedRewrite(
+                    NpcCoreChangesContract.NpcCorePath,
+                    $"{section}[{index}]",
+                    "initialId",
+                    actorInitialId,
+                    "initialLocationId",
+                    "currentLocationId",
+                    locationInitialId,
+                    permanentId));
+            }
+        }
+
+        return rewrites;
+    }
+
+    private static void ValidateLocationCompanionReferences(
+        IReadOnlyList<LocationCandidate> candidates,
+        MortalLocationCompanionAuthority authority,
+        ActorBindingAuthority actorAuthority,
+        FactionControlAuthority factionAuthority,
+        List<ValidationIssue> issues)
+    {
+        foreach (var candidate in candidates)
+        {
+            issues.AddRange(authority.ValidateLoreBindings(candidate.Raw, candidate.Context));
+            ValidateAndRewriteActorBindings(candidate, actorAuthority, issues);
+            ValidateAndRewriteFactionControls(candidate, factionAuthority, issues);
+        }
+    }
+
+    private static void ValidateAndRewriteFactionControls(
+        LocationCandidate candidate,
+        FactionControlAuthority authority,
+        List<ValidationIssue> issues)
+    {
+        if (candidate.Raw["factionControl"] is not JsonArray controls)
+            return;
+
+        for (var index = 0; index < controls.Count; index++)
+        {
+            if (controls[index] is not JsonObject control)
+                continue;
+
+            var usesTemporaryIdentity = TryGetExactIdentity(
+                control,
+                "initialFactionId",
+                out var identity);
+            var identityField = usesTemporaryIdentity
+                ? "initialFactionId"
+                : "factionId";
+            if (!usesTemporaryIdentity &&
+                !TryGetExactIdentity(control, identityField, out identity))
+            {
+                continue;
+            }
+
+            var resolution = authority.Resolve(identity, usesTemporaryIdentity);
+            if (resolution != MortalLocationReferenceResolution.Exact)
+            {
+                var code = resolution switch
+                {
+                    MortalLocationReferenceResolution.Confusable =>
+                        "mortal_location_faction_control_target_confusable",
+                    MortalLocationReferenceResolution.Ambiguous =>
+                        "mortal_location_faction_control_target_ambiguous",
+                    _ => "mortal_location_faction_control_target_unknown"
+                };
+                issues.Add(Issue(
+                    $"{candidate.Context}.factionControl[{index}].{identityField}",
+                    code,
+                    "Faction control must resolve to one exact accepted Mortal faction.",
+                    usesTemporaryIdentity
+                        ? "one exact same-turn initial faction identity"
+                        : "one exact permanent faction identity",
+                    identity));
+                continue;
+            }
+
+            if (usesTemporaryIdentity)
+            {
+                control["factionId"] = identity;
+                control.Remove("initialFactionId");
+            }
+        }
+    }
+
+    private static void ValidateLocationUpdateCompanionReferences(
+        IReadOnlyList<LocationUpdate> updates,
+        MortalLocationCompanionAuthority companionAuthority,
+        ActorBindingAuthority actorAuthority,
+        FactionControlAuthority factionAuthority,
+        List<ValidationIssue> issues)
+    {
+        foreach (var update in updates)
+        {
+            issues.AddRange(companionAuthority.ValidateLoreBindings(
+                update.Raw,
+                update.Context));
+            ValidateAndRewriteLocationUpdateActorBindings(
+                update,
+                actorAuthority,
+                issues);
+            ValidateAndRewriteLocationUpdateFactionControls(
+                update,
+                factionAuthority,
+                issues);
+        }
+    }
+
+    private static void ValidateAndRewriteLocationUpdateActorBindings(
+        LocationUpdate update,
+        ActorBindingAuthority authority,
+        List<ValidationIssue> issues)
+    {
+        if (update.Raw["actorBindings"] is not JsonArray bindings)
+            return;
+
+        for (var index = 0; index < bindings.Count; index++)
+        {
+            if (bindings[index] is not JsonObject binding)
+                continue;
+
+            var usesTemporaryIdentity = TryGetExactIdentity(
+                binding,
+                "initialActorId",
+                out var identity);
+            var identityField = usesTemporaryIdentity ? "initialActorId" : "actorId";
+            if (!usesTemporaryIdentity &&
+                !TryGetExactIdentity(binding, identityField, out identity))
+            {
+                continue;
+            }
+
+            var resolution = authority.Resolve(
+                identity,
+                usesTemporaryIdentity,
+                out var placement);
+            if (resolution != MortalLocationReferenceResolution.Exact || placement == null)
+            {
+                var code = resolution switch
+                {
+                    MortalLocationReferenceResolution.Confusable =>
+                        "mortal_location_actor_binding_target_confusable",
+                    MortalLocationReferenceResolution.Ambiguous =>
+                        "mortal_location_actor_binding_target_ambiguous",
+                    _ => "mortal_location_actor_binding_target_unknown"
+                };
+                issues.Add(Issue(
+                    $"{update.Context}.actorBindings[{index}].{identityField}",
+                    code,
+                    "Updated actor binding must resolve to one exact accepted Mortal actor.",
+                    usesTemporaryIdentity
+                        ? "one exact same-turn initial actor identity"
+                        : "one exact permanent actor identity",
+                    identity));
+                continue;
+            }
+
+            if (!string.Equals(
+                    placement.PermanentLocationId,
+                    update.LocationId,
+                    StringComparison.Ordinal) ||
+                placement.InitialLocationId != null)
+            {
+                issues.Add(Issue(
+                    $"{update.Context}.actorBindings[{index}]",
+                    "mortal_location_actor_binding_physical_conflict",
+                    "An updated physical actor binding must agree with the actor's exact accepted location.",
+                    $"currentLocationId={update.LocationId}",
+                    placement.Describe()));
+                continue;
+            }
+
+            if (usesTemporaryIdentity)
+            {
+                binding["actorId"] = identity;
+                binding.Remove("initialActorId");
+            }
+        }
+    }
+
+    private static void ValidateAndRewriteLocationUpdateFactionControls(
+        LocationUpdate update,
+        FactionControlAuthority authority,
+        List<ValidationIssue> issues)
+    {
+        if (update.Raw["factionControl"] is not JsonArray controls)
+            return;
+
+        for (var index = 0; index < controls.Count; index++)
+        {
+            if (controls[index] is not JsonObject control)
+                continue;
+
+            var usesTemporaryIdentity = TryGetExactIdentity(
+                control,
+                "initialFactionId",
+                out var identity);
+            var identityField = usesTemporaryIdentity
+                ? "initialFactionId"
+                : "factionId";
+            if (!usesTemporaryIdentity &&
+                !TryGetExactIdentity(control, identityField, out identity))
+            {
+                continue;
+            }
+
+            var resolution = authority.Resolve(identity, usesTemporaryIdentity);
+            if (resolution != MortalLocationReferenceResolution.Exact)
+            {
+                var code = resolution switch
+                {
+                    MortalLocationReferenceResolution.Confusable =>
+                        "mortal_location_faction_control_target_confusable",
+                    MortalLocationReferenceResolution.Ambiguous =>
+                        "mortal_location_faction_control_target_ambiguous",
+                    _ => "mortal_location_faction_control_target_unknown"
+                };
+                issues.Add(Issue(
+                    $"{update.Context}.factionControl[{index}].{identityField}",
+                    code,
+                    "Updated faction control must resolve to one exact accepted Mortal faction.",
+                    usesTemporaryIdentity
+                        ? "one exact same-turn initial faction identity"
+                        : "one exact permanent faction identity",
+                    identity));
+                continue;
+            }
+
+            if (usesTemporaryIdentity)
+            {
+                control["factionId"] = identity;
+                control.Remove("initialFactionId");
+            }
+        }
+    }
+
+    private static void ValidateAndRewriteActorBindings(
+        LocationCandidate candidate,
+        ActorBindingAuthority authority,
+        List<ValidationIssue> issues)
+    {
+        if (candidate.Raw["actorBindings"] is not JsonArray bindings)
+            return;
+
+        var locationInitialId = ReadExactString(candidate.Raw, "initialId")!;
+        for (var index = 0; index < bindings.Count; index++)
+        {
+            if (bindings[index] is not JsonObject binding)
+                continue;
+
+            var usesTemporaryIdentity = TryGetExactIdentity(
+                binding,
+                "initialActorId",
+                out var identity);
+            var identityField = usesTemporaryIdentity ? "initialActorId" : "actorId";
+            if (!usesTemporaryIdentity &&
+                !TryGetExactIdentity(binding, identityField, out identity))
+            {
+                continue;
+            }
+
+            var resolution = authority.Resolve(
+                identity,
+                usesTemporaryIdentity,
+                out var placement);
+            if (resolution != MortalLocationReferenceResolution.Exact || placement == null)
+            {
+                var code = resolution switch
+                {
+                    MortalLocationReferenceResolution.Confusable =>
+                        "mortal_location_actor_binding_target_confusable",
+                    MortalLocationReferenceResolution.Ambiguous =>
+                        "mortal_location_actor_binding_target_ambiguous",
+                    _ => "mortal_location_actor_binding_target_unknown"
+                };
+                issues.Add(Issue(
+                    $"{candidate.Context}.actorBindings[{index}].{identityField}",
+                    code,
+                    "Actor binding must resolve to one exact accepted Mortal actor.",
+                    usesTemporaryIdentity
+                        ? "one exact same-turn initial actor identity"
+                        : "one exact permanent actor identity",
+                    identity));
+                continue;
+            }
+
+            if (!string.Equals(
+                    placement.InitialLocationId,
+                    locationInitialId,
+                    StringComparison.Ordinal) ||
+                placement.PermanentLocationId != null)
+            {
+                issues.Add(Issue(
+                    $"{candidate.Context}.actorBindings[{index}]",
+                    "mortal_location_actor_binding_physical_conflict",
+                    "A physical actor binding must agree with the actor's exact accepted location.",
+                    $"initialLocationId={locationInitialId}",
+                    placement.Describe()));
+                continue;
+            }
+
+            if (usesTemporaryIdentity)
+            {
+                binding["actorId"] = identity;
+                binding.Remove("initialActorId");
+            }
+        }
+    }
+
+    private static ActorBindingAuthority BuildActorBindingAuthority(JsonObject? npcRoot)
+    {
+        var authority = new ActorBindingAuthority();
+        if (npcRoot == null)
+            return authority;
+
+        var commandPlacements = new Dictionary<string, List<ActorPlacement>>(StringComparer.Ordinal);
+        if (npcRoot[NpcCoreChangesContract.PropertyName] is JsonArray commands)
+        {
+            foreach (var command in commands.OfType<JsonObject>())
+            {
+                var npcId = ReadExactString(command, "NPCId");
+                var placement = ReadActorPlacement(command["location"] as JsonObject);
+                if (npcId == null || placement == null)
+                    continue;
+                if (!commandPlacements.TryGetValue(npcId, out var placements))
+                {
+                    placements = [];
+                    commandPlacements.Add(npcId, placements);
+                }
+                placements.Add(placement);
+            }
+        }
+
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (npcRoot[section] is not JsonArray actors)
+                continue;
+            foreach (var actor in actors.OfType<JsonObject>())
+            {
+                if (TryReadExactPermanentActorIdentity(actor, out var permanentId))
+                {
+                    if (commandPlacements.TryGetValue(permanentId, out var commandValues))
+                    {
+                        foreach (var commandPlacement in commandValues)
+                            authority.AddPermanent(permanentId, commandPlacement);
+                    }
+                    else if (ReadActorPlacement(actor) is { } existingPlacement)
+                    {
+                        authority.AddPermanent(permanentId, existingPlacement);
+                    }
+                    continue;
+                }
+
+                var initialId = ReadExactString(actor, "initialId");
+                if (initialId == null ||
+                    actor[ActorMaterializationContract.PropertyName] is not JsonObject envelope ||
+                    !string.Equals(
+                        ReadExactString(envelope, "actorType"),
+                        "mortal_npc",
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        ReadExactString(envelope, "actorId"),
+                        initialId,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        ReadExactString(envelope, "state"),
+                        "complete",
+                        StringComparison.Ordinal) ||
+                    ReadActorPlacement(actor) is not { } placement)
+                {
+                    continue;
+                }
+
+                authority.AddTemporary(initialId, placement);
+            }
+        }
+
+        return authority;
+    }
+
+    private static FactionControlAuthority BuildFactionControlAuthority(
+        JsonObject? factionRoot)
+    {
+        var authority = new FactionControlAuthority();
+        if (factionRoot == null)
+            return authority;
+
+        if (factionRoot["factions"] is JsonArray canonicalFactions)
+        {
+            foreach (var faction in canonicalFactions.OfType<JsonObject>())
+            {
+                var factionId = ReadExactString(faction, "factionId");
+                if (factionId != null &&
+                    !faction.ContainsKey("initialId") &&
+                    HasExactMortalFactionEnvelope(faction, factionId))
+                {
+                    authority.AddPermanent(factionId);
+                }
+            }
+        }
+
+        if (factionRoot["factionDataChanges"] is JsonArray factionChanges)
+        {
+            foreach (var faction in factionChanges.OfType<JsonObject>())
+            {
+                var initialId = ReadExactString(faction, "initialId");
+                if (initialId != null &&
+                    faction.ContainsKey("factionId") &&
+                    faction["factionId"] == null &&
+                    TryReadExactBoolean(faction, "isNewFaction", out var isNewFaction) &&
+                    isNewFaction &&
+                    HasExactMortalFactionEnvelope(faction, initialId))
+                {
+                    authority.AddTemporary(initialId);
+                }
+            }
+        }
+
+        return authority;
+    }
+
+    private static bool HasExactMortalFactionEnvelope(
+        JsonObject faction,
+        string factionId) =>
+        faction[FactionMaterializationContract.PropertyName] is JsonObject envelope &&
+        string.Equals(
+            ReadExactString(envelope, "factionType"),
+            "mortal_faction",
+            StringComparison.Ordinal) &&
+        string.Equals(
+            ReadExactString(envelope, "factionId"),
+            factionId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            ReadExactString(envelope, "state"),
+            "complete",
+            StringComparison.Ordinal);
+
+    private static bool TryReadExactBoolean(
+        JsonObject value,
+        string propertyName,
+        out bool result)
+    {
+        result = false;
+        return value[propertyName] is JsonValue scalar &&
+               scalar.TryGetValue<bool>(out result);
+    }
+
+    private static bool TryReadExactPermanentActorIdentity(
+        JsonObject actor,
+        out string identity)
+    {
+        identity = string.Empty;
+        var hasNullAlias = false;
+        string? resolved = null;
+        foreach (var field in new[] { "NPCId", "npcId", "id" })
+        {
+            if (!actor.TryGetPropertyValue(field, out var node))
+                continue;
+            if (node == null)
+            {
+                hasNullAlias = true;
+                continue;
+            }
+            if (ReadExactString(actor, field) is not { } candidate ||
+                resolved != null && !string.Equals(resolved, candidate, StringComparison.Ordinal))
+            {
+                return false;
+            }
+            resolved = candidate;
+        }
+
+        if (resolved == null || hasNullAlias)
+            return false;
+        identity = resolved;
+        return true;
+    }
+
+    private static ActorPlacement? ReadActorPlacement(JsonObject? actor)
+    {
+        if (actor == null)
+            return null;
+        var current = ReadExactString(actor, "currentLocationId");
+        var initial = ReadExactString(actor, "initialLocationId");
+        return (current != null) == (initial != null)
+            ? null
+            : new ActorPlacement(current, initial);
     }
 
     private static BootstrapPlanningContext? ValidateBootstrapReservations(
@@ -824,6 +1598,7 @@ internal static class MortalLocationAcceptedTurnPlanner
         JsonArray preTurnLocations,
         MortalLocationIdentityState identityState,
         int turn,
+        MortalBootstrapLocationReservationSet? bootstrapReservations,
         List<ValidationIssue> issues)
     {
         var routeByOriginKey = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -857,6 +1632,14 @@ internal static class MortalLocationAcceptedTurnPlanner
                     turn.ToString(),
                     sourceTurn?.ToString() ?? "missing"));
             }
+            ValidateAcceptedTurnSourceAuthority(
+                candidate.Raw,
+                candidate.Context,
+                candidate.SelectCurrent,
+                isLink: false,
+                turn,
+                bootstrapReservations,
+                issues);
 
             if (initialId != null)
             {
@@ -911,6 +1694,8 @@ internal static class MortalLocationAcceptedTurnPlanner
 
     private static void ValidateParentGraph(
         IReadOnlyList<LocationCandidate> candidates,
+        IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
+        MortalLocationIdentityState identityState,
         List<ValidationIssue> issues)
     {
         var parents = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -919,23 +1704,92 @@ internal static class MortalLocationAcceptedTurnPlanner
             .Where(static value => value != null)
             .Cast<string>()
             .ToHashSet(StringComparer.Ordinal);
+        var candidateIdentityKeys = candidateIds
+            .Select(MortalLocationIdentityState.BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
+        var activePermanentIdentityKeys = preTurnLocationsById.Keys
+            .Select(MortalLocationIdentityState.BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
         foreach (var candidate in candidates)
         {
             var initialId = ReadExactString(candidate.Raw, "initialId");
-            var parentInitialId = ReadExactString(candidate.Raw, "parentInitialId");
-            if (initialId == null || parentInitialId == null)
+            if (initialId == null)
                 continue;
-            if (!candidateIds.Contains(parentInitialId))
+
+            var parentLocationId = ReadExactString(candidate.Raw, "parentLocationId");
+            var parentInitialId = ReadExactString(candidate.Raw, "parentInitialId");
+            if (parentLocationId != null &&
+                preTurnLocationsById.ContainsKey(parentLocationId))
             {
-                issues.Add(Issue(
-                    candidate.Context + ".parentInitialId",
-                    "mortal_location_materialization_parent_unresolved",
-                    "Same-turn parentInitialId must resolve to one accepted location candidate.",
-                    "exact same-turn initialId",
-                    parentInitialId));
                 continue;
             }
-            parents[initialId] = parentInitialId;
+            if (parentInitialId != null && candidateIds.Contains(parentInitialId))
+            {
+                if (string.Equals(initialId, parentInitialId, StringComparison.Ordinal))
+                {
+                    issues.Add(Issue(
+                        candidate.Context + ".parentInitialId",
+                        "mortal_location_materialization_parent_cycle",
+                        "A location cannot name its own creation identity as parent.",
+                        "a different exact same-turn initialId or null",
+                        parentInitialId));
+                    continue;
+                }
+                parents[initialId] = parentInitialId;
+                continue;
+            }
+
+            var rawParentLocationId = ReadStringScalar(candidate.Raw, "parentLocationId");
+            var rawParentInitialId = ReadStringScalar(candidate.Raw, "parentInitialId");
+            if (rawParentLocationId == null && rawParentInitialId == null)
+                continue;
+
+            var historical =
+                identityState.ContainsRetiredLocationId(rawParentLocationId) ||
+                identityState.ContainsHistoricalLocationOrigin(rawParentInitialId, null);
+            if (historical)
+            {
+                issues.Add(Issue(
+                    candidate.Context + (rawParentLocationId != null
+                        ? ".parentLocationId"
+                        : ".parentInitialId"),
+                    "mortal_location_materialization_parent_historical_replay",
+                    "A parent selector cannot reuse retired permanent identity or historical creation-origin evidence.",
+                    "exact active locationId or accepted same-turn initialId",
+                    rawParentLocationId ?? rawParentInitialId!));
+                continue;
+            }
+
+            var confusable =
+                rawParentLocationId != null &&
+                activePermanentIdentityKeys.Contains(
+                    MortalLocationIdentityState.BuildConfusableKey(rawParentLocationId)) ||
+                rawParentInitialId != null &&
+                candidateIdentityKeys.Contains(
+                    MortalLocationIdentityState.BuildConfusableKey(rawParentInitialId));
+            if (confusable)
+            {
+                issues.Add(Issue(
+                    candidate.Context + (rawParentLocationId != null
+                        ? ".parentLocationId"
+                        : ".parentInitialId"),
+                    "mortal_location_materialization_parent_confusable",
+                    "A parent selector must match exact case-sensitive identity authority and cannot use a Unicode or whitespace alias.",
+                    "exact active locationId or accepted same-turn initialId",
+                    rawParentLocationId ?? rawParentInitialId!));
+                continue;
+            }
+
+            var unresolvedField = rawParentLocationId != null
+                ? "parentLocationId"
+                : "parentInitialId";
+            var unresolvedSelector = rawParentLocationId ?? rawParentInitialId!;
+            issues.Add(Issue(
+                candidate.Context + "." + unresolvedField,
+                "mortal_location_materialization_parent_unresolved",
+                "A parent selector must resolve to one exact active or accepted same-turn Mortal location.",
+                "exact active locationId or accepted same-turn initialId",
+                unresolvedSelector));
         }
 
         foreach (var start in parents.Keys)
@@ -963,6 +1817,7 @@ internal static class MortalLocationAcceptedTurnPlanner
         JsonObject? updates,
         MortalLocationIdentityState identityState,
         int turn,
+        MortalBootstrapLocationReservationSet? bootstrapReservations,
         List<ValidationIssue> issues)
     {
         var result = new List<LinkCandidate>();
@@ -1015,6 +1870,14 @@ internal static class MortalLocationAcceptedTurnPlanner
                     turn.ToString(),
                     sourceTurn?.ToString() ?? "missing"));
             }
+            ValidateAcceptedTurnSourceAuthority(
+                link,
+                context,
+                selectCurrent: false,
+                isLink: true,
+                turn,
+                bootstrapReservations,
+                issues);
             if ((initialId != null && !originKeys.Add(MortalLocationIdentityState.BuildConfusableKey(initialId))) ||
                 (materializationId != null && !materializationKeys.Add(MortalLocationIdentityState.BuildConfusableKey(materializationId))))
             {
@@ -1039,16 +1902,71 @@ internal static class MortalLocationAcceptedTurnPlanner
         return result;
     }
 
+    private static void ValidateAcceptedTurnSourceAuthority(
+        JsonObject candidate,
+        string context,
+        bool selectCurrent,
+        bool isLink,
+        int turn,
+        MortalBootstrapLocationReservationSet? bootstrapReservations,
+        List<ValidationIssue> issues)
+    {
+        var initialId = ReadExactString(candidate, "initialId");
+        var usesReservedBootstrapOrigin = bootstrapReservations is { State: "pending" } &&
+            (isLink
+                ? string.Equals(
+                    initialId,
+                    bootstrapReservations.Link.InitialId,
+                    StringComparison.Ordinal)
+                : selectCurrent
+                    ? string.Equals(
+                        initialId,
+                        bootstrapReservations.Start.InitialId,
+                        StringComparison.Ordinal)
+                    : string.Equals(
+                        initialId,
+                        bootstrapReservations.Neighbor.InitialId,
+                        StringComparison.Ordinal));
+        var expectedKind = usesReservedBootstrapOrigin
+            ? bootstrapReservations!.AuthorityKind
+            : "turn_outcome";
+        var expectedId = usesReservedBootstrapOrigin
+            ? bootstrapReservations!.AuthorityId
+            : "turn_" + turn;
+        var authority = candidate["materialization"]?["sourceAuthority"] as JsonObject;
+        var actualKind = ReadExactString(authority, "kind");
+        var actualId = ReadExactString(authority, "authorityId");
+        if (string.Equals(actualKind, expectedKind, StringComparison.Ordinal) &&
+            string.Equals(actualId, expectedId, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        issues.Add(Issue(
+            context + ".materialization.sourceAuthority",
+            "mortal_location_materialization_source_authority_mismatch",
+            "Materialization source authority must match the exact accepted-turn authority.",
+            expectedKind + ":" + expectedId,
+            authority?.ToJsonString() ?? "missing"));
+    }
+
     private static void ValidateRawLinkEndpoints(
         IReadOnlyList<LinkCandidate> links,
         IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
         IReadOnlyList<LocationCandidate> locationCandidates,
+        MortalLocationIdentityState identityState,
         List<ValidationIssue> issues)
     {
         var sameTurnInitialIds = locationCandidates
             .Select(candidate => ReadExactString(candidate.Raw, "initialId"))
             .Where(static value => value != null)
             .Cast<string>()
+            .ToHashSet(StringComparer.Ordinal);
+        var sameTurnIdentityKeys = sameTurnInitialIds
+            .Select(MortalLocationIdentityState.BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
+        var activePermanentIdentityKeys = preTurnLocationsById.Keys
+            .Select(MortalLocationIdentityState.BuildConfusableKey)
             .ToHashSet(StringComparer.Ordinal);
         foreach (var candidate in links)
         {
@@ -1060,12 +1978,55 @@ internal static class MortalLocationAcceptedTurnPlanner
                                temporary != null && sameTurnInitialIds.Contains(temporary);
                 if (resolved)
                     continue;
+
+                var permanentField = endpoint + "LocationId";
+                var temporaryField = endpoint + "InitialId";
+                var rawPermanent = ReadStringScalar(candidate.Raw, permanentField);
+                var rawTemporary = ReadStringScalar(candidate.Raw, temporaryField);
+                var selectorField = rawPermanent != null
+                    ? permanentField
+                    : rawTemporary != null
+                        ? temporaryField
+                        : permanentField;
+                var selector = rawPermanent ?? rawTemporary;
+                var historical =
+                    identityState.ContainsRetiredLocationId(rawPermanent) ||
+                    identityState.ContainsHistoricalLocationOrigin(rawTemporary, null);
+                if (historical)
+                {
+                    issues.Add(Issue(
+                        candidate.Context + "." + selectorField,
+                        "mortal_location_link_endpoint_historical_replay",
+                        "A link endpoint cannot reuse retired permanent identity or historical creation-origin evidence.",
+                        "exact active locationId or accepted same-turn initialId",
+                        selector ?? "missing"));
+                    continue;
+                }
+
+                var confusable =
+                    rawPermanent != null &&
+                    activePermanentIdentityKeys.Contains(
+                        MortalLocationIdentityState.BuildConfusableKey(rawPermanent)) ||
+                    rawTemporary != null &&
+                    sameTurnIdentityKeys.Contains(
+                        MortalLocationIdentityState.BuildConfusableKey(rawTemporary));
+                if (confusable)
+                {
+                    issues.Add(Issue(
+                        candidate.Context + "." + selectorField,
+                        "mortal_location_link_endpoint_confusable",
+                        "A link endpoint must match exact case-sensitive identity authority and cannot use a Unicode or whitespace alias.",
+                        "exact active locationId or accepted same-turn initialId",
+                        selector ?? "missing"));
+                    continue;
+                }
+
                 issues.Add(Issue(
-                    candidate.Context + "." + endpoint,
+                    candidate.Context + "." + selectorField,
                     "mortal_location_link_endpoint_unresolved",
                     "Each link endpoint must resolve exactly once to pre-turn or same-turn location authority.",
                     "exact active locationId or accepted initialId",
-                    permanent ?? temporary ?? "missing"));
+                    selector ?? "missing"));
             }
         }
     }
@@ -1583,7 +2544,9 @@ internal static class MortalLocationAcceptedTurnPlanner
     private static ExistingSelection? ValidateExistingSelection(
         JsonObject raw,
         string existingId,
+        JsonObject? preTurnCurrentLocation,
         IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
+        JsonArray preTurnLinks,
         List<ValidationIssue> issues)
     {
         var forbidden = raw.Select(static pair => pair.Key)
@@ -1598,6 +2561,24 @@ internal static class MortalLocationAcceptedTurnPlanner
                 string.Join(',', ExistingCurrentFields.OrderBy(static field => field, StringComparer.Ordinal)),
                 string.Join(',', forbidden)));
         }
+        if (raw["locationStorages"] is JsonArray rawStorages)
+        {
+            for (var index = 0; index < rawStorages.Count; index++)
+            {
+                if (rawStorages[index] is not JsonObject storage ||
+                    !storage.ContainsKey("contents"))
+                {
+                    continue;
+                }
+
+                issues.Add(Issue(
+                    $"currentLocationData.locationStorages[{index}].contents",
+                    "mortal_location_movement_client_owned_item_contents_forbidden",
+                    "Existing movement cannot author or echo client-owned storage item contents.",
+                    "field absent; the client relocates accepted contents atomically",
+                    storage["contents"]?.ToJsonString() ?? "null"));
+            }
+        }
         if (!preTurnLocationsById.TryGetValue(existingId, out var canonical))
         {
             issues.Add(Issue(
@@ -1608,8 +2589,68 @@ internal static class MortalLocationAcceptedTurnPlanner
                 existingId));
             return null;
         }
+
+        var preTurnCurrentId = ReadExactString(preTurnCurrentLocation, "locationId");
+        if (!string.Equals(preTurnCurrentId, existingId, StringComparison.Ordinal) &&
+            (preTurnCurrentId == null ||
+             !IsPlayerKnown(canonical) ||
+             !preTurnLinks.OfType<JsonObject>().Any(link =>
+                 IsAuthorizedTraversal(link, preTurnCurrentId, existingId))))
+        {
+            issues.Add(Issue(
+                "currentLocationData.locationId",
+                "mortal_location_movement_not_authorized",
+                "Changing the current location requires one exact visible open outgoing link from the pre-turn current location.",
+                "same current location or exact player-known open directed link",
+                existingId));
+        }
+
+        foreach (var field in raw.Select(static property => property.Key)
+                     .Where(ExistingProtectedResendFields.Contains))
+        {
+            var code = field switch
+            {
+                "materialization" or "materializationId" or "initialId" or "parentInitialId" =>
+                    "mortal_location_materialization_identity_conflict",
+                "materializationReceipt" or "receiptId" or "seal" =>
+                    "mortal_location_materialization_receipt_conflict",
+                _ => "mortal_location_materialization_gm_authored_client_field"
+            };
+            issues.Add(Issue(
+                "currentLocationData." + field,
+                code,
+                "An existing-location resend cannot carry historical or client-owned authority fields.",
+                "field absent from the GM-authored current-selection route",
+                raw[field]?.ToJsonString() ?? "null"));
+        }
         return new ExistingSelection(raw.DeepClone().AsObject(), canonical.DeepClone().AsObject());
     }
+
+    private static bool IsAuthorizedTraversal(
+        JsonObject link,
+        string sourceLocationId,
+        string targetLocationId)
+    {
+        if (!string.Equals(ReadExactString(link, "sourceLocationId"), sourceLocationId, StringComparison.Ordinal) ||
+            !string.Equals(ReadExactString(link, "targetLocationId"), targetLocationId, StringComparison.Ordinal) ||
+            link["access"] is not JsonObject access ||
+            !string.Equals(ReadExactString(access, "state"), "open", StringComparison.Ordinal) ||
+            access["requirements"] is not JsonArray requirements ||
+            requirements.Count != 0 ||
+            link["discovery"] is not JsonObject discovery ||
+            string.Equals(ReadExactString(discovery, "tier"), "hidden", StringComparison.Ordinal) ||
+            !string.Equals(ReadExactString(discovery, "audience"), "player_known", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool IsPlayerKnown(JsonObject location) =>
+        location["discovery"] is JsonObject discovery &&
+        !string.Equals(ReadExactString(discovery, "tier"), "hidden", StringComparison.Ordinal) &&
+        string.Equals(ReadExactString(discovery, "audience"), "player_known", StringComparison.Ordinal);
 
     private static void ApplyLocationUpdates(
         JsonArray locations,
@@ -2055,6 +3096,139 @@ internal static class MortalLocationAcceptedTurnPlanner
         return projection;
     }
 
+    private static JsonObject CreateExistingProjectionSource(
+        JsonObject? preTurnCurrent,
+        ExistingSelection selection)
+    {
+        var source = selection.RawSelection.DeepClone().AsObject();
+        var selectedLocationId = ReadExactString(selection.RawSelection, "locationId");
+        if (preTurnCurrent == null ||
+            selectedLocationId == null ||
+            !string.Equals(
+                ReadExactString(preTurnCurrent, "locationId"),
+                selectedLocationId,
+                StringComparison.Ordinal) ||
+            preTurnCurrent["locationStorages"] is not JsonArray preTurnStorages)
+        {
+            return source;
+        }
+
+        source["locationStorages"] = preTurnStorages.DeepClone();
+        return source;
+    }
+
+    private static JsonObject ReconcileLocationStorageContents(
+        JsonObject finalWorldMap,
+        JsonObject? preTurnCurrent,
+        JsonObject? preTurnOffscreen,
+        string? selectedLocationId,
+        JsonObject? finalCurrent,
+        List<ValidationIssue> issues)
+    {
+        var parsed = MortalLocationStorageContentsState.Parse(preTurnOffscreen);
+        issues.AddRange(parsed.Issues);
+        if (parsed.Issues.Count != 0)
+            return parsed.Root;
+
+        var storageMetadata = new Dictionary<MortalLocationStorageKey, JsonObject>();
+        foreach (var location in finalWorldMap["locations"]!
+                     .AsArray()
+                     .OfType<JsonObject>())
+        {
+            var locationId = ReadExactString(location, "locationId");
+            if (locationId == null || location["locationStorages"] is not JsonArray storages)
+                continue;
+            foreach (var storage in storages.OfType<JsonObject>())
+            {
+                var storageId = ReadExactString(storage, "storageId");
+                if (storageId != null)
+                {
+                    storageMetadata.TryAdd(
+                        new MortalLocationStorageKey(locationId, storageId),
+                        storage);
+                }
+            }
+        }
+
+        var entries = parsed.Entries.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsArray());
+        var preTurnLocationId = ReadExactString(preTurnCurrent, "locationId");
+        foreach (var key in entries.Keys.ToArray())
+        {
+            if (!storageMetadata.ContainsKey(key))
+            {
+                issues.Add(Issue(
+                    MortalLocationStorageContentsState.StatePath,
+                    "mortal_location_storage_contents_coordinate_unresolved",
+                    "Every offscreen item array must bind one exact active location storage.",
+                    "exact active locationId/storageId metadata coordinate",
+                    $"{key.LocationId}/{key.StorageId}"));
+            }
+            if (preTurnLocationId != null &&
+                string.Equals(key.LocationId, preTurnLocationId, StringComparison.Ordinal))
+            {
+                issues.Add(Issue(
+                    MortalLocationStorageContentsState.StatePath,
+                    "mortal_location_storage_contents_current_duplicate",
+                    "The pre-turn current location cannot also own an offscreen physical item array.",
+                    "current location contents only in current_location.json",
+                    $"{key.LocationId}/{key.StorageId}"));
+            }
+        }
+        if (issues.Count != 0)
+            return parsed.Root;
+
+        var selectionChanged = preTurnLocationId != null &&
+                               selectedLocationId != null &&
+                               !string.Equals(
+                                   preTurnLocationId,
+                                   selectedLocationId,
+                                   StringComparison.Ordinal);
+        if (selectionChanged && preTurnCurrent?["locationStorages"] is JsonArray sourceStorages)
+        {
+            foreach (var storage in sourceStorages.OfType<JsonObject>())
+            {
+                var storageId = ReadExactString(storage, "storageId");
+                if (storageId == null || storage["contents"] is not JsonArray contents || contents.Count == 0)
+                    continue;
+
+                var key = new MortalLocationStorageKey(preTurnLocationId!, storageId);
+                if (!storageMetadata.ContainsKey(key) || entries.ContainsKey(key))
+                {
+                    issues.Add(Issue(
+                        MortalLocationStorageContentsState.StatePath,
+                        "mortal_location_storage_contents_source_ambiguous",
+                        "Current storage contents can be parked only at one exact active metadata coordinate.",
+                        "one exact empty offscreen coordinate",
+                        $"{key.LocationId}/{key.StorageId}"));
+                    continue;
+                }
+                entries.Add(key, contents.DeepClone().AsArray());
+            }
+        }
+
+        if (selectionChanged &&
+            selectedLocationId != null &&
+            finalCurrent?["locationStorages"] is JsonArray targetStorages)
+        {
+            foreach (var storage in targetStorages.OfType<JsonObject>())
+            {
+                var storageId = ReadExactString(storage, "storageId");
+                if (storageId == null)
+                    continue;
+                var key = new MortalLocationStorageKey(selectedLocationId, storageId);
+                storage["contents"] = entries.Remove(key, out var contents)
+                    ? contents.DeepClone()
+                    : new JsonArray();
+            }
+        }
+
+        if (issues.Count != 0)
+            return parsed.Root;
+        return MortalLocationStorageContentsState.BuildCanonicalRoot(entries);
+    }
+
     private static void StripStorageContents(JsonObject location)
     {
         if (location["locationStorages"] is not JsonArray storages)
@@ -2064,7 +3238,8 @@ internal static class MortalLocationAcceptedTurnPlanner
     }
 
     private static IReadOnlyList<MortalLocationStorageCoordinate> BuildAcceptedStorageCoordinates(
-        JsonObject? current)
+        JsonObject? current,
+        IReadOnlyDictionary<string, string> locationIdsByInitialId)
     {
         if (current == null ||
             !TryGetExactIdentity(current, "locationId", out var locationId) ||
@@ -2073,12 +3248,22 @@ internal static class MortalLocationAcceptedTurnPlanner
             return Array.Empty<MortalLocationStorageCoordinate>();
         }
 
+        var initialLocationId = locationIdsByInitialId
+            .Where(pair => string.Equals(
+                pair.Value,
+                locationId,
+                StringComparison.Ordinal))
+            .Select(static pair => pair.Key)
+            .SingleOrDefault();
         return storages.OfType<JsonObject>()
             .Select(static storage => ReadExactString(storage, "storageId"))
             .Where(static storageId => storageId != null)
             .Cast<string>()
             .Distinct(StringComparer.Ordinal)
-            .Select(storageId => new MortalLocationStorageCoordinate(locationId, storageId))
+            .Select(storageId => new MortalLocationStorageCoordinate(
+                locationId,
+                storageId,
+                initialLocationId))
             .ToArray();
     }
 
@@ -2194,6 +3379,15 @@ internal static class MortalLocationAcceptedTurnPlanner
         return text;
     }
 
+    private static string? ReadStringScalar(JsonObject? root, string field)
+    {
+        return root?[field] is JsonValue value &&
+               value.TryGetValue<string>(out var text) &&
+               !string.IsNullOrEmpty(text)
+            ? text
+            : null;
+    }
+
     private static int? ReadInt(JsonObject? root, string field)
     {
         return root?[field] is JsonValue value && value.TryGetValue<int>(out var result)
@@ -2243,6 +3437,195 @@ internal static class MortalLocationAcceptedTurnPlanner
     private sealed record LinkUpdate(JsonObject Raw, string Context, string LinkId);
 
     private sealed record LinkRemoval(JsonObject Raw, string Context, string LinkId);
+
+    private sealed record ActorPlacement(
+        string? PermanentLocationId,
+        string? InitialLocationId)
+    {
+        internal string Describe() => PermanentLocationId != null
+            ? "currentLocationId=" + PermanentLocationId
+            : "initialLocationId=" + (InitialLocationId ?? "missing");
+    }
+
+    private sealed class ActorBindingAuthority
+    {
+        private readonly ActorBindingIndex _permanent = new();
+        private readonly ActorBindingIndex _temporary = new();
+
+        internal void AddPermanent(string identity, ActorPlacement placement) =>
+            _permanent.Add(identity, placement);
+
+        internal void AddTemporary(string identity, ActorPlacement placement) =>
+            _temporary.Add(identity, placement);
+
+        internal MortalLocationReferenceResolution Resolve(
+            string identity,
+            bool temporary,
+            out ActorPlacement? placement) =>
+            (temporary ? _temporary : _permanent).Resolve(identity, out placement);
+
+        internal MortalLocationReferenceResolution ResolveEffective(
+            string identity,
+            out ActorPlacement? placement)
+        {
+            var permanentResolution = _permanent.Resolve(identity, out var permanentPlacement);
+            var temporaryResolution = _temporary.Resolve(identity, out var temporaryPlacement);
+            if (permanentResolution == MortalLocationReferenceResolution.Exact &&
+                temporaryResolution == MortalLocationReferenceResolution.Missing)
+            {
+                placement = permanentPlacement;
+                return MortalLocationReferenceResolution.Exact;
+            }
+            if (temporaryResolution == MortalLocationReferenceResolution.Exact &&
+                permanentResolution == MortalLocationReferenceResolution.Missing)
+            {
+                placement = temporaryPlacement;
+                return MortalLocationReferenceResolution.Exact;
+            }
+
+            placement = null;
+            if (permanentResolution == MortalLocationReferenceResolution.Ambiguous ||
+                temporaryResolution == MortalLocationReferenceResolution.Ambiguous ||
+                permanentResolution == MortalLocationReferenceResolution.Exact ||
+                temporaryResolution == MortalLocationReferenceResolution.Exact)
+            {
+                return MortalLocationReferenceResolution.Ambiguous;
+            }
+            if (permanentResolution == MortalLocationReferenceResolution.Confusable ||
+                temporaryResolution == MortalLocationReferenceResolution.Confusable)
+            {
+                return MortalLocationReferenceResolution.Confusable;
+            }
+            return MortalLocationReferenceResolution.Missing;
+        }
+    }
+
+    private sealed class ActorBindingIndex
+    {
+        private readonly Dictionary<string, HashSet<ActorPlacement>> _placementsByIdentity =
+            new(StringComparer.Ordinal);
+        private readonly Dictionary<string, HashSet<string>> _identitiesByConfusableKey =
+            new(StringComparer.Ordinal);
+
+        internal void Add(string identity, ActorPlacement placement)
+        {
+            if (!_placementsByIdentity.TryGetValue(identity, out var placements))
+            {
+                placements = [];
+                _placementsByIdentity.Add(identity, placements);
+            }
+            placements.Add(placement);
+
+            var key = MortalLocationIdentityState.BuildConfusableKey(identity);
+            if (!_identitiesByConfusableKey.TryGetValue(key, out var identities))
+            {
+                identities = new HashSet<string>(StringComparer.Ordinal);
+                _identitiesByConfusableKey.Add(key, identities);
+            }
+            identities.Add(identity);
+        }
+
+        internal MortalLocationReferenceResolution Resolve(
+            string identity,
+            out ActorPlacement? placement)
+        {
+            placement = null;
+            var key = MortalLocationIdentityState.BuildConfusableKey(identity);
+            _identitiesByConfusableKey.TryGetValue(key, out var confusableIdentities);
+            if (_placementsByIdentity.TryGetValue(identity, out var placements))
+            {
+                if (placements.Count == 1 && confusableIdentities?.Count == 1)
+                {
+                    placement = placements.Single();
+                    return MortalLocationReferenceResolution.Exact;
+                }
+                return MortalLocationReferenceResolution.Ambiguous;
+            }
+
+            return confusableIdentities is { Count: > 0 }
+                ? MortalLocationReferenceResolution.Confusable
+                : MortalLocationReferenceResolution.Missing;
+        }
+    }
+
+    private sealed class FactionControlAuthority
+    {
+        private readonly ExactIdentityIndex _permanent = new();
+        private readonly ExactIdentityIndex _temporary = new();
+
+        internal void AddPermanent(string identity) => _permanent.Add(identity);
+
+        internal void AddTemporary(string identity) => _temporary.Add(identity);
+
+        internal MortalLocationReferenceResolution Resolve(
+            string identity,
+            bool temporary) =>
+            (temporary ? _temporary : _permanent).Resolve(identity);
+
+        internal MortalLocationReferenceResolution ResolveEffective(string identity)
+        {
+            var permanentResolution = _permanent.Resolve(identity);
+            var temporaryResolution = _temporary.Resolve(identity);
+            if (permanentResolution == MortalLocationReferenceResolution.Exact &&
+                temporaryResolution == MortalLocationReferenceResolution.Missing ||
+                temporaryResolution == MortalLocationReferenceResolution.Exact &&
+                permanentResolution == MortalLocationReferenceResolution.Missing)
+            {
+                return MortalLocationReferenceResolution.Exact;
+            }
+
+            if (permanentResolution == MortalLocationReferenceResolution.Ambiguous ||
+                temporaryResolution == MortalLocationReferenceResolution.Ambiguous ||
+                permanentResolution == MortalLocationReferenceResolution.Exact ||
+                temporaryResolution == MortalLocationReferenceResolution.Exact)
+            {
+                return MortalLocationReferenceResolution.Ambiguous;
+            }
+
+            return permanentResolution == MortalLocationReferenceResolution.Confusable ||
+                   temporaryResolution == MortalLocationReferenceResolution.Confusable
+                ? MortalLocationReferenceResolution.Confusable
+                : MortalLocationReferenceResolution.Missing;
+        }
+    }
+
+    private sealed class ExactIdentityIndex
+    {
+        private readonly Dictionary<string, int> _countsByIdentity =
+            new(StringComparer.Ordinal);
+        private readonly Dictionary<string, HashSet<string>> _identitiesByConfusableKey =
+            new(StringComparer.Ordinal);
+
+        internal void Add(string identity)
+        {
+            _countsByIdentity.TryGetValue(identity, out var count);
+            _countsByIdentity[identity] = count + 1;
+
+            var key = MortalLocationIdentityState.BuildConfusableKey(identity);
+            if (!_identitiesByConfusableKey.TryGetValue(key, out var identities))
+            {
+                identities = new HashSet<string>(StringComparer.Ordinal);
+                _identitiesByConfusableKey.Add(key, identities);
+            }
+            identities.Add(identity);
+        }
+
+        internal MortalLocationReferenceResolution Resolve(string identity)
+        {
+            var key = MortalLocationIdentityState.BuildConfusableKey(identity);
+            _identitiesByConfusableKey.TryGetValue(key, out var confusableIdentities);
+            if (_countsByIdentity.TryGetValue(identity, out var count))
+            {
+                return count == 1 && confusableIdentities?.Count == 1
+                    ? MortalLocationReferenceResolution.Exact
+                    : MortalLocationReferenceResolution.Ambiguous;
+            }
+
+            return confusableIdentities is { Count: > 0 }
+                ? MortalLocationReferenceResolution.Confusable
+                : MortalLocationReferenceResolution.Missing;
+        }
+    }
 
     private sealed record BootstrapPlanningContext(
         MortalBootstrapLocationReservationSet Reservations,

@@ -9,15 +9,24 @@ internal sealed record MortalLocationAcceptedTurnInput(
     JsonObject? RawCurrentLocationData,
     JsonObject? RawWorldMapUpdates,
     int Turn,
-    JsonObject? BootstrapScaffold = null);
+    JsonObject? BootstrapScaffold = null,
+    MortalLocationCompanionAuthority? CompanionAuthority = null,
+    JsonObject? RawNpcCore = null,
+    JsonObject? RawFactionCore = null,
+    JsonObject? PreTurnStorageContents = null);
 
 internal sealed record MortalLocationStorageCoordinate(
     string LocationId,
-    string StorageId);
+    string StorageId,
+    string? InitialLocationId = null);
 
 internal sealed record MortalLocationGovernedRewrite(
     string CarrierPath,
-    string Field,
+    string EntryPath,
+    string OwnerField,
+    string OwnerId,
+    string TemporaryFieldPath,
+    string PermanentFieldPath,
     string InitialId,
     string PermanentId);
 
@@ -26,7 +35,11 @@ internal sealed record MortalLocationRepairContext(
     string EntityKind,
     string? InitialId,
     string? MaterializationId,
-    IReadOnlyList<string> RepairableFields);
+    IReadOnlyList<string> RepairableFields,
+    string? ExistingId = null,
+    int? ExpectedSourceTurn = null,
+    string? ExpectedSourceAuthorityKind = null,
+    string? ExpectedSourceAuthorityId = null);
 
 internal sealed class MortalLocationAcceptedTurnPlan
 {
@@ -34,6 +47,7 @@ internal sealed class MortalLocationAcceptedTurnPlan
         JsonObject finalWorldMap,
         JsonObject? finalCurrentLocation,
         JsonObject finalIdentityIndex,
+        JsonObject finalStorageContents,
         IReadOnlyDictionary<string, string> locationIdsByInitialId,
         IReadOnlyDictionary<string, string> linkIdsByInitialId,
         IReadOnlyList<MortalLocationStorageCoordinate> acceptedStorageCoordinates,
@@ -45,6 +59,7 @@ internal sealed class MortalLocationAcceptedTurnPlan
         FinalWorldMap = finalWorldMap ?? throw new ArgumentNullException(nameof(finalWorldMap));
         FinalCurrentLocation = finalCurrentLocation;
         FinalIdentityIndex = finalIdentityIndex ?? throw new ArgumentNullException(nameof(finalIdentityIndex));
+        FinalStorageContents = finalStorageContents ?? throw new ArgumentNullException(nameof(finalStorageContents));
         LocationIdsByInitialId = locationIdsByInitialId ?? throw new ArgumentNullException(nameof(locationIdsByInitialId));
         LinkIdsByInitialId = linkIdsByInitialId ?? throw new ArgumentNullException(nameof(linkIdsByInitialId));
         AcceptedStorageCoordinates = acceptedStorageCoordinates ?? throw new ArgumentNullException(nameof(acceptedStorageCoordinates));
@@ -59,6 +74,8 @@ internal sealed class MortalLocationAcceptedTurnPlan
     internal JsonObject? FinalCurrentLocation { get; }
 
     internal JsonObject FinalIdentityIndex { get; }
+
+    internal JsonObject FinalStorageContents { get; }
 
     internal IReadOnlyDictionary<string, string> LocationIdsByInitialId { get; }
 
