@@ -28,6 +28,14 @@ public sealed class RepositoryPublicationDocumentationTests
         return Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
     }
 
+    private static string Sha256NormalizedText(string relativePath)
+    {
+        var normalized = Read(relativePath)
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace('\r', '\n');
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(normalized)));
+    }
+
     [Fact]
     public void RootPublicationDocuments_DefineApprovedMixedLicenseBoundary()
     {
@@ -40,7 +48,7 @@ public sealed class RepositoryPublicationDocumentationTests
         Assert.StartsWith("GNU AFFERO GENERAL PUBLIC LICENSE", license.TrimStart());
         Assert.Equal(
             "0D96A4FF68AD6D4B6F1F30F713B18D5184912BA8DD389F86AA7710DB079ABCB0",
-            Sha256("LICENSE"));
+            Sha256NormalizedText("LICENSE"));
         Assert.Contains("AGPL-3.0-or-later", readme, StringComparison.Ordinal);
         Assert.Contains("AGPL-3.0-or-later", content, StringComparison.Ordinal);
         Assert.Contains("CC BY-NC-SA 4.0", content, StringComparison.Ordinal);
