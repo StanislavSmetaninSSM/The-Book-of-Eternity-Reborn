@@ -103,8 +103,14 @@ and disposition; later migrations update this table if a fixture changes role.
   receipt-bearing fixture or a file-backed canonical context; negatives mutate
   one named field/reference.
 - `BrowserCommandPresentationAuditTests.cs` consumes the active
-  `FileSystemExample`, so T081 migrated its positive map/current/index input
-  without another copied literal. The four file-backed location validator
+  `FileSystemExample` and the tracked
+  `mortal_world_command_display_fixture.zip`. T081 migrated both positive
+  map/current/index inputs: the reusable archive now carries five accepted
+  locations, four accepted links, one matching location identity index, and a
+  current projection whose storage metadata agrees with the map while its two
+  receipt-bearing items remain in current-only `contents`. A permanent archive
+  integrity test validates every location/link receipt, current/map agreement,
+  and index reconciliation. The four file-backed location validator
   definitions now run through the dedicated focused
   `MortalLocationMigratedFixture_BrokenAndFixedVariantsRespectCurrentContract`
   boundary; `ValidatorFixtureHarness` invokes the raw Mortal-location phase for

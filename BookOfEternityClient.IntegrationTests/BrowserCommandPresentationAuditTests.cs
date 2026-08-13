@@ -630,17 +630,17 @@ public sealed partial class BrowserCommandPresentationAuditTests : IClassFixture
     }
 
     [Fact]
-    public async Task MortalCurrentLocationSplitsDifficultyProfileIntoLocalizedFacts()
+    public async Task MortalCurrentLocationRendersCanonicalDifficultyProfilesInLocalizedFacts()
     {
         var result = await ExecuteFromLoadedSaveAsync(
             "mortal_world_command_display_fixture.zip",
             "/где_я");
         var text = CollectResultText(result);
 
-        Assert.Contains("Боевая опасность", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Опасность окружения", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Социальное напряжение", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Сложность исследования", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сложность (для своих)", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сложность (для чужих)", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рекомендуемый уровень (для своих)", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Рекомендуемый уровень (для чужих)", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("бой: 30 окружение", text, StringComparison.OrdinalIgnoreCase);
     }
 

@@ -57,7 +57,7 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         }
 
         Assert.Equal(100, observed.Max(item => item.EntryCount));
-        Assert.Equal(285_015, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(324_297, observed.Max(item => item.ExpandedBytes));
         Assert.Equal(61_375, observed.Max(item => item.LargestEntryBytes));
         Assert.Equal(3_552, observed.Max(item => item.NameUtf8Bytes));
 
@@ -321,6 +321,72 @@ public sealed class FileSystemExampleFixtureIntegrityTests
             Assert.Equal(occurrence.Carrier.OwnerId, carrier["ownerId"]!.GetValue<string>());
             Assert.Equal(occurrence.Carrier.ContainerId, carrier["containerId"]?.GetValue<string>());
         }
+    }
+
+    [Fact]
+    public void MortalCommandDisplaySaveFixture_MortalLocationsUseCurrentMaterializationAndIdentityIndex()
+    {
+        var fixturePath = Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "saves",
+            "manual_saves",
+            "mortal_world_command_display_fixture.zip");
+        using var archive = ZipFile.OpenRead(fixturePath);
+        var map = ReadArchiveObject(archive, MortalLocationMaterializationContract.WorldMapPath);
+        var current = ReadArchiveObject(archive, MortalLocationMaterializationContract.CurrentLocationPath);
+        var indexRoot = ReadArchiveObject(archive, MortalLocationIdentityState.StatePath);
+
+        var locations = map["locations"]?.AsArray() ??
+                        throw new InvalidDataException("Reusable Mortal save must contain canonical locations[].");
+        var links = map["links"]?.AsArray() ??
+                    throw new InvalidDataException("Reusable Mortal save must contain canonical links[].");
+        Assert.NotEmpty(locations);
+
+        foreach (var location in locations.OfType<JsonObject>())
+        {
+            using var document = JsonDocument.Parse(location.ToJsonString());
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLocation(
+                document.RootElement,
+                "reusable Mortal save location"));
+        }
+
+        foreach (var link in links.OfType<JsonObject>())
+        {
+            using var document = JsonDocument.Parse(link.ToJsonString());
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalLink(
+                document.RootElement,
+                "reusable Mortal save link"));
+        }
+
+        using (var currentDocument = JsonDocument.Parse(current.ToJsonString()))
+        {
+            Assert.Empty(MortalLocationMaterializationContract.ValidateCanonicalCurrentLocation(
+                currentDocument.RootElement,
+                "reusable Mortal save current location"));
+        }
+
+        var currentLocationId = current["locationId"]!.GetValue<string>();
+        var mapCurrent = Assert.Single(
+            locations.OfType<JsonObject>(),
+            location => string.Equals(
+                location["locationId"]?.GetValue<string>(),
+                currentLocationId,
+                StringComparison.Ordinal));
+        foreach (var (field, mapValue) in mapCurrent)
+        {
+            Assert.True(
+                current.TryGetPropertyValue(field, out var currentValue) &&
+                MortalLocationMaterializationContract.SharedCurrentProjectionValueEquals(
+                    field,
+                    mapValue,
+                    currentValue),
+                $"Reusable Mortal save current field '{field}' must match canonical map metadata.");
+        }
+
+        var index = MortalLocationIdentityState.Parse(indexRoot);
+        Assert.Empty(index.Issues);
+        Assert.Empty(index.ValidateCanonicalState(map));
+        Assert.True(index.LocationEntriesById.ContainsKey(currentLocationId));
     }
 
     [Theory]
