@@ -1086,12 +1086,11 @@ public sealed class ExplorerWebCommandServiceTests :
             "visited",
             x: 14,
             y: 5);
-        canonical["locationStorages"] = new JsonArray(new JsonObject
-        {
-            ["storageId"] = "storage_browser_chest",
-            ["name"] = "Ларь под навесом",
-            ["hasFullAccess"] = true
-        });
+        canonical["locationStorages"] = new JsonArray(
+            MortalLocationTestFixture.CreateStorageMetadata(
+                "storage_browser_chest",
+                "Ларь под навесом",
+                hasFullAccess: true));
         canonical["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
         {
             ["disposition"] = "populated",
@@ -2385,10 +2384,11 @@ public sealed class ExplorerWebCommandServiceTests :
         """);
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/weather"));
+        var text = CollectBlockText(result.Blocks);
         var payload = SerializeResult(result);
 
         Assert.DoesNotContain("PRIVATE RAW WEATHER", payload, StringComparison.Ordinal);
-        Assert.Contains("Погода остаётся видимой", payload, StringComparison.Ordinal);
+        Assert.Contains("Погода остаётся видимой", text, StringComparison.Ordinal);
     }
 
     [Fact]
